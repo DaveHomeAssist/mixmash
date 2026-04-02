@@ -91,3 +91,44 @@ Original prompt: Create a Smash Bros-style fighting game (BrawlForge) based on s
 - Input abstraction: `getPlayerInput(p)` handles human/CPU/gamepad
 - State machine: 13 player states (idle, walk, jump, fall, attack, hitstun, shield, dodge, spotdodge, airdodge, grab, grabbing, grabbed, dead, respawning)
 - 3 stages, 2 fighters, 3 game modes, 3 CPU difficulty levels
+
+## April 2 DJ Pass
+- Replaced the default fighter selection fallback with DJ roster defaults so fresh loads resolve valid fighters.
+- Added a six-fighter DJ art dispatch layer: `deadmau5`, `Skrillex`, `Marshmello`, `Daft Punk`, `Tiesto`, and `Subtronics`.
+- Kept the existing combat data and wired the new roster into gameplay rendering and the character picker.
+- Added `Festival Main Stage` with a dedicated `festival` platform theme plus new parallax shapes: `lasergrid`, `ledwall`, `speakerstacks`, `crowd`, and `spotlights`.
+- Fixed the title-to-character-select `Enter` carry bug so one confirm no longer auto-skips the picker.
+
+### April 2 Verification
+- `new Function(...)` parse check on the inline `<script>` passed.
+- Playwright client captured `charselect` mode after a single title confirm; DJ portraits rendered for `deadmau5` and `Skrillex`.
+- Playwright client captured `stageselect` with the new `Festival Main Stage` card visible.
+- Playwright client captured live `festival` gameplay with both DJ fighters rendered, festival background layers active, and combat state updating normally.
+
+### April 2 Test Follow-up
+- Browser smoke test reconfirmed title -> charselect -> stageselect -> modeselect -> playing on `index.html`.
+- Found a combat regression: grounded attacks were reading `damage` from `hitbox.damage`, which produced `NaN` knockback and broke camera/parallax rendering with a non-finite gradient error.
+- Fixed attack state setup by cloning attack definitions per move instance and reading charge scaling from the top-level attack `damage` value.
+- TODO: rerun the deterministic attack test after the fix and confirm damage, hitstun, and parallax rendering stay finite.
+
+### April 2 Stage Construction Pass
+- Reworked stage geometry across `skybridge`, `festival`, `tomorrowland`, `ultra`, `burningMan`, `coachella`, and `edc` to create stronger silhouette variance: more asymmetry, staggered heights, and distinct moving-platform lanes.
+- Kept `battlefield` and `finalDest` as the baseline control shapes so the roster still has familiar competitive anchors.
+- Verified a fresh stage-select capture shows visibly different platform stacks and spacing across the grid.
+- Verified a live `festival` match still reaches gameplay cleanly after stage selection, with no console errors and normal movement/combat state updates.
+
+### April 2 Music Pass
+- Added procedural background music with Web Audio scheduling instead of external audio files, keeping the build self-contained for static hosting.
+- Introduced mode/stage-aware cues: `menu` for title and selection screens, `neon` for festival/EDC/Ultra gameplay, plus `sky`, `sunset`, `fantasy`, `cosmic`, `clash`, and `victory` cue families.
+- Added a persisted `Music` toggle to the options menu while keeping the existing master `Volume` as the shared output level.
+- Extended `render_game_to_text` with `musicOn`, `musicCue`, `musicStep`, and `audioState` for browser verification.
+- Verified in Playwright that menu music starts after input, the options toggle clears/restores the cue, and `Festival Stage` gameplay switches from `menu` to `neon` with `audioState: running` and no console errors.
+
+### April 2 Control Matrix Verification
+- Added a reusable deterministic Playwright harness at `output/verify_controls_matrix.mjs` to verify roster/role control coverage without relying on live `requestAnimationFrame` timing drift.
+- Verified all 12 fighters across four roles: `P1` human, `P2` human, `CPU P1`, and `CPU P2`.
+- Human checks covered `left`, `right`, `jump`, `shield`, `spot dodge`, `attack`, `P1 alt attack` (`Space`), and grounded `special`/grab.
+- CPU checks covered approach movement, recovery jump, close-range attack, grounded special/grab into throw, and reactive shield.
+- Final matrix result: `300/300` checks passed, with `0` console errors and `0` page errors.
+- Primary artifacts: `output/web-game/control-matrix/summary.json`, `p1-deadmau5-special.png`, `p2-skrillex-shield.png`, `cpu-p1-marshmello-special.png`, and `cpu-p2-daftpunk-shield.png`.
+- Supplemental standard client smoke artifact: `output/web-game/control-matrix-client/shot-0.png` with matching text state in `output/web-game/control-matrix-client/state-0.json`.

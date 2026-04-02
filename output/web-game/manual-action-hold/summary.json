@@ -1,0 +1,178 @@
+{
+  "afterTitle": {
+    "mode": "charselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterCpuToggle": {
+    "mode": "charselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterCharConfirm": {
+    "mode": "charselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterStageConfirm": {
+    "mode": "stageselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "start": {
+    "mode": "stageselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterMove": {
+    "mode": "stageselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterAttack1": {
+    "mode": "modeselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "edc",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterAttack2": {
+    "mode": "playing",
+    "frame": 42,
+    "matchType": "stock",
+    "stage": "edc",
+    "players": [
+      {
+        "idx": 0,
+        "fighter": "deadmau5",
+        "x": -90,
+        "y": 210,
+        "vx": 0,
+        "vy": 0,
+        "state": "idle",
+        "damage": 0,
+        "stocks": 3,
+        "score": 0,
+        "facing": 1,
+        "grounded": true,
+        "shieldHP": 100,
+        "invincible": 0,
+        "controlType": "human",
+        "cpuLevel": 3,
+        "grabTarget": -1
+      },
+      {
+        "idx": 1,
+        "fighter": "skrillex",
+        "x": 90,
+        "y": 210,
+        "vx": 0,
+        "vy": 0,
+        "state": "idle",
+        "damage": 0,
+        "stocks": 3,
+        "score": 0,
+        "facing": -1,
+        "grounded": true,
+        "shieldHP": 100,
+        "invincible": 0,
+        "controlType": "human",
+        "cpuLevel": 3,
+        "grabTarget": -1
+      }
+    ],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 200,
+      "zoom": 1.44
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "errors": []
+}

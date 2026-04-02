@@ -1,0 +1,129 @@
+{
+  "optionsStart": {
+    "mode": "options",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "musicOn": true,
+    "musicCue": "menu",
+    "musicStep": 3,
+    "audioState": "running",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "musicOff": {
+    "mode": "options",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "musicOn": false,
+    "musicCue": null,
+    "musicStep": 0,
+    "audioState": "running",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "musicOn": {
+    "mode": "options",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "musicOn": true,
+    "musicCue": "menu",
+    "musicStep": 4,
+    "audioState": "running",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "stageSelect": {
+    "mode": "charselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "musicOn": true,
+    "musicCue": "menu",
+    "musicStep": 4,
+    "audioState": "running",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "playing": {
+    "mode": "stageselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "musicOn": true,
+    "musicCue": "menu",
+    "musicStep": 9,
+    "audioState": "running",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "afterMove": {
+    "mode": "stageselect",
+    "frame": 0,
+    "matchType": "stock",
+    "stage": "battlefield",
+    "musicOn": true,
+    "musicCue": "menu",
+    "musicStep": 3,
+    "audioState": "running",
+    "players": [],
+    "hitstop": 0,
+    "camera": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    },
+    "winner": -1,
+    "activeParticles": 0,
+    "damageNumbers": 0,
+    "coordSystem": "+x right, +y down, origin at stage center"
+  },
+  "errors": []
+}

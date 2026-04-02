@@ -1,0 +1,3139 @@
+{
+  "url": "http://127.0.0.1:4173/index.html",
+  "fighters": [
+    "deadmau5",
+    "skrillex",
+    "marshmello",
+    "daftpunk",
+    "tiesto",
+    "subtronics",
+    "avicii",
+    "excision",
+    "zedd",
+    "aphextwin",
+    "calvinharris",
+    "rezz"
+  ],
+  "totalChecks": 300,
+  "passedChecks": 300,
+  "failedChecks": 0,
+  "failures": [],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "screenshots": [
+    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/p1-deadmau5-special.png",
+    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/p2-skrillex-shield.png",
+    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/cpu-p1-marshmello-special.png",
+    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/cpu-p2-daftpunk-shield.png"
+  ],
+  "results": [
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -87
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 87
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 123,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 9
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 9
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "deadmau5",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": "p1-deadmau5-special.png"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -87
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 87
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 123,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 9
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "deadmau5",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "deadmau5",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -64
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "deadmau5",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 299,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "deadmau5",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 24
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "deadmau5",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 10,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "deadmau5",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 93,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "deadmau5",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 64
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "deadmau5",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 299,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "deadmau5",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 24
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "deadmau5",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 10,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "deadmau5",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 93,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -128
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 128
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 100,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 4
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 4
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "skrillex",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -128
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 128
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 100,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": "p2-skrillex-shield.png"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 4
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "skrillex",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "skrillex",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": 8
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "skrillex",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 293,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "skrillex",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 12
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "skrillex",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 6,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "skrillex",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "skrillex",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": -8
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "skrillex",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 293,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "skrillex",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 12
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "skrillex",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 6,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "skrillex",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -106
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 106
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 112,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 6
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 6
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "marshmello",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -106
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 106
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 112,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 6
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "marshmello",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "marshmello",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -31
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "marshmello",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 295,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "marshmello",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 15
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "marshmello",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": "cpu-p1-marshmello-special.png"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "marshmello",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "marshmello",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 31
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "marshmello",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 295,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "marshmello",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 15
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "marshmello",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "marshmello",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -109
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 109
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 110,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "daftpunk",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -109
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 109
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 110,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "daftpunk",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "daftpunk",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -26
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "daftpunk",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 297,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "daftpunk",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 17
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "daftpunk",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "daftpunk",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "daftpunk",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 26
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "daftpunk",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 297,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "daftpunk",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 17
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "daftpunk",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "daftpunk",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": "cpu-p2-daftpunk-shield.png"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -102
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 102
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 115,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 6
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 6
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "tiesto",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -102
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 102
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 115,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 6
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "tiesto",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "tiesto",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -38
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "tiesto",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 295,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "tiesto",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 17
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "tiesto",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 7,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "tiesto",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "tiesto",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 38
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "tiesto",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 295,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "tiesto",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 17
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "tiesto",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 7,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "tiesto",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -93
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 93
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 120,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 8
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 8
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "subtronics",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -93
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 93
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 120,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 8
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "subtronics",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "subtronics",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -55
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "subtronics",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 298,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "subtronics",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 20
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "subtronics",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 9,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "subtronics",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "subtronics",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 55
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "subtronics",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 298,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "subtronics",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 20
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "subtronics",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 9,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "subtronics",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -94
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 94
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 95,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 5
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 5
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "avicii",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -94
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 94
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 95,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 5
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "avicii",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "avicii",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -50
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "avicii",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 292,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "avicii",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 14
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "avicii",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 6,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "avicii",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "avicii",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 50
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "avicii",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 292,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "avicii",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 14
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "avicii",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 6,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "avicii",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -78
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 78
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 140,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 12
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 12
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "excision",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -78
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 78
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 140,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 12
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "excision",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "excision",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -81
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "excision",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 303,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "excision",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 33
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "excision",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 14,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "excision",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "excision",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 81
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "excision",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 303,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "excision",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 33
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "excision",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 14,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "excision",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -106
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 106
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 112,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "zedd",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -106
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 106
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 112,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "zedd",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "zedd",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -31
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "zedd",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 295,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "zedd",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 18
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "zedd",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "zedd",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "zedd",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 31
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "zedd",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 295,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "zedd",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 18
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "zedd",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "zedd",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -121
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 121
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 108,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 11
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 11
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "aphextwin",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -121
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 121
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 108,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 11
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "aphextwin",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "aphextwin",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -5
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "aphextwin",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 290,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "aphextwin",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 15
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "aphextwin",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 7,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "aphextwin",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "aphextwin",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 5
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "aphextwin",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 290,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "aphextwin",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 15
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "aphextwin",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 7,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "aphextwin",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -106
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 106
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 112,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "calvinharris",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -106
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 106
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 112,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 7
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "calvinharris",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "calvinharris",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -31
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "calvinharris",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 297,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "calvinharris",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 18
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "calvinharris",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "calvinharris",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "calvinharris",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 31
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "calvinharris",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 297,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "calvinharris",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 18
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "calvinharris",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 8,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "calvinharris",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -97
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 97
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 118,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 5
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "attack_alt",
+      "passed": true,
+      "details": {
+        "opponentDamage": 5
+      }
+    },
+    {
+      "role": "p1",
+      "fighter": "rezz",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 1,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "move_left",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": -97
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "move_right",
+      "passed": true,
+      "details": {
+        "beforeX": 0,
+        "afterX": 97
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "jump",
+      "passed": true,
+      "details": {
+        "y": 118,
+        "state": "jump"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 98,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "spot_dodge",
+      "passed": true,
+      "details": {
+        "state": "spotdodge"
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 5
+      }
+    },
+    {
+      "role": "p2",
+      "fighter": "rezz",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "grabbing",
+        "otherState": "grabbed",
+        "grabTarget": 0,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "rezz",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": -220,
+        "afterX": -47
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "rezz",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 294,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "rezz",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 14
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "rezz",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 7,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p1",
+      "fighter": "rezz",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "rezz",
+      "check": "move",
+      "passed": true,
+      "details": {
+        "beforeX": 220,
+        "afterX": 47
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "rezz",
+      "check": "jump_recovery",
+      "passed": true,
+      "details": {
+        "beforeY": 320,
+        "afterY": 294,
+        "state": "fall"
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "rezz",
+      "check": "attack",
+      "passed": true,
+      "details": {
+        "opponentDamage": 14
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "rezz",
+      "check": "special",
+      "passed": true,
+      "details": {
+        "targetState": "walk",
+        "otherState": "hitstun",
+        "grabTarget": -1,
+        "opponentDamage": 7,
+        "screenshotFile": null
+      }
+    },
+    {
+      "role": "cpu_p2",
+      "fighter": "rezz",
+      "check": "shield",
+      "passed": true,
+      "details": {
+        "state": "shield",
+        "shieldHP": 85,
+        "screenshotFile": null
+      }
+    }
+  ]
+}
