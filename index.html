@@ -43,6 +43,7 @@ const BLAST = { left: -580, right: 580, top: -480, bottom: 400 };
 // --- Options (persisted to localStorage) ---
 let options = {
   volume: 1.0,
+  musicOn: true,
   showHitboxes: false,
   hazardsOn: true,
   p1Binds: null, // null = use defaults
@@ -130,9 +131,10 @@ const STAGES = {
   skybridge: {
     name: 'Skybridge',
     platforms: [
-      { x: -200, y: 200, w: 400, h: 30, type: 'solid' },
-      { x: -320, y: 60, w: 100, h: 12, type: 'passthrough', moving: { axis: 'x', range: 120, speed: 1.5 } },
-      { x: 220, y: 60, w: 100, h: 12, type: 'passthrough', moving: { axis: 'x', range: 120, speed: 1.5 } },
+      { x: -220, y: 210, w: 440, h: 30, type: 'solid' },
+      { x: -320, y: 78, w: 102, h: 12, type: 'passthrough', moving: { axis: 'y', range: 38, speed: 1.1 } },
+      { x: -60, y: 6, w: 120, h: 12, type: 'passthrough' },
+      { x: 210, y: 122, w: 112, h: 12, type: 'passthrough', moving: { axis: 'x', range: 86, speed: 1.3 } },
     ],
     spawns: [{ x: -80, y: 100 }, { x: 80, y: 100 }],
     bg: '#1a0a2e',
@@ -149,10 +151,10 @@ const STAGES = {
   festival: {
     name: 'Festival Stage',
     platforms: [
-      { x: -260, y: 210, w: 520, h: 34, type: 'solid' },
-      { x: -180, y: 70, w: 110, h: 14, type: 'passthrough' },
-      { x: 70, y: 70, w: 110, h: 14, type: 'passthrough' },
-      { x: -50, y: -45, w: 100, h: 12, type: 'passthrough', moving: { axis: 'x', range: 70, speed: 1.1 } },
+      { x: -260, y: 218, w: 520, h: 34, type: 'solid' },
+      { x: -255, y: 118, w: 136, h: 14, type: 'passthrough' },
+      { x: 118, y: 146, w: 148, h: 14, type: 'passthrough' },
+      { x: -58, y: 28, w: 116, h: 12, type: 'passthrough', moving: { axis: 'y', range: 28, speed: 1.0 } },
     ],
     spawns: [{ x: -100, y: 105 }, { x: 100, y: 105 }],
     bg: '#050814',
@@ -169,10 +171,10 @@ const STAGES = {
   tomorrowland: {
     name: 'Tomorrowland',
     platforms: [
-      { x: -270, y: 205, w: 540, h: 32, type: 'solid' },
-      { x: -190, y: 55, w: 100, h: 12, type: 'passthrough' },
-      { x: 90, y: 55, w: 100, h: 12, type: 'passthrough' },
-      { x: -55, y: -50, w: 110, h: 12, type: 'passthrough' },
+      { x: -280, y: 208, w: 560, h: 32, type: 'solid' },
+      { x: -250, y: 118, w: 138, h: 12, type: 'passthrough' },
+      { x: -72, y: 38, w: 142, h: 12, type: 'passthrough' },
+      { x: 150, y: -34, w: 94, h: 12, type: 'passthrough' },
     ],
     spawns: [{ x: -100, y: 100 }, { x: 100, y: 100 }],
     bg: '#0a0618',
@@ -187,9 +189,10 @@ const STAGES = {
   ultra: {
     name: 'Ultra Miami',
     platforms: [
-      { x: -240, y: 210, w: 480, h: 30, type: 'solid' },
-      { x: -260, y: 40, w: 90, h: 12, type: 'passthrough', moving: { axis: 'y', range: 50, speed: 1.2 } },
-      { x: 170, y: 40, w: 90, h: 12, type: 'passthrough', moving: { axis: 'y', range: 50, speed: 1.2 } },
+      { x: -230, y: 220, w: 460, h: 30, type: 'solid' },
+      { x: -305, y: 122, w: 96, h: 12, type: 'passthrough', moving: { axis: 'y', range: 72, speed: 1.15 } },
+      { x: -56, y: 30, w: 112, h: 12, type: 'passthrough' },
+      { x: 208, y: 52, w: 96, h: 12, type: 'passthrough', moving: { axis: 'y', range: 48, speed: 1.45 } },
     ],
     spawns: [{ x: -90, y: 110 }, { x: 90, y: 110 }],
     bg: '#020a1a',
@@ -204,8 +207,10 @@ const STAGES = {
   burningMan: {
     name: 'Burning Man',
     platforms: [
-      { x: -300, y: 215, w: 600, h: 28, type: 'solid' },
-      { x: -45, y: 50, w: 90, h: 12, type: 'passthrough' },
+      { x: -320, y: 220, w: 640, h: 28, type: 'solid' },
+      { x: -255, y: 118, w: 96, h: 12, type: 'passthrough' },
+      { x: -46, y: 34, w: 92, h: 12, type: 'passthrough' },
+      { x: 158, y: 118, w: 96, h: 12, type: 'passthrough' },
     ],
     spawns: [{ x: -120, y: 115 }, { x: 120, y: 115 }],
     bg: '#1a0e04',
@@ -220,9 +225,10 @@ const STAGES = {
   coachella: {
     name: 'Coachella',
     platforms: [
-      { x: -250, y: 200, w: 500, h: 30, type: 'solid' },
-      { x: -200, y: 50, w: 110, h: 12, type: 'passthrough' },
-      { x: 90, y: 50, w: 110, h: 12, type: 'passthrough' },
+      { x: -255, y: 212, w: 510, h: 30, type: 'solid' },
+      { x: -252, y: 126, w: 112, h: 12, type: 'passthrough' },
+      { x: -52, y: 30, w: 104, h: 12, type: 'passthrough' },
+      { x: 150, y: 116, w: 122, h: 12, type: 'passthrough' },
     ],
     spawns: [{ x: -100, y: 100 }, { x: 100, y: 100 }],
     bg: '#1a0c20',
@@ -237,10 +243,10 @@ const STAGES = {
   edc: {
     name: 'EDC Las Vegas',
     platforms: [
-      { x: -230, y: 210, w: 460, h: 30, type: 'solid' },
-      { x: -160, y: 60, w: 100, h: 12, type: 'passthrough' },
-      { x: 60, y: 60, w: 100, h: 12, type: 'passthrough' },
-      { x: -40, y: -55, w: 80, h: 12, type: 'passthrough', moving: { axis: 'x', range: 60, speed: 1.4 } },
+      { x: -235, y: 218, w: 470, h: 30, type: 'solid' },
+      { x: -232, y: 88, w: 112, h: 12, type: 'passthrough' },
+      { x: 125, y: 50, w: 122, h: 12, type: 'passthrough' },
+      { x: -46, y: -18, w: 92, h: 12, type: 'passthrough', moving: { axis: 'x', range: 84, speed: 1.25 } },
     ],
     spawns: [{ x: -90, y: 105 }, { x: 90, y: 105 }],
     bg: '#04020e',
@@ -717,7 +723,308 @@ function renderParticles() {
 
 // --- Audio ---
 let audioCtx = null;
-function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+const MUSIC_CUES = {
+  menu: {
+    bpm: 104, level: 0.52, filter: 2600,
+    bassWave: 'triangle', leadWave: 'triangle', padWave: 'sine',
+    chords: [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 55, 59]],
+    bass: [33, null, null, 33, 29, null, null, 29, 31, null, null, 31, 28, null, 29, null],
+    lead: [69, null, 72, null, 76, null, 72, null, 67, null, 71, null, 74, null, 71, null],
+    kick: [0, 4, 8, 12],
+    hat: [2, 6, 10, 14],
+  },
+  clash: {
+    bpm: 126, level: 0.62, filter: 3200,
+    bassWave: 'sawtooth', leadWave: 'square', padWave: 'triangle',
+    chords: [[48, 55, 60], [50, 57, 62], [53, 60, 65], [55, 62, 67]],
+    bass: [36, null, 36, 36, 38, null, null, 38, 41, null, 41, 41, 43, null, 41, null],
+    lead: [null, 60, 63, null, 67, null, 63, null, null, 60, 65, null, 68, null, 70, null],
+    kick: [0, 3, 4, 7, 8, 11, 12, 15],
+    snare: [4, 12],
+    hat: [2, 6, 10, 14],
+    hatOpen: [7, 15],
+  },
+  sky: {
+    bpm: 118, level: 0.5, filter: 3600,
+    bassWave: 'triangle', leadWave: 'sine', padWave: 'triangle',
+    chords: [[50, 57, 62], [55, 59, 62], [57, 60, 64], [52, 57, 60]],
+    bass: [38, null, null, 38, 43, null, null, 43, 45, null, null, 45, 40, null, 43, null],
+    lead: [74, null, 78, null, 81, null, 78, null, 76, null, 79, null, 83, null, 79, null],
+    kick: [0, 4, 8, 12],
+    hat: [2, 6, 10, 14],
+  },
+  neon: {
+    bpm: 132, level: 0.66, filter: 4200,
+    bassWave: 'sawtooth', leadWave: 'square', padWave: 'sine',
+    chords: [[45, 52, 57], [48, 55, 60], [43, 50, 55], [50, 57, 62]],
+    bass: [33, 33, null, 33, 36, null, 36, null, 31, 31, null, 31, 38, null, 36, null],
+    lead: [69, null, 72, 76, null, 79, 76, null, 67, null, 71, 74, null, 76, 74, null],
+    kick: [0, 4, 8, 12],
+    snare: [4, 12],
+    hat: [2, 6, 8, 10, 14],
+    hatOpen: [7, 15],
+  },
+  sunset: {
+    bpm: 96, level: 0.46, filter: 2200,
+    bassWave: 'triangle', leadWave: 'triangle', padWave: 'sine',
+    chords: [[45, 52, 57], [41, 48, 53], [43, 50, 55], [38, 45, 50]],
+    bass: [33, null, null, 33, null, 29, null, null, 31, null, null, 31, null, 26, 29, null],
+    lead: [64, null, 67, null, 69, null, 72, null, 62, null, 65, null, 67, null, 69, null],
+    kick: [0, 8, 12],
+    snare: [4, 12],
+    hat: [6, 14],
+  },
+  fantasy: {
+    bpm: 114, level: 0.54, filter: 3000,
+    bassWave: 'triangle', leadWave: 'triangle', padWave: 'sine',
+    chords: [[50, 57, 62], [45, 52, 57], [47, 54, 59], [52, 59, 64]],
+    bass: [38, null, null, 38, 33, null, null, 33, 35, null, null, 35, 40, null, 35, null],
+    lead: [74, 78, null, 81, null, 78, 76, null, 74, null, 79, null, 83, null, 81, null],
+    kick: [0, 4, 8, 12],
+    hat: [2, 6, 10, 14],
+  },
+  cosmic: {
+    bpm: 110, level: 0.5, filter: 2400,
+    bassWave: 'triangle', leadWave: 'sine', padWave: 'triangle',
+    chords: [[45, 52, 57], [43, 50, 55], [40, 47, 52], [47, 54, 59]],
+    bass: [33, null, null, 33, 31, null, null, 31, 28, null, null, 28, 35, null, 31, null],
+    lead: [69, null, 72, null, 67, null, 71, null, 64, null, 67, null, 74, null, 71, null],
+    kick: [0, 8],
+    hat: [4, 12],
+  },
+  victory: {
+    bpm: 116, level: 0.62, filter: 3800,
+    bassWave: 'triangle', leadWave: 'square', padWave: 'triangle',
+    chords: [[55, 59, 62], [57, 60, 64], [60, 64, 67], [62, 65, 69]],
+    bass: [43, null, 43, null, 45, null, 45, null, 48, null, 48, null, 50, null, 52, null],
+    lead: [79, null, 83, 86, null, 83, 88, null, 84, null, 88, 91, null, 88, 93, null],
+    kick: [0, 4, 8, 12],
+    snare: [4, 12],
+    hat: [2, 6, 10, 14],
+  },
+};
+
+const musicState = {
+  masterGain: null,
+  toneFilter: null,
+  schedulerId: null,
+  noiseBuffer: null,
+  currentCue: null,
+  step: 0,
+  nextNoteTime: 0,
+  targetGain: -1,
+  targetFilter: -1,
+};
+
+function midiToFreq(note) {
+  return 440 * Math.pow(2, (note - 69) / 12);
+}
+
+function ensureMusicGraph() {
+  if (!audioCtx || musicState.masterGain) return;
+  musicState.masterGain = audioCtx.createGain();
+  musicState.masterGain.gain.value = 0.0001;
+  musicState.toneFilter = audioCtx.createBiquadFilter();
+  musicState.toneFilter.type = 'lowpass';
+  musicState.toneFilter.frequency.value = 2800;
+  musicState.toneFilter.Q.value = 0.6;
+  musicState.toneFilter.connect(musicState.masterGain);
+  musicState.masterGain.connect(audioCtx.destination);
+
+  const len = Math.max(1, Math.floor(audioCtx.sampleRate * 0.25));
+  const noise = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const data = noise.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  musicState.noiseBuffer = noise;
+}
+
+function getMusicCueKey() {
+  if (!options.musicOn) return null;
+  if (state.mode === 'results') return 'victory';
+  if (state.mode === 'title' || state.mode === 'charselect' || state.mode === 'stageselect' || state.mode === 'modeselect' || state.mode === 'options') return 'menu';
+  if (state.mode !== 'playing' && state.mode !== 'training' && state.mode !== 'paused') return null;
+  const stage = currentStage || STAGES[state.selectedStage] || STAGES.battlefield;
+  switch (stage.theme) {
+    case 'festival':
+    case 'ultra':
+    case 'edc':
+      return 'neon';
+    case 'desert':
+    case 'coachella':
+      return 'sunset';
+    case 'tomorrowland':
+      return 'fantasy';
+    case 'sky':
+      return 'sky';
+    case 'cosmic':
+      return 'cosmic';
+    default:
+      return 'clash';
+  }
+}
+
+function scheduleTone({ type, freq, time, duration, volume, attack, release, filterFreq, detune }) {
+  if (!audioCtx || !musicState.toneFilter || !Number.isFinite(freq) || freq <= 0) return;
+  const osc = audioCtx.createOscillator();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq, time);
+  if (detune) osc.detune.setValueAtTime(detune, time);
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(filterFreq || 2800, time);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.linearRampToValueAtTime(volume, time + (attack || 0.01));
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + duration + (release || 0.08));
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(musicState.toneFilter);
+  osc.start(time);
+  osc.stop(time + duration + (release || 0.08) + 0.03);
+}
+
+function scheduleKick(time, volume) {
+  if (!audioCtx || !musicState.toneFilter) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const filter = audioCtx.createBiquadFilter();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(130, time);
+  osc.frequency.exponentialRampToValueAtTime(42, time + 0.18);
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(240, time);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.linearRampToValueAtTime(volume, time + 0.005);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.22);
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(musicState.toneFilter);
+  osc.start(time);
+  osc.stop(time + 0.24);
+}
+
+function scheduleNoiseHit(time, volume, duration, highpass) {
+  if (!audioCtx || !musicState.noiseBuffer || !musicState.toneFilter) return;
+  const src = audioCtx.createBufferSource();
+  const filter = audioCtx.createBiquadFilter();
+  const gain = audioCtx.createGain();
+  src.buffer = musicState.noiseBuffer;
+  filter.type = 'highpass';
+  filter.frequency.setValueAtTime(highpass, time);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.linearRampToValueAtTime(volume, time + 0.004);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+  src.connect(filter);
+  filter.connect(gain);
+  gain.connect(musicState.toneFilter);
+  src.start(time);
+  src.stop(time + duration + 0.03);
+}
+
+function scheduleMusicStep(cue, step, time, stepDur) {
+  const idx = step % 16;
+  if (cue.kick && cue.kick.includes(idx)) scheduleKick(time, 0.07 * cue.level);
+  if (cue.snare && cue.snare.includes(idx)) scheduleNoiseHit(time, 0.03 * cue.level, 0.12, 1600);
+  if (cue.hat && cue.hat.includes(idx)) scheduleNoiseHit(time, 0.018 * cue.level, 0.05, 5200);
+  if (cue.hatOpen && cue.hatOpen.includes(idx)) scheduleNoiseHit(time, 0.02 * cue.level, 0.11, 4600);
+
+  const bassNote = cue.bass[idx];
+  if (bassNote !== null && bassNote !== undefined) {
+    scheduleTone({
+      type: cue.bassWave,
+      freq: midiToFreq(bassNote),
+      time,
+      duration: stepDur * 1.75,
+      volume: 0.028 * cue.level,
+      attack: 0.01,
+      release: 0.12,
+      filterFreq: cue.filter * 0.55,
+    });
+  }
+
+  const leadNote = cue.lead[idx];
+  if (leadNote !== null && leadNote !== undefined) {
+    scheduleTone({
+      type: cue.leadWave,
+      freq: midiToFreq(leadNote),
+      time: time + stepDur * 0.04,
+      duration: stepDur * 0.85,
+      volume: 0.018 * cue.level,
+      attack: 0.008,
+      release: 0.09,
+      filterFreq: cue.filter * 1.2,
+    });
+  }
+
+  if (cue.chords && idx % 4 === 0) {
+    const chord = cue.chords[Math.floor(idx / 4) % cue.chords.length];
+    chord.forEach((note, noteIdx) => {
+      scheduleTone({
+        type: cue.padWave,
+        freq: midiToFreq(note),
+        time,
+        duration: stepDur * 3.5,
+        volume: 0.009 * cue.level,
+        attack: 0.03,
+        release: 0.18,
+        filterFreq: cue.filter * 0.8,
+        detune: noteIdx === 0 ? -3 : noteIdx === chord.length - 1 ? 3 : 0,
+      });
+    });
+  }
+}
+
+function scheduleMusic() {
+  if (!audioCtx || audioCtx.state !== 'running') return;
+  const cue = musicState.currentCue ? MUSIC_CUES[musicState.currentCue] : null;
+  if (!cue) return;
+  const stepDur = 60 / cue.bpm / 4;
+  while (musicState.nextNoteTime < audioCtx.currentTime + 0.2) {
+    scheduleMusicStep(cue, musicState.step, musicState.nextNoteTime, stepDur);
+    musicState.step = (musicState.step + 1) % 16;
+    musicState.nextNoteTime += stepDur;
+  }
+}
+
+function syncMusicState(force) {
+  if (!audioCtx) return;
+  ensureMusicGraph();
+  const cueKey = getMusicCueKey();
+  const cue = cueKey ? MUSIC_CUES[cueKey] : null;
+  const pausedDuck = state.mode === 'paused' ? 0.28 : 1;
+  const targetGain = cue ? Math.max(0.0001, options.volume * pausedDuck * cue.level * 0.12) : 0.0001;
+  const targetFilter = cue ? cue.filter * (state.mode === 'paused' ? 0.55 : 1) : 1800;
+
+  if (force || musicState.currentCue !== cueKey) {
+    musicState.currentCue = cueKey;
+    musicState.step = 0;
+    musicState.nextNoteTime = audioCtx.currentTime + 0.06;
+  }
+  if (force || Math.abs(musicState.targetGain - targetGain) > 0.001) {
+    musicState.targetGain = targetGain;
+    musicState.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+    musicState.masterGain.gain.setTargetAtTime(targetGain, audioCtx.currentTime, 0.08);
+  }
+  if (force || Math.abs(musicState.targetFilter - targetFilter) > 2) {
+    musicState.targetFilter = targetFilter;
+    musicState.toneFilter.frequency.cancelScheduledValues(audioCtx.currentTime);
+    musicState.toneFilter.frequency.setTargetAtTime(targetFilter, audioCtx.currentTime, 0.12);
+  }
+}
+
+function startMusicScheduler() {
+  if (musicState.schedulerId || !audioCtx) return;
+  musicState.nextNoteTime = audioCtx.currentTime + 0.06;
+  musicState.schedulerId = window.setInterval(scheduleMusic, 80);
+}
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  ensureMusicGraph();
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+  startMusicScheduler();
+  syncMusicState(true);
+}
 
 function playSound(type) {
   if (!audioCtx) return;
@@ -5274,6 +5581,7 @@ function renderOptions() {
     { label: 'Volume', value: `${Math.round(options.volume * 100)}%` },
     { label: 'Show Hitboxes', value: options.showHitboxes ? 'ON' : 'OFF' },
     { label: 'Stage Hazards', value: options.hazardsOn ? 'ON' : 'OFF' },
+    { label: 'Music', value: options.musicOn ? 'ON' : 'OFF' },
   ];
 
   for (let i = 0; i < items.length; i++) {
@@ -5320,6 +5628,7 @@ function renderPaused() {
 }
 
 function render() {
+  syncMusicState(false);
   ctx.clearRect(0, 0, BASE_W, BASE_H);
 
   switch (state.mode) {
@@ -5462,7 +5771,7 @@ function handleModeSelectInput() {
 
 function handleOptionsInput() {
   if (justPressed['KeyW'] || justPressed['ArrowUp']) { state.optionsCursor = Math.max(0, state.optionsCursor - 1); playSound('select'); }
-  if (justPressed['KeyS'] || justPressed['ArrowDown']) { state.optionsCursor = Math.min(2, state.optionsCursor + 1); playSound('select'); }
+  if (justPressed['KeyS'] || justPressed['ArrowDown']) { state.optionsCursor = Math.min(3, state.optionsCursor + 1); playSound('select'); }
   const left = justPressed['KeyA'] || justPressed['ArrowLeft'];
   const right = justPressed['KeyD'] || justPressed['ArrowRight'];
   if (left || right) {
@@ -5470,17 +5779,18 @@ function handleOptionsInput() {
     if (state.optionsCursor === 0) options.volume = Math.max(0, Math.min(1, options.volume + d * 0.1));
     if (state.optionsCursor === 1) options.showHitboxes = !options.showHitboxes;
     if (state.optionsCursor === 2) options.hazardsOn = !options.hazardsOn;
+    if (state.optionsCursor === 3) options.musicOn = !options.musicOn;
     playSound('select');
   }
 }
 
 // --- Global Key Handlers ---
 document.addEventListener('keydown', e => {
+  if (e.code !== 'Escape' && e.code !== 'KeyF') initAudio();
   if (state.mode === 'title') {
     if (e.code === 'Enter' || e.code === 'Space') {
       state.mode = 'charselect';
       delete justPressed[e.code];
-      initAudio();
     }
     if (e.code === 'KeyO') { state.mode = 'options'; }
   } else if (state.mode === 'results') {
@@ -5559,6 +5869,10 @@ window.render_game_to_text = function () {
     frame: state.frameCount,
     matchType: state.matchType,
     stage: state.selectedStage,
+    musicOn: options.musicOn,
+    musicCue: musicState.currentCue,
+    musicStep: musicState.step,
+    audioState: audioCtx ? audioCtx.state : 'off',
     timeRemaining: state.matchType === 'time' ? Math.round(state.timeRemaining) : undefined,
     players: state.players.map(p => ({
       idx: p.idx, fighter: p.fighterKey,
