@@ -1,2 +1,4 @@
 .DS_Store
+aoe2-clone/
+node_modules/
 output/gh-pages-publish/

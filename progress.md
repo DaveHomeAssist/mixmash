@@ -86,11 +86,11 @@ Original prompt: Create a Smash Bros-style fighting game (BrawlForge) based on s
 - No console errors
 
 ## Architecture
-- Single HTML file (~1,400 lines)
+- Single HTML file (~6,200 lines)
 - Centralized physics: `applyPhysics(p, dt, opts)`
 - Input abstraction: `getPlayerInput(p)` handles human/CPU/gamepad
-- State machine: 13 player states (idle, walk, jump, fall, attack, hitstun, shield, dodge, spotdodge, airdodge, grab, grabbing, grabbed, dead, respawning)
-- 3 stages, 2 fighters, 3 game modes, 3 CPU difficulty levels
+- State machine covers grounded, aerial, dodge, shield, grab, KO, and respawn flows
+- 9 stages, 12 fighters, 3 game modes, 3 CPU difficulty levels
 
 ## April 2 DJ Pass
 - Replaced the default fighter selection fallback with DJ roster defaults so fresh loads resolve valid fighters.

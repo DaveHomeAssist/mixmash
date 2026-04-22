@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 
-const ROOT = "/Users/daverobertson/Desktop/Code/brawlforge";
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(SCRIPT_DIR, "..");
 const OUTPUT_DIR = path.join(ROOT, "output/web-game/control-matrix");
-const URL = process.argv[2] || "http://127.0.0.1:4173/index.html";
+const URL = process.argv[2] || pathToFileURL(path.join(ROOT, "index.html")).href;
 
 const SCREENSHOT_TARGETS = [
   { role: "p1", fighter: "deadmau5", check: "special", file: "p1-deadmau5-special.png" },
@@ -14,7 +16,8 @@ const SCREENSHOT_TARGETS = [
 ];
 const ALL_TEST_KEYS = [
   "KeyA", "KeyD", "KeyW", "KeyS", "KeyJ", "Space", "KeyK", "KeyL",
-  "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Numpad1", "Numpad2", "Numpad3",
+  "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Period", "Slash", "Semicolon",
+  "Numpad1", "Numpad2", "Numpad3",
 ];
 
 function ensureDir(dir) {
@@ -495,9 +498,9 @@ async function main() {
     right: "ArrowRight",
     up: "ArrowUp",
     down: "ArrowDown",
-    attack: "Numpad1",
-    special: "Numpad2",
-    shield: "Numpad3",
+    attack: "Period",
+    special: "Slash",
+    shield: "Semicolon",
   };
 
   for (const fighter of fighterKeys) {

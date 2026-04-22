@@ -1,0 +1,12 @@
+{
+  "name": "mixmash",
+  "private": true,
+  "description": "Mixmash browser fighter verification tooling",
+  "scripts": {
+    "verify:controls": "node output/verify_controls_matrix.mjs",
+    "playwright:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.54.2"
+  }
+}
