@@ -1,5 +1,5 @@
 {
-  "url": "http://127.0.0.1:4173/index.html",
+  "url": "file:///Users/daverobertson/Desktop/Code/10-projects/active/mixmash/index.html",
   "fighters": [
     "deadmau5",
     "skrillex",
@@ -21,10 +21,10 @@
   "consoleErrors": [],
   "pageErrors": [],
   "screenshots": [
-    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/p1-deadmau5-special.png",
-    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/p2-skrillex-shield.png",
-    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/cpu-p1-marshmello-special.png",
-    "/Users/daverobertson/Desktop/Code/brawlforge/output/web-game/control-matrix/cpu-p2-daftpunk-shield.png"
+    "/Users/daverobertson/Desktop/Code/10-projects/active/mixmash/output/web-game/control-matrix/p1-deadmau5-special.png",
+    "/Users/daverobertson/Desktop/Code/10-projects/active/mixmash/output/web-game/control-matrix/p2-skrillex-shield.png",
+    "/Users/daverobertson/Desktop/Code/10-projects/active/mixmash/output/web-game/control-matrix/cpu-p1-marshmello-special.png",
+    "/Users/daverobertson/Desktop/Code/10-projects/active/mixmash/output/web-game/control-matrix/cpu-p2-daftpunk-shield.png"
   ],
   "results": [
     {
@@ -53,7 +53,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 123,
+        "y": 129,
         "state": "jump"
       }
     },
@@ -133,7 +133,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 123,
+        "y": 129,
         "state": "jump"
       }
     },
@@ -214,7 +214,7 @@
       "check": "special",
       "passed": true,
       "details": {
-        "targetState": "walk",
+        "targetState": "idle",
         "otherState": "hitstun",
         "grabTarget": -1,
         "opponentDamage": 10,
@@ -268,7 +268,7 @@
       "check": "special",
       "passed": true,
       "details": {
-        "targetState": "walk",
+        "targetState": "idle",
         "otherState": "hitstun",
         "grabTarget": -1,
         "opponentDamage": 10,
@@ -312,7 +312,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 100,
+        "y": 111,
         "state": "jump"
       }
     },
@@ -392,7 +392,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 100,
+        "y": 111,
         "state": "jump"
       }
     },
@@ -571,7 +571,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 112,
+        "y": 121,
         "state": "jump"
       }
     },
@@ -651,7 +651,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 112,
+        "y": 121,
         "state": "jump"
       }
     },
@@ -830,7 +830,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 110,
+        "y": 119,
         "state": "jump"
       }
     },
@@ -910,7 +910,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 110,
+        "y": 119,
         "state": "jump"
       }
     },
@@ -1089,7 +1089,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 115,
+        "y": 123,
         "state": "jump"
       }
     },
@@ -1169,7 +1169,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 115,
+        "y": 123,
         "state": "jump"
       }
     },
@@ -1348,7 +1348,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 120,
+        "y": 127,
         "state": "jump"
       }
     },
@@ -1428,7 +1428,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 120,
+        "y": 127,
         "state": "jump"
       }
     },
@@ -1607,7 +1607,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 95,
+        "y": 107,
         "state": "jump"
       }
     },
@@ -1687,7 +1687,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 95,
+        "y": 107,
         "state": "jump"
       }
     },
@@ -1866,7 +1866,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 140,
+        "y": 143,
         "state": "jump"
       }
     },
@@ -1946,7 +1946,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 140,
+        "y": 143,
         "state": "jump"
       }
     },
@@ -2027,7 +2027,7 @@
       "check": "special",
       "passed": true,
       "details": {
-        "targetState": "walk",
+        "targetState": "idle",
         "otherState": "hitstun",
         "grabTarget": -1,
         "opponentDamage": 14,
@@ -2081,7 +2081,7 @@
       "check": "special",
       "passed": true,
       "details": {
-        "targetState": "walk",
+        "targetState": "idle",
         "otherState": "hitstun",
         "grabTarget": -1,
         "opponentDamage": 14,
@@ -2125,7 +2125,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 112,
+        "y": 121,
         "state": "jump"
       }
     },
@@ -2205,7 +2205,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 112,
+        "y": 121,
         "state": "jump"
       }
     },
@@ -2384,7 +2384,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 108,
+        "y": 117,
         "state": "jump"
       }
     },
@@ -2464,7 +2464,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 108,
+        "y": 117,
         "state": "jump"
       }
     },
@@ -2643,7 +2643,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 112,
+        "y": 121,
         "state": "jump"
       }
     },
@@ -2723,7 +2723,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 112,
+        "y": 121,
         "state": "jump"
       }
     },
@@ -2902,7 +2902,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 118,
+        "y": 125,
         "state": "jump"
       }
     },
@@ -2982,7 +2982,7 @@
       "check": "jump",
       "passed": true,
       "details": {
-        "y": 118,
+        "y": 125,
         "state": "jump"
       }
     },
