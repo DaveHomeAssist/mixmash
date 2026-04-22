@@ -15,7 +15,7 @@
 <script>
 // ============================================================
 // MIXMASH — DJ-Powered Platform Fighter
-// Full feature build: 2 fighters, 3 stages, CPU AI, training,
+// Full feature build: 12 fighters, 9 stages, CPU AI, training,
 // time match, grabs, DI, dodges, clang, visual polish, gamepad
 // ============================================================
 
@@ -37,6 +37,14 @@ const HITSTOP_BASE = 4;
 const DI_MAX_ANGLE = 18 * Math.PI / 180; // max DI shift in radians
 const GRAB_ESCAPE_BASE = 90; // frames before auto-escape
 const INPUT_BUFFER_WINDOW = 5; // frames to buffer inputs
+const COYOTE_TIME = 6; // frames of grace after leaving ground
+const JUMP_SQUAT_FRAMES = 3; // crouch frames before liftoff
+const LANDING_LAG_BASE = 4; // minimum landing lag frames
+const LANDING_LAG_VEL_SCALE = 0.008; // extra lag per unit of fall velocity
+const TUMBLE_KB_THRESHOLD = 80; // knockback above this enters tumble
+const LEDGE_SNAP_RANGE = 22; // pixels within which ledge grab activates
+const LEDGE_HANG_FRAMES = 90; // max frames on ledge before forced drop
+const AFTERIMAGE_COUNT = 3; // ghost trail count on tumble knockback
 
 const BLAST = { left: -580, right: 580, top: -480, bottom: 400 };
 
@@ -56,6 +64,155 @@ function saveOptions() {
   try { localStorage.setItem('mixmash_opts', JSON.stringify(options)); } catch {}
 }
 loadOptions();
+
+// --- Meta Modes: Festival Tour now, Guided Trials later ---
+const TOUR_STORAGE_KEY = 'mixmash_tour';
+const TOUR_RUNS = {
+  neonCircuit: {
+    id: 'neonCircuit',
+    name: 'Neon Circuit',
+    desc: 'Beat a four-leg festival bill from warmup slot to headliner finale.',
+    completionReward: 'Headliner Pass',
+    legs: [
+      {
+        opponent: 'marshmello',
+        stage: 'festival',
+        cpuLevel: 1,
+        ruleTwist: 'Warmup Set',
+        rewardLabel: 'Soundcheck Wristband',
+        hazardsOn: true,
+      },
+      {
+        opponent: 'zedd',
+        stage: 'skybridge',
+        cpuLevel: 3,
+        ruleTwist: 'Skybridge Crossover',
+        rewardLabel: 'Laser Crew Pin',
+        hazardsOn: false,
+      },
+      {
+        opponent: 'rezz',
+        stage: 'edc',
+        cpuLevel: 3,
+        ruleTwist: 'Midnight Crowd Surge',
+        rewardLabel: 'Afterhours Stamp',
+        hazardsOn: true,
+      },
+      {
+        opponent: 'skrillex',
+        stage: 'ultra',
+        cpuLevel: 5,
+        ruleTwist: 'Headliner Showdown',
+        rewardLabel: 'Main Stage Crown',
+        hazardsOn: true,
+      },
+    ],
+  },
+};
+const TOUR_RUN_KEYS = Object.keys(TOUR_RUNS);
+const DEFAULT_TOUR_RUN_ID = TOUR_RUN_KEYS[0];
+
+const MODE_OPTIONS = [
+  { name: 'Stock Match', desc: '3 stocks, last one standing wins', key: 'stock' },
+  { name: 'Time Match', desc: '3 minutes, most KOs wins', key: 'time' },
+  { name: 'Training', desc: 'Practice mode with hitbox display', key: 'training' },
+  { name: 'Festival Tour', desc: 'Climb a curated DJ gauntlet with persistent clears', key: 'tour', runId: DEFAULT_TOUR_RUN_ID },
+];
+
+function createTourState() {
+  return {
+    runId: DEFAULT_TOUR_RUN_ID,
+    currentLegIndex: 0,
+    completedLegs: 0,
+    losses: 0,
+    rewardState: '',
+    active: false,
+    completed: false,
+    playerFighter: null,
+    lastOutcome: null,
+  };
+}
+
+function normalizeTourStorage(raw) {
+  const bestClears = raw && typeof raw.bestClears === 'object' ? raw.bestClears : {};
+  const activeRun = raw && raw.activeRun && TOUR_RUNS[raw.activeRun.runId] ? raw.activeRun : null;
+  return { activeRun, bestClears };
+}
+
+let tourStorage = { activeRun: null, bestClears: {} };
+function loadTourStorage() {
+  try {
+    const s = localStorage.getItem(TOUR_STORAGE_KEY);
+    if (s) tourStorage = normalizeTourStorage(JSON.parse(s));
+  } catch {}
+}
+function saveTourStorage() {
+  try { localStorage.setItem(TOUR_STORAGE_KEY, JSON.stringify(tourStorage)); } catch {}
+}
+loadTourStorage();
+
+function getTourRun(runId) {
+  return TOUR_RUNS[runId] || TOUR_RUNS[DEFAULT_TOUR_RUN_ID];
+}
+
+function getTourLeg(runId, legIndex) {
+  const run = getTourRun(runId);
+  return run.legs[legIndex] || null;
+}
+
+function getActiveTourLeg() {
+  return getTourLeg(state.tourState.runId, state.tourState.currentLegIndex);
+}
+
+function getTourProgressForSave() {
+  const legAdvance = state.tourState.lastOutcome === 'advance' ? 1 : 0;
+  const run = getTourRun(state.tourState.runId);
+  return {
+    runId: state.tourState.runId,
+    currentLegIndex: Math.min(state.tourState.currentLegIndex + legAdvance, run.legs.length - 1),
+    completedLegs: Math.max(state.tourState.completedLegs, state.tourState.currentLegIndex + legAdvance),
+    losses: state.tourState.losses,
+    rewardState: state.tourState.rewardState,
+    active: true,
+    completed: false,
+    playerFighter: state.tourState.playerFighter || state.p1Fighter || FIGHTER_KEYS[0],
+  };
+}
+
+function persistActiveTourProgress() {
+  if (state.tourState.active && !state.tourState.completed) {
+    tourStorage.activeRun = getTourProgressForSave();
+    saveTourStorage();
+  }
+}
+
+function clearSavedTourProgress() {
+  tourStorage.activeRun = null;
+  saveTourStorage();
+}
+
+function getTourMedal(losses) {
+  if (losses <= 0) return { key: 'gold', label: 'Gold Headliner' };
+  if (losses === 1) return { key: 'silver', label: 'Silver Headliner' };
+  return { key: 'bronze', label: 'Bronze Headliner' };
+}
+
+function updateBestTourClear() {
+  const run = getTourRun(state.tourState.runId);
+  const medal = getTourMedal(state.tourState.losses);
+  const candidate = {
+    fighter: state.tourState.playerFighter || state.p1Fighter,
+    losses: state.tourState.losses,
+    medal: medal.key,
+    rewardState: state.tourState.rewardState || run.completionReward,
+    clearedAt: new Date().toISOString().slice(0, 10),
+  };
+  const existing = tourStorage.bestClears[state.tourState.runId];
+  if (!existing || candidate.losses < existing.losses) {
+    tourStorage.bestClears[state.tourState.runId] = candidate;
+    saveTourStorage();
+  }
+}
 
 // --- Game State ---
 const state = {
@@ -91,6 +248,7 @@ const state = {
   slowMoTimer: 0,
   slowMoTarget: null,
   confettiSpawned: false,
+  tourState: createTourState(),
 };
 
 // --- Stage Definitions ---
@@ -447,19 +605,52 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => { keys[e.code] = false; });
 
 const DEFAULT_P1_BINDS = { left: 'KeyA', right: 'KeyD', up: 'KeyW', down: 'KeyS', attack: 'KeyJ', attack2: 'Space', special: 'KeyK', shield: 'KeyL' };
-const DEFAULT_P2_BINDS = { left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown', attack: 'Numpad1', special: 'Numpad2', shield: 'Numpad3' };
+const DEFAULT_P2_BINDS = {
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+  up: 'ArrowUp',
+  down: 'ArrowDown',
+  attack: ['Period', 'Numpad1'],
+  special: ['Slash', 'Numpad2'],
+  shield: ['Semicolon', 'Numpad3'],
+};
 function getP1Binds() { return options.p1Binds || DEFAULT_P1_BINDS; }
 function getP2Binds() { return options.p2Binds || DEFAULT_P2_BINDS; }
 
+function bindCodes(bind) {
+  if (!bind) return [];
+  return Array.isArray(bind) ? bind : [bind];
+}
+
+function isBindActive(bind) {
+  return bindCodes(bind).some(code => !!keys[code]);
+}
+
+function wasBindJustPressed(bind) {
+  return bindCodes(bind).some(code => !!justPressed[code]);
+}
+
+function menuConfirmPressed() {
+  const p1b = getP1Binds();
+  const p2b = getP2Binds();
+  return (
+    justPressed['Enter'] ||
+    wasBindJustPressed(p1b.attack) ||
+    wasBindJustPressed(p1b.attack2) ||
+    wasBindJustPressed(p2b.attack) ||
+    wasBindJustPressed(p2b.attack2)
+  );
+}
+
 function getInput(binds) {
   return {
-    left: !!keys[binds.left],
-    right: !!keys[binds.right],
-    up: !!keys[binds.up],
-    down: !!keys[binds.down],
-    attack: !!keys[binds.attack] || !!(binds.attack2 && keys[binds.attack2]),
-    special: !!keys[binds.special],
-    shield: !!keys[binds.shield],
+    left: isBindActive(binds.left),
+    right: isBindActive(binds.right),
+    up: isBindActive(binds.up),
+    down: isBindActive(binds.down),
+    attack: isBindActive(binds.attack) || isBindActive(binds.attack2),
+    special: isBindActive(binds.special),
+    shield: isBindActive(binds.shield),
   };
 }
 
@@ -620,6 +811,25 @@ function createPlayer(idx, fighterKey, spawn, controlType, cpuLevel, useAltColor
     specialFall: false,
     // DI
     diActive: false,
+    // Coyote time & jump squat
+    coyoteTimer: 0, // frames since last grounded
+    jumpSquatTimer: 0, // frames remaining in jump squat
+    jumpSquatForce: 0, // stored jump force for after squat
+    // Landing lag
+    landingLag: 0, // frames of mechanical landing lag remaining
+    aerialAttackActive: false, // was in active aerial frames when landing
+    // Tumble & afterimages
+    tumbling: false, // in tumble state (high KB)
+    afterimages: [], // [{x, y, alpha, facing}]
+    // Ledge
+    onLedge: false,
+    ledgeTimer: 0,
+    ledgeSide: 0, // -1 left, 1 right
+    // Pivot
+    pivotTimer: 0,
+    pivotDir: 0,
+    // Hitstop tracking (for asymmetric hitlag)
+    personalHitstop: 0,
     // Visual
     squish: { sx: 1, sy: 1, timer: 0 },
     useAltColor: useAltColor || false,
@@ -667,9 +877,19 @@ function spawnParticle(x, y, vx, vy, life, color, size, gravity) {
   return null;
 }
 
-function spawnHitSparks(x, y, count, color) {
+function spawnHitSparks(x, y, count, color, dirBias) {
+  // dirBias: -1 or 1 to bias spark direction (opposite attacker facing)
+  const biasAngle = dirBias ? (dirBias < 0 ? Math.PI : 0) : null;
   for (let i = 0; i < count; i++) {
-    const a = Math.random() * Math.PI * 2;
+    let a;
+    if (biasAngle !== null) {
+      // Bias: 60% of sparks within ±60° of bias direction, rest random
+      a = Math.random() < 0.6
+        ? biasAngle + (Math.random() - 0.5) * Math.PI * 0.67
+        : Math.random() * Math.PI * 2;
+    } else {
+      a = Math.random() * Math.PI * 2;
+    }
     const s = 100 + Math.random() * 300;
     spawnParticle(x, y, Math.cos(a) * s, Math.sin(a) * s, 0.3 + Math.random() * 0.2, color || '#ffff00', 2 + Math.random() * 4, 200);
   }
@@ -1035,17 +1255,20 @@ function playSound(type) {
   osc.connect(gain); gain.connect(audioCtx.destination);
   const t = audioCtx.currentTime;
 
+  // Pitch variation: ±10% random detune for organic feel
+  const pitchVar = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
+
   switch (type) {
     case 'hit_light':
-      osc.type = 'square'; osc.frequency.setValueAtTime(300, t); osc.frequency.exponentialRampToValueAtTime(100, t + 0.08);
+      osc.type = 'square'; osc.frequency.setValueAtTime(300 * pitchVar, t); osc.frequency.exponentialRampToValueAtTime(100 * pitchVar, t + 0.08);
       gain.gain.setValueAtTime(0.15 * vol, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
       osc.start(t); osc.stop(t + 0.1); break;
     case 'hit_heavy':
-      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, t); osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150 * pitchVar, t); osc.frequency.exponentialRampToValueAtTime(40 * pitchVar, t + 0.15);
       gain.gain.setValueAtTime(0.2 * vol, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
       osc.start(t); osc.stop(t + 0.2); break;
     case 'jump':
-      osc.type = 'sine'; osc.frequency.setValueAtTime(250, t); osc.frequency.exponentialRampToValueAtTime(500, t + 0.08);
+      osc.type = 'sine'; osc.frequency.setValueAtTime(250 * pitchVar, t); osc.frequency.exponentialRampToValueAtTime(500 * pitchVar, t + 0.08);
       gain.gain.setValueAtTime(0.08 * vol, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
       osc.start(t); osc.stop(t + 0.1); break;
     case 'shield':
@@ -1250,9 +1473,14 @@ function updatePlayer(p, dt) {
   if (p.state === 'shield') {
     p.shieldHP = Math.max(0, p.shieldHP - 0.5);
     if (p.shieldHP <= 0) {
-      p.state = 'hitstun'; p.stateTimer = 180;
+      p.state = 'hitstun'; p.stateTimer = 240; // longer stun — shield break is a real punish
       playSound('shieldbreak');
-      spawnHitSparks(p.x, p.y - p.h / 2, 15, '#00ffff');
+      // Big burst: shield shatter effect
+      spawnHitSparks(p.x, p.y - p.h / 2, 25, '#00ffff');
+      spawnHitSparks(p.x, p.y - p.h / 2, 12, '#ffffff');
+      state.screenShake.intensity = 12;
+      // Launch upward slightly for dramatic effect
+      p.vy = -200; p.grounded = false;
       return;
     }
     if (!input.shield) { p.state = 'idle'; return; }
@@ -1317,7 +1545,18 @@ function updatePlayer(p, dt) {
   // --- Hitstun ---
   if (p.state === 'hitstun') {
     p.stateTimer--;
-    if (p.stateTimer <= 0) p.state = p.grounded ? 'idle' : 'fall';
+    // Tumble recovery: any button press after half the hitstun reduces remaining stun
+    if (p.tumbling && p.stateTimer < p.stateTimer + 5) { // always true after initial frames
+      if (justPressedAttack || justPressedJump || justPressedShield || justPressedSpecial) {
+        p.stateTimer = Math.min(p.stateTimer, 4); // snap to near-end
+        p.tumbling = false;
+      }
+    }
+    if (p.stateTimer <= 0) {
+      p.state = p.grounded ? 'idle' : 'fall';
+      p.tumbling = false;
+      p.afterimages = [];
+    }
     applyPhysics(p, dt, { driftFactor: 1, frictionOverride: 0.98 });
     return;
   }
@@ -1350,8 +1589,23 @@ function updatePlayer(p, dt) {
     }
 
     const totalFrames = atk.startup + atk.active + atk.endlag;
-    // Buffer check during endlag
     const inEndlag = p.attackFrame >= atk.startup + atk.active;
+
+    // Track if aerial attack is in active frames (for landing lag penalty)
+    if (!p.grounded && p.attackFrame >= atk.startup && p.attackFrame < atk.startup + atk.active) {
+      p.aerialAttackActive = true;
+    }
+
+    // Shield cancel out of endlag (available after startup + active + 4 frames)
+    if (inEndlag && p.attackFrame >= atk.startup + atk.active + 4) {
+      if (input.shield && p.grounded && p.shieldHP > 10) {
+        p.state = 'shield'; p.shieldActive = true; p.vx = 0;
+        p.attackData = null; p.hitRegistered = false;
+        p.charging = false; p.chargeFrames = 0;
+        playSound('shield'); return;
+      }
+    }
+
     if (p.attackFrame >= totalFrames) {
       // Check buffer
       if (p.inputBuffer.attack > 0) {
@@ -1388,12 +1642,29 @@ function updatePlayer(p, dt) {
 
   // Run detection
   const movingDir = input.left ? -1 : input.right ? 1 : 0;
+  const wasRunning = p.runTimer > 6 && p.grounded;
   if (movingDir !== 0 && movingDir === p.moveDir) p.runTimer++;
-  else { p.runTimer = 0; p.moveDir = movingDir; }
+  else {
+    // Pivot skid: reversing direction at run speed
+    if (wasRunning && movingDir !== 0 && movingDir !== p.moveDir && p.grounded) {
+      p.pivotTimer = 3;
+      p.pivotDir = movingDir;
+    }
+    p.runTimer = 0; p.moveDir = movingDir;
+  }
   const isRunning = p.runTimer > 6 && p.grounded;
   const speed = isRunning ? p.def.runSpeed : p.def.walkSpeed;
 
-  if (input.left) p.vx = -speed;
+  // Pivot skid: decelerate before reversing
+  if (p.pivotTimer > 0) {
+    p.pivotTimer--;
+    p.vx *= 0.6; // rapid deceleration
+    if (p.pivotTimer <= 0) {
+      p.facing = p.pivotDir;
+      p.vx = p.pivotDir * p.def.walkSpeed * 0.5; // start slow after pivot
+    }
+    spawnRunDust(p.x, p.y, -p.pivotDir); // skid dust opposite to new direction
+  } else if (input.left) p.vx = -speed;
   else if (input.right) p.vx = speed;
   else {
     p.vx *= p.grounded ? GROUND_FRICTION : AIR_FRICTION;
@@ -1403,13 +1674,43 @@ function updatePlayer(p, dt) {
   // Run dust
   if (isRunning && state.frameCount % 6 === 0) spawnRunDust(p.x, p.y, p.facing);
 
-  // Jump
-  if ((justPressedJump || p.inputBuffer.jump > 0) && p.jumpsLeft > 0 && !p.specialFall) {
+  // Landing lag freeze: skip actions while in landing lag
+  if (p.landingLag > 0) {
+    applyPhysics(p, dt);
+    return;
+  }
+
+  // Jump squat processing
+  if (p.jumpSquatTimer > 0) {
+    p.jumpSquatTimer--;
+    p.squish = { sx: 1.15, sy: 0.85, timer: p.jumpSquatTimer + 2 }; // visual crouch
+    if (p.jumpSquatTimer <= 0) {
+      // Launch!
+      p.vy = p.jumpSquatForce; p.jumpsLeft--; p.grounded = false; p.state = 'jump';
+      playSound('jump');
+      p.squish = { sx: 0.8, sy: 1.25, timer: 6 }; // stretch on launch
+    }
+    applyPhysics(p, dt);
+    return;
+  }
+
+  // Jump (with coyote time support)
+  const canCoyoteJump = p.coyoteTimer > 0 && !p.grounded;
+  if ((justPressedJump || p.inputBuffer.jump > 0) && (p.jumpsLeft > 0 || canCoyoteJump) && !p.specialFall) {
     p.inputBuffer.jump = 0;
     const maxJumps = p.def.maxJumps || MAX_JUMPS;
-    const force = p.jumpsLeft === maxJumps ? p.def.jumpForce : p.def.doubleJumpForce;
-    p.vy = force; p.jumpsLeft--; p.grounded = false; p.state = 'jump';
-    playSound('jump');
+    const force = (p.jumpsLeft === maxJumps || canCoyoteJump) ? p.def.jumpForce : p.def.doubleJumpForce;
+    if (canCoyoteJump) p.coyoteTimer = 0; // consume coyote time
+    // Grounded jump: enter jump squat
+    if (p.grounded || canCoyoteJump) {
+      p.jumpSquatTimer = JUMP_SQUAT_FRAMES;
+      p.jumpSquatForce = force;
+      p.vx *= 0.5; // brief slowdown during squat
+    } else {
+      // Air jump: instant (no squat)
+      p.vy = force; p.jumpsLeft--; p.grounded = false; p.state = 'jump';
+      playSound('jump');
+    }
   }
 
   // Air dodge
@@ -1564,8 +1865,17 @@ function checkHits() {
         target.grounded = false;
         attacker.hitRegistered = true;
 
+        // Tumble: high knockback enters tumble state
+        if (kb >= TUMBLE_KB_THRESHOLD) {
+          target.tumbling = true;
+          target.stateTimer += 8; // extra hitstun in tumble
+        }
+
         const hitstop = HITSTOP_BASE + Math.floor(atk.damage / 4);
-        state.hitstopFrames = hitstop;
+        // Asymmetric hitlag: attacker feels less freeze than defender
+        target.personalHitstop = hitstop;
+        attacker.personalHitstop = Math.max(1, hitstop - 2);
+        state.hitstopFrames = hitstop; // global still needed for particles/camera
         state.screenShake.intensity = Math.min(atk.damage * 0.8, 15);
         // Character-themed hit spark colors
         let sparkColor = '#ffff00';
@@ -1576,7 +1886,7 @@ function checkHits() {
         else if (attacker.fighterKey === 'tiesto') sparkColor = atk.damage > 10 ? '#b36dff' : '#d9a7ff';
         else if (attacker.fighterKey === 'subtronics') sparkColor = atk.damage > 10 ? '#a0ff5a' : '#c7ff9b';
         else sparkColor = atk.damage > 10 ? '#ff8800' : '#ffff00';
-        spawnHitSparks(hx, hy, 8 + atk.damage, sparkColor);
+        spawnHitSparks(hx, hy, 8 + atk.damage, sparkColor, -attacker.facing);
         playSound(atk.damage >= 10 ? 'hit_heavy' : 'hit_light');
 
         // Gamepad rumble
@@ -1735,36 +2045,42 @@ function updateScreenShake() {
 // --- Main Update ---
 function update(dt) {
   // Slow-mo
-  if (state.slowMoTimer > 0) {
-    state.slowMoTimer--;
-    dt *= state.slowMo;
-    if (state.slowMoTimer <= 0) {
-      state.slowMo = 1;
-      if (state.winner >= 0) { state.mode = 'results'; state.confettiSpawned = false; }
+    if (state.slowMoTimer > 0) {
+      state.slowMoTimer--;
+      dt *= state.slowMo;
+      if (state.slowMoTimer <= 0) {
+        state.slowMo = 1;
+        if (state.winner >= 0) enterResultsMode();
+      }
     }
-  }
 
   if (state.mode === 'playing' || state.mode === 'training') {
     state.frameCount++;
 
     // Time match timer
-    if (state.matchType === 'time') {
-      state.timeRemaining -= dt;
-      if (state.timeRemaining <= 0) {
-        state.timeRemaining = 0;
-        // Winner by score
-        const p1 = state.players[0], p2 = state.players[1];
-        state.winner = p1.score > p2.score ? 0 : p2.score > p1.score ? 1 : -1;
-        state.mode = 'results'; state.confettiSpawned = false;
-        return;
+      if (state.matchType === 'time') {
+        state.timeRemaining -= dt;
+        if (state.timeRemaining <= 0) {
+          state.timeRemaining = 0;
+          // Winner by score
+          const p1 = state.players[0], p2 = state.players[1];
+          state.winner = p1.score > p2.score ? 0 : p2.score > p1.score ? 1 : -1;
+          enterResultsMode();
+          return;
+        }
       }
-    }
 
     if (state.hitstopFrames > 0) {
       state.hitstopFrames--;
+      // Per-player hitstop: decrement individually
+      for (const p of state.players) {
+        if (p.personalHitstop > 0) p.personalHitstop--;
+      }
       updateParticles(dt); updateScreenShake(); updateDamageNumbers();
       return;
     }
+    // Clear any lingering personal hitstop
+    for (const p of state.players) p.personalHitstop = 0;
 
     updateMovingPlatforms(dt);
 
@@ -1774,16 +2090,130 @@ function update(dt) {
     for (const p of state.players) {
       if (p.state === 'dead' || p.state === 'respawning' || p.state === 'grabbed') continue;
       const wasGrounded = p.grounded;
+      const preLandVy = p.vy; // capture fall speed before collision
       p.grounded = false;
       for (const plat of currentStage.platforms) resolvePlayerPlatform(p, plat);
+
+      // --- Landing ---
       if (!wasGrounded && p.grounded) {
         spawnLandDust(p.x, p.y);
         p.squish = { sx: 1.3, sy: 0.7, timer: 8 };
+        p.coyoteTimer = 0;
+        p.tumbling = false;
+        p.afterimages = [];
+        p.onLedge = false;
+
+        // Landing lag: scale by fall velocity
+        const fallSpeed = Math.abs(preLandVy);
+        let lag = LANDING_LAG_BASE + Math.floor(fallSpeed * LANDING_LAG_VEL_SCALE);
+
+        // Aerial attack landing: if landing during active attack frames, extra lag
+        if (p.state === 'attack' && p.attackData && !p.grounded) {
+          // This is handled below
+        }
+        if (p.aerialAttackActive) {
+          lag += 4; // punish whiffed aerials that clip the ground
+          p.aerialAttackActive = false;
+        }
+
+        p.landingLag = lag;
       }
+
+      // --- Coyote time tracking ---
+      if (wasGrounded && !p.grounded) {
+        p.coyoteTimer = COYOTE_TIME; // just left ground
+      } else if (!p.grounded && p.coyoteTimer > 0) {
+        p.coyoteTimer--;
+      }
+
+      // --- Ledge grab detection ---
+      if (!p.grounded && !p.onLedge && p.vy >= 0 && p.state !== 'dead' &&
+          p.state !== 'respawning' && !p.tumbling) {
+        for (const plat of currentStage.platforms) {
+          if (plat.type === 'passthrough') continue; // only solid platform edges
+          // Left edge
+          const leftEdgeX = plat.x;
+          const leftEdgeY = plat.y;
+          const dxL = p.x - leftEdgeX;
+          const dyL = (p.y - p.h * 0.5) - leftEdgeY;
+          if (dxL > -LEDGE_SNAP_RANGE && dxL < 5 && Math.abs(dyL) < LEDGE_SNAP_RANGE && p.vx < 0) {
+            p.onLedge = true; p.ledgeTimer = LEDGE_HANG_FRAMES; p.ledgeSide = -1;
+            p.x = leftEdgeX - 5; p.y = leftEdgeY + p.h * 0.5;
+            p.vx = 0; p.vy = 0; p.jumpsLeft = p.def.maxJumps || MAX_JUMPS;
+            p.usedAirDodge = false; p.specialFall = false;
+            break;
+          }
+          // Right edge
+          const rightEdgeX = plat.x + plat.w;
+          const dxR = p.x - rightEdgeX;
+          const dyR = (p.y - p.h * 0.5) - plat.y;
+          if (dxR < LEDGE_SNAP_RANGE && dxR > -5 && Math.abs(dyR) < LEDGE_SNAP_RANGE && p.vx > 0) {
+            p.onLedge = true; p.ledgeTimer = LEDGE_HANG_FRAMES; p.ledgeSide = 1;
+            p.x = rightEdgeX + 5; p.y = plat.y + p.h * 0.5;
+            p.vx = 0; p.vy = 0; p.jumpsLeft = p.def.maxJumps || MAX_JUMPS;
+            p.usedAirDodge = false; p.specialFall = false;
+            break;
+          }
+        }
+      }
+
+      // --- Ledge hang update ---
+      if (p.onLedge) {
+        p.vy = 0; p.vx = 0; p.grounded = false;
+        p.ledgeTimer--;
+        const input = getPlayerInput(p);
+        // Drop from ledge
+        if (p.ledgeTimer <= 0 || input.down) {
+          p.onLedge = false; p.vy = 50;
+        }
+        // Jump from ledge
+        else if (input.jump) {
+          p.onLedge = false;
+          p.vy = p.def.jumpForce; p.jumpsLeft--;
+          p.state = 'jump'; playSound('jump');
+        }
+        // Climb up (toward stage)
+        else if ((p.ledgeSide === -1 && input.right) || (p.ledgeSide === 1 && input.left)) {
+          p.onLedge = false;
+          p.y -= p.h; // teleport up onto stage
+          p.invincible = 8; // brief i-frames on getup
+        }
+        // Attack from ledge
+        else if (input.attack) {
+          p.onLedge = false;
+          p.y -= p.h;
+          p.attackData = cloneAttackData(p.def.attacks.neutral);
+          p.attackFrame = 0; p.hitRegistered = false;
+          p.attackKey = 'neutral'; p.state = 'attack';
+          p.chargeFrames = 0; p.charging = false;
+        }
+        if (p.onLedge) {
+          // Stay on ledge — skip state assignment
+          p.state = 'idle'; // visual only
+          continue; // skip normal state labels
+        }
+      }
+
       // State labels
       if (!['attack', 'hitstun', 'shield', 'dodge', 'spotdodge', 'airdodge', 'grab', 'grabbing', 'grabbed'].includes(p.state)) {
-        if (p.grounded) p.state = Math.abs(p.vx) > 10 ? 'walk' : 'idle';
-        else p.state = p.vy < 0 ? 'jump' : 'fall';
+        if (p.landingLag > 0) {
+          p.landingLag--;
+          p.state = 'idle'; // frozen in landing
+        } else if (p.grounded) {
+          p.state = Math.abs(p.vx) > 10 ? 'walk' : 'idle';
+        } else {
+          p.state = p.vy < 0 ? 'jump' : 'fall';
+        }
+      }
+
+      // --- Tumble afterimages ---
+      if (p.tumbling && p.state === 'hitstun') {
+        p.afterimages.unshift({ x: p.x, y: p.y, alpha: 0.3, facing: p.facing });
+        if (p.afterimages.length > AFTERIMAGE_COUNT) p.afterimages.pop();
+      } else if (p.afterimages.length > 0) {
+        // Fade out
+        for (const ai of p.afterimages) ai.alpha -= 0.05;
+        p.afterimages = p.afterimages.filter(ai => ai.alpha > 0);
       }
     }
 
@@ -1795,6 +2225,132 @@ function update(dt) {
     updateParticles(dt);
     updateDamageNumbers();
   }
+}
+
+// --- Festival Tour Helpers ---
+function hydrateTourStateFromSave(saved, fallbackRunId) {
+  const run = getTourRun((saved && saved.runId) || fallbackRunId || DEFAULT_TOUR_RUN_ID);
+  Object.assign(state.tourState, {
+    runId: run.id,
+    currentLegIndex: Math.max(0, Math.min((saved && saved.currentLegIndex) || 0, run.legs.length - 1)),
+    completedLegs: Math.max(0, (saved && saved.completedLegs) || 0),
+    losses: Math.max(0, (saved && saved.losses) || 0),
+    rewardState: (saved && saved.rewardState) || '',
+    active: true,
+    completed: false,
+    playerFighter: (saved && saved.playerFighter) || state.p1Fighter || FIGHTER_KEYS[0],
+    lastOutcome: null,
+  });
+}
+
+function startOrResumeTourRun(runId) {
+  const targetRun = getTourRun(runId || DEFAULT_TOUR_RUN_ID);
+  const saved = tourStorage.activeRun && tourStorage.activeRun.runId === targetRun.id ? tourStorage.activeRun : null;
+  hydrateTourStateFromSave(saved, targetRun.id);
+  launchCurrentTourLeg();
+}
+
+function launchCurrentTourLeg() {
+  const leg = getActiveTourLeg();
+  if (!leg) return;
+  startMatch({
+    matchType: 'stock',
+    stageKey: leg.stage,
+    p1Fighter: state.tourState.playerFighter || state.p1Fighter,
+    p2Fighter: leg.opponent,
+    p1Cpu: false,
+    p2Cpu: true,
+    p1CpuLevel: state.charSelectCursors[0].cpuLevel,
+    p2CpuLevel: leg.cpuLevel || 3,
+    hazardsOn: leg.hazardsOn !== undefined ? leg.hazardsOn : options.hazardsOn,
+  });
+}
+
+function suspendTourRun() {
+  if (state.tourState.active && !state.tourState.completed) persistActiveTourProgress();
+  state.tourState.active = false;
+  state.tourState.completed = false;
+  state.tourState.lastOutcome = null;
+}
+
+function resetLiveTourState() {
+  const fresh = createTourState();
+  state.tourState.runId = fresh.runId;
+  state.tourState.currentLegIndex = fresh.currentLegIndex;
+  state.tourState.completedLegs = fresh.completedLegs;
+  state.tourState.losses = fresh.losses;
+  state.tourState.rewardState = fresh.rewardState;
+  state.tourState.active = fresh.active;
+  state.tourState.completed = fresh.completed;
+  state.tourState.playerFighter = fresh.playerFighter;
+  state.tourState.lastOutcome = fresh.lastOutcome;
+}
+
+function resolveTourResults() {
+  if (!state.tourState.active) return;
+  const run = getTourRun(state.tourState.runId);
+  const leg = getActiveTourLeg();
+  if (!run || !leg) return;
+
+  if (state.winner === 0) {
+    state.tourState.completedLegs = Math.max(state.tourState.completedLegs, state.tourState.currentLegIndex + 1);
+    if (state.tourState.currentLegIndex >= run.legs.length - 1) {
+      state.tourState.completed = true;
+      state.tourState.lastOutcome = 'complete';
+      state.tourState.rewardState = `${getTourMedal(state.tourState.losses).label} ${run.completionReward}`;
+      updateBestTourClear();
+      clearSavedTourProgress();
+    } else {
+      state.tourState.lastOutcome = 'advance';
+      state.tourState.rewardState = leg.rewardLabel || '';
+      persistActiveTourProgress();
+    }
+  } else {
+    state.tourState.losses++;
+    state.tourState.completed = false;
+    state.tourState.lastOutcome = 'fail';
+    state.tourState.rewardState = leg.rewardLabel || '';
+    persistActiveTourProgress();
+  }
+}
+
+function enterResultsMode() {
+  state.mode = 'results';
+  state.confettiSpawned = false;
+  resolveTourResults();
+}
+
+function handleResultsConfirm() {
+  if (!state.tourState.active) {
+    startMatch();
+    return;
+  }
+  if (state.tourState.lastOutcome === 'advance') {
+    const run = getTourRun(state.tourState.runId);
+    state.tourState.currentLegIndex = Math.min(state.tourState.currentLegIndex + 1, run.legs.length - 1);
+    state.tourState.lastOutcome = null;
+    launchCurrentTourLeg();
+    return;
+  }
+  if (state.tourState.lastOutcome === 'fail') {
+    state.tourState.lastOutcome = null;
+    launchCurrentTourLeg();
+    return;
+  }
+  if (state.tourState.lastOutcome === 'complete') {
+    const runId = state.tourState.runId;
+    const playerFighter = state.tourState.playerFighter || state.p1Fighter;
+    resetLiveTourState();
+    state.tourState.playerFighter = playerFighter;
+    startOrResumeTourRun(runId);
+    return;
+  }
+  startMatch();
+}
+
+function handleResultsEscape() {
+  if (state.tourState.active) suspendTourRun();
+  state.mode = 'title';
 }
 
 // --- Rendering ---
@@ -4899,6 +5455,34 @@ function renderPlayer(p) {
   const outline = p.useAltColor ? p.def.altOutline : p.def.outlineColor;
   let bodyColor = p.state === 'hitstun' ? '#ffffff' : p.state === 'grabbed' ? '#ffaaaa' : color;
 
+  // Startup flash: white flash on last 2 startup frames before active
+  if (p.state === 'attack' && p.attackData) {
+    const framesUntilActive = p.attackData.startup - p.attackFrame;
+    if (framesUntilActive > 0 && framesUntilActive <= 2) {
+      bodyColor = framesUntilActive === 1 ? '#ffffff' : '#ffddaa';
+    }
+  }
+
+  // Tumble spin visual
+  if (p.tumbling && p.state === 'hitstun') {
+    bodyColor = state.frameCount % 4 < 2 ? '#ff6666' : '#ffffff';
+  }
+
+  // Draw tumble afterimage ghosts
+  if (p.afterimages && p.afterimages.length > 0) {
+    for (const ai of p.afterimages) {
+      const aiPos = worldToScreen(ai.x, ai.y);
+      ctx.save();
+      ctx.translate(aiPos.x, aiPos.y - h / 2);
+      ctx.globalAlpha = ai.alpha;
+      ctx.scale(p.squish.sx, p.squish.sy);
+      ctx.scale(ai.facing, 1);
+      const drawFn = DJ_DRAW[p.fighterKey];
+      if (drawFn) drawFn(ctx, p, w, h, z, color, outline, bodyColor);
+      ctx.restore();
+    }
+  }
+
   // Draw dodge trail ghosts
   if (p.dodgeTrail && p.dodgeTrail.length > 0) {
     for (const trail of p.dodgeTrail) {
@@ -4919,9 +5503,15 @@ function renderPlayer(p) {
   ctx.scale(p.squish.sx, p.squish.sy);
 
   // Idle breathing
-  if (p.state === 'idle') {
+  if (p.state === 'idle' && !p.onLedge) {
     const breathe = Math.sin(state.frameCount * 0.05) * 1.5;
     ctx.translate(0, breathe);
+  }
+
+  // Ledge hang: bob slightly
+  if (p.onLedge) {
+    const ledgeBob = Math.sin(state.frameCount * 0.08) * 2;
+    ctx.translate(0, ledgeBob);
   }
 
   if (p.invincible > 0 && p.invincible % 8 < 4) ctx.globalAlpha = 0.6;
@@ -5047,8 +5637,29 @@ function renderHUD() {
     }
   }
 
+  if (state.tourState.active) renderTourHUD();
+
   // Training mode HUD
   if (state.matchType === 'training') renderTrainingHUD();
+}
+
+function renderTourHUD() {
+  const run = getTourRun(state.tourState.runId);
+  const leg = getActiveTourLeg();
+  if (!run || !leg) return;
+  ctx.fillStyle = 'rgba(0,0,0,0.58)';
+  ctx.fillRect(BASE_W / 2 - 175, 6, 350, 46);
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(BASE_W / 2 - 175, 6, 350, 46);
+  ctx.fillStyle = '#ff6600';
+  ctx.font = 'bold 13px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${run.name.toUpperCase()}  LEG ${state.tourState.currentLegIndex + 1}/${run.legs.length}`, BASE_W / 2, 22);
+  ctx.fillStyle = '#ddd';
+  ctx.font = '11px monospace';
+  const twist = leg.ruleTwist ? `  |  ${leg.ruleTwist}` : '';
+  ctx.fillText(`VS ${FIGHTER_DEFS[leg.opponent].name.toUpperCase()}  |  CPU ${leg.cpuLevel}${twist}`, BASE_W / 2, 38);
 }
 
 function renderTrainingHUD() {
@@ -5234,7 +5845,7 @@ function renderCharSelect() {
 
   // Controls
   ctx.fillStyle = '#555'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
-  ctx.fillText('P1: A/D select, J confirm, W/S CPU  |  P2: Arrows, Num1 confirm, Up/Down CPU  |  ESC Back', BASE_W / 2, BASE_H - 8);
+  ctx.fillText('P1: A/D select, J/Space confirm, W/S CPU  |  P2: Arrows, . or Num1 confirm, Up/Down CPU  |  ESC Back', BASE_W / 2, BASE_H - 8);
 }
 
 function renderStageSelect() {
@@ -5550,22 +6161,48 @@ function renderModeSelect() {
   ctx.fillStyle = '#ff6600'; ctx.font = 'bold 32px monospace'; ctx.textAlign = 'center';
   ctx.fillText('SELECT MODE', BASE_W / 2, 80);
 
-  const modes = [
-    { name: 'Stock Match', desc: '3 stocks, last one standing wins', key: 'stock' },
-    { name: 'Time Match', desc: '3 minutes, most KOs wins', key: 'time' },
-    { name: 'Training', desc: 'Practice mode with hitbox display', key: 'training' },
-  ];
-
-  for (let i = 0; i < modes.length; i++) {
-    const y = 160 + i * 80;
+  for (let i = 0; i < MODE_OPTIONS.length; i++) {
+    const y = 150 + i * 74;
     const selected = state.modeCursor === i;
     ctx.fillStyle = selected ? '#2a2a4e' : '#1a1a2e';
     ctx.fillRect(BASE_W / 2 - 200, y, 400, 60);
     if (selected) { ctx.strokeStyle = '#ff6600'; ctx.lineWidth = 2; ctx.strokeRect(BASE_W / 2 - 200, y, 400, 60); }
     ctx.fillStyle = selected ? '#fff' : '#888'; ctx.font = 'bold 18px monospace';
-    ctx.fillText(modes[i].name, BASE_W / 2, y + 25);
+    ctx.fillText(MODE_OPTIONS[i].name, BASE_W / 2, y + 25);
     ctx.fillStyle = '#666'; ctx.font = '12px monospace';
-    ctx.fillText(modes[i].desc, BASE_W / 2, y + 45);
+    ctx.fillText(MODE_OPTIONS[i].desc, BASE_W / 2, y + 45);
+  }
+
+  const selectedMode = MODE_OPTIONS[state.modeCursor];
+  if (selectedMode && selectedMode.key === 'tour') {
+    const run = getTourRun(selectedMode.runId);
+    const saved = tourStorage.activeRun && tourStorage.activeRun.runId === run.id ? tourStorage.activeRun : null;
+    const best = tourStorage.bestClears[run.id];
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(BASE_W / 2 - 230, 470, 460, 92);
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.strokeRect(BASE_W / 2 - 230, 470, 460, 92);
+    ctx.fillStyle = '#ff6600';
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(run.name.toUpperCase(), BASE_W / 2, 492);
+    ctx.fillStyle = '#bbb';
+    ctx.font = '12px monospace';
+    ctx.fillText(run.desc, BASE_W / 2, 510);
+    if (saved) {
+      const savedLeg = getTourLeg(saved.runId, saved.currentLegIndex);
+      ctx.fillStyle = '#7dff9d';
+      ctx.fillText(`Resume: Leg ${saved.currentLegIndex + 1}/${run.legs.length} vs ${FIGHTER_DEFS[savedLeg.opponent].name}  |  Losses ${saved.losses}`, BASE_W / 2, 530);
+    } else {
+      ctx.fillStyle = '#7dff9d';
+      ctx.fillText(`Fresh run reward: ${run.completionReward}`, BASE_W / 2, 530);
+    }
+    if (best) {
+      ctx.fillStyle = '#aaa';
+      ctx.fillText(`Best clear: ${best.medal.toUpperCase()} with ${best.fighter}  |  ${best.losses} losses`, BASE_W / 2, 548);
+    } else {
+      ctx.fillStyle = '#777';
+      ctx.fillText('No clear recorded yet', BASE_W / 2, 548);
+    }
   }
 
   ctx.fillStyle = '#666'; ctx.font = '13px monospace';
@@ -5601,6 +6238,10 @@ function renderOptions() {
 }
 
 function renderResults() {
+  if (state.tourState.active) {
+    renderTourResults();
+    return;
+  }
   ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, BASE_W, BASE_H);
   ctx.font = 'bold 48px monospace'; ctx.textAlign = 'center';
   if (state.winner >= 0) {
@@ -5617,6 +6258,61 @@ function renderResults() {
 
   // Confetti
   if (!state.confettiSpawned) { spawnConfetti(); state.confettiSpawned = true; }
+}
+
+function renderTourResults() {
+  const run = getTourRun(state.tourState.runId);
+  const leg = getTourLeg(state.tourState.runId, state.tourState.currentLegIndex);
+  const lossState = state.tourState.lastOutcome === 'fail';
+  const completeState = state.tourState.lastOutcome === 'complete';
+
+  ctx.fillStyle = 'rgba(0,0,0,0.76)';
+  ctx.fillRect(0, 0, BASE_W, BASE_H);
+  ctx.textAlign = 'center';
+
+  if (!lossState && !state.confettiSpawned) { spawnConfetti(); state.confettiSpawned = true; }
+
+  if (lossState) {
+    ctx.fillStyle = '#ff6666';
+    ctx.font = 'bold 44px monospace';
+    ctx.fillText('TOUR SETBACK', BASE_W / 2, BASE_H / 2 - 92);
+  } else if (completeState) {
+    ctx.fillStyle = '#ffe36a';
+    ctx.font = 'bold 42px monospace';
+    ctx.fillText('HEADLINER CLEAR', BASE_W / 2, BASE_H / 2 - 92);
+  } else {
+    ctx.fillStyle = '#7dff9d';
+    ctx.font = 'bold 42px monospace';
+    ctx.fillText('LEG CLEARED', BASE_W / 2, BASE_H / 2 - 92);
+  }
+
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 20px monospace';
+  if (lossState) ctx.fillText(`Lost to ${FIGHTER_DEFS[leg.opponent].name.toUpperCase()} on ${STAGES[leg.stage].name.toUpperCase()}`, BASE_W / 2, BASE_H / 2 - 48);
+  else if (completeState) ctx.fillText(`${state.p1Fighter.toUpperCase()} conquered ${run.name.toUpperCase()}`, BASE_W / 2, BASE_H / 2 - 48);
+  else ctx.fillText(`Beat ${FIGHTER_DEFS[leg.opponent].name.toUpperCase()} at ${STAGES[leg.stage].name.toUpperCase()}`, BASE_W / 2, BASE_H / 2 - 48);
+
+  ctx.fillStyle = '#bbb';
+  ctx.font = '15px monospace';
+  ctx.fillText(`Leg ${Math.min(state.tourState.completedLegs, run.legs.length)}/${run.legs.length}  |  Losses ${state.tourState.losses}`, BASE_W / 2, BASE_H / 2 - 16);
+  if (leg.ruleTwist) ctx.fillText(`Twist: ${leg.ruleTwist}`, BASE_W / 2, BASE_H / 2 + 12);
+  if (state.tourState.rewardState) {
+    ctx.fillStyle = completeState ? '#ffe36a' : '#7dff9d';
+    ctx.fillText(`Reward: ${state.tourState.rewardState}`, BASE_W / 2, BASE_H / 2 + 40);
+  }
+
+  ctx.fillStyle = '#aaa';
+  ctx.font = '18px monospace';
+  if (lossState) ctx.fillText('ENTER = Retry Leg  |  ESC = Save & Exit', BASE_W / 2, BASE_H / 2 + 92);
+  else if (completeState) ctx.fillText('ENTER = New Run  |  ESC = Title', BASE_W / 2, BASE_H / 2 + 92);
+  else ctx.fillText('ENTER = Next Leg  |  ESC = Save & Exit', BASE_W / 2, BASE_H / 2 + 92);
+
+  const best = tourStorage.bestClears[state.tourState.runId];
+  if (best) {
+    ctx.fillStyle = '#777';
+    ctx.font = '12px monospace';
+    ctx.fillText(`Best clear: ${best.medal.toUpperCase()} with ${best.fighter} (${best.losses} losses)`, BASE_W / 2, BASE_H / 2 + 122);
+  }
 }
 
 function renderPaused() {
@@ -5652,7 +6348,10 @@ function render() {
 }
 
 // --- Match Start ---
-function startMatch() {
+function startMatch(config) {
+  const matchConfig = config || {};
+  state.matchType = matchConfig.matchType || state.matchType;
+  state.selectedStage = matchConfig.stageKey || state.selectedStage || 'battlefield';
   const stageKey = state.selectedStage || 'battlefield';
   currentStage = STAGES[stageKey];
   // Reset moving platform state
@@ -5660,15 +6359,21 @@ function startMatch() {
     if (plat.moving) { plat._baseX = plat.x; plat._baseY = plat.y; plat._moveTimer = 0; plat._deltaX = 0; }
   }
 
-  const p1Key = (state.p1Fighter && FIGHTER_DEFS[state.p1Fighter]) ? state.p1Fighter : FIGHTER_KEYS[0];
-  const p2Key = (state.p2Fighter && FIGHTER_DEFS[state.p2Fighter]) ? state.p2Fighter : FIGHTER_KEYS[1] || FIGHTER_KEYS[0];
+  const p1Key = (matchConfig.p1Fighter && FIGHTER_DEFS[matchConfig.p1Fighter]) ? matchConfig.p1Fighter : (state.p1Fighter && FIGHTER_DEFS[state.p1Fighter]) ? state.p1Fighter : FIGHTER_KEYS[0];
+  const p2Key = (matchConfig.p2Fighter && FIGHTER_DEFS[matchConfig.p2Fighter]) ? matchConfig.p2Fighter : (state.p2Fighter && FIGHTER_DEFS[state.p2Fighter]) ? state.p2Fighter : FIGHTER_KEYS[1] || FIGHTER_KEYS[0];
   const c1 = state.charSelectCursors[0];
   const c2 = state.charSelectCursors[1];
   const mirror = p1Key === p2Key;
+  const p1Cpu = matchConfig.p1Cpu !== undefined ? matchConfig.p1Cpu : c1.cpu;
+  const p2Cpu = matchConfig.p2Cpu !== undefined ? matchConfig.p2Cpu : c2.cpu;
+  const p1CpuLevel = matchConfig.p1CpuLevel || c1.cpuLevel;
+  const p2CpuLevel = matchConfig.p2CpuLevel || c2.cpuLevel;
+  state.p1Fighter = p1Key;
+  state.p2Fighter = p2Key;
 
   state.players = [
-    createPlayer(0, p1Key, currentStage.spawns[0], c1.cpu ? 'cpu' : 'human', c1.cpuLevel, false),
-    createPlayer(1, p2Key, currentStage.spawns[1], c2.cpu ? 'cpu' : 'human', c2.cpuLevel, mirror),
+    createPlayer(0, p1Key, currentStage.spawns[0], p1Cpu ? 'cpu' : 'human', p1CpuLevel, false),
+    createPlayer(1, p2Key, currentStage.spawns[1], p2Cpu ? 'cpu' : 'human', p2CpuLevel, mirror),
   ];
 
   // Auto-assign gamepads
@@ -5686,7 +6391,7 @@ function startMatch() {
   state.damageNumbers = [];
   state.slowMo = 1; state.slowMoTimer = 0; state.slowMoTarget = null;
   state.confettiSpawned = false;
-  state.hazardsOn = options.hazardsOn;
+  state.hazardsOn = matchConfig.hazardsOn !== undefined ? matchConfig.hazardsOn : options.hazardsOn;
   state.timeRemaining = 180;
   particlePool.forEach(p => p.active = false);
   initAudio();
@@ -5701,20 +6406,20 @@ function handleCharSelectInput() {
 
   // P1 navigation
   if (!c1.confirmed) {
-    if (justPressed[p1b.right]) { c1.pos = (c1.pos + 1) % FIGHTER_KEYS.length; playSound('select'); }
-    if (justPressed[p1b.left]) { c1.pos = (c1.pos - 1 + FIGHTER_KEYS.length) % FIGHTER_KEYS.length; playSound('select'); }
-    if (justPressed[p1b.up]) { c1.cpu = !c1.cpu; playSound('select'); }
-    if (justPressed[p1b.down]) { if (c1.cpu) { c1.cpuLevel = c1.cpuLevel === 1 ? 3 : c1.cpuLevel === 3 ? 5 : 1; playSound('select'); } }
-    if (justPressed[p1b.attack] || (p1b.attack2 && justPressed[p1b.attack2])) { c1.confirmed = true; playSound('select'); }
+    if (wasBindJustPressed(p1b.right)) { c1.pos = (c1.pos + 1) % FIGHTER_KEYS.length; playSound('select'); }
+    if (wasBindJustPressed(p1b.left)) { c1.pos = (c1.pos - 1 + FIGHTER_KEYS.length) % FIGHTER_KEYS.length; playSound('select'); }
+    if (wasBindJustPressed(p1b.up)) { c1.cpu = !c1.cpu; playSound('select'); }
+    if (wasBindJustPressed(p1b.down)) { if (c1.cpu) { c1.cpuLevel = c1.cpuLevel === 1 ? 3 : c1.cpuLevel === 3 ? 5 : 1; playSound('select'); } }
+    if (wasBindJustPressed(p1b.attack) || wasBindJustPressed(p1b.attack2)) { c1.confirmed = true; playSound('select'); }
   }
 
   // P2 navigation
   if (!c2.confirmed) {
-    if (justPressed[p2b.right]) { c2.pos = (c2.pos + 1) % FIGHTER_KEYS.length; playSound('select'); }
-    if (justPressed[p2b.left]) { c2.pos = (c2.pos - 1 + FIGHTER_KEYS.length) % FIGHTER_KEYS.length; playSound('select'); }
-    if (justPressed[p2b.up]) { c2.cpu = !c2.cpu; playSound('select'); }
-    if (justPressed[p2b.down]) { if (c2.cpu) { c2.cpuLevel = c2.cpuLevel === 1 ? 3 : c2.cpuLevel === 3 ? 5 : 1; playSound('select'); } }
-    if (justPressed[p2b.attack]) { c2.confirmed = true; playSound('select'); }
+    if (wasBindJustPressed(p2b.right)) { c2.pos = (c2.pos + 1) % FIGHTER_KEYS.length; playSound('select'); }
+    if (wasBindJustPressed(p2b.left)) { c2.pos = (c2.pos - 1 + FIGHTER_KEYS.length) % FIGHTER_KEYS.length; playSound('select'); }
+    if (wasBindJustPressed(p2b.up)) { c2.cpu = !c2.cpu; playSound('select'); }
+    if (wasBindJustPressed(p2b.down)) { if (c2.cpu) { c2.cpuLevel = c2.cpuLevel === 1 ? 3 : c2.cpuLevel === 3 ? 5 : 1; playSound('select'); } }
+    if (wasBindJustPressed(p2b.attack) || wasBindJustPressed(p2b.attack2)) { c2.confirmed = true; playSound('select'); }
   }
 
   // Enter confirms both
@@ -5752,7 +6457,7 @@ function handleStageSelectInput() {
     state.stageCursor = newCursor < STAGE_KEYS.length ? newCursor : newCursor % STAGE_KEYS.length;
     playSound('select');
   }
-  if (justPressed['KeyJ'] || justPressed['Enter'] || justPressed['Space'] || justPressed['Numpad1']) {
+  if (menuConfirmPressed()) {
     state.selectedStage = STAGE_KEYS[state.stageCursor];
     state.mode = 'modeselect';
     playSound('select');
@@ -5760,11 +6465,16 @@ function handleStageSelectInput() {
 }
 
 function handleModeSelectInput() {
-  if (justPressed['KeyW'] || justPressed['ArrowUp']) { state.modeCursor = (state.modeCursor - 1 + 3) % 3; playSound('select'); }
-  if (justPressed['KeyS'] || justPressed['ArrowDown']) { state.modeCursor = (state.modeCursor + 1) % 3; playSound('select'); }
-  if (justPressed['KeyJ'] || justPressed['Enter'] || justPressed['Space'] || justPressed['Numpad1']) {
-    state.matchType = ['stock', 'time', 'training'][state.modeCursor];
-    startMatch();
+  if (justPressed['KeyW'] || justPressed['ArrowUp']) { state.modeCursor = (state.modeCursor - 1 + MODE_OPTIONS.length) % MODE_OPTIONS.length; playSound('select'); }
+  if (justPressed['KeyS'] || justPressed['ArrowDown']) { state.modeCursor = (state.modeCursor + 1) % MODE_OPTIONS.length; playSound('select'); }
+  if (menuConfirmPressed()) {
+    const selectedMode = MODE_OPTIONS[state.modeCursor];
+    if (selectedMode.key === 'tour') startOrResumeTourRun(selectedMode.runId);
+    else {
+      suspendTourRun();
+      state.matchType = selectedMode.key;
+      startMatch();
+    }
     playSound('select');
   }
 }
@@ -5794,11 +6504,11 @@ document.addEventListener('keydown', e => {
     }
     if (e.code === 'KeyO') { state.mode = 'options'; }
   } else if (state.mode === 'results') {
-    if (e.code === 'Enter' || e.code === 'Space') startMatch();
-    if (e.code === 'Escape') state.mode = 'title';
+    if (e.code === 'Enter' || e.code === 'Space') handleResultsConfirm();
+    if (e.code === 'Escape') handleResultsEscape();
   } else if (state.mode === 'playing' || state.mode === 'training') {
     if (e.code === 'KeyP') state.mode = state.mode === 'playing' ? 'paused' : state.mode;
-    if (e.code === 'Escape') state.mode = 'title';
+    if (e.code === 'Escape') { suspendTourRun(); state.mode = 'title'; }
     // Training mode keys
     if (state.matchType === 'training') {
       if (e.code === 'KeyH') options.showHitboxes = !options.showHitboxes;
@@ -5806,7 +6516,7 @@ document.addEventListener('keydown', e => {
     }
   } else if (state.mode === 'paused') {
     if (e.code === 'KeyP') state.mode = 'playing';
-    if (e.code === 'Escape') state.mode = 'title';
+    if (e.code === 'Escape') { suspendTourRun(); state.mode = 'title'; }
   } else if (state.mode === 'charselect' || state.mode === 'stageselect' || state.mode === 'modeselect') {
     if (e.code === 'Escape') {
       if (state.mode === 'modeselect') state.mode = 'stageselect';
@@ -5874,6 +6584,17 @@ window.render_game_to_text = function () {
     musicStep: musicState.step,
     audioState: audioCtx ? audioCtx.state : 'off',
     timeRemaining: state.matchType === 'time' ? Math.round(state.timeRemaining) : undefined,
+    tour: {
+      runId: state.tourState.runId,
+      active: state.tourState.active,
+      completed: state.tourState.completed,
+      currentLegIndex: state.tourState.currentLegIndex,
+      completedLegs: state.tourState.completedLegs,
+      losses: state.tourState.losses,
+      rewardState: state.tourState.rewardState,
+      lastOutcome: state.tourState.lastOutcome,
+      savedBestClear: tourStorage.bestClears[state.tourState.runId] || null,
+    },
     players: state.players.map(p => ({
       idx: p.idx, fighter: p.fighterKey,
       x: Math.round(p.x), y: Math.round(p.y),
