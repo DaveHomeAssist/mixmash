@@ -634,6 +634,7 @@ footer {
 <nav>
   <div class="nav-logo">MIXMASH</div>
   <ul class="nav-links">
+    <li><a href="./">&#8592; Studio</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#roster">Lineup</a></li>
     <li><a href="#stages">Stages</a></li>
@@ -981,7 +982,7 @@ footer {
 function launchGame() {
   const frame = document.getElementById('game-frame');
   const overlay = document.getElementById('game-overlay');
-  frame.src = 'index.html';
+  frame.src = 'play/index.html';
   overlay.classList.add('hidden');
 
   // Focus iframe after load so keyboard events go to the game

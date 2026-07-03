@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EMPIRES — RTS Prototype | MixMash Studio</title>
+    <style>
+      html, body { margin: 0; padding: 0; background: #111; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+      #root { position: relative; width: 100vw; height: 100vh; }
+      canvas { display: block; background: #2b3a1e; cursor: crosshair; }
+      #hud { position: absolute; top: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.55); display: flex; gap: 18px; font-size: 14px; pointer-events: none; }
+      #hud .r { display: flex; align-items: center; gap: 6px; }
+      #hud .sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+      #bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.55); font-size: 13px; display: flex; justify-content: space-between; }
+      #bottom button { background: #444; color: #eee; border: 1px solid #666; padding: 4px 10px; margin-right: 6px; cursor: pointer; font-size: 12px; }
+      #bottom button:hover { background: #555; }
+      #bottom button:disabled { opacity: 0.4; cursor: not-allowed; }
+      #selection { color: #ffd27f; }
+      #tick { opacity: 0.6; }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DFLGmTr6.js"></script>
+  </head>
+  <body>
+    <div id="root">
+      <canvas id="game"></canvas>
+      <div id="hud">
+        <div class="r"><span class="sw" style="background:#d4b36a"></span><span>Food <b id="r-food">0</b></span></div>
+        <div class="r"><span class="sw" style="background:#8b5a2b"></span><span>Wood <b id="r-wood">0</b></span></div>
+        <div class="r"><span class="sw" style="background:#ffd84d"></span><span>Gold <b id="r-gold">0</b></span></div>
+        <div class="r"><span class="sw" style="background:#bbbbbb"></span><span>Stone <b id="r-stone">0</b></span></div>
+        <div class="r"><span>Pop <b id="r-pop">0/0</b></span></div>
+        <div class="r" id="tick">tick 0</div>
+      </div>
+      <div id="bottom">
+        <div>
+          <button id="btn-train-villager">Train Villager (50F)</button>
+          <button id="btn-build-house">Build House (30W)</button>
+          <button id="btn-toggle-autogather">Auto-Gather: ON</button>
+        </div>
+        <div id="selection">No selection</div>
+      </div>
+    </div>
+  </body>
+</html>
