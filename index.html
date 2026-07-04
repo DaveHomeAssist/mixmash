@@ -12,6 +12,13 @@
 <meta property="og:title" content="MixMash Studio — Games That Play in Your Browser">
 <meta property="og:description" content="Small, loud, instantly playable browser games. No installs, no accounts.">
 <meta property="og:url" content="https://mixmash.games/">
+<meta property="og:image" content="https://mixmash.games/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MixMash Studio — Games That Play in Your Browser">
+<meta name="twitter:description" content="Small, loud, instantly playable browser games. No installs, no accounts.">
+<meta name="twitter:image" content="https://mixmash.games/assets/og-card.png">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Space+Mono:wght@400;700&family=Anybody:wght@400;700;900&display=swap');
 
@@ -63,6 +70,7 @@ nav {
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 32px;
   background: rgba(6,6,14,0.82);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--glass-border);
 }
@@ -233,7 +241,7 @@ nav {
   font-family: var(--font-mono); font-size: 0.58rem; font-weight: 700;
   letter-spacing: 0.16em; text-transform: uppercase;
   padding: 4px 10px; border-radius: 999px;
-  background: rgba(6,6,14,0.72); backdrop-filter: blur(6px);
+  background: rgba(6,6,14,0.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
   border: 1px solid var(--glass-border);
 }
 .st-live { color: var(--festival-green); border-color: rgba(57,255,142,0.4); }

@@ -1,0 +1,13 @@
+{
+  "name": "mixmash",
+  "version": "1.0.0",
+  "description": "MIXMASH — DJ-powered platform fighter (MixMash Studio)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
+  }
+}

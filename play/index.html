@@ -12,6 +12,13 @@
 <meta property="og:title" content="MIXMASH — DJ-Powered Platform Fighter">
 <meta property="og:description" content="12 headliners, 9 festival stages. Drop the beat, throw the punch. Free in your browser.">
 <meta property="og:url" content="https://mixmash.games/play/">
+<meta property="og:image" content="https://mixmash.games/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MIXMASH — DJ-Powered Platform Fighter">
+<meta name="twitter:description" content="12 headliners, 9 festival stages. Drop the beat, throw the punch. Free in your browser.">
+<meta name="twitter:image" content="https://mixmash.games/assets/og-card.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
@@ -43,6 +50,11 @@ const STARTING_STOCKS = 3;
 const RESPAWN_INVINCIBILITY = 120;
 const HITSTOP_BASE = 4;
 const DI_MAX_ANGLE = 18 * Math.PI / 180; // max DI shift in radians
+
+// Coerce to a finite number so a malformed attack def / degenerate weight can never
+// push NaN into a target's velocity, timers, or the camera. Mirror of src/combat.js
+// (kept inline so the live game has no external module dependency). See ROADMAP.md.
+function finite(x, fallback = 0) { return Number.isFinite(x) ? x : fallback; }
 const GRAB_ESCAPE_BASE = 90; // frames before auto-escape
 const INPUT_BUFFER_WINDOW = 5; // frames to buffer inputs
 
@@ -1138,7 +1150,13 @@ function resolvePlayerPlatform(p, plat) {
 
 // --- Knockback ---
 function calcKnockback(atkData, targetDamage, targetWeight) {
-  return (atkData.damage * 0.1 + 2) * atkData.kbScale * (1 + targetDamage / 100) / targetWeight + atkData.kbBase;
+  const damage = finite(atkData && atkData.damage, 0);
+  const kbScale = finite(atkData && atkData.kbScale, 0);
+  const kbBase = finite(atkData && atkData.kbBase, 0);
+  const pct = finite(targetDamage, 0);
+  let weight = finite(targetWeight, 1);
+  if (weight <= 0) weight = 1; // never divide by zero or a negative weight
+  return finite((damage * 0.1 + 2) * kbScale * (1 + pct / 100) / weight + kbBase, 0);
 }
 
 // --- Get Input for a player (human, cpu, or gamepad) ---
@@ -1469,11 +1487,11 @@ function executeThrow(grabber, target, dir) {
   target.damage += throwData.damage;
   spawnDamageNumber(target.x, target.y - target.h, throwData.damage);
   const kb = calcKnockback(throwData, target.damage, target.def.weight);
-  const angle = throwData.angle * Math.PI / 180;
+  const angle = finite(throwData.angle, 0) * Math.PI / 180;
   const dirX = dir === 'back' ? -grabber.facing : grabber.facing;
-  target.vx = Math.cos(angle) * kb * dirX;
-  target.vy = -Math.abs(Math.sin(angle) * kb);
-  target.state = 'hitstun'; target.stateTimer = Math.floor(kb / 15);
+  target.vx = finite(Math.cos(angle) * kb * dirX, 0);
+  target.vy = finite(-Math.abs(Math.sin(angle) * kb), 0);
+  target.state = 'hitstun'; target.stateTimer = finite(Math.floor(kb / 15), 0);
   target.grounded = false;
   grabber.state = 'idle'; grabber.grabTarget = -1;
   playSound('throw');
@@ -1538,7 +1556,7 @@ function checkHits() {
         }
 
         // Hit!
-        target.damage += atk.damage;
+        target.damage = finite(target.damage + finite(atk.damage, 0), target.damage);
         spawnDamageNumber(target.x, target.y - target.h, atk.damage);
         let kb = calcKnockback(atk, target.damage, target.def.weight);
 
@@ -1565,16 +1583,16 @@ function checkHits() {
         }
 
         const dirX = attacker.facing;
-        target.vx = Math.cos(angle) * kb * dirX;
-        target.vy = -Math.abs(Math.sin(angle) * kb);
+        target.vx = finite(Math.cos(angle) * kb * dirX, 0);
+        target.vy = finite(-Math.abs(Math.sin(angle) * kb), 0);
         target.state = 'hitstun';
-        target.stateTimer = Math.floor(kb / 15);
+        target.stateTimer = finite(Math.floor(kb / 15), 0);
         target.grounded = false;
         attacker.hitRegistered = true;
 
-        const hitstop = HITSTOP_BASE + Math.floor(atk.damage / 4);
+        const hitstop = HITSTOP_BASE + Math.floor(finite(atk.damage, 0) / 4);
         state.hitstopFrames = hitstop;
-        state.screenShake.intensity = Math.min(atk.damage * 0.8, 15);
+        state.screenShake.intensity = finite(Math.min(finite(atk.damage, 0) * 0.8, 15), 0);
         // Character-themed hit spark colors
         let sparkColor = '#ffff00';
         if (attacker.fighterKey === 'deadmau5') sparkColor = atk.damage > 10 ? '#ff5db0' : '#ffb3d9';
@@ -1728,8 +1746,12 @@ function updateCamera() {
     const targetZoom = Math.max(0.85, Math.min(1.5, 500 / dist));
     state.camera.zoom += (targetZoom - state.camera.zoom) * 0.05;
   }
-  state.camera.x += (cx - state.camera.x) * 0.08;
-  state.camera.y += (cy - state.camera.y) * 0.08;
+  // Guard the camera against any non-finite target so a stray NaN can never become
+  // a permanent (sticky) NaN in the entity pool — the camera holds its last good value.
+  const nextCamX = state.camera.x + (cx - state.camera.x) * 0.08;
+  const nextCamY = state.camera.y + (cy - state.camera.y) * 0.08;
+  if (Number.isFinite(nextCamX)) state.camera.x = nextCamX;
+  if (Number.isFinite(nextCamY)) state.camera.y = nextCamY;
 }
 
 function updateScreenShake() {
