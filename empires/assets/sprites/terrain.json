@@ -1,0 +1,79 @@
+{
+  "texture": "terrain.png",
+  "cellWidth": 64,
+  "cellHeight": 40,
+  "animations": {
+    "grass_a": {
+      "row": 0,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "grass_b": {
+      "row": 1,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "forest_full": {
+      "row": 2,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "forest_depleted": {
+      "row": 3,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "gold_full": {
+      "row": 4,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "gold_depleted": {
+      "row": 5,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "stone_full": {
+      "row": 6,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "stone_depleted": {
+      "row": 7,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "water": {
+      "row": 8,
+      "frames": 4,
+      "fps": 7,
+      "loop": true
+    },
+    "building_site": {
+      "row": 9,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "berry_full": {
+      "row": 10,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    },
+    "berry_depleted": {
+      "row": 11,
+      "frames": 1,
+      "fps": 1,
+      "loop": true
+    }
+  }
+}

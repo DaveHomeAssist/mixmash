@@ -1,0 +1,13 @@
+{
+  "texture": "barracks.png",
+  "cellWidth": 96,
+  "cellHeight": 80,
+  "animations": {
+    "idle_se": {
+      "row": 0,
+      "frames": 4,
+      "fps": 4,
+      "loop": true
+    }
+  }
+}

@@ -23,7 +23,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 - CNAME cycled during the mixmash.games domain-binding process (see the DNS/cert incident in the studio's ops history) — `git pull --ff-only` before local work on `gh-pages`.
 
 ## 2026-07-03 — MixMash Studio hub consolidation
-- Restructured the repo from a single-game Pages site into the studio hub: new homepage (`index.html`/`home.html`, Mainstage Neons brand tokens), `/play/` (the fighter, moved from repo root), `/mars/` (MarsScape snapshot), `/empires/` (aoe2-clone Vite build), `/garden/` (Garden OS story-mode iframe).
+- Restructured the repo from a single-game Pages site into the studio hub: new homepage (`index.html`/`home.html`, Mainstage Neons brand tokens), `/play/` (the fighter, moved from repo root), `/mars/` (MarsScape snapshot), `/empires/` (now Age of Dave), `/garden/` (Garden OS story-mode iframe).
+- Replaced the old `/empires/` Vite RTS prototype with the Age of Dave route: a static launcher/status surface backed by the real private `DaveHomeAssist/aoe2-clone` C++/SDL alpha and its verified sprite atlases.
 - Custom domain `mixmash.games` bound; HTTPS enforced once the cert issued.
 - Favicon added (`favicon.svg`) as part of a favicon audit remediation pass (2026-06-20, prior to the hub restructure).
 

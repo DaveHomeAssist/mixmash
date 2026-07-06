@@ -1,0 +1,23 @@
+{
+  "texture": "ui_icons.png",
+  "cellWidth": 32,
+  "cellHeight": 32,
+  "animations": {
+    "build_house": { "row": 0, "frames": 1, "fps": 8, "loop": true },
+    "build_farm": { "row": 1, "frames": 1, "fps": 8, "loop": true },
+    "build_barracks": { "row": 2, "frames": 1, "fps": 8, "loop": true },
+    "build_mill": { "row": 3, "frames": 1, "fps": 8, "loop": true },
+    "build_lumbercamp": { "row": 4, "frames": 1, "fps": 8, "loop": true },
+    "build_miningcamp": { "row": 5, "frames": 1, "fps": 8, "loop": true },
+    "build_blacksmith": { "row": 6, "frames": 1, "fps": 8, "loop": true },
+    "train_villager": { "row": 7, "frames": 1, "fps": 8, "loop": true },
+    "train_militia": { "row": 8, "frames": 1, "fps": 8, "loop": true },
+    "train_archer": { "row": 9, "frames": 1, "fps": 8, "loop": true },
+    "train_scout": { "row": 10, "frames": 1, "fps": 8, "loop": true },
+    "train_spearman": { "row": 11, "frames": 1, "fps": 8, "loop": true },
+    "advance_age": { "row": 12, "frames": 1, "fps": 8, "loop": true },
+    "research_forging": { "row": 13, "frames": 1, "fps": 8, "loop": true },
+    "research_fletching": { "row": 14, "frames": 1, "fps": 8, "loop": true },
+    "research_scalemail": { "row": 15, "frames": 1, "fps": 8, "loop": true }
+  }
+}

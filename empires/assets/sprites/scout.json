@@ -1,0 +1,42 @@
+{
+  "texture": "scout.png",
+  "cellWidth": 64,
+  "cellHeight": 64,
+  "animations": {
+    "idle_e": { "row": 0, "frames": 4, "fps": 5, "loop": true },
+    "idle_se": { "row": 1, "frames": 4, "fps": 5, "loop": true },
+    "idle_s": { "row": 2, "frames": 4, "fps": 5, "loop": true },
+    "idle_sw": { "row": 3, "frames": 4, "fps": 5, "loop": true },
+    "idle_w": { "row": 4, "frames": 4, "fps": 5, "loop": true },
+    "idle_nw": { "row": 5, "frames": 4, "fps": 5, "loop": true },
+    "idle_n": { "row": 6, "frames": 4, "fps": 5, "loop": true },
+    "idle_ne": { "row": 7, "frames": 4, "fps": 5, "loop": true },
+
+    "walk_e": { "row": 8, "frames": 4, "fps": 8, "loop": true },
+    "walk_se": { "row": 9, "frames": 4, "fps": 8, "loop": true },
+    "walk_s": { "row": 10, "frames": 4, "fps": 8, "loop": true },
+    "walk_sw": { "row": 11, "frames": 4, "fps": 8, "loop": true },
+    "walk_w": { "row": 12, "frames": 4, "fps": 8, "loop": true },
+    "walk_nw": { "row": 13, "frames": 4, "fps": 8, "loop": true },
+    "walk_n": { "row": 14, "frames": 4, "fps": 8, "loop": true },
+    "walk_ne": { "row": 15, "frames": 4, "fps": 8, "loop": true },
+
+    "attack_e": { "row": 16, "frames": 4, "fps": 8, "loop": true },
+    "attack_se": { "row": 17, "frames": 4, "fps": 8, "loop": true },
+    "attack_s": { "row": 18, "frames": 4, "fps": 8, "loop": true },
+    "attack_sw": { "row": 19, "frames": 4, "fps": 8, "loop": true },
+    "attack_w": { "row": 20, "frames": 4, "fps": 8, "loop": true },
+    "attack_nw": { "row": 21, "frames": 4, "fps": 8, "loop": true },
+    "attack_n": { "row": 22, "frames": 4, "fps": 8, "loop": true },
+    "attack_ne": { "row": 23, "frames": 4, "fps": 8, "loop": true },
+
+    "die_e": { "row": 24, "frames": 4, "fps": 8, "loop": false },
+    "die_se": { "row": 25, "frames": 4, "fps": 8, "loop": false },
+    "die_s": { "row": 26, "frames": 4, "fps": 8, "loop": false },
+    "die_sw": { "row": 27, "frames": 4, "fps": 8, "loop": false },
+    "die_w": { "row": 28, "frames": 4, "fps": 8, "loop": false },
+    "die_nw": { "row": 29, "frames": 4, "fps": 8, "loop": false },
+    "die_n": { "row": 30, "frames": 4, "fps": 8, "loop": false },
+    "die_ne": { "row": 31, "frames": 4, "fps": 8, "loop": false }
+  }
+}

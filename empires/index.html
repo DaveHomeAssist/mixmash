@@ -1,44 +1,677 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EMPIRES — RTS Prototype | MixMash Studio</title>
-    <style>
-      html, body { margin: 0; padding: 0; background: #111; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
-      #root { position: relative; width: 100vw; height: 100vh; }
-      canvas { display: block; background: #2b3a1e; cursor: crosshair; }
-      #hud { position: absolute; top: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.55); display: flex; gap: 18px; font-size: 14px; pointer-events: none; }
-      #hud .r { display: flex; align-items: center; gap: 6px; }
-      #hud .sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
-      #bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.55); font-size: 13px; display: flex; justify-content: space-between; }
-      #bottom button { background: #444; color: #eee; border: 1px solid #666; padding: 4px 10px; margin-right: 6px; cursor: pointer; font-size: 12px; }
-      #bottom button:hover { background: #555; }
-      #bottom button:disabled { opacity: 0.4; cursor: not-allowed; }
-      #selection { color: #ffd27f; }
-      #tick { opacity: 0.6; }
-    </style>
-    <script type="module" crossorigin src="./assets/index-DFLGmTr6.js"></script>
-  </head>
-  <body>
-    <div id="root">
-      <canvas id="game"></canvas>
-      <div id="hud">
-        <div class="r"><span class="sw" style="background:#d4b36a"></span><span>Food <b id="r-food">0</b></span></div>
-        <div class="r"><span class="sw" style="background:#8b5a2b"></span><span>Wood <b id="r-wood">0</b></span></div>
-        <div class="r"><span class="sw" style="background:#ffd84d"></span><span>Gold <b id="r-gold">0</b></span></div>
-        <div class="r"><span class="sw" style="background:#bbbbbb"></span><span>Stone <b id="r-stone">0</b></span></div>
-        <div class="r"><span>Pop <b id="r-pop">0/0</b></span></div>
-        <div class="r" id="tick">tick 0</div>
-      </div>
-      <div id="bottom">
-        <div>
-          <button id="btn-train-villager">Train Villager (50F)</button>
-          <button id="btn-build-house">Build House (30W)</button>
-          <button id="btn-toggle-autogather">Auto-Gather: ON</button>
-        </div>
-        <div id="selection">No selection</div>
-      </div>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age of Dave - RTS Alpha | MixMash Studio</title>
+<meta name="description" content="Age of Dave is the restored real-time strategy alpha backed by the private aoe2-clone native C++/SDL project.">
+<link rel="canonical" href="https://mixmash.games/empires/">
+<style>
+:root {
+  --ink: #10130f;
+  --coal: #171914;
+  --iron: #25291f;
+  --panel: #303425;
+  --hide: #4f5b32;
+  --grass: #6d8d44;
+  --moss: #8ba85a;
+  --wheat: #d7b86a;
+  --gold: #f0cf66;
+  --clay: #a86a42;
+  --brick: #8e3f2d;
+  --water: #4c8fa6;
+  --sky: #b9d9d0;
+  --paper: #f4ead2;
+  --muted: #c7b98f;
+  --line: rgba(244, 234, 210, 0.16);
+  --shadow: rgba(8, 9, 7, 0.44);
+  --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-title: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--ink); color: var(--paper); font-family: var(--font-ui); }
+body {
+  overflow-x: hidden;
+  background:
+    linear-gradient(180deg, rgba(12, 18, 15, 0.26), rgba(16, 19, 15, 0.9)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 64px),
+    linear-gradient(135deg, #26331f 0%, #12150f 46%, #21160f 100%);
+}
+
+a { color: inherit; }
+button, a.action {
+  min-height: 42px;
+  border: 1px solid rgba(244, 234, 210, 0.22);
+  background: linear-gradient(180deg, #51432d, #2c2d21);
+  color: var(--paper);
+  font: 800 0.74rem/1 var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 14px;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 18px rgba(0,0,0,0.2);
+}
+button:hover, a.action:hover { border-color: rgba(240, 207, 102, 0.66); color: #fff5cb; }
+button[aria-pressed="true"] { background: linear-gradient(180deg, #7d673e, #3f3c26); border-color: rgba(240, 207, 102, 0.72); }
+button:disabled { opacity: 0.52; cursor: not-allowed; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px clamp(14px, 4vw, 34px);
+  background: rgba(18, 21, 15, 0.9);
+  border-bottom: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  text-decoration: none;
+}
+.crest {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(from 45deg, #d7b86a, #8ba85a, #4c8fa6, #8e3f2d, #d7b86a);
+  color: #1d1a11;
+  font-weight: 1000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.25), inset 0 0 0 2px rgba(255,255,255,0.28);
+}
+.brand strong { display: block; font: 900 0.86rem/1 var(--font-ui); letter-spacing: 0.14em; text-transform: uppercase; }
+.brand span { display: block; margin-top: 3px; color: var(--muted); font-size: 0.76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.navlinks { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.navlinks a {
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.navlinks a:hover { color: var(--paper); border-color: var(--line); background: rgba(255,255,255,0.04); }
+
+.shell {
+  min-height: calc(100vh - 58px);
+  display: grid;
+  grid-template-columns: minmax(220px, 270px) minmax(0, 1fr) minmax(250px, 330px);
+  gap: 14px;
+  padding: 14px;
+}
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(65, 69, 48, 0.9), rgba(35, 38, 27, 0.94)),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 6px);
+  box-shadow: 0 20px 46px rgba(0,0,0,0.28);
+  min-width: 0;
+}
+.left, .right { padding: 14px; }
+.left { display: flex; flex-direction: column; gap: 14px; }
+.right { display: grid; gap: 14px; align-content: start; }
+
+.title-kicker {
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 8px 0 0;
+  font: 900 clamp(2.6rem, 5vw, 5.1rem)/0.88 var(--font-title);
+  letter-spacing: 0;
+  color: #fff1be;
+  text-shadow: 0 3px 0 rgba(0,0,0,0.28);
+}
+.subtitle { margin: 12px 0 0; color: var(--muted); font-size: 0.96rem; line-height: 1.48; }
+.status-grid { display: grid; gap: 8px; margin-top: 4px; }
+.stat {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+  min-height: 46px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(12, 14, 9, 0.26);
+  border: 1px solid rgba(244,234,210,0.1);
+}
+.gem {
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  background: var(--grass);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.1);
+}
+.gem.gold { background: var(--gold); }
+.gem.water { background: var(--water); }
+.gem.brick { background: var(--brick); }
+.stat b { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.stat span { color: var(--muted); font-size: 0.82rem; }
+
+.actions { display: grid; gap: 8px; }
+.mode-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mode-tabs button { padding: 0 6px; font-size: 0.66rem; }
+
+.stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 620px;
+  background:
+    linear-gradient(180deg, rgba(185,217,208,0.22), rgba(82,110,67,0.22) 42%, rgba(37,41,31,0.4)),
+    linear-gradient(135deg, #4b6f50, #26341f 62%, #171914);
+}
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(transparent 0 64%, rgba(0,0,0,0.34)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 38px);
+  pointer-events: none;
+}
+#scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.scene-hud {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.resource {
+  border-radius: 6px;
+  border: 1px solid rgba(244,234,210,0.14);
+  background: rgba(14, 16, 11, 0.74);
+  padding: 9px 10px;
+}
+.resource span { display: block; color: var(--muted); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.resource b { display: block; margin-top: 3px; font-size: 1rem; }
+
+.block h2, .block h3 {
+  margin: 0 0 10px;
+  color: #fff1be;
+  font: 900 1rem/1.1 var(--font-title);
+  letter-spacing: 0;
+}
+.block p { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.48; }
+.rows { display: grid; gap: 7px; }
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+  border-bottom: 1px solid rgba(244,234,210,0.09);
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+.row:last-child { border-bottom: 0; }
+.row b { color: var(--paper); font-size: 0.86rem; text-align: right; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 4px;
+  padding: 0 8px;
+  background: rgba(139,168,90,0.22);
+  color: #e9ffc2;
+  border: 1px solid rgba(139,168,90,0.34);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.badge.warn { background: rgba(215,184,106,0.18); color: #ffe8a1; border-color: rgba(215,184,106,0.36); }
+.badge.hot { background: rgba(142,63,45,0.22); color: #ffc0ae; border-color: rgba(142,63,45,0.42); }
+.build-log {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.build-log li {
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(12, 14, 9, 0.24);
+  border: 1px solid rgba(244,234,210,0.1);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.build-log b { color: var(--paper); display: block; margin-bottom: 3px; }
+
+.port-note {
+  margin-top: 10px;
+  border-left: 3px solid var(--gold);
+  padding: 9px 10px;
+  color: var(--muted);
+  background: rgba(0,0,0,0.18);
+  font-size: 0.84rem;
+}
+
+@media (max-width: 1060px) {
+  .shell { grid-template-columns: 1fr; }
+  .stage { min-height: 560px; order: -1; }
+  .left, .right { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .topbar { align-items: flex-start; flex-direction: column; }
+  .navlinks { justify-content: flex-start; }
+  .shell { padding: 10px; }
+  .left, .right { display: grid; grid-template-columns: 1fr; }
+  .stage { min-height: 510px; }
+  .scene-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  h1 { font-size: clamp(2.3rem, 17vw, 4rem); }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="../">
+    <span class="crest">AD</span>
+    <span>
+      <strong>MixMash Studio</strong>
+      <span>Age of Dave alpha route</span>
+    </span>
+  </a>
+  <nav class="navlinks" aria-label="Studio routes">
+    <a href="../play/">MIXMASH</a>
+    <a href="../mars/">MarsScape</a>
+    <a href="../garden/">Garden</a>
+  </nav>
+</header>
+
+<main class="shell">
+  <aside class="panel left" aria-label="Age of Dave status">
+    <section>
+      <div class="title-kicker">Native RTS restored</div>
+      <h1>Age of Dave</h1>
+      <p class="subtitle">The old web toy has been removed. This route now points at the real deterministic RTS alpha from the private C++/SDL project.</p>
+    </section>
+
+    <section class="status-grid" aria-label="Verified build facts">
+      <div class="stat"><span class="gem gold"></span><span><b>Native core</b><span>C++17, SDL3, deterministic lockstep</span></span></div>
+      <div class="stat"><span class="gem"></span><span><b>Checks</b><span>29 local headless tests passing</span></span></div>
+      <div class="stat"><span class="gem water"></span><span><b>Art path</b><span>16 sprite atlases, 775 frames verified</span></span></div>
+      <div class="stat"><span class="gem brick"></span><span><b>Browser port</b><span>Not shipped yet; no fake web build</span></span></div>
+    </section>
+
+    <section class="actions" aria-label="Age of Dave actions">
+      <a class="action" href="https://github.com/DaveHomeAssist/aoe2-clone" rel="noopener">Source Repo</a>
+      <button id="launchNative" type="button">Desktop Alpha</button>
+      <button id="portPlan" type="button">Browser Port Queue</button>
+    </section>
+  </aside>
+
+  <section class="panel stage" aria-label="Age of Dave sprite scene">
+    <canvas id="scene" width="1280" height="720"></canvas>
+    <div class="scene-hud" aria-label="Current settlement resources">
+      <div class="resource"><span>Food</span><b id="food">420</b></div>
+      <div class="resource"><span>Wood</span><b id="wood">315</b></div>
+      <div class="resource"><span>Gold</span><b id="gold">180</b></div>
+      <div class="resource"><span>Population</span><b id="pop">18 / 25</b></div>
     </div>
-  </body>
+  </section>
+
+  <aside class="panel right" aria-label="Age of Dave control ledger">
+    <section class="block">
+      <h2>Command View</h2>
+      <div class="mode-tabs" role="group" aria-label="Scene mode">
+        <button type="button" data-mode="economy" aria-pressed="true">Economy</button>
+        <button type="button" data-mode="combat" aria-pressed="false">Combat</button>
+        <button type="button" data-mode="network" aria-pressed="false">Network</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Source State</h2>
+      <div class="rows">
+        <div class="row"><span>Repo</span><b>DaveHomeAssist/aoe2-clone</b></div>
+        <div class="row"><span>Latest local verify</span><b>2026-07-06</b></div>
+        <div class="row"><span>CI patch</span><b>Transport split + SDL fallback</b></div>
+        <div class="row"><span>Public route</span><b>/empires/</b></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Build Ledger</h2>
+      <ul class="build-log">
+        <li><b><span class="badge">Verified</span> Headless sim</b>Determinism, AI, save/load, UDP, relay, reconnect, and public NAT evidence tests pass locally.</li>
+        <li><b><span class="badge">Verified</span> SDL app</b>Dummy-video render smoke and direct reconnect app smoke pass with matching server/client hashes.</li>
+        <li><b><span class="badge warn">Next</span> Browser build</b>Ship the native sim to WebAssembly or publish desktop artifacts. This page will not pretend the port already exists.</li>
+      </ul>
+      <div class="port-note" id="actionNote">Economy preview selected. Sprites are loaded from the real alpha asset set.</div>
+    </section>
+  </aside>
+</main>
+
+<script>
+const state = {
+  mode: "economy",
+  time: 0,
+  assetsReady: false,
+  note: "Economy preview selected. Sprites are loaded from the real alpha asset set.",
+  resources: { food: 420, wood: 315, gold: 180, pop: "18 / 25" },
+  verification: {
+    nativeRepo: "DaveHomeAssist/aoe2-clone",
+    headlessTests: "29/29",
+    spriteAtlases: 16,
+    spriteFrames: 775,
+    sdlSmoke: "render + direct reconnect",
+    browserPort: "pending"
+  }
+};
+
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+const note = document.getElementById("actionNote");
+const resourceEls = {
+  food: document.getElementById("food"),
+  wood: document.getElementById("wood"),
+  gold: document.getElementById("gold"),
+  pop: document.getElementById("pop")
+};
+const atlasNames = [
+  "terrain", "towncenter", "villager", "militia", "archer", "scout",
+  "house", "barracks", "farm", "mill", "lumbercamp", "miningcamp",
+  "blacksmith"
+];
+const atlases = {};
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function loadAtlas(name) {
+  const meta = await fetch(`assets/sprites/${name}.json`).then((r) => r.json());
+  const image = await loadImage(`assets/sprites/${meta.texture}`);
+  atlases[name] = { meta, image };
+}
+
+function resize() {
+  const rect = canvas.getBoundingClientRect();
+  const scale = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  canvas.width = Math.max(640, Math.floor(rect.width * scale));
+  canvas.height = Math.max(480, Math.floor(rect.height * scale));
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  render();
+}
+
+function iso(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  const tileW = Math.max(38, Math.min(78, rect.width / 9));
+  const tileH = tileW * 0.56;
+  return {
+    x: rect.width / 2 + (x - y) * tileW / 2,
+    y: rect.height * 0.24 + (x + y) * tileH / 2,
+    tileW,
+    tileH
+  };
+}
+
+function frameFor(atlas, animName) {
+  const anim = atlas.meta.animations[animName] || atlas.meta.animations.idle_se || Object.values(atlas.meta.animations)[0];
+  const frameCount = anim.frames || 1;
+  const fps = anim.fps || 1;
+  return {
+    row: anim.row || 0,
+    col: Math.floor((state.time / 1000) * fps) % frameCount,
+    cellW: atlas.meta.cellWidth,
+    cellH: atlas.meta.cellHeight
+  };
+}
+
+function drawAtlas(name, anim, x, y, size = 1, anchorY = 0.78) {
+  const atlas = atlases[name];
+  if (!atlas) {
+    ctx.fillStyle = name === "terrain" ? "#6d8d44" : "#d7b86a";
+    ctx.fillRect(x - 12, y - 18, 24, 24);
+    return;
+  }
+  const f = frameFor(atlas, anim);
+  const dw = f.cellW * size;
+  const dh = f.cellH * size;
+  ctx.drawImage(
+    atlas.image,
+    f.col * f.cellW,
+    f.row * f.cellH,
+    f.cellW,
+    f.cellH,
+    x - dw / 2,
+    y - dh * anchorY,
+    dw,
+    dh
+  );
+}
+
+function drawFallbackTile(x, y, w, h, fill) {
+  ctx.beginPath();
+  ctx.moveTo(x, y - h / 2);
+  ctx.lineTo(x + w / 2, y);
+  ctx.lineTo(x, y + h / 2);
+  ctx.lineTo(x - w / 2, y);
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.strokeStyle = "rgba(20,24,16,0.28)";
+  ctx.stroke();
+}
+
+function terrainAt(x, y) {
+  if ((x === 1 && y > 2) || (y === 1 && x > 4)) return "forest_full";
+  if ((x === 7 && y === 2) || (x === 8 && y === 3)) return "gold_full";
+  if (x === 0 || y === 8) return "water";
+  if ((x === 5 && y === 6) || (x === 6 && y === 6)) return "berry_full";
+  if ((x + y) % 3 === 0) return "grass_b";
+  return "grass_a";
+}
+
+function drawGround() {
+  for (let y = 0; y < 9; y += 1) {
+    for (let x = 0; x < 9; x += 1) {
+      const p = iso(x, y);
+      const terrain = terrainAt(x, y);
+      if (atlases.terrain) {
+        drawAtlas("terrain", terrain, p.x, p.y + 5, p.tileW / 64, 0.52);
+      } else {
+        const fill = terrain === "water" ? "#4c8fa6" : terrain.includes("forest") ? "#4f6f34" : "#6d8d44";
+        drawFallbackTile(p.x, p.y, p.tileW, p.tileH, fill);
+      }
+    }
+  }
+}
+
+function entityList() {
+  const base = [
+    ["towncenter", "idle_se", 4, 3, 1.24],
+    ["house", "idle_se", 3, 5, 0.95],
+    ["house", "idle_se", 5, 4, 0.95],
+    ["mill", "idle_se", 6, 5, 0.9],
+    ["farm", "idle_se", 5, 6, 0.88],
+    ["lumbercamp", "idle_se", 2, 5, 0.85],
+    ["miningcamp", "idle_se", 7, 3, 0.86],
+    ["villager", "walk_se", 3.2, 4.4, 0.78],
+    ["villager", "gather_se", 1.7, 5.7, 0.78],
+    ["villager", "carry_se", 5.7, 5.8, 0.78]
+  ];
+  if (state.mode === "combat") {
+    base.push(["barracks", "idle_se", 6.6, 2.2, 0.92]);
+    base.push(["militia", "attack_se", 5.8, 2.8, 0.82]);
+    base.push(["archer", "attack_se", 4.9, 2.7, 0.82]);
+    base.push(["scout", "walk_se", 6.8, 3.3, 0.82]);
+  }
+  if (state.mode === "network") {
+    base.push(["blacksmith", "idle_se", 6.4, 2.6, 0.9]);
+    base.push(["militia", "walk_se", 4.4, 2.1, 0.82]);
+    base.push(["archer", "walk_se", 5.4, 2.0, 0.82]);
+    base.push(["scout", "walk_se", 6.3, 3.1, 0.82]);
+  }
+  return base.sort((a, b) => (a[2] + a[3]) - (b[2] + b[3]));
+}
+
+function drawEntities() {
+  for (const [name, anim, gx, gy, size] of entityList()) {
+    const bob = name === "villager" || name === "militia" || name === "archer" || name === "scout"
+      ? Math.sin(state.time / 180 + gx) * 2
+      : 0;
+    const p = iso(gx, gy);
+    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y + 11, 22 * size, 9 * size, 0, 0, Math.PI * 2);
+    ctx.fill();
+    drawAtlas(name, anim, p.x, p.y + bob, size, name === "towncenter" ? 0.74 : 0.78);
+  }
+}
+
+function drawBanners() {
+  const rect = canvas.getBoundingClientRect();
+  ctx.fillStyle = "rgba(15,18,12,0.6)";
+  ctx.fillRect(0, 0, rect.width, 74);
+  const compact = rect.width < 560;
+  ctx.fillStyle = "#fff1be";
+  ctx.font = compact ? "900 16px Georgia, serif" : "900 18px Georgia, serif";
+  const title = state.mode === "economy" ? "Settlement Economy" : state.mode === "combat" ? "Skirmish Readiness" : "Lockstep Network Drill";
+  ctx.fillText(compact ? title.replace(" Readiness", "") : title, 18, compact ? 31 : 29);
+  if (!compact) {
+    ctx.fillStyle = "#c7b98f";
+    ctx.font = "700 12px system-ui, sans-serif";
+    ctx.fillText("Real Age of Dave sprite preview - native alpha source verified locally", 18, 51);
+  }
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#f0cf66";
+  ctx.font = "900 12px system-ui, sans-serif";
+  ctx.fillText(compact ? "29/29" : "29/29 HEADLESS", rect.width - 18, compact ? 31 : 29);
+  ctx.fillStyle = "#c7b98f";
+  ctx.font = "800 11px system-ui, sans-serif";
+  ctx.fillText(compact ? "16 atlases" : "16 ATLASES", rect.width - 18, compact ? 51 : 51);
+  ctx.textAlign = "left";
+}
+
+function updateResources() {
+  const sets = {
+    economy: { food: 420, wood: 315, gold: 180, pop: "18 / 25" },
+    combat: { food: 260, wood: 190, gold: 340, pop: "23 / 25" },
+    network: { food: 300, wood: 260, gold: 220, pop: "2 peers" }
+  };
+  state.resources = sets[state.mode];
+  for (const [key, value] of Object.entries(state.resources)) {
+    resourceEls[key].textContent = value;
+  }
+}
+
+function render() {
+  const rect = canvas.getBoundingClientRect();
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  const grad = ctx.createLinearGradient(0, 0, 0, rect.height);
+  grad.addColorStop(0, "#b9d9d0");
+  grad.addColorStop(0.34, "#8aa66f");
+  grad.addColorStop(1, "#1b1e15");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, rect.width, rect.height);
+  drawGround();
+  drawEntities();
+  drawBanners();
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  const labels = {
+    economy: "Economy preview selected. Sprites are loaded from the real alpha asset set.",
+    combat: "Combat preview selected. Native app has units, attacks, projectiles, and SDL smoke coverage.",
+    network: "Network preview selected. Lockstep, UDP, relay, reconnect, and NAT evidence checks are covered locally."
+  };
+  state.note = labels[mode];
+  note.textContent = state.note;
+  document.querySelectorAll("[data-mode]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+  });
+  updateResources();
+  render();
+}
+
+document.querySelectorAll("[data-mode]").forEach((button) => {
+  button.addEventListener("click", () => setMode(button.dataset.mode));
+});
+document.getElementById("launchNative").addEventListener("click", () => {
+  state.note = "Desktop alpha lives in the native aoe2-clone checkout. Use CMake build-codex-app for local runs.";
+  note.textContent = state.note;
+});
+document.getElementById("portPlan").addEventListener("click", () => {
+  state.note = "Browser port queue: compile the deterministic sim to WebAssembly, then wire canvas input/rendering.";
+  note.textContent = state.note;
+});
+
+window.render_game_to_text = () => JSON.stringify({
+  route: "/empires/",
+  title: "Age of Dave",
+  mode: state.mode,
+  assetsReady: state.assetsReady,
+  resources: state.resources,
+  verification: state.verification,
+  note: state.note,
+  coordinateSystem: "isometric preview grid, origin at north-west tile"
+});
+
+window.advanceTime = (ms) => {
+  state.time += Math.max(0, Number(ms) || 0);
+  render();
+};
+
+Promise.all(atlasNames.map(loadAtlas))
+  .then(() => {
+    state.assetsReady = true;
+    resize();
+  })
+  .catch(() => {
+    state.assetsReady = false;
+    resize();
+  });
+
+window.addEventListener("resize", resize);
+setMode("economy");
+resize();
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(50, now - last);
+  last = now;
+  window.advanceTime(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
 </html>

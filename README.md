@@ -9,7 +9,7 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `/` (`index.html`, `home.html`) | Studio homepage — brand tokens, game lineup |
 | `/play/` | **MIXMASH** — a DJ-powered platform fighter (the flagship game; see `docs/PLAYER_GUIDE.md`) |
 | `/mars/` | MarsScape — canvas-backed isometric client with a **server-authoritative backend** (see below). No longer a build snapshot of the [marsscape source repo](https://github.com/DaveHomeAssist/marsscape) — the two have diverged; do not overwrite one with the other. |
-| `/empires/` | EMPIRES — RTS prototype (Vite build, `--base=./`) |
+| `/empires/` | Age of Dave — restored RTS alpha launcher backed by the private `DaveHomeAssist/aoe2-clone` C++/SDL project; no longer the old web prototype |
 | `/garden/` | Full-viewport iframe embed of the live Garden OS story mode (`davehomeassist.github.io/garden-os/story-mode/`) — never drifts |
 | `ROADMAP.md` | Production roadmap **for the MIXMASH fighter specifically** — phased DoD/checkpoints/verification standards |
 | `src/combat.js` | Canonical, tested knockback math for the fighter (`finite()` guard + `calcKnockback`) |
@@ -44,7 +44,7 @@ There is no build step for the static site itself — `index.html`, `home.html`,
 
 **This means the old redeploy recipe (`marsscape` repo → `npm run build` → copy `dist/index.html` into `mixmash/mars/`) is obsolete and would destroy this architecture if run.** The `marsscape` GitHub repo continues to exist as an independent single-file-build project; the two `/mars/` implementations have diverged and are not currently reconciled.
 
-`/empires/` is still a manual Vite build snapshot copied in from its own dev environment. `/garden/` needs no redeploy — it's a live iframe.
+`/empires/` is now a truthful Age of Dave status/launcher surface using sprite atlases copied from `DaveHomeAssist/aoe2-clone`; the actual RTS remains a native C++/SDL app until a browser/WASM port is built. `/garden/` needs no redeploy — it's a live iframe.
 
 ## Conventions
 
