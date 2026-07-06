@@ -1,3 +1,5 @@
 node_modules/
 mars/.data/
 mars/output/
+.vercel
+.env*.local

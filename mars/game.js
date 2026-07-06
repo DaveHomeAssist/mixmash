@@ -16,9 +16,9 @@ import {
 
 const STORAGE_KEY = 'marsscape.session.v3';
 const SESSION_KEY = 'marsscape.sessionId.v3';
-const API_BASE = new URL('api/', window.location.href);
 const ASSET_MANIFEST = './assets/manifest.json';
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '']);
+const API_BASE = resolveApiBase();
 const TILE_W = 42;
 const TILE_H = 21;
 const CANVAS_W = 940;
@@ -167,6 +167,14 @@ const assetLoader = new AssetLoader(ASSET_MANIFEST);
 const localSigner = new LocalEnvelopeSigner();
 
 boot();
+
+function resolveApiBase() {
+  const configured = document.querySelector('meta[name="marsscape-api-base"]')?.content?.trim();
+  if (configured && !LOCAL_HOSTS.has(window.location.hostname)) {
+    return new URL(configured, window.location.href);
+  }
+  return new URL('api/', window.location.href);
+}
 
 async function boot() {
   setBootStatus('Preloading terrain and colony assets...');

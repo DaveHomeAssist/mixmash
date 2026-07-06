@@ -62,6 +62,13 @@ test('authority API uses sqlite and ignores client-seeded resources', async () =
   assert.equal(duplicate.state.inventory.iron_ore, 1);
   assert.equal(duplicate.state.seq, 1);
 
+  const commandCreated = await jsonFetch('/api/sessions/33333333-3333-4333-8333-333333333333/commands', {
+    method: 'POST',
+    body: JSON.stringify({ id: 'api-cmd-bootstrap', type: 'gather', nodeId: 'iron-north' }),
+  });
+  assert.equal(commandCreated.state.inventory.iron_ore, 1);
+  assert.equal(commandCreated.state.seq, 1);
+
   await stat(dbFile);
 });
 
