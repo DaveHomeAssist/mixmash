@@ -1,14 +1,19 @@
 import {
   BUILDINGS,
   CRAFT_RECIPES,
+  EQUIP_SLOTS,
+  EQUIP_TIERS,
   ITEMS,
   NODES,
+  REGIONS,
   RESEARCH,
+  ROVERS,
   SKILLS,
   SMELT_RECIPES,
   advanceState,
   applyCommand,
   createState,
+  equipStats,
   levelForXp,
   publicState,
   sanitizeState,
@@ -54,6 +59,7 @@ const el = {
   oxygenBar: document.querySelector('#oxygenBar'),
   powerBar: document.querySelector('#powerBar'),
   solValue: document.querySelector('#solValue'),
+  regionLabel: document.querySelector('#regionLabel'),
   tabs: document.querySelector('#tabs'),
   tickButton: document.querySelector('#tickButton'),
   exportButton: document.querySelector('#exportButton'),
@@ -336,6 +342,7 @@ function renderStatus() {
   el.oxygenMeter.setAttribute('aria-valuenow', String(oxygen));
   el.powerMeter.setAttribute('aria-valuenow', String(power));
   el.solValue.textContent = String(state.sol);
+  el.regionLabel.textContent = REGIONS[state.currentRegion]?.name || 'Landing Basin';
   el.authorityStatus.textContent = mode === 'online' ? `Server authority: ${sessionId.slice(0, 8)}` : 'Offline local fallback';
   el.authorityStatus.style.color = mode === 'online' ? 'var(--green)' : 'var(--ochre)';
   for (const button of el.tabs.querySelectorAll('button')) {
@@ -346,11 +353,19 @@ function renderStatus() {
   }
 }
 
+function nodeInCurrentRegion(node) {
+  return (node.regionId || 'landing_basin') === state.currentRegion;
+}
+
 function renderMap() {
   const fragments = [];
   fragments.push(`<canvas class="terrain-canvas" width="${CANVAS_W}" height="${CANVAS_H}" aria-hidden="true"></canvas>`);
-  for (const node of NODES) fragments.push(renderNode(node));
-  for (const building of BUILDINGS) fragments.push(renderBuilding(building));
+  for (const node of NODES.filter(nodeInCurrentRegion)) fragments.push(renderNode(node));
+  // Buildings live only at the Landing Basin — hidden (and, server-side, rejected)
+  // while away, same as MarsScape v0.4.0.
+  if (state.currentRegion === 'landing_basin') {
+    for (const building of BUILDINGS) fragments.push(renderBuilding(building));
+  }
   const player = iso(state.player.x, state.player.y);
   fragments.push(`<span class="player-marker" style="left:${player.x}px;top:${player.y}px" aria-hidden="true"></span>`);
   el.isoBoard.innerHTML = fragments.join('');
@@ -406,7 +421,7 @@ function renderBuilding(building) {
 }
 
 function renderPanel() {
-  const renderers = { skills: renderSkills, pack: renderPack, build: renderBuild, forge: renderForge, research: renderResearch };
+  const renderers = { skills: renderSkills, pack: renderPack, build: renderBuild, forge: renderForge, research: renderResearch, travel: renderTravel };
   el.panelBody.innerHTML = renderers[activeTab]();
   el.panelBody.querySelectorAll('[data-action]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -420,6 +435,7 @@ function renderPanel() {
       if (action === 'harvest') enqueueCommand('harvest');
       if (action === 'ration') enqueueCommand('ration');
       if (action === 'storm') enqueueCommand('startStorm');
+      if (action === 'travel') enqueueCommand('travel', { destRegion: button.dataset.id });
     });
   });
 }
@@ -438,7 +454,14 @@ function renderSkills() {
 
 function renderPack() {
   const slots = Object.entries(ITEMS).map(([id, item]) => `<div class="slot"><span>${escapeHtml(item.short)}</span><b>${state.inventory[id] || 0}</b></div>`).join('');
-  return `<div class="card"><h3>Field Pack</h3><p>Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="plant" ${!state.built.greenhouse || state.farm.plantedAt && !state.farm.ready ? 'disabled' : ''}>Plant Greenhouse Crop</button><button data-action="harvest" ${!state.farm.ready ? 'disabled' : ''}>Harvest Food</button><button data-action="ration" ${(state.inventory.food || 0) < 1 ? 'disabled' : ''}>Ration Food</button></div>`;
+  const stats = equipStats(state);
+  const equipRows = EQUIP_SLOTS.map((slot) => `<div class="skill-row"><span>${escapeHtml(capitalize(slot))}</span><b>${state.equip[slot] ? escapeHtml(capitalize(state.equip[slot])) : 'empty'}</b></div>`).join('');
+  const statLine = `O2 efficiency +${stats.o2}% · quality chance +${stats.crit}% · pack capacity +${stats.pack} — craft gear at the Forge`;
+  return `<div class="card"><h3>Field Pack</h3><p>Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Equipment</h3><p>${statLine}</p><div class="skill-list">${equipRows}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="plant" ${!state.built.greenhouse || state.farm.plantedAt && !state.farm.ready ? 'disabled' : ''}>Plant Greenhouse Crop</button><button data-action="harvest" ${!state.farm.ready ? 'disabled' : ''}>Harvest Food</button><button data-action="ration" ${(state.inventory.food || 0) < 1 ? 'disabled' : ''}>Ration Food</button></div>`;
+}
+
+function capitalize(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 function renderBuild() {
@@ -450,7 +473,12 @@ function renderBuild() {
 
 function renderForge() {
   const smelt = SMELT_RECIPES.map((recipe) => `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${renderCost(recipe.input)}<button data-action="smelt" data-id="${recipe.id}" ${!canAfford(recipe.input) ? 'disabled' : ''}>Smelt</button></div>`).join('');
-  const craft = CRAFT_RECIPES.map((recipe) => `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${renderCost(recipe.input)}<button data-action="craft" data-id="${recipe.id}" ${!canAfford(recipe.input) ? 'disabled' : ''}>Fabricate</button></div>`).join('');
+  const craft = CRAFT_RECIPES.map((recipe) => {
+    const gated = recipe.lvl && (state.skills.fabrication?.level || 1) < recipe.lvl;
+    const desc = recipe.description ? `<p>${escapeHtml(recipe.description)}</p>` : '';
+    const lvlNote = recipe.lvl ? `<p class="muted">Requires Fabrication ${recipe.lvl}.</p>` : '';
+    return `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${desc}${lvlNote}${renderCost(recipe.input)}<button data-action="craft" data-id="${recipe.id}" ${!canAfford(recipe.input) || gated ? 'disabled' : ''}>Fabricate</button></div>`;
+  }).join('');
   return `<div class="card"><h3>Smelting</h3><p>Bars consume power and train Fabrication.</p></div>${smelt}<div class="card"><h3>Crafting</h3></div>${craft}`;
 }
 
@@ -459,6 +487,38 @@ function renderResearch() {
     const done = !!state.research[project.id];
     return `<div class="card"><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p>${renderCost(project.input)}<button data-action="research" data-id="${project.id}" ${done || !state.built.lab || !canAfford(project.input) ? 'disabled' : ''}>${done ? 'Researched' : 'Research'}</button></div>`;
   }).join('');
+}
+
+const TRAVEL_FUEL_COST = 1;
+
+function renderTravel() {
+  if (state.travel) {
+    const region = REGIONS[state.travel.destRegion];
+    const remainingMs = Math.max(0, state.travel.arrivalAt - Date.now());
+    return `<div class="card"><h3>En Route</h3><p>Driving to ${escapeHtml(region?.name || state.travel.destRegion)} — arriving in about ${Math.ceil(remainingMs / 1000)}s.</p></div>`;
+  }
+  const rover = ROVERS[state.rover];
+  const pilotLevel = state.skills.piloting?.level || 1;
+  const cards = Object.entries(REGIONS).map(([id, region]) => {
+    if (id === state.currentRegion) {
+      return `<div class="card"><h3>${escapeHtml(region.name)}</h3><p>You are here.</p></div>`;
+    }
+    const gateOk = !region.gate || pilotLevel >= region.gate.lvl;
+    const gateText = region.gate && !gateOk ? `Requires ${escapeHtml(SKILLS[region.gate.skill].name)} ${region.gate.lvl}.` : '';
+    const hasFuel = (state.inventory.fuel || 0) >= TRAVEL_FUEL_COST;
+    const eta = region.home ? 0 : previewTravelMs(region);
+    return `<div class="card"><h3>${escapeHtml(region.name)}</h3>${gateText ? `<p>${gateText}</p>` : `<p>${Math.round(eta / 1000)}s by ${escapeHtml(rover.name)} · ${TRAVEL_FUEL_COST} Fuel Cell</p>`}<button data-action="travel" data-id="${id}" ${!gateOk || !hasFuel ? 'disabled' : ''}>Drive here</button></div>`;
+  }).join('');
+  return `<div class="card"><h3>Rover</h3><p>${escapeHtml(rover.name)} · Piloting L${pilotLevel} · ${state.inventory.fuel || 0} Fuel Cells in the pack.</p></div>${cards}`;
+}
+
+// Client-side preview only — the server (engine.mjs travelDurationMs) is authoritative
+// and recomputes this itself when the travel command is applied.
+function previewTravelMs(region) {
+  const roverMult = ROVERS[state.rover]?.mult ?? 1;
+  const pilotCut = Math.floor((state.skills.piloting?.level || 1) / 8);
+  const ticks = Math.max(4, Math.round(region.baseTravelTicks * roverMult) - pilotCut);
+  return ticks * 600;
 }
 
 function renderCost(cost) {
@@ -504,8 +564,10 @@ function drawTerrain(canvas) {
       drawTile(ctx, x, y);
     }
   }
-  for (const node of NODES) drawNodeModel(ctx, node);
-  for (const building of BUILDINGS) drawBuildingModel(ctx, building);
+  for (const node of NODES.filter(nodeInCurrentRegion)) drawNodeModel(ctx, node);
+  if (state.currentRegion === 'landing_basin') {
+    for (const building of BUILDINGS) drawBuildingModel(ctx, building);
+  }
   drawPlayerModel(ctx);
   drawBoardEdge(ctx);
   ctx.restore();
@@ -872,7 +934,7 @@ function cleanPendingCommands(commands) {
     if (!command || typeof command !== 'object') return null;
     const clean = {};
     for (const [key, value] of Object.entries(command)) {
-      if (['id', 'type', 'nodeId', 'buildingId', 'recipeId', 'projectId'].includes(key) && typeof value === 'string') {
+      if (['id', 'type', 'nodeId', 'buildingId', 'recipeId', 'projectId', 'destRegion'].includes(key) && typeof value === 'string') {
         clean[key] = value.slice(0, 80);
       }
     }
@@ -941,6 +1003,10 @@ function exposeTestHooks() {
     player: state.player,
     inventory: state.inventory,
     built: state.built,
+    currentRegion: state.currentRegion,
+    rover: state.rover,
+    travel: state.travel,
+    equip: state.equip,
     activeTab,
     events: state.events.slice(0, 5),
   });
