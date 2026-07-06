@@ -72,6 +72,32 @@ test('authority API uses sqlite and ignores client-seeded resources', async () =
   await stat(dbFile);
 });
 
+test('travel command round-trips through the real HTTP authority server', async () => {
+  await waitForServer();
+  const sessionId = '22222222-2222-4222-8222-222222222222';
+  await jsonFetch('/api/sessions', { method: 'POST', body: JSON.stringify({ sessionId }) });
+
+  // No fuel yet — the new command type must reach the engine and come back as a
+  // structured GameError over real HTTP, not a 500 or an unrecognized-route failure.
+  await assertRejects(
+    () => jsonFetch(`/api/sessions/${sessionId}/commands`, {
+      method: 'POST',
+      body: JSON.stringify({ id: 'api-travel-1', type: 'travel', destRegion: 'dune_sea' }),
+    }),
+    /Need 1 Fuel/,
+  );
+});
+
+async function assertRejects(fn, pattern) {
+  try {
+    await fn();
+  } catch (error) {
+    assert.match(error.message, pattern);
+    return;
+  }
+  throw new Error('Expected the request to be rejected');
+}
+
 async function waitForServer() {
   const deadline = Date.now() + 5000;
   while (Date.now() < deadline) {

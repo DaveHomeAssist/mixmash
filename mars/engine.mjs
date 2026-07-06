@@ -14,6 +14,7 @@ export const ITEMS = {
   frame: { name: 'Frame', short: 'Frame', color: '#aeb8bf' },
   component: { name: 'Component', short: 'Comp', color: '#76d6d2' },
   food: { name: 'Food', short: 'Food', color: '#8ccf69' },
+  fuel: { name: 'Fuel Cell', short: 'Fuel', color: '#e0a03a' },
 };
 
 export const SKILLS = {
@@ -24,6 +25,57 @@ export const SKILLS = {
   agriculture: { name: 'Agriculture', accent: '#91ce67' },
   research: { name: 'Research', accent: '#87d8d9' },
   survival: { name: 'Survival', accent: '#e3be66' },
+  piloting: { name: 'Piloting', accent: '#7fa8e3' },
+};
+
+// Regions beyond the home basin. `gate` is a skill/level requirement to travel there
+// (dune_sea's is trivially met at Piloting 1 — the real gate is having built the Water
+// Plant and holding a Fuel Cell, matching the original game's design). `baseTravelTicks`
+// is expressed in the original game's 600ms tick, not this engine's 5000ms TICK_MS —
+// travel duration is computed once (see travelDurationMs) and stored as an arrival
+// timestamp, so it never depends on the tick loop's own grain.
+export const REGIONS = {
+  landing_basin: { name: 'Landing Basin', home: true, gate: null },
+  dune_sea: { name: 'Dune Sea', home: false, gate: { skill: 'piloting', lvl: 1 }, baseTravelTicks: 20 },
+};
+const TRAVEL_TICK_MS = 600;
+
+export const ROVERS = {
+  buggy: { name: 'Survey Buggy', mult: 1.0 },
+  rover2: { name: 'Rover Mk2', mult: 0.7 },
+  rover3: { name: 'Rover Mk3', mult: 0.5 },
+};
+const ROVER_ORDER = ['buggy', 'rover2', 'rover3'];
+const TRAVEL_FUEL = 1;
+
+// 6 slots x 4 tiers, ported from MarsScape v0.4.0's equipment system. Tiers requiring
+// materials this simpler engine doesn't have (glass, alloy, iridium) are substituted
+// with iron/titanium bar + component at comparable cost, and composite's original
+// research prerequisite (alloy_tempering) is dropped since no equivalent research
+// project exists here yet.
+export const EQUIP_SLOTS = ['suit', 'helmet', 'gloves', 'boots', 'scanner', 'backpack'];
+export const EQUIP_TIERS = ['canvas', 'steel', 'titan', 'composite'];
+const EQUIP_TIER_META = {
+  canvas: { lvl: 5, xp: 40, cost: { iron_bar: 3, frame: 1 } },
+  steel: { lvl: 15, xp: 90, cost: { iron_bar: 4, copper_bar: 3, frame: 2 } },
+  titan: { lvl: 30, xp: 200, requiresBuilding: 'machine', cost: { titanium_bar: 4, frame: 2, component: 2 } },
+  composite: { lvl: 45, xp: 420, cost: { titanium_bar: 6, component: 4 } },
+};
+const EQUIP_SLOT_META = {
+  suit: { stat: 'o2' },
+  helmet: { stat: 'o2' },
+  gloves: { stat: 'crit' },
+  boots: { stat: 'speed' },
+  scanner: { stat: 'geode' },
+  backpack: { stat: 'pack' },
+};
+const EQUIP_STATS = {
+  suit: { o2: [4, 8, 12, 16] },
+  helmet: { o2: [2, 4, 6, 8] },
+  gloves: { crit: [1, 2, 3, 4] },
+  boots: { speed: [8, 15, 22, 30] },
+  scanner: { geode: [1, 2, 3, 4] },
+  backpack: { pack: [2, 4, 6, 8] },
 };
 
 export const NODES = [
@@ -34,6 +86,11 @@ export const NODES = [
   { id: 'ice-pocket', name: 'Ice Pocket', type: 'ice', item: 'ice', skill: 'water', xp: 22, x: 4, y: 3, charges: 5 },
   { id: 'ice-scarp', name: 'Ice Scarp', type: 'ice', item: 'ice', skill: 'water', xp: 22, x: 8, y: 5, charges: 5 },
   { id: 'titanium-vein', name: 'Titanium Vein', type: 'ore', item: 'titanium_ore', skill: 'mining', xp: 58, x: 5, y: 1, charges: 3, requiresBuilding: 'machine' },
+  // Dune Sea (regionId set; nodes with no regionId belong to landing_basin). Ported
+  // 2 of the original 3 Dune Sea node types (Iron Scree, Wreck Site) — Silicate Dunes
+  // deferred since this engine has no silicate/glass material chain yet.
+  { id: 'dune-iron-scree', name: 'Iron Scree', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 20, x: 2, y: 4, charges: 6, regionId: 'dune_sea', yieldBonus: 1 },
+  { id: 'dune-wreck-site', name: 'Wreck Site', type: 'salvage', item: 'component', skill: 'mining', xp: 48, x: 7, y: 6, charges: 3, regionId: 'dune_sea' },
 ];
 
 export const BUILDINGS = [
@@ -57,7 +114,36 @@ export const CRAFT_RECIPES = [
   { id: 'craft-component', name: 'Component', input: { copper_bar: 2 }, output: { component: 1 }, xp: 24 },
   { id: 'craft-steel-pick', name: 'Steel Pick', input: { iron_bar: 4, component: 1 }, gear: { pickaxe: 'steel' }, xp: 70 },
   { id: 'craft-titanium-pick', name: 'Titanium Pick', input: { titanium_bar: 5, component: 2 }, gear: { pickaxe: 'titanium' }, xp: 190, requiresBuilding: 'machine' },
+  { id: 'craft-fuel-cell', name: 'Fuel Cell', input: { water: 2 }, output: { fuel: 1 }, xp: 20 },
+  // Rovers cut travel time to Dune Sea; tiers ported from MarsScape v0.4.0 with
+  // part/alloy costs remapped onto this engine's simpler component/bar palette.
+  { id: 'craft-rover-2', name: 'Rover Mk2', input: { titanium_bar: 6, component: 4 }, gear: { rover: 'rover2' }, xp: 200, lvl: 12, requiresBuilding: 'machine' },
+  { id: 'craft-rover-3', name: 'Rover Mk3', input: { titanium_bar: 10, component: 6 }, gear: { rover: 'rover3' }, xp: 420, lvl: 35, requiresBuilding: 'machine' },
 ];
+// Generate the 24 equipment recipes (6 slots x 4 tiers), same idiom as the source game.
+for (const tier of EQUIP_TIERS) {
+  const meta = EQUIP_TIER_META[tier];
+  for (const slot of EQUIP_SLOTS) {
+    const stat = EQUIP_SLOT_META[slot].stat;
+    const value = EQUIP_STATS[slot][stat][EQUIP_TIERS.indexOf(tier)];
+    CRAFT_RECIPES.push({
+      id: `craft-equip-${tier}-${slot}`,
+      name: `${capitalize(tier)} ${capitalize(slot)}`,
+      input: meta.cost,
+      gear: { equip: { slot, tier } },
+      xp: meta.xp,
+      lvl: meta.lvl,
+      requiresBuilding: meta.requiresBuilding || null,
+      description: `+${value}${stat === 'pack' ? '' : '%'} ${statLabel(stat)}.`,
+    });
+  }
+}
+function capitalize(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+function statLabel(stat) {
+  return { o2: 'O2 efficiency', crit: 'quality chance', speed: 'walk speed', geode: 'geode find', pack: 'pack capacity' }[stat] || stat;
+}
 
 export const RESEARCH = [
   { id: 'drills', name: 'Reinforced Drills', input: { titanium_bar: 4, component: 4 }, description: 'Gathering returns one extra resource on rich strikes.' },
@@ -70,6 +156,8 @@ const SKILL_IDS = Object.keys(SKILLS);
 const BUILDING_IDS = BUILDINGS.map((building) => building.id);
 const RESEARCH_IDS = RESEARCH.map((project) => project.id);
 const NODE_IDS = NODES.map((node) => node.id);
+const REGION_IDS = Object.keys(REGIONS);
+const ROVER_IDS = Object.keys(ROVERS);
 
 export class GameError extends Error {
   constructor(code, message, status = 422) {
@@ -99,6 +187,10 @@ export function createState(now = Date.now()) {
     farm: { plantedAt: 0, ready: false },
     storm: { status: 'locked', phase: 0, endsAt: 0 },
     player: { x: 5, y: 9 },
+    currentRegion: 'landing_basin',
+    rover: 'buggy',
+    travel: null,
+    equip: Object.fromEntries(EQUIP_SLOTS.map((slot) => [slot, null])),
     commandIds: [],
     events: [{ tone: 'info', text: 'You step out of the lander. Mission Control: start with iron ore.' }],
   };
@@ -135,6 +227,10 @@ export function sanitizeState(raw, now = Date.now()) {
       x: int(raw.player?.x, 0, 10),
       y: int(raw.player?.y, 0, 10),
     },
+    currentRegion: REGION_IDS.includes(raw.currentRegion) ? raw.currentRegion : 'landing_basin',
+    rover: ROVER_IDS.includes(raw.rover) ? raw.rover : 'buggy',
+    travel: cleanTravel(raw.travel, now),
+    equip: cleanEquip(raw.equip),
     commandIds: Array.isArray(raw.commandIds) ? raw.commandIds.filter((id) => typeof id === 'string').slice(-40) : [],
     events: cleanEvents(raw.events),
   };
@@ -149,6 +245,8 @@ export function advanceState(input, now = Date.now()) {
   if (ticks <= 0) return state;
 
   const rates = meterRates(state);
+  const suitO2 = equipStats(state).o2;
+  if (rates.oxygen < 0) rates.oxygen *= (1 - suitO2 / 100); // suit/helmet efficiency softens loss only
   for (let i = 0; i < ticks; i += 1) {
     state.tickCount += 1;
     if (state.tickCount % 100 === 0) {
@@ -178,6 +276,19 @@ export function advanceState(input, now = Date.now()) {
     }
   }
   state.lastTickAt += ticks * TICK_MS;
+
+  // Travel resolves against real elapsed time, not the tick grid above — a rover trip
+  // is an arrival timestamp (like farm.ready / storm.endsAt), not a running counter.
+  if (state.travel && now >= state.travel.arrivalAt) {
+    const region = REGIONS[state.travel.destRegion];
+    state.currentRegion = state.travel.destRegion;
+    state.travel = null;
+    if (region) {
+      gainSkill(state, 'piloting', region.home ? 30 : 50);
+      addEvent(state, 'good', `Arrived at ${region.name}.`);
+    }
+  }
+
   state.updatedAt = now;
   return state;
 }
@@ -227,6 +338,9 @@ export function applyCommand(input, command, now = Date.now()) {
     case 'startStorm':
       startStorm(state, now);
       break;
+    case 'travel':
+      travel(state, command.destRegion, now);
+      break;
     case 'tick':
       addEvent(state, 'info', 'Mission clock advanced.');
       break;
@@ -246,6 +360,7 @@ export function publicState(input, now = Date.now()) {
   const state = advanceState(input, now);
   return {
     ...state,
+    stats: equipStats(state),
     catalog: {
       items: ITEMS,
       skills: SKILLS,
@@ -254,6 +369,8 @@ export function publicState(input, now = Date.now()) {
       smeltRecipes: SMELT_RECIPES,
       craftRecipes: CRAFT_RECIPES,
       research: RESEARCH,
+      regions: REGIONS,
+      rovers: ROVERS,
     },
   };
 }
@@ -265,6 +382,9 @@ export function levelForXp(xp) {
 function gather(state, nodeId) {
   const node = NODES.find((candidate) => candidate.id === nodeId);
   if (!node) throw new GameError('NODE_NOT_FOUND', 'Resource node not found', 404);
+  if (nodeRegion(node) !== state.currentRegion) {
+    throw new GameError('WRONG_REGION', `${node.name} is not in your current region.`);
+  }
   if (node.requiresBuilding && !state.built[node.requiresBuilding]) {
     throw new GameError('NODE_LOCKED', `${node.name} requires ${buildingName(node.requiresBuilding)}.`);
   }
@@ -276,11 +396,14 @@ function gather(state, nodeId) {
     state.nodes[node.id] = nodeState;
     throw new GameError('NODE_DEPLETED', `${node.name} is respawning.`);
   }
-  if (packSize(state) >= 40 && !state.inventory[node.item]) {
+  const packCap = 40 + equipStats(state).pack;
+  if (packSize(state) >= packCap && !state.inventory[node.item]) {
     throw new GameError('PACK_FULL', 'Pack is full.');
   }
-  const bonus = state.research.drills && Math.random() < 0.18 ? 1 : 0;
-  addItem(state, node.item, 1 + bonus);
+  const critBonus = Math.random() * 100 < equipStats(state).crit ? 1 : 0;
+  const drillBonus = state.research.drills && Math.random() < 0.18 ? 1 : 0;
+  const bonus = Math.max(critBonus, drillBonus);
+  addItem(state, node.item, (node.yieldBonus || 0) + 1 + bonus);
   gainSkill(state, node.skill, node.xp);
   nodeState.charges -= 1;
   if (nodeState.charges <= 0) {
@@ -289,12 +412,15 @@ function gather(state, nodeId) {
   }
   state.nodes[node.id] = nodeState;
   state.player = { x: node.x, y: node.y };
-  addEvent(state, 'good', `Gathered ${1 + bonus} ${ITEMS[node.item].name}.`);
+  addEvent(state, 'good', `Gathered ${(node.yieldBonus || 0) + 1 + bonus} ${ITEMS[node.item].name}.`);
 }
 
 function build(state, buildingId) {
   const building = BUILDINGS.find((candidate) => candidate.id === buildingId);
   if (!building) throw new GameError('BUILDING_NOT_FOUND', 'Building not found', 404);
+  if (state.currentRegion !== 'landing_basin') {
+    throw new GameError('AWAY_FROM_BASIN', 'Construction happens at the Landing Basin. Drive home first.');
+  }
   if (state.built[building.id]) throw new GameError('ALREADY_BUILT', `${building.name} is already online.`);
   spendItems(state, building.cost);
   state.built[building.id] = true;
@@ -310,6 +436,9 @@ function build(state, buildingId) {
 function smelt(state, recipeId) {
   const recipe = SMELT_RECIPES.find((candidate) => candidate.id === recipeId);
   if (!recipe) throw new GameError('RECIPE_NOT_FOUND', 'Smelting recipe not found', 404);
+  if (state.currentRegion !== 'landing_basin') {
+    throw new GameError('AWAY_FROM_BASIN', 'The Machine Shop is back at the Landing Basin. Drive home to smelt.');
+  }
   if (recipe.requiresBuilding && !state.built[recipe.requiresBuilding]) {
     throw new GameError('RECIPE_LOCKED', `${recipe.name} requires ${buildingName(recipe.requiresBuilding)}.`);
   }
@@ -329,12 +458,40 @@ function craft(state, recipeId) {
   if (recipe.requiresBuilding && !state.built[recipe.requiresBuilding]) {
     throw new GameError('RECIPE_LOCKED', `${recipe.name} requires ${buildingName(recipe.requiresBuilding)}.`);
   }
+  if (recipe.lvl && state.skills.fabrication.level < recipe.lvl) {
+    throw new GameError('LEVEL_LOW', `${recipe.name} requires Fabrication level ${recipe.lvl}.`);
+  }
   spendItems(state, recipe.input);
   if (recipe.output) addItems(state, recipe.output);
-  if (recipe.gear?.pickaxe) state.gear.pickaxe = recipe.gear.pickaxe;
+  if (recipe.gear) applyGear(state, recipe.gear);
   gainSkill(state, 'fabrication', recipe.xp);
   state.player = { x: 7, y: 8 };
   addEvent(state, 'good', `Fabricated ${recipe.name}.`);
+}
+
+// Generalized so rovers/equipment plug into the same craft-time gear application as
+// the original pickaxe-only case, each with its own anti-downgrade guard (crafting a
+// tier at or below what's already held is blocked, matching the source game).
+function applyGear(state, gear) {
+  if (gear.pickaxe) {
+    // Unchanged from the pre-port behavior: no anti-downgrade check here originally,
+    // so none is added now — only the new rover/equip gear kinds get the guard.
+    state.gear.pickaxe = gear.pickaxe;
+  }
+  if (gear.rover) {
+    if (ROVER_ORDER.indexOf(gear.rover) <= ROVER_ORDER.indexOf(state.rover)) {
+      throw new GameError('NO_DOWNGRADE', 'You already have an equal or better rover.');
+    }
+    state.rover = gear.rover;
+  }
+  if (gear.equip) {
+    const { slot, tier } = gear.equip;
+    const current = state.equip[slot];
+    if (current && EQUIP_TIERS.indexOf(tier) <= EQUIP_TIERS.indexOf(current)) {
+      throw new GameError('NO_DOWNGRADE', 'You already have an equal or better item in that slot.');
+    }
+    state.equip[slot] = tier;
+  }
 }
 
 function purify(state) {
@@ -376,6 +533,9 @@ function harvest(state) {
 }
 
 function research(state, projectId) {
+  if (state.currentRegion !== 'landing_basin') {
+    throw new GameError('AWAY_FROM_BASIN', 'The Research Lab is back at the Landing Basin. Drive home first.');
+  }
   if (!state.built.lab) throw new GameError('BUILDING_REQUIRED', 'Build the Research Lab first.');
   const project = RESEARCH.find((candidate) => candidate.id === projectId);
   if (!project) throw new GameError('PROJECT_NOT_FOUND', 'Research project not found', 404);
@@ -401,6 +561,45 @@ function startStorm(state, now) {
   }
   state.storm = { status: 'active', phase: 1, startedAt: now, endsAt: now + 180_000 };
   addEvent(state, 'warn', 'The Great Storm begins. Hold oxygen and power above 50%.');
+}
+
+function travel(state, destRegion, now) {
+  const region = REGIONS[destRegion];
+  if (!region) throw new GameError('REGION_NOT_FOUND', 'Unknown region', 404);
+  if (destRegion === state.currentRegion) throw new GameError('ALREADY_THERE', 'You are already there.');
+  if (state.travel) throw new GameError('ALREADY_TRAVELING', 'A trip is already underway.');
+  if (state.storm.status === 'active') throw new GameError('STORM_ACTIVE', 'You cannot leave the basin during the Great Storm.');
+  if (region.gate && state.skills[region.gate.skill].level < region.gate.lvl) {
+    throw new GameError('REGION_LOCKED', `${region.name} requires ${SKILLS[region.gate.skill].name} ${region.gate.lvl}.`);
+  }
+  if (!region.home) spendItems(state, { fuel: TRAVEL_FUEL });
+  const durationMs = region.home ? 0 : travelDurationMs(region, state);
+  state.travel = { destRegion, arrivalAt: now + durationMs };
+  addEvent(state, 'info', `Departing for ${region.name} — arriving in ${Math.ceil(durationMs / 1000)}s.`);
+}
+
+function travelDurationMs(region, state) {
+  const roverMult = ROVERS[state.rover]?.mult ?? 1;
+  const pilotCut = Math.floor(state.skills.piloting.level / 8);
+  const ticks = Math.max(4, Math.round(region.baseTravelTicks * roverMult) - pilotCut);
+  return ticks * TRAVEL_TICK_MS;
+}
+
+function nodeRegion(node) {
+  return node.regionId || 'landing_basin';
+}
+
+export function equipStats(state) {
+  const totals = { o2: 0, crit: 0, speed: 0, geode: 0, pack: 0 };
+  for (const slot of EQUIP_SLOTS) {
+    const tier = state.equip[slot];
+    if (!tier) continue;
+    const ti = EQUIP_TIERS.indexOf(tier);
+    if (ti < 0) continue;
+    const stats = EQUIP_STATS[slot];
+    for (const key in stats) totals[key] += stats[key][ti];
+  }
+  return totals;
 }
 
 function meterRates(state) {
@@ -508,6 +707,23 @@ function cleanStorm(raw) {
     startedAt: int(raw?.startedAt, 0, Date.now() + 86_400_000),
     endsAt: int(raw?.endsAt, 0, Date.now() + 86_400_000),
   };
+}
+
+function cleanTravel(raw, now) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (!REGION_IDS.includes(raw.destRegion)) return null;
+  const arrivalAt = int(raw.arrivalAt, 0, now + 86_400_000);
+  if (!arrivalAt) return null;
+  return { destRegion: raw.destRegion, arrivalAt };
+}
+
+function cleanEquip(raw) {
+  const clean = Object.fromEntries(EQUIP_SLOTS.map((slot) => [slot, null]));
+  if (!raw || typeof raw !== 'object') return clean;
+  for (const slot of EQUIP_SLOTS) {
+    if (EQUIP_TIERS.includes(raw[slot])) clean[slot] = raw[slot];
+  }
+  return clean;
 }
 
 function cleanEvents(raw) {
