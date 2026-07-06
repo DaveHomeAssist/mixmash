@@ -4,38 +4,465 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIXMASH — DJ-Powered Platform Fighter</title>
-<meta name="description" content="MIXMASH: the DJ-powered platform fighter. 12 headliner fighters, 9 festival stages, local versus and CPU battles. Free in your browser — keyboard and gamepad supported.">
+<title>MIXMASH — Browser Platform Fighter</title>
+<script>
+  (function guardMixmashFrame() {
+    const status = { checked: true, framed: false, action: 'top-level' };
+    try {
+      status.framed = window.top !== window.self;
+    } catch {
+      status.framed = true;
+    }
+    if (status.framed) {
+      status.action = 'top-navigation-attempted';
+      try {
+        window.top.location = window.self.location.href;
+      } catch {
+        status.action = 'blocked-embed-hidden';
+        document.addEventListener('DOMContentLoaded', () => {
+          document.body.innerHTML = '<main style="display:grid;min-height:100vh;place-items:center;background:#070711;color:#f4f1ff;font:16px ui-monospace,monospace;text-align:center;padding:24px;"><div><h1 style="font-size:24px;margin-bottom:12px;">MIXMASH opens in its own tab.</h1><p>This page blocks third-party framing.</p></div></main>';
+        }, { once: true });
+      }
+    }
+    window.__mixmashFrameGuard = status;
+  })();
+</script>
+<meta name="description" content="MIXMASH: the browser platform fighter. 14 fighters, 11 arenas, local versus, solo Platform Rush, CPU battles, keyboard, and gamepad support.">
 <link rel="canonical" href="https://mixmash.games/play/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MixMash Studio">
-<meta property="og:title" content="MIXMASH — DJ-Powered Platform Fighter">
-<meta property="og:description" content="12 headliners, 9 festival stages. Drop the beat, throw the punch. Free in your browser.">
+<meta property="og:title" content="MIXMASH — Browser Platform Fighter">
+<meta property="og:description" content="14 fighters, 11 arenas, solo Platform Rush, local versus, and CPU battles. Free in your browser.">
 <meta property="og:url" content="https://mixmash.games/play/">
 <meta property="og:image" content="https://mixmash.games/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="MIXMASH — DJ-Powered Platform Fighter">
-<meta name="twitter:description" content="12 headliners, 9 festival stages. Drop the beat, throw the punch. Free in your browser.">
+<meta name="twitter:title" content="MIXMASH — Browser Platform Fighter">
+<meta name="twitter:description" content="14 fighters, 11 arenas, solo Platform Rush, local versus, and CPU battles. Free in your browser.">
 <meta name="twitter:image" content="https://mixmash.games/assets/og-card.png">
 <style>
+  :root {
+    --mix-bg: #070711;
+    --mix-panel: #121326;
+    --mix-panel-strong: #1c1d34;
+    --mix-border: rgba(255, 102, 0, 0.42);
+    --mix-text: #f4f1ff;
+    --mix-muted: #a9a6bb;
+    --mix-dim: #706d83;
+    --mix-orange: #ff7a18;
+    --mix-cyan: #54e8ff;
+    --mix-pink: #ff4aa2;
+    --mix-focus: #ffe66d;
+    --mix-radius: 8px;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+  body {
+    background: #111;
+    color: var(--mix-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
   canvas { display: block; image-rendering: pixelated; }
+  canvas.menu-captured { pointer-events: none; filter: saturate(0.7) brightness(0.48); }
+  button, input, select { font: inherit; }
+  .menu-overlay[hidden] { display: none; }
+  .menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    padding: clamp(12px, 3vw, 28px);
+    background:
+      linear-gradient(135deg, rgba(255, 74, 162, 0.14), transparent 34%),
+      radial-gradient(circle at 80% 18%, rgba(84, 232, 255, 0.16), transparent 28%),
+      rgba(3, 3, 9, 0.84);
+  }
+  .mix-menu {
+    width: min(1040px, 100%);
+    max-height: min(720px, calc(100vh - 32px));
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    overflow: hidden;
+    color: var(--mix-text);
+    background: linear-gradient(180deg, rgba(18, 19, 38, 0.98), rgba(7, 7, 17, 0.98));
+    border: 1px solid var(--mix-border);
+    border-radius: var(--mix-radius);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  }
+  .mix-menu__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .mix-menu__kicker {
+    color: var(--mix-orange);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .mix-menu h1 {
+    margin-top: 5px;
+    color: var(--mix-text);
+    font-size: clamp(24px, 4vw, 38px);
+    line-height: 1;
+  }
+  .mix-menu__summary {
+    max-width: 680px;
+    margin-top: 8px;
+    color: var(--mix-muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .menu-close,
+  .menu-tab,
+  .menu-action,
+  .rebind-button {
+    min-height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    color: var(--mix-text);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+  }
+  .menu-close {
+    width: 44px;
+    flex: 0 0 44px;
+    color: var(--mix-orange);
+    font-size: 24px;
+  }
+  .menu-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.24);
+  }
+  .menu-tab {
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .menu-tab[aria-selected="true"] {
+    color: #120b03;
+    border-color: var(--mix-orange);
+    background: linear-gradient(90deg, var(--mix-orange), #ffd16c);
+  }
+  .menu-panels {
+    overflow: auto;
+    padding: 20px 24px 24px;
+  }
+  .menu-panel[hidden] { display: none; }
+  .panel-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+    gap: 18px;
+  }
+  .menu-card {
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--mix-radius);
+    background: rgba(255, 255, 255, 0.045);
+  }
+  .menu-card h2,
+  .menu-card h3 {
+    margin-bottom: 10px;
+    color: var(--mix-cyan);
+    font-size: 15px;
+    text-transform: uppercase;
+  }
+  .menu-card p,
+  .menu-card li {
+    color: var(--mix-muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .menu-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .menu-action {
+    padding: 0 14px;
+    color: #0b0a12;
+    border-color: rgba(84, 232, 255, 0.65);
+    background: linear-gradient(90deg, var(--mix-cyan), #b5f7ff);
+    font-weight: 800;
+  }
+  .menu-action.secondary {
+    color: var(--mix-text);
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .mechanics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .mechanic-tile {
+    min-height: 84px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 3px solid var(--mix-pink);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .profile-grid,
+  .challenge-list {
+    display: grid;
+    gap: 10px;
+  }
+  .profile-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stat-pill,
+  .challenge-row {
+    padding: 11px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.22);
+  }
+  .stat-pill strong,
+  .challenge-row strong {
+    display: block;
+    color: var(--mix-text);
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  .stat-pill span,
+  .challenge-row span {
+    color: var(--mix-muted);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .challenge-row.complete {
+    border-color: rgba(84, 232, 255, 0.36);
+    background: rgba(84, 232, 255, 0.08);
+  }
+  .control-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .control-table th,
+  .control-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--mix-muted);
+    text-align: left;
+  }
+  .control-table th {
+    color: var(--mix-orange);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .rebind-button {
+    min-width: 96px;
+    padding: 0 10px;
+    color: var(--mix-text);
+  }
+  .rebind-button.listening-state {
+    color: #140900;
+    border-color: var(--mix-focus);
+    background: var(--mix-focus);
+  }
+  .field-stack {
+    display: grid;
+    gap: 14px;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr minmax(180px, 0.85fr);
+    align-items: center;
+    gap: 14px;
+    color: var(--mix-muted);
+    font-size: 13px;
+  }
+  .field-row input[type="range"] {
+    width: 100%;
+    accent-color: var(--mix-orange);
+  }
+  .field-row select {
+    min-height: 42px;
+    color: var(--mix-text);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 6px;
+    background: var(--mix-panel-strong);
+  }
+  .field-row input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--mix-orange);
+  }
+  .menu-status {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    z-index: 21;
+    transform: translateX(-50%);
+    color: var(--mix-text);
+    background: rgba(0, 0, 0, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .menu-status:empty { display: none; }
+  .menu-overlay :focus-visible {
+    outline: 3px solid var(--mix-focus);
+    outline-offset: 2px;
+  }
+  @media (max-width: 760px) {
+    .mix-menu { max-height: calc(100vh - 16px); }
+    .mix-menu__header { padding: 16px; }
+    .menu-tabs { grid-template-columns: 1fr; }
+    .menu-panels { padding: 14px; }
+    .panel-grid,
+    .mechanics-grid,
+    .profile-grid,
+    .field-row { grid-template-columns: 1fr; }
+    .control-table { font-size: 12px; }
+    .control-table th:nth-child(3),
+    .control-table td:nth-child(3) { display: none; }
+  }
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
+<div id="menu-overlay" class="menu-overlay" hidden aria-hidden="true">
+  <section class="mix-menu" role="dialog" aria-modal="true" aria-labelledby="menu-title" aria-describedby="menu-summary">
+    <header class="mix-menu__header">
+      <div>
+        <div class="mix-menu__kicker">Mixmash command menu</div>
+        <h1 id="menu-title">Setup, Controls, Audio, Progress</h1>
+        <p id="menu-summary" class="mix-menu__summary">Configure a match without leaking inputs into the canvas. Opening this menu pauses active play and captures keyboard focus until it closes.</p>
+      </div>
+      <button id="menu-close" class="menu-close" type="button" aria-label="Close menu">×</button>
+    </header>
+    <nav class="menu-tabs" role="tablist" aria-label="Menu sections">
+      <button id="tab-onboarding" class="menu-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-onboarding" data-menu-tab="onboarding">Onboarding</button>
+      <button id="tab-controls" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-controls" data-menu-tab="controls">Controls</button>
+      <button id="tab-audio" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-audio" data-menu-tab="audio">Audio</button>
+      <button id="tab-progress" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-progress" data-menu-tab="progress">Progress</button>
+    </nav>
+    <div class="menu-panels">
+      <section id="panel-onboarding" class="menu-panel" role="tabpanel" aria-labelledby="tab-onboarding" data-menu-panel="onboarding">
+        <div class="panel-grid">
+          <div class="menu-card">
+            <h2>First Session</h2>
+            <p>Quick Fight starts a clean P1 versus CPU stock match. Sandbox opens Training with hitboxes enabled and no scoring pressure.</p>
+            <div class="menu-actions">
+              <button id="menu-quick-fight" class="menu-action" type="button">Start Quick Fight</button>
+              <button id="menu-sandbox" class="menu-action secondary" type="button">Enter Sandbox</button>
+              <button id="menu-copy-match" class="menu-action secondary" type="button">Copy Match Link</button>
+              <button id="menu-copy-challenge" class="menu-action secondary" type="button">Copy Daily Challenge</button>
+              <button id="menu-reset-tooltips" class="menu-action secondary" type="button">Reset Tooltips</button>
+            </div>
+          </div>
+          <div class="menu-card">
+            <h2>Mechanics Encyclopedia</h2>
+            <div class="mechanics-grid" aria-label="Mechanics index">
+              <div class="mechanic-tile"><h3>Movement</h3><p>Walk, short hop, double jump, air drift, and platform drop.</p></div>
+              <div class="mechanic-tile"><h3>Defense</h3><p>Shield, dodge, DI, invincibility, and recovery routes.</p></div>
+              <div class="mechanic-tile"><h3>Offense</h3><p>Neutral, tilt, aerial, special, grab, throw, clang, and armor windows.</p></div>
+              <div class="mechanic-tile"><h3>Stages</h3><p>11 arenas with readable hazards, passthrough platforms, and theme-based music cues.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="panel-controls" class="menu-panel" role="tabpanel" aria-labelledby="tab-controls" data-menu-panel="controls" hidden>
+        <div class="menu-card">
+          <h2>Input Remapping</h2>
+          <p>Choose a binding, press the next key, or press Escape to cancel. The listener intercepts the key before the canvas sees it.</p>
+          <table class="control-table">
+            <thead>
+              <tr><th>Action</th><th>P1 Binding</th><th>P2 Binding</th><th>Fallback</th></tr>
+            </thead>
+            <tbody id="control-bindings-body"></tbody>
+          </table>
+          <div class="menu-actions">
+            <button id="menu-reset-controls" class="menu-action secondary" type="button">Reset Controls</button>
+          </div>
+        </div>
+      </section>
+      <section id="panel-audio" class="menu-panel" role="tabpanel" aria-labelledby="tab-audio" data-menu-panel="audio" hidden>
+        <div class="panel-grid">
+          <div class="menu-card">
+            <h2>Audio Matrix</h2>
+            <div class="field-stack">
+              <label class="field-row">Master Volume <input id="audio-master" type="range" min="0" max="100" step="1"></label>
+              <label class="field-row">Music Volume <input id="audio-music" type="range" min="0" max="100" step="1"></label>
+              <label class="field-row">SFX Volume <input id="audio-sfx" type="range" min="0" max="100" step="1"></label>
+              <label class="field-row">Music Track <select id="audio-track"></select></label>
+              <label class="field-row">Mute On Focus Loss <input id="audio-mute-blur" type="checkbox"></label>
+            </div>
+          </div>
+          <div class="menu-card">
+            <h2>Runtime State</h2>
+            <p id="audio-state-readout">Audio context has not started.</p>
+          </div>
+        </div>
+      </section>
+      <section id="panel-progress" class="menu-panel" role="tabpanel" aria-labelledby="tab-progress" data-menu-panel="progress" hidden>
+        <div class="panel-grid">
+          <div class="menu-card">
+            <h2>Local Profile</h2>
+            <div id="profile-summary" class="profile-grid" aria-label="Local progression summary"></div>
+            <div class="menu-actions">
+              <button id="menu-reset-profile" class="menu-action secondary" type="button">Reset Progress</button>
+            </div>
+          </div>
+          <div class="menu-card">
+            <h2>Challenges</h2>
+            <div id="challenge-list" class="challenge-list" aria-label="Challenge completions"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+<div id="menu-status" class="menu-status" role="status" aria-live="polite"></div>
+<script src="./stage-data.js"></script>
+<script src="./fighter-data.js"></script>
+<script src="./core.js"></script>
+<script src="./input-data.js"></script>
+<script src="./mode-rules.js"></script>
+<script src="./snapshot-data.js"></script>
 <script>
 // ============================================================
-// MIXMASH — DJ-Powered Platform Fighter
-// Full feature build: 2 fighters, 3 stages, CPU AI, training,
+// MIXMASH — Browser Platform Fighter
+// Full feature build: 14 fighters, 11 stages, CPU AI, training,
 // time match, grabs, DI, dodges, clang, visual polish, gamepad
 // ============================================================
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const menuOverlay = document.getElementById('menu-overlay');
+const menuCloseBtn = document.getElementById('menu-close');
+const menuStatus = document.getElementById('menu-status');
+const controlBindingsBody = document.getElementById('control-bindings-body');
+const audioMasterInput = document.getElementById('audio-master');
+const audioMusicInput = document.getElementById('audio-music');
+const audioSfxInput = document.getElementById('audio-sfx');
+const audioTrackSelect = document.getElementById('audio-track');
+const audioMuteBlurInput = document.getElementById('audio-mute-blur');
+const audioStateReadout = document.getElementById('audio-state-readout');
+const profileSummary = document.getElementById('profile-summary');
+const challengeList = document.getElementById('challenge-list');
+const menuResetProfileBtn = document.getElementById('menu-reset-profile');
+const menuCopyMatchBtn = document.getElementById('menu-copy-match');
+const menuCopyChallengeBtn = document.getElementById('menu-copy-challenge');
 
 // --- Constants ---
 const BASE_W = 960;
@@ -50,16 +477,48 @@ const STARTING_STOCKS = 3;
 const RESPAWN_INVINCIBILITY = 120;
 const HITSTOP_BASE = 4;
 const DI_MAX_ANGLE = 18 * Math.PI / 180; // max DI shift in radians
-const ACTIVE_MATCH_SNAPSHOT_KEY = 'mixmash_active_match_snapshot';
-const ACTIVE_MATCH_SNAPSHOT_VERSION = 1;
-const SNAPSHOT_SAVE_INTERVAL = 15;
-const SNAPSHOT_MODES = ['playing', 'training', 'paused'];
-const MATCH_TYPES = ['stock', 'time', 'training'];
+const INPUT_DATA = window.MixmashInputData;
+const MODE_RULES = window.MixmashModeRules;
+const SNAPSHOT_DATA = window.MixmashSnapshotData;
+const ACTIVE_MATCH_SNAPSHOT_KEY = SNAPSHOT_DATA.STORAGE_KEYS.activeMatchSnapshot;
+const QUICK_FIGHT_SETUP_KEY = SNAPSHOT_DATA.STORAGE_KEYS.quickFightSetup;
+const MIXMASH_CONFIG_KEY = SNAPSHOT_DATA.STORAGE_KEYS.config;
+const MIXMASH_PROFILE_KEY = SNAPSHOT_DATA.STORAGE_KEYS.profile;
+const ACTIVE_MATCH_SNAPSHOT_VERSION = SNAPSHOT_DATA.ACTIVE_MATCH_SNAPSHOT_VERSION;
+const MIXMASH_PROFILE_VERSION = SNAPSHOT_DATA.MIXMASH_PROFILE_VERSION;
+const SNAPSHOT_SAVE_INTERVAL = SNAPSHOT_DATA.SNAPSHOT_SAVE_INTERVAL;
+const SNAPSHOT_MODES = SNAPSHOT_DATA.SNAPSHOT_MODES;
+const MATCH_TYPES = MODE_RULES.MATCH_TYPES;
+const RECENT_HIT_EVENT_LIMIT = 8;
+const PLATFORM_RUSH_TIME_LIMIT = MODE_RULES.PLATFORM_RUSH.timeLimit;
+const PLATFORM_RUSH_RECORDS = MODE_RULES.PLATFORM_RUSH.records;
+const PLATFORM_RUSH_DEEP_CUTS = MODE_RULES.PLATFORM_RUSH.deepCuts;
+const PLATFORM_RUSH_COLLECT_RADIUS = MODE_RULES.PLATFORM_RUSH.collectRadius;
+const PLATFORM_RUSH_GHOST_SAMPLE_EVERY = MODE_RULES.PLATFORM_RUSH.ghostSampleEvery;
+const PLATFORM_RUSH_GHOST_LIMIT = MODE_RULES.PLATFORM_RUSH.ghostLimit;
 
 // Coerce to a finite number so a malformed attack def / degenerate weight can never
 // push NaN into a target's velocity, timers, or the camera. Mirror of src/combat.js
 // (kept inline so the live game has no external module dependency). See ROADMAP.md.
 function finite(x, fallback = 0) { return Number.isFinite(x) ? x : fallback; }
+
+function createScreenShakeState(raw) {
+  return {
+    x: finite(raw && raw.x, 0),
+    y: finite(raw && raw.y, 0),
+    intensity: finite(raw && raw.intensity, 0),
+    vectorX: finite(raw && raw.vectorX, 0),
+    vectorY: finite(raw && raw.vectorY, 0),
+  };
+}
+
+function createPlatformRushState(raw) {
+  return MODE_RULES.createPlatformRushState(raw);
+}
+
+function compactPlatformRushCollectible(raw) {
+  return MODE_RULES.compactPlatformRushCollectible(raw);
+}
 const GRAB_ESCAPE_BASE = 90; // frames before auto-escape
 const INPUT_BUFFER_WINDOW = 5; // frames to buffer inputs
 
@@ -69,6 +528,10 @@ const BLAST = { left: -580, right: 580, top: -480, bottom: 400 };
 let options = {
   volume: 1.0,
   musicOn: true,
+  sfxVolume: 1.0,
+  musicVolume: 1.0,
+  muteOnBlur: true,
+  trackSelectionId: 'auto',
   showHitboxes: false,
   hazardsOn: true,
   p1Binds: null, // null = use defaults
@@ -87,7 +550,7 @@ const state = {
   mode: 'title', // title, charselect, stageselect, modeselect, playing, paused, results, options, training
   players: [],
   hitstopFrames: 0,
-  screenShake: { x: 0, y: 0, intensity: 0 },
+  screenShake: createScreenShakeState(),
   camera: { x: 0, y: 0, zoom: 1 },
   winner: -1,
   frameCount: 0,
@@ -116,368 +579,807 @@ const state = {
   slowMoTimer: 0,
   slowMoTarget: null,
   confettiSpawned: false,
+  recentHitEvents: [],
+  nextHitEventId: 1,
+  platformRushSeedId: null,
+  platformRushGhostTrace: [],
+  platformRushGhostReplay: null,
+  platformRush: createPlatformRushState(),
 };
 
 let snapshotAvailable = false;
 let lastSnapshotSaveFrame = -1;
+let domMenuOpen = false;
+let menuReturnMode = null;
+let lastMenuTrigger = null;
+let activeMenuTab = 'onboarding';
+let isCapturingBinding = false;
+let pauseEventCount = 0;
+let resumeEventCount = 0;
 
 // --- Stage Definitions ---
-const STAGES = {
-  battlefield: {
-    name: 'Battlefield',
-    platforms: [
-      { x: -250, y: 200, w: 500, h: 30, type: 'solid' },
-      { x: -180, y: 60, w: 120, h: 12, type: 'passthrough' },
-      { x: 60, y: 60, w: 120, h: 12, type: 'passthrough' },
-      { x: -60, y: -60, w: 120, h: 12, type: 'passthrough' },
-    ],
-    spawns: [{ x: -100, y: 100 }, { x: 100, y: 100 }],
-    bg: '#141428',
-    theme: 'arena',
-    bgLayers: [
-      { color: '#12122a', parallax: 0.05, shapes: 'stars' },
-      { color: '#18182e', parallax: 0.15, shapes: 'castle' },
-      { parallax: 0.0, shapes: 'torchglow' },
-      { parallax: 0.0, shapes: 'embers' },
-    ],
-  },
-  finalDest: {
-    name: 'Final Destination',
-    platforms: [
-      { x: -280, y: 200, w: 560, h: 30, type: 'solid' },
-    ],
-    spawns: [{ x: -120, y: 100 }, { x: 120, y: 100 }],
-    bg: '#060612',
-    theme: 'cosmic',
-    bgLayers: [
-      { color: '#0a0a1e', parallax: 0.03, shapes: 'stars' },
-      { parallax: 0.08, shapes: 'nebula' },
-      { parallax: 0.12, shapes: 'planet' },
-      { parallax: 0.0, shapes: 'energyparticles' },
-    ],
-  },
-  skybridge: {
-    name: 'Skybridge',
-    platforms: [
-      { x: -220, y: 210, w: 440, h: 30, type: 'solid' },
-      { x: -320, y: 78, w: 102, h: 12, type: 'passthrough', moving: { axis: 'y', range: 38, speed: 1.1 } },
-      { x: -60, y: 6, w: 120, h: 12, type: 'passthrough' },
-      { x: 210, y: 122, w: 112, h: 12, type: 'passthrough', moving: { axis: 'x', range: 86, speed: 1.3 } },
-    ],
-    spawns: [{ x: -80, y: 100 }, { x: 80, y: 100 }],
-    bg: '#1a0a2e',
-    theme: 'sky',
-    bgLayers: [
-      { parallax: 0.0, shapes: 'sunset' },
-      { parallax: 0.05, shapes: 'sunrays' },
-      { color: '#1a1a3a', parallax: 0.1, shapes: 'mountains' },
-      { color: 'rgba(255,255,255,0.06)', parallax: 0.25, shapes: 'clouds', yOffset: 40 },
-      { parallax: 0.0, shapes: 'birds' },
-      { color: 'rgba(255,200,100,0.04)', parallax: 0.5, shapes: 'clouds', yOffset: BASE_H - 150 },
-    ],
-  },
-  festival: {
-    name: 'Festival Stage',
-    platforms: [
-      { x: -260, y: 218, w: 520, h: 34, type: 'solid' },
-      { x: -255, y: 118, w: 136, h: 14, type: 'passthrough' },
-      { x: 118, y: 146, w: 148, h: 14, type: 'passthrough' },
-      { x: -58, y: 28, w: 116, h: 12, type: 'passthrough', moving: { axis: 'y', range: 28, speed: 1.0 } },
-    ],
-    spawns: [{ x: -100, y: 105 }, { x: 100, y: 105 }],
-    bg: '#050814',
-    theme: 'festival',
-    bgLayers: [
-      { color: '#081120', parallax: 0.02, shapes: 'stars' },
-      { color: '#33d8ff', parallax: 0.05, shapes: 'lasergrid' },
-      { color: '#ff4fa0', parallax: 0.08, shapes: 'ledwall' },
-      { color: '#0f1628', parallax: 0.12, shapes: 'speakerstacks' },
-      { color: '#12192d', parallax: 0.18, shapes: 'crowd' },
-      { color: '#8fe7ff', parallax: 0.0, shapes: 'spotlights' },
-    ],
-  },
-  tomorrowland: {
-    name: 'Tomorrowland',
-    platforms: [
-      { x: -280, y: 208, w: 560, h: 32, type: 'solid' },
-      { x: -250, y: 118, w: 138, h: 12, type: 'passthrough' },
-      { x: -72, y: 38, w: 142, h: 12, type: 'passthrough' },
-      { x: 150, y: -34, w: 94, h: 12, type: 'passthrough' },
-    ],
-    spawns: [{ x: -100, y: 100 }, { x: 100, y: 100 }],
-    bg: '#0a0618',
-    theme: 'tomorrowland',
-    bgLayers: [
-      { parallax: 0.04, shapes: 'stars' },
-      { parallax: 0.1, shapes: 'fairycastle' },
-      { parallax: 0.0, shapes: 'fireworks' },
-      { parallax: 0.0, shapes: 'fairydust' },
-    ],
-  },
-  ultra: {
-    name: 'Ultra Miami',
-    platforms: [
-      { x: -230, y: 220, w: 460, h: 30, type: 'solid' },
-      { x: -305, y: 122, w: 96, h: 12, type: 'passthrough', moving: { axis: 'y', range: 72, speed: 1.15 } },
-      { x: -56, y: 30, w: 112, h: 12, type: 'passthrough' },
-      { x: 208, y: 52, w: 96, h: 12, type: 'passthrough', moving: { axis: 'y', range: 48, speed: 1.45 } },
-    ],
-    spawns: [{ x: -90, y: 110 }, { x: 90, y: 110 }],
-    bg: '#020a1a',
-    theme: 'ultra',
-    bgLayers: [
-      { parallax: 0.03, shapes: 'oceansky' },
-      { parallax: 0.12, shapes: 'palmtrees' },
-      { parallax: 0.07, shapes: 'spiderstage' },
-      { parallax: 0.0, shapes: 'ultralasers' },
-    ],
-  },
-  burningMan: {
-    name: 'Burning Man',
-    platforms: [
-      { x: -320, y: 220, w: 640, h: 28, type: 'solid' },
-      { x: -255, y: 118, w: 96, h: 12, type: 'passthrough' },
-      { x: -46, y: 34, w: 92, h: 12, type: 'passthrough' },
-      { x: 158, y: 118, w: 96, h: 12, type: 'passthrough' },
-    ],
-    spawns: [{ x: -120, y: 115 }, { x: 120, y: 115 }],
-    bg: '#1a0e04',
-    theme: 'desert',
-    bgLayers: [
-      { parallax: 0.02, shapes: 'desertsky' },
-      { parallax: 0.08, shapes: 'theman' },
-      { parallax: 0.0, shapes: 'dustparticles' },
-      { parallax: 0.15, shapes: 'campfires' },
-    ],
-  },
-  coachella: {
-    name: 'Coachella',
-    platforms: [
-      { x: -255, y: 212, w: 510, h: 30, type: 'solid' },
-      { x: -252, y: 126, w: 112, h: 12, type: 'passthrough' },
-      { x: -52, y: 30, w: 104, h: 12, type: 'passthrough' },
-      { x: 150, y: 116, w: 122, h: 12, type: 'passthrough' },
-    ],
-    spawns: [{ x: -100, y: 100 }, { x: 100, y: 100 }],
-    bg: '#1a0c20',
-    theme: 'coachella',
-    bgLayers: [
-      { parallax: 0.0, shapes: 'coachellasky' },
-      { parallax: 0.06, shapes: 'ferriswheel' },
-      { parallax: 0.14, shapes: 'coachellapalms' },
-      { parallax: 0.0, shapes: 'artinstalls' },
-    ],
-  },
-  edc: {
-    name: 'EDC Las Vegas',
-    platforms: [
-      { x: -235, y: 218, w: 470, h: 30, type: 'solid' },
-      { x: -232, y: 88, w: 112, h: 12, type: 'passthrough' },
-      { x: 125, y: 50, w: 122, h: 12, type: 'passthrough' },
-      { x: -46, y: -18, w: 92, h: 12, type: 'passthrough', moving: { axis: 'x', range: 84, speed: 1.25 } },
-    ],
-    spawns: [{ x: -90, y: 105 }, { x: 90, y: 105 }],
-    bg: '#04020e',
-    theme: 'edc',
-    bgLayers: [
-      { parallax: 0.03, shapes: 'stars' },
-      { parallax: 0.08, shapes: 'owlstage' },
-      { parallax: 0.0, shapes: 'neonrides' },
-      { parallax: 0.0, shapes: 'rainbowlasers' },
-    ],
-  },
-};
+const STAGES = window.MixmashStageData;
 const STAGE_KEYS = Object.keys(STAGES);
+const ENCORE_STAGE_KEYS = ['runeFoundry', 'crystalCanopy'];
 
 let currentStage = STAGES.battlefield;
 
+function clamp01(value) {
+  return Math.max(0, Math.min(1, finite(value, 0)));
+}
+
+function hashStringSeed(text) {
+  return MixmashCore.hashStringSeed(text);
+}
+
+function getPlatformRushSeed(stageKey, seedId = null) {
+  return MixmashCore.getPlatformRushSeed(stageKey, seedId);
+}
+
+function getPlatformRushZones(stageKey) {
+  const stage = STAGES[stageKey] || STAGES.battlefield;
+  return stage.platforms.map((platform, index) => {
+    const margin = Math.min(42, Math.max(22, finite(platform.w, 0) * 0.16));
+    const platformX = finite(platform._baseX, finite(platform.x, 0));
+    const platformY = finite(platform._baseY, finite(platform.y, 0));
+    let xMin = platformX + margin;
+    let xMax = platformX + finite(platform.w, 0) - margin;
+    if (xMax < xMin) {
+      const center = platformX + finite(platform.w, 0) / 2;
+      xMin = center;
+      xMax = center;
+    }
+    return {
+      platformIndex: index,
+      xMin,
+      xMax,
+      y: platformY - 34,
+      platform,
+    };
+  }).filter(zone => Number.isFinite(zone.xMin) && Number.isFinite(zone.xMax) && Number.isFinite(zone.y));
+}
+
+function slotX(zone, slotIndex, slotCount, seed) {
+  const usable = Math.max(1, slotCount);
+  const baseT = (slotIndex + 1) / (usable + 1);
+  const jitter = (seeded01(seed + slotIndex * 19.73) - 0.5) * Math.min(0.14, 0.24 / usable);
+  const t = clamp01(baseT + jitter);
+  return finite(zone.xMin + (zone.xMax - zone.xMin) * t, zone.xMin);
+}
+
+function buildPlatformRushCollectibles(stageKey, seed) {
+  const zones = getPlatformRushZones(stageKey);
+  if (!zones.length) return [];
+  const items = [];
+
+  for (let i = 0; i < PLATFORM_RUSH_RECORDS; i++) {
+    const zoneIndex = i % zones.length;
+    const zone = zones[zoneIndex];
+    const slotIndex = Math.floor(i / zones.length);
+    const slotCount = Math.ceil((PLATFORM_RUSH_RECORDS - zoneIndex) / zones.length);
+    items.push(compactPlatformRushCollectible({
+      id: `record-${i + 1}`,
+      type: 'record',
+      x: slotX(zone, slotIndex, slotCount, seed + i * 37.1),
+      y: zone.y,
+      platformIndex: zone.platformIndex,
+      hidden: false,
+      collected: false,
+      value: 100,
+    }));
+  }
+
+  const hiddenZones = zones.slice().sort((a, b) => a.y - b.y || a.xMin - b.xMin);
+  for (let i = 0; i < PLATFORM_RUSH_DEEP_CUTS; i++) {
+    const zone = hiddenZones[i % hiddenZones.length];
+    const slotIndex = hiddenZones.length === 1 ? i : 0;
+    const slotCount = hiddenZones.length === 1 ? PLATFORM_RUSH_DEEP_CUTS : 1;
+    items.push(compactPlatformRushCollectible({
+      id: `deep-cut-${i + 1}`,
+      type: 'deepCut',
+      x: slotX(zone, slotIndex, slotCount, seed + 400 + i * 53.7),
+      y: zone.y - 42,
+      platformIndex: zone.platformIndex,
+      hidden: true,
+      collected: false,
+      value: 350,
+    }));
+  }
+
+  return items;
+}
+
+function isPlatformRushCollectibleReachable(stageKey, item) {
+  const stage = STAGES[stageKey] || STAGES.battlefield;
+  const platform = stage.platforms[finite(item && item.platformIndex, 0)];
+  if (!platform) return false;
+  const x = finite(item && item.x, NaN);
+  const y = finite(item && item.y, NaN);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
+  const platformX = finite(platform._baseX, finite(platform.x, 0));
+  const platformY = finite(platform._baseY, finite(platform.y, 0));
+  const platformLeft = platformX - 24;
+  const platformRight = platformX + finite(platform.w, 0) + 24;
+  const platformTop = platformY;
+  return x >= platformLeft &&
+    x <= platformRight &&
+    y <= platformTop &&
+    y >= BLAST.top + 32 &&
+    y <= BLAST.bottom - 32 &&
+    x >= BLAST.left + 32 &&
+    x <= BLAST.right - 32;
+}
+
+function getPlatformRushPlacementReport(stageKey = state.selectedStage, seedOverride) {
+  const seed = Number.isFinite(seedOverride) ? seedOverride : getPlatformRushSeed(stageKey);
+  const collectibles = buildPlatformRushCollectibles(stageKey, seed);
+  const unreachable = collectibles.filter(item => !isPlatformRushCollectibleReachable(stageKey, item));
+  return {
+    stage: stageKey,
+    seed,
+    total: collectibles.length,
+    records: collectibles.filter(item => item.type === 'record').length,
+    deepCuts: collectibles.filter(item => item.type === 'deepCut').length,
+    unreachableCount: unreachable.length,
+    unreachableIds: unreachable.map(item => item.id),
+  };
+}
+
+function getAllPlatformRushPlacementReports() {
+  return STAGE_KEYS.map(stageKey => getPlatformRushPlacementReport(stageKey));
+}
+
 // --- Fighter Definitions (DJ Roster) ---
-const FIGHTER_DEFS = {
-  deadmau5: {
-    name: 'deadmau5', color: '#cc0000', outlineColor: '#880000', altColor: '#00cccc', altOutline: '#008888',
-    w: 52, h: 68, weight: 1.3, walkSpeed: 250, runSpeed: 380, jumpForce: -550, doubleJumpForce: -480,
-    attacks: {
-      neutral: { startup: 5, active: 4, endlag: 12, damage: 9, kbBase: 65, kbScale: 85, angle: 45, hitbox: { ox: 28, oy: -10, w: 50, h: 35 } },
-      forward: { startup: 9, active: 5, endlag: 22, damage: 16, kbBase: 85, kbScale: 130, angle: 32, hitbox: { ox: 25, oy: -12, w: 65, h: 42 } },
-      up:      { startup: 6, active: 4, endlag: 16, damage: 12, kbBase: 75, kbScale: 105, angle: 80, hitbox: { ox: -8, oy: -50, w: 60, h: 48 } },
-      down:    { startup: 7, active: 6, endlag: 18, damage: 14, kbBase: 55, kbScale: 100, angle: 270, hitbox: { ox: -15, oy: 8, w: 75, h: 32 } },
-      aerial:  { startup: 4, active: 3, endlag: 10, damage: 8, kbBase: 45, kbScale: 65, angle: 50, hitbox: { ox: 22, oy: -15, w: 48, h: 38 } },
-    },
-    grab: { startup: 7, active: 2, endlag: 32, range: 50, pummelDamage: 3 },
-    throws: { forward: { damage: 10, kbBase: 75, kbScale: 75, angle: 38 }, back: { damage: 12, kbBase: 90, kbScale: 85, angle: 135 }, up: { damage: 9, kbBase: 100, kbScale: 60, angle: 85 }, down: { damage: 8, kbBase: 60, kbScale: 90, angle: 270 } },
-    desc: 'Heavyweight bass drops',
-  },
-  skrillex: {
-    name: 'Skrillex', color: '#aa00ff', outlineColor: '#7700bb', altColor: '#ff00aa', altOutline: '#bb0077',
-    w: 44, h: 62, weight: 0.8, walkSpeed: 380, runSpeed: 550, jumpForce: -640, doubleJumpForce: -560,
-    attacks: {
-      neutral: { startup: 2, active: 2, endlag: 5, damage: 4, kbBase: 25, kbScale: 45, angle: 42, hitbox: { ox: 22, oy: -8, w: 35, h: 25 } },
-      forward: { startup: 4, active: 3, endlag: 10, damage: 8, kbBase: 45, kbScale: 75, angle: 28, hitbox: { ox: 20, oy: -10, w: 48, h: 30 } },
-      up:      { startup: 3, active: 3, endlag: 9, damage: 6, kbBase: 55, kbScale: 75, angle: 85, hitbox: { ox: -6, oy: -45, w: 48, h: 40 } },
-      down:    { startup: 3, active: 4, endlag: 10, damage: 7, kbBase: 35, kbScale: 65, angle: 280, hitbox: { ox: -10, oy: 8, w: 55, h: 25 } },
-      aerial:  { startup: 2, active: 2, endlag: 4, damage: 5, kbBase: 20, kbScale: 38, angle: 45, hitbox: { ox: 18, oy: -12, w: 40, h: 30 } },
-    },
-    grab: { startup: 5, active: 2, endlag: 24, range: 40, pummelDamage: 2 },
-    throws: { forward: { damage: 6, kbBase: 50, kbScale: 60, angle: 32 }, back: { damage: 8, kbBase: 70, kbScale: 65, angle: 140 }, up: { damage: 5, kbBase: 75, kbScale: 48, angle: 88 }, down: { damage: 4, kbBase: 35, kbScale: 70, angle: 275 } },
-    desc: 'Blazing dubstep combos',
-  },
-  marshmello: {
-    name: 'Marshmello', color: '#ffffff', outlineColor: '#cccccc', altColor: '#ffccdd', altOutline: '#cc99aa',
-    w: 48, h: 64, weight: 1.0, walkSpeed: 310, runSpeed: 460, jumpForce: -590, doubleJumpForce: -510,
-    attacks: {
-      neutral: { startup: 3, active: 3, endlag: 8, damage: 6, kbBase: 45, kbScale: 65, angle: 45, hitbox: { ox: 26, oy: -8, w: 42, h: 28 } },
-      forward: { startup: 6, active: 4, endlag: 14, damage: 10, kbBase: 60, kbScale: 90, angle: 35, hitbox: { ox: 22, oy: -12, w: 55, h: 35 } },
-      up:      { startup: 4, active: 3, endlag: 12, damage: 8, kbBase: 70, kbScale: 85, angle: 82, hitbox: { ox: -8, oy: -48, w: 55, h: 42 } },
-      down:    { startup: 5, active: 5, endlag: 14, damage: 9, kbBase: 45, kbScale: 80, angle: 270, hitbox: { ox: -12, oy: 8, w: 62, h: 28 } },
-      aerial:  { startup: 3, active: 2, endlag: 7, damage: 6, kbBase: 35, kbScale: 50, angle: 48, hitbox: { ox: 20, oy: -14, w: 44, h: 32 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 26, range: 45, pummelDamage: 2 },
-    throws: { forward: { damage: 8, kbBase: 60, kbScale: 68, angle: 38 }, back: { damage: 9, kbBase: 78, kbScale: 72, angle: 138 }, up: { damage: 7, kbBase: 88, kbScale: 52, angle: 86 }, down: { damage: 6, kbBase: 48, kbScale: 78, angle: 272 } },
-    desc: 'Balanced tricky mix-ups',
-  },
-  daftpunk: {
-    name: 'Daft Punk', color: '#ddaa00', outlineColor: '#aa7700', altColor: '#cccccc', altOutline: '#888888',
-    w: 46, h: 66, weight: 0.95, walkSpeed: 320, runSpeed: 470, jumpForce: -600, doubleJumpForce: -520,
-    attacks: {
-      neutral: { startup: 3, active: 3, endlag: 8, damage: 7, kbBase: 50, kbScale: 70, angle: 44, hitbox: { ox: 25, oy: -9, w: 40, h: 28 } },
-      forward: { startup: 6, active: 3, endlag: 15, damage: 11, kbBase: 65, kbScale: 95, angle: 33, hitbox: { ox: 22, oy: -13, w: 52, h: 34 } },
-      up:      { startup: 4, active: 4, endlag: 12, damage: 9, kbBase: 68, kbScale: 90, angle: 82, hitbox: { ox: -8, oy: -48, w: 54, h: 44 } },
-      down:    { startup: 5, active: 4, endlag: 14, damage: 10, kbBase: 48, kbScale: 82, angle: 272, hitbox: { ox: -12, oy: 8, w: 60, h: 28 } },
-      aerial:  { startup: 3, active: 2, endlag: 6, damage: 6, kbBase: 30, kbScale: 48, angle: 46, hitbox: { ox: 19, oy: -13, w: 42, h: 32 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 28, range: 44, pummelDamage: 2 },
-    throws: { forward: { damage: 8, kbBase: 62, kbScale: 66, angle: 36 }, back: { damage: 10, kbBase: 80, kbScale: 74, angle: 136 }, up: { damage: 7, kbBase: 90, kbScale: 54, angle: 86 }, down: { damage: 6, kbBase: 50, kbScale: 80, angle: 274 } },
-    desc: 'Technical disco strikes',
-  },
-  tiesto: {
-    name: 'Tiesto', color: '#0088ff', outlineColor: '#0055bb', altColor: '#ff8800', altOutline: '#bb5500',
-    w: 46, h: 64, weight: 0.9, walkSpeed: 300, runSpeed: 440, jumpForce: -580, doubleJumpForce: -500,
-    attacks: {
-      neutral: { startup: 4, active: 4, endlag: 10, damage: 6, kbBase: 40, kbScale: 55, angle: 45, hitbox: { ox: 30, oy: -6, w: 55, h: 30 } },
-      forward: { startup: 7, active: 3, endlag: 16, damage: 11, kbBase: 60, kbScale: 90, angle: 30, hitbox: { ox: 28, oy: -10, w: 60, h: 32 } },
-      up:      { startup: 5, active: 3, endlag: 13, damage: 8, kbBase: 65, kbScale: 85, angle: 80, hitbox: { ox: -6, oy: -50, w: 52, h: 42 } },
-      down:    { startup: 5, active: 4, endlag: 14, damage: 9, kbBase: 42, kbScale: 75, angle: 275, hitbox: { ox: -12, oy: 8, w: 58, h: 26 } },
-      aerial:  { startup: 3, active: 2, endlag: 6, damage: 5, kbBase: 28, kbScale: 42, angle: 46, hitbox: { ox: 20, oy: -12, w: 42, h: 30 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 26, range: 42, pummelDamage: 2 },
-    throws: { forward: { damage: 7, kbBase: 58, kbScale: 64, angle: 34 }, back: { damage: 9, kbBase: 76, kbScale: 70, angle: 138 }, up: { damage: 6, kbBase: 85, kbScale: 50, angle: 87 }, down: { damage: 5, kbBase: 44, kbScale: 76, angle: 274 } },
-    desc: 'Trance zoning & control',
-  },
-  subtronics: {
-    name: 'Subtronics', color: '#33cc33', outlineColor: '#228822', altColor: '#444444', altOutline: '#222222',
-    w: 50, h: 67, weight: 1.15, walkSpeed: 270, runSpeed: 400, jumpForce: -560, doubleJumpForce: -490,
-    attacks: {
-      neutral: { startup: 4, active: 3, endlag: 10, damage: 8, kbBase: 55, kbScale: 78, angle: 44, hitbox: { ox: 28, oy: -10, w: 48, h: 32 } },
-      forward: { startup: 7, active: 4, endlag: 18, damage: 13, kbBase: 72, kbScale: 110, angle: 34, hitbox: { ox: 24, oy: -14, w: 58, h: 38 } },
-      up:      { startup: 5, active: 4, endlag: 14, damage: 10, kbBase: 70, kbScale: 95, angle: 82, hitbox: { ox: -8, oy: -50, w: 58, h: 45 } },
-      down:    { startup: 6, active: 5, endlag: 16, damage: 11, kbBase: 48, kbScale: 88, angle: 272, hitbox: { ox: -14, oy: 8, w: 68, h: 30 } },
-      aerial:  { startup: 3, active: 3, endlag: 8, damage: 7, kbBase: 38, kbScale: 58, angle: 48, hitbox: { ox: 20, oy: -14, w: 46, h: 34 } },
-    },
-    grab: { startup: 5, active: 3, endlag: 28, range: 55, pummelDamage: 3 },
-    throws: { forward: { damage: 9, kbBase: 68, kbScale: 72, angle: 38 }, back: { damage: 11, kbBase: 84, kbScale: 78, angle: 134 }, up: { damage: 8, kbBase: 95, kbScale: 56, angle: 84 }, down: { damage: 7, kbBase: 52, kbScale: 84, angle: 272 } },
-    desc: 'Brutal mech grabs & wobble',
-  },
-  avicii: {
-    name: 'Avicii', color: '#f5c842', outlineColor: '#c49a20', altColor: '#ffffff', altOutline: '#cccccc',
-    w: 42, h: 62, weight: 0.75, walkSpeed: 260, runSpeed: 420, jumpForce: -660, doubleJumpForce: -600, maxJumps: 3,
-    attacks: {
-      neutral: { startup: 3, active: 3, endlag: 8, damage: 5, kbBase: 48, kbScale: 92, angle: 45, hitbox: { ox: 24, oy: -8, w: 38, h: 28 } },
-      forward: { startup: 5, active: 4, endlag: 14, damage: 9, kbBase: 55, kbScale: 105, angle: 35, hitbox: { ox: 20, oy: -11, w: 52, h: 34 } },
-      up:      { startup: 4, active: 3, endlag: 12, damage: 7, kbBase: 70, kbScale: 98, angle: 84, hitbox: { ox: -6, oy: -48, w: 50, h: 42 } },
-      down:    { startup: 5, active: 4, endlag: 13, damage: 6, kbBase: 40, kbScale: 88, angle: 270, hitbox: { ox: -10, oy: 8, w: 58, h: 26 } },
-      aerial:  { startup: 2, active: 3, endlag: 6, damage: 5, kbBase: 32, kbScale: 62, angle: 48, hitbox: { ox: 18, oy: -12, w: 40, h: 30 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 26, range: 42, pummelDamage: 2 },
-    throws: { forward: { damage: 6, kbBase: 52, kbScale: 64, angle: 35 }, back: { damage: 7, kbBase: 68, kbScale: 70, angle: 138 }, up: { damage: 5, kbBase: 82, kbScale: 54, angle: 86 }, down: { damage: 4, kbBase: 42, kbScale: 76, angle: 274 } },
-    desc: 'Angelic floater with triple jump',
-  },
-  excision: {
-    name: 'Excision', color: '#cc2200', outlineColor: '#881100', altColor: '#22cccc', altOutline: '#118888',
-    w: 56, h: 72, weight: 1.5, walkSpeed: 220, runSpeed: 340, jumpForce: -480, doubleJumpForce: -420, armor: true,
-    attacks: {
-      neutral: { startup: 7, active: 4, endlag: 18, damage: 12, kbBase: 90, kbScale: 108, angle: 45, hitbox: { ox: 32, oy: -12, w: 64, h: 40 } },
-      forward: { startup: 11, active: 6, endlag: 28, damage: 22, kbBase: 130, kbScale: 150, angle: 32, hitbox: { ox: 28, oy: -16, w: 72, h: 48 } },
-      up:      { startup: 8, active: 5, endlag: 20, damage: 16, kbBase: 100, kbScale: 125, angle: 82, hitbox: { ox: -10, oy: -52, w: 66, h: 50 } },
-      down:    { startup: 9, active: 6, endlag: 22, damage: 18, kbBase: 75, kbScale: 120, angle: 270, hitbox: { ox: -16, oy: 10, w: 76, h: 36 } },
-      aerial:  { startup: 6, active: 4, endlag: 12, damage: 10, kbBase: 60, kbScale: 85, angle: 50, hitbox: { ox: 26, oy: -16, w: 58, h: 42 } },
-    },
-    grab: { startup: 7, active: 3, endlag: 36, range: 60, pummelDamage: 4 },
-    throws: { forward: { damage: 14, kbBase: 100, kbScale: 90, angle: 40 }, back: { damage: 16, kbBase: 118, kbScale: 96, angle: 134 }, up: { damage: 11, kbBase: 120, kbScale: 72, angle: 86 }, down: { damage: 10, kbBase: 70, kbScale: 100, angle: 272 } },
-    desc: 'Mech tank grappler with armor',
-  },
-  zedd: {
-    name: 'Zedd', color: '#4488ff', outlineColor: '#2255cc', altColor: '#ff4488', altOutline: '#cc2255',
-    w: 48, h: 64, weight: 0.92, walkSpeed: 310, runSpeed: 460, jumpForce: -590, doubleJumpForce: -510,
-    attacks: {
-      neutral: { startup: 4, active: 3, endlag: 9, damage: 7, kbBase: 52, kbScale: 75, angle: 45, hitbox: { ox: 28, oy: -9, w: 62, h: 35 } },
-      forward: { startup: 6, active: 4, endlag: 15, damage: 12, kbBase: 65, kbScale: 100, angle: 33, hitbox: { ox: 24, oy: -13, w: 68, h: 38 } },
-      up:      { startup: 5, active: 4, endlag: 13, damage: 9, kbBase: 72, kbScale: 95, angle: 82, hitbox: { ox: -8, oy: -50, w: 62, h: 46 } },
-      down:    { startup: 5, active: 5, endlag: 15, damage: 10, kbBase: 50, kbScale: 88, angle: 272, hitbox: { ox: -13, oy: 8, w: 68, h: 30 } },
-      aerial:  { startup: 3, active: 3, endlag: 7, damage: 6, kbBase: 35, kbScale: 55, angle: 48, hitbox: { ox: 21, oy: -14, w: 50, h: 34 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 27, range: 46, pummelDamage: 2 },
-    throws: { forward: { damage: 8, kbBase: 62, kbScale: 68, angle: 37 }, back: { damage: 10, kbBase: 82, kbScale: 75, angle: 137 }, up: { damage: 7, kbBase: 92, kbScale: 56, angle: 86 }, down: { damage: 6, kbBase: 50, kbScale: 80, angle: 274 } },
-    desc: 'Geometric zoner with long range',
-  },
-  aphextwin: {
-    name: 'Aphex Twin', color: '#ff8800', outlineColor: '#cc5500', altColor: '#88ff00', altOutline: '#55cc00',
-    w: 44, h: 60, weight: 0.85, walkSpeed: 360, runSpeed: 520, jumpForce: -610, doubleJumpForce: -530,
-    attacks: {
-      neutral: { startup: 2, active: 3, endlag: 6, damage: 11, kbBase: 70, kbScale: 95, angle: 44, hitbox: { ox: 25, oy: -8, w: 40, h: 28 } },
-      forward: { startup: 5, active: 3, endlag: 12, damage: 10, kbBase: 60, kbScale: 88, angle: 30, hitbox: { ox: 22, oy: -12, w: 54, h: 32 } },
-      up:      { startup: 4, active: 3, endlag: 11, damage: 6, kbBase: 62, kbScale: 80, angle: 83, hitbox: { ox: -7, oy: -47, w: 50, h: 40 } },
-      down:    { startup: 4, active: 4, endlag: 11, damage: 8, kbBase: 45, kbScale: 78, angle: 275, hitbox: { ox: -11, oy: 8, w: 56, h: 28 } },
-      aerial:  { startup: 2, active: 2, endlag: 5, damage: 5, kbBase: 25, kbScale: 48, angle: 46, hitbox: { ox: 19, oy: -13, w: 42, h: 32 } },
-    },
-    grab: { startup: 5, active: 2, endlag: 24, range: 40, pummelDamage: 2 },
-    throws: { forward: { damage: 7, kbBase: 54, kbScale: 62, angle: 34 }, back: { damage: 8, kbBase: 72, kbScale: 68, angle: 140 }, up: { damage: 5, kbBase: 78, kbScale: 50, angle: 88 }, down: { damage: 4, kbBase: 38, kbScale: 72, angle: 275 } },
-    desc: 'Chaotic trickster with speed',
-  },
-  calvinharris: {
-    name: 'Calvin Harris', color: '#ff6633', outlineColor: '#cc4411', altColor: '#3366ff', altOutline: '#1144cc',
-    w: 48, h: 66, weight: 1.0, walkSpeed: 310, runSpeed: 460, jumpForce: -590, doubleJumpForce: -510,
-    attacks: {
-      neutral: { startup: 4, active: 3, endlag: 9, damage: 7, kbBase: 50, kbScale: 72, angle: 45, hitbox: { ox: 26, oy: -9, w: 44, h: 30 } },
-      forward: { startup: 7, active: 4, endlag: 15, damage: 12, kbBase: 62, kbScale: 92, angle: 34, hitbox: { ox: 23, oy: -12, w: 56, h: 36 } },
-      up:      { startup: 5, active: 4, endlag: 13, damage: 9, kbBase: 70, kbScale: 88, angle: 82, hitbox: { ox: -7, oy: -49, w: 54, h: 43 } },
-      down:    { startup: 5, active: 5, endlag: 14, damage: 10, kbBase: 46, kbScale: 82, angle: 272, hitbox: { ox: -12, oy: 8, w: 62, h: 29 } },
-      aerial:  { startup: 3, active: 2, endlag: 7, damage: 7, kbBase: 36, kbScale: 52, angle: 48, hitbox: { ox: 20, oy: -14, w: 45, h: 33 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 26, range: 44, pummelDamage: 2 },
-    throws: { forward: { damage: 8, kbBase: 60, kbScale: 66, angle: 36 }, back: { damage: 10, kbBase: 80, kbScale: 72, angle: 138 }, up: { damage: 7, kbBase: 88, kbScale: 54, angle: 86 }, down: { damage: 6, kbBase: 48, kbScale: 78, angle: 273 } },
-    desc: 'Balanced all-rounder groove',
-  },
-  rezz: {
-    name: 'Rezz', color: '#9933ff', outlineColor: '#6622cc', altColor: '#ff3399', altOutline: '#cc2277',
-    w: 46, h: 64, weight: 0.95, walkSpeed: 280, runSpeed: 420, jumpForce: -570, doubleJumpForce: -500,
-    attacks: {
-      neutral: { startup: 3, active: 3, endlag: 8, damage: 5, kbBase: 42, kbScale: 68, angle: 44, hitbox: { ox: 24, oy: -9, w: 40, h: 28 } },
-      forward: { startup: 6, active: 3, endlag: 14, damage: 9, kbBase: 58, kbScale: 88, angle: 32, hitbox: { ox: 21, oy: -12, w: 52, h: 34 } },
-      up:      { startup: 4, active: 4, endlag: 12, damage: 7, kbBase: 68, kbScale: 86, angle: 82, hitbox: { ox: -7, oy: -48, w: 52, h: 42 } },
-      down:    { startup: 5, active: 4, endlag: 13, damage: 8, kbBase: 44, kbScale: 80, angle: 272, hitbox: { ox: -11, oy: 8, w: 60, h: 27 } },
-      aerial:  { startup: 3, active: 2, endlag: 6, damage: 5, kbBase: 30, kbScale: 48, angle: 46, hitbox: { ox: 19, oy: -13, w: 42, h: 31 } },
-    },
-    grab: { startup: 6, active: 2, endlag: 26, range: 43, pummelDamage: 2 },
-    throws: { forward: { damage: 7, kbBase: 56, kbScale: 64, angle: 35 }, back: { damage: 9, kbBase: 74, kbScale: 68, angle: 138 }, up: { damage: 6, kbBase: 84, kbScale: 52, angle: 86 }, down: { damage: 5, kbBase: 46, kbScale: 76, angle: 274 } },
-    desc: 'Hypnotic debuffer with style',
-  },
-};
+const FIGHTER_DEFS = window.MixmashFighterData;
 const FIGHTER_KEYS = Object.keys(FIGHTER_DEFS);
+const ENCORE_FIGHTER_KEYS = ['runeweaver', 'bassforger'];
+const MODE_SELECT_ITEMS = MODE_RULES.MODE_SELECT_ITEMS;
+const PROFILE_CHALLENGES = MODE_RULES.PROFILE_CHALLENGES;
+
+function createDefaultProfile() {
+  return {
+    version: MIXMASH_PROFILE_VERSION,
+    updatedAt: Date.now(),
+    stats: {
+      matchCount: 0,
+      wins: 0,
+      kos: 0,
+      platformRushRuns: 0,
+      platformRushCompletions: 0,
+      favoriteFighter: null,
+    },
+    fighters: {},
+    bestPlatformRushTimes: {},
+    platformRushGhosts: {},
+    challengeCompletions: {},
+  };
+}
+
+function sanitizeFighterStats(raw) {
+  return {
+    plays: Math.max(0, finite(raw && raw.plays, 0)),
+    wins: Math.max(0, finite(raw && raw.wins, 0)),
+    kos: Math.max(0, finite(raw && raw.kos, 0)),
+  };
+}
+
+function sanitizeRushBest(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const elapsedSeconds = finite(raw.elapsedSeconds, Infinity);
+  if (!Number.isFinite(elapsedSeconds)) return null;
+  return {
+    elapsedSeconds: Math.max(0, elapsedSeconds),
+    score: Math.max(0, finite(raw.score, 0)),
+    completedAt: finite(raw.completedAt, Date.now()),
+  };
+}
+
+function sanitizeRushGhost(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const samples = Array.isArray(raw.samples)
+    ? raw.samples
+        .map(sample => Array.isArray(sample)
+          ? [Math.max(0, finite(sample[0], 0)), Math.round(finite(sample[1], 0)), Math.round(finite(sample[2], 0))]
+          : null)
+        .filter(Boolean)
+        .slice(0, PLATFORM_RUSH_GHOST_LIMIT)
+    : [];
+  if (!samples.length) return null;
+  return {
+    stage: STAGES[raw.stage] ? raw.stage : 'battlefield',
+    seedId: sanitizeShareSeed(raw.seedId),
+    elapsedSeconds: Math.max(0, finite(raw.elapsedSeconds, 0)),
+    score: Math.max(0, finite(raw.score, 0)),
+    completedAt: finite(raw.completedAt, Date.now()),
+    samples,
+  };
+}
+
+function sanitizeProfile(raw) {
+  const profile = createDefaultProfile();
+  if (!raw || typeof raw !== 'object') return profile;
+  const stats = raw.stats && typeof raw.stats === 'object' ? raw.stats : {};
+  profile.updatedAt = finite(raw.updatedAt, profile.updatedAt);
+  profile.stats.matchCount = Math.max(0, finite(stats.matchCount, 0));
+  profile.stats.wins = Math.max(0, finite(stats.wins, 0));
+  profile.stats.kos = Math.max(0, finite(stats.kos, 0));
+  profile.stats.platformRushRuns = Math.max(0, finite(stats.platformRushRuns, 0));
+  profile.stats.platformRushCompletions = Math.max(0, finite(stats.platformRushCompletions, 0));
+
+  const rawFighters = raw.fighters && typeof raw.fighters === 'object' ? raw.fighters : {};
+  for (const key of FIGHTER_KEYS) {
+    if (rawFighters[key]) profile.fighters[key] = sanitizeFighterStats(rawFighters[key]);
+  }
+
+  const rawBest = raw.bestPlatformRushTimes && typeof raw.bestPlatformRushTimes === 'object' ? raw.bestPlatformRushTimes : {};
+  for (const key of STAGE_KEYS) {
+    const best = sanitizeRushBest(rawBest[key]);
+    if (best) profile.bestPlatformRushTimes[key] = best;
+  }
+
+  const rawGhosts = raw.platformRushGhosts && typeof raw.platformRushGhosts === 'object' ? raw.platformRushGhosts : {};
+  for (const [key, value] of Object.entries(rawGhosts)) {
+    const ghost = sanitizeRushGhost(value);
+    if (ghost) profile.platformRushGhosts[key.slice(0, 96)] = ghost;
+  }
+
+  const rawChallenges = raw.challengeCompletions && typeof raw.challengeCompletions === 'object' ? raw.challengeCompletions : {};
+  for (const challenge of PROFILE_CHALLENGES) {
+    const entry = rawChallenges[challenge.id];
+    if (entry && typeof entry === 'object' && entry.completed) {
+      profile.challengeCompletions[challenge.id] = {
+        completed: true,
+        completedAt: finite(entry.completedAt, Date.now()),
+      };
+    }
+  }
+  profile.stats.favoriteFighter = computeFavoriteFighter(profile);
+  return profile;
+}
+
+function loadMixmashProfile() {
+  try {
+    const saved = localStorage.getItem(MIXMASH_PROFILE_KEY);
+    return sanitizeProfile(saved ? JSON.parse(saved) : null);
+  } catch {
+    return createDefaultProfile();
+  }
+}
+
+let mixmashProfile = loadMixmashProfile();
+
+function saveMixmashProfile() {
+  mixmashProfile.version = MIXMASH_PROFILE_VERSION;
+  mixmashProfile.updatedAt = Date.now();
+  mixmashProfile.stats.favoriteFighter = computeFavoriteFighter(mixmashProfile);
+  try { localStorage.setItem(MIXMASH_PROFILE_KEY, JSON.stringify(mixmashProfile)); } catch {}
+  renderProfilePanel();
+}
+
+function getFighterProgress(key) {
+  if (!FIGHTER_DEFS[key]) return null;
+  if (!mixmashProfile.fighters[key]) mixmashProfile.fighters[key] = sanitizeFighterStats();
+  return mixmashProfile.fighters[key];
+}
+
+function computeFavoriteFighter(profile) {
+  let favorite = null;
+  let best = 0;
+  const fighters = profile && profile.fighters ? profile.fighters : {};
+  for (const key of FIGHTER_KEYS) {
+    const plays = finite(fighters[key] && fighters[key].plays, 0);
+    if (plays > best) {
+      favorite = key;
+      best = plays;
+    }
+  }
+  return favorite;
+}
+
+function completeChallenge(id) {
+  if (!PROFILE_CHALLENGES.some(challenge => challenge.id === id)) return;
+  if (mixmashProfile.challengeCompletions[id]) return;
+  mixmashProfile.challengeCompletions[id] = { completed: true, completedAt: Date.now() };
+}
+
+function isEncoreStage(stageKey) {
+  return ENCORE_STAGE_KEYS.includes(stageKey);
+}
+
+function platformRushGhostKey(stageKey = state.selectedStage, seedId = state.platformRushSeedId) {
+  return `${STAGES[stageKey] ? stageKey : 'battlefield'}:${seedId || 'default'}`;
+}
+
+function getPlatformRushGhost(stageKey = state.selectedStage, seedId = state.platformRushSeedId) {
+  return mixmashProfile.platformRushGhosts[platformRushGhostKey(stageKey, seedId)] || null;
+}
+
+function savePlatformRushGhost(stageKey, seedId, elapsedSeconds, score, samples) {
+  if (!Array.isArray(samples) || !samples.length) return;
+  const key = platformRushGhostKey(stageKey, seedId);
+  const previous = mixmashProfile.platformRushGhosts[key];
+  if (previous && previous.elapsedSeconds <= elapsedSeconds) return;
+  mixmashProfile.platformRushGhosts[key] = {
+    stage: stageKey,
+    seedId: seedId || null,
+    elapsedSeconds: Math.round(elapsedSeconds * 10) / 10,
+    score: Math.max(0, finite(score, 0)),
+    completedAt: Date.now(),
+    samples: samples.slice(0, PLATFORM_RUSH_GHOST_LIMIT),
+  };
+}
+
+function recordVersusProgression(reason) {
+  if (state.matchType === 'training' || state.matchType === 'rush') return;
+  const p1 = state.players[0];
+  const p2 = state.players[1];
+  if (!p1 || !p2) return;
+  mixmashProfile.stats.matchCount++;
+  completeChallenge('first_match');
+  if (isEncoreStage(state.selectedStage)) completeChallenge('encore_explorer');
+  for (const player of state.players) {
+    const progress = getFighterProgress(player.fighterKey);
+    if (!progress) continue;
+    progress.plays++;
+    progress.kos += Math.max(0, finite(player.score, 0));
+    mixmashProfile.stats.kos += Math.max(0, finite(player.score, 0));
+    if (state.winner === player.idx) progress.wins++;
+  }
+  if (state.winner === 0 && p1.controlType === 'human') {
+    mixmashProfile.stats.wins++;
+    completeChallenge('first_win');
+  }
+  saveMixmashProfile();
+}
+
+function recordPlatformRushProgression(reason) {
+  if (state.matchType !== 'rush' || !state.platformRush) return;
+  const rush = state.platformRush;
+  mixmashProfile.stats.platformRushRuns++;
+  if (isEncoreStage(state.selectedStage)) completeChallenge('encore_explorer');
+  if (reason === 'complete') {
+    mixmashProfile.stats.platformRushCompletions++;
+    completeChallenge('rush_complete');
+    const elapsedSeconds = Math.max(0, PLATFORM_RUSH_TIME_LIMIT - finite(rush.timeRemaining, 0));
+    const previous = mixmashProfile.bestPlatformRushTimes[state.selectedStage];
+    if (!previous || elapsedSeconds < previous.elapsedSeconds) {
+      mixmashProfile.bestPlatformRushTimes[state.selectedStage] = {
+        elapsedSeconds: Math.round(elapsedSeconds * 10) / 10,
+        score: Math.max(0, finite(rush.score, 0)),
+        completedAt: Date.now(),
+      };
+    }
+    savePlatformRushGhost(
+      state.selectedStage,
+      state.platformRushSeedId,
+      elapsedSeconds,
+      rush.score,
+      state.platformRushGhostTrace
+    );
+  }
+  saveMixmashProfile();
+}
+
+function summarizeProfile() {
+  const favoriteKey = mixmashProfile.stats.favoriteFighter;
+  const favorite = favoriteKey && FIGHTER_DEFS[favoriteKey] ? FIGHTER_DEFS[favoriteKey].name : 'None yet';
+  const bestEntries = Object.entries(mixmashProfile.bestPlatformRushTimes);
+  const bestRush = bestEntries.length
+    ? bestEntries.reduce((best, entry) => !best || entry[1].elapsedSeconds < best[1].elapsedSeconds ? entry : best, null)
+    : null;
+  return {
+    version: mixmashProfile.version,
+    matchCount: mixmashProfile.stats.matchCount,
+    wins: mixmashProfile.stats.wins,
+    kos: mixmashProfile.stats.kos,
+    favoriteFighter: favoriteKey,
+    favoriteFighterName: favorite,
+    platformRushRuns: mixmashProfile.stats.platformRushRuns,
+    platformRushCompletions: mixmashProfile.stats.platformRushCompletions,
+    platformRushGhostCount: Object.keys(mixmashProfile.platformRushGhosts).length,
+    bestPlatformRush: bestRush ? {
+      stage: bestRush[0],
+      stageName: STAGES[bestRush[0]] ? STAGES[bestRush[0]].name : bestRush[0],
+      elapsedSeconds: bestRush[1].elapsedSeconds,
+      score: bestRush[1].score,
+    } : null,
+    challenges: PROFILE_CHALLENGES.map(challenge => ({
+      id: challenge.id,
+      name: challenge.name,
+      desc: challenge.desc,
+      completed: !!mixmashProfile.challengeCompletions[challenge.id],
+      completedAt: mixmashProfile.challengeCompletions[challenge.id] ? mixmashProfile.challengeCompletions[challenge.id].completedAt : null,
+    })),
+  };
+}
+
+function renderProfilePanel() {
+  if (!profileSummary || !challengeList) return;
+  const profile = summarizeProfile();
+  const best = profile.bestPlatformRush ? `${profile.bestPlatformRush.stageName} ${profile.bestPlatformRush.elapsedSeconds}s` : 'None yet';
+  const stats = [
+    ['Matches', profile.matchCount],
+    ['Wins', profile.wins],
+    ['KOs', profile.kos],
+    ['Favorite', profile.favoriteFighterName],
+    ['Rush clears', `${profile.platformRushCompletions}/${profile.platformRushRuns}`],
+    ['Best Rush', best],
+    ['Ghosts', profile.platformRushGhostCount],
+  ];
+  profileSummary.innerHTML = '';
+  for (const [label, value] of stats) {
+    const item = document.createElement('div');
+    item.className = 'stat-pill';
+    const strong = document.createElement('strong');
+    strong.textContent = String(value);
+    const span = document.createElement('span');
+    span.textContent = label;
+    item.append(strong, span);
+    profileSummary.appendChild(item);
+  }
+
+  challengeList.innerHTML = '';
+  for (const challenge of profile.challenges) {
+    const item = document.createElement('div');
+    item.className = `challenge-row${challenge.completed ? ' complete' : ''}`;
+    const strong = document.createElement('strong');
+    strong.textContent = challenge.completed ? `${challenge.name} complete` : challenge.name;
+    const span = document.createElement('span');
+    span.textContent = challenge.desc;
+    item.append(strong, span);
+    challengeList.appendChild(item);
+  }
+}
+
+function resetProgressionProfile() {
+  if (!window.confirm('Reset local progression?')) return;
+  mixmashProfile = createDefaultProfile();
+  saveMixmashProfile();
+  setMenuStatus('Progress reset');
+}
+
+// --- Quick Fight setup (persisted separately from options) ---
+function defaultQuickFightSetup() {
+  return MODE_RULES.createDefaultQuickFightSetup(FIGHTER_KEYS);
+}
+
+function sanitizeCpuLevel(value) {
+  return MixmashCore.sanitizeCpuLevel(value);
+}
+
+function sanitizeQuickFightSetup(raw) {
+  return MODE_RULES.sanitizeQuickFightSetup(raw, {
+    fighterKeys: FIGHTER_KEYS,
+    stageKeys: STAGE_KEYS,
+    matchTypes: MATCH_TYPES,
+    fallback: defaultQuickFightSetup(),
+  });
+}
+
+function loadQuickFightSetup() {
+  try {
+    const saved = localStorage.getItem(QUICK_FIGHT_SETUP_KEY);
+    return sanitizeQuickFightSetup(saved ? JSON.parse(saved) : null);
+  } catch {
+    return defaultQuickFightSetup();
+  }
+}
+
+let quickFightSetup = loadQuickFightSetup();
+
+function saveQuickFightSetup() {
+  try { localStorage.setItem(QUICK_FIGHT_SETUP_KEY, JSON.stringify(quickFightSetup)); } catch {}
+}
+
+function applyQuickFightSetup(setup) {
+  const next = sanitizeQuickFightSetup(setup || quickFightSetup);
+  quickFightSetup = next;
+  state.p1Fighter = next.p1Fighter;
+  state.p2Fighter = next.p2Fighter;
+  state.selectedStage = next.selectedStage;
+  state.matchType = next.matchType;
+  state.stageCursor = Math.max(0, STAGE_KEYS.indexOf(next.selectedStage));
+  state.modeCursor = Math.max(0, MATCH_TYPES.indexOf(next.matchType));
+  state.charSelectCursors = [
+    {
+      pos: Math.max(0, FIGHTER_KEYS.indexOf(next.p1Fighter)),
+      confirmed: false,
+      cpu: next.p1Cpu,
+      cpuLevel: next.p1CpuLevel,
+    },
+    {
+      pos: Math.max(0, FIGHTER_KEYS.indexOf(next.p2Fighter)),
+      confirmed: false,
+      cpu: next.p2Cpu,
+      cpuLevel: next.p2CpuLevel,
+    },
+  ];
+}
+
+function captureQuickFightSetup() {
+  const c1 = state.charSelectCursors[0] || {};
+  const c2 = state.charSelectCursors[1] || {};
+  const matchType = state.matchType === 'rush' ? defaultQuickFightSetup().matchType : state.matchType;
+  return sanitizeQuickFightSetup({
+    p1Fighter: state.p1Fighter,
+    p2Fighter: state.p2Fighter,
+    selectedStage: state.selectedStage,
+    matchType,
+    p1Cpu: !!c1.cpu,
+    p2Cpu: !!c2.cpu,
+    p1CpuLevel: c1.cpuLevel,
+    p2CpuLevel: c2.cpuLevel,
+  });
+}
+
+function persistQuickFightSetupFromState() {
+  quickFightSetup = captureQuickFightSetup();
+  saveQuickFightSetup();
+}
+
+let appliedSharePreset = null;
+
+function sanitizeShareSeed(value) {
+  return MixmashCore.sanitizeShareSeed(value);
+}
+
+function parseShareBoolean(value, fallback) {
+  return MixmashCore.parseShareBoolean(value, fallback);
+}
+
+function readSharePresetFromUrl() {
+  let params;
+  try { params = new URLSearchParams(window.location.search); } catch { return null; }
+  const hasShareParams = params.get('mix') === '1' || ['p1', 'p2', 'stage', 'mode', 'seed'].some(key => params.has(key));
+  if (!hasShareParams) return null;
+  const fallback = defaultQuickFightSetup();
+  const mode = MATCH_TYPES.includes(params.get('mode')) ? params.get('mode') : fallback.matchType;
+  const stage = STAGES[params.get('stage')] ? params.get('stage') : fallback.selectedStage;
+  const p1 = isKnownFighterKey(params.get('p1')) ? params.get('p1') : fallback.p1Fighter;
+  const p2 = isKnownFighterKey(params.get('p2')) ? params.get('p2') : fallback.p2Fighter;
+  return {
+    p1Fighter: p1,
+    p2Fighter: p2,
+    selectedStage: stage,
+    matchType: mode,
+    p1Cpu: parseShareBoolean(params.get('p1cpu'), fallback.p1Cpu),
+    p2Cpu: parseShareBoolean(params.get('p2cpu'), fallback.p2Cpu),
+    p1CpuLevel: sanitizeCpuLevel(Number(params.get('p1level'))),
+    p2CpuLevel: sanitizeCpuLevel(Number(params.get('p2level'))),
+    hazardsOn: parseShareBoolean(params.get('hazards'), options.hazardsOn),
+    seedId: sanitizeShareSeed(params.get('seed')),
+    autoStart: parseShareBoolean(params.get('start'), false),
+  };
+}
+
+function applySharePresetToState(preset) {
+  if (!preset) return;
+  state.p1Fighter = preset.p1Fighter;
+  state.p2Fighter = preset.p2Fighter;
+  state.selectedStage = preset.selectedStage;
+  state.matchType = preset.matchType;
+  state.platformRushSeedId = preset.seedId;
+  options.hazardsOn = preset.hazardsOn;
+  state.stageCursor = Math.max(0, STAGE_KEYS.indexOf(preset.selectedStage));
+  state.modeCursor = Math.max(0, MATCH_TYPES.indexOf(preset.matchType));
+  state.charSelectCursors = [
+    { pos: Math.max(0, FIGHTER_KEYS.indexOf(preset.p1Fighter)), confirmed: false, cpu: preset.p1Cpu, cpuLevel: preset.p1CpuLevel },
+    { pos: Math.max(0, FIGHTER_KEYS.indexOf(preset.p2Fighter)), confirmed: false, cpu: preset.p2Cpu, cpuLevel: preset.p2CpuLevel },
+  ];
+  if (preset.matchType !== 'rush') {
+    quickFightSetup = sanitizeQuickFightSetup(preset);
+    saveQuickFightSetup();
+  }
+  saveOptions();
+}
+
+function applySharePresetFromUrl() {
+  const preset = readSharePresetFromUrl();
+  if (!preset) return null;
+  appliedSharePreset = { ...preset };
+  applySharePresetToState(preset);
+  if (preset.autoStart) startMatch();
+  return preset;
+}
+
+function getShareBaseUrl() {
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.hash = '';
+  return url;
+}
+
+function appendShareParams(url, preset) {
+  url.searchParams.set('mix', '1');
+  url.searchParams.set('p1', preset.p1Fighter);
+  url.searchParams.set('p2', preset.p2Fighter);
+  url.searchParams.set('stage', preset.selectedStage);
+  url.searchParams.set('mode', preset.matchType);
+  url.searchParams.set('p1cpu', preset.p1Cpu ? '1' : '0');
+  url.searchParams.set('p2cpu', preset.p2Cpu ? '1' : '0');
+  url.searchParams.set('p1level', String(sanitizeCpuLevel(preset.p1CpuLevel)));
+  url.searchParams.set('p2level', String(sanitizeCpuLevel(preset.p2CpuLevel)));
+  url.searchParams.set('hazards', preset.hazardsOn ? '1' : '0');
+  if (preset.seedId) url.searchParams.set('seed', preset.seedId);
+  if (preset.autoStart) url.searchParams.set('start', '1');
+  return url;
+}
+
+function currentSharePreset() {
+  const setup = captureQuickFightSetup();
+  return {
+    ...setup,
+    hazardsOn: options.hazardsOn,
+    seedId: state.platformRushSeedId,
+    autoStart: false,
+  };
+}
+
+function localDateStamp(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}${m}${d}`;
+}
+
+function dailyChallengePreset() {
+  const setup = currentSharePreset();
+  return {
+    ...setup,
+    selectedStage: state.selectedStage || setup.selectedStage || 'battlefield',
+    matchType: 'rush',
+    p1Cpu: false,
+    p2Cpu: true,
+    hazardsOn: options.hazardsOn,
+    seedId: `daily_${localDateStamp()}`,
+    autoStart: true,
+  };
+}
+
+function buildMatchShareUrl() {
+  return appendShareParams(getShareBaseUrl(), currentSharePreset()).toString();
+}
+
+function buildDailyChallengeUrl() {
+  return appendShareParams(getShareBaseUrl(), dailyChallengePreset()).toString();
+}
+
+function copyShareUrl(url, label) {
+  const done = () => setMenuStatus(`${label} copied`);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done).catch(() => setMenuStatus(url));
+  } else {
+    setMenuStatus(url);
+  }
+}
 
 // --- Input Manager ---
 const keys = {};
 const justPressed = {};
 document.addEventListener('keydown', e => {
+  if (domMenuOpen || isCapturingBinding) return;
   if (!keys[e.code]) justPressed[e.code] = true;
   keys[e.code] = true;
   e.preventDefault();
 });
 document.addEventListener('keyup', e => { keys[e.code] = false; });
 
-const DEFAULT_P1_BINDS = { left: 'KeyA', right: 'KeyD', up: 'KeyW', down: 'KeyS', attack: 'KeyJ', attack2: 'Space', special: 'KeyK', shield: 'KeyL' };
-const DEFAULT_P2_BINDS = { left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown', attack: 'Numpad1', special: 'Numpad2', shield: 'Numpad3' };
-function getP1Binds() { return options.p1Binds || DEFAULT_P1_BINDS; }
-function getP2Binds() { return options.p2Binds || DEFAULT_P2_BINDS; }
+const DEFAULT_P1_BINDS = INPUT_DATA.DEFAULT_P1_BINDS;
+const DEFAULT_P2_BINDS = INPUT_DATA.DEFAULT_P2_BINDS;
+const CONTROL_BINDING_ROWS = INPUT_DATA.CONTROL_BINDING_ROWS;
+
+function clamp01(value, fallback = 1) {
+  return Math.max(0, Math.min(1, finite(value, fallback)));
+}
+
+function createDefaultConfig() {
+  const keyBindings = INPUT_DATA.createDefaultKeyBindings();
+  return {
+    meta: { updated_timestamp: Date.now(), schema_version: 1 },
+    audio: {
+      master_volume: clamp01(options.volume, 1),
+      music_volume: clamp01(options.musicVolume, options.musicOn ? 1 : 0),
+      sfx_volume: clamp01(options.sfxVolume, 1),
+      track_selection_id: options.trackSelectionId || 'auto',
+      mute_on_blur: options.muteOnBlur !== false,
+    },
+    controls: {
+      input_mode: 'hybrid_keyboard_gamepad',
+      deadzone_radius_px: 15,
+      key_bindings: keyBindings,
+    },
+    onboarding: {
+      has_completed_basic_tutorial: false,
+      sandbox_unlocked: true,
+      displayed_tooltips: [],
+    },
+  };
+}
+
+function sanitizeKeyCode(value, fallback) {
+  return typeof value === 'string' && value.length > 0 ? value : fallback;
+}
+
+function sanitizeConfig(raw) {
+  const fallback = createDefaultConfig();
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const audio = source.audio && typeof source.audio === 'object' ? source.audio : {};
+  const controls = source.controls && typeof source.controls === 'object' ? source.controls : {};
+  const incomingBindings = controls.key_bindings && typeof controls.key_bindings === 'object' ? controls.key_bindings : {};
+  const keyBindings = { ...fallback.controls.key_bindings };
+  for (const row of CONTROL_BINDING_ROWS) {
+    keyBindings[`P1_${row.id}`] = sanitizeKeyCode(incomingBindings[`P1_${row.id}`], row.p1Default);
+    keyBindings[`P2_${row.id}`] = sanitizeKeyCode(incomingBindings[`P2_${row.id}`], row.p2Default);
+  }
+  return {
+    meta: { updated_timestamp: finite(source.meta && source.meta.updated_timestamp, Date.now()), schema_version: 1 },
+    audio: {
+      master_volume: clamp01(audio.master_volume, fallback.audio.master_volume),
+      music_volume: clamp01(audio.music_volume, fallback.audio.music_volume),
+      sfx_volume: clamp01(audio.sfx_volume, fallback.audio.sfx_volume),
+      track_selection_id: sanitizeKeyCode(audio.track_selection_id, 'auto'),
+      mute_on_blur: audio.mute_on_blur !== undefined ? !!audio.mute_on_blur : fallback.audio.mute_on_blur,
+    },
+    controls: {
+      input_mode: sanitizeKeyCode(controls.input_mode, fallback.controls.input_mode),
+      deadzone_radius_px: Math.max(0, finite(controls.deadzone_radius_px, fallback.controls.deadzone_radius_px)),
+      key_bindings: keyBindings,
+    },
+    onboarding: {
+      has_completed_basic_tutorial: !!(source.onboarding && source.onboarding.has_completed_basic_tutorial),
+      sandbox_unlocked: source.onboarding && source.onboarding.sandbox_unlocked !== undefined ? !!source.onboarding.sandbox_unlocked : true,
+      displayed_tooltips: Array.isArray(source.onboarding && source.onboarding.displayed_tooltips) ? source.onboarding.displayed_tooltips.filter(Boolean).slice(0, 24) : [],
+    },
+  };
+}
+
+function loadMixmashConfig() {
+  try {
+    const saved = localStorage.getItem(MIXMASH_CONFIG_KEY);
+    return sanitizeConfig(saved ? JSON.parse(saved) : null);
+  } catch {
+    return createDefaultConfig();
+  }
+}
+
+let mixmashConfig = loadMixmashConfig();
+
+function applyConfigToRuntime() {
+  options.volume = clamp01(mixmashConfig.audio.master_volume, 1);
+  options.musicVolume = clamp01(mixmashConfig.audio.music_volume, 1);
+  options.sfxVolume = clamp01(mixmashConfig.audio.sfx_volume, 1);
+  options.trackSelectionId = mixmashConfig.audio.track_selection_id || 'auto';
+  options.muteOnBlur = mixmashConfig.audio.mute_on_blur !== false;
+  options.musicOn = options.musicVolume > 0.001;
+  const p1 = { ...DEFAULT_P1_BINDS };
+  const p2 = { ...DEFAULT_P2_BINDS };
+  for (const row of CONTROL_BINDING_ROWS) {
+    p1[row.action] = mixmashConfig.controls.key_bindings[`P1_${row.id}`];
+    p2[row.action] = mixmashConfig.controls.key_bindings[`P2_${row.id}`];
+  }
+  p1.attack2 = DEFAULT_P1_BINDS.attack2;
+  options.p1Binds = p1;
+  options.p2Binds = p2;
+  saveOptions();
+}
+
+function saveMixmashConfig(statusMessage) {
+  mixmashConfig.meta.updated_timestamp = Date.now();
+  try { localStorage.setItem(MIXMASH_CONFIG_KEY, JSON.stringify(mixmashConfig)); } catch {}
+  applyConfigToRuntime();
+  if (statusMessage) setMenuStatus(statusMessage);
+}
+
+function setMenuStatus(message) {
+  if (!menuStatus) return;
+  menuStatus.textContent = message || '';
+  if (message) window.setTimeout(() => { if (menuStatus.textContent === message) menuStatus.textContent = ''; }, 1800);
+}
+
+applyConfigToRuntime();
+
+function getP1Binds() { return { ...DEFAULT_P1_BINDS, ...(options.p1Binds || {}) }; }
+function getP2Binds() { return { ...DEFAULT_P2_BINDS, ...(options.p2Binds || {}) }; }
 
 function getInput(binds) {
   return {
@@ -533,6 +1435,295 @@ function mergeInput(a, b) {
     attack: a.attack || b.attack, special: a.special || b.special,
     shield: a.shield || b.shield,
   };
+}
+
+const CONTROL_ACTIONS = INPUT_DATA.CONTROL_ACTIONS;
+
+function summarizeInput(input) {
+  if (!input) return 'none';
+  const active = CONTROL_ACTIONS.filter(action => !!input[action]);
+  return active.length ? active.join(', ') : 'none';
+}
+
+function getConnectedGamepads() {
+  try {
+    const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+    return Array.from(pads || [])
+      .map((pad, index) => pad ? { index, id: pad.id || `Gamepad ${index + 1}` } : null)
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function getControlsTesterState() {
+  const p1Keyboard = getInput(getP1Binds());
+  const p2Keyboard = getInput(getP2Binds());
+  const gamepads = getConnectedGamepads();
+  return {
+    p1Active: summarizeInput(p1Keyboard),
+    p2Active: summarizeInput(p2Keyboard),
+    gamepadCount: gamepads.length,
+    gamepadFallback: gamepads.length ? 'gamepads available' : 'keyboard active',
+    gamepads: gamepads.slice(0, 4).map(pad => ({
+      index: pad.index,
+      id: pad.id,
+      active: summarizeInput(getGamepadInput(pad.index)),
+    })),
+  };
+}
+
+function clearPressedInput() {
+  for (const k in keys) keys[k] = false;
+  for (const k in justPressed) delete justPressed[k];
+}
+
+function getMenuFocusableElements() {
+  if (!menuOverlay) return [];
+  return Array.from(menuOverlay.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+    .filter(el => !el.hidden && el.offsetParent !== null);
+}
+
+function setMenuTab(tab) {
+  activeMenuTab = tab || 'onboarding';
+  for (const btn of document.querySelectorAll('[data-menu-tab]')) {
+    const selected = btn.dataset.menuTab === activeMenuTab;
+    btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+  }
+  for (const panel of document.querySelectorAll('[data-menu-panel]')) {
+    panel.hidden = panel.dataset.menuPanel !== activeMenuTab;
+  }
+}
+
+function renderControlBindings() {
+  if (!controlBindingsBody) return;
+  controlBindingsBody.innerHTML = '';
+  for (const row of CONTROL_BINDING_ROWS) {
+    const tr = document.createElement('tr');
+    const label = document.createElement('td');
+    label.textContent = row.label;
+    const p1 = document.createElement('td');
+    const p1Button = document.createElement('button');
+    p1Button.type = 'button';
+    p1Button.className = 'rebind-button';
+    p1Button.textContent = mixmashConfig.controls.key_bindings[`P1_${row.id}`];
+    p1Button.dataset.player = 'P1';
+    p1Button.dataset.action = row.id;
+    p1Button.addEventListener('click', () => initiateRebind('P1', row.id, p1Button));
+    p1.appendChild(p1Button);
+    const p2 = document.createElement('td');
+    const p2Button = document.createElement('button');
+    p2Button.type = 'button';
+    p2Button.className = 'rebind-button';
+    p2Button.textContent = mixmashConfig.controls.key_bindings[`P2_${row.id}`];
+    p2Button.dataset.player = 'P2';
+    p2Button.dataset.action = row.id;
+    p2Button.addEventListener('click', () => initiateRebind('P2', row.id, p2Button));
+    p2.appendChild(p2Button);
+    const fallback = document.createElement('td');
+    fallback.textContent = row.fallback;
+    tr.append(label, p1, p2, fallback);
+    controlBindingsBody.appendChild(tr);
+  }
+}
+
+function renderAudioTrackOptions() {
+  if (!audioTrackSelect) return;
+  const current = mixmashConfig.audio.track_selection_id || 'auto';
+  audioTrackSelect.innerHTML = '';
+  const auto = document.createElement('option');
+  auto.value = 'auto';
+  auto.textContent = 'Auto by stage';
+  audioTrackSelect.appendChild(auto);
+  if (typeof MUSIC_CUES !== 'undefined') {
+    for (const key of Object.keys(MUSIC_CUES)) {
+      const option = document.createElement('option');
+      option.value = key;
+      option.textContent = key[0].toUpperCase() + key.slice(1);
+      audioTrackSelect.appendChild(option);
+    }
+  }
+  audioTrackSelect.value = current;
+}
+
+function updateMenuFormState() {
+  renderControlBindings();
+  renderAudioTrackOptions();
+  renderProfilePanel();
+  if (audioMasterInput) audioMasterInput.value = String(Math.round(mixmashConfig.audio.master_volume * 100));
+  if (audioMusicInput) audioMusicInput.value = String(Math.round(mixmashConfig.audio.music_volume * 100));
+  if (audioSfxInput) audioSfxInput.value = String(Math.round(mixmashConfig.audio.sfx_volume * 100));
+  if (audioMuteBlurInput) audioMuteBlurInput.checked = mixmashConfig.audio.mute_on_blur !== false;
+  if (audioStateReadout) {
+    const ctxState = audioCtx ? audioCtx.state : 'off';
+    const cue = options.trackSelectionId && options.trackSelectionId !== 'auto' ? options.trackSelectionId : (musicState.currentCue || 'auto');
+    audioStateReadout.textContent = `Context: ${ctxState}. Track: ${cue}. Master ${Math.round(options.volume * 100)}%, music ${Math.round(options.musicVolume * 100)}%, SFX ${Math.round(options.sfxVolume * 100)}%.`;
+  }
+}
+
+function openDomMenu(tab = 'onboarding') {
+  if (!menuOverlay) return;
+  if (!domMenuOpen) {
+    lastMenuTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    menuReturnMode = (state.mode === 'playing' || state.mode === 'training') ? state.mode : null;
+    if (menuReturnMode) {
+      state.mode = 'paused';
+      saveActiveMatchSnapshot(true);
+    }
+    domMenuOpen = true;
+    menuOverlay.hidden = false;
+    menuOverlay.setAttribute('aria-hidden', 'false');
+    canvas.classList.add('menu-captured');
+    canvas.setAttribute('aria-hidden', 'true');
+    try { canvas.inert = true; } catch {}
+    clearPressedInput();
+    pauseEventCount++;
+    window.dispatchEvent(new CustomEvent('PAUSE_GAME_TICK', { detail: { source: 'dom-menu' } }));
+  }
+  setMenuTab(tab);
+  updateMenuFormState();
+  requestAnimationFrame(() => {
+    const focusables = getMenuFocusableElements();
+    (focusables[0] || menuCloseBtn || menuOverlay).focus();
+  });
+}
+
+function closeDomMenu({ resume = true } = {}) {
+  if (!menuOverlay || !domMenuOpen) return;
+  domMenuOpen = false;
+  isCapturingBinding = false;
+  menuOverlay.hidden = true;
+  menuOverlay.setAttribute('aria-hidden', 'true');
+  setMenuStatus('');
+  canvas.classList.remove('menu-captured');
+  canvas.removeAttribute('aria-hidden');
+  try { canvas.inert = false; } catch {}
+  clearPressedInput();
+  if (resume && menuReturnMode && state.mode === 'paused') state.mode = menuReturnMode;
+  menuReturnMode = null;
+  resumeEventCount++;
+  window.dispatchEvent(new CustomEvent('RESUME_GAME_TICK', { detail: { source: 'dom-menu' } }));
+  if (lastMenuTrigger && typeof lastMenuTrigger.focus === 'function') lastMenuTrigger.focus();
+  lastMenuTrigger = null;
+}
+
+function handleMenuKeydown(event) {
+  if (!domMenuOpen || isCapturingBinding) return;
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    event.stopPropagation();
+    closeDomMenu();
+    return;
+  }
+  if (event.key === 'Tab') {
+    const focusables = getMenuFocusableElements();
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+  event.stopPropagation();
+}
+
+function initiateRebind(player, actionId, button) {
+  if (isCapturingBinding) return;
+  const key = `${player}_${actionId}`;
+  isCapturingBinding = true;
+  button.classList.add('listening-state');
+  button.textContent = 'Press key...';
+  setMenuStatus(`${player} ${actionId.toLowerCase()} listening`);
+
+  const captureKey = (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (event.code !== 'Escape') {
+      mixmashConfig.controls.key_bindings[key] = event.code;
+      saveMixmashConfig(`${player} ${actionId.toLowerCase()} set to ${event.code}`);
+    } else {
+      setMenuStatus('Rebind cancelled');
+    }
+    isCapturingBinding = false;
+    button.classList.remove('listening-state');
+    renderControlBindings();
+    updateMenuFormState();
+  };
+
+  window.addEventListener('keydown', captureKey, { capture: true, once: true });
+}
+
+function resetControlsToDefaults() {
+  const defaults = createDefaultConfig().controls.key_bindings;
+  mixmashConfig.controls.key_bindings = { ...defaults };
+  saveMixmashConfig('Controls reset');
+  renderControlBindings();
+}
+
+function resetOnboardingTooltips() {
+  mixmashConfig.onboarding.has_completed_basic_tutorial = false;
+  mixmashConfig.onboarding.displayed_tooltips = [];
+  saveMixmashConfig('Tooltips reset');
+}
+
+function startSandboxFromMenu() {
+  mixmashConfig.onboarding.sandbox_unlocked = true;
+  mixmashConfig.onboarding.has_completed_basic_tutorial = true;
+  saveMixmashConfig('Sandbox loading');
+  closeDomMenu({ resume: false });
+  applyQuickFightSetup({ ...quickFightSetup, matchType: 'training', p1Cpu: false, p2Cpu: true });
+  options.showHitboxes = true;
+  saveOptions();
+  startMatch();
+}
+
+function setupDomMenu() {
+  if (!menuOverlay) return;
+  menuOverlay.addEventListener('keydown', handleMenuKeydown, true);
+  if (menuCloseBtn) menuCloseBtn.addEventListener('click', () => closeDomMenu());
+  for (const btn of document.querySelectorAll('[data-menu-tab]')) {
+    btn.addEventListener('click', () => setMenuTab(btn.dataset.menuTab));
+  }
+  document.getElementById('menu-quick-fight')?.addEventListener('click', () => {
+    closeDomMenu({ resume: false });
+    startQuickFight();
+  });
+  document.getElementById('menu-sandbox')?.addEventListener('click', startSandboxFromMenu);
+  menuCopyMatchBtn?.addEventListener('click', () => copyShareUrl(buildMatchShareUrl(), 'Match link'));
+  menuCopyChallengeBtn?.addEventListener('click', () => copyShareUrl(buildDailyChallengeUrl(), 'Challenge link'));
+  document.getElementById('menu-reset-tooltips')?.addEventListener('click', resetOnboardingTooltips);
+  document.getElementById('menu-reset-controls')?.addEventListener('click', resetControlsToDefaults);
+  menuResetProfileBtn?.addEventListener('click', resetProgressionProfile);
+  audioMasterInput?.addEventListener('input', () => {
+    mixmashConfig.audio.master_volume = clamp01(Number(audioMasterInput.value) / 100, 1);
+    saveMixmashConfig();
+    updateMenuFormState();
+  });
+  audioMusicInput?.addEventListener('input', () => {
+    mixmashConfig.audio.music_volume = clamp01(Number(audioMusicInput.value) / 100, 1);
+    saveMixmashConfig();
+    updateMenuFormState();
+  });
+  audioSfxInput?.addEventListener('input', () => {
+    mixmashConfig.audio.sfx_volume = clamp01(Number(audioSfxInput.value) / 100, 1);
+    saveMixmashConfig();
+    updateMenuFormState();
+  });
+  audioTrackSelect?.addEventListener('change', () => {
+    mixmashConfig.audio.track_selection_id = audioTrackSelect.value || 'auto';
+    saveMixmashConfig('Track updated');
+    syncMusicState(true);
+    updateMenuFormState();
+  });
+  audioMuteBlurInput?.addEventListener('change', () => {
+    mixmashConfig.audio.mute_on_blur = !!audioMuteBlurInput.checked;
+    saveMixmashConfig('Focus mute updated');
+  });
+  updateMenuFormState();
 }
 
 // --- CPU AI ---
@@ -684,15 +1875,13 @@ function isValidSnapshotPlayer(raw) {
 }
 
 function isValidActiveMatchSnapshot(snapshot) {
-  return !!snapshot &&
-    snapshot.version === ACTIVE_MATCH_SNAPSHOT_VERSION &&
-    SNAPSHOT_MODES.includes(snapshot.mode) &&
-    MATCH_TYPES.includes(snapshot.matchType) &&
-    !!STAGES[snapshot.selectedStage] &&
-    Array.isArray(snapshot.players) &&
-    snapshot.players.length === 2 &&
-    snapshot.players.every(isValidSnapshotPlayer) &&
-    (!snapshot.damageNumbers || Array.isArray(snapshot.damageNumbers));
+  return SNAPSHOT_DATA.isValidActiveMatchSnapshot(snapshot, {
+    version: ACTIVE_MATCH_SNAPSHOT_VERSION,
+    snapshotModes: SNAPSHOT_MODES,
+    matchTypes: MATCH_TYPES,
+    stageKeys: STAGE_KEYS,
+    isValidPlayer: isValidSnapshotPlayer,
+  });
 }
 
 function resetDodgeTrail(p) {
@@ -711,6 +1900,319 @@ function recordDodgeTrail(p, alpha, maxLen) {
   slot.alpha = finite(alpha, 0);
   p.dodgeTrailCursor = (p.dodgeTrailCursor + 1) % maxLen;
   p.dodgeTrailSize = Math.min(maxLen, (p.dodgeTrailSize || 0) + 1);
+}
+
+function roundTelemetry(value, digits) {
+  const scale = Math.pow(10, digits === undefined ? 1 : digits);
+  return Math.round(finite(value, 0) * scale) / scale;
+}
+
+function resetRecentHitEvents() {
+  state.recentHitEvents = [];
+  state.nextHitEventId = 1;
+}
+
+function compactCombatEvent(raw) {
+  return {
+    id: finite(raw && raw.id, 0),
+    frame: finite(raw && raw.frame, 0),
+    type: typeof (raw && raw.type) === 'string' ? raw.type : 'hit',
+    attacker: raw && raw.attacker ? {
+      idx: finite(raw.attacker.idx, 0),
+      fighter: typeof raw.attacker.fighter === 'string' ? raw.attacker.fighter : 'unknown',
+    } : null,
+    target: raw && raw.target ? {
+      idx: finite(raw.target.idx, 0),
+      fighter: typeof raw.target.fighter === 'string' ? raw.target.fighter : 'unknown',
+    } : null,
+    attack: typeof (raw && raw.attack) === 'string' ? raw.attack : null,
+    damage: roundTelemetry(raw && raw.damage, 1),
+    targetDamage: roundTelemetry(raw && raw.targetDamage, 1),
+    shieldHP: raw && raw.shieldHP !== undefined ? roundTelemetry(raw.shieldHP, 1) : null,
+    knockback: raw && raw.knockback !== undefined ? roundTelemetry(raw.knockback, 1) : null,
+    angleDeg: raw && raw.angleDeg !== undefined ? roundTelemetry(raw.angleDeg, 1) : null,
+    launch: raw && raw.launch ? {
+      vx: Math.round(finite(raw.launch.vx, 0)),
+      vy: Math.round(finite(raw.launch.vy, 0)),
+    } : null,
+    hitstunFrames: finite(raw && raw.hitstunFrames, 0),
+    hitstopFrames: finite(raw && raw.hitstopFrames, 0),
+    diActive: !!(raw && raw.diActive),
+  };
+}
+
+function recordCombatEvent(type, attacker, target, details) {
+  const event = compactCombatEvent({
+    id: state.nextHitEventId++,
+    frame: state.frameCount,
+    type,
+    attacker: attacker ? { idx: attacker.idx, fighter: attacker.fighterKey } : null,
+    target: target ? { idx: target.idx, fighter: target.fighterKey } : null,
+    attack: details && details.attack,
+    damage: details && details.damage,
+    targetDamage: target ? target.damage : (details && details.targetDamage),
+    shieldHP: target ? target.shieldHP : (details && details.shieldHP),
+    knockback: details && details.knockback,
+    angleDeg: details && details.angleDeg,
+    launch: details && details.launch,
+    hitstunFrames: details && details.hitstunFrames,
+    hitstopFrames: details && details.hitstopFrames,
+    diActive: details && details.diActive,
+  });
+  state.recentHitEvents.push(event);
+  if (state.recentHitEvents.length > RECENT_HIT_EVENT_LIMIT) {
+    state.recentHitEvents.splice(0, state.recentHitEvents.length - RECENT_HIT_EVENT_LIMIT);
+  }
+  return event;
+}
+
+function triggerScreenShake(strength, attacker, target, launchVx, launchVy) {
+  const intensity = finite(strength, 0);
+  if (intensity <= 0) return;
+
+  let vx = finite(launchVx, 0) + finite(attacker && attacker.vx, 0) * 0.18;
+  let vy = finite(launchVy, 0) * 0.7 + finite(attacker && attacker.vy, 0) * 0.18;
+  if (Math.abs(vx) + Math.abs(vy) < 0.01 && attacker && target) {
+    vx = finite(target.x - attacker.x, attacker.facing || 1);
+    vy = finite(target.y - attacker.y, -0.35);
+  }
+  if (Math.abs(vx) + Math.abs(vy) < 0.01) {
+    vx = attacker && attacker.facing ? attacker.facing : 1;
+    vy = -0.35;
+  }
+
+  const mag = Math.hypot(vx, vy) || 1;
+  state.screenShake.vectorX = finite(vx / mag, 1);
+  state.screenShake.vectorY = finite(vy / mag, 0);
+  state.screenShake.intensity = Math.max(
+    finite(state.screenShake.intensity, 0),
+    Math.min(15, Math.max(0, intensity))
+  );
+}
+
+function getAttackPhase(p) {
+  if (!p || p.state !== 'attack' || !p.attackData) return null;
+  const atk = p.attackData;
+  const frame = finite(p.attackFrame, 0);
+  if (frame < finite(atk.startup, 0)) return 'startup';
+  if (frame < finite(atk.startup, 0) + finite(atk.active, 0)) return 'active';
+  if (frame < finite(atk.startup, 0) + finite(atk.active, 0) + finite(atk.endlag, 0)) return 'endlag';
+  return 'recovery';
+}
+
+function getPlayerTrainingTelemetry(p) {
+  const latestHit = state.recentHitEvents.slice().reverse().find(event => event.target && event.target.idx === p.idx);
+  const attack = p.state === 'attack' && p.attackData ? {
+    key: p.attackKey || 'neutral',
+    phase: getAttackPhase(p),
+    frame: finite(p.attackFrame, 0),
+    startup: finite(p.attackData.startup, 0),
+    active: finite(p.attackData.active, 0),
+    endlag: finite(p.attackData.endlag, 0),
+    damage: roundTelemetry(p.attackData.damage, 1),
+    kbBase: roundTelemetry(p.attackData.kbBase, 1),
+    kbScale: roundTelemetry(p.attackData.kbScale, 1),
+  } : null;
+
+  return {
+    idx: p.idx,
+    fighter: p.fighterKey,
+    state: p.state,
+    damage: roundTelemetry(p.damage, 1),
+    hitstunFrames: p.state === 'hitstun' ? finite(p.stateTimer, 0) : 0,
+    shield: {
+      active: p.state === 'shield' || !!p.shieldActive,
+      hp: roundTelemetry(p.shieldHP, 1),
+    },
+    attack,
+    launch: latestHit && latestHit.launch ? latestHit.launch : null,
+    lastHitFrame: latestHit ? latestHit.frame : null,
+  };
+}
+
+function getTrainingTelemetry() {
+  return {
+    frame: state.frameCount,
+    hitstopFrames: state.hitstopFrames,
+    hitboxesVisible: options.showHitboxes || state.matchType === 'training',
+    screenShake: {
+      x: roundTelemetry(state.screenShake.x, 2),
+      y: roundTelemetry(state.screenShake.y, 2),
+      intensity: roundTelemetry(state.screenShake.intensity, 2),
+      vectorX: roundTelemetry(state.screenShake.vectorX, 2),
+      vectorY: roundTelemetry(state.screenShake.vectorY, 2),
+    },
+    players: state.players.map(getPlayerTrainingTelemetry),
+    recentHitEvents: state.recentHitEvents.slice().reverse(),
+  };
+}
+
+function syncPlatformRushCounts() {
+  const rush = state.platformRush;
+  const items = Array.isArray(rush.collectibles) ? rush.collectibles : [];
+  rush.totalRecords = items.filter(item => item.type === 'record').length;
+  rush.recordsCollected = items.filter(item => item.type === 'record' && item.collected).length;
+  rush.totalDeepCuts = items.filter(item => item.type === 'deepCut').length;
+  rush.deepCutsCollected = items.filter(item => item.type === 'deepCut' && item.collected).length;
+}
+
+function startPlatformRush() {
+  const stageKey = state.selectedStage || 'battlefield';
+  const seed = getPlatformRushSeed(stageKey, state.platformRushSeedId);
+  state.platformRushGhostTrace = [];
+  state.platformRushGhostReplay = getPlatformRushGhost(stageKey, state.platformRushSeedId);
+  state.platformRush = createPlatformRushState({
+    active: true,
+    seed,
+    timeRemaining: PLATFORM_RUSH_TIME_LIMIT,
+    score: 0,
+    recordsCollected: 0,
+    totalRecords: PLATFORM_RUSH_RECORDS,
+    deepCutsCollected: 0,
+    totalDeepCuts: PLATFORM_RUSH_DEEP_CUTS,
+    finished: false,
+    resultReason: null,
+    collectibles: buildPlatformRushCollectibles(stageKey, seed),
+  });
+  syncPlatformRushCounts();
+}
+
+function restorePlatformRush(raw) {
+  state.platformRush = createPlatformRushState(raw);
+  state.platformRushGhostTrace = [];
+  state.platformRushGhostReplay = getPlatformRushGhost(state.selectedStage, state.platformRushSeedId);
+  if (!state.platformRush.collectibles.length) {
+    state.platformRush.seed = state.platformRush.seed || getPlatformRushSeed(state.selectedStage, state.platformRushSeedId);
+    state.platformRush.collectibles = buildPlatformRushCollectibles(state.selectedStage, state.platformRush.seed);
+  }
+  state.platformRush.active = state.matchType === 'rush' && !state.platformRush.finished;
+  syncPlatformRushCounts();
+}
+
+function serializePlatformRush() {
+  const rush = state.platformRush || createPlatformRushState();
+  return {
+    active: rush.active,
+    seed: rush.seed,
+    timeRemaining: rush.timeRemaining,
+    score: rush.score,
+    recordsCollected: rush.recordsCollected,
+    totalRecords: rush.totalRecords,
+    deepCutsCollected: rush.deepCutsCollected,
+    totalDeepCuts: rush.totalDeepCuts,
+    finished: rush.finished,
+    resultReason: rush.resultReason,
+    collectibles: (rush.collectibles || []).map(compactPlatformRushCollectible),
+  };
+}
+
+function collectPlatformRushItem(item) {
+  const rush = state.platformRush;
+  if (!rush || rush.finished || item.collected) return;
+  item.collected = true;
+  rush.score += finite(item.value, item.type === 'deepCut' ? 350 : 100);
+  syncPlatformRushCounts();
+  spawnDamageNumber(item.x, item.y - 18, item.type === 'deepCut' ? 18 : 10);
+  spawnHitSparks(item.x, item.y, item.type === 'deepCut' ? 12 : 7, item.type === 'deepCut' ? '#ffd36a' : '#9ee8ff');
+  playSound(item.type === 'deepCut' ? 'cheer' : 'select');
+  saveActiveMatchSnapshot(true);
+
+  const collectedAll = rush.recordsCollected >= rush.totalRecords && rush.deepCutsCollected >= rush.totalDeepCuts;
+  if (collectedAll) finishPlatformRush('complete');
+}
+
+function finishPlatformRush(reason) {
+  const rush = state.platformRush;
+  if (!rush || rush.finished) return;
+  rush.finished = true;
+  rush.active = false;
+  rush.resultReason = reason || 'complete';
+  if (reason === 'complete') {
+    rush.score += Math.max(0, Math.ceil(finite(rush.timeRemaining, 0))) * 10;
+    playSound('cheer');
+  }
+  recordPlatformRushProgression(reason);
+  state.winner = -1;
+  state.mode = 'results';
+  state.confettiSpawned = false;
+  resetDamageNumberPool();
+  clearActiveMatchSnapshot();
+}
+
+function restartPlatformRush() {
+  state.matchType = 'rush';
+  startMatch();
+}
+
+function recordPlatformRushGhostSample(player) {
+  if (!player || state.frameCount % PLATFORM_RUSH_GHOST_SAMPLE_EVERY !== 0) return;
+  if (!Array.isArray(state.platformRushGhostTrace)) state.platformRushGhostTrace = [];
+  if (state.platformRushGhostTrace.length >= PLATFORM_RUSH_GHOST_LIMIT) return;
+  const elapsed = PLATFORM_RUSH_TIME_LIMIT - finite(state.platformRush.timeRemaining, PLATFORM_RUSH_TIME_LIMIT);
+  state.platformRushGhostTrace.push([
+    Math.round(Math.max(0, elapsed) * 10) / 10,
+    Math.round(finite(player.x, 0)),
+    Math.round(finite(player.y, 0)),
+  ]);
+}
+
+function updatePlatformRush(dt) {
+  const rush = state.platformRush;
+  if (state.matchType !== 'rush' || !rush || rush.finished) return;
+  if (!rush.active) rush.active = true;
+  rush.timeRemaining = Math.max(0, finite(rush.timeRemaining, PLATFORM_RUSH_TIME_LIMIT) - dt);
+  if (rush.timeRemaining <= 0) {
+    finishPlatformRush('time');
+    return;
+  }
+
+  const player = state.players[0];
+  if (!player || player.state === 'dead' || player.state === 'respawning') return;
+  recordPlatformRushGhostSample(player);
+  for (const item of rush.collectibles) {
+    if (item.collected) continue;
+    const dx = finite(player.x, 0) - finite(item.x, 0);
+    const dy = (finite(player.y, 0) - finite(player.h, 0) * 0.45) - finite(item.y, 0);
+    const radius = item.type === 'deepCut' ? PLATFORM_RUSH_COLLECT_RADIUS - 2 : PLATFORM_RUSH_COLLECT_RADIUS;
+    if (Math.hypot(dx, dy) <= radius) collectPlatformRushItem(item);
+  }
+}
+
+function getPlatformRushSummary() {
+  const rush = state.platformRush || createPlatformRushState();
+  const activeItems = (rush.collectibles || []).filter(item => !item.collected);
+  return {
+    active: rush.active,
+    finished: rush.finished,
+    resultReason: rush.resultReason,
+    seed: rush.seed,
+    timeRemaining: Math.max(0, Math.round(finite(rush.timeRemaining, 0))),
+    score: Math.round(finite(rush.score, 0)),
+    recordsCollected: rush.recordsCollected,
+    totalRecords: rush.totalRecords,
+    deepCutsCollected: rush.deepCutsCollected,
+    totalDeepCuts: rush.totalDeepCuts,
+    remaining: activeItems.length,
+    nextTarget: activeItems[0] ? {
+      id: activeItems[0].id,
+      type: activeItems[0].type,
+      x: Math.round(activeItems[0].x),
+      y: Math.round(activeItems[0].y),
+      hidden: activeItems[0].hidden,
+    } : null,
+    collectibles: (rush.collectibles || []).map(item => ({
+      id: item.id,
+      type: item.type,
+      x: Math.round(item.x),
+      y: Math.round(item.y),
+      platformIndex: item.platformIndex,
+      hidden: item.hidden,
+      collected: item.collected,
+      reachable: isPlatformRushCollectibleReachable(state.selectedStage, item),
+    })),
+    placement: getPlatformRushPlacementReport(state.selectedStage, rush.seed),
+    allStagePlacement: getAllPlatformRushPlacementReports(),
+  };
 }
 
 function serializePlayer(p) {
@@ -849,6 +2351,10 @@ function serializeActiveMatch() {
     modeCursor: state.modeCursor,
     players: state.players.map(serializePlayer),
     damageNumbers: damageNumberPool.filter(d => d.active).map(d => ({ x: d.x, y: d.y, value: d.value, timer: d.timer, vy: d.vy })),
+    recentHitEvents: state.recentHitEvents.map(compactCombatEvent),
+    nextHitEventId: state.nextHitEventId,
+    platformRushSeedId: state.platformRushSeedId,
+    platformRush: serializePlatformRush(),
   };
 }
 
@@ -896,20 +2402,24 @@ function restoreActiveMatchSnapshot() {
   state.selectedStage = snapshot.selectedStage;
   currentStage = STAGES[state.selectedStage] || STAGES.battlefield;
   for (const plat of currentStage.platforms) {
-    if (plat.moving) { plat._baseX = plat.x; plat._baseY = plat.y; plat._moveTimer = 0; plat._deltaX = 0; }
+    if (plat.moving) {
+      plat._baseX = finite(plat._baseX, plat.x);
+      plat._baseY = finite(plat._baseY, plat.y);
+      plat.x = plat._baseX;
+      plat.y = plat._baseY;
+      plat._moveTimer = 0;
+      plat._deltaX = 0;
+    }
   }
 
   state.matchType = MATCH_TYPES.includes(snapshot.matchType) ? snapshot.matchType : 'stock';
+  state.platformRushSeedId = sanitizeShareSeed(snapshot.platformRushSeedId);
   state.timeRemaining = finite(snapshot.timeRemaining, 180);
   state.hazardsOn = !!snapshot.hazardsOn;
   state.frameCount = finite(snapshot.frameCount, 0);
   state.winner = finite(snapshot.winner, -1);
   state.hitstopFrames = finite(snapshot.hitstopFrames, 0);
-  state.screenShake = {
-    x: finite(snapshot.screenShake && snapshot.screenShake.x, 0),
-    y: finite(snapshot.screenShake && snapshot.screenShake.y, 0),
-    intensity: finite(snapshot.screenShake && snapshot.screenShake.intensity, 0),
-  };
+  state.screenShake = createScreenShakeState(snapshot.screenShake);
   state.camera = {
     x: finite(snapshot.camera && snapshot.camera.x, 0),
     y: finite(snapshot.camera && snapshot.camera.y, 100),
@@ -924,7 +2434,7 @@ function restoreActiveMatchSnapshot() {
   state.p1Fighter = FIGHTER_DEFS[snapshot.p1Fighter] ? snapshot.p1Fighter : FIGHTER_KEYS[0];
   state.p2Fighter = FIGHTER_DEFS[snapshot.p2Fighter] ? snapshot.p2Fighter : FIGHTER_KEYS[1] || FIGHTER_KEYS[0];
   state.stageCursor = Math.max(0, Math.min(STAGE_KEYS.length - 1, finite(snapshot.stageCursor, 0)));
-  state.modeCursor = Math.max(0, Math.min(2, finite(snapshot.modeCursor, 0)));
+  state.modeCursor = Math.max(0, Math.min(MODE_SELECT_ITEMS.length - 1, finite(snapshot.modeCursor, 0)));
   state.charSelectCursors = Array.isArray(snapshot.charSelectCursors) && snapshot.charSelectCursors.length === 2
     ? snapshot.charSelectCursors.map((c, i) => ({
         pos: Math.max(0, Math.min(FIGHTER_KEYS.length - 1, finite(c.pos, i))),
@@ -936,6 +2446,14 @@ function restoreActiveMatchSnapshot() {
 
   const spawns = currentStage.spawns || [{ x: -100, y: 100 }, { x: 100, y: 100 }];
   state.players = snapshot.players.slice(0, 2).map((raw, idx) => restorePlayer({ ...raw, idx }, spawns[idx]));
+  restorePlatformRush(snapshot.platformRush);
+  state.recentHitEvents = Array.isArray(snapshot.recentHitEvents)
+    ? snapshot.recentHitEvents.slice(-RECENT_HIT_EVENT_LIMIT).map(compactCombatEvent)
+    : [];
+  state.nextHitEventId = Math.max(
+    finite(snapshot.nextHitEventId, 1),
+    state.recentHitEvents.reduce((max, event) => Math.max(max, finite(event.id, 0) + 1), 1)
+  );
   resetDamageNumberPool();
   if (Array.isArray(snapshot.damageNumbers)) {
     const items = snapshot.damageNumbers.slice(0, DAMAGE_NUMBER_POOL_SIZE);
@@ -1129,6 +2647,26 @@ const MUSIC_CUES = {
     kick: [0, 8],
     hat: [4, 12],
   },
+  runic: {
+    bpm: 108, level: 0.52, filter: 2800,
+    bassWave: 'triangle', leadWave: 'triangle', padWave: 'sine',
+    chords: [[38, 45, 50], [41, 48, 53], [43, 50, 55], [36, 43, 48]],
+    bass: [26, null, 26, null, 29, null, null, 29, 31, null, 31, null, 24, null, 26, null],
+    lead: [62, null, 65, 69, null, 67, null, 65, 60, null, 64, null, 67, null, 65, null],
+    kick: [0, 6, 8, 14],
+    snare: [4, 12],
+    hat: [2, 10],
+  },
+  crystal: {
+    bpm: 122, level: 0.48, filter: 4200,
+    bassWave: 'triangle', leadWave: 'sine', padWave: 'triangle',
+    chords: [[47, 54, 59], [50, 57, 62], [52, 59, 64], [45, 52, 57]],
+    bass: [35, null, null, 35, 38, null, 38, null, 40, null, null, 40, 33, null, 38, null],
+    lead: [71, 74, null, 78, null, 76, 74, null, 72, null, 76, 79, null, 83, null, 79],
+    kick: [0, 4, 8, 12],
+    hat: [2, 6, 10, 14],
+    hatOpen: [15],
+  },
   victory: {
     bpm: 116, level: 0.62, filter: 3800,
     bassWave: 'triangle', leadWave: 'square', padWave: 'triangle',
@@ -1180,6 +2718,7 @@ function getMusicCueKey() {
   if (state.mode === 'results') return 'victory';
   if (state.mode === 'title' || state.mode === 'charselect' || state.mode === 'stageselect' || state.mode === 'modeselect' || state.mode === 'options') return 'menu';
   if (state.mode !== 'playing' && state.mode !== 'training' && state.mode !== 'paused') return null;
+  if (options.trackSelectionId && options.trackSelectionId !== 'auto' && MUSIC_CUES[options.trackSelectionId]) return options.trackSelectionId;
   const stage = currentStage || STAGES[state.selectedStage] || STAGES.battlefield;
   switch (stage.theme) {
     case 'festival':
@@ -1195,6 +2734,10 @@ function getMusicCueKey() {
       return 'sky';
     case 'cosmic':
       return 'cosmic';
+    case 'runic':
+      return 'runic';
+    case 'crystal':
+      return 'crystal';
     default:
       return 'clash';
   }
@@ -1329,7 +2872,7 @@ function syncMusicState(force) {
   const cueKey = getMusicCueKey();
   const cue = cueKey ? MUSIC_CUES[cueKey] : null;
   const pausedDuck = state.mode === 'paused' ? 0.28 : 1;
-  const targetGain = cue ? Math.max(0.0001, options.volume * pausedDuck * cue.level * 0.12) : 0.0001;
+  const targetGain = cue ? Math.max(0.0001, options.volume * options.musicVolume * pausedDuck * cue.level * 0.12) : 0.0001;
   const targetFilter = cue ? cue.filter * (state.mode === 'paused' ? 0.55 : 1) : 1800;
 
   if (force || musicState.currentCue !== cueKey) {
@@ -1365,7 +2908,7 @@ function initAudio() {
 
 function playSound(type) {
   if (!audioCtx) return;
-  const vol = options.volume;
+  const vol = options.volume * options.sfxVolume;
   if (vol <= 0) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -1540,9 +3083,15 @@ function updatePlayer(p, dt) {
     const target = state.players[p.grabTarget];
     // Pummel
     if (justPressedAttack && target) {
-      target.damage += p.def.grab.pummelDamage;
-      spawnDamageNumber(target.x, target.y - target.h, p.def.grab.pummelDamage);
+      const pummelDamage = finite(p.def.grab.pummelDamage, 0);
+      target.damage = finite(target.damage + pummelDamage, target.damage);
+      spawnDamageNumber(target.x, target.y - target.h, pummelDamage);
       state.hitstopFrames = 3;
+      recordCombatEvent('pummel', p, target, {
+        attack: 'grab-pummel',
+        damage: pummelDamage,
+        hitstopFrames: state.hitstopFrames,
+      });
       saveActiveMatchSnapshot(true);
     }
     // Throw
@@ -1795,10 +3344,12 @@ function updatePlayer(p, dt) {
 // --- Throw ---
 function executeThrow(grabber, target, dir) {
   const throwData = grabber.def.throws[dir];
-  target.damage += throwData.damage;
-  spawnDamageNumber(target.x, target.y - target.h, throwData.damage);
+  const throwDamage = finite(throwData.damage, 0);
+  target.damage = finite(target.damage + throwDamage, target.damage);
+  spawnDamageNumber(target.x, target.y - target.h, throwDamage);
   const kb = calcKnockback(throwData, target.damage, target.def.weight);
   const angle = finite(throwData.angle, 0) * Math.PI / 180;
+  const angleDeg = finite(throwData.angle, 0);
   const dirX = dir === 'back' ? -grabber.facing : grabber.facing;
   target.vx = finite(Math.cos(angle) * kb * dirX, 0);
   target.vy = finite(-Math.abs(Math.sin(angle) * kb), 0);
@@ -1807,7 +3358,16 @@ function executeThrow(grabber, target, dir) {
   grabber.state = 'idle'; grabber.grabTarget = -1;
   playSound('throw');
   spawnHitSparks(target.x, target.y - target.h / 2, 6, '#ffaa00');
-  state.screenShake.intensity = Math.min(throwData.damage * 0.5, 8);
+  triggerScreenShake(Math.min(throwDamage * 0.5, 8), grabber, target, target.vx, target.vy);
+  recordCombatEvent('throw', grabber, target, {
+    attack: `throw-${dir}`,
+    damage: throwDamage,
+    knockback: kb,
+    angleDeg,
+    launch: { vx: target.vx, vy: target.vy },
+    hitstunFrames: target.stateTimer,
+    hitstopFrames: state.hitstopFrames,
+  });
   saveActiveMatchSnapshot(true);
 }
 
@@ -1856,18 +3416,25 @@ function checkHits() {
 
       if (aabbValues(hx - hb.w / 2, hy - hb.h / 2, hb.w, hb.h, tx, ty, target.w, target.h)) {
         if (target.state === 'shield') {
-          target.shieldHP = Math.max(0, target.shieldHP - atk.damage * 1.5);
+          const shieldDamage = finite(atk.damage, 0);
+          target.shieldHP = Math.max(0, finite(target.shieldHP, 0) - shieldDamage * 1.5);
           spawnHitSparks(target.x, target.y - target.h / 2, 5, '#00aaff');
           playSound('shield');
           attacker.hitRegistered = true;
           state.hitstopFrames = 3;
+          recordCombatEvent('shield-hit', attacker, target, {
+            attack: attacker.attackKey || 'attack',
+            damage: shieldDamage,
+            hitstopFrames: state.hitstopFrames,
+          });
           saveActiveMatchSnapshot(true);
           continue;
         }
 
         // Hit!
-        target.damage = finite(target.damage + finite(atk.damage, 0), target.damage);
-        spawnDamageNumber(target.x, target.y - target.h, atk.damage);
+        const hitDamage = finite(atk.damage, 0);
+        target.damage = finite(target.damage + hitDamage, target.damage);
+        spawnDamageNumber(target.x, target.y - target.h, hitDamage);
         let kb = calcKnockback(atk, target.damage, target.def.weight);
 
         // Armor mechanic: halve knockback during attack startup
@@ -1875,9 +3442,11 @@ function checkHits() {
           kb *= 0.5;
         }
 
-        let angle = atk.angle * Math.PI / 180;
+        const baseAngleDeg = finite(atk.angle, 0);
+        let angle = baseAngleDeg * Math.PI / 180;
 
         // DI: shift angle toward target's input direction
+        target.diActive = false;
         const targetInput = getPlayerInput(target);
         if (targetInput.left || targetInput.right || targetInput.up || targetInput.down) {
           const diX = (targetInput.right ? 1 : 0) - (targetInput.left ? 1 : 0);
@@ -1902,21 +3471,31 @@ function checkHits() {
 
         const hitstop = HITSTOP_BASE + Math.floor(finite(atk.damage, 0) / 4);
         state.hitstopFrames = hitstop;
-        state.screenShake.intensity = finite(Math.min(finite(atk.damage, 0) * 0.8, 15), 0);
+        triggerScreenShake(Math.min(hitDamage * 0.8, 15), attacker, target, target.vx, target.vy);
         // Character-themed hit spark colors
         let sparkColor = '#ffff00';
-        if (attacker.fighterKey === 'deadmau5') sparkColor = atk.damage > 10 ? '#ff5db0' : '#ffb3d9';
-        else if (attacker.fighterKey === 'skrillex') sparkColor = atk.damage > 10 ? '#9268ff' : '#c9a7ff';
-        else if (attacker.fighterKey === 'marshmello') sparkColor = atk.damage > 10 ? '#ff9d3d' : '#ffb366';
-        else if (attacker.fighterKey === 'daftpunk') sparkColor = atk.damage > 10 ? '#78f1ff' : '#a8feff';
-        else if (attacker.fighterKey === 'tiesto') sparkColor = atk.damage > 10 ? '#b36dff' : '#d9a7ff';
-        else if (attacker.fighterKey === 'subtronics') sparkColor = atk.damage > 10 ? '#a0ff5a' : '#c7ff9b';
-        else sparkColor = atk.damage > 10 ? '#ff8800' : '#ffff00';
-        spawnHitSparks(hx, hy, 8 + atk.damage, sparkColor);
-        playSound(atk.damage >= 10 ? 'hit_heavy' : 'hit_light');
+        if (attacker.fighterKey === 'deadmau5') sparkColor = hitDamage > 10 ? '#ff5db0' : '#ffb3d9';
+        else if (attacker.fighterKey === 'skrillex') sparkColor = hitDamage > 10 ? '#9268ff' : '#c9a7ff';
+        else if (attacker.fighterKey === 'marshmello') sparkColor = hitDamage > 10 ? '#ff9d3d' : '#ffb366';
+        else if (attacker.fighterKey === 'daftpunk') sparkColor = hitDamage > 10 ? '#78f1ff' : '#a8feff';
+        else if (attacker.fighterKey === 'tiesto') sparkColor = hitDamage > 10 ? '#b36dff' : '#d9a7ff';
+        else if (attacker.fighterKey === 'subtronics') sparkColor = hitDamage > 10 ? '#a0ff5a' : '#c7ff9b';
+        else sparkColor = hitDamage > 10 ? '#ff8800' : '#ffff00';
+        spawnHitSparks(hx, hy, 8 + hitDamage, sparkColor);
+        playSound(hitDamage >= 10 ? 'hit_heavy' : 'hit_light');
+        recordCombatEvent('hit', attacker, target, {
+          attack: attacker.attackKey || 'attack',
+          damage: hitDamage,
+          knockback: kb,
+          angleDeg: angle * 180 / Math.PI,
+          launch: { vx: target.vx, vy: target.vy },
+          hitstunFrames: target.stateTimer,
+          hitstopFrames: hitstop,
+          diActive: target.diActive,
+        });
 
         // Gamepad rumble
-        if (target.gamepadIndex !== null) triggerRumble(target.gamepadIndex, Math.min(kb / 300, 1), 100 + atk.damage * 5);
+        if (target.gamepadIndex !== null) triggerRumble(target.gamepadIndex, Math.min(kb / 300, 1), 100 + hitDamage * 5);
         if (attacker.gamepadIndex !== null) triggerRumble(attacker.gamepadIndex, 0.2, 50);
         saveActiveMatchSnapshot(true);
       }
@@ -1967,15 +3546,149 @@ function renderDamageNumbers() {
   ctx.globalAlpha = 1;
 }
 
+function getGhostSampleAtElapsed(ghost, elapsed) {
+  const samples = ghost && Array.isArray(ghost.samples) ? ghost.samples : [];
+  if (!samples.length) return null;
+  let best = samples[0];
+  let bestDelta = Math.abs(finite(best[0], 0) - elapsed);
+  for (let i = 1; i < samples.length; i++) {
+    const delta = Math.abs(finite(samples[i][0], 0) - elapsed);
+    if (delta < bestDelta) {
+      best = samples[i];
+      bestDelta = delta;
+    }
+  }
+  return best;
+}
+
+function renderPlatformRushGhost() {
+  const ghost = state.platformRushGhostReplay;
+  if (state.matchType !== 'rush' || !ghost || !state.platformRush || state.platformRush.finished) return;
+  const elapsed = PLATFORM_RUSH_TIME_LIMIT - finite(state.platformRush.timeRemaining, PLATFORM_RUSH_TIME_LIMIT);
+  const sample = getGhostSampleAtElapsed(ghost, elapsed);
+  if (!sample) return;
+  const pos = worldToScreen(sample[1], sample[2]);
+  const z = state.camera.zoom;
+  ctx.save();
+  ctx.globalAlpha = 0.42;
+  ctx.globalCompositeOperation = 'screen';
+  ctx.strokeStyle = '#ffd36a';
+  ctx.lineWidth = Math.max(2, 2 * z);
+  const samples = ghost.samples || [];
+  ctx.beginPath();
+  for (let i = 0; i < samples.length; i += 8) {
+    const p = worldToScreen(samples[i][1], samples[i][2]);
+    if (i === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  }
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255,211,106,0.32)';
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y - 24 * z, 18 * z, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#fff2ad';
+  ctx.strokeRect(pos.x - 9 * z, pos.y - 36 * z, 18 * z, 18 * z);
+  ctx.fillStyle = '#fff2ad';
+  ctx.font = `${Math.max(9, 9 * z)}px monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText('GHOST', pos.x, pos.y - 46 * z);
+  ctx.restore();
+}
+
+function renderPlatformRushCollectibles() {
+  if (state.matchType !== 'rush' || !state.platformRush || state.platformRush.finished) return;
+  const player = state.players[0];
+  for (const item of state.platformRush.collectibles) {
+    if (item.collected) continue;
+    const pos = worldToScreen(item.x, item.y);
+    const z = state.camera.zoom;
+    const pulse = 0.75 + Math.sin(state.frameCount * 0.09 + item.x * 0.01) * 0.25;
+    const dist = player ? Math.hypot(finite(player.x, 0) - item.x, finite(player.y, 0) - item.y) : 999;
+    const hiddenAlpha = item.hidden ? (dist < 170 ? 0.96 : 0.38 + pulse * 0.14) : 1;
+    ctx.save();
+    ctx.translate(pos.x, pos.y);
+    ctx.scale(z, z);
+    ctx.globalAlpha = hiddenAlpha;
+
+    if (item.type === 'deepCut') {
+      ctx.save();
+      ctx.rotate(Math.PI / 4 + state.frameCount * 0.012);
+      ctx.fillStyle = `rgba(255,211,106,${0.22 + pulse * 0.18})`;
+      ctx.fillRect(-18, -18, 36, 36);
+      ctx.strokeStyle = '#ffd36a';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-12, -12, 24, 24);
+      ctx.fillStyle = '#fff2ad';
+      ctx.fillRect(-5, -5, 10, 10);
+      ctx.restore();
+      ctx.fillStyle = '#ffd36a';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('DEEP', 0, 29);
+    } else {
+      ctx.fillStyle = `rgba(126,232,255,${0.14 + pulse * 0.18})`;
+      ctx.beginPath();
+      ctx.arc(0, 0, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#111827';
+      ctx.beginPath();
+      ctx.arc(0, 0, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#9ee8ff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 15, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#ff5db0';
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(0, 0, 9, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+
 // --- Blast Zones / Death ---
 function checkBlastZones() {
   for (const p of state.players) {
     if (p.state === 'dead' || p.state === 'respawning') continue;
     if (p.x < BLAST.left || p.x > BLAST.right || p.y < BLAST.top || p.y > BLAST.bottom) {
       // KO!
+      const killer = state.players.find(pl => pl !== p && pl.state !== 'dead');
+      recordCombatEvent(state.matchType === 'training' ? 'ringout' : 'ko', killer, p, {
+        attack: 'blast-zone',
+        targetDamage: p.damage,
+        launch: { vx: p.vx, vy: p.vy },
+      });
+      triggerScreenShake(10, killer, p, p.vx, p.vy);
+
+      if (state.matchType === 'rush') {
+        const spawn = currentStage.spawns[0];
+        p.x = spawn.x;
+        p.y = spawn.y - 100;
+        p.vx = 0;
+        p.vy = 0;
+        p.damage = 0;
+        p.state = 'respawning';
+        p.stateTimer = 40;
+        p.invincible = RESPAWN_INVINCIBILITY;
+        state.platformRush.score = Math.max(0, finite(state.platformRush.score, 0) - 75);
+        state.platformRush.timeRemaining = Math.max(0, finite(state.platformRush.timeRemaining, 0) - 5);
+        playSound('death');
+        spawnHitSparks(p.x, p.y, 12, '#ff4a6a');
+        saveActiveMatchSnapshot(true);
+        return;
+      }
+
       if (state.matchType === 'time') {
         // Time match: score system
-        const killer = state.players.find(pl => pl !== p && pl.state !== 'dead');
         if (killer) killer.score++;
         else p.score--; // self-destruct
         // Respawn
@@ -2002,6 +3715,8 @@ function checkBlastZones() {
       }
 
       // Stock match
+      if (killer) killer.score++;
+      else p.score = finite(p.score, 0) - 1;
       p.stocks--;
       playSound('ko'); playSound('cheer');
       spawnHitSparks(p.x, p.y, 20, '#ff0000');
@@ -2011,6 +3726,7 @@ function checkBlastZones() {
         const alive = state.players.filter(pl => pl.stocks > 0);
         if (alive.length <= 1) {
           state.winner = alive.length === 1 ? alive[0].idx : -1;
+          recordVersusProgression('stock');
           // Final KO slow-mo
           state.slowMo = 0.3; state.slowMoTimer = 90;
           state.slowMoTarget = { x: p.x, y: p.y };
@@ -2087,10 +3803,16 @@ function updateCamera() {
 
 function updateScreenShake() {
   if (state.screenShake.intensity > 0.5) {
-    state.screenShake.x = (Math.random() - 0.5) * state.screenShake.intensity * 2;
-    state.screenShake.y = (Math.random() - 0.5) * state.screenShake.intensity * 2;
+    state.screenShake.x = finite(state.screenShake.vectorX, 0) * state.screenShake.intensity;
+    state.screenShake.y = finite(state.screenShake.vectorY, 0) * state.screenShake.intensity;
     state.screenShake.intensity *= 0.85;
-  } else { state.screenShake.x = 0; state.screenShake.y = 0; state.screenShake.intensity = 0; }
+  } else {
+    state.screenShake.x = 0;
+    state.screenShake.y = 0;
+    state.screenShake.intensity = 0;
+    state.screenShake.vectorX = 0;
+    state.screenShake.vectorY = 0;
+  }
 }
 
 // --- Main Update ---
@@ -2117,6 +3839,7 @@ function update(dt) {
         const p1 = state.players[0], p2 = state.players[1];
         state.winner = p1.score > p2.score ? 0 : p2.score > p1.score ? 1 : -1;
         state.mode = 'results'; state.confettiSpawned = false;
+        recordVersusProgression('time');
         clearActiveMatchSnapshot();
         return;
       }
@@ -2152,6 +3875,8 @@ function update(dt) {
     carryPlayersOnMovingPlatforms();
     checkHits();
     checkBlastZones();
+    updatePlatformRush(dt);
+    if (state.mode === 'results') return;
     updateCamera();
     updateScreenShake();
     updateParticles(dt);
@@ -3025,7 +4750,145 @@ function renderParallaxBG(stage) {
         ctx.stroke();
       }
       ctx.globalCompositeOperation = 'source-over';
-
+    } else if (layer.shapes === 'runefoundrysky') {
+      const grd = ctx.createLinearGradient(0, 0, 0, BASE_H);
+      grd.addColorStop(0, '#0b1020');
+      grd.addColorStop(0.42, '#1b1622');
+      grd.addColorStop(0.72, '#382115');
+      grd.addColorStop(1, '#5a2a18');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, BASE_W, BASE_H);
+      ctx.fillStyle = 'rgba(9,14,22,0.36)';
+      ctx.beginPath();
+      ctx.moveTo(-60 + ox * 0.1, BASE_H * 0.62);
+      ctx.lineTo(130 + ox * 0.08, BASE_H * 0.34);
+      ctx.lineTo(320 + ox * 0.1, BASE_H * 0.62);
+      ctx.lineTo(520 + ox * 0.05, BASE_H * 0.28);
+      ctx.lineTo(780 + ox * 0.08, BASE_H * 0.62);
+      ctx.lineTo(BASE_W + 80 + ox * 0.1, BASE_H * 0.4);
+      ctx.lineTo(BASE_W + 80, BASE_H);
+      ctx.lineTo(-60, BASE_H);
+      ctx.closePath();
+      ctx.fill();
+    } else if (layer.shapes === 'runefoundry') {
+      const bx = ox * 0.18;
+      ctx.fillStyle = 'rgba(22,18,20,0.72)';
+      ctx.fillRect(0, BASE_H - 190, BASE_W, 190);
+      ctx.fillStyle = 'rgba(82,65,54,0.58)';
+      for (let i = 0; i < 7; i++) {
+        const px = 42 + i * 148 + bx;
+        ctx.fillRect(px, BASE_H - 235, 44, 190);
+        ctx.fillStyle = 'rgba(158,114,70,0.38)';
+        ctx.beginPath();
+        ctx.moveTo(px - 12, BASE_H - 235);
+        ctx.lineTo(px + 22, BASE_H - 282);
+        ctx.lineTo(px + 56, BASE_H - 235);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = 'rgba(82,65,54,0.58)';
+      }
+      ctx.fillStyle = 'rgba(18,12,10,0.62)';
+      ctx.fillRect(180 + bx, BASE_H - 170, 600, 150);
+      ctx.strokeStyle = 'rgba(255,156,72,0.34)';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 5; i++) {
+        const rx = 230 + bx + i * 118;
+        ctx.strokeRect(rx, BASE_H - 132, 42, 58);
+        ctx.beginPath();
+        ctx.moveTo(rx + 21, BASE_H - 126);
+        ctx.lineTo(rx + 21, BASE_H - 84);
+        ctx.moveTo(rx + 8, BASE_H - 106);
+        ctx.lineTo(rx + 34, BASE_H - 106);
+        ctx.stroke();
+      }
+      const lava = ctx.createLinearGradient(0, BASE_H - 38, 0, BASE_H);
+      lava.addColorStop(0, 'rgba(255,176,65,0.25)');
+      lava.addColorStop(1, 'rgba(136,38,12,0.48)');
+      ctx.fillStyle = lava;
+      for (let i = 0; i < 4; i++) {
+        const lx = 120 + i * 230 + Math.sin(t * 0.012 + i) * 18;
+        ctx.fillRect(lx, BASE_H - 34, 132, 10);
+      }
+    } else if (layer.shapes === 'runeglow') {
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 18; i++) {
+        const seed = 72 + i * 21.7;
+        const rx = wrapValue(seeded01(seed) * BASE_W + ox * 0.12, BASE_W);
+        const ry = seededRange(seed + 4, 74, BASE_H - 120) + Math.sin(t * 0.018 + i) * 10;
+        const pulse = 0.28 + (Math.sin(t * 0.04 + i * 1.7) * 0.5 + 0.5) * 0.28;
+        ctx.save();
+        ctx.translate(rx, ry);
+        ctx.rotate(0.78 + Math.sin(t * 0.006 + i) * 0.16);
+        ctx.strokeStyle = `rgba(74,232,188,${pulse})`;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-5, -5, 10, 10);
+        ctx.beginPath();
+        ctx.moveTo(-3, 0);
+        ctx.lineTo(3, 0);
+        ctx.moveTo(0, -3);
+        ctx.lineTo(0, 3);
+        ctx.stroke();
+        ctx.restore();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    } else if (layer.shapes === 'crystalsky') {
+      const grd = ctx.createLinearGradient(0, 0, 0, BASE_H);
+      grd.addColorStop(0, '#071522');
+      grd.addColorStop(0.45, '#124044');
+      grd.addColorStop(0.78, '#1f5f4e');
+      grd.addColorStop(1, '#284228');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, BASE_W, BASE_H);
+      ctx.fillStyle = 'rgba(210,255,232,0.06)';
+      for (let i = 0; i < 5; i++) {
+        const cy = BASE_H * (0.16 + i * 0.12) + Math.sin(t * 0.008 + i) * 4;
+        ctx.fillRect(0, cy, BASE_W, 5);
+      }
+    } else if (layer.shapes === 'crystalgrove') {
+      const bx = ox * 0.22;
+      ctx.fillStyle = 'rgba(9,28,27,0.72)';
+      ctx.fillRect(0, BASE_H - 180, BASE_W, 180);
+      for (let i = 0; i < 8; i++) {
+        const cx = 44 + i * 136 + bx;
+        const h = 130 + (i % 3) * 42;
+        ctx.fillStyle = i % 2 === 0 ? 'rgba(34,75,58,0.62)' : 'rgba(26,62,74,0.58)';
+        ctx.beginPath();
+        ctx.moveTo(cx - 18, BASE_H);
+        ctx.lineTo(cx - 10, BASE_H - h);
+        ctx.lineTo(cx + 14, BASE_H - h - 24);
+        ctx.lineTo(cx + 24, BASE_H);
+        ctx.closePath();
+        ctx.fill();
+        const shard = ctx.createLinearGradient(cx - 28, BASE_H - h - 72, cx + 28, BASE_H - h + 32);
+        shard.addColorStop(0, 'rgba(172,255,226,0.22)');
+        shard.addColorStop(1, 'rgba(70,165,194,0.08)');
+        ctx.fillStyle = shard;
+        ctx.beginPath();
+        ctx.moveTo(cx, BASE_H - h - 72);
+        ctx.lineTo(cx + 34, BASE_H - h + 16);
+        ctx.lineTo(cx - 6, BASE_H - h + 44);
+        ctx.lineTo(cx - 32, BASE_H - h + 4);
+        ctx.closePath();
+        ctx.fill();
+      }
+    } else if (layer.shapes === 'crystalshards') {
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < 20; i++) {
+        const seed = 31 + i * 14.6;
+        const sx = wrapValue(seeded01(seed) * BASE_W + ox * 0.15, BASE_W);
+        const sy = seededRange(seed + 2, 58, BASE_H - 100) + Math.sin(t * 0.014 + i * 1.2) * 14;
+        const size = seededRange(seed + 5, 7, 18);
+        const alpha = 0.16 + (Math.sin(t * 0.036 + i) * 0.5 + 0.5) * 0.18;
+        ctx.fillStyle = `rgba(150,255,224,${alpha})`;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - size);
+        ctx.lineTo(sx + size * 0.55, sy);
+        ctx.lineTo(sx, sy + size);
+        ctx.lineTo(sx - size * 0.55, sy);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
     }
     ctx.restore();
   }
@@ -3116,6 +4979,121 @@ function renderPlatforms() {
         ctx.moveTo(tl.x + pw * 0.2, tl.y + ph - 2 * z);
         ctx.lineTo(tl.x + pw * 0.48, tl.y + 2 * z);
         ctx.lineTo(tl.x + pw * 0.8, tl.y + ph - 2 * z);
+        ctx.stroke();
+      }
+    } else if (theme === 'runic') {
+      const pulse = Math.sin(t * 0.045 + plat.x * 0.01) * 0.18 + 0.72;
+      if (plat.type === 'solid') {
+        const stoneGrad = ctx.createLinearGradient(tl.x, tl.y, tl.x, tl.y + ph);
+        stoneGrad.addColorStop(0, '#786958');
+        stoneGrad.addColorStop(0.45, '#4a4038');
+        stoneGrad.addColorStop(1, '#231d1f');
+        ctx.fillStyle = stoneGrad;
+        ctx.beginPath();
+        ctx.moveTo(tl.x + 10 * z, tl.y);
+        ctx.lineTo(tl.x + pw - 10 * z, tl.y);
+        ctx.lineTo(tl.x + pw, tl.y + ph * 0.34);
+        ctx.lineTo(tl.x + pw - 18 * z, tl.y + ph);
+        ctx.lineTo(tl.x + 18 * z, tl.y + ph);
+        ctx.lineTo(tl.x, tl.y + ph * 0.34);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = `rgba(255,176,78,${0.22 + pulse * 0.18})`;
+        ctx.fillRect(tl.x + 12 * z, tl.y, pw - 24 * z, topLip);
+        ctx.strokeStyle = 'rgba(18,10,8,0.36)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 7; i++) {
+          const bx = tl.x + (i + 1) * pw / 8;
+          ctx.beginPath();
+          ctx.moveTo(bx, tl.y + 5 * z);
+          ctx.lineTo(bx - 12 * z, tl.y + ph - 5 * z);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = `rgba(70,238,190,${0.22 + pulse * 0.22})`;
+        ctx.lineWidth = Math.max(1, 1.5 * z);
+        for (let i = 0; i < 4; i++) {
+          const rx = tl.x + pw * (0.18 + i * 0.21);
+          const ry = tl.y + ph * 0.48;
+          ctx.strokeRect(rx - 4 * z, ry - 4 * z, 8 * z, 8 * z);
+        }
+      } else {
+        ctx.fillStyle = 'rgba(64,52,48,0.92)';
+        ctx.beginPath();
+        ctx.moveTo(tl.x + 8 * z, tl.y);
+        ctx.lineTo(tl.x + pw - 8 * z, tl.y);
+        ctx.lineTo(tl.x + pw - 2 * z, tl.y + ph * 0.45);
+        ctx.lineTo(tl.x + pw * 0.72, tl.y + ph);
+        ctx.lineTo(tl.x + pw * 0.25, tl.y + ph);
+        ctx.lineTo(tl.x + 2 * z, tl.y + ph * 0.45);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = `rgba(70,238,190,${0.34 + pulse * 0.22})`;
+        ctx.fillRect(tl.x + 8 * z, tl.y, pw - 16 * z, Math.max(2, 2 * z));
+        ctx.strokeStyle = 'rgba(255,176,78,0.24)';
+        ctx.lineWidth = 1.2 * z;
+        ctx.beginPath();
+        ctx.moveTo(tl.x + pw * 0.2, tl.y + ph - 2 * z);
+        ctx.lineTo(tl.x + pw * 0.5, tl.y + 2 * z);
+        ctx.lineTo(tl.x + pw * 0.8, tl.y + ph - 2 * z);
+        ctx.stroke();
+      }
+    } else if (theme === 'crystal') {
+      const pulse = Math.sin(t * 0.05 + plat.y * 0.01) * 0.18 + 0.72;
+      if (plat.type === 'solid') {
+        const crystalGrad = ctx.createLinearGradient(tl.x, tl.y, tl.x + pw, tl.y + ph);
+        crystalGrad.addColorStop(0, '#2a715f');
+        crystalGrad.addColorStop(0.45, '#18464a');
+        crystalGrad.addColorStop(1, '#10242b');
+        ctx.fillStyle = crystalGrad;
+        ctx.beginPath();
+        ctx.moveTo(tl.x + 18 * z, tl.y);
+        ctx.lineTo(tl.x + pw - 20 * z, tl.y);
+        ctx.lineTo(tl.x + pw, tl.y + ph * 0.46);
+        ctx.lineTo(tl.x + pw - 36 * z, tl.y + ph);
+        ctx.lineTo(tl.x + 26 * z, tl.y + ph);
+        ctx.lineTo(tl.x, tl.y + ph * 0.42);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = `rgba(160,255,226,${0.2 + pulse * 0.18})`;
+        ctx.fillRect(tl.x + 14 * z, tl.y, pw - 28 * z, topLip);
+        ctx.strokeStyle = 'rgba(198,255,238,0.18)';
+        ctx.lineWidth = 1.5 * z;
+        for (let i = 0; i < 5; i++) {
+          const sx = tl.x + pw * (0.14 + i * 0.17);
+          ctx.beginPath();
+          ctx.moveTo(sx, tl.y + 4 * z);
+          ctx.lineTo(sx + 20 * z, tl.y + ph - 6 * z);
+          ctx.stroke();
+        }
+        for (let i = 0; i < 4; i++) {
+          const shardX = tl.x + pw * (0.2 + i * 0.2);
+          ctx.fillStyle = `rgba(174,255,235,${0.14 + pulse * 0.16})`;
+          ctx.beginPath();
+          ctx.moveTo(shardX, tl.y + ph + 4 * z);
+          ctx.lineTo(shardX + 6 * z, tl.y + ph + 20 * z);
+          ctx.lineTo(shardX - 5 * z, tl.y + ph + 17 * z);
+          ctx.closePath();
+          ctx.fill();
+        }
+      } else {
+        ctx.fillStyle = 'rgba(22,64,72,0.82)';
+        ctx.beginPath();
+        ctx.moveTo(tl.x + 10 * z, tl.y);
+        ctx.lineTo(tl.x + pw - 10 * z, tl.y);
+        ctx.lineTo(tl.x + pw, tl.y + ph * 0.5);
+        ctx.lineTo(tl.x + pw - 12 * z, tl.y + ph);
+        ctx.lineTo(tl.x + 12 * z, tl.y + ph);
+        ctx.lineTo(tl.x, tl.y + ph * 0.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = `rgba(170,255,232,${0.36 + pulse * 0.22})`;
+        ctx.fillRect(tl.x + 8 * z, tl.y + 1, pw - 16 * z, Math.max(2, 2 * z));
+        ctx.strokeStyle = 'rgba(104,220,255,0.24)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(tl.x + pw * 0.22, tl.y + ph - 2 * z);
+        ctx.lineTo(tl.x + pw * 0.52, tl.y + 2 * z);
+        ctx.lineTo(tl.x + pw * 0.78, tl.y + ph - 2 * z);
         ctx.stroke();
       }
     } else if (theme === 'sky') {
@@ -3965,6 +5943,40 @@ function drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, style) {
         ctx.arc(-6 * z + i * 5 * z, armH * 0.36, 1.5 * z, 0, Math.PI * 2);
         ctx.fill();
       }
+    } else if (style.prop === 'rune') {
+      const runeSize = 9 * z;
+      ctx.save();
+      ctx.translate(0, armH * 0.28);
+      ctx.rotate(Math.PI / 4 + Math.sin(state.frameCount * 0.04) * 0.12);
+      ctx.fillStyle = accent;
+      ctx.globalAlpha = 0.9;
+      ctx.fillRect(-runeSize * 0.55, -runeSize * 0.55, runeSize * 1.1, runeSize * 1.1);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = accent2;
+      ctx.lineWidth = 1.5 * z;
+      ctx.strokeRect(-runeSize * 0.65, -runeSize * 0.65, runeSize * 1.3, runeSize * 1.3);
+      ctx.beginPath();
+      ctx.moveTo(-runeSize * 0.36, 0);
+      ctx.lineTo(runeSize * 0.36, 0);
+      ctx.moveTo(0, -runeSize * 0.36);
+      ctx.lineTo(0, runeSize * 0.36);
+      ctx.stroke();
+      ctx.restore();
+    } else if (style.prop === 'hammer') {
+      ctx.save();
+      ctx.translate(0, armH * 0.25);
+      ctx.rotate(-0.18);
+      ctx.fillStyle = '#3f3028';
+      ctx.fillRect(-2 * z, -8 * z, 4 * z, 23 * z);
+      const metal = ctx.createLinearGradient(-10 * z, -12 * z, 10 * z, -3 * z);
+      metal.addColorStop(0, '#5b4b3f');
+      metal.addColorStop(0.5, accent2);
+      metal.addColorStop(1, '#2f2620');
+      ctx.fillStyle = metal;
+      ctx.fillRect(-11 * z, -13 * z, 22 * z, 9 * z);
+      ctx.fillStyle = style.glow || 'rgba(255,130,60,0.35)';
+      ctx.fillRect(-8 * z, -13 * z, 16 * z, 2 * z);
+      ctx.restore();
     } else if (style.prop === 'tendrils') {
       // Rezz dark swirling tendrils
       ctx.strokeStyle = accent;
@@ -4176,6 +6188,30 @@ function drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, style) {
         ctx.beginPath();
         ctx.arc(bx, by, hb.w * 0.12, 0, Math.PI * 2);
         ctx.fill();
+      }
+    } else if (style.prop === 'rune') {
+      const runeAlpha = Math.max(0, 0.62 - vfxProgress * 0.62);
+      ctx.strokeStyle = `rgba(70, 238, 190, ${runeAlpha})`;
+      ctx.lineWidth = 2 * z;
+      for (let i = 0; i < 4; i++) {
+        const size = hb.w * (0.18 + i * 0.13 + vfxProgress * 0.45);
+        ctx.save();
+        ctx.translate(vfxX, vfxY);
+        ctx.rotate(Math.PI / 4 + i * 0.4);
+        ctx.strokeRect(-size / 2, -size / 2, size, size);
+        ctx.restore();
+      }
+    } else if (style.prop === 'hammer') {
+      const slamAlpha = Math.max(0, 0.68 - vfxProgress * 0.68);
+      ctx.strokeStyle = `rgba(255, 154, 70, ${slamAlpha})`;
+      ctx.lineWidth = 3 * z;
+      for (let i = 0; i < 5; i++) {
+        const angle = -0.9 + i * 0.45;
+        const len = hb.w * (0.36 + vfxProgress * 0.55);
+        ctx.beginPath();
+        ctx.moveTo(vfxX, vfxY);
+        ctx.lineTo(vfxX + Math.cos(angle) * len, vfxY + Math.sin(angle) * len);
+        ctx.stroke();
       }
     } else if (style.prop === 'tendrils') {
       // Rezz: Purple swirling tendrils
@@ -5235,6 +7271,22 @@ function drawRezz(ctx, p, w, h, z, color, outline, bodyColor) {
   });
 }
 
+function drawRuneWeaver(ctx, p, w, h, z, color, outline, bodyColor) {
+  drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, {
+    bulk: 0, outerwear: 'vest', head: 'human', hair: 'short', chest: 'diamond',
+    dark: '#17332f', pants: '#13241f', shoes: '#d7f3d3', accent2: '#f0c75a',
+    prop: 'rune', glow: 'rgba(70,238,190,0.48)', shieldFill: 'rgba(70,238,190,0.22)', shieldStroke: 'rgba(240,199,90,0.58)',
+  });
+}
+
+function drawBassForger(ctx, p, w, h, z, color, outline, bodyColor) {
+  drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, {
+    bulk: 0.18, outerwear: 'coat', head: 'mechvisor', chest: 'circuit',
+    dark: '#2f1710', pants: '#24120d', shoes: '#5e3220', accent2: '#ffb24d',
+    gloves: true, prop: 'hammer', glow: 'rgba(255,129,49,0.48)', shieldFill: 'rgba(255,129,49,0.20)', shieldStroke: 'rgba(255,190,90,0.58)',
+  });
+}
+
 // DJ_DRAW routing map
 const DJ_DRAW = {
   deadmau5: drawDeadmau5,
@@ -5249,6 +7301,8 @@ const DJ_DRAW = {
   aphextwin: drawAphexTwin,
   calvinharris: drawCalvinHarris,
   rezz: drawRezz,
+  runeweaver: drawRuneWeaver,
+  bassforger: drawBassForger,
 };
 
 function renderPlayer(p) {
@@ -5359,6 +7413,46 @@ function renderHitboxOverlay(p) {
   }
 }
 
+function formatClock(seconds) {
+  const safe = Math.max(0, Math.ceil(finite(seconds, 0)));
+  const mins = Math.floor(safe / 60);
+  const secs = safe % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function renderPlatformRushHUD() {
+  const rush = state.platformRush || createPlatformRushState();
+  const x = 16;
+  const y = 12;
+  const w = 342;
+  const h = 74;
+  ctx.save();
+  ctx.fillStyle = 'rgba(5,8,18,0.82)';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = 'rgba(255,211,106,0.44)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+  ctx.fillStyle = '#ffd36a';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('PLATFORM RUSH', x + 14, y + 12);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 24px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText(formatClock(rush.timeRemaining), x + w - 14, y + 8);
+  ctx.textAlign = 'left';
+  ctx.font = '12px monospace';
+  ctx.fillStyle = '#dce8f7';
+  ctx.fillText(`Score ${Math.round(finite(rush.score, 0))}`, x + 14, y + 38);
+  ctx.fillStyle = '#9ee8ff';
+  ctx.fillText(`Records ${rush.recordsCollected}/${rush.totalRecords}`, x + 136, y + 38);
+  ctx.fillStyle = '#ffd36a';
+  ctx.fillText(`Deep Cuts ${rush.deepCutsCollected}/${rush.totalDeepCuts}`, x + 254, y + 38);
+  ctx.fillStyle = '#8fa1b8';
+  ctx.fillText('R restart  |  P pause  |  collect all records', x + 14, y + 58);
+  ctx.restore();
+}
+
 function renderHUD() {
   const hudY = BASE_H - 50;
 
@@ -5369,9 +7463,11 @@ function renderHUD() {
     ctx.fillStyle = '#fff'; ctx.font = 'bold 24px monospace'; ctx.textAlign = 'center';
     ctx.fillText(`${mins}:${secs.toString().padStart(2, '0')}`, BASE_W / 2, 35);
   }
+  if (state.matchType === 'rush') renderPlatformRushHUD();
 
   for (let i = 0; i < state.players.length; i++) {
     const p = state.players[i];
+    if (p.state === 'dead' || (state.matchType === 'rush' && i > 0)) continue;
     const hx = i === 0 ? 120 : BASE_W - 120;
     const color = p.useAltColor ? p.def.altColor : p.def.color;
 
@@ -5401,7 +7497,10 @@ function renderHUD() {
     ctx.fillText(`${Math.floor(p.damage)}%`, hx, hudY + 22);
 
     // Stocks or score
-    if (state.matchType === 'time') {
+    if (state.matchType === 'rush') {
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 14px monospace';
+      ctx.fillText(`Score: ${Math.round(finite(state.platformRush.score, 0))}`, hx, hudY - 32);
+    } else if (state.matchType === 'time') {
       ctx.fillStyle = '#fff'; ctx.font = 'bold 14px monospace';
       ctx.fillText(`Score: ${p.score}`, hx, hudY - 32);
     } else {
@@ -5418,42 +7517,116 @@ function renderHUD() {
 }
 
 function renderTrainingHUD() {
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(BASE_W - 200, 5, 195, 100);
-  ctx.fillStyle = '#aaa'; ctx.font = '11px monospace'; ctx.textAlign = 'left';
-  ctx.fillText('TRAINING MODE', BASE_W - 190, 20);
-  ctx.fillText('H: Toggle hitboxes', BASE_W - 190, 35);
-  ctx.fillText('R: Reset damage', BASE_W - 190, 50);
-  ctx.fillText(`Hitboxes: ${options.showHitboxes ? 'ON' : 'OFF'}`, BASE_W - 190, 65);
+  const data = getTrainingTelemetry();
+  const x = BASE_W - 318;
+  const y = 8;
+  const w = 310;
+  const h = 188;
+  const line = 13;
+  const signed = value => `${value >= 0 ? '+' : ''}${value}`;
 
-  // Show frame data for attacking player
-  for (const p of state.players) {
-    if (p.state === 'attack' && p.attackData) {
-      const atk = p.attackData;
-      ctx.fillText(`S:${atk.startup} A:${atk.active} E:${atk.endlag} F:${p.attackFrame}`, BASE_W - 190, 80);
-      ctx.fillText(`DMG:${atk.damage} KB:${atk.kbBase}+${atk.kbScale}`, BASE_W - 190, 95);
-      break;
+  ctx.save();
+  ctx.fillStyle = 'rgba(5,8,18,0.78)';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = 'rgba(0,240,255,0.38)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.font = 'bold 12px monospace';
+  ctx.fillStyle = '#e8fbff';
+  ctx.fillText('TRAINING LAB', x + 10, y + 8);
+  ctx.font = '11px monospace';
+  ctx.fillStyle = '#9bd7ff';
+  ctx.fillText(`H hitboxes ${data.hitboxesVisible ? 'ON' : 'OFF'}   R reset`, x + 126, y + 9);
+
+  ctx.fillStyle = '#b8c8d8';
+  ctx.fillText(`Frame ${data.frame}   Hitstop ${data.hitstopFrames}   Shake ${data.screenShake.intensity.toFixed(1)}`, x + 10, y + 27);
+
+  const playerY = y + 47;
+  for (const player of data.players) {
+    const colX = x + 10 + player.idx * 150;
+    const label = `P${player.idx + 1} ${player.fighter}`.slice(0, 17);
+    ctx.fillStyle = player.idx === 0 ? '#ff5db0' : '#78f1ff';
+    ctx.font = 'bold 11px monospace';
+    ctx.fillText(label, colX, playerY);
+    ctx.font = '10px monospace';
+    ctx.fillStyle = '#f2f6ff';
+    ctx.fillText(`Dmg ${player.damage.toFixed(1)}  Hstun ${player.hitstunFrames}`, colX, playerY + line);
+    ctx.fillStyle = player.shield.active ? '#7df3ff' : '#aeb6c2';
+    ctx.fillText(`Shield ${player.shield.hp.toFixed(0)} ${player.shield.active ? 'ACTIVE' : 'idle'}`, colX, playerY + line * 2);
+    ctx.fillStyle = '#f2f6ff';
+    if (player.attack) {
+      ctx.fillText(`Atk ${player.attack.key} ${player.attack.phase}`, colX, playerY + line * 3);
+      ctx.fillText(`F${player.attack.frame} S${player.attack.startup} A${player.attack.active} E${player.attack.endlag}`, colX, playerY + line * 4);
+    } else {
+      ctx.fillText(`State ${player.state}`, colX, playerY + line * 3);
+      ctx.fillText('Atk none', colX, playerY + line * 4);
+    }
+    const launch = player.launch ? `${signed(player.launch.vx)},${signed(player.launch.vy)}` : 'none';
+    ctx.fillText(`Launch ${launch}`, colX, playerY + line * 5);
+  }
+
+  const eventY = y + 136;
+  ctx.fillStyle = '#9bd7ff';
+  ctx.font = 'bold 10px monospace';
+  ctx.fillText('RECENT HITS', x + 10, eventY);
+  ctx.font = '10px monospace';
+  const events = data.recentHitEvents.slice(0, 3);
+  if (events.length === 0) {
+    ctx.fillStyle = '#7e8c9a';
+    ctx.fillText('No contacts yet', x + 10, eventY + line);
+  } else {
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
+      const a = event.attacker ? `P${event.attacker.idx + 1}` : '--';
+      const t = event.target ? `P${event.target.idx + 1}` : '--';
+      const kb = event.knockback !== null ? `KB ${event.knockback.toFixed(0)}` : 'shield';
+      const launch = event.launch ? `L ${signed(event.launch.vx)},${signed(event.launch.vy)}` : '';
+      ctx.fillStyle = i === 0 ? '#ffffff' : '#c0cad8';
+      ctx.fillText(`F${event.frame} ${a}->${t} ${event.type} +${event.damage.toFixed(1)} ${kb} ${launch}`.slice(0, 48), x + 10, eventY + line * (i + 1));
     }
   }
+
+  ctx.restore();
 }
 
 // --- Menu Screens ---
 function renderTitle() {
-  ctx.fillStyle = '#0a0a1a'; ctx.fillRect(0, 0, BASE_W, BASE_H);
+  const heroStage = STAGES.runeFoundry || STAGES.battlefield;
+  ctx.fillStyle = heroStage.bg;
+  ctx.fillRect(0, 0, BASE_W, BASE_H);
+  const savedCam = { ...state.camera };
+  state.camera = { x: Math.sin(state.frameCount * 0.01) * 28, y: 80, zoom: 1 };
+  renderParallaxBG(heroStage);
+  state.camera = savedCam;
+  const shade = ctx.createLinearGradient(0, 0, 0, BASE_H);
+  shade.addColorStop(0, 'rgba(2,3,8,0.2)');
+  shade.addColorStop(0.42, 'rgba(2,3,8,0.36)');
+  shade.addColorStop(1, 'rgba(2,3,8,0.82)');
+  ctx.fillStyle = shade;
+  ctx.fillRect(0, 0, BASE_W, BASE_H);
 
   // Title gradient text
   const grad = ctx.createLinearGradient(BASE_W/2 - 200, 0, BASE_W/2 + 200, 0);
-  grad.addColorStop(0, '#FF2D6B'); grad.addColorStop(0.5, '#B429F9'); grad.addColorStop(1, '#00F0FF');
+  grad.addColorStop(0, '#f0c75a'); grad.addColorStop(0.5, '#38d7b8'); grad.addColorStop(1, '#ff8f42');
   ctx.fillStyle = grad; ctx.font = 'bold 72px monospace'; ctx.textAlign = 'center';
   ctx.fillText('MIXMASH', BASE_W / 2, BASE_H / 3);
-  ctx.fillStyle = '#888'; ctx.font = '18px monospace';
-  ctx.fillText('Drop the Beat. Throw the Punch.', BASE_W / 2, BASE_H / 3 + 40);
+  ctx.fillStyle = '#d8ccb8'; ctx.font = '18px monospace';
+  ctx.fillText('Forge the route. Win the fight.', BASE_W / 2, BASE_H / 3 + 40);
 
   ctx.fillStyle = '#aaa'; ctx.font = '16px monospace';
   const y0 = BASE_H / 2 + 20;
-  ctx.fillText('Press ENTER to start', BASE_W / 2, y0);
+  ctx.fillText('Q = Quick Fight  |  ENTER = Setup Match', BASE_W / 2, y0);
+  const qStage = STAGES[quickFightSetup.selectedStage] || STAGES.battlefield;
+  const qP1 = FIGHTER_DEFS[quickFightSetup.p1Fighter] || FIGHTER_DEFS[FIGHTER_KEYS[0]];
+  const qP2 = FIGHTER_DEFS[quickFightSetup.p2Fighter] || FIGHTER_DEFS[FIGHTER_KEYS[1]] || qP1;
+  ctx.fillStyle = '#777'; ctx.font = '13px monospace';
+  const qP2Label = quickFightSetup.p2Cpu ? `${qP2.name} CPU` : qP2.name;
+  ctx.fillText(`${qP1.name} vs ${qP2Label}  |  ${qStage.name}  |  ${quickFightSetup.matchType.toUpperCase()}`, BASE_W / 2, y0 + 24);
   ctx.fillStyle = '#666'; ctx.font = '14px monospace';
-  ctx.fillText(snapshotAvailable ? 'R = Resume  |  O = Options  |  F = Fullscreen' : 'O = Options  |  F = Fullscreen', BASE_W / 2, y0 + 40);
+  ctx.fillText(snapshotAvailable ? 'R = Resume  |  O = Menu  |  F = Fullscreen' : 'O = Menu  |  F = Fullscreen', BASE_W / 2, y0 + 56);
 }
 
 function drawStatBar(x, y, w, label, value, maxVal, color) {
@@ -5600,7 +7773,13 @@ function renderCharSelect() {
 
   // Controls
   ctx.fillStyle = '#555'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
-  ctx.fillText('P1: A/D select, J confirm, W/S CPU  |  P2: Arrows, Num1 confirm, Up/Down CPU  |  ESC Back', BASE_W / 2, BASE_H - 8);
+  if (state.charSelectCursors[1].cpu) {
+    ctx.fillText('P1: A/D choose, J confirm  |  P2 CPU: Arrows choose, Up human, Down level  |  ENTER confirm', BASE_W / 2, BASE_H - 24);
+    ctx.fillText('ESC Back', BASE_W / 2, BASE_H - 8);
+  } else {
+    ctx.fillText('P1: A/D choose, J confirm  |  P2: Arrows choose, Num1 confirm, Up CPU  |  ENTER confirm', BASE_W / 2, BASE_H - 24);
+    ctx.fillText('ESC Back', BASE_W / 2, BASE_H - 8);
+  }
 }
 
 function renderStageSelect() {
@@ -5857,6 +8036,68 @@ function renderStageSelect() {
         ctx.moveTo(x + cellW * 0.5, y + cellH * 0.5);
         ctx.lineTo(x + cellW, y + cellH * 0.5);
         ctx.stroke();
+      } else if (layer.shapes === 'runefoundrysky') {
+        const grd = ctx.createLinearGradient(x, y, x, y + cellH);
+        grd.addColorStop(0, '#0b1020');
+        grd.addColorStop(0.7, '#382115');
+        grd.addColorStop(1, '#5a2a18');
+        ctx.fillStyle = grd;
+        ctx.fillRect(x, y, cellW, cellH);
+      } else if (layer.shapes === 'runefoundry') {
+        ctx.fillStyle = 'rgba(42,32,28,0.75)';
+        ctx.fillRect(x, y + cellH * 0.44, cellW, cellH * 0.56);
+        ctx.strokeStyle = 'rgba(255,160,72,0.32)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 3; i++) {
+          const rx = x + 34 + i * 42;
+          ctx.strokeRect(rx, y + 42, 18, 24);
+        }
+      } else if (layer.shapes === 'runeglow') {
+        ctx.strokeStyle = 'rgba(74,232,188,0.42)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 4; i++) {
+          const rx = x + 28 + i * 34;
+          const ry = y + 18 + (i % 2) * 22;
+          ctx.save();
+          ctx.translate(rx, ry);
+          ctx.rotate(0.78);
+          ctx.strokeRect(-4, -4, 8, 8);
+          ctx.restore();
+        }
+      } else if (layer.shapes === 'crystalsky') {
+        const grd = ctx.createLinearGradient(x, y, x, y + cellH);
+        grd.addColorStop(0, '#071522');
+        grd.addColorStop(0.58, '#124044');
+        grd.addColorStop(1, '#284228');
+        ctx.fillStyle = grd;
+        ctx.fillRect(x, y, cellW, cellH);
+      } else if (layer.shapes === 'crystalgrove') {
+        ctx.fillStyle = 'rgba(9,28,27,0.75)';
+        ctx.fillRect(x, y + cellH * 0.42, cellW, cellH * 0.58);
+        ctx.fillStyle = 'rgba(150,255,224,0.28)';
+        for (let i = 0; i < 4; i++) {
+          const sx = x + 24 + i * 36;
+          ctx.beginPath();
+          ctx.moveTo(sx, y + 18);
+          ctx.lineTo(sx + 16, y + 60);
+          ctx.lineTo(sx - 8, y + 76);
+          ctx.lineTo(sx - 18, y + 45);
+          ctx.closePath();
+          ctx.fill();
+        }
+      } else if (layer.shapes === 'crystalshards') {
+        ctx.fillStyle = 'rgba(166,255,226,0.3)';
+        for (let i = 0; i < 5; i++) {
+          const sx = x + 20 + i * 30;
+          const sy = y + 20 + (i % 3) * 16;
+          ctx.beginPath();
+          ctx.moveTo(sx, sy - 8);
+          ctx.lineTo(sx + 5, sy);
+          ctx.lineTo(sx, sy + 8);
+          ctx.lineTo(sx - 5, sy);
+          ctx.closePath();
+          ctx.fill();
+        }
       }
     }
     state.camera = fakeCamera;
@@ -5874,6 +8115,8 @@ function renderStageSelect() {
       else if (stg.theme === 'desert') ctx.fillStyle = plat.type === 'solid' ? '#c8884a' : '#a85830';
       else if (stg.theme === 'coachella') ctx.fillStyle = plat.type === 'solid' ? '#e8c8a8' : '#c8a878';
       else if (stg.theme === 'edc') ctx.fillStyle = plat.type === 'solid' ? '#ff80c0' : '#6040a0';
+      else if (stg.theme === 'runic') ctx.fillStyle = plat.type === 'solid' ? '#b38358' : '#4ae8bc';
+      else if (stg.theme === 'crystal') ctx.fillStyle = plat.type === 'solid' ? '#78e6c8' : '#58a8d8';
       else ctx.fillStyle = plat.type === 'solid' ? '#777' : '#666';
       ctx.fillRect(px, py, plat.w * scale, Math.max(2, plat.h * scale));
     }
@@ -5916,22 +8159,16 @@ function renderModeSelect() {
   ctx.fillStyle = '#ff6600'; ctx.font = 'bold 32px monospace'; ctx.textAlign = 'center';
   ctx.fillText('SELECT MODE', BASE_W / 2, 80);
 
-  const modes = [
-    { name: 'Stock Match', desc: '3 stocks, last one standing wins', key: 'stock' },
-    { name: 'Time Match', desc: '3 minutes, most KOs wins', key: 'time' },
-    { name: 'Training', desc: 'Practice mode with hitbox display', key: 'training' },
-  ];
-
-  for (let i = 0; i < modes.length; i++) {
-    const y = 160 + i * 80;
+  for (let i = 0; i < MODE_SELECT_ITEMS.length; i++) {
+    const y = 145 + i * 72;
     const selected = state.modeCursor === i;
     ctx.fillStyle = selected ? '#2a2a4e' : '#1a1a2e';
     ctx.fillRect(BASE_W / 2 - 200, y, 400, 60);
     if (selected) { ctx.strokeStyle = '#ff6600'; ctx.lineWidth = 2; ctx.strokeRect(BASE_W / 2 - 200, y, 400, 60); }
     ctx.fillStyle = selected ? '#fff' : '#888'; ctx.font = 'bold 18px monospace';
-    ctx.fillText(modes[i].name, BASE_W / 2, y + 25);
+    ctx.fillText(MODE_SELECT_ITEMS[i].name, BASE_W / 2, y + 25);
     ctx.fillStyle = '#666'; ctx.font = '12px monospace';
-    ctx.fillText(modes[i].desc, BASE_W / 2, y + 45);
+    ctx.fillText(MODE_SELECT_ITEMS[i].desc, BASE_W / 2, y + 45);
   }
 
   ctx.fillStyle = '#666'; ctx.font = '13px monospace';
@@ -5962,6 +8199,24 @@ function renderOptions() {
     ctx.fillText(items[i].value, BASE_W / 2 + 180, y + 28);
   }
 
+  const tester = getControlsTesterState();
+  const panelX = BASE_W / 2 - 250;
+  const panelY = 395;
+  const panelW = 500;
+  ctx.fillStyle = 'rgba(20,20,42,0.88)';
+  ctx.fillRect(panelX, panelY, panelW, 130);
+  ctx.strokeStyle = 'rgba(255,102,0,0.35)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(panelX, panelY, panelW, 130);
+  ctx.fillStyle = '#ff6600'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'left';
+  ctx.fillText('CONTROL TESTER', panelX + 18, panelY + 24);
+  ctx.fillStyle = '#bfc7d5'; ctx.font = '12px monospace';
+  ctx.fillText(`P1 active: ${tester.p1Active}`, panelX + 18, panelY + 50);
+  ctx.fillText(`P2 active: ${tester.p2Active}`, panelX + 18, panelY + 72);
+  ctx.fillText(`Gamepads: ${tester.gamepadCount ? tester.gamepads.map(p => `#${p.index + 1}`).join(', ') : 'none'} (${tester.gamepadFallback})`, panelX + 18, panelY + 94);
+  if (tester.gamepads[0]) ctx.fillText(`Pad #${tester.gamepads[0].index + 1}: ${tester.gamepads[0].active}`, panelX + 18, panelY + 116);
+  else ctx.fillText('Keyboard controls are active without a gamepad.', panelX + 18, panelY + 116);
+
   ctx.fillStyle = '#666'; ctx.font = '13px monospace'; ctx.textAlign = 'center';
   ctx.fillText('W/S to navigate, A/D to change, ESC to save & return', BASE_W / 2, BASE_H - 40);
 }
@@ -5969,6 +8224,19 @@ function renderOptions() {
 function renderResults() {
   ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, BASE_W, BASE_H);
   ctx.font = 'bold 48px monospace'; ctx.textAlign = 'center';
+  if (state.matchType === 'rush') {
+    const rush = state.platformRush || createPlatformRushState();
+    ctx.fillStyle = rush.resultReason === 'complete' ? '#ffd36a' : '#ff8a5c';
+    ctx.fillText(rush.resultReason === 'complete' ? 'PLATFORM RUSH CLEAR' : 'TIME UP', BASE_W / 2, BASE_H / 2 - 88);
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 32px monospace';
+    ctx.fillText(`Score ${Math.round(finite(rush.score, 0))}`, BASE_W / 2, BASE_H / 2 - 34);
+    ctx.font = '16px monospace'; ctx.fillStyle = '#dce8f7';
+    ctx.fillText(`Records ${rush.recordsCollected}/${rush.totalRecords}  |  Deep Cuts ${rush.deepCutsCollected}/${rush.totalDeepCuts}  |  Time ${formatClock(rush.timeRemaining)}`, BASE_W / 2, BASE_H / 2 + 4);
+    ctx.fillStyle = '#aaa'; ctx.font = '18px monospace';
+    ctx.fillText('ENTER = Restart Run  |  ESC = Title', BASE_W / 2, BASE_H / 2 + 56);
+    if (!state.confettiSpawned) { spawnConfetti(); state.confettiSpawned = true; }
+    return;
+  }
   if (state.winner >= 0) {
     const w = state.players[state.winner];
     const color = w.useAltColor ? w.def.altColor : w.def.color;
@@ -6005,6 +8273,8 @@ function render() {
     case 'options': renderOptions(); return;
     case 'results':
       renderStage(); renderPlatforms();
+      renderPlatformRushGhost();
+      renderPlatformRushCollectibles();
       for (const p of state.players) renderPlayer(p);
       renderParticles(); renderDamageNumbers(); renderHUD();
       renderResults(); return;
@@ -6012,18 +8282,33 @@ function render() {
 
   // Playing / paused / training
   renderStage(); renderPlatforms();
+  renderPlatformRushGhost();
+  renderPlatformRushCollectibles();
   for (const p of state.players) renderPlayer(p);
   renderParticles(); renderDamageNumbers(); renderHUD();
   if (state.mode === 'paused') renderPaused();
 }
 
 // --- Match Start ---
+function startQuickFight() {
+  applyQuickFightSetup(quickFightSetup);
+  startMatch();
+}
+
 function startMatch() {
+  persistQuickFightSetupFromState();
   const stageKey = state.selectedStage || 'battlefield';
   currentStage = STAGES[stageKey];
   // Reset moving platform state
   for (const plat of currentStage.platforms) {
-    if (plat.moving) { plat._baseX = plat.x; plat._baseY = plat.y; plat._moveTimer = 0; plat._deltaX = 0; }
+    if (plat.moving) {
+      plat._baseX = finite(plat._baseX, plat.x);
+      plat._baseY = finite(plat._baseY, plat.y);
+      plat.x = plat._baseX;
+      plat.y = plat._baseY;
+      plat._moveTimer = 0;
+      plat._deltaX = 0;
+    }
   }
 
   const p1Key = (state.p1Fighter && FIGHTER_DEFS[state.p1Fighter]) ? state.p1Fighter : FIGHTER_KEYS[0];
@@ -6036,6 +8321,14 @@ function startMatch() {
     createPlayer(0, p1Key, currentStage.spawns[0], c1.cpu ? 'cpu' : 'human', c1.cpuLevel, false),
     createPlayer(1, p2Key, currentStage.spawns[1], c2.cpu ? 'cpu' : 'human', c2.cpuLevel, mirror),
   ];
+  if (state.matchType === 'rush') {
+    const p2 = state.players[1];
+    p2.state = 'dead';
+    p2.stocks = 0;
+    p2.controlType = 'cpu';
+    p2.x = currentStage.spawns[1].x;
+    p2.y = currentStage.spawns[1].y - 200;
+  }
 
   // Auto-assign gamepads
   let pads = [];
@@ -6046,14 +8339,17 @@ function startMatch() {
   }
 
   state.hitstopFrames = 0;
-  state.screenShake = { x: 0, y: 0, intensity: 0 };
+  state.screenShake = createScreenShakeState();
   state.camera = { x: 0, y: 100, zoom: 1 };
   state.winner = -1; state.frameCount = 0;
+  resetRecentHitEvents();
   resetDamageNumberPool();
   state.slowMo = 1; state.slowMoTimer = 0; state.slowMoTarget = null;
   state.confettiSpawned = false;
   state.hazardsOn = options.hazardsOn;
   state.timeRemaining = 180;
+  if (state.matchType === 'rush') startPlatformRush();
+  else state.platformRush = createPlatformRushState();
   particlePool.forEach(p => p.active = false);
   initAudio();
 
@@ -6127,10 +8423,10 @@ function handleStageSelectInput() {
 }
 
 function handleModeSelectInput() {
-  if (justPressed['KeyW'] || justPressed['ArrowUp']) { state.modeCursor = (state.modeCursor - 1 + 3) % 3; playSound('select'); }
-  if (justPressed['KeyS'] || justPressed['ArrowDown']) { state.modeCursor = (state.modeCursor + 1) % 3; playSound('select'); }
+  if (justPressed['KeyW'] || justPressed['ArrowUp']) { state.modeCursor = (state.modeCursor - 1 + MODE_SELECT_ITEMS.length) % MODE_SELECT_ITEMS.length; playSound('select'); }
+  if (justPressed['KeyS'] || justPressed['ArrowDown']) { state.modeCursor = (state.modeCursor + 1) % MODE_SELECT_ITEMS.length; playSound('select'); }
   if (justPressed['KeyJ'] || justPressed['Enter'] || justPressed['Space'] || justPressed['Numpad1']) {
-    state.matchType = ['stock', 'time', 'training'][state.modeCursor];
+    state.matchType = MODE_SELECT_ITEMS[state.modeCursor].key;
     startMatch();
     playSound('select');
   }
@@ -6153,9 +8449,20 @@ function handleOptionsInput() {
 
 // --- Global Key Handlers ---
 document.addEventListener('keydown', e => {
+  if (domMenuOpen || isCapturingBinding) return;
   if (e.code !== 'Escape' && e.code !== 'KeyF') initAudio();
+  if (e.code === 'KeyO') {
+    openDomMenu('onboarding');
+    delete justPressed[e.code];
+    return;
+  }
   if (state.mode === 'title') {
     if (e.code === 'KeyR' && snapshotAvailable && restoreActiveMatchSnapshot()) {
+      delete justPressed[e.code];
+      return;
+    }
+    if (e.code === 'KeyQ') {
+      startQuickFight();
       delete justPressed[e.code];
       return;
     }
@@ -6163,12 +8470,12 @@ document.addEventListener('keydown', e => {
       state.mode = 'charselect';
       delete justPressed[e.code];
     }
-    if (e.code === 'KeyO') { state.mode = 'options'; }
   } else if (state.mode === 'results') {
     if (e.code === 'Enter' || e.code === 'Space') startMatch();
     if (e.code === 'Escape') state.mode = 'title';
   } else if (state.mode === 'playing' || state.mode === 'training') {
     if (e.code === 'KeyP' && state.mode === 'playing') { state.mode = 'paused'; saveActiveMatchSnapshot(true); }
+    if (e.code === 'KeyR' && state.matchType === 'rush') { restartPlatformRush(); delete justPressed[e.code]; return; }
     if (e.code === 'Escape') { clearActiveMatchSnapshot(); state.mode = 'title'; }
     // Training mode keys
     if (state.matchType === 'training') {
@@ -6176,7 +8483,7 @@ document.addEventListener('keydown', e => {
       if (e.code === 'KeyR') { for (const p of state.players) p.damage = 0; saveActiveMatchSnapshot(true); }
     }
   } else if (state.mode === 'paused') {
-    if (e.code === 'KeyP') state.mode = 'playing';
+    if (e.code === 'KeyP') state.mode = state.matchType === 'training' ? 'training' : 'playing';
     if (e.code === 'Escape') { clearActiveMatchSnapshot(); state.mode = 'title'; }
   } else if (state.mode === 'charselect' || state.mode === 'stageselect' || state.mode === 'modeselect') {
     if (e.code === 'Escape') {
@@ -6199,6 +8506,14 @@ window.addEventListener('resize', resizeCanvas);
 window.addEventListener('pagehide', () => saveActiveMatchSnapshot(true));
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') saveActiveMatchSnapshot(true);
+});
+window.addEventListener('blur', () => {
+  if (!options.muteOnBlur || !audioCtx || !musicState.masterGain) return;
+  musicState.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+  musicState.masterGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
+});
+window.addEventListener('focus', () => {
+  if (options.muteOnBlur) syncMusicState(true);
 });
 
 // --- Game Loop ---
@@ -6238,17 +8553,129 @@ window.advanceTime = (ms) => {
   render();
 };
 
+function getOnlinePrototypeSummary() {
+  const ghost = state.platformRushGhostReplay;
+  return {
+    decision: 'async-local-ghost',
+    networked: false,
+    status: 'local-only prototype',
+    latencyHandling: 'seeded deterministic challenge; no real-time network latency',
+    disconnectHandling: 'local play and resume snapshots continue without network',
+    pauseHandling: 'ghost replay advances only through fixed game frames',
+    ghost: {
+      available: !!(ghost && Array.isArray(ghost.samples) && ghost.samples.length),
+      samples: ghost && Array.isArray(ghost.samples) ? ghost.samples.length : 0,
+      stage: ghost ? ghost.stage : null,
+      seedId: ghost ? ghost.seedId : null,
+    },
+  };
+}
+
 window.render_game_to_text = function () {
   return JSON.stringify({
     mode: state.mode,
     frame: state.frameCount,
     matchType: state.matchType,
     stage: state.selectedStage,
+    titleActions: state.mode === 'title' ? {
+      quickFight: 'KeyQ',
+      setupMatch: 'Enter',
+      resume: snapshotAvailable ? 'KeyR' : null,
+      menu: 'KeyO',
+    } : undefined,
+    quickFightSetup: {
+      p1Fighter: quickFightSetup.p1Fighter,
+      p2Fighter: quickFightSetup.p2Fighter,
+      selectedStage: quickFightSetup.selectedStage,
+      matchType: quickFightSetup.matchType,
+      p1Cpu: quickFightSetup.p1Cpu,
+      p2Cpu: quickFightSetup.p2Cpu,
+      p1CpuLevel: quickFightSetup.p1CpuLevel,
+      p2CpuLevel: quickFightSetup.p2CpuLevel,
+    },
+    charSelect: state.mode === 'charselect' ? state.charSelectCursors.map((c, idx) => ({
+      idx,
+      fighter: FIGHTER_KEYS[c.pos],
+      confirmed: c.confirmed,
+      cpu: c.cpu,
+      cpuLevel: c.cpuLevel,
+    })) : undefined,
+    modeSelect: state.mode === 'modeselect' ? {
+      cursor: state.modeCursor,
+      selected: MODE_SELECT_ITEMS[state.modeCursor] ? MODE_SELECT_ITEMS[state.modeCursor].key : null,
+      modes: MODE_SELECT_ITEMS.map(item => item.key),
+    } : undefined,
+    options: {
+      volume: +options.volume.toFixed(2),
+      musicVolume: +options.musicVolume.toFixed(2),
+      sfxVolume: +options.sfxVolume.toFixed(2),
+      trackSelectionId: options.trackSelectionId,
+      muteOnBlur: options.muteOnBlur,
+      showHitboxes: options.showHitboxes,
+      hazardsOn: options.hazardsOn,
+      musicOn: options.musicOn,
+    },
+    controlsTester: (state.mode === 'options' || domMenuOpen) ? getControlsTesterState() : undefined,
+    domMenu: {
+      open: domMenuOpen,
+      activeTab: activeMenuTab,
+      focusTrapActive: domMenuOpen,
+      pausedReturnMode: menuReturnMode,
+      canvasCaptured: canvas.classList.contains('menu-captured'),
+      focusedElement: document.activeElement && document.activeElement.id ? document.activeElement.id : null,
+      pauseEventCount,
+      resumeEventCount,
+    },
+    combat: {
+      recentHitEvents: state.recentHitEvents.slice().reverse(),
+      screenShake: {
+        x: roundTelemetry(state.screenShake.x, 2),
+        y: roundTelemetry(state.screenShake.y, 2),
+        intensity: roundTelemetry(state.screenShake.intensity, 2),
+        vectorX: roundTelemetry(state.screenShake.vectorX, 2),
+        vectorY: roundTelemetry(state.screenShake.vectorY, 2),
+      },
+    },
+    training: state.matchType === 'training' ? getTrainingTelemetry() : undefined,
+    platformRush: state.matchType === 'rush' ? getPlatformRushSummary() : undefined,
+    contentPack: {
+      stages: STAGE_KEYS.length,
+      fighters: FIGHTER_KEYS.length,
+      encoreStages: ENCORE_STAGE_KEYS.filter(key => !!STAGES[key]),
+      encoreFighters: ENCORE_FIGHTER_KEYS.filter(key => !!FIGHTER_DEFS[key]),
+      movingHazardStages: STAGE_KEYS.filter(key => (STAGES[key].platforms || []).some(platform => !!platform.moving)),
+      musicCues: Object.keys(MUSIC_CUES),
+      visualDirection: 'retro fantasy arena pack',
+    },
+    config: {
+      schemaVersion: mixmashConfig.meta.schema_version,
+      audio: { ...mixmashConfig.audio },
+      controls: {
+        inputMode: mixmashConfig.controls.input_mode,
+        bindingCount: Object.keys(mixmashConfig.controls.key_bindings).length,
+      },
+      onboarding: { ...mixmashConfig.onboarding },
+    },
+    profile: summarizeProfile(),
+    share: {
+      applied: appliedSharePreset,
+      matchUrl: buildMatchShareUrl(),
+      dailyChallengeUrl: buildDailyChallengeUrl(),
+      platformRushSeedId: state.platformRushSeedId,
+    },
+    onlinePrototype: getOnlinePrototypeSummary(),
+    security: {
+      frameGuard: window.__mixmashFrameGuard ? {
+        checked: !!window.__mixmashFrameGuard.checked,
+        framed: !!window.__mixmashFrameGuard.framed,
+        action: window.__mixmashFrameGuard.action,
+      } : null,
+    },
     musicOn: options.musicOn,
     musicCue: musicState.currentCue,
     musicStep: musicState.step,
     audioState: audioCtx ? audioCtx.state : 'off',
-    timeRemaining: state.matchType === 'time' ? Math.round(state.timeRemaining) : undefined,
+    timeRemaining: state.matchType === 'time' ? Math.round(state.timeRemaining) : state.matchType === 'rush' ? Math.round(state.platformRush.timeRemaining) : undefined,
     players: state.players.map(p => ({
       idx: p.idx, fighter: p.fighterKey,
       x: Math.round(p.x), y: Math.round(p.y),
@@ -6273,6 +8700,8 @@ window.render_game_to_text = function () {
 
 // --- Init ---
 snapshotAvailable = hasActiveMatchSnapshot();
+setupDomMenu();
+applySharePresetFromUrl();
 resizeCanvas();
 requestAnimationFrame(gameLoop);
 </script>
