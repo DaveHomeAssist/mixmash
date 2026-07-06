@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "terrain",
+      "type": "image",
+      "src": "./assets/mars-terrain.svg"
+    },
+    {
+      "id": "settlementAtlas",
+      "type": "image",
+      "src": "./assets/settlement-atlas.svg"
+    }
+  ]
+}

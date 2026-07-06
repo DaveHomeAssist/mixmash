@@ -5,7 +5,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run && node --test mars/test-engine.mjs mars/test-api.mjs",
+    "start:mars": "node mars/server.mjs"
   },
   "devDependencies": {
     "vitest": "^4.1.9"
