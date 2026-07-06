@@ -4,12 +4,12 @@
     {
       "id": "terrain",
       "type": "image",
-      "src": "./assets/mars-terrain.svg"
+      "src": "./mars-terrain.svg"
     },
     {
       "id": "settlementAtlas",
       "type": "image",
-      "src": "./assets/settlement-atlas.svg"
+      "src": "./settlement-atlas.svg"
     }
   ]
 }
