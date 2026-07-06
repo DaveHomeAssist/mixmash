@@ -83,3 +83,9 @@ Original prompt: Implement the MIXMASH Product Upgrade Roadmap for the `/play/` 
 - Added `test/play-system-modules.test.mjs` and included it in `npm test`.
 - Updated `ROADMAP.md` to match current repo reality: P0-P8 implemented locally, D1/D2/D3/D4 resolved for this release, live deployment still separate.
 - Completion audit found seeded Platform Rush placement reports could rebuild collectibles from animated platform coordinates on moving-platform stages. Fixed Rush generation/reachability to use base platform geometry and added smoke coverage that every active collectible reports reachable.
+
+### 2026-07-06 product QA pass
+
+- Ran live desktop/mobile QA for Quick Fight, Platform Rush, Progress, share links, and Encore stage entry points.
+- Found a mobile command-menu reachability issue: `.menu-panels` had `overflow: auto`, but as a CSS grid child it lacked `min-height: 0`, so lower Progress and onboarding controls could sit below the visible `.mix-menu` with no scroll movement on a 390x844 viewport.
+- Patched `.menu-panels` with `min-height: 0` and contained overscroll so the existing panel-level scrolling works on constrained mobile viewports.

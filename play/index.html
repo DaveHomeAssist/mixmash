@@ -159,8 +159,10 @@
     background: linear-gradient(90deg, var(--mix-orange), #ffd16c);
   }
   .menu-panels {
+    min-height: 0;
     overflow: auto;
     padding: 20px 24px 24px;
+    overscroll-behavior: contain;
   }
   .menu-panel[hidden] { display: none; }
   .panel-grid {
