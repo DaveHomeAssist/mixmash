@@ -6,7 +6,11 @@
   "private": true,
   "scripts": {
     "test": "node --test test/combat.test.js mars/test-engine.mjs mars/test-api.mjs mars/test-vercel-handler.mjs",
+    "smoke:play": "node test/play-resume-smoke.mjs",
     "vercel-build": "node --check \"api/[...path].mjs\" && node --check api/health.mjs && node --check api/sessions.mjs && node --check \"api/sessions/[sessionId].mjs\" && node --check \"api/sessions/[sessionId]/commands.mjs\" && node --check mars/game.js && node --check mars/server.mjs && node --check mars/engine.mjs",
     "start:mars": "node mars/server.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }

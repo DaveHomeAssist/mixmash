@@ -50,6 +50,11 @@ const STARTING_STOCKS = 3;
 const RESPAWN_INVINCIBILITY = 120;
 const HITSTOP_BASE = 4;
 const DI_MAX_ANGLE = 18 * Math.PI / 180; // max DI shift in radians
+const ACTIVE_MATCH_SNAPSHOT_KEY = 'mixmash_active_match_snapshot';
+const ACTIVE_MATCH_SNAPSHOT_VERSION = 1;
+const SNAPSHOT_SAVE_INTERVAL = 15;
+const SNAPSHOT_MODES = ['playing', 'training', 'paused'];
+const MATCH_TYPES = ['stock', 'time', 'training'];
 
 // Coerce to a finite number so a malformed attack def / degenerate weight can never
 // push NaN into a target's velocity, timers, or the camera. Mirror of src/combat.js
@@ -112,6 +117,9 @@ const state = {
   slowMoTarget: null,
   confettiSpawned: false,
 };
+
+let snapshotAvailable = false;
+let lastSnapshotSaveFrame = -1;
 
 // --- Stage Definitions ---
 const STAGES = {
@@ -642,6 +650,9 @@ function createPlayer(idx, fighterKey, spawn, controlType, cpuLevel, useAltColor
     diActive: false,
     // Visual
     squish: { sx: 1, sy: 1, timer: 0 },
+    dodgeTrail: [],
+    dodgeTrailCursor: 0,
+    dodgeTrailSize: 0,
     useAltColor: useAltColor || false,
     // Control
     controlType: controlType || 'human', // 'human' or 'cpu'
@@ -656,6 +667,295 @@ function cloneAttackData(attack) {
     ...attack,
     hitbox: { ...attack.hitbox },
   };
+}
+
+function isKnownFighterKey(key) {
+  return typeof key === 'string' && !!FIGHTER_DEFS[key];
+}
+
+function isValidSnapshotPlayer(raw) {
+  return !!raw &&
+    isKnownFighterKey(raw.fighterKey) &&
+    Number.isFinite(raw.x) &&
+    Number.isFinite(raw.y) &&
+    Number.isFinite(raw.vx) &&
+    Number.isFinite(raw.vy) &&
+    (raw.controlType === 'human' || raw.controlType === 'cpu');
+}
+
+function isValidActiveMatchSnapshot(snapshot) {
+  return !!snapshot &&
+    snapshot.version === ACTIVE_MATCH_SNAPSHOT_VERSION &&
+    SNAPSHOT_MODES.includes(snapshot.mode) &&
+    MATCH_TYPES.includes(snapshot.matchType) &&
+    !!STAGES[snapshot.selectedStage] &&
+    Array.isArray(snapshot.players) &&
+    snapshot.players.length === 2 &&
+    snapshot.players.every(isValidSnapshotPlayer) &&
+    (!snapshot.damageNumbers || Array.isArray(snapshot.damageNumbers));
+}
+
+function resetDodgeTrail(p) {
+  p.dodgeTrailCursor = 0;
+  p.dodgeTrailSize = 0;
+  if (!Array.isArray(p.dodgeTrail)) p.dodgeTrail = [];
+}
+
+function recordDodgeTrail(p, alpha, maxLen) {
+  if (!Array.isArray(p.dodgeTrail)) p.dodgeTrail = [];
+  while (p.dodgeTrail.length < maxLen) p.dodgeTrail.push({ x: 0, y: 0, alpha: 0 });
+  p.dodgeTrailCursor = (p.dodgeTrailCursor || 0) % maxLen;
+  const slot = p.dodgeTrail[p.dodgeTrailCursor];
+  slot.x = finite(p.x, 0);
+  slot.y = finite(p.y, 0);
+  slot.alpha = finite(alpha, 0);
+  p.dodgeTrailCursor = (p.dodgeTrailCursor + 1) % maxLen;
+  p.dodgeTrailSize = Math.min(maxLen, (p.dodgeTrailSize || 0) + 1);
+}
+
+function serializePlayer(p) {
+  return {
+    idx: p.idx,
+    fighterKey: p.fighterKey,
+    x: p.x, y: p.y,
+    vx: p.vx, vy: p.vy,
+    facing: p.facing,
+    grounded: p.grounded,
+    jumpsLeft: p.jumpsLeft,
+    damage: p.damage,
+    stocks: p.stocks,
+    score: p.score,
+    state: p.state,
+    stateTimer: p.stateTimer,
+    attackData: p.attackData ? cloneAttackData(p.attackData) : null,
+    attackFrame: p.attackFrame,
+    attackKey: p.attackKey || null,
+    hitRegistered: p.hitRegistered,
+    shieldHP: p.shieldHP,
+    shieldActive: p.shieldActive,
+    invincible: p.invincible,
+    dodgeCooldown: p.dodgeCooldown,
+    prevAttack: p.prevAttack,
+    prevJump: p.prevJump,
+    prevSpecial: p.prevSpecial,
+    prevShield: p.prevShield,
+    inputBuffer: { ...p.inputBuffer },
+    runTimer: p.runTimer,
+    moveDir: p.moveDir,
+    grabTarget: p.grabTarget,
+    grabTimer: p.grabTimer,
+    usedAirDodge: p.usedAirDodge,
+    specialFall: p.specialFall,
+    diActive: p.diActive,
+    squish: { ...p.squish },
+    useAltColor: p.useAltColor,
+    controlType: p.controlType,
+    cpuLevel: p.cpuLevel,
+    cpuState: { actionTimer: p.cpuState.actionTimer, currentInput: p.cpuState.currentInput },
+    chargeFrames: p.chargeFrames || 0,
+    charging: !!p.charging,
+    dodgeTrail: Array.isArray(p.dodgeTrail)
+      ? p.dodgeTrail.slice(0, p.dodgeTrailSize || 0).map(t => ({ x: t.x, y: t.y, alpha: t.alpha }))
+      : [],
+    dodgeTrailCursor: p.dodgeTrailCursor || 0,
+    dodgeTrailSize: p.dodgeTrailSize || 0,
+  };
+}
+
+function restorePlayer(raw, fallbackSpawn) {
+  const fighterKey = raw && FIGHTER_DEFS[raw.fighterKey] ? raw.fighterKey : FIGHTER_KEYS[0];
+  const p = createPlayer(
+    raw && raw.idx === 1 ? 1 : 0,
+    fighterKey,
+    fallbackSpawn || { x: 0, y: 100 },
+    raw && raw.controlType === 'cpu' ? 'cpu' : 'human',
+    finite(raw && raw.cpuLevel, 3),
+    !!(raw && raw.useAltColor)
+  );
+
+  p.x = finite(raw && raw.x, p.x); p.y = finite(raw && raw.y, p.y);
+  p.vx = finite(raw && raw.vx, 0); p.vy = finite(raw && raw.vy, 0);
+  p.facing = finite(raw && raw.facing, p.facing) >= 0 ? 1 : -1;
+  p.grounded = !!(raw && raw.grounded);
+  p.jumpsLeft = finite(raw && raw.jumpsLeft, p.jumpsLeft);
+  p.damage = finite(raw && raw.damage, 0);
+  p.stocks = finite(raw && raw.stocks, STARTING_STOCKS);
+  p.score = finite(raw && raw.score, 0);
+  p.state = raw && typeof raw.state === 'string' ? raw.state : 'idle';
+  p.stateTimer = finite(raw && raw.stateTimer, 0);
+  p.attackData = raw && raw.attackData && raw.attackData.hitbox ? cloneAttackData(raw.attackData) : null;
+  p.attackFrame = finite(raw && raw.attackFrame, 0);
+  p.attackKey = raw && typeof raw.attackKey === 'string' ? raw.attackKey : null;
+  p.hitRegistered = !!(raw && raw.hitRegistered);
+  p.shieldHP = finite(raw && raw.shieldHP, 100);
+  p.shieldActive = !!(raw && raw.shieldActive);
+  p.invincible = finite(raw && raw.invincible, 0);
+  p.dodgeCooldown = finite(raw && raw.dodgeCooldown, 0);
+  p.prevAttack = !!(raw && raw.prevAttack);
+  p.prevJump = !!(raw && raw.prevJump);
+  p.prevSpecial = !!(raw && raw.prevSpecial);
+  p.prevShield = !!(raw && raw.prevShield);
+  p.inputBuffer = {
+    attack: finite(raw && raw.inputBuffer && raw.inputBuffer.attack, 0),
+    jump: finite(raw && raw.inputBuffer && raw.inputBuffer.jump, 0),
+  };
+  p.runTimer = finite(raw && raw.runTimer, 0);
+  p.moveDir = finite(raw && raw.moveDir, 0);
+  p.grabTarget = finite(raw && raw.grabTarget, -1);
+  p.grabTimer = finite(raw && raw.grabTimer, 0);
+  p.usedAirDodge = !!(raw && raw.usedAirDodge);
+  p.specialFall = !!(raw && raw.specialFall);
+  p.diActive = !!(raw && raw.diActive);
+  p.squish = {
+    sx: finite(raw && raw.squish && raw.squish.sx, 1),
+    sy: finite(raw && raw.squish && raw.squish.sy, 1),
+    timer: finite(raw && raw.squish && raw.squish.timer, 0),
+  };
+  p.cpuState = {
+    actionTimer: finite(raw && raw.cpuState && raw.cpuState.actionTimer, 0),
+    currentInput: raw && raw.cpuState ? raw.cpuState.currentInput : null,
+  };
+  p.chargeFrames = finite(raw && raw.chargeFrames, 0);
+  p.charging = !!(raw && raw.charging);
+  p.dodgeTrail = Array.isArray(raw && raw.dodgeTrail)
+    ? raw.dodgeTrail.slice(0, 5).map(t => ({ x: finite(t.x, p.x), y: finite(t.y, p.y), alpha: finite(t.alpha, 0.25) }))
+    : [];
+  p.dodgeTrailCursor = finite(raw && raw.dodgeTrailCursor, 0) % 5;
+  p.dodgeTrailSize = Math.min(5, finite(raw && raw.dodgeTrailSize, p.dodgeTrail.length));
+  return p;
+}
+
+function serializeActiveMatch() {
+  return {
+    version: ACTIVE_MATCH_SNAPSHOT_VERSION,
+    savedAt: new Date().toISOString(),
+    mode: state.mode,
+    matchType: state.matchType,
+    timeRemaining: state.timeRemaining,
+    selectedStage: state.selectedStage,
+    hazardsOn: state.hazardsOn,
+    frameCount: state.frameCount,
+    winner: state.winner,
+    hitstopFrames: state.hitstopFrames,
+    screenShake: { ...state.screenShake },
+    camera: { ...state.camera },
+    slowMo: state.slowMo,
+    slowMoTimer: state.slowMoTimer,
+    slowMoTarget: state.slowMoTarget ? { ...state.slowMoTarget } : null,
+    p1Fighter: state.p1Fighter,
+    p2Fighter: state.p2Fighter,
+    charSelectCursors: state.charSelectCursors.map(c => ({ pos: c.pos, confirmed: false, cpu: c.cpu, cpuLevel: c.cpuLevel })),
+    stageCursor: state.stageCursor,
+    modeCursor: state.modeCursor,
+    players: state.players.map(serializePlayer),
+    damageNumbers: damageNumberPool.filter(d => d.active).map(d => ({ x: d.x, y: d.y, value: d.value, timer: d.timer, vy: d.vy })),
+  };
+}
+
+function saveActiveMatchSnapshot(force) {
+  if (!['playing', 'training', 'paused'].includes(state.mode) || state.players.length === 0) return;
+  if (!force && (state.frameCount === lastSnapshotSaveFrame || state.frameCount % SNAPSHOT_SAVE_INTERVAL !== 0)) return;
+  try {
+    localStorage.setItem(ACTIVE_MATCH_SNAPSHOT_KEY, JSON.stringify(serializeActiveMatch()));
+    snapshotAvailable = true;
+    lastSnapshotSaveFrame = state.frameCount;
+  } catch {}
+}
+
+function clearActiveMatchSnapshot() {
+  try { localStorage.removeItem(ACTIVE_MATCH_SNAPSHOT_KEY); } catch {}
+  snapshotAvailable = false;
+  lastSnapshotSaveFrame = -1;
+}
+
+function readActiveMatchSnapshot() {
+  let raw = null;
+  try {
+    raw = localStorage.getItem(ACTIVE_MATCH_SNAPSHOT_KEY);
+    if (!raw) return null;
+    const snapshot = JSON.parse(raw);
+    if (!isValidActiveMatchSnapshot(snapshot)) throw new Error('Invalid active match snapshot');
+    return snapshot;
+  } catch {
+    if (raw) clearActiveMatchSnapshot();
+    return null;
+  }
+}
+
+function hasActiveMatchSnapshot() {
+  return !!readActiveMatchSnapshot();
+}
+
+function restoreActiveMatchSnapshot() {
+  const snapshot = readActiveMatchSnapshot();
+  if (!snapshot) {
+    clearActiveMatchSnapshot();
+    return false;
+  }
+
+  state.selectedStage = snapshot.selectedStage;
+  currentStage = STAGES[state.selectedStage] || STAGES.battlefield;
+  for (const plat of currentStage.platforms) {
+    if (plat.moving) { plat._baseX = plat.x; plat._baseY = plat.y; plat._moveTimer = 0; plat._deltaX = 0; }
+  }
+
+  state.matchType = MATCH_TYPES.includes(snapshot.matchType) ? snapshot.matchType : 'stock';
+  state.timeRemaining = finite(snapshot.timeRemaining, 180);
+  state.hazardsOn = !!snapshot.hazardsOn;
+  state.frameCount = finite(snapshot.frameCount, 0);
+  state.winner = finite(snapshot.winner, -1);
+  state.hitstopFrames = finite(snapshot.hitstopFrames, 0);
+  state.screenShake = {
+    x: finite(snapshot.screenShake && snapshot.screenShake.x, 0),
+    y: finite(snapshot.screenShake && snapshot.screenShake.y, 0),
+    intensity: finite(snapshot.screenShake && snapshot.screenShake.intensity, 0),
+  };
+  state.camera = {
+    x: finite(snapshot.camera && snapshot.camera.x, 0),
+    y: finite(snapshot.camera && snapshot.camera.y, 100),
+    zoom: finite(snapshot.camera && snapshot.camera.zoom, 1),
+  };
+  state.slowMo = finite(snapshot.slowMo, 1);
+  state.slowMoTimer = finite(snapshot.slowMoTimer, 0);
+  state.slowMoTarget = snapshot.slowMoTarget ? {
+    x: finite(snapshot.slowMoTarget.x, 0),
+    y: finite(snapshot.slowMoTarget.y, 0),
+  } : null;
+  state.p1Fighter = FIGHTER_DEFS[snapshot.p1Fighter] ? snapshot.p1Fighter : FIGHTER_KEYS[0];
+  state.p2Fighter = FIGHTER_DEFS[snapshot.p2Fighter] ? snapshot.p2Fighter : FIGHTER_KEYS[1] || FIGHTER_KEYS[0];
+  state.stageCursor = Math.max(0, Math.min(STAGE_KEYS.length - 1, finite(snapshot.stageCursor, 0)));
+  state.modeCursor = Math.max(0, Math.min(2, finite(snapshot.modeCursor, 0)));
+  state.charSelectCursors = Array.isArray(snapshot.charSelectCursors) && snapshot.charSelectCursors.length === 2
+    ? snapshot.charSelectCursors.map((c, i) => ({
+        pos: Math.max(0, Math.min(FIGHTER_KEYS.length - 1, finite(c.pos, i))),
+        confirmed: false,
+        cpu: !!c.cpu,
+        cpuLevel: finite(c.cpuLevel, 3),
+      }))
+    : state.charSelectCursors;
+
+  const spawns = currentStage.spawns || [{ x: -100, y: 100 }, { x: 100, y: 100 }];
+  state.players = snapshot.players.slice(0, 2).map((raw, idx) => restorePlayer({ ...raw, idx }, spawns[idx]));
+  resetDamageNumberPool();
+  if (Array.isArray(snapshot.damageNumbers)) {
+    const items = snapshot.damageNumbers.slice(0, DAMAGE_NUMBER_POOL_SIZE);
+    for (let i = 0; i < items.length; i++) {
+      const raw = items[i];
+      const slot = damageNumberPool[i];
+      slot.active = true;
+      slot.x = finite(raw.x, 0);
+      slot.y = finite(raw.y, 0);
+      slot.value = finite(raw.value, 0);
+      slot.timer = finite(raw.timer, 50);
+      slot.vy = finite(raw.vy, -1.5);
+    }
+  }
+  particlePool.forEach(p => p.active = false);
+  state.confettiSpawned = false;
+  state.mode = snapshot.mode === 'paused' ? 'paused' : (state.matchType === 'training' ? 'training' : 'playing');
+  snapshotAvailable = true;
+  lastSnapshotSaveFrame = state.frameCount;
+  return true;
 }
 
 // --- Centralized Physics ---
@@ -674,6 +974,23 @@ const PARTICLE_POOL_SIZE = 600;
 const particlePool = [];
 for (let i = 0; i < PARTICLE_POOL_SIZE; i++) {
   particlePool.push({ active: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, maxLife: 0, color: '#fff', size: 3, gravity: 0 });
+}
+
+const DAMAGE_NUMBER_POOL_SIZE = 80;
+const damageNumberPool = [];
+for (let i = 0; i < DAMAGE_NUMBER_POOL_SIZE; i++) {
+  damageNumberPool.push({ active: false, x: 0, y: 0, value: 0, timer: 0, vy: 0 });
+}
+state.damageNumbers = damageNumberPool;
+
+function resetDamageNumberPool() {
+  for (const d of damageNumberPool) d.active = false;
+}
+
+function countActiveDamageNumbers() {
+  let count = 0;
+  for (const d of damageNumberPool) if (d.active) count++;
+  return count;
 }
 
 function spawnParticle(x, y, vx, vy, life, color, size, gravity) {
@@ -1108,13 +1425,13 @@ function playSound(type) {
 }
 
 // --- Collision ---
-function aabb(a, b) {
-  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+function aabbValues(ax, ay, aw, ah, bx, by, bw, bh) {
+  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 }
 
 function resolvePlayerPlatform(p, plat) {
   const px = p.x - p.w / 2, py = p.y - p.h, pw = p.w, ph = p.h;
-  if (!aabb({ x: px, y: py, w: pw, h: ph }, { x: plat.x, y: plat.y, w: plat.w, h: plat.h })) return false;
+  if (!aabbValues(px, py, pw, ph, plat.x, plat.y, plat.w, plat.h)) return false;
 
   if (plat.type === 'passthrough') {
     const prevBottom = p.y - p.vy * FIXED_STEP;
@@ -1226,6 +1543,7 @@ function updatePlayer(p, dt) {
       target.damage += p.def.grab.pummelDamage;
       spawnDamageNumber(target.x, target.y - target.h, p.def.grab.pummelDamage);
       state.hitstopFrames = 3;
+      saveActiveMatchSnapshot(true);
     }
     // Throw
     const throwDir = input.up ? 'up' : input.down ? 'down' : input.left ? (p.facing === -1 ? 'forward' : 'back') : input.right ? (p.facing === 1 ? 'forward' : 'back') : null;
@@ -1306,22 +1624,17 @@ function updatePlayer(p, dt) {
     p.stateTimer--;
     // i-frames 3-17
     if (p.stateTimer <= 17 && p.stateTimer >= 3) p.invincible = 2;
-    if (p.stateTimer <= 0) p.state = 'idle';
-    // Trail
-    if (!p.dodgeTrail) p.dodgeTrail = [];
-    p.dodgeTrail.unshift({ x: p.x, y: p.y, alpha: 0.25 });
-    if (p.dodgeTrail.length > 3) p.dodgeTrail.pop();
+    if (p.stateTimer <= 0) { p.state = 'idle'; resetDodgeTrail(p); return; }
+    recordDodgeTrail(p, 0.25, 3);
     return;
   }
 
   // --- Dodge ---
   if (p.state === 'dodge') {
     p.stateTimer--;
-    if (p.stateTimer <= 0) { p.state = 'idle'; p.vx *= 0.3; p.dodgeTrail = []; }
-    // Trail
-    if (!p.dodgeTrail) p.dodgeTrail = [];
-    p.dodgeTrail.unshift({ x: p.x, y: p.y, alpha: 0.3 });
-    if (p.dodgeTrail.length > 4) p.dodgeTrail.pop();
+    if (p.stateTimer <= 0) { p.state = 'idle'; p.vx *= 0.3; resetDodgeTrail(p); }
+    if (p.stateTimer <= 0) return;
+    recordDodgeTrail(p, 0.3, 4);
     applyPhysics(p, dt, { driftFactor: 1 });
     return;
   }
@@ -1331,11 +1644,9 @@ function updatePlayer(p, dt) {
     p.stateTimer--;
     // i-frames 3-18
     if (p.stateTimer <= 21 && p.stateTimer >= 6) p.invincible = 2;
-    if (p.stateTimer <= 0) { p.state = 'fall'; p.specialFall = true; p.dodgeTrail = []; }
-    // Trail
-    if (!p.dodgeTrail) p.dodgeTrail = [];
-    p.dodgeTrail.unshift({ x: p.x, y: p.y, alpha: 0.3 });
-    if (p.dodgeTrail.length > 5) p.dodgeTrail.pop();
+    if (p.stateTimer <= 0) { p.state = 'fall'; p.specialFall = true; resetDodgeTrail(p); }
+    if (p.stateTimer <= 0) return;
+    recordDodgeTrail(p, 0.3, 5);
     applyPhysics(p, dt, { driftFactor: 0.8 });
     return;
   }
@@ -1497,6 +1808,7 @@ function executeThrow(grabber, target, dir) {
   playSound('throw');
   spawnHitSparks(target.x, target.y - target.h / 2, 6, '#ffaa00');
   state.screenShake.intensity = Math.min(throwData.damage * 0.5, 8);
+  saveActiveMatchSnapshot(true);
 }
 
 // --- Hit Detection (with clang + DI) ---
@@ -1512,9 +1824,7 @@ function checkHits() {
       const aHb = aAtk.hitbox, bHb = bAtk.hitbox;
       const ax = a.x + aHb.ox * a.facing, ay = a.y - a.h / 2 + aHb.oy;
       const bx = b.x + bHb.ox * b.facing, by = b.y - b.h / 2 + bHb.oy;
-      const aRect = { x: ax - aHb.w / 2, y: ay - aHb.h / 2, w: aHb.w, h: aHb.h };
-      const bRect = { x: bx - bHb.w / 2, y: by - bHb.h / 2, w: bHb.w, h: bHb.h };
-      if (aabb(aRect, bRect)) {
+      if (aabbValues(ax - aHb.w / 2, ay - aHb.h / 2, aHb.w, aHb.h, bx - bHb.w / 2, by - bHb.h / 2, bHb.w, bHb.h)) {
         // Clang! Cancel both attacks
         a.hitRegistered = true; b.hitRegistered = true;
         a.vx = a.x < b.x ? -150 : 150;
@@ -1543,15 +1853,15 @@ function checkHits() {
       if (target.invincible > 0) continue;
 
       const tx = target.x - target.w / 2, ty = target.y - target.h;
-      const hitboxRect = { x: hx - hb.w / 2, y: hy - hb.h / 2, w: hb.w, h: hb.h };
 
-      if (aabb(hitboxRect, { x: tx, y: ty, w: target.w, h: target.h })) {
+      if (aabbValues(hx - hb.w / 2, hy - hb.h / 2, hb.w, hb.h, tx, ty, target.w, target.h)) {
         if (target.state === 'shield') {
           target.shieldHP = Math.max(0, target.shieldHP - atk.damage * 1.5);
           spawnHitSparks(target.x, target.y - target.h / 2, 5, '#00aaff');
           playSound('shield');
           attacker.hitRegistered = true;
           state.hitstopFrames = 3;
+          saveActiveMatchSnapshot(true);
           continue;
         }
 
@@ -1608,6 +1918,7 @@ function checkHits() {
         // Gamepad rumble
         if (target.gamepadIndex !== null) triggerRumble(target.gamepadIndex, Math.min(kb / 300, 1), 100 + atk.damage * 5);
         if (attacker.gamepadIndex !== null) triggerRumble(attacker.gamepadIndex, 0.2, 50);
+        saveActiveMatchSnapshot(true);
       }
     }
   }
@@ -1615,19 +1926,35 @@ function checkHits() {
 
 // --- Damage Numbers ---
 function spawnDamageNumber(x, y, value) {
-  state.damageNumbers.push({ x, y: y - 10, value, timer: 50, vy: -1.5 });
+  let slot = null;
+  for (const d of damageNumberPool) {
+    if (!d.active) { slot = d; break; }
+  }
+  if (!slot) {
+    slot = damageNumberPool[0];
+    for (const d of damageNumberPool) {
+      if (d.timer < slot.timer) slot = d;
+    }
+  }
+  slot.active = true;
+  slot.x = finite(x, 0);
+  slot.y = finite(y, 0) - 10;
+  slot.value = finite(value, 0);
+  slot.timer = 50;
+  slot.vy = -1.5;
 }
 
 function updateDamageNumbers() {
-  for (let i = state.damageNumbers.length - 1; i >= 0; i--) {
-    const d = state.damageNumbers[i];
+  for (const d of damageNumberPool) {
+    if (!d.active) continue;
     d.y += d.vy; d.timer--;
-    if (d.timer <= 0) state.damageNumbers.splice(i, 1);
+    if (d.timer <= 0) d.active = false;
   }
 }
 
 function renderDamageNumbers() {
-  for (const d of state.damageNumbers) {
+  for (const d of damageNumberPool) {
+    if (!d.active) continue;
     const pos = worldToScreen(d.x, d.y);
     const alpha = Math.min(1, d.timer / 20);
     ctx.globalAlpha = alpha;
@@ -1659,6 +1986,7 @@ function checkBlastZones() {
         p.invincible = RESPAWN_INVINCIBILITY;
         playSound('death'); playSound('cheer');
         spawnHitSparks(p.x, p.y, 15, '#ff0000');
+        saveActiveMatchSnapshot(true);
         return;
       }
 
@@ -1669,6 +1997,7 @@ function checkBlastZones() {
         p.vx = 0; p.vy = 0; p.damage = 0;
         p.state = 'respawning'; p.stateTimer = 30;
         p.invincible = RESPAWN_INVINCIBILITY;
+        saveActiveMatchSnapshot(true);
         return;
       }
 
@@ -1685,6 +2014,7 @@ function checkBlastZones() {
           // Final KO slow-mo
           state.slowMo = 0.3; state.slowMoTimer = 90;
           state.slowMoTarget = { x: p.x, y: p.y };
+          clearActiveMatchSnapshot();
         }
       } else {
         const spawn = currentStage.spawns[p.idx];
@@ -1693,6 +2023,7 @@ function checkBlastZones() {
         p.state = 'respawning'; p.stateTimer = 60;
         p.invincible = RESPAWN_INVINCIBILITY;
         playSound('death');
+        saveActiveMatchSnapshot(true);
       }
     }
   }
@@ -1770,7 +2101,7 @@ function update(dt) {
     dt *= state.slowMo;
     if (state.slowMoTimer <= 0) {
       state.slowMo = 1;
-      if (state.winner >= 0) { state.mode = 'results'; state.confettiSpawned = false; }
+      if (state.winner >= 0) { state.mode = 'results'; state.confettiSpawned = false; clearActiveMatchSnapshot(); }
     }
   }
 
@@ -1786,6 +2117,7 @@ function update(dt) {
         const p1 = state.players[0], p2 = state.players[1];
         state.winner = p1.score > p2.score ? 0 : p2.score > p1.score ? 1 : -1;
         state.mode = 'results'; state.confettiSpawned = false;
+        clearActiveMatchSnapshot();
         return;
       }
     }
@@ -1824,6 +2156,7 @@ function update(dt) {
     updateScreenShake();
     updateParticles(dt);
     updateDamageNumbers();
+    saveActiveMatchSnapshot(false);
   }
 }
 
@@ -4930,8 +5263,11 @@ function renderPlayer(p) {
   let bodyColor = p.state === 'hitstun' ? '#ffffff' : p.state === 'grabbed' ? '#ffaaaa' : color;
 
   // Draw dodge trail ghosts
-  if (p.dodgeTrail && p.dodgeTrail.length > 0) {
-    for (const trail of p.dodgeTrail) {
+  const trailCount = p.dodgeTrailSize || 0;
+  if (p.dodgeTrail && trailCount > 0) {
+    for (let i = 0; i < trailCount; i++) {
+      const trailIndex = (p.dodgeTrailCursor - 1 - i + p.dodgeTrail.length) % p.dodgeTrail.length;
+      const trail = p.dodgeTrail[trailIndex];
       const trailPos = worldToScreen(trail.x, trail.y);
       ctx.save();
       ctx.translate(trailPos.x, trailPos.y - h / 2);
@@ -5117,7 +5453,7 @@ function renderTitle() {
   const y0 = BASE_H / 2 + 20;
   ctx.fillText('Press ENTER to start', BASE_W / 2, y0);
   ctx.fillStyle = '#666'; ctx.font = '14px monospace';
-  ctx.fillText('O = Options  |  F = Fullscreen', BASE_W / 2, y0 + 40);
+  ctx.fillText(snapshotAvailable ? 'R = Resume  |  O = Options  |  F = Fullscreen' : 'O = Options  |  F = Fullscreen', BASE_W / 2, y0 + 40);
 }
 
 function drawStatBar(x, y, w, label, value, maxVal, color) {
@@ -5713,7 +6049,7 @@ function startMatch() {
   state.screenShake = { x: 0, y: 0, intensity: 0 };
   state.camera = { x: 0, y: 100, zoom: 1 };
   state.winner = -1; state.frameCount = 0;
-  state.damageNumbers = [];
+  resetDamageNumberPool();
   state.slowMo = 1; state.slowMoTimer = 0; state.slowMoTarget = null;
   state.confettiSpawned = false;
   state.hazardsOn = options.hazardsOn;
@@ -5722,6 +6058,7 @@ function startMatch() {
   initAudio();
 
   state.mode = state.matchType === 'training' ? 'training' : 'playing';
+  saveActiveMatchSnapshot(true);
 }
 
 // --- Menu Navigation ---
@@ -5818,6 +6155,10 @@ function handleOptionsInput() {
 document.addEventListener('keydown', e => {
   if (e.code !== 'Escape' && e.code !== 'KeyF') initAudio();
   if (state.mode === 'title') {
+    if (e.code === 'KeyR' && snapshotAvailable && restoreActiveMatchSnapshot()) {
+      delete justPressed[e.code];
+      return;
+    }
     if (e.code === 'Enter' || e.code === 'Space') {
       state.mode = 'charselect';
       delete justPressed[e.code];
@@ -5827,16 +6168,16 @@ document.addEventListener('keydown', e => {
     if (e.code === 'Enter' || e.code === 'Space') startMatch();
     if (e.code === 'Escape') state.mode = 'title';
   } else if (state.mode === 'playing' || state.mode === 'training') {
-    if (e.code === 'KeyP') state.mode = state.mode === 'playing' ? 'paused' : state.mode;
-    if (e.code === 'Escape') state.mode = 'title';
+    if (e.code === 'KeyP' && state.mode === 'playing') { state.mode = 'paused'; saveActiveMatchSnapshot(true); }
+    if (e.code === 'Escape') { clearActiveMatchSnapshot(); state.mode = 'title'; }
     // Training mode keys
     if (state.matchType === 'training') {
       if (e.code === 'KeyH') options.showHitboxes = !options.showHitboxes;
-      if (e.code === 'KeyR') { for (const p of state.players) p.damage = 0; }
+      if (e.code === 'KeyR') { for (const p of state.players) p.damage = 0; saveActiveMatchSnapshot(true); }
     }
   } else if (state.mode === 'paused') {
     if (e.code === 'KeyP') state.mode = 'playing';
-    if (e.code === 'Escape') state.mode = 'title';
+    if (e.code === 'Escape') { clearActiveMatchSnapshot(); state.mode = 'title'; }
   } else if (state.mode === 'charselect' || state.mode === 'stageselect' || state.mode === 'modeselect') {
     if (e.code === 'Escape') {
       if (state.mode === 'modeselect') state.mode = 'stageselect';
@@ -5855,6 +6196,10 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('fullscreenchange', resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
+window.addEventListener('pagehide', () => saveActiveMatchSnapshot(true));
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') saveActiveMatchSnapshot(true);
+});
 
 // --- Game Loop ---
 let lastTime = 0;
@@ -5920,12 +6265,14 @@ window.render_game_to_text = function () {
     winner: state.winner,
     slowMo: state.slowMo !== 1 ? state.slowMo : undefined,
     activeParticles: particlePool.filter(p => p.active).length,
-    damageNumbers: state.damageNumbers.length,
+    damageNumbers: countActiveDamageNumbers(),
+    snapshotAvailable,
     coordSystem: '+x right, +y down, origin at stage center',
   });
 };
 
 // --- Init ---
+snapshotAvailable = hasActiveMatchSnapshot();
 resizeCanvas();
 requestAnimationFrame(gameLoop);
 </script>
