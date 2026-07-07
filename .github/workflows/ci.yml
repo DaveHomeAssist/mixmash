@@ -6,6 +6,9 @@ on:
     paths:
       - 'src/**'
       - 'test/**'
+      - 'play/**'
+      - 'mars/**'
+      - 'api/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/ci.yml'
@@ -20,5 +23,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - run: npm ci
       - run: npm test
+      - run: npm run vercel-build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:play

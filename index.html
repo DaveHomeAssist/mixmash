@@ -6,6 +6,8 @@
 <title>MixMash Studio — Games That Play in Your Browser</title>
 <meta name="description" content="MixMash Studio makes small, loud, instantly playable browser games: MIXMASH the DJ platform fighter, MarsScape the Mars colony skiller, Garden OS Story Mode, and more. No installs, no accounts.">
 <link rel="canonical" href="https://mixmash.games/">
+<meta name="google-site-verification" content="PwUDpqqaU3YZsUKNgUq5lGEcCuRFvL149sVLZUbXb8Q" />
+<!-- <meta name="msvalidate.01" content="PASTE_BING_TOKEN_HERE"> -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MixMash Studio">
@@ -223,17 +225,22 @@ nav {
   background: rgba(57,255,142,0.22); filter: blur(9px);
 }
 
-.vis-empires { background: linear-gradient(180deg, #0A0A0E 0%, #16161E 55%, #232326 100%); }
+.vis-empires { background: linear-gradient(180deg, #96b7a5 0%, #5c7b44 42%, #28311f 74%, #15170f 100%); }
 .vis-empires::before {
-  content: ''; position: absolute; bottom: 24%; left: 50%; transform: translateX(-50%) rotate(45deg);
-  width: 44px; height: 44px;
-  background: linear-gradient(135deg, rgba(255,216,77,0.7), rgba(212,179,106,0.28));
-  box-shadow: 0 0 34px rgba(255,216,77,0.28);
+  content: ''; position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%) rotate(45deg);
+  width: 68px; height: 68px;
+  background:
+    linear-gradient(135deg, rgba(240,207,102,0.8), rgba(111,145,72,0.42)),
+    repeating-linear-gradient(0deg, rgba(18,19,14,0.28) 0 4px, transparent 4px 8px);
+  box-shadow: 0 18px 34px rgba(0,0,0,0.3);
 }
 .vis-empires::after {
-  content: ''; position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%) rotate(45deg);
-  width: 76px; height: 76px;
-  border: 1px solid rgba(212,179,106,0.35);
+  content: ''; position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%) rotate(45deg);
+  width: 118px; height: 118px;
+  border: 1px solid rgba(240,207,102,0.4);
+  background:
+    linear-gradient(90deg, transparent 48%, rgba(240,207,102,0.25) 49% 51%, transparent 52%),
+    linear-gradient(0deg, transparent 48%, rgba(240,207,102,0.25) 49% 51%, transparent 52%);
 }
 
 .game-status {
@@ -404,14 +411,14 @@ footer a:hover { color: var(--led-cyan); }
 
     <article class="game-card" style="--card-glow: var(--strobe-yellow)">
       <div class="game-vis vis-empires">
-        <span class="game-status st-proto">&#9679; Prototype</span>
+        <span class="game-status st-proto">&#9679; Native Alpha</span>
       </div>
       <div class="game-body">
         <div class="game-genre">Real-Time Strategy</div>
-        <h3 class="game-name">Empires</h3>
-        <p class="game-desc">A deterministic RTS experiment — command villagers, gather resources, and grow your settlement. Early prototype; combat is on the roadmap. Working title.</p>
+        <h3 class="game-name">Age of Dave</h3>
+        <p class="game-desc">The restored RTS alpha backed by the real C++/SDL project: deterministic sim, sprite atlases, lockstep networking, and native app smoke coverage.</p>
         <div class="game-actions">
-          <a class="play-link" href="empires/">&#9654; Play</a>
+          <a class="play-link" href="empires/">&#9654; Open</a>
         </div>
       </div>
     </article>
