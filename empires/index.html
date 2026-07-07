@@ -3,42 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EMPIRES — RTS Prototype | MixMash Studio</title>
+    <title>EMPIRES — MixMash Studio</title>
+    <meta name="description" content="EMPIRES is a browser build of a deterministic C++ real-time strategy sim: 7 civilizations, combat, and an AI opponent. Local skirmish only in the browser." />
+    <link rel="canonical" href="https://mixmash.games/empires" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <meta name="theme-color" content="#111111" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="EMPIRES" />
+    <meta property="og:description" content="A deterministic C++/WebAssembly RTS: 7 civilizations, combat, and an AI opponent. Local skirmish only in the browser." />
+    <meta property="og:url" content="https://mixmash.games/empires" />
     <style>
-      html, body { margin: 0; padding: 0; background: #111; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
-      #root { position: relative; width: 100vw; height: 100vh; }
-      canvas { display: block; background: #2b3a1e; cursor: crosshair; }
-      #hud { position: absolute; top: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.55); display: flex; gap: 18px; font-size: 14px; pointer-events: none; }
-      #hud .r { display: flex; align-items: center; gap: 6px; }
-      #hud .sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
-      #bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.55); font-size: 13px; display: flex; justify-content: space-between; }
-      #bottom button { background: #444; color: #eee; border: 1px solid #666; padding: 4px 10px; margin-right: 6px; cursor: pointer; font-size: 12px; }
-      #bottom button:hover { background: #555; }
-      #bottom button:disabled { opacity: 0.4; cursor: not-allowed; }
-      #selection { color: #ffd27f; }
-      #tick { opacity: 0.6; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { height: 100%; background: #111; overflow: hidden; }
+      #canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; background: #2b3a1e; cursor: crosshair; }
+      .back-pill {
+        position: fixed; top: 14px; left: 14px; z-index: 10;
+        font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
+        text-transform: uppercase; text-decoration: none;
+        color: #F0F0F8; background: rgba(6,6,14,0.72);
+        border: 1px solid rgba(255,255,255,0.14);
+        padding: 7px 14px; border-radius: 999px;
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        opacity: 0.85; transition: opacity 0.2s;
+      }
+      .back-pill:hover { opacity: 1; }
+      #status {
+        position: fixed; top: 14px; right: 14px; z-index: 10;
+        font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.05em;
+        color: #9A9ABB; background: rgba(6,6,14,0.72);
+        border: 1px solid rgba(255,255,255,0.14);
+        padding: 7px 14px; border-radius: 999px;
+        max-width: 60vw;
+      }
+      #status:empty { display: none; }
     </style>
-    <script type="module" crossorigin src="./assets/index-DFLGmTr6.js"></script>
   </head>
   <body>
-    <div id="root">
-      <canvas id="game"></canvas>
-      <div id="hud">
-        <div class="r"><span class="sw" style="background:#d4b36a"></span><span>Food <b id="r-food">0</b></span></div>
-        <div class="r"><span class="sw" style="background:#8b5a2b"></span><span>Wood <b id="r-wood">0</b></span></div>
-        <div class="r"><span class="sw" style="background:#ffd84d"></span><span>Gold <b id="r-gold">0</b></span></div>
-        <div class="r"><span class="sw" style="background:#bbbbbb"></span><span>Stone <b id="r-stone">0</b></span></div>
-        <div class="r"><span>Pop <b id="r-pop">0/0</b></span></div>
-        <div class="r" id="tick">tick 0</div>
-      </div>
-      <div id="bottom">
-        <div>
-          <button id="btn-train-villager">Train Villager (50F)</button>
-          <button id="btn-build-house">Build House (30W)</button>
-          <button id="btn-toggle-autogather">Auto-Gather: ON</button>
-        </div>
-        <div id="selection">No selection</div>
-      </div>
-    </div>
+    <a class="back-pill" href="../">&#8592; mixmash.games</a>
+    <div id="status">Loading...</div>
+    <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+    <script src="./assets/shell.js"></script>
+    <script src="./assets/aoe2-clone.js"></script>
   </body>
 </html>

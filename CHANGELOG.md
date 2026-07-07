@@ -4,6 +4,11 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+## 2026-07-07 — EMPIRES replaced with the real aoe2-clone build
+- **`/empires/` replaced entirely**: the page was serving `aoe2-clone`'s very first prototype (a bare TypeScript/Canvas villager-auto-gather demo from April 2026). It's now a WebAssembly build of the actual current game — 7 civilizations, combat, AI opponent, sprite-capable rendering — compiled via a new Emscripten target added to the `aoe2-clone` CMake project.
+- **Local skirmish only in the browser.** `aoe2-clone`'s LAN/internet multiplayer (raw TCP/UDP sockets, a subprocess-spawned headless-runner) has no browser equivalent; the web build compiles `NetworkSession` down to a stub that reports unavailable. Multiplayer still works in the native SDL3 desktop build.
+- Page chrome simplified to match the hub's `/garden/`-style embed pattern (a `back-pill` link, full-bleed canvas) since the game now draws its own HUD/menus on the canvas — the old page's HTML-side resource bar and build buttons belonged to the retired prototype.
+
 ## 2026-07-06 — MarsScape rebuilt as a server-authoritative app
 - **`/mars/` replaced entirely**: the generated single-file page is gone. New: canvas-backed isometric client (`mars/game.js`, `mars/styles.css`), shared engine (`mars/engine.mjs`), a Node/SQLite authority server for local dev (`mars/server.mjs`), and a production authority API on Vercel (`api/*.mjs`, project `mixmash-marsscape-authority`, private Blob storage).
 - **Trust model changed:** the server is now authoritative for game state — submitted client resource totals are ignored, sessions always start from server-created state, and gameplay actions are applied as signed commands (`gather`, `build`, `smelt`, `craft`, `research`, `startStorm`).
