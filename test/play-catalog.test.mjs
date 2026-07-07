@@ -19,17 +19,17 @@ async function loadCatalog() {
 test('stage catalog exports the full current arena list', async () => {
   const { stages } = await loadCatalog();
   assert.equal(Object.keys(stages).length, 11);
-  assert.ok(stages.runeFoundry);
-  assert.ok(stages.crystalCanopy);
-  assert.equal(stages.runeFoundry.platforms.some((platform) => platform.moving), true);
-  assert.equal(stages.crystalCanopy.platforms.some((platform) => platform.moving), true);
+  assert.ok(stages.printworks);
+  assert.ok(stages.electricForest);
+  assert.equal(stages.printworks.platforms.some((platform) => platform.moving), true);
+  assert.equal(stages.electricForest.platforms.some((platform) => platform.moving), true);
 });
 
 test('fighter catalog exports the full current roster', async () => {
   const { fighters } = await loadCatalog();
   assert.equal(Object.keys(fighters).length, 14);
-  assert.ok(fighters.runeweaver);
-  assert.ok(fighters.bassforger);
-  assert.equal(fighters.runeweaver.maxJumps, 3);
-  assert.equal(fighters.bassforger.armor, true);
+  assert.ok(fighters.flume);
+  assert.ok(fighters.zomboy);
+  assert.equal(fighters.flume.maxJumps, 3);
+  assert.equal(fighters.zomboy.armor, true);
 });

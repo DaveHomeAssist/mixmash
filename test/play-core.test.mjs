@@ -37,16 +37,16 @@ test('active match snapshot validation is data driven', async () => {
     version: 1,
     snapshotModes: ['playing', 'training', 'paused'],
     matchTypes: ['stock', 'time', 'training', 'rush'],
-    stageKeys: ['battlefield', 'runeFoundry'],
+    stageKeys: ['battlefield', 'printworks'],
   };
   const valid = {
     version: 1,
     mode: 'playing',
     matchType: 'stock',
-    selectedStage: 'runeFoundry',
+    selectedStage: 'printworks',
     players: [
-      { fighterKey: 'runeweaver', x: 0, y: 0, vx: 0, vy: 0, controlType: 'human' },
-      { fighterKey: 'bassforger', x: 1, y: 0, vx: 0, vy: 0, controlType: 'cpu' },
+      { fighterKey: 'flume', x: 0, y: 0, vx: 0, vy: 0, controlType: 'human' },
+      { fighterKey: 'zomboy', x: 1, y: 0, vx: 0, vy: 0, controlType: 'cpu' },
     ],
     damageNumbers: [],
   };

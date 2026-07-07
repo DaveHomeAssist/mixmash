@@ -168,8 +168,8 @@
     throws: { forward: { damage: 7, kbBase: 56, kbScale: 64, angle: 35 }, back: { damage: 9, kbBase: 74, kbScale: 68, angle: 138 }, up: { damage: 6, kbBase: 84, kbScale: 52, angle: 86 }, down: { damage: 5, kbBase: 46, kbScale: 76, angle: 274 } },
     desc: 'Hypnotic debuffer with style',
   },
-  runeweaver: {
-    name: 'Rune Weaver', color: '#38d7b8', outlineColor: '#17866f', altColor: '#f1d36b', altOutline: '#a98120',
+  flume: {
+    name: 'Flume', color: '#38d7b8', outlineColor: '#17866f', altColor: '#ff9a76', altOutline: '#c8623e',
     w: 43, h: 63, weight: 0.84, walkSpeed: 345, runSpeed: 505, jumpForce: -630, doubleJumpForce: -565, maxJumps: 3,
     attacks: {
       neutral: { startup: 2, active: 3, endlag: 7, damage: 5, kbBase: 42, kbScale: 68, angle: 48, hitbox: { ox: 23, oy: -8, w: 38, h: 27 } },
@@ -180,10 +180,10 @@
     },
     grab: { startup: 5, active: 2, endlag: 24, range: 44, pummelDamage: 2 },
     throws: { forward: { damage: 7, kbBase: 58, kbScale: 66, angle: 36 }, back: { damage: 8, kbBase: 76, kbScale: 70, angle: 138 }, up: { damage: 6, kbBase: 92, kbScale: 56, angle: 86 }, down: { damage: 5, kbBase: 46, kbScale: 80, angle: 276 } },
-    desc: 'Fast runic routes with triple jump',
+    desc: 'Airy future-bass floater with triple jump',
   },
-  bassforger: {
-    name: 'Bass Forger', color: '#d86a32', outlineColor: '#8e3519', altColor: '#78f1ff', altOutline: '#226e86',
+  zomboy: {
+    name: 'Zomboy', color: '#3faf43', outlineColor: '#1f6b25', altColor: '#101410', altOutline: '#050705',
     w: 55, h: 71, weight: 1.38, walkSpeed: 240, runSpeed: 360, jumpForce: -510, doubleJumpForce: -450, armor: true,
     attacks: {
       neutral: { startup: 6, active: 4, endlag: 16, damage: 10, kbBase: 78, kbScale: 98, angle: 44, hitbox: { ox: 31, oy: -11, w: 58, h: 38 } },
@@ -194,7 +194,7 @@
     },
     grab: { startup: 7, active: 3, endlag: 34, range: 58, pummelDamage: 4 },
     throws: { forward: { damage: 12, kbBase: 92, kbScale: 86, angle: 38 }, back: { damage: 14, kbBase: 108, kbScale: 92, angle: 135 }, up: { damage: 10, kbBase: 110, kbScale: 70, angle: 85 }, down: { damage: 9, kbBase: 66, kbScale: 94, angle: 272 } },
-    desc: 'Armored forge hits with slow power',
+    desc: 'Armored heavy-dubstep bruiser with slow power',
   },
 };
 })(globalThis);

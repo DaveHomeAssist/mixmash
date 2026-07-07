@@ -28,11 +28,11 @@ Original prompt: Implement the MIXMASH Product Upgrade Roadmap for the `/play/` 
 
 ### P4 Encore Content Pack
 
-- Resolved D1 for new public content by adding original names only: Rune Foundry, Crystal Canopy, Rune Weaver, and Bass Forger.
+- Re-themed Encore content to DJ/festival identities for cohesion with the base roster: Printworks, Electric Forest, Flume, and Zomboy.
 - Stage count is now 11 and fighter count is now 14 through the canonical `STAGES` and `FIGHTER_DEFS` tables.
 - Added readable optional moving hazards on both new stages using the existing `hazardsOn` pipeline.
-- Added runic and crystal procedural music cues, exposed automatically through the existing DOM audio track selector and `mixmash_config_v1` persistence.
-- Shifted the title surface and new content art toward a retro fantasy arena direction with custom forge/crystal backgrounds, platform materials, fighter props, and attack VFX.
+- Added warehouse and forest procedural music cues, exposed automatically through the existing DOM audio track selector and `mixmash_config_v1` persistence.
+- Shifted the title surface and new content art toward a DJ/festival arena direction with warehouse/forest backgrounds, platform materials, fighter props, and attack VFX.
 - `render_game_to_text()` now exposes `contentPack` counts, keys, cue inventory, hazard-stage inventory, and visual direction for automation.
 - Smoke coverage now asserts the new counts/keys/cues, launches both new stage/fighter combinations, screenshots them, and verifies hazards move only when enabled.
 

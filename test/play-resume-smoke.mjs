@@ -94,10 +94,10 @@ try {
   assert.equal(title.quickFightSetup.p2Cpu, true);
   assert.equal(title.contentPack.stages, 11);
   assert.equal(title.contentPack.fighters, 14);
-  assert.deepEqual(title.contentPack.encoreStages, ['runeFoundry', 'crystalCanopy']);
-  assert.deepEqual(title.contentPack.encoreFighters, ['runeweaver', 'bassforger']);
-  assert.equal(title.contentPack.musicCues.includes('runic'), true);
-  assert.equal(title.contentPack.musicCues.includes('crystal'), true);
+  assert.deepEqual(title.contentPack.encoreStages, ['printworks', 'electricForest']);
+  assert.deepEqual(title.contentPack.encoreFighters, ['flume', 'zomboy']);
+  assert.equal(title.contentPack.musicCues.includes('warehouse'), true);
+  assert.equal(title.contentPack.musicCues.includes('forest'), true);
   assert.equal(title.security.frameGuard.checked, true);
   assert.equal(title.security.frameGuard.framed, false);
   assert.equal(title.security.frameGuard.action, 'top-level');
@@ -283,13 +283,13 @@ try {
 
   await page.evaluate(() => {
     options.hazardsOn = true;
-    state.selectedStage = 'runeFoundry';
-    state.p1Fighter = 'runeweaver';
-    state.p2Fighter = 'bassforger';
+    state.selectedStage = 'printworks';
+    state.p1Fighter = 'flume';
+    state.p2Fighter = 'zomboy';
     state.matchType = 'stock';
     state.charSelectCursors = [
-      { pos: FIGHTER_KEYS.indexOf('runeweaver'), confirmed: false, cpu: false, cpuLevel: 3 },
-      { pos: FIGHTER_KEYS.indexOf('bassforger'), confirmed: false, cpu: true, cpuLevel: 3 },
+      { pos: FIGHTER_KEYS.indexOf('flume'), confirmed: false, cpu: false, cpuLevel: 3 },
+      { pos: FIGHTER_KEYS.indexOf('zomboy'), confirmed: false, cpu: true, cpuLevel: 3 },
     ];
     startMatch();
     const p2 = state.players[1];
@@ -306,7 +306,7 @@ try {
   assert.equal(stockProgress.profile.matchCount, 1);
   assert.equal(stockProgress.profile.wins, 1);
   assert.ok(stockProgress.profile.kos >= 1);
-  assert.equal(stockProgress.profile.favoriteFighter, 'runeweaver');
+  assert.equal(stockProgress.profile.favoriteFighter, 'flume');
   assert.equal(stockProgress.profile.challenges.find((challenge) => challenge.id === 'first_match').completed, true);
   assert.equal(stockProgress.profile.challenges.find((challenge) => challenge.id === 'first_win').completed, true);
   assert.equal(stockProgress.profile.challenges.find((challenge) => challenge.id === 'encore_explorer').completed, true);
@@ -483,30 +483,30 @@ try {
     return readState();
   }
 
-  const runeMatch = await launchEncoreMatch('runeFoundry', 'runeweaver', 'bassforger', true);
+  const runeMatch = await launchEncoreMatch('printworks', 'flume', 'zomboy', true);
   assert.equal(runeMatch.mode, 'playing');
-  assert.equal(runeMatch.stage, 'runeFoundry');
-  assert.equal(runeMatch.players[0].fighter, 'runeweaver');
-  assert.equal(runeMatch.players[1].fighter, 'bassforger');
+  assert.equal(runeMatch.stage, 'printworks');
+  assert.equal(runeMatch.players[0].fighter, 'flume');
+  assert.equal(runeMatch.players[1].fighter, 'zomboy');
   assert.equal(runeMatch.options.hazardsOn, true);
-  await screenshot('10-encore-rune-foundry.png');
+  await screenshot('10-encore-printworks.png');
 
-  const crystalMatch = await launchEncoreMatch('crystalCanopy', 'bassforger', 'runeweaver', true);
+  const crystalMatch = await launchEncoreMatch('electricForest', 'zomboy', 'flume', true);
   assert.equal(crystalMatch.mode, 'playing');
-  assert.equal(crystalMatch.stage, 'crystalCanopy');
-  assert.equal(crystalMatch.players[0].fighter, 'bassforger');
-  assert.equal(crystalMatch.players[1].fighter, 'runeweaver');
-  await screenshot('11-encore-crystal-canopy.png');
+  assert.equal(crystalMatch.stage, 'electricForest');
+  assert.equal(crystalMatch.players[0].fighter, 'zomboy');
+  assert.equal(crystalMatch.players[1].fighter, 'flume');
+  await screenshot('11-encore-electric-forest.png');
 
   const movingHazard = await page.evaluate(() => {
     options.hazardsOn = true;
-    state.selectedStage = 'runeFoundry';
-    state.p1Fighter = 'runeweaver';
-    state.p2Fighter = 'bassforger';
+    state.selectedStage = 'printworks';
+    state.p1Fighter = 'flume';
+    state.p2Fighter = 'zomboy';
     state.matchType = 'stock';
     state.charSelectCursors = [
-      { pos: FIGHTER_KEYS.indexOf('runeweaver'), confirmed: false, cpu: false, cpuLevel: 3 },
-      { pos: FIGHTER_KEYS.indexOf('bassforger'), confirmed: false, cpu: true, cpuLevel: 3 },
+      { pos: FIGHTER_KEYS.indexOf('flume'), confirmed: false, cpu: false, cpuLevel: 3 },
+      { pos: FIGHTER_KEYS.indexOf('zomboy'), confirmed: false, cpu: true, cpuLevel: 3 },
     ];
     startMatch();
     const moving = currentStage.platforms.filter(platform => platform.moving);
@@ -521,13 +521,13 @@ try {
 
   const staticHazard = await page.evaluate(() => {
     options.hazardsOn = false;
-    state.selectedStage = 'crystalCanopy';
-    state.p1Fighter = 'bassforger';
-    state.p2Fighter = 'runeweaver';
+    state.selectedStage = 'electricForest';
+    state.p1Fighter = 'zomboy';
+    state.p2Fighter = 'flume';
     state.matchType = 'stock';
     state.charSelectCursors = [
-      { pos: FIGHTER_KEYS.indexOf('bassforger'), confirmed: false, cpu: false, cpuLevel: 3 },
-      { pos: FIGHTER_KEYS.indexOf('runeweaver'), confirmed: false, cpu: true, cpuLevel: 3 },
+      { pos: FIGHTER_KEYS.indexOf('zomboy'), confirmed: false, cpu: false, cpuLevel: 3 },
+      { pos: FIGHTER_KEYS.indexOf('flume'), confirmed: false, cpu: true, cpuLevel: 3 },
     ];
     startMatch();
     const moving = currentStage.platforms.filter(platform => platform.moving);
@@ -574,37 +574,37 @@ try {
   assert.equal(malformedShare.quickFightSetup.matchType, 'stock');
   assert.equal(malformedShare.share.platformRushSeedId, null);
 
-  await page.goto(`${playUrl}?mix=1&p1=runeweaver&p2=bassforger&stage=crystalCanopy&mode=stock&p1cpu=0&p2cpu=1&p1level=3&p2level=5&hazards=0&seed=party_42`, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${playUrl}?mix=1&p1=flume&p2=zomboy&stage=electricForest&mode=stock&p1cpu=0&p2cpu=1&p1level=3&p2level=5&hazards=0&seed=party_42`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(250);
   const presetShare = await readState();
   assert.equal(presetShare.mode, 'title');
-  assert.equal(presetShare.quickFightSetup.p1Fighter, 'runeweaver');
-  assert.equal(presetShare.quickFightSetup.p2Fighter, 'bassforger');
-  assert.equal(presetShare.quickFightSetup.selectedStage, 'crystalCanopy');
+  assert.equal(presetShare.quickFightSetup.p1Fighter, 'flume');
+  assert.equal(presetShare.quickFightSetup.p2Fighter, 'zomboy');
+  assert.equal(presetShare.quickFightSetup.selectedStage, 'electricForest');
   assert.equal(presetShare.quickFightSetup.p2CpuLevel, 5);
   assert.equal(presetShare.options.hazardsOn, false);
   assert.equal(presetShare.share.platformRushSeedId, 'party_42');
   assert.equal(presetShare.share.matchUrl.includes('mix=1'), true);
-  assert.equal(presetShare.share.matchUrl.includes('stage=crystalCanopy'), true);
+  assert.equal(presetShare.share.matchUrl.includes('stage=electricForest'), true);
   await press('KeyQ');
   await step(20);
   const presetMatch = await readState();
   assert.equal(presetMatch.mode, 'playing');
-  assert.equal(presetMatch.stage, 'crystalCanopy');
-  assert.equal(presetMatch.players[0].fighter, 'runeweaver');
-  assert.equal(presetMatch.players[1].fighter, 'bassforger');
+  assert.equal(presetMatch.stage, 'electricForest');
+  assert.equal(presetMatch.players[0].fighter, 'flume');
+  assert.equal(presetMatch.players[1].fighter, 'zomboy');
   assert.equal(presetMatch.options.hazardsOn, false);
   await press('Escape');
   assert.equal((await readState()).mode, 'title');
 
-  const challengeUrl = `${playUrl}?mix=1&p1=runeweaver&p2=bassforger&stage=runeFoundry&mode=rush&p1cpu=0&p2cpu=1&hazards=1&seed=daily_test&start=1`;
+  const challengeUrl = `${playUrl}?mix=1&p1=flume&p2=zomboy&stage=printworks&mode=rush&p1cpu=0&p2cpu=1&hazards=1&seed=daily_test&start=1`;
   await page.goto(challengeUrl, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(250);
   await step(20);
   const challengeA = await readState();
   assert.equal(challengeA.mode, 'playing');
   assert.equal(challengeA.matchType, 'rush');
-  assert.equal(challengeA.stage, 'runeFoundry');
+  assert.equal(challengeA.stage, 'printworks');
   assert.equal(challengeA.share.platformRushSeedId, 'daily_test');
   assert.equal(challengeA.snapshotAvailable, true);
   const challengePositionsA = challengeA.platformRush.collectibles.map((item) => [item.id, item.x, item.y]);

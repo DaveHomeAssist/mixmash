@@ -21,7 +21,7 @@
     { id: 'first_match', name: 'First Match', desc: 'Finish any stock or time match.' },
     { id: 'first_win', name: 'First Win', desc: 'Win a stock or time match as P1.' },
     { id: 'rush_complete', name: 'Deep Cut Route', desc: 'Complete every Platform Rush pickup.' },
-    { id: 'encore_explorer', name: 'Encore Explorer', desc: 'Play Rune Foundry or Crystal Canopy.' },
+    { id: 'encore_explorer', name: 'Encore Explorer', desc: 'Play Printworks or Electric Forest.' },
   ].map(Object.freeze));
 
   const PLATFORM_RUSH = Object.freeze({

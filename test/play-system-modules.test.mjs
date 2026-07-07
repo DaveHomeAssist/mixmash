@@ -43,12 +43,12 @@ test('mode rules module owns Platform Rush and quick fight defaults', async () =
   assert.equal(rules.PROFILE_CHALLENGES.some((challenge) => challenge.id === 'rush_complete'), true);
 
   const setup = rules.sanitizeQuickFightSetup(
-    { p1Fighter: 'bad', p2Fighter: 'bassforger', selectedStage: 'crystalCanopy', matchType: 'rush', p2Cpu: false, p1CpuLevel: 5, p2CpuLevel: 9 },
-    { fighterKeys: ['runeweaver', 'bassforger'], stageKeys: ['battlefield', 'crystalCanopy'] }
+    { p1Fighter: 'bad', p2Fighter: 'zomboy', selectedStage: 'electricForest', matchType: 'rush', p2Cpu: false, p1CpuLevel: 5, p2CpuLevel: 9 },
+    { fighterKeys: ['flume', 'zomboy'], stageKeys: ['battlefield', 'electricForest'] }
   );
-  assert.equal(setup.p1Fighter, 'runeweaver');
-  assert.equal(setup.p2Fighter, 'bassforger');
-  assert.equal(setup.selectedStage, 'crystalCanopy');
+  assert.equal(setup.p1Fighter, 'flume');
+  assert.equal(setup.p2Fighter, 'zomboy');
+  assert.equal(setup.selectedStage, 'electricForest');
   assert.equal(setup.matchType, 'stock');
   assert.equal(setup.p2Cpu, false);
   assert.equal(setup.p1CpuLevel, 5);
@@ -90,8 +90,8 @@ test('snapshot module centralizes storage keys and delegates schema validation',
     matchType: 'rush',
     selectedStage: 'battlefield',
     players: [
-      { fighterKey: 'runeweaver', x: 0, y: 0, vx: 0, vy: 0, controlType: 'human' },
-      { fighterKey: 'bassforger', x: 1, y: 0, vx: 0, vy: 0, controlType: 'cpu' },
+      { fighterKey: 'flume', x: 0, y: 0, vx: 0, vy: 0, controlType: 'human' },
+      { fighterKey: 'zomboy', x: 1, y: 0, vx: 0, vy: 0, controlType: 'cpu' },
     ],
   };
   assert.equal(snapshot.isValidActiveMatchSnapshot(valid, {
@@ -99,7 +99,7 @@ test('snapshot module centralizes storage keys and delegates schema validation',
     snapshotModes: snapshot.SNAPSHOT_MODES,
     matchTypes: ['stock', 'time', 'training', 'rush'],
     stageKeys: ['battlefield'],
-    isValidPlayer: (player) => ['runeweaver', 'bassforger'].includes(player.fighterKey) && Number.isFinite(player.x) && Number.isFinite(player.y) && Number.isFinite(player.vx) && Number.isFinite(player.vy),
+    isValidPlayer: (player) => ['flume', 'zomboy'].includes(player.fighterKey) && Number.isFinite(player.x) && Number.isFinite(player.y) && Number.isFinite(player.vx) && Number.isFinite(player.vy),
   }), true);
   assert.equal(snapshot.isValidActiveMatchSnapshot({ ...valid, selectedStage: 'bad' }, {
     version: 1,

@@ -163,8 +163,8 @@
       { parallax: 0.0, shapes: 'rainbowlasers' },
     ],
   },
-  runeFoundry: {
-    name: 'Rune Foundry',
+  printworks: {
+    name: 'Printworks',
     platforms: [
       { x: -285, y: 218, w: 570, h: 32, type: 'solid' },
       { x: -248, y: 112, w: 118, h: 12, type: 'passthrough', moving: { axis: 'x', range: 54, speed: 1.1 } },
@@ -173,16 +173,16 @@
     ],
     spawns: [{ x: -106, y: 105 }, { x: 106, y: 105 }],
     bg: '#100b16',
-    theme: 'runic',
+    theme: 'warehouse',
     bgLayers: [
-      { parallax: 0.0, shapes: 'runefoundrysky' },
-      { parallax: 0.08, shapes: 'runefoundry' },
-      { parallax: 0.0, shapes: 'runeglow' },
+      { parallax: 0.0, shapes: 'warehousesky' },
+      { parallax: 0.08, shapes: 'warehouse' },
+      { parallax: 0.0, shapes: 'warehouseglow' },
       { parallax: 0.0, shapes: 'embers' },
     ],
   },
-  crystalCanopy: {
-    name: 'Crystal Canopy',
+  electricForest: {
+    name: 'Electric Forest',
     platforms: [
       { x: -260, y: 215, w: 520, h: 30, type: 'solid' },
       { x: -310, y: 104, w: 104, h: 12, type: 'passthrough', moving: { axis: 'y', range: 50, speed: 1.05 } },
@@ -191,11 +191,11 @@
     ],
     spawns: [{ x: -96, y: 104 }, { x: 96, y: 104 }],
     bg: '#071516',
-    theme: 'crystal',
+    theme: 'forest',
     bgLayers: [
-      { parallax: 0.0, shapes: 'crystalsky' },
-      { parallax: 0.11, shapes: 'crystalgrove' },
-      { parallax: 0.0, shapes: 'crystalshards' },
+      { parallax: 0.0, shapes: 'forestsky' },
+      { parallax: 0.11, shapes: 'forestgrove' },
+      { parallax: 0.0, shapes: 'forestlights' },
       { parallax: 0.0, shapes: 'fairydust' },
     ],
   },

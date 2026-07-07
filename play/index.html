@@ -602,7 +602,7 @@ let resumeEventCount = 0;
 // --- Stage Definitions ---
 const STAGES = window.MixmashStageData;
 const STAGE_KEYS = Object.keys(STAGES);
-const ENCORE_STAGE_KEYS = ['runeFoundry', 'crystalCanopy'];
+const ENCORE_STAGE_KEYS = ['printworks', 'electricForest'];
 
 let currentStage = STAGES.battlefield;
 
@@ -734,7 +734,7 @@ function getAllPlatformRushPlacementReports() {
 // --- Fighter Definitions (DJ Roster) ---
 const FIGHTER_DEFS = window.MixmashFighterData;
 const FIGHTER_KEYS = Object.keys(FIGHTER_DEFS);
-const ENCORE_FIGHTER_KEYS = ['runeweaver', 'bassforger'];
+const ENCORE_FIGHTER_KEYS = ['flume', 'zomboy'];
 const MODE_SELECT_ITEMS = MODE_RULES.MODE_SELECT_ITEMS;
 const PROFILE_CHALLENGES = MODE_RULES.PROFILE_CHALLENGES;
 
@@ -2649,7 +2649,7 @@ const MUSIC_CUES = {
     kick: [0, 8],
     hat: [4, 12],
   },
-  runic: {
+  warehouse: {
     bpm: 108, level: 0.52, filter: 2800,
     bassWave: 'triangle', leadWave: 'triangle', padWave: 'sine',
     chords: [[38, 45, 50], [41, 48, 53], [43, 50, 55], [36, 43, 48]],
@@ -2659,7 +2659,7 @@ const MUSIC_CUES = {
     snare: [4, 12],
     hat: [2, 10],
   },
-  crystal: {
+  forest: {
     bpm: 122, level: 0.48, filter: 4200,
     bassWave: 'triangle', leadWave: 'sine', padWave: 'triangle',
     chords: [[47, 54, 59], [50, 57, 62], [52, 59, 64], [45, 52, 57]],
@@ -2736,10 +2736,10 @@ function getMusicCueKey() {
       return 'sky';
     case 'cosmic':
       return 'cosmic';
-    case 'runic':
-      return 'runic';
-    case 'crystal':
-      return 'crystal';
+    case 'warehouse':
+      return 'warehouse';
+    case 'forest':
+      return 'forest';
     default:
       return 'clash';
   }
@@ -2996,7 +2996,7 @@ function resolvePlayerPlatform(p, plat) {
   const min = Math.min(oL, oR, oT, oB);
 
   if (min === oT && p.vy >= 0) {
-    p.y = plat.y; p.vy = 0; p.grounded = true; p.jumpsLeft = MAX_JUMPS;
+    p.y = plat.y; p.vy = 0; p.grounded = true; p.jumpsLeft = p.def.maxJumps || MAX_JUMPS;
     if (p.usedAirDodge) p.usedAirDodge = false;
     if (p.specialFall) p.specialFall = false;
     return true;
@@ -3892,7 +3892,12 @@ function resizeCanvas() {
   const aspect = BASE_W / BASE_H;
   let w = window.innerWidth, h = window.innerHeight;
   if (w / h > aspect) w = h * aspect; else h = w / aspect;
-  canvas.width = BASE_W; canvas.height = BASE_H;
+  // Size the backing store to physical pixels so the vector scene stays crisp on
+  // high-DPI / scaled displays. The scene is still authored in BASE_W x BASE_H space;
+  // render() maps that space onto the backing store each frame. Cap DPR at 2 to bound cost.
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.max(1, Math.round(w * dpr));
+  canvas.height = Math.max(1, Math.round(h * dpr));
   canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
 }
 
@@ -4752,7 +4757,7 @@ function renderParallaxBG(stage) {
         ctx.stroke();
       }
       ctx.globalCompositeOperation = 'source-over';
-    } else if (layer.shapes === 'runefoundrysky') {
+    } else if (layer.shapes === 'warehousesky') {
       const grd = ctx.createLinearGradient(0, 0, 0, BASE_H);
       grd.addColorStop(0, '#0b1020');
       grd.addColorStop(0.42, '#1b1622');
@@ -4772,7 +4777,7 @@ function renderParallaxBG(stage) {
       ctx.lineTo(-60, BASE_H);
       ctx.closePath();
       ctx.fill();
-    } else if (layer.shapes === 'runefoundry') {
+    } else if (layer.shapes === 'warehouse') {
       const bx = ox * 0.18;
       ctx.fillStyle = 'rgba(22,18,20,0.72)';
       ctx.fillRect(0, BASE_H - 190, BASE_W, 190);
@@ -4811,7 +4816,7 @@ function renderParallaxBG(stage) {
         const lx = 120 + i * 230 + Math.sin(t * 0.012 + i) * 18;
         ctx.fillRect(lx, BASE_H - 34, 132, 10);
       }
-    } else if (layer.shapes === 'runeglow') {
+    } else if (layer.shapes === 'warehouseglow') {
       ctx.globalCompositeOperation = 'screen';
       for (let i = 0; i < 18; i++) {
         const seed = 72 + i * 21.7;
@@ -4833,7 +4838,7 @@ function renderParallaxBG(stage) {
         ctx.restore();
       }
       ctx.globalCompositeOperation = 'source-over';
-    } else if (layer.shapes === 'crystalsky') {
+    } else if (layer.shapes === 'forestsky') {
       const grd = ctx.createLinearGradient(0, 0, 0, BASE_H);
       grd.addColorStop(0, '#071522');
       grd.addColorStop(0.45, '#124044');
@@ -4846,7 +4851,7 @@ function renderParallaxBG(stage) {
         const cy = BASE_H * (0.16 + i * 0.12) + Math.sin(t * 0.008 + i) * 4;
         ctx.fillRect(0, cy, BASE_W, 5);
       }
-    } else if (layer.shapes === 'crystalgrove') {
+    } else if (layer.shapes === 'forestgrove') {
       const bx = ox * 0.22;
       ctx.fillStyle = 'rgba(9,28,27,0.72)';
       ctx.fillRect(0, BASE_H - 180, BASE_W, 180);
@@ -4873,7 +4878,7 @@ function renderParallaxBG(stage) {
         ctx.closePath();
         ctx.fill();
       }
-    } else if (layer.shapes === 'crystalshards') {
+    } else if (layer.shapes === 'forestlights') {
       ctx.globalCompositeOperation = 'screen';
       for (let i = 0; i < 20; i++) {
         const seed = 31 + i * 14.6;
@@ -4983,7 +4988,7 @@ function renderPlatforms() {
         ctx.lineTo(tl.x + pw * 0.8, tl.y + ph - 2 * z);
         ctx.stroke();
       }
-    } else if (theme === 'runic') {
+    } else if (theme === 'warehouse') {
       const pulse = Math.sin(t * 0.045 + plat.x * 0.01) * 0.18 + 0.72;
       if (plat.type === 'solid') {
         const stoneGrad = ctx.createLinearGradient(tl.x, tl.y, tl.x, tl.y + ph);
@@ -5039,14 +5044,14 @@ function renderPlatforms() {
         ctx.lineTo(tl.x + pw * 0.8, tl.y + ph - 2 * z);
         ctx.stroke();
       }
-    } else if (theme === 'crystal') {
+    } else if (theme === 'forest') {
       const pulse = Math.sin(t * 0.05 + plat.y * 0.01) * 0.18 + 0.72;
       if (plat.type === 'solid') {
-        const crystalGrad = ctx.createLinearGradient(tl.x, tl.y, tl.x + pw, tl.y + ph);
-        crystalGrad.addColorStop(0, '#2a715f');
-        crystalGrad.addColorStop(0.45, '#18464a');
-        crystalGrad.addColorStop(1, '#10242b');
-        ctx.fillStyle = crystalGrad;
+        const forestGrad = ctx.createLinearGradient(tl.x, tl.y, tl.x + pw, tl.y + ph);
+        forestGrad.addColorStop(0, '#2a715f');
+        forestGrad.addColorStop(0.45, '#18464a');
+        forestGrad.addColorStop(1, '#10242b');
+        ctx.fillStyle = forestGrad;
         ctx.beginPath();
         ctx.moveTo(tl.x + 18 * z, tl.y);
         ctx.lineTo(tl.x + pw - 20 * z, tl.y);
@@ -5945,40 +5950,6 @@ function drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, style) {
         ctx.arc(-6 * z + i * 5 * z, armH * 0.36, 1.5 * z, 0, Math.PI * 2);
         ctx.fill();
       }
-    } else if (style.prop === 'rune') {
-      const runeSize = 9 * z;
-      ctx.save();
-      ctx.translate(0, armH * 0.28);
-      ctx.rotate(Math.PI / 4 + Math.sin(state.frameCount * 0.04) * 0.12);
-      ctx.fillStyle = accent;
-      ctx.globalAlpha = 0.9;
-      ctx.fillRect(-runeSize * 0.55, -runeSize * 0.55, runeSize * 1.1, runeSize * 1.1);
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = accent2;
-      ctx.lineWidth = 1.5 * z;
-      ctx.strokeRect(-runeSize * 0.65, -runeSize * 0.65, runeSize * 1.3, runeSize * 1.3);
-      ctx.beginPath();
-      ctx.moveTo(-runeSize * 0.36, 0);
-      ctx.lineTo(runeSize * 0.36, 0);
-      ctx.moveTo(0, -runeSize * 0.36);
-      ctx.lineTo(0, runeSize * 0.36);
-      ctx.stroke();
-      ctx.restore();
-    } else if (style.prop === 'hammer') {
-      ctx.save();
-      ctx.translate(0, armH * 0.25);
-      ctx.rotate(-0.18);
-      ctx.fillStyle = '#3f3028';
-      ctx.fillRect(-2 * z, -8 * z, 4 * z, 23 * z);
-      const metal = ctx.createLinearGradient(-10 * z, -12 * z, 10 * z, -3 * z);
-      metal.addColorStop(0, '#5b4b3f');
-      metal.addColorStop(0.5, accent2);
-      metal.addColorStop(1, '#2f2620');
-      ctx.fillStyle = metal;
-      ctx.fillRect(-11 * z, -13 * z, 22 * z, 9 * z);
-      ctx.fillStyle = style.glow || 'rgba(255,130,60,0.35)';
-      ctx.fillRect(-8 * z, -13 * z, 16 * z, 2 * z);
-      ctx.restore();
     } else if (style.prop === 'tendrils') {
       // Rezz dark swirling tendrils
       ctx.strokeStyle = accent;
@@ -6190,30 +6161,6 @@ function drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, style) {
         ctx.beginPath();
         ctx.arc(bx, by, hb.w * 0.12, 0, Math.PI * 2);
         ctx.fill();
-      }
-    } else if (style.prop === 'rune') {
-      const runeAlpha = Math.max(0, 0.62 - vfxProgress * 0.62);
-      ctx.strokeStyle = `rgba(70, 238, 190, ${runeAlpha})`;
-      ctx.lineWidth = 2 * z;
-      for (let i = 0; i < 4; i++) {
-        const size = hb.w * (0.18 + i * 0.13 + vfxProgress * 0.45);
-        ctx.save();
-        ctx.translate(vfxX, vfxY);
-        ctx.rotate(Math.PI / 4 + i * 0.4);
-        ctx.strokeRect(-size / 2, -size / 2, size, size);
-        ctx.restore();
-      }
-    } else if (style.prop === 'hammer') {
-      const slamAlpha = Math.max(0, 0.68 - vfxProgress * 0.68);
-      ctx.strokeStyle = `rgba(255, 154, 70, ${slamAlpha})`;
-      ctx.lineWidth = 3 * z;
-      for (let i = 0; i < 5; i++) {
-        const angle = -0.9 + i * 0.45;
-        const len = hb.w * (0.36 + vfxProgress * 0.55);
-        ctx.beginPath();
-        ctx.moveTo(vfxX, vfxY);
-        ctx.lineTo(vfxX + Math.cos(angle) * len, vfxY + Math.sin(angle) * len);
-        ctx.stroke();
       }
     } else if (style.prop === 'tendrils') {
       // Rezz: Purple swirling tendrils
@@ -7273,19 +7220,19 @@ function drawRezz(ctx, p, w, h, z, color, outline, bodyColor) {
   });
 }
 
-function drawRuneWeaver(ctx, p, w, h, z, color, outline, bodyColor) {
+function drawFlume(ctx, p, w, h, z, color, outline, bodyColor) {
   drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, {
     bulk: 0, outerwear: 'vest', head: 'human', hair: 'short', chest: 'diamond',
-    dark: '#17332f', pants: '#13241f', shoes: '#d7f3d3', accent2: '#f0c75a',
-    prop: 'rune', glow: 'rgba(70,238,190,0.48)', shieldFill: 'rgba(70,238,190,0.22)', shieldStroke: 'rgba(240,199,90,0.58)',
+    dark: '#17332f', pants: '#13241f', shoes: '#d7f3d3', accent2: '#ff9a76',
+    prop: 'pad', glow: 'rgba(70,238,190,0.48)', shieldFill: 'rgba(70,238,190,0.22)', shieldStroke: 'rgba(255,154,118,0.58)',
   });
 }
 
-function drawBassForger(ctx, p, w, h, z, color, outline, bodyColor) {
+function drawZomboy(ctx, p, w, h, z, color, outline, bodyColor) {
   drawDJPerformer(ctx, p, w, h, z, color, outline, bodyColor, {
     bulk: 0.18, outerwear: 'coat', head: 'mechvisor', chest: 'circuit',
-    dark: '#2f1710', pants: '#24120d', shoes: '#5e3220', accent2: '#ffb24d',
-    gloves: true, prop: 'hammer', glow: 'rgba(255,129,49,0.48)', shieldFill: 'rgba(255,129,49,0.20)', shieldStroke: 'rgba(255,190,90,0.58)',
+    dark: '#12240f', pants: '#0e1a0a', shoes: '#2c5e2a', accent2: '#8dff5a',
+    gloves: true, prop: 'wobble', glow: 'rgba(120,230,80,0.48)', shieldFill: 'rgba(120,230,80,0.20)', shieldStroke: 'rgba(160,255,110,0.58)',
   });
 }
 
@@ -7303,8 +7250,8 @@ const DJ_DRAW = {
   aphextwin: drawAphexTwin,
   calvinharris: drawCalvinHarris,
   rezz: drawRezz,
-  runeweaver: drawRuneWeaver,
-  bassforger: drawBassForger,
+  flume: drawFlume,
+  zomboy: drawZomboy,
 };
 
 function renderPlayer(p) {
@@ -7596,7 +7543,7 @@ function renderTrainingHUD() {
 
 // --- Menu Screens ---
 function renderTitle() {
-  const heroStage = STAGES.runeFoundry || STAGES.battlefield;
+  const heroStage = STAGES.printworks || STAGES.battlefield;
   ctx.fillStyle = heroStage.bg;
   ctx.fillRect(0, 0, BASE_W, BASE_H);
   const savedCam = { ...state.camera };
@@ -8038,14 +7985,14 @@ function renderStageSelect() {
         ctx.moveTo(x + cellW * 0.5, y + cellH * 0.5);
         ctx.lineTo(x + cellW, y + cellH * 0.5);
         ctx.stroke();
-      } else if (layer.shapes === 'runefoundrysky') {
+      } else if (layer.shapes === 'warehousesky') {
         const grd = ctx.createLinearGradient(x, y, x, y + cellH);
         grd.addColorStop(0, '#0b1020');
         grd.addColorStop(0.7, '#382115');
         grd.addColorStop(1, '#5a2a18');
         ctx.fillStyle = grd;
         ctx.fillRect(x, y, cellW, cellH);
-      } else if (layer.shapes === 'runefoundry') {
+      } else if (layer.shapes === 'warehouse') {
         ctx.fillStyle = 'rgba(42,32,28,0.75)';
         ctx.fillRect(x, y + cellH * 0.44, cellW, cellH * 0.56);
         ctx.strokeStyle = 'rgba(255,160,72,0.32)';
@@ -8054,7 +8001,7 @@ function renderStageSelect() {
           const rx = x + 34 + i * 42;
           ctx.strokeRect(rx, y + 42, 18, 24);
         }
-      } else if (layer.shapes === 'runeglow') {
+      } else if (layer.shapes === 'warehouseglow') {
         ctx.strokeStyle = 'rgba(74,232,188,0.42)';
         ctx.lineWidth = 2;
         for (let i = 0; i < 4; i++) {
@@ -8066,14 +8013,14 @@ function renderStageSelect() {
           ctx.strokeRect(-4, -4, 8, 8);
           ctx.restore();
         }
-      } else if (layer.shapes === 'crystalsky') {
+      } else if (layer.shapes === 'forestsky') {
         const grd = ctx.createLinearGradient(x, y, x, y + cellH);
         grd.addColorStop(0, '#071522');
         grd.addColorStop(0.58, '#124044');
         grd.addColorStop(1, '#284228');
         ctx.fillStyle = grd;
         ctx.fillRect(x, y, cellW, cellH);
-      } else if (layer.shapes === 'crystalgrove') {
+      } else if (layer.shapes === 'forestgrove') {
         ctx.fillStyle = 'rgba(9,28,27,0.75)';
         ctx.fillRect(x, y + cellH * 0.42, cellW, cellH * 0.58);
         ctx.fillStyle = 'rgba(150,255,224,0.28)';
@@ -8087,7 +8034,7 @@ function renderStageSelect() {
           ctx.closePath();
           ctx.fill();
         }
-      } else if (layer.shapes === 'crystalshards') {
+      } else if (layer.shapes === 'forestlights') {
         ctx.fillStyle = 'rgba(166,255,226,0.3)';
         for (let i = 0; i < 5; i++) {
           const sx = x + 20 + i * 30;
@@ -8117,8 +8064,8 @@ function renderStageSelect() {
       else if (stg.theme === 'desert') ctx.fillStyle = plat.type === 'solid' ? '#c8884a' : '#a85830';
       else if (stg.theme === 'coachella') ctx.fillStyle = plat.type === 'solid' ? '#e8c8a8' : '#c8a878';
       else if (stg.theme === 'edc') ctx.fillStyle = plat.type === 'solid' ? '#ff80c0' : '#6040a0';
-      else if (stg.theme === 'runic') ctx.fillStyle = plat.type === 'solid' ? '#b38358' : '#4ae8bc';
-      else if (stg.theme === 'crystal') ctx.fillStyle = plat.type === 'solid' ? '#78e6c8' : '#58a8d8';
+      else if (stg.theme === 'warehouse') ctx.fillStyle = plat.type === 'solid' ? '#b38358' : '#4ae8bc';
+      else if (stg.theme === 'forest') ctx.fillStyle = plat.type === 'solid' ? '#78e6c8' : '#58a8d8';
       else ctx.fillStyle = plat.type === 'solid' ? '#777' : '#666';
       ctx.fillRect(px, py, plat.w * scale, Math.max(2, plat.h * scale));
     }
@@ -8265,6 +8212,8 @@ function renderPaused() {
 
 function render() {
   syncMusicState(false);
+  // Map the BASE_W x BASE_H authoring space onto the physical-pixel backing store.
+  ctx.setTransform(canvas.width / BASE_W, 0, 0, canvas.height / BASE_H, 0, 0);
   ctx.clearRect(0, 0, BASE_W, BASE_H);
 
   switch (state.mode) {
@@ -8647,7 +8596,7 @@ window.render_game_to_text = function () {
       encoreFighters: ENCORE_FIGHTER_KEYS.filter(key => !!FIGHTER_DEFS[key]),
       movingHazardStages: STAGE_KEYS.filter(key => (STAGES[key].platforms || []).some(platform => !!platform.moving)),
       musicCues: Object.keys(MUSIC_CUES),
-      visualDirection: 'retro fantasy arena pack',
+      visualDirection: 'DJ festival arena pack',
     },
     config: {
       schemaVersion: mixmashConfig.meta.schema_version,

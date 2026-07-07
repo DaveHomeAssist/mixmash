@@ -20,7 +20,7 @@ MIXMASH should move from "impressive browser fighter demo" to "replayable browse
 
 | Gate | Status | Decision Needed | Why It Matters |
 |------|--------|-----------------|----------------|
-| D1: Character and venue identity | Resolved for this release | New Encore content uses original fantasy names and art direction: Rune Foundry, Crystal Canopy, Rune Weaver, and Bass Forger. Legacy roster/stage names remain unchanged in this pass. | Adds content without expanding public likeness exposure. |
+| D1: Character and venue identity | Re-themed 2026-07-07 | Encore content re-skinned to match the DJ/festival roster: Printworks and Electric Forest stages, Flume and Zomboy fighters. Same real-name parody basis as the base roster. | Prioritizes thematic cohesion; likeness exposure now consistent with the rest of the roster. |
 | D2: Hosting security model | Resolved for GitHub Pages | `/play/index.html` now includes a JS frame guard and exposes its state through `render_game_to_text()`. Real `frame-ancestors` headers still require a future Vercel-hosted `/play/` move. | Gives the current static host a practical frame defense without a hosting rewrite. |
 | D3: Online scope | Resolved as async local ghost | No real-time network multiplayer in this pass. Platform Rush records and replays local ghosts keyed by deterministic stage/seed. | Adds replayable async behavior without latency/backend risk. |
 | D4: Progression storage | Resolved as local-only | `mixmash_profile` stores versioned local stats, challenge completions, best Rush times, and ghost data with corruption recovery and reset. | Adds repeat-play progression without cloud privacy or account scope. |
@@ -120,7 +120,7 @@ Verification:
 
 ### P4: Encore Content Pack
 
-Status: Implemented locally; verified 2026-07-06. D1 is resolved for this release by using original Encore names and visuals.
+Status: Implemented locally; verified 2026-07-06. Encore content re-themed 2026-07-07 to real DJ/festival identities (Printworks, Electric Forest, Flume, Zomboy) for cohesion with the base roster.
 
 Definition of done:
 - Two new stages ship, bringing the fighter stage count from 9 to 11.
