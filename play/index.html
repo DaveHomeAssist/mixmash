@@ -435,6 +435,7 @@
   </section>
 </div>
 <div id="menu-status" class="menu-status" role="status" aria-live="polite"></div>
+<script src="../src/kit/save.js"></script>
 <script src="./stage-data.js"></script>
 <script src="./fighter-data.js"></script>
 <script src="./core.js"></script>
@@ -539,11 +540,18 @@ let options = {
   p1Binds: null, // null = use defaults
   p2Binds: null,
 };
+const optionsStore = window.MixKitSave ? MixKitSave.createSaveStore('mixmash_opts', { version: 1 }) : null;
 function loadOptions() {
-  try { const s = localStorage.getItem('mixmash_opts'); if (s) Object.assign(options, JSON.parse(s)); } catch {}
+  try {
+    const s = optionsStore ? optionsStore.load() : JSON.parse(localStorage.getItem('mixmash_opts') || 'null');
+    if (s) Object.assign(options, s);
+  } catch {}
 }
 function saveOptions() {
-  try { localStorage.setItem('mixmash_opts', JSON.stringify(options)); } catch {}
+  try {
+    if (optionsStore) optionsStore.save(options);
+    else localStorage.setItem('mixmash_opts', JSON.stringify(options));
+  } catch {}
 }
 loadOptions();
 
