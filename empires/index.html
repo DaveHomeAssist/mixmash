@@ -37,11 +37,54 @@
         max-width: 60vw;
       }
       #status:empty { display: none; }
+
+      #loading {
+        position: fixed; inset: 0; z-index: 20;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+        background: #111;
+        font-family: 'Space Mono', monospace; color: #F0F0F8;
+      }
+      #loadbar-track {
+        width: min(320px, 70vw); height: 8px; border-radius: 999px;
+        background: rgba(255,255,255,0.12); overflow: hidden;
+      }
+      #loadbar-fill {
+        height: 100%; width: 0%; border-radius: 999px;
+        background: linear-gradient(90deg, #FF2D6B, #B429F9, #00F0FF);
+        transition: width 0.15s ease-out;
+      }
+      #loadbar-label { font-size: 12px; letter-spacing: 0.05em; color: #9A9ABB; }
+
+      #start-hint {
+        position: fixed; left: 0; right: 0; bottom: 40px; z-index: 10;
+        display: none; justify-content: center;
+      }
+      #start-hint button {
+        font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 0.08em;
+        text-transform: uppercase; color: #111; background: #39FF8E;
+        border: none; border-radius: 999px; padding: 12px 28px; cursor: pointer;
+        box-shadow: 0 6px 24px rgba(57,255,142,0.35);
+        animation: start-pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes start-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
     </style>
   </head>
   <body>
     <a class="back-pill" href="../">&#8592; mixmash.games</a>
-    <div id="status">Loading...</div>
+    <div id="status"></div>
+
+    <div id="loading">
+      <div id="loadbar-track"><div id="loadbar-fill"></div></div>
+      <div id="loadbar-label">Loading EMPIRES...</div>
+    </div>
+
+    <div id="start-hint">
+      <button type="button">&#9654; Click or press SPACE to start</button>
+    </div>
+
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
     <script src="./assets/shell.js"></script>
     <script src="./assets/aoe2-clone.js"></script>
