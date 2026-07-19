@@ -225,6 +225,24 @@ nav {
   background: rgba(57,255,142,0.22); filter: blur(9px);
 }
 
+.vis-pitch { background: linear-gradient(180deg, #04120A 0%, #0c4a28 45%, #0f6234 78%, #0d5730 100%); }
+.vis-pitch::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 22px, transparent 22px 44px);
+}
+.vis-pitch::after {
+  content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 74px; height: 74px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 0 0 1px rgba(0,240,255,0.15), inset 0 0 22px rgba(0,240,255,0.12);
+}
+.vis-pitch .ball {
+  position: absolute; top: 50%; left: 50%; transform: translate(20px,-6px);
+  width: 15px; height: 15px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 16px rgba(255,255,255,0.7);
+}
+
 .vis-empires { background: linear-gradient(180deg, #96b7a5 0%, #5c7b44 42%, #28311f 74%, #15170f 100%); }
 .vis-empires::before {
   content: ''; position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%) rotate(45deg);
@@ -360,7 +378,7 @@ footer a:hover { color: var(--led-cyan); }
 <main class="section" id="games">
   <div class="section-h">
     <h2>The Lineup</h2>
-    <span class="count">4 GAMES / ALL FREE</span>
+    <span class="count">5 GAMES / ALL FREE</span>
   </div>
 
   <div class="games-grid">
@@ -419,6 +437,21 @@ footer a:hover { color: var(--led-cyan); }
         <p class="game-desc">The restored RTS alpha backed by the real C++/SDL project: deterministic sim, sprite atlases, lockstep networking, and native app smoke coverage.</p>
         <div class="game-actions">
           <a class="play-link" href="empires/">&#9654; Open</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="game-card" style="--card-glow: var(--led-cyan)">
+      <div class="game-vis vis-pitch">
+        <span class="ball"></span>
+        <span class="game-status st-live">&#9679; Live</span>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Arcade Soccer</div>
+        <h3 class="game-name">Pitch Riot</h3>
+        <p class="game-desc">Street soccer with the volume up. Dribble, sprint, and smash it past the CPU keeper in a fast two-minute kickabout. Keyboard or touch.</p>
+        <div class="game-actions">
+          <a class="play-link" href="pitch/">&#9654; Play</a>
         </div>
       </div>
     </article>
