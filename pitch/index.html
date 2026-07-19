@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>PITCH RIOT — MixMash Studio</title>
+<meta name="description" content="PITCH RIOT is a fast, arcade street-soccer game you play in your browser. Dribble, sprint, and smash goals past the CPU — then cover the pitch for the halftime show to earn a hyped second half. Keyboard or touch, no installs." />
+<link rel="canonical" href="https://mixmash.games/pitch" />
+<link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+<meta name="theme-color" content="#06060E" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="MixMash Studio" />
+<meta property="og:title" content="PITCH RIOT — Arcade Street Soccer" />
+<meta property="og:description" content="Fast arcade soccer in your browser. Score past the CPU, then cover the pitch for the halftime show. No installs, no accounts." />
+<meta property="og:url" content="https://mixmash.games/pitch" />
+<meta property="og:image" content="https://mixmash.games/assets/og-card.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=Outfit:wght@400;600;800;900&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --laser-pink: #FF2D6B;
+  --uv-violet: #B429F9;
+  --led-cyan: #00F0FF;
+  --strobe-yellow: #FFE23D;
+  --festival-green: #39FF8E;
+  --void: #06060E;
+  --surface: #12121E;
+  --surface-light: #252540;
+  --text-primary: #F0F0F8;
+  --text-secondary: #9A9ABB;
+  --glass-border: rgba(255,255,255,0.08);
+  --grad: linear-gradient(135deg, #FF2D6B 0%, #B429F9 50%, #00F0FF 100%);
+  --font-display: 'Anybody', 'Outfit', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  height: 100%;
+  background: var(--void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  overflow: hidden;
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+#stage {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(180,41,249,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,240,255,0.10) 0%, transparent 60%),
+    var(--void);
+}
+
+#game {
+  display: block;
+  max-width: 100%; max-height: 100%;
+  border-radius: 14px;
+  box-shadow: 0 24px 80px -24px rgba(0,0,0,0.9), 0 0 0 1px var(--glass-border);
+  background: #0b3a20;
+  touch-action: none;
+}
+
+/* ===== back pill ===== */
+.back-pill {
+  position: fixed; top: 14px; left: 14px; z-index: 30;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--text-primary); background: rgba(6,6,14,0.72);
+  border: 1px solid var(--glass-border);
+  padding: 7px 14px; border-radius: 999px;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  opacity: 0.85; transition: opacity 0.2s;
+}
+.back-pill:hover { opacity: 1; }
+
+/* ===== overlays ===== */
+.overlay {
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+  background: rgba(6,6,14,0.82);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.overlay[hidden] { display: none; }
+
+.kicker {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--led-cyan); margin-bottom: 14px;
+}
+.title {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(2.6rem, 12vw, 5.6rem); line-height: 0.9;
+  text-transform: uppercase; letter-spacing: -0.02em;
+}
+.title .grad {
+  background: var(--grad);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.subtitle {
+  max-width: 440px; margin: 18px auto 0;
+  color: var(--text-secondary); font-weight: 400; font-size: 1rem;
+}
+
+.panel {
+  margin-top: 28px;
+  display: flex; flex-direction: column; gap: 22px;
+  width: min(440px, 92vw);
+}
+.opt-group { text-align: left; }
+.opt-label {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-secondary); margin-bottom: 9px;
+}
+.seg {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.seg button {
+  flex: 1 1 0; min-width: 80px;
+  font-family: var(--font-body); font-weight: 800; font-size: 0.8rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 12px 8px; border-radius: 12px; cursor: pointer;
+  color: var(--text-secondary);
+  background: var(--surface); border: 1px solid var(--glass-border);
+  transition: transform 0.12s, border-color 0.15s, color 0.15s, background 0.15s;
+}
+.seg button:hover { color: var(--text-primary); border-color: var(--surface-light); }
+.seg button[aria-pressed="true"] {
+  color: #fff; background: var(--surface-light);
+  border-color: var(--card-glow, var(--uv-violet));
+  box-shadow: 0 4px 22px -8px var(--card-glow, var(--uv-violet));
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 15px 34px; border-radius: 999px; cursor: pointer;
+  font-family: var(--font-body); font-weight: 900; font-size: 0.95rem;
+  letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+  border: none; color: #fff;
+  background: var(--grad);
+  box-shadow: 0 0 34px rgba(180,41,249,0.4);
+  transition: transform 0.16s, box-shadow 0.16s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 0 48px rgba(180,41,249,0.6); }
+.btn.ghost {
+  background: transparent; color: var(--text-secondary);
+  border: 1px solid var(--surface-light); box-shadow: none;
+}
+.btn.ghost:hover { color: var(--led-cyan); border-color: var(--led-cyan); transform: none; }
+
+.controls-hint {
+  margin-top: 26px;
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary);
+  line-height: 1.9; letter-spacing: 0.02em;
+}
+.controls-hint kbd {
+  font-family: var(--font-mono); font-size: 0.68rem;
+  background: var(--surface-light); color: var(--text-primary);
+  border: 1px solid var(--glass-border); border-bottom-width: 2px;
+  border-radius: 6px; padding: 2px 7px; margin: 0 1px;
+}
+
+/* result screen */
+.result-line {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(1.4rem, 6vw, 2.4rem); text-transform: uppercase;
+  margin-top: 4px;
+}
+.result-score {
+  font-family: var(--font-mono); font-weight: 700;
+  font-size: clamp(2.6rem, 12vw, 5rem); letter-spacing: 0.06em;
+  margin: 10px 0 6px;
+}
+.win  { color: var(--festival-green); }
+.lose { color: var(--laser-pink); }
+.draw { color: var(--strobe-yellow); }
+
+.overlay-actions { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+/* ===== touch controls ===== */
+#touch { position: fixed; inset: 0; z-index: 15; pointer-events: none; display: none; }
+#touch.on { display: block; }
+#stick-zone {
+  position: absolute; left: 0; bottom: 0; width: 45%; height: 55%;
+  pointer-events: auto;
+}
+#stick-base, #stick-knob {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  opacity: 0; transition: opacity 0.15s;
+}
+#stick-base {
+  width: 128px; height: 128px; margin: -64px 0 0 -64px;
+  border: 2px solid rgba(255,255,255,0.22);
+  background: rgba(6,6,14,0.35);
+}
+#stick-knob {
+  width: 60px; height: 60px; margin: -30px 0 0 -30px;
+  background: rgba(180,41,249,0.75);
+  box-shadow: 0 0 26px rgba(180,41,249,0.6);
+}
+#stick-zone.active #stick-base, #stick-zone.active #stick-knob { opacity: 1; }
+
+.tbtn {
+  position: absolute; pointer-events: auto;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
+  color: #fff; letter-spacing: 0.04em;
+  border: 1px solid rgba(255,255,255,0.16);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+.tbtn:active { transform: scale(0.92); }
+#btn-shoot {
+  right: 26px; bottom: 118px; width: 96px; height: 96px; font-size: 0.9rem;
+  background: radial-gradient(circle at 40% 35%, rgba(255,45,107,0.95), rgba(180,41,249,0.85));
+  box-shadow: 0 0 30px rgba(255,45,107,0.5);
+}
+#btn-sprint {
+  right: 132px; bottom: 40px; width: 76px; height: 76px; font-size: 0.72rem;
+  background: radial-gradient(circle at 40% 35%, rgba(0,240,255,0.9), rgba(57,255,142,0.8));
+  box-shadow: 0 0 26px rgba(0,240,255,0.45);
+}
+
+/* ===== pause button (always available in-match) ===== */
+#pause-pill {
+  position: fixed; top: 14px; right: 14px; z-index: 30;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; cursor: pointer;
+  color: var(--text-primary); background: rgba(6,6,14,0.72);
+  border: 1px solid var(--glass-border);
+  padding: 7px 14px; border-radius: 999px;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  opacity: 0.85; transition: opacity 0.2s;
+}
+#pause-pill:hover { opacity: 1; }
+#pause-pill[hidden] { display: none; }
+
+@media (max-width: 720px) {
+  .controls-hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<a class="back-pill" href="../">&larr; MixMash Studio</a>
+<div id="pause-pill" hidden>&#10073;&#10073; Pause</div>
+
+<div id="stage">
+  <canvas id="game" width="900" height="560" aria-label="PITCH RIOT soccer pitch"></canvas>
+</div>
+
+<!-- Touch controls -->
+<div id="touch" aria-hidden="true">
+  <div id="stick-zone">
+    <div id="stick-base"></div>
+    <div id="stick-knob"></div>
+  </div>
+  <div id="btn-sprint" class="tbtn">Sprint</div>
+  <div id="btn-shoot" class="tbtn">Shoot</div>
+</div>
+
+<!-- Start / menu overlay -->
+<div id="menu" class="overlay" style="--card-glow: var(--strobe-yellow)">
+  <div class="kicker">MixMash Studio &middot; Arcade Soccer</div>
+  <h1 class="title">PITCH <span class="grad">RIOT</span></h1>
+  <p class="subtitle">Street soccer with the volume up. Smash it past the keeper, then cover the pitch for the halftime show — a good show hypes up your second half.</p>
+
+  <div class="panel">
+    <div class="opt-group">
+      <div class="opt-label">Difficulty</div>
+      <div class="seg" id="seg-diff">
+        <button data-diff="0">Casual</button>
+        <button data-diff="1" aria-pressed="true">Baller</button>
+        <button data-diff="2">Legend</button>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">Match Length</div>
+      <div class="seg" id="seg-time">
+        <button data-time="60">1 Min</button>
+        <button data-time="120" aria-pressed="true">2 Min</button>
+        <button data-time="180">3 Min</button>
+      </div>
+    </div>
+    <button class="btn" id="kickoff-btn">&#9654; Kick Off</button>
+  </div>
+
+  <div class="controls-hint">
+    <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> Move &nbsp;&middot;&nbsp;
+    <kbd>Space</kbd> Shoot &nbsp;&middot;&nbsp; <kbd>Shift</kbd> Sprint &nbsp;&middot;&nbsp; <kbd>P</kbd> Pause
+  </div>
+</div>
+
+<!-- Pause overlay -->
+<div id="pause" class="overlay" hidden>
+  <div class="kicker">Paused</div>
+  <h2 class="title" style="font-size: clamp(2rem,10vw,4rem)">TIME <span class="grad">OUT</span></h2>
+  <div class="overlay-actions">
+    <button class="btn" id="resume-btn">&#9654; Resume</button>
+    <button class="btn ghost" id="quit-btn">Quit to Menu</button>
+  </div>
+</div>
+
+<!-- Result overlay -->
+<div id="result" class="overlay" hidden>
+  <div class="kicker">Full Time</div>
+  <div class="result-line" id="result-line">&nbsp;</div>
+  <div class="result-score" id="result-score">0 &ndash; 0</div>
+  <p class="subtitle" id="result-sub">&nbsp;</p>
+  <div class="overlay-actions">
+    <button class="btn" id="rematch-btn">&#9654; Rematch</button>
+    <button class="btn ghost" id="menu-btn">Change Settings</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+(() => {
+  // ---------------------------------------------------------------------------
+  // Constants — logical field is fixed; canvas scales to fit via CSS.
+  // ---------------------------------------------------------------------------
+  const W = 900, H = 560;           // logical pitch size (px)
+  const WALL = 26;                  // pitch border thickness
+  const GOAL_H = 168;               // vertical opening of each goal
+  const GOAL_DEPTH = 22;            // how deep the net sits behind the wall
+  const PLAYER_R = 15;
+  const KEEPER_R = 16;
+  const BALL_R = 9;
+
+  const PLAYER_ACCEL = 0.72;
+  const PLAYER_MAX = 4.15;
+  const SPRINT_MULT = 1.5;
+  const PLAYER_FRICTION = 0.80;
+
+  const BALL_FRICTION = 0.985;
+  const BALL_MAX = 15;
+  const SHOOT_POWER = 12.2;
+  const DRIBBLE_TOUCH = 3.4;        // speed imparted to ball on a running touch
+  const KICK_RANGE = PLAYER_R + BALL_R + 14;
+
+  const DIFF = [
+    // casual, baller, legend
+    { name: "Casual", cpuSpeed: 3.25, cpuAccel: 0.52, react: 0.62, shootRange: 250, keeper: 2.5 },
+    { name: "Baller", cpuSpeed: 3.95, cpuAccel: 0.66, react: 0.82, shootRange: 300, keeper: 3.2 },
+    { name: "Legend", cpuSpeed: 4.35, cpuAccel: 0.78, react: 0.94, shootRange: 340, keeper: 3.9 },
+  ];
+
+  const goalTop = (H - GOAL_H) / 2;
+  const goalBot = (H + GOAL_H) / 2;
+
+  // ---------------------------------------------------------------------------
+  // Canvas + DPI
+  // ---------------------------------------------------------------------------
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+
+  function fitCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // CSS sizing: fit within viewport keeping aspect ratio.
+    const pad = 16;
+    const availW = window.innerWidth - pad * 2;
+    const availH = window.innerHeight - pad * 2;
+    const scale = Math.min(availW / W, availH / H);
+    canvas.style.width = Math.round(W * scale) + "px";
+    canvas.style.height = Math.round(H * scale) + "px";
+  }
+  window.addEventListener("resize", fitCanvas);
+
+  // ---------------------------------------------------------------------------
+  // Game state
+  // ---------------------------------------------------------------------------
+  const STATE = { MENU: 0, PLAY: 1, PAUSE: 2, GOAL: 3, RESULT: 4, HALFTIME: 5 };
+
+  const LANES = 6;                 // halftime show: cover lanes (mini FIFA Pitch Crew)
+  const SPRINKLER_R = 13;
+  const HT_SECONDS = 26;
+  const COVER_RATE = 0.0062;       // lane coverage per frame while standing in it
+
+  const game = {
+    state: STATE.MENU,
+    prevState: STATE.PLAY,   // what PAUSE returns to (PLAY or HALFTIME)
+    diff: 1,
+    matchTime: 120,
+    clock: 120,        // seconds remaining
+    half: 1,
+    homeScore: 0,
+    awayScore: 0,
+    shake: 0,
+    flash: 0,
+    flashColor: "#fff",
+    goalMsg: "",
+    goalTimer: 0,
+    bannerColor: "#39FF8E",
+    lastKickAt: 0,     // debounce keyboard shooting
+    kickoffDir: 1,     // who kicks off (1 => home attacks right)
+    // halftime show
+    htClock: 0,        // seconds left in the halftime show (float)
+    htIntro: 0,        // frames of "HALFTIME!" intro text
+    lanes: [],         // per-lane cloth coverage 0..1
+    sprinklers: [],
+    hype: 0,           // seconds of second-half boost earned by the show
+  };
+
+  // Entities. home attacks RIGHT goal, away attacks LEFT goal.
+  const ball = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+  const player = { x: W * 0.32, y: H / 2, vx: 0, vy: 0, face: { x: 1, y: 0 }, stun: 0 };
+  const cpu = { x: W * 0.68, y: H / 2, vx: 0, vy: 0 };
+  const keeperHome = { x: WALL + 30, y: H / 2, vy: 0 };
+  const keeperAway = { x: W - WALL - 30, y: H / 2, vy: 0 };
+
+  // ---------------------------------------------------------------------------
+  // Input
+  // ---------------------------------------------------------------------------
+  const keys = new Set();
+  const input = { up: false, down: false, left: false, right: false, sprint: false, shoot: false };
+
+  const KEYMAP = {
+    ArrowUp: "up", KeyW: "up",
+    ArrowDown: "down", KeyS: "down",
+    ArrowLeft: "left", KeyA: "left",
+    ArrowRight: "right", KeyD: "right",
+    ShiftLeft: "sprint", ShiftRight: "sprint",
+    Space: "shoot", KeyJ: "shoot", KeyK: "shoot",
+  };
+
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "KeyP" || e.code === "Escape") {
+      if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
+      else if (game.state === STATE.PAUSE) resumeGame();
+      e.preventDefault();
+      return;
+    }
+    if (e.code === "Enter") {
+      if (game.state === STATE.MENU) startMatch();
+      else if (game.state === STATE.RESULT) startMatch();
+      return;
+    }
+    if (KEYMAP[e.code]) { keys.add(e.code); e.preventDefault(); }
+  });
+  window.addEventListener("keyup", (e) => { keys.delete(e.code); });
+  window.addEventListener("blur", () => {
+    keys.clear();
+    if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
+  });
+
+  // Touch input
+  const touch = { active: false, mag: 0, dx: 0, dy: 0, shoot: false, sprint: false };
+  function setupTouch() {
+    const isTouch = ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
+    if (!isTouch) return;
+    document.getElementById("touch").classList.add("on");
+
+    const zone = document.getElementById("stick-zone");
+    const base = document.getElementById("stick-base");
+    const knob = document.getElementById("stick-knob");
+    let stickId = null, ox = 0, oy = 0;
+    const RADIUS = 56;
+
+    zone.addEventListener("touchstart", (e) => {
+      const t = e.changedTouches[0];
+      stickId = t.identifier; ox = t.clientX; oy = t.clientY;
+      base.style.left = knob.style.left = ox + "px";
+      base.style.top = knob.style.top = oy + "px";
+      zone.classList.add("active");
+      touch.active = true;
+      e.preventDefault();
+    }, { passive: false });
+    zone.addEventListener("touchmove", (e) => {
+      for (const t of e.changedTouches) {
+        if (t.identifier !== stickId) continue;
+        let dx = t.clientX - ox, dy = t.clientY - oy;
+        const d = Math.hypot(dx, dy) || 1;
+        const clamped = Math.min(d, RADIUS);
+        knob.style.left = (ox + dx / d * clamped) + "px";
+        knob.style.top = (oy + dy / d * clamped) + "px";
+        touch.dx = dx / d; touch.dy = dy / d;
+        touch.mag = Math.min(1, d / RADIUS);
+      }
+      e.preventDefault();
+    }, { passive: false });
+    const endStick = (e) => {
+      for (const t of e.changedTouches) {
+        if (t.identifier === stickId) {
+          stickId = null; touch.active = false; touch.mag = 0;
+          zone.classList.remove("active");
+        }
+      }
+    };
+    zone.addEventListener("touchend", endStick);
+    zone.addEventListener("touchcancel", endStick);
+
+    const bindBtn = (id, prop) => {
+      const el = document.getElementById(id);
+      el.addEventListener("touchstart", (e) => { touch[prop] = true; e.preventDefault(); }, { passive: false });
+      const off = (e) => { touch[prop] = false; e.preventDefault(); };
+      el.addEventListener("touchend", off);
+      el.addEventListener("touchcancel", off);
+    };
+    bindBtn("btn-shoot", "shoot");
+    bindBtn("btn-sprint", "sprint");
+  }
+
+  function pollInput() {
+    input.up = keys.has("ArrowUp") || keys.has("KeyW");
+    input.down = keys.has("ArrowDown") || keys.has("KeyS");
+    input.left = keys.has("ArrowLeft") || keys.has("KeyA");
+    input.right = keys.has("ArrowRight") || keys.has("KeyD");
+    input.sprint = keys.has("ShiftLeft") || keys.has("ShiftRight") || touch.sprint;
+    input.shoot = keys.has("Space") || keys.has("KeyJ") || keys.has("KeyK") || touch.shoot;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+  const clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
+  const len = (x, y) => Math.hypot(x, y);
+  function limitSpeed(e, max) {
+    const s = len(e.vx, e.vy);
+    if (s > max) { e.vx = e.vx / s * max; e.vy = e.vy / s * max; }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Match flow
+  // ---------------------------------------------------------------------------
+  function resetPositions(dir) {
+    ball.x = W / 2; ball.y = H / 2; ball.vx = 0; ball.vy = 0;
+    player.x = W * 0.32; player.y = H / 2; player.vx = 0; player.vy = 0;
+    player.face = { x: 1, y: 0 }; player.stun = 0;
+    cpu.x = W * 0.68; cpu.y = H / 2; cpu.vx = 0; cpu.vy = 0;
+    keeperHome.y = H / 2; keeperHome.vy = 0;
+    keeperAway.y = H / 2; keeperAway.vy = 0;
+    // Nudge the conceding side toward possession — small home-field give.
+    if (dir === -1) { player.x = W * 0.42; }  // home just conceded, gets ball-ish
+    else if (dir === 1) { cpu.x = W * 0.58; }
+  }
+
+  function startMatch() {
+    game.homeScore = 0; game.awayScore = 0;
+    game.clock = game.matchTime;
+    game.half = 1; game.hype = 0;
+    game.shake = 0; game.flash = 0; game.goalTimer = 0;
+    resetPositions(1);
+    game.state = STATE.PLAY;
+    hideAllOverlays();
+    document.getElementById("pause-pill").hidden = false;
+  }
+
+  function pauseGame() {
+    if (game.state !== STATE.PLAY && game.state !== STATE.HALFTIME) return;
+    game.prevState = game.state;
+    game.state = STATE.PAUSE;
+    document.getElementById("pause").hidden = false;
+  }
+  function resumeGame() {
+    if (game.state !== STATE.PAUSE) return;
+    game.state = game.prevState;
+    document.getElementById("pause").hidden = true;
+    lastTime = performance.now();  // avoid a huge dt jump
+  }
+  function quitToMenu() {
+    game.state = STATE.MENU;
+    hideAllOverlays();
+    document.getElementById("menu").hidden = false;
+    document.getElementById("pause-pill").hidden = true;
+  }
+
+  function showBanner(msg, color, kickoffDir) {
+    game.goalMsg = msg;
+    game.bannerColor = color;
+    game.kickoffDir = kickoffDir;
+    game.state = STATE.GOAL;
+    game.goalTimer = 105; // frames of celebration (~1.75s)
+  }
+
+  function scoreGoal(scorer) {
+    if (scorer === "home") { game.homeScore++; game.flashColor = "#39FF8E"; showBanner("GOAL!", "#39FF8E", -1); }
+    else { game.awayScore++; game.flashColor = "#FF2D6B"; showBanner("CONCEDED", "#FF2D6B", 1); }
+    game.flash = 1;
+    game.shake = 16;
+  }
+
+  // -------- Halftime show: a mini FIFA Pitch Crew (cover ops) --------
+  function startHalftime() {
+    game.state = STATE.HALFTIME;
+    game.htClock = HT_SECONDS;
+    game.htIntro = 110;
+    game.lanes = new Array(LANES).fill(0);
+    game.sprinklers = [];
+    const n = 2 + game.diff; // 2 / 3 / 4 by difficulty
+    for (let i = 0; i < n; i++) {
+      game.sprinklers.push({
+        x: WALL + 70 + (W - WALL * 2 - 140) * (n === 1 ? 0.5 : i / (n - 1)),
+        y: H / 2 + (i % 2 ? -90 : 90),
+        vx: (i % 2 ? 2.1 : -2.1) * (1 + game.diff * 0.18),
+        vy: (i % 2 ? -1.6 : 1.6) * (1 + game.diff * 0.18),
+      });
+    }
+    // crew position: touchline, ready to run the cloth
+    player.x = W / 2; player.y = H - WALL - 40;
+    player.vx = 0; player.vy = 0; player.stun = 0;
+    game.flash = 0.6; game.flashColor = "#FFE23D";
+  }
+
+  function endHalftime() {
+    const sum = game.lanes.reduce((a, b) => a + b, 0);
+    const perfect = game.lanes.every((v) => v >= 1);
+    game.hype = sum * 2.5 + (perfect ? 3 : 0); // up to 18s of boost
+    game.half = 2;
+    game.flash = 1; game.flashColor = "#FFE23D";
+    resetPositions(-1);
+    showBanner(perfect ? "PERFECT SHOW!" : "SHOW TIME!", "#FFE23D", -1);
+  }
+
+  function endMatch() {
+    game.state = STATE.RESULT;
+    document.getElementById("pause-pill").hidden = true;
+    const r = document.getElementById("result");
+    const line = document.getElementById("result-line");
+    const score = document.getElementById("result-score");
+    const sub = document.getElementById("result-sub");
+    score.textContent = `${game.homeScore} – ${game.awayScore}`;
+    line.className = "result-line";
+    if (game.homeScore > game.awayScore) {
+      line.textContent = "You Win"; line.classList.add("win");
+      sub.textContent = "The pitch is yours. Rematch?";
+    } else if (game.homeScore < game.awayScore) {
+      line.textContent = "You Lose"; line.classList.add("lose");
+      sub.textContent = "The CPU took the bragging rights. Run it back.";
+    } else {
+      line.textContent = "Draw"; line.classList.add("draw");
+      sub.textContent = "Dead level. Someone has to win the replay.";
+    }
+    r.hidden = false;
+  }
+
+  function hideAllOverlays() {
+    for (const id of ["menu", "pause", "result"]) document.getElementById(id).hidden = true;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Physics / simulation (fixed timestep)
+  // ---------------------------------------------------------------------------
+  function stepPlayerMovement() {
+    if (player.stun > 0) {
+      player.stun--;
+      player.vx *= 0.92; player.vy *= 0.92;
+      player.x += player.vx; player.y += player.vy;
+      confine(player, PLAYER_R);
+      return;
+    }
+    let ax = 0, ay = 0;
+    if (touch.active && touch.mag > 0.12) { ax = touch.dx * touch.mag; ay = touch.dy * touch.mag; }
+    else {
+      if (input.left) ax -= 1;
+      if (input.right) ax += 1;
+      if (input.up) ay -= 1;
+      if (input.down) ay += 1;
+      const m = len(ax, ay);
+      if (m > 0) { ax /= m; ay /= m; }
+    }
+    const hypeMult = game.hype > 0 ? 1.12 : 1;
+    const maxSpd = PLAYER_MAX * (input.sprint ? SPRINT_MULT : 1) * hypeMult;
+    player.vx += ax * PLAYER_ACCEL * (input.sprint ? 1.15 : 1);
+    player.vy += ay * PLAYER_ACCEL * (input.sprint ? 1.15 : 1);
+    if (ax === 0 && ay === 0) { player.vx *= PLAYER_FRICTION; player.vy *= PLAYER_FRICTION; }
+    limitSpeed(player, maxSpd);
+    player.x += player.vx; player.y += player.vy;
+    confine(player, PLAYER_R);
+    if (len(player.vx, player.vy) > 0.4) {
+      const s = len(player.vx, player.vy);
+      player.face.x = player.vx / s; player.face.y = player.vy / s;
+    }
+  }
+
+  function stepPlayer() {
+    stepPlayerMovement();
+
+    // Contact with ball → dribble/shoot.
+    const dx = ball.x - player.x, dy = ball.y - player.y;
+    const d = len(dx, dy);
+    if (d < PLAYER_R + BALL_R + 2) {
+      // separate
+      const nx = dx / (d || 1), ny = dy / (d || 1);
+      ball.x = player.x + nx * (PLAYER_R + BALL_R + 2);
+      ball.y = player.y + ny * (PLAYER_R + BALL_R + 2);
+      // running touch imparts momentum in facing direction
+      const carry = DRIBBLE_TOUCH + len(player.vx, player.vy) * 0.6;
+      ball.vx = player.face.x * carry;
+      ball.vy = player.face.y * carry;
+    }
+
+    // Shoot
+    const now = performance.now();
+    if (input.shoot && d < KICK_RANGE && now - game.lastKickAt > 220) {
+      game.lastKickAt = now;
+      // Aim: player facing, but bias toward the goal for satisfying shots.
+      const goalX = W - WALL, goalY = clamp(ball.y, goalTop + 24, goalBot - 24);
+      let aimX = player.face.x, aimY = player.face.y;
+      const tgX = goalX - ball.x, tgY = goalY - ball.y;
+      const tl = len(tgX, tgY) || 1;
+      // Blend facing with goal aim when pointing generally forward.
+      if (aimX > -0.2) {
+        aimX = aimX * 0.45 + (tgX / tl) * 0.55;
+        aimY = aimY * 0.45 + (tgY / tl) * 0.55;
+      }
+      const al = len(aimX, aimY) || 1;
+      const hypeMult = game.hype > 0 ? 1.15 : 1;
+      ball.vx = aimX / al * SHOOT_POWER * hypeMult;
+      ball.vy = aimY / al * SHOOT_POWER * hypeMult;
+    }
+  }
+
+  function stepCPU(cfg) {
+    // Decide role: chase ball if I'm the away outfielder.
+    const dxb = ball.x - cpu.x, dyb = ball.y - cpu.y;
+    const db = len(dxb, dyb);
+    // Target: intercept a point slightly behind the ball toward home goal so the CPU shepherds it left.
+    const attackX = WALL + 12; // away attacks left goal
+    let tx, ty;
+    const hasBall = db < KEEPER_R + 30;
+    if (hasBall) {
+      // dribble toward left goal, aim for goal mouth
+      const gy = clamp(cpu.y, goalTop + 30, goalBot - 30);
+      tx = attackX; ty = gy;
+    } else {
+      // approach ball from the goal-side so pushing it moves it left
+      const behindX = ball.x + 26; // stand to the right of ball
+      tx = behindX; ty = ball.y;
+    }
+    let ax = tx - cpu.x, ay = ty - cpu.y;
+    const m = len(ax, ay) || 1;
+    ax /= m; ay /= m;
+    // reaction jitter based on difficulty (lower react => sloppier)
+    const jitter = (1 - cfg.react) * 0.5;
+    ax += (pseudoNoise(cpu.x * 0.7) ) * jitter;
+    ay += (pseudoNoise(cpu.y * 1.3 + 5)) * jitter;
+    cpu.vx += ax * cfg.cpuAccel;
+    cpu.vy += ay * cfg.cpuAccel;
+    cpu.vx *= 0.86; cpu.vy *= 0.86;
+    limitSpeed(cpu, cfg.cpuSpeed);
+    cpu.x += cpu.vx; cpu.y += cpu.vy;
+    confine(cpu, PLAYER_R);
+
+    // Contact with ball
+    const dx = ball.x - cpu.x, dy = ball.y - cpu.y;
+    const d = len(dx, dy);
+    if (d < PLAYER_R + BALL_R + 2) {
+      const nx = dx / (d || 1), ny = dy / (d || 1);
+      ball.x = cpu.x + nx * (PLAYER_R + BALL_R + 2);
+      ball.y = cpu.y + ny * (PLAYER_R + BALL_R + 2);
+      // Direction generally toward left goal
+      const gy = clamp(ball.y, goalTop + 24, goalBot - 24);
+      let tox = (WALL) - ball.x, toy = gy - ball.y;
+      const tl = len(tox, toy) || 1;
+      // Shoot if within range, else dribble touch
+      if (ball.x < cfg.shootRange + WALL) {
+        ball.vx = tox / tl * SHOOT_POWER * 0.92;
+        ball.vy = toy / tl * SHOOT_POWER * 0.92;
+      } else {
+        const carry = DRIBBLE_TOUCH + len(cpu.vx, cpu.vy) * 0.6;
+        ball.vx = tox / tl * carry;
+        ball.vy = toy / tl * carry;
+      }
+    }
+  }
+
+  // deterministic-ish smooth noise in [-1,1] without Math.random for stable feel
+  function pseudoNoise(t) {
+    return Math.sin(t) * 0.5 + Math.sin(t * 2.3 + 1.7) * 0.3 + Math.sin(t * 0.7 + 4.1) * 0.2;
+  }
+
+  function stepKeeper(k, cfg, isHome) {
+    // Track the ball's y when it's on the keeper's side; otherwise drift to center.
+    const nearSide = isHome ? ball.x < W * 0.42 : ball.x > W * 0.58;
+    let targetY = H / 2;
+    if (nearSide) targetY = clamp(ball.y, goalTop + KEEPER_R + 4, goalBot - KEEPER_R - 4);
+    const dy = targetY - k.y;
+    k.vy += clamp(dy, -cfg.keeper, cfg.keeper) * 0.25;
+    k.vy *= 0.7;
+    k.vy = clamp(k.vy, -cfg.keeper, cfg.keeper);
+    k.y += k.vy;
+    k.y = clamp(k.y, goalTop + KEEPER_R, goalBot - KEEPER_R);
+
+    // Save: ball collision
+    const dx = ball.x - k.x, dyy = ball.y - k.y;
+    const d = len(dx, dyy);
+    if (d < KEEPER_R + BALL_R + 1) {
+      const nx = dx / (d || 1), ny = dyy / (d || 1);
+      ball.x = k.x + nx * (KEEPER_R + BALL_R + 1);
+      ball.y = k.y + ny * (KEEPER_R + BALL_R + 1);
+      // clear the ball away from goal
+      const clearDir = isHome ? 1 : -1;
+      ball.vx = clearDir * (7 + Math.abs(ny) * 2);
+      ball.vy = ny * 7;
+    }
+  }
+
+  function confine(e, r) {
+    if (e.x < WALL + r) { e.x = WALL + r; if (e.vx) e.vx *= -0.3; }
+    if (e.x > W - WALL - r) { e.x = W - WALL - r; if (e.vx) e.vx *= -0.3; }
+    if (e.y < WALL + r) { e.y = WALL + r; if (e.vy) e.vy *= -0.3; }
+    if (e.y > H - WALL - r) { e.y = H - WALL - r; if (e.vy) e.vy *= -0.3; }
+  }
+
+  function stepBall() {
+    ball.vx *= BALL_FRICTION; ball.vy *= BALL_FRICTION;
+    limitSpeed(ball, BALL_MAX);
+    if (Math.abs(ball.vx) < 0.02) ball.vx = 0;
+    if (Math.abs(ball.vy) < 0.02) ball.vy = 0;
+    ball.x += ball.vx; ball.y += ball.vy;
+
+    const inGoalBand = ball.y > goalTop && ball.y < goalBot;
+
+    // Left goal (away scores)
+    if (ball.x < WALL + BALL_R) {
+      if (inGoalBand) {
+        if (ball.x < WALL - GOAL_DEPTH) { scoreGoal("away"); return; }
+        // else let it travel into the net area (no bounce inside mouth)
+      } else {
+        ball.x = WALL + BALL_R; ball.vx = Math.abs(ball.vx) * 0.72;
+      }
+    }
+    // Right goal (home scores)
+    if (ball.x > W - WALL - BALL_R) {
+      if (inGoalBand) {
+        if (ball.x > W - WALL + GOAL_DEPTH) { scoreGoal("home"); return; }
+      } else {
+        ball.x = W - WALL - BALL_R; ball.vx = -Math.abs(ball.vx) * 0.72;
+      }
+    }
+    // Top / bottom walls
+    if (ball.y < WALL + BALL_R) { ball.y = WALL + BALL_R; ball.vy = Math.abs(ball.vy) * 0.72; }
+    if (ball.y > H - WALL - BALL_R) { ball.y = H - WALL - BALL_R; ball.vy = -Math.abs(ball.vy) * 0.72; }
+  }
+
+  function separatePlayers() {
+    const dx = cpu.x - player.x, dy = cpu.y - player.y;
+    const d = len(dx, dy);
+    const min = PLAYER_R * 2;
+    if (d > 0 && d < min) {
+      const push = (min - d) / 2;
+      const nx = dx / d, ny = dy / d;
+      player.x -= nx * push; player.y -= ny * push;
+      cpu.x += nx * push; cpu.y += ny * push;
+      confine(player, PLAYER_R); confine(cpu, PLAYER_R);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Update
+  // ---------------------------------------------------------------------------
+  let clockAccum = 0;
+  function update(dt) {
+    const cfg = DIFF[game.diff];
+
+    if (game.state === STATE.PLAY) {
+      pollInput();
+      stepPlayer();
+      stepCPU(cfg);
+      separatePlayers();
+      stepKeeper(keeperHome, cfg, true);
+      stepKeeper(keeperAway, cfg, false);
+      stepBall();
+
+      // hype boost ticks down in the second half
+      if (game.hype > 0) game.hype = Math.max(0, game.hype - dt);
+
+      // match clock
+      clockAccum += dt;
+      if (clockAccum >= 1) {
+        game.clock -= Math.floor(clockAccum);
+        clockAccum -= Math.floor(clockAccum);
+        if (game.clock <= 0) { game.clock = 0; endMatch(); }
+        else if (game.half === 1 && game.clock <= game.matchTime / 2) startHalftime();
+      }
+    } else if (game.state === STATE.HALFTIME) {
+      pollInput();
+      stepPlayerMovement();
+
+      // sprinklers roam and knock the crew back
+      for (const s of game.sprinklers) {
+        s.x += s.vx; s.y += s.vy;
+        if (s.x < WALL + SPRINKLER_R) { s.x = WALL + SPRINKLER_R; s.vx = Math.abs(s.vx); }
+        if (s.x > W - WALL - SPRINKLER_R) { s.x = W - WALL - SPRINKLER_R; s.vx = -Math.abs(s.vx); }
+        if (s.y < WALL + SPRINKLER_R) { s.y = WALL + SPRINKLER_R; s.vy = Math.abs(s.vy); }
+        if (s.y > H - WALL - SPRINKLER_R) { s.y = H - WALL - SPRINKLER_R; s.vy = -Math.abs(s.vy); }
+        const dx = player.x - s.x, dy = player.y - s.y;
+        const d = len(dx, dy);
+        if (d < SPRINKLER_R + PLAYER_R && player.stun <= 0) {
+          const nx = dx / (d || 1), ny = dy / (d || 1);
+          player.stun = 48; // ~0.8s soaked
+          player.vx = nx * 7; player.vy = ny * 7;
+          game.shake = 8;
+        }
+      }
+
+      // standing in an uncovered lane rolls the cloth out
+      if (player.stun <= 0) {
+        const laneW = (W - WALL * 2) / LANES;
+        const li = clamp(Math.floor((player.x - WALL) / laneW), 0, LANES - 1);
+        game.lanes[li] = Math.min(1, game.lanes[li] + COVER_RATE);
+      }
+
+      if (game.htIntro > 0) game.htIntro--;
+      game.htClock -= dt;
+      if (game.htClock <= 0 || game.lanes.every((v) => v >= 1)) endHalftime();
+    } else if (game.state === STATE.GOAL) {
+      // keep ball/keepers subtly alive; count down then kick off
+      game.goalTimer--;
+      if (game.goalTimer <= 0) {
+        resetPositions(game.kickoffDir); // conceding side restarts
+        game.state = STATE.PLAY;
+      }
+    }
+
+    if (game.shake > 0) game.shake *= 0.86;
+    if (game.flash > 0) game.flash -= 0.03;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+  function draw() {
+    ctx.save();
+    if (game.shake > 0.5) {
+      ctx.translate((pseudoNoise(performance.now() * 0.05) ) * game.shake,
+                    (pseudoNoise(performance.now() * 0.07 + 3)) * game.shake);
+    }
+    drawPitch();
+    const inHalftime = game.state === STATE.HALFTIME ||
+      (game.state === STATE.PAUSE && game.prevState === STATE.HALFTIME);
+    if (inHalftime) {
+      drawHalftime();
+    } else {
+      drawGoals();
+      drawEntities();
+    }
+    ctx.restore();
+
+    drawHUD();
+
+    if (game.flash > 0) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, game.flash) * 0.5;
+      ctx.fillStyle = game.flashColor;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+    }
+    if (game.state === STATE.GOAL) drawGoalBanner();
+  }
+
+  function drawPitch() {
+    // grass with mowed stripes
+    ctx.fillStyle = "#0e5a2f";
+    ctx.fillRect(0, 0, W, H);
+    const stripes = 10;
+    const sw = (W - WALL * 2) / stripes;
+    for (let i = 0; i < stripes; i++) {
+      ctx.fillStyle = i % 2 === 0 ? "#0f6234" : "#0d5730";
+      ctx.fillRect(WALL + i * sw, WALL, sw, H - WALL * 2);
+    }
+    // subtle vignette
+    const g = ctx.createRadialGradient(W / 2, H / 2, H * 0.2, W / 2, H / 2, H * 0.75);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(1, "rgba(0,0,0,0.28)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // markings
+    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(WALL, WALL, W - WALL * 2, H - WALL * 2);
+    // halfway line
+    ctx.beginPath();
+    ctx.moveTo(W / 2, WALL); ctx.lineTo(W / 2, H - WALL);
+    ctx.stroke();
+    // center circle
+    ctx.beginPath();
+    ctx.arc(W / 2, H / 2, 72, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(W / 2, H / 2, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.fill();
+    // penalty boxes
+    const boxH = 250, boxW = 96;
+    ctx.strokeRect(WALL, (H - boxH) / 2, boxW, boxH);
+    ctx.strokeRect(W - WALL - boxW, (H - boxH) / 2, boxW, boxH);
+    const sixH = 130, sixW = 44;
+    ctx.strokeRect(WALL, (H - sixH) / 2, sixW, sixH);
+    ctx.strokeRect(W - WALL - sixW, (H - sixH) / 2, sixW, sixH);
+  }
+
+  function drawGoals() {
+    // nets sitting behind the wall openings
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,255,255,0.85)";
+    ctx.lineWidth = 4;
+    // left goal
+    ctx.beginPath();
+    ctx.moveTo(WALL, goalTop);
+    ctx.lineTo(WALL - GOAL_DEPTH, goalTop);
+    ctx.lineTo(WALL - GOAL_DEPTH, goalBot);
+    ctx.lineTo(WALL, goalBot);
+    ctx.stroke();
+    // right goal
+    ctx.beginPath();
+    ctx.moveTo(W - WALL, goalTop);
+    ctx.lineTo(W - WALL + GOAL_DEPTH, goalTop);
+    ctx.lineTo(W - WALL + GOAL_DEPTH, goalBot);
+    ctx.lineTo(W - WALL, goalBot);
+    ctx.stroke();
+    // net mesh
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 1;
+    for (let y = goalTop; y <= goalBot; y += 9) {
+      ctx.beginPath(); ctx.moveTo(WALL - GOAL_DEPTH, y); ctx.lineTo(WALL, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W - WALL, y); ctx.lineTo(W - WALL + GOAL_DEPTH, y); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawShadow(x, y, r) {
+    ctx.beginPath();
+    ctx.ellipse(x, y + r * 0.55, r * 0.95, r * 0.4, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.28)";
+    ctx.fill();
+  }
+
+  function drawKit(e, r, fill, ring, glow) {
+    drawShadow(e.x, e.y, r);
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = fill;
+    ctx.shadowColor = glow; ctx.shadowBlur = 16;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = 3; ctx.strokeStyle = ring; ctx.stroke();
+  }
+
+  function drawEntities() {
+    // keepers (gloves = strobe yellow)
+    drawKit(keeperHome, KEEPER_R, "#2a2a3e", "#FFE23D", "rgba(255,226,61,0.5)");
+    drawKit(keeperAway, KEEPER_R, "#2a2a3e", "#FFE23D", "rgba(255,226,61,0.5)");
+
+    // cpu (away — pink)
+    drawKit(cpu, PLAYER_R, "#3a0d1c", "#FF2D6B", "rgba(255,45,107,0.6)");
+
+    // player (home — cyan/violet), with facing arrow
+    if (game.hype > 0) {
+      const pulse = 3 + Math.sin(performance.now() * 0.012) * 2;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, PLAYER_R + 6 + pulse, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255,226,61,0.7)";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+    drawKit(player, PLAYER_R, "#0d2b3a", "#00F0FF", "rgba(0,240,255,0.6)");
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    ctx.rotate(Math.atan2(player.face.y, player.face.x));
+    ctx.beginPath();
+    ctx.moveTo(PLAYER_R + 2, 0);
+    ctx.lineTo(PLAYER_R - 5, -5);
+    ctx.lineTo(PLAYER_R - 5, 5);
+    ctx.closePath();
+    ctx.fillStyle = "#00F0FF";
+    ctx.fill();
+    ctx.restore();
+
+    // ball
+    drawShadow(ball.x, ball.y, BALL_R);
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "rgba(255,255,255,0.6)"; ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // pentagon marks
+    ctx.fillStyle = "#111";
+    for (let i = 0; i < 5; i++) {
+      const a = i / 5 * Math.PI * 2 + ball.x * 0.02;
+      ctx.beginPath();
+      ctx.arc(ball.x + Math.cos(a) * BALL_R * 0.5, ball.y + Math.sin(a) * BALL_R * 0.5, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawHalftime() {
+    const fieldTop = WALL, fieldH = H - WALL * 2;
+    const laneW = (W - WALL * 2) / LANES;
+
+    // stage cloth rolling down each lane
+    for (let i = 0; i < LANES; i++) {
+      const cov = game.lanes[i];
+      if (cov <= 0) continue;
+      const x = WALL + i * laneW;
+      const h = cov * fieldH;
+      const g = ctx.createLinearGradient(0, fieldTop, 0, fieldTop + h);
+      g.addColorStop(0, "rgba(255,46,136,0.82)");
+      g.addColorStop(1, "rgba(180,41,249,0.72)");
+      ctx.fillStyle = g;
+      ctx.fillRect(x + 2, fieldTop, laneW - 4, h);
+      // roller bar at the cloth's leading edge
+      if (cov < 1) {
+        ctx.fillStyle = "rgba(240,240,248,0.9)";
+        ctx.fillRect(x + 2, fieldTop + h - 3, laneW - 4, 6);
+      } else {
+        // covered: subtle stage sheen
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        ctx.fillRect(x + 2, fieldTop, laneW - 4, fieldH);
+      }
+    }
+
+    // lane pips under the scoreboard
+    const pipW = 26, gap = 8;
+    const px0 = W / 2 - (LANES * pipW + (LANES - 1) * gap) / 2;
+    for (let i = 0; i < LANES; i++) {
+      const x = px0 + i * (pipW + gap);
+      roundRect(x, 66, pipW, 7, 3);
+      ctx.fillStyle = "rgba(255,255,255,0.14)";
+      ctx.fill();
+      if (game.lanes[i] > 0) {
+        roundRect(x, 66, pipW * Math.min(1, game.lanes[i]), 7, 3);
+        ctx.fillStyle = game.lanes[i] >= 1 ? "#39FF8E" : "#FFE23D";
+        ctx.fill();
+      }
+    }
+
+    // sprinklers
+    for (const s of game.sprinklers) {
+      const spray = 5 + Math.sin(performance.now() * 0.01 + s.x) * 3;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, SPRINKLER_R + spray, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(57,213,255,0.4)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      drawShadow(s.x, s.y, SPRINKLER_R);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, SPRINKLER_R, 0, Math.PI * 2);
+      ctx.fillStyle = "#39d5ff";
+      ctx.shadowColor = "rgba(57,213,255,0.8)"; ctx.shadowBlur = 16;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.lineWidth = 2; ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.stroke();
+      // nozzle
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+    }
+
+    // the crew (you) — soaked flicker while stunned
+    if (player.stun > 0 && (player.stun >> 2) % 2 === 0) ctx.globalAlpha = 0.45;
+    drawKit(player, PLAYER_R, "#0d2b3a", "#00F0FF", "rgba(0,240,255,0.6)");
+    ctx.globalAlpha = 1;
+
+    // hint
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = "700 13px 'Space Mono', monospace";
+    ctx.fillStyle = "rgba(240,240,248,0.75)";
+    ctx.fillText("COVER ALL 6 LANES · DODGE THE SPRINKLERS", W / 2, H - 44);
+
+    // intro title
+    if (game.htIntro > 0) {
+      const a = Math.min(1, game.htIntro / 40);
+      ctx.globalAlpha = a;
+      ctx.font = "900 64px 'Anybody', sans-serif";
+      ctx.lineWidth = 7; ctx.strokeStyle = "rgba(0,0,0,0.5)";
+      ctx.strokeText("HALFTIME!", W / 2, H / 2 - 36);
+      ctx.fillStyle = "#FFE23D";
+      ctx.shadowColor = "#FFE23D"; ctx.shadowBlur = 26;
+      ctx.fillText("HALFTIME!", W / 2, H / 2 - 36);
+      ctx.shadowBlur = 0;
+      ctx.font = "700 17px 'Outfit', sans-serif";
+      ctx.fillStyle = "#F0F0F8";
+      ctx.fillText("Cover the pitch for the show — a good show hypes your second half", W / 2, H / 2 + 14);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function drawHUD() {
+    // scoreboard bar
+    const barW = 300, barH = 46, bx = (W - barW) / 2, by = 12;
+    roundRect(bx, by, barW, barH, 12);
+    ctx.fillStyle = "rgba(6,6,14,0.78)";
+    ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.stroke();
+
+    // team dots + score
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    // home
+    ctx.beginPath(); ctx.arc(bx + 30, by + barH / 2, 7, 0, Math.PI * 2);
+    ctx.fillStyle = "#00F0FF"; ctx.fill();
+    ctx.beginPath(); ctx.arc(bx + barW - 30, by + barH / 2, 7, 0, Math.PI * 2);
+    ctx.fillStyle = "#FF2D6B"; ctx.fill();
+
+    ctx.font = "900 26px 'Anybody', sans-serif";
+    ctx.fillStyle = "#F0F0F8";
+    ctx.fillText(`${game.homeScore}`, bx + 78, by + barH / 2 + 1);
+    ctx.fillText(`${game.awayScore}`, bx + barW - 78, by + barH / 2 + 1);
+
+    // clock (halftime shows its own countdown)
+    const inHT = game.state === STATE.HALFTIME ||
+      (game.state === STATE.PAUSE && game.prevState === STATE.HALFTIME);
+    const secs = inHT ? Math.max(0, Math.ceil(game.htClock)) : game.clock;
+    const mm = Math.floor(secs / 60);
+    const ss = secs % 60;
+    ctx.font = "700 20px 'Space Mono', monospace";
+    ctx.fillStyle = inHT ? "#FFE23D"
+      : (game.clock <= 10 && game.clock > 0 && game.state !== STATE.RESULT ? "#FFE23D" : "#9A9ABB");
+    ctx.fillText(`${mm}:${ss < 10 ? "0" : ""}${ss}`, bx + barW / 2, by + barH / 2 + 1);
+
+    // labels
+    ctx.font = "700 9px 'Space Mono', monospace";
+    ctx.fillStyle = "#5A5A78";
+    ctx.fillText("YOU", bx + 30, by + barH - 5);
+    ctx.fillText("CPU", bx + barW - 30, by + barH - 5);
+    if (inHT) {
+      ctx.fillStyle = "#FFE23D";
+      ctx.fillText("HALFTIME SHOW", bx + barW / 2, by + barH - 5);
+    } else if (game.hype > 0 && game.half === 2) {
+      ctx.fillStyle = "#FFE23D";
+      ctx.fillText(`HYPED ${Math.ceil(game.hype)}S`, bx + barW / 2, by + barH - 5);
+    } else {
+      ctx.fillText(game.half === 1 ? "1ST HALF" : "2ND HALF", bx + barW / 2, by + barH - 5);
+    }
+  }
+
+  function drawGoalBanner() {
+    ctx.save();
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    const t = 1 - game.goalTimer / 105;
+    const scale = 0.8 + Math.min(1, t * 3) * 0.4;
+    ctx.translate(W / 2, H / 2);
+    ctx.scale(scale, scale);
+    ctx.font = "900 84px 'Anybody', sans-serif";
+    ctx.lineWidth = 8; ctx.strokeStyle = "rgba(0,0,0,0.5)";
+    ctx.strokeText(game.goalMsg, 0, 0);
+    ctx.fillStyle = game.bannerColor;
+    ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 30;
+    ctx.fillText(game.goalMsg, 0, 0);
+    ctx.restore();
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Main loop
+  // ---------------------------------------------------------------------------
+  let lastTime = performance.now();
+  function loop(now) {
+    let dt = (now - lastTime) / 1000;
+    lastTime = now;
+    if (dt > 0.1) dt = 0.1; // clamp big gaps (tab switches)
+
+    // Simulate physics at ~60fps steps regardless of dt for stable feel.
+    if (game.state === STATE.PLAY || game.state === STATE.GOAL || game.state === STATE.HALFTIME) {
+      // fixed-ish: run in ~16ms slices
+      let acc = dt;
+      const step = 1 / 60;
+      let guard = 0;
+      while (acc > 0 && guard < 5) {
+        update(Math.min(step, acc));
+        acc -= step;
+        guard++;
+      }
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  // ---------------------------------------------------------------------------
+  // UI wiring
+  // ---------------------------------------------------------------------------
+  function wireSeg(id, apply) {
+    const seg = document.getElementById(id);
+    seg.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      for (const el of seg.querySelectorAll("button")) el.setAttribute("aria-pressed", "false");
+      b.setAttribute("aria-pressed", "true");
+      apply(b);
+    });
+  }
+  wireSeg("seg-diff", (b) => { game.diff = parseInt(b.dataset.diff, 10); });
+  wireSeg("seg-time", (b) => { game.matchTime = parseInt(b.dataset.time, 10); });
+
+  document.getElementById("kickoff-btn").addEventListener("click", startMatch);
+  document.getElementById("rematch-btn").addEventListener("click", startMatch);
+  document.getElementById("menu-btn").addEventListener("click", quitToMenu);
+  document.getElementById("resume-btn").addEventListener("click", resumeGame);
+  document.getElementById("quit-btn").addEventListener("click", quitToMenu);
+  document.getElementById("pause-pill").addEventListener("click", () => {
+    if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
+  });
+
+  // ---------------------------------------------------------------------------
+  // Boot
+  // ---------------------------------------------------------------------------
+  fitCanvas();
+  setupTouch();
+  requestAnimationFrame(loop);
+
+  // Optional debug hook for automated smoke tests (?debug in the URL).
+  if (location.search.indexOf("debug") !== -1) {
+    window.__pitch = { game, ball, player, cpu, scoreGoal, startMatch, startHalftime, endHalftime, STATE };
+  }
+})();
+</script>
+</body>
+</html>
