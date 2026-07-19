@@ -4,14 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>PITCH RIOT — MixMash Studio</title>
-<meta name="description" content="PITCH RIOT is a fast, arcade street-soccer game you play in your browser. Dribble, sprint, and smash goals past the CPU in a two-minute festival kickabout. Keyboard or touch, no installs." />
+<meta name="description" content="PITCH RIOT is a fast, arcade street-soccer game you play in your browser. Dribble, sprint, and smash goals past the CPU — then cover the pitch for the halftime show to earn a hyped second half. Keyboard or touch, no installs." />
 <link rel="canonical" href="https://mixmash.games/pitch" />
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
 <meta name="theme-color" content="#06060E" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="MixMash Studio" />
 <meta property="og:title" content="PITCH RIOT — Arcade Street Soccer" />
-<meta property="og:description" content="Fast arcade soccer in your browser. Dribble, sprint, and score past the CPU. No installs, no accounts." />
+<meta property="og:description" content="Fast arcade soccer in your browser. Score past the CPU, then cover the pitch for the halftime show. No installs, no accounts." />
 <meta property="og:url" content="https://mixmash.games/pitch" />
 <meta property="og:image" content="https://mixmash.games/assets/og-card.png" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -269,7 +269,7 @@ html, body {
 <div id="menu" class="overlay" style="--card-glow: var(--strobe-yellow)">
   <div class="kicker">MixMash Studio &middot; Arcade Soccer</div>
   <h1 class="title">PITCH <span class="grad">RIOT</span></h1>
-  <p class="subtitle">Street soccer with the volume up. Dribble, sprint and smash it past the keeper before the clock runs out.</p>
+  <p class="subtitle">Street soccer with the volume up. Smash it past the keeper, then cover the pitch for the halftime show — a good show hypes up your second half.</p>
 
   <div class="panel">
     <div class="opt-group">
@@ -378,13 +378,20 @@ html, body {
   // ---------------------------------------------------------------------------
   // Game state
   // ---------------------------------------------------------------------------
-  const STATE = { MENU: 0, PLAY: 1, PAUSE: 2, GOAL: 3, RESULT: 4 };
+  const STATE = { MENU: 0, PLAY: 1, PAUSE: 2, GOAL: 3, RESULT: 4, HALFTIME: 5 };
+
+  const LANES = 6;                 // halftime show: cover lanes (mini FIFA Pitch Crew)
+  const SPRINKLER_R = 13;
+  const HT_SECONDS = 26;
+  const COVER_RATE = 0.0062;       // lane coverage per frame while standing in it
 
   const game = {
     state: STATE.MENU,
+    prevState: STATE.PLAY,   // what PAUSE returns to (PLAY or HALFTIME)
     diff: 1,
     matchTime: 120,
     clock: 120,        // seconds remaining
+    half: 1,
     homeScore: 0,
     awayScore: 0,
     shake: 0,
@@ -392,13 +399,20 @@ html, body {
     flashColor: "#fff",
     goalMsg: "",
     goalTimer: 0,
+    bannerColor: "#39FF8E",
     lastKickAt: 0,     // debounce keyboard shooting
     kickoffDir: 1,     // who kicks off (1 => home attacks right)
+    // halftime show
+    htClock: 0,        // seconds left in the halftime show (float)
+    htIntro: 0,        // frames of "HALFTIME!" intro text
+    lanes: [],         // per-lane cloth coverage 0..1
+    sprinklers: [],
+    hype: 0,           // seconds of second-half boost earned by the show
   };
 
   // Entities. home attacks RIGHT goal, away attacks LEFT goal.
   const ball = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
-  const player = { x: W * 0.32, y: H / 2, vx: 0, vy: 0, face: { x: 1, y: 0 } };
+  const player = { x: W * 0.32, y: H / 2, vx: 0, vy: 0, face: { x: 1, y: 0 }, stun: 0 };
   const cpu = { x: W * 0.68, y: H / 2, vx: 0, vy: 0 };
   const keeperHome = { x: WALL + 30, y: H / 2, vy: 0 };
   const keeperAway = { x: W - WALL - 30, y: H / 2, vy: 0 };
@@ -420,7 +434,7 @@ html, body {
 
   window.addEventListener("keydown", (e) => {
     if (e.code === "KeyP" || e.code === "Escape") {
-      if (game.state === STATE.PLAY) pauseGame();
+      if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
       else if (game.state === STATE.PAUSE) resumeGame();
       e.preventDefault();
       return;
@@ -433,7 +447,10 @@ html, body {
     if (KEYMAP[e.code]) { keys.add(e.code); e.preventDefault(); }
   });
   window.addEventListener("keyup", (e) => { keys.delete(e.code); });
-  window.addEventListener("blur", () => { keys.clear(); if (game.state === STATE.PLAY) pauseGame(); });
+  window.addEventListener("blur", () => {
+    keys.clear();
+    if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
+  });
 
   // Touch input
   const touch = { active: false, mag: 0, dx: 0, dy: 0, shoot: false, sprint: false };
@@ -517,7 +534,7 @@ html, body {
   function resetPositions(dir) {
     ball.x = W / 2; ball.y = H / 2; ball.vx = 0; ball.vy = 0;
     player.x = W * 0.32; player.y = H / 2; player.vx = 0; player.vy = 0;
-    player.face = { x: 1, y: 0 };
+    player.face = { x: 1, y: 0 }; player.stun = 0;
     cpu.x = W * 0.68; cpu.y = H / 2; cpu.vx = 0; cpu.vy = 0;
     keeperHome.y = H / 2; keeperHome.vy = 0;
     keeperAway.y = H / 2; keeperAway.vy = 0;
@@ -529,6 +546,7 @@ html, body {
   function startMatch() {
     game.homeScore = 0; game.awayScore = 0;
     game.clock = game.matchTime;
+    game.half = 1; game.hype = 0;
     game.shake = 0; game.flash = 0; game.goalTimer = 0;
     resetPositions(1);
     game.state = STATE.PLAY;
@@ -537,13 +555,14 @@ html, body {
   }
 
   function pauseGame() {
-    if (game.state !== STATE.PLAY) return;
+    if (game.state !== STATE.PLAY && game.state !== STATE.HALFTIME) return;
+    game.prevState = game.state;
     game.state = STATE.PAUSE;
     document.getElementById("pause").hidden = false;
   }
   function resumeGame() {
     if (game.state !== STATE.PAUSE) return;
-    game.state = STATE.PLAY;
+    game.state = game.prevState;
     document.getElementById("pause").hidden = true;
     lastTime = performance.now();  // avoid a huge dt jump
   }
@@ -554,13 +573,51 @@ html, body {
     document.getElementById("pause-pill").hidden = true;
   }
 
-  function scoreGoal(scorer) {
-    if (scorer === "home") { game.homeScore++; game.goalMsg = "GOAL!"; game.flashColor = "#39FF8E"; }
-    else { game.awayScore++; game.goalMsg = "CONCEDED"; game.flashColor = "#FF2D6B"; }
-    game.flash = 1;
-    game.shake = 16;
+  function showBanner(msg, color, kickoffDir) {
+    game.goalMsg = msg;
+    game.bannerColor = color;
+    game.kickoffDir = kickoffDir;
     game.state = STATE.GOAL;
     game.goalTimer = 105; // frames of celebration (~1.75s)
+  }
+
+  function scoreGoal(scorer) {
+    if (scorer === "home") { game.homeScore++; game.flashColor = "#39FF8E"; showBanner("GOAL!", "#39FF8E", -1); }
+    else { game.awayScore++; game.flashColor = "#FF2D6B"; showBanner("CONCEDED", "#FF2D6B", 1); }
+    game.flash = 1;
+    game.shake = 16;
+  }
+
+  // -------- Halftime show: a mini FIFA Pitch Crew (cover ops) --------
+  function startHalftime() {
+    game.state = STATE.HALFTIME;
+    game.htClock = HT_SECONDS;
+    game.htIntro = 110;
+    game.lanes = new Array(LANES).fill(0);
+    game.sprinklers = [];
+    const n = 2 + game.diff; // 2 / 3 / 4 by difficulty
+    for (let i = 0; i < n; i++) {
+      game.sprinklers.push({
+        x: WALL + 70 + (W - WALL * 2 - 140) * (n === 1 ? 0.5 : i / (n - 1)),
+        y: H / 2 + (i % 2 ? -90 : 90),
+        vx: (i % 2 ? 2.1 : -2.1) * (1 + game.diff * 0.18),
+        vy: (i % 2 ? -1.6 : 1.6) * (1 + game.diff * 0.18),
+      });
+    }
+    // crew position: touchline, ready to run the cloth
+    player.x = W / 2; player.y = H - WALL - 40;
+    player.vx = 0; player.vy = 0; player.stun = 0;
+    game.flash = 0.6; game.flashColor = "#FFE23D";
+  }
+
+  function endHalftime() {
+    const sum = game.lanes.reduce((a, b) => a + b, 0);
+    const perfect = game.lanes.every((v) => v >= 1);
+    game.hype = sum * 2.5 + (perfect ? 3 : 0); // up to 18s of boost
+    game.half = 2;
+    game.flash = 1; game.flashColor = "#FFE23D";
+    resetPositions(-1);
+    showBanner(perfect ? "PERFECT SHOW!" : "SHOW TIME!", "#FFE23D", -1);
   }
 
   function endMatch() {
@@ -592,7 +649,14 @@ html, body {
   // ---------------------------------------------------------------------------
   // Physics / simulation (fixed timestep)
   // ---------------------------------------------------------------------------
-  function stepPlayer() {
+  function stepPlayerMovement() {
+    if (player.stun > 0) {
+      player.stun--;
+      player.vx *= 0.92; player.vy *= 0.92;
+      player.x += player.vx; player.y += player.vy;
+      confine(player, PLAYER_R);
+      return;
+    }
     let ax = 0, ay = 0;
     if (touch.active && touch.mag > 0.12) { ax = touch.dx * touch.mag; ay = touch.dy * touch.mag; }
     else {
@@ -603,7 +667,8 @@ html, body {
       const m = len(ax, ay);
       if (m > 0) { ax /= m; ay /= m; }
     }
-    const maxSpd = PLAYER_MAX * (input.sprint ? SPRINT_MULT : 1);
+    const hypeMult = game.hype > 0 ? 1.12 : 1;
+    const maxSpd = PLAYER_MAX * (input.sprint ? SPRINT_MULT : 1) * hypeMult;
     player.vx += ax * PLAYER_ACCEL * (input.sprint ? 1.15 : 1);
     player.vy += ay * PLAYER_ACCEL * (input.sprint ? 1.15 : 1);
     if (ax === 0 && ay === 0) { player.vx *= PLAYER_FRICTION; player.vy *= PLAYER_FRICTION; }
@@ -614,6 +679,10 @@ html, body {
       const s = len(player.vx, player.vy);
       player.face.x = player.vx / s; player.face.y = player.vy / s;
     }
+  }
+
+  function stepPlayer() {
+    stepPlayerMovement();
 
     // Contact with ball → dribble/shoot.
     const dx = ball.x - player.x, dy = ball.y - player.y;
@@ -644,8 +713,9 @@ html, body {
         aimY = aimY * 0.45 + (tgY / tl) * 0.55;
       }
       const al = len(aimX, aimY) || 1;
-      ball.vx = aimX / al * SHOOT_POWER;
-      ball.vy = aimY / al * SHOOT_POWER;
+      const hypeMult = game.hype > 0 ? 1.15 : 1;
+      ball.vx = aimX / al * SHOOT_POWER * hypeMult;
+      ball.vy = aimY / al * SHOOT_POWER * hypeMult;
     }
   }
 
@@ -801,19 +871,53 @@ html, body {
       stepKeeper(keeperAway, cfg, false);
       stepBall();
 
+      // hype boost ticks down in the second half
+      if (game.hype > 0) game.hype = Math.max(0, game.hype - dt);
+
       // match clock
       clockAccum += dt;
       if (clockAccum >= 1) {
         game.clock -= Math.floor(clockAccum);
         clockAccum -= Math.floor(clockAccum);
         if (game.clock <= 0) { game.clock = 0; endMatch(); }
+        else if (game.half === 1 && game.clock <= game.matchTime / 2) startHalftime();
       }
+    } else if (game.state === STATE.HALFTIME) {
+      pollInput();
+      stepPlayerMovement();
+
+      // sprinklers roam and knock the crew back
+      for (const s of game.sprinklers) {
+        s.x += s.vx; s.y += s.vy;
+        if (s.x < WALL + SPRINKLER_R) { s.x = WALL + SPRINKLER_R; s.vx = Math.abs(s.vx); }
+        if (s.x > W - WALL - SPRINKLER_R) { s.x = W - WALL - SPRINKLER_R; s.vx = -Math.abs(s.vx); }
+        if (s.y < WALL + SPRINKLER_R) { s.y = WALL + SPRINKLER_R; s.vy = Math.abs(s.vy); }
+        if (s.y > H - WALL - SPRINKLER_R) { s.y = H - WALL - SPRINKLER_R; s.vy = -Math.abs(s.vy); }
+        const dx = player.x - s.x, dy = player.y - s.y;
+        const d = len(dx, dy);
+        if (d < SPRINKLER_R + PLAYER_R && player.stun <= 0) {
+          const nx = dx / (d || 1), ny = dy / (d || 1);
+          player.stun = 48; // ~0.8s soaked
+          player.vx = nx * 7; player.vy = ny * 7;
+          game.shake = 8;
+        }
+      }
+
+      // standing in an uncovered lane rolls the cloth out
+      if (player.stun <= 0) {
+        const laneW = (W - WALL * 2) / LANES;
+        const li = clamp(Math.floor((player.x - WALL) / laneW), 0, LANES - 1);
+        game.lanes[li] = Math.min(1, game.lanes[li] + COVER_RATE);
+      }
+
+      if (game.htIntro > 0) game.htIntro--;
+      game.htClock -= dt;
+      if (game.htClock <= 0 || game.lanes.every((v) => v >= 1)) endHalftime();
     } else if (game.state === STATE.GOAL) {
       // keep ball/keepers subtly alive; count down then kick off
       game.goalTimer--;
       if (game.goalTimer <= 0) {
-        const dir = game.goalMsg === "GOAL!" ? -1 : 1; // conceding side restarts
-        resetPositions(dir);
+        resetPositions(game.kickoffDir); // conceding side restarts
         game.state = STATE.PLAY;
       }
     }
@@ -832,8 +936,14 @@ html, body {
                     (pseudoNoise(performance.now() * 0.07 + 3)) * game.shake);
     }
     drawPitch();
-    drawGoals();
-    drawEntities();
+    const inHalftime = game.state === STATE.HALFTIME ||
+      (game.state === STATE.PAUSE && game.prevState === STATE.HALFTIME);
+    if (inHalftime) {
+      drawHalftime();
+    } else {
+      drawGoals();
+      drawEntities();
+    }
     ctx.restore();
 
     drawHUD();
@@ -946,6 +1056,14 @@ html, body {
     drawKit(cpu, PLAYER_R, "#3a0d1c", "#FF2D6B", "rgba(255,45,107,0.6)");
 
     // player (home — cyan/violet), with facing arrow
+    if (game.hype > 0) {
+      const pulse = 3 + Math.sin(performance.now() * 0.012) * 2;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, PLAYER_R + 6 + pulse, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255,226,61,0.7)";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
     drawKit(player, PLAYER_R, "#0d2b3a", "#00F0FF", "rgba(0,240,255,0.6)");
     ctx.save();
     ctx.translate(player.x, player.y);
@@ -977,6 +1095,99 @@ html, body {
     }
   }
 
+  function drawHalftime() {
+    const fieldTop = WALL, fieldH = H - WALL * 2;
+    const laneW = (W - WALL * 2) / LANES;
+
+    // stage cloth rolling down each lane
+    for (let i = 0; i < LANES; i++) {
+      const cov = game.lanes[i];
+      if (cov <= 0) continue;
+      const x = WALL + i * laneW;
+      const h = cov * fieldH;
+      const g = ctx.createLinearGradient(0, fieldTop, 0, fieldTop + h);
+      g.addColorStop(0, "rgba(255,46,136,0.82)");
+      g.addColorStop(1, "rgba(180,41,249,0.72)");
+      ctx.fillStyle = g;
+      ctx.fillRect(x + 2, fieldTop, laneW - 4, h);
+      // roller bar at the cloth's leading edge
+      if (cov < 1) {
+        ctx.fillStyle = "rgba(240,240,248,0.9)";
+        ctx.fillRect(x + 2, fieldTop + h - 3, laneW - 4, 6);
+      } else {
+        // covered: subtle stage sheen
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        ctx.fillRect(x + 2, fieldTop, laneW - 4, fieldH);
+      }
+    }
+
+    // lane pips under the scoreboard
+    const pipW = 26, gap = 8;
+    const px0 = W / 2 - (LANES * pipW + (LANES - 1) * gap) / 2;
+    for (let i = 0; i < LANES; i++) {
+      const x = px0 + i * (pipW + gap);
+      roundRect(x, 66, pipW, 7, 3);
+      ctx.fillStyle = "rgba(255,255,255,0.14)";
+      ctx.fill();
+      if (game.lanes[i] > 0) {
+        roundRect(x, 66, pipW * Math.min(1, game.lanes[i]), 7, 3);
+        ctx.fillStyle = game.lanes[i] >= 1 ? "#39FF8E" : "#FFE23D";
+        ctx.fill();
+      }
+    }
+
+    // sprinklers
+    for (const s of game.sprinklers) {
+      const spray = 5 + Math.sin(performance.now() * 0.01 + s.x) * 3;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, SPRINKLER_R + spray, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(57,213,255,0.4)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      drawShadow(s.x, s.y, SPRINKLER_R);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, SPRINKLER_R, 0, Math.PI * 2);
+      ctx.fillStyle = "#39d5ff";
+      ctx.shadowColor = "rgba(57,213,255,0.8)"; ctx.shadowBlur = 16;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.lineWidth = 2; ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.stroke();
+      // nozzle
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+    }
+
+    // the crew (you) — soaked flicker while stunned
+    if (player.stun > 0 && (player.stun >> 2) % 2 === 0) ctx.globalAlpha = 0.45;
+    drawKit(player, PLAYER_R, "#0d2b3a", "#00F0FF", "rgba(0,240,255,0.6)");
+    ctx.globalAlpha = 1;
+
+    // hint
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = "700 13px 'Space Mono', monospace";
+    ctx.fillStyle = "rgba(240,240,248,0.75)";
+    ctx.fillText("COVER ALL 6 LANES · DODGE THE SPRINKLERS", W / 2, H - 44);
+
+    // intro title
+    if (game.htIntro > 0) {
+      const a = Math.min(1, game.htIntro / 40);
+      ctx.globalAlpha = a;
+      ctx.font = "900 64px 'Anybody', sans-serif";
+      ctx.lineWidth = 7; ctx.strokeStyle = "rgba(0,0,0,0.5)";
+      ctx.strokeText("HALFTIME!", W / 2, H / 2 - 36);
+      ctx.fillStyle = "#FFE23D";
+      ctx.shadowColor = "#FFE23D"; ctx.shadowBlur = 26;
+      ctx.fillText("HALFTIME!", W / 2, H / 2 - 36);
+      ctx.shadowBlur = 0;
+      ctx.font = "700 17px 'Outfit', sans-serif";
+      ctx.fillStyle = "#F0F0F8";
+      ctx.fillText("Cover the pitch for the show — a good show hypes your second half", W / 2, H / 2 + 14);
+      ctx.globalAlpha = 1;
+    }
+  }
+
   function drawHUD() {
     // scoreboard bar
     const barW = 300, barH = 46, bx = (W - barW) / 2, by = 12;
@@ -998,11 +1209,15 @@ html, body {
     ctx.fillText(`${game.homeScore}`, bx + 78, by + barH / 2 + 1);
     ctx.fillText(`${game.awayScore}`, bx + barW - 78, by + barH / 2 + 1);
 
-    // clock
-    const mm = Math.floor(game.clock / 60);
-    const ss = game.clock % 60;
+    // clock (halftime shows its own countdown)
+    const inHT = game.state === STATE.HALFTIME ||
+      (game.state === STATE.PAUSE && game.prevState === STATE.HALFTIME);
+    const secs = inHT ? Math.max(0, Math.ceil(game.htClock)) : game.clock;
+    const mm = Math.floor(secs / 60);
+    const ss = secs % 60;
     ctx.font = "700 20px 'Space Mono', monospace";
-    ctx.fillStyle = game.clock <= 10 && game.clock > 0 && game.state !== STATE.RESULT ? "#FFE23D" : "#9A9ABB";
+    ctx.fillStyle = inHT ? "#FFE23D"
+      : (game.clock <= 10 && game.clock > 0 && game.state !== STATE.RESULT ? "#FFE23D" : "#9A9ABB");
     ctx.fillText(`${mm}:${ss < 10 ? "0" : ""}${ss}`, bx + barW / 2, by + barH / 2 + 1);
 
     // labels
@@ -1010,6 +1225,15 @@ html, body {
     ctx.fillStyle = "#5A5A78";
     ctx.fillText("YOU", bx + 30, by + barH - 5);
     ctx.fillText("CPU", bx + barW - 30, by + barH - 5);
+    if (inHT) {
+      ctx.fillStyle = "#FFE23D";
+      ctx.fillText("HALFTIME SHOW", bx + barW / 2, by + barH - 5);
+    } else if (game.hype > 0 && game.half === 2) {
+      ctx.fillStyle = "#FFE23D";
+      ctx.fillText(`HYPED ${Math.ceil(game.hype)}S`, bx + barW / 2, by + barH - 5);
+    } else {
+      ctx.fillText(game.half === 1 ? "1ST HALF" : "2ND HALF", bx + barW / 2, by + barH - 5);
+    }
   }
 
   function drawGoalBanner() {
@@ -1022,7 +1246,7 @@ html, body {
     ctx.font = "900 84px 'Anybody', sans-serif";
     ctx.lineWidth = 8; ctx.strokeStyle = "rgba(0,0,0,0.5)";
     ctx.strokeText(game.goalMsg, 0, 0);
-    ctx.fillStyle = game.goalMsg === "GOAL!" ? "#39FF8E" : "#FF2D6B";
+    ctx.fillStyle = game.bannerColor;
     ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 30;
     ctx.fillText(game.goalMsg, 0, 0);
     ctx.restore();
@@ -1048,7 +1272,7 @@ html, body {
     if (dt > 0.1) dt = 0.1; // clamp big gaps (tab switches)
 
     // Simulate physics at ~60fps steps regardless of dt for stable feel.
-    if (game.state === STATE.PLAY || game.state === STATE.GOAL) {
+    if (game.state === STATE.PLAY || game.state === STATE.GOAL || game.state === STATE.HALFTIME) {
       // fixed-ish: run in ~16ms slices
       let acc = dt;
       const step = 1 / 60;
@@ -1085,7 +1309,7 @@ html, body {
   document.getElementById("resume-btn").addEventListener("click", resumeGame);
   document.getElementById("quit-btn").addEventListener("click", quitToMenu);
   document.getElementById("pause-pill").addEventListener("click", () => {
-    if (game.state === STATE.PLAY) pauseGame();
+    if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
   });
 
   // ---------------------------------------------------------------------------
@@ -1097,7 +1321,7 @@ html, body {
 
   // Optional debug hook for automated smoke tests (?debug in the URL).
   if (location.search.indexOf("debug") !== -1) {
-    window.__pitch = { game, ball, player, cpu, scoreGoal, startMatch, STATE };
+    window.__pitch = { game, ball, player, cpu, scoreGoal, startMatch, startHalftime, endHalftime, STATE };
   }
 })();
 </script>

@@ -243,21 +243,6 @@ nav {
   box-shadow: 0 0 16px rgba(255,255,255,0.7);
 }
 
-.vis-halftime { background: linear-gradient(180deg, #060a14 0%, #0b1224 52%, #123a26 82%, #17b364 130%); }
-.vis-halftime::before {
-  content: ''; position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 30% 24% at 18% 12%, rgba(255,226,61,0.5) 0%, transparent 60%),
-    radial-gradient(ellipse 30% 24% at 82% 12%, rgba(255,226,61,0.5) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 45% at 50% 100%, rgba(23,179,100,0.45) 0%, transparent 65%);
-}
-.vis-halftime::after {
-  content: ''; position: absolute; bottom: 14%; left: 50%; transform: translateX(-50%) skewX(-8deg);
-  width: 96px; height: 34px; border-radius: 4px;
-  background: linear-gradient(135deg, rgba(255,46,136,0.85), rgba(180,41,249,0.7));
-  box-shadow: 0 0 26px rgba(255,46,136,0.5), 0 10px 20px rgba(0,0,0,0.4);
-}
-
 .vis-empires { background: linear-gradient(180deg, #96b7a5 0%, #5c7b44 42%, #28311f 74%, #15170f 100%); }
 .vis-empires::before {
   content: ''; position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%) rotate(45deg);
@@ -393,7 +378,7 @@ footer a:hover { color: var(--led-cyan); }
 <main class="section" id="games">
   <div class="section-h">
     <h2>The Lineup</h2>
-    <span class="count">6 GAMES / ALL FREE</span>
+    <span class="count">5 GAMES / ALL FREE</span>
   </div>
 
   <div class="games-grid">
@@ -464,23 +449,10 @@ footer a:hover { color: var(--led-cyan); }
       <div class="game-body">
         <div class="game-genre">Arcade Soccer</div>
         <h3 class="game-name">Pitch Riot</h3>
-        <p class="game-desc">Street soccer with the volume up. Dribble, sprint, and smash it past the CPU keeper in a fast two-minute kickabout. Keyboard or touch.</p>
+        <p class="game-desc">Street soccer with the volume up. Beat the CPU across two halves — and at halftime, cover the pitch for the show to hype up your second half. Keyboard or touch.</p>
         <div class="game-actions">
           <a class="play-link" href="pitch/">&#9654; Play</a>
-        </div>
-      </div>
-    </article>
-
-    <article class="game-card" style="--card-glow: var(--laser-pink)">
-      <div class="game-vis vis-halftime">
-        <span class="game-status st-live">&#9679; Live</span>
-      </div>
-      <div class="game-body">
-        <div class="game-genre">Halftime Cover Ops</div>
-        <h3 class="game-name">FIFA Pitch Crew</h3>
-        <p class="game-desc">The halftime show won't stage itself. Deploy the cover cloth across six lanes, dodge the sprinklers, run the show, then strike it before kickoff.</p>
-        <div class="game-actions">
-          <a class="play-link" href="halftime/">&#9654; Play</a>
+          <a class="info-link" href="https://systembydave.com/fifa-pitch-crew/">Full Cover Ops</a>
         </div>
       </div>
     </article>
