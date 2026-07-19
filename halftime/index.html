@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA Pitch Crew: Halftime Cover Ops — MixMash Studio</title>
+<meta name="description" content="An arcade halftime-cover game by Dave Robertson. Deploy the stage cloth across six lanes, dodge the sprinklers, run the show, then strike it before kickoff. Plays free in your browser.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; background: #060a14; overflow: hidden; }
+#game-frame {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  border: 0; display: block;
+}
+.back-pill {
+  position: fixed; top: 14px; left: 14px; z-index: 10;
+  font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; text-decoration: none;
+  color: #F0F0F8; background: rgba(6,6,14,0.72);
+  border: 1px solid rgba(255,255,255,0.14);
+  padding: 7px 14px; border-radius: 999px;
+  backdrop-filter: blur(8px);
+  opacity: 0.85; transition: opacity 0.9s;
+}
+.back-pill:hover { opacity: 1 !important; }
+body.idle .back-pill { opacity: 0.12; }
+</style>
+</head>
+<body>
+<a class="back-pill" href="../">&#8592; mixmash.games</a>
+<iframe id="game-frame"
+  src="https://systembydave.com/fifa-pitch-crew/"
+  title="FIFA Pitch Crew: Halftime Cover Ops"
+  allow="fullscreen; autoplay"
+  allowfullscreen></iframe>
+<script>
+const frame = document.getElementById('game-frame');
+window.addEventListener('load', () => { try { frame.contentWindow.focus(); } catch(e) {} });
+window.addEventListener('mousedown', () => { try { frame.contentWindow.focus(); } catch(e) {} });
+let idleTimer;
+function wake() {
+  document.body.classList.remove('idle');
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => document.body.classList.add('idle'), 2500);
+}
+['mousemove','touchstart','keydown'].forEach(ev => window.addEventListener(ev, wake, { passive: true }));
+wake();
+</script>
+</body>
+</html>
