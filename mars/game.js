@@ -47,7 +47,9 @@ const el = {
   bootStatus: document.querySelector('#bootStatus'),
   startButton: document.querySelector('#startButton'),
   authorityStatus: document.querySelector('#authorityStatus'),
+  isoViewport: document.querySelector('#isoViewport'),
   isoBoard: document.querySelector('#isoBoard'),
+  viewReset: document.querySelector('#viewReset'),
   panelBody: document.querySelector('#panelBody'),
   eventLog: document.querySelector('#eventLog'),
   actionReadout: document.querySelector('#actionReadout'),
@@ -224,6 +226,7 @@ function wireEvents() {
     render();
   });
   el.tabs.addEventListener('keydown', handleTabKeys);
+  setupViewportControls();
   el.tickButton.addEventListener('click', () => enqueueCommand('tick'));
   el.exportButton.addEventListener('click', exportSave);
   el.importButton.addEventListener('click', importSave);
@@ -233,6 +236,122 @@ function wireEvents() {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') saveLocalSoon(true);
   });
+}
+
+// MS-105: pinch/drag/wheel navigation for the isometric colony map.
+const MIN_VIEW_SCALE = 0.5;
+const MAX_VIEW_SCALE = 2.5;
+const MAX_PAN_PX = 900;
+const DRAG_THRESHOLD_PX = 6;
+
+const viewTransform = { scale: 1, x: 0, y: 0 };
+const activePointers = new Map();
+let pinchStartDistance = 0;
+let pinchStartScale = 1;
+let panStart = null;
+let viewportDragged = false;
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function applyViewTransform() {
+  if (!el.isoBoard) return;
+  el.isoBoard.style.setProperty('--user-scale', String(viewTransform.scale));
+  el.isoBoard.style.setProperty('--pan-x', `${viewTransform.x}px`);
+  el.isoBoard.style.setProperty('--pan-y', `${viewTransform.y}px`);
+  const moved = viewTransform.scale !== 1 || viewTransform.x !== 0 || viewTransform.y !== 0;
+  if (el.viewReset) el.viewReset.hidden = !moved;
+}
+
+function setViewScale(nextScale) {
+  viewTransform.scale = clamp(nextScale, MIN_VIEW_SCALE, MAX_VIEW_SCALE);
+  applyViewTransform();
+}
+
+function panView(dx, dy) {
+  viewTransform.x = clamp(viewTransform.x + dx, -MAX_PAN_PX, MAX_PAN_PX);
+  viewTransform.y = clamp(viewTransform.y + dy, -MAX_PAN_PX, MAX_PAN_PX);
+  applyViewTransform();
+}
+
+function resetView() {
+  viewTransform.scale = 1;
+  viewTransform.x = 0;
+  viewTransform.y = 0;
+  applyViewTransform();
+}
+
+function pointerDistance() {
+  const [a, b] = [...activePointers.values()];
+  if (!a || !b) return 0;
+  return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function setupViewportControls() {
+  const viewport = el.isoViewport;
+  if (!viewport) return;
+
+  viewport.addEventListener('pointerdown', (event) => {
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (activePointers.size === 1) {
+      panStart = { x: event.clientX, y: event.clientY };
+      viewportDragged = false;
+    } else if (activePointers.size === 2) {
+      pinchStartDistance = pointerDistance();
+      pinchStartScale = viewTransform.scale;
+      panStart = null;
+    }
+  });
+
+  viewport.addEventListener('pointermove', (event) => {
+    if (!activePointers.has(event.pointerId)) return;
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (activePointers.size >= 2) {
+      const distance = pointerDistance();
+      if (pinchStartDistance > 0 && distance > 0) {
+        setViewScale(pinchStartScale * (distance / pinchStartDistance));
+        viewportDragged = true;
+      }
+      return;
+    }
+
+    if (!panStart) return;
+    const dx = event.clientX - panStart.x;
+    const dy = event.clientY - panStart.y;
+    if (!viewportDragged && Math.hypot(dx, dy) < DRAG_THRESHOLD_PX) return;
+    viewportDragged = true;
+    panStart = { x: event.clientX, y: event.clientY };
+    panView(dx, dy);
+    try { viewport.setPointerCapture(event.pointerId); } catch { /* capture is best-effort */ }
+  });
+
+  const endPointer = (event) => {
+    activePointers.delete(event.pointerId);
+    if (activePointers.size < 2) pinchStartDistance = 0;
+    if (activePointers.size === 0) panStart = null;
+  };
+  viewport.addEventListener('pointerup', endPointer);
+  viewport.addEventListener('pointercancel', endPointer);
+  viewport.addEventListener('pointerleave', endPointer);
+
+  // A drag that ends over a map piece must not also fire that piece's gather command.
+  viewport.addEventListener('click', (event) => {
+    if (!viewportDragged) return;
+    event.preventDefault();
+    event.stopPropagation();
+    viewportDragged = false;
+  }, true);
+
+  viewport.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    setViewScale(viewTransform.scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12));
+  }, { passive: false });
+
+  viewport.addEventListener('dblclick', resetView);
+  if (el.viewReset) el.viewReset.addEventListener('click', resetView);
+  applyViewTransform();
 }
 
 function handleTabKeys(event) {
@@ -389,7 +508,13 @@ function renderNode(node) {
   const locked = node.requiresBuilding && !state.built[node.requiresBuilding];
   const depleted = nodeState.charges <= 0 || nodeState.cooldownUntil > Date.now();
   const pos = iso(node.x, node.y);
-  const label = locked ? `${node.name} locked` : depleted ? `${node.name} respawning` : `Gather ${node.name}`;
+  const maxCharges = Math.max(1, node.charges);
+  const remainingCharges = Math.max(0, Math.min(maxCharges, Number.isFinite(nodeState.charges) ? nodeState.charges : maxCharges));
+  const label = locked
+    ? `${node.name} locked`
+    : depleted
+      ? `${node.name} respawning`
+      : `Gather ${node.name}, ${remainingCharges} of ${maxCharges} charges left`;
   return `
     <button class="map-piece node ${locked ? 'locked' : ''} ${depleted ? 'depleted' : ''}"
       type="button"
@@ -400,8 +525,22 @@ function renderNode(node) {
       aria-label="${escapeHtml(label)}">
       <span class="model"></span>
       <span class="label">${escapeHtml(node.name)}</span>
-      <span class="charges">${locked ? 'locked' : depleted ? 'respawn' : '■'.repeat(Math.max(1, nodeState.charges || node.charges))}</span>
+      ${renderNodeCharges(node, nodeState, locked, depleted)}
     </button>`;
+}
+
+// MS-102: an animated fill bar for remaining node health, replacing the old block glyphs.
+function renderNodeCharges(node, nodeState, locked, depleted) {
+  const max = Math.max(1, node.charges);
+  const remaining = Math.max(0, Math.min(max, Number.isFinite(nodeState.charges) ? nodeState.charges : max));
+  const pct = locked || depleted ? 0 : Math.round((remaining / max) * 100);
+  const stateLabel = locked ? 'locked' : depleted ? 'respawn' : `${remaining}/${max}`;
+  const tone = pct > 60 ? 'high' : pct > 25 ? 'mid' : 'low';
+  return `
+      <span class="charges" aria-hidden="true">
+        <span class="charge-track"><i class="charge-fill ${tone}" style="width:${pct}%"></i></span>
+        <span class="charge-count">${stateLabel}</span>
+      </span>`;
 }
 
 function renderBuilding(building) {
@@ -438,13 +577,104 @@ function renderPanel() {
       if (action === 'travel') enqueueCommand('travel', { destRegion: button.dataset.id });
     });
   });
+  wireSkillRows();
+}
+
+// MS-103: tapping a skill row toggles the same detail the hover tooltip shows.
+function wireSkillRows() {
+  el.panelBody.querySelectorAll('.skill-row--expandable').forEach((row) => {
+    const detail = document.getElementById(row.getAttribute('aria-controls'));
+    if (!detail) return;
+    const toggle = () => {
+      const open = detail.hidden;
+      detail.hidden = !open;
+      row.setAttribute('aria-expanded', String(open));
+    };
+    row.addEventListener('click', toggle);
+    row.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggle();
+      }
+    });
+  });
+}
+
+// MS-103: levelForXp is level = floor(sqrt(xp) / 5) + 1, so the XP floor for a level
+// is 25 * (level - 1)^2. Level 99 is the cap, where there is no "next" target.
+const MAX_SKILL_LEVEL = 99;
+
+function xpForLevel(level) {
+  return 25 * Math.pow(Math.max(1, level) - 1, 2);
+}
+
+function skillProgress(xp) {
+  const safeXp = Math.max(0, Math.floor(Number(xp) || 0));
+  const level = levelForXp(safeXp);
+  if (level >= MAX_SKILL_LEVEL) {
+    return { xp: safeXp, level, nextLevel: null, nextLevelXp: null, xpToNext: 0, percent: 100 };
+  }
+  const floorXp = xpForLevel(level);
+  const nextLevelXp = xpForLevel(level + 1);
+  const span = Math.max(1, nextLevelXp - floorXp);
+  return {
+    xp: safeXp,
+    level,
+    nextLevel: level + 1,
+    nextLevelXp,
+    xpToNext: Math.max(0, nextLevelXp - safeXp),
+    percent: Math.max(0, Math.min(100, Math.round(((safeXp - floorXp) / span) * 100))),
+  };
+}
+
+// Gear modifiers that actually change this skill's outcomes in the engine.
+// `speed` and `geode` are defined on equipment but not yet consumed by any
+// engine rule, so they are deliberately not advertised here.
+function skillModifiers(skillId) {
+  const stats = equipStats(state);
+  const mods = [];
+  if (['mining', 'water'].includes(skillId) && stats.crit > 0) {
+    mods.push(`+${stats.crit}% chance of a bonus unit per gather`);
+  }
+  if (skillId === 'survival' && stats.o2 > 0) {
+    mods.push(`+${stats.o2}% suit O2 efficiency`);
+  }
+  if (['mining', 'water'].includes(skillId) && stats.pack > 0) {
+    mods.push(`+${stats.pack} pack capacity (${40 + stats.pack} total)`);
+  }
+  return mods;
+}
+
+function skillTooltip(skillId, skill) {
+  const progress = skillProgress((state.skills[skillId] || {}).xp);
+  const lines = [`${skill.name} — level ${progress.level}`, `XP: ${progress.xp.toLocaleString()}`];
+  if (progress.nextLevel) {
+    lines.push(`Next: level ${progress.nextLevel} at ${progress.nextLevelXp.toLocaleString()} XP (${progress.xpToNext.toLocaleString()} to go)`);
+  } else {
+    lines.push('Level cap reached');
+  }
+  const mods = skillModifiers(skillId);
+  lines.push(mods.length ? `Gear: ${mods.join('; ')}` : 'Gear: no equipped modifiers affect this skill');
+  return lines.join('\n');
 }
 
 function renderSkills() {
   const skills = Object.entries(SKILLS).map(([id, skill]) => {
-    const current = state.skills[id] || { xp: 0, level: 1 };
-    const progress = Math.min(100, Math.round((Math.sqrt(current.xp) % 5) * 20));
-    return `<div class="skill-row"><span>${escapeHtml(skill.name)} L${current.level}</span><span class="skill-bar"><i style="width:${progress}%;background:${skill.accent}"></i></span><b>${current.xp}</b></div>`;
+    const progress = skillProgress((state.skills[id] || {}).xp);
+    const detailId = `skill-detail-${id}`;
+    const nextLine = progress.nextLevel
+      ? `${progress.xpToNext.toLocaleString()} XP to level ${progress.nextLevel} (target ${progress.nextLevelXp.toLocaleString()})`
+      : 'Level cap reached';
+    const mods = skillModifiers(id);
+    return `<div class="skill-row skill-row--expandable" tabindex="0" role="button" aria-expanded="false" aria-controls="${detailId}" title="${escapeHtml(skillTooltip(id, skill))}" data-skill="${id}">
+      <span>${escapeHtml(skill.name)} L${progress.level}</span>
+      <span class="skill-bar"><i style="width:${progress.percent}%;background:${skill.accent}"></i></span>
+      <b>${progress.xp}</b>
+    </div>
+    <div class="skill-detail" id="${detailId}" hidden>
+      <p>${escapeHtml(nextLine)}</p>
+      <p>${escapeHtml(mods.length ? `Gear: ${mods.join(' · ')}` : 'Gear: no equipped modifiers affect this skill.')}</p>
+    </div>`;
   }).join('');
   const storm = state.storm.status === 'ready'
     ? '<div class="card"><h3>Great Storm Ready</h3><p>Start only with strong reserves. O2 and Power must stay above 50%.</p><button data-action="storm">Begin Great Storm</button></div>'
@@ -884,21 +1114,69 @@ async function exportSave() {
   window.prompt('Copy this MarsScape save envelope:', btoa(unescape(encodeURIComponent(data))));
 }
 
+// MS-104: validate the pasted code in stages so a malformed paste reports what is
+// actually wrong instead of dropping the player into a half-parsed game state.
+const BASE64_PATTERN = /^[A-Za-z0-9+/]+={0,2}$/;
+
+function validateSaveCode(raw) {
+  const trimmed = String(raw ?? '').trim().replace(/\s+/g, '');
+  if (!trimmed) return { ok: false, reason: 'That paste was empty. Copy the full save code from Export Save.' };
+  if (!BASE64_PATTERN.test(trimmed) || trimmed.length % 4 !== 0) {
+    return { ok: false, reason: 'That code is not valid base64. It was probably truncated or line-wrapped on the way over.' };
+  }
+
+  let decoded;
+  try {
+    decoded = decodeURIComponent(escape(atob(trimmed)));
+  } catch {
+    return { ok: false, reason: 'That code could not be decoded. Copy it again without adding or removing characters.' };
+  }
+
+  let envelope;
+  try {
+    envelope = JSON.parse(decoded);
+  } catch {
+    return { ok: false, reason: 'The decoded save is not valid JSON. The code is corrupted.' };
+  }
+
+  if (!envelope || typeof envelope !== 'object' || Array.isArray(envelope)) {
+    return { ok: false, reason: 'The decoded save is not a MarsScape envelope.' };
+  }
+  if (!envelope.state || typeof envelope.state !== 'object' || Array.isArray(envelope.state)) {
+    return { ok: false, reason: 'That envelope has no colony state in it.' };
+  }
+  if (typeof envelope.localHmac !== 'string' || !envelope.localHmac) {
+    return { ok: false, reason: 'That envelope is unsigned, so it cannot be trusted.' };
+  }
+  return { ok: true, envelope };
+}
+
 async function importSave() {
   const raw = window.prompt('Paste a MarsScape save envelope:');
-  if (!raw) return;
+  if (raw === null) return;
+
+  const validation = validateSaveCode(raw);
+  if (!validation.ok) {
+    window.alert(`Import failed\n\n${validation.reason}`);
+    showToast('Import failed', validation.reason);
+    return;
+  }
+
+  const { envelope } = validation;
   try {
-    const envelope = JSON.parse(decodeURIComponent(escape(atob(raw.trim()))));
-    if (!envelope?.state) throw new Error('Missing state');
-    if (!(await verifyLocalEnvelope(envelope))) throw new Error('Unsigned or tampered envelope');
-    state = publicState(envelope.state);
+    if (!(await verifyLocalEnvelope(envelope))) {
+      throw new Error('Unsigned or tampered envelope');
+    }
+    state = publicState(sanitizeState(envelope.state));
     sessionId = envelope.sessionId || getOrCreateSessionId(true);
     mode = 'offline';
     saveLocalSoon(true);
     render();
     showToast('Save imported', 'Imported locally. Authority will reconcile when the API is available.');
   } catch {
-    showToast('Import failed', 'That save envelope was unsigned, tampered with, or signed by another browser.');
+    const reason = 'That save was signed by another browser, or its contents were changed after signing.';
+    window.alert(`Import failed\n\n${reason}`);
+    showToast('Import failed', reason);
   }
 }
 
@@ -1009,7 +1287,10 @@ function exposeTestHooks() {
     equip: state.equip,
     activeTab,
     events: state.events.slice(0, 5),
+    viewport: { ...viewTransform },
+    skills: Object.fromEntries(Object.keys(SKILLS).map((id) => [id, skillProgress((state.skills[id] || {}).xp)])),
   });
+  window.validateSaveCode = validateSaveCode;
   window.advanceTime = (ms = 5000) => {
     state = publicState(advanceState({ ...state, lastTickAt: state.lastTickAt - ms }, Date.now()));
     render();

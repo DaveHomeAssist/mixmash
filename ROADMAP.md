@@ -2,6 +2,8 @@
 
 Updated 2026-07-06. Scope: the MIXMASH fighter at `/play/`. Studio hub pages and the other games in this repo are tracked separately unless a roadmap item explicitly names them.
 
+Cross-catalog UX/mobile/performance polish for every game — including `/play/` tickets MM-101 through MM-105 — is tracked separately in [`docs/SPRINT_BOARDS.md`](docs/SPRINT_BOARDS.md).
+
 ## Current Baseline
 
 - Browser platform fighter with 14 fighters, 11 stages, stock, time, training, Platform Rush, keyboard, gamepad, CPU, pause, fullscreen, DOM command menu, options/config persistence, local progression, and shareable URL presets.

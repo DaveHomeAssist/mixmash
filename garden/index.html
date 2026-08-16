@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Garden OS: Story Mode — MixMash Studio</title>
 <meta name="description" content="A 3D open-world garden adventure by MixMash Studio. Plays free in your browser.">
+<link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,22 +15,11 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
   width: 100%; height: 100%;
   border: 0; display: block;
 }
-.back-pill {
-  position: fixed; top: 14px; left: 14px; z-index: 10;
-  font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
-  text-transform: uppercase; text-decoration: none;
-  color: #F0F0F8; background: rgba(6,6,14,0.72);
-  border: 1px solid rgba(255,255,255,0.14);
-  padding: 7px 14px; border-radius: 999px;
-  backdrop-filter: blur(8px);
-  opacity: 0.85; transition: opacity 0.9s;
-}
-.back-pill:hover { opacity: 1 !important; }
-body.idle .back-pill { opacity: 0.12; }
 </style>
+<script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
-<a class="back-pill" href="../">&#8592; mixmash.games</a>
+<script src="../src/kit/nav.js"></script>
 <iframe id="game-frame"
   src="https://davehomeassist.github.io/garden-os/story-mode/"
   title="Garden OS: Story Mode"
@@ -39,14 +29,7 @@ body.idle .back-pill { opacity: 0.12; }
 const frame = document.getElementById('game-frame');
 window.addEventListener('load', () => { try { frame.contentWindow.focus(); } catch(e) {} });
 window.addEventListener('mousedown', () => { try { frame.contentWindow.focus(); } catch(e) {} });
-let idleTimer;
-function wake() {
-  document.body.classList.remove('idle');
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => document.body.classList.add('idle'), 2500);
-}
-['mousemove','touchstart','keydown'].forEach(ev => window.addEventListener(ev, wake, { passive: true }));
-wake();
+// The shared nav (src/kit/nav.js) owns the idle-dim behaviour the old back pill had.
 </script>
 </body>
 </html>

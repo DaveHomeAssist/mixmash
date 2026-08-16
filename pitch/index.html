@@ -6,6 +6,7 @@
 <title>PITCH RIOT — MixMash Studio</title>
 <meta name="description" content="PITCH RIOT is a fast, arcade street-soccer game you play in your browser. Dribble, sprint, and smash goals past the CPU — then cover the pitch for the halftime show to earn a hyped second half. Keyboard or touch, no installs." />
 <link rel="canonical" href="https://mixmash.games/pitch" />
+<link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
 <meta name="theme-color" content="#06060E" />
 <meta property="og:type" content="website" />
@@ -66,19 +67,6 @@ html, body {
   touch-action: none;
 }
 
-/* ===== back pill ===== */
-.back-pill {
-  position: fixed; top: 14px; left: 14px; z-index: 30;
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
-  text-transform: uppercase; text-decoration: none;
-  color: var(--text-primary); background: rgba(6,6,14,0.72);
-  border: 1px solid var(--glass-border);
-  padding: 7px 14px; border-radius: 999px;
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  opacity: 0.85; transition: opacity 0.2s;
-}
-.back-pill:hover { opacity: 1; }
-
 /* ===== overlays ===== */
 .overlay {
   position: fixed; inset: 0; z-index: 20;
@@ -137,6 +125,31 @@ html, body {
   box-shadow: 0 4px 22px -8px var(--card-glow, var(--uv-violet));
 }
 
+/* PR-102: master volume + mute on the pre-match screen. */
+.vol-row { display: flex; align-items: center; gap: 10px; }
+.vol-mute {
+  flex: none; width: 44px; height: 44px; border-radius: 12px; cursor: pointer;
+  display: grid; place-items: center; font-size: 1.1rem; line-height: 1;
+  color: var(--text-primary);
+  background: var(--surface); border: 1px solid var(--glass-border);
+  transition: border-color 0.15s, background 0.15s;
+}
+.vol-mute:hover { border-color: var(--surface-light); }
+.vol-mute[aria-pressed="true"] {
+  color: var(--text-secondary);
+  border-color: var(--card-glow, var(--uv-violet));
+}
+.vol-slider {
+  flex: 1 1 auto; min-width: 0; height: 44px;
+  accent-color: var(--strobe-yellow, #FFE23D);
+  cursor: pointer;
+}
+.vol-readout {
+  flex: none; min-width: 3.2rem; text-align: right;
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   padding: 15px 34px; border-radius: 999px; cursor: pointer;
@@ -184,11 +197,28 @@ html, body {
 .overlay-actions { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 
 /* ===== touch controls ===== */
-#touch { position: fixed; inset: 0; z-index: 15; pointer-events: none; display: none; }
+/* PR-101: the pad is laid out against the safe area and sized from viewport
+   height, so the stick and the Sprint/Shoot cluster stay in the bottom band and
+   never ride up into the canvas scoreboard in portrait or landscape. */
+#touch {
+  --pad-inset-b: calc(18px + env(safe-area-inset-bottom, 0px));
+  --pad-inset-r: calc(18px + env(safe-area-inset-right, 0px));
+  --pad-inset-l: calc(18px + env(safe-area-inset-left, 0px));
+  --shoot-size: clamp(64px, 13vh, 96px);
+  --sprint-size: clamp(52px, 10vh, 76px);
+  position: fixed; inset: 0; z-index: 15; pointer-events: none; display: none;
+  touch-action: none;
+}
 #touch.on { display: block; }
 #stick-zone {
-  position: absolute; left: 0; bottom: 0; width: 45%; height: 55%;
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 45%;
+  /* Capped so a touch near the top of the zone cannot float the 128px stick
+     base up over the scoreboard on short landscape viewports. */
+  height: min(45%, 240px);
   pointer-events: auto;
+  touch-action: none;
 }
 #stick-base, #stick-knob {
   position: absolute; border-radius: 50%; pointer-events: none;
@@ -214,17 +244,39 @@ html, body {
   color: #fff; letter-spacing: 0.04em;
   border: 1px solid rgba(255,255,255,0.16);
   -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
 }
 .tbtn:active { transform: scale(0.92); }
 #btn-shoot {
-  right: 26px; bottom: 118px; width: 96px; height: 96px; font-size: 0.9rem;
+  right: var(--pad-inset-r);
+  bottom: var(--pad-inset-b);
+  width: var(--shoot-size); height: var(--shoot-size);
+  font-size: clamp(0.7rem, 2.4vh, 0.9rem);
   background: radial-gradient(circle at 40% 35%, rgba(255,45,107,0.95), rgba(180,41,249,0.85));
   box-shadow: 0 0 30px rgba(255,45,107,0.5);
 }
 #btn-sprint {
-  right: 132px; bottom: 40px; width: 76px; height: 76px; font-size: 0.72rem;
+  right: calc(var(--pad-inset-r) + var(--shoot-size) + 14px);
+  bottom: var(--pad-inset-b);
+  width: var(--sprint-size); height: var(--sprint-size);
+  font-size: clamp(0.6rem, 2vh, 0.72rem);
   background: radial-gradient(circle at 40% 35%, rgba(0,240,255,0.9), rgba(57,255,142,0.8));
   box-shadow: 0 0 26px rgba(0,240,255,0.45);
+}
+
+/* Short landscape viewports: shrink the cluster and hug the bottom rail so the
+   buttons never reach the scoreboard band at the top of the canvas. */
+@media (orientation: landscape) and (max-height: 480px) {
+  #touch {
+    --pad-inset-b: calc(10px + env(safe-area-inset-bottom, 0px));
+    --shoot-size: 64px;
+    --sprint-size: 52px;
+  }
+  #stick-zone { height: min(60%, 170px); width: 38%; }
+  #stick-base { width: 96px; height: 96px; margin: -48px 0 0 -48px; }
+  #stick-knob { width: 46px; height: 46px; margin: -23px 0 0 -23px; }
 }
 
 /* ===== pause button (always available in-match) ===== */
@@ -245,10 +297,11 @@ html, body {
   .controls-hint { display: none; }
 }
 </style>
+<script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
 
-<a class="back-pill" href="../">&larr; MixMash Studio</a>
+<script src="../src/kit/nav.js"></script>
 <div id="pause-pill" hidden>&#10073;&#10073; Pause</div>
 
 <div id="stage">
@@ -286,6 +339,15 @@ html, body {
         <button data-time="60">1 Min</button>
         <button data-time="120" aria-pressed="true">2 Min</button>
         <button data-time="180">3 Min</button>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">Audio</div>
+      <div class="vol-row">
+        <button id="mute-btn" class="vol-mute" type="button" aria-pressed="false" aria-label="Mute audio">&#128266;</button>
+        <input id="vol-slider" class="vol-slider" type="range" min="0" max="100" step="1" value="70"
+          aria-label="Master volume">
+        <span id="vol-readout" class="vol-readout">70%</span>
       </div>
     </div>
     <button class="btn" id="kickoff-btn">&#9654; Kick Off</button>
@@ -383,6 +445,7 @@ html, body {
   const LANES = 6;                 // halftime show: cover lanes (mini FIFA Pitch Crew)
   const SPRINKLER_R = 13;
   const HT_SECONDS = 26;
+  const HT_GUIDE_SECONDS = 3;      // PR-103: animated "how the show works" diagram
   const COVER_RATE = 0.0062;       // lane coverage per frame while standing in it
 
   const game = {
@@ -405,6 +468,7 @@ html, body {
     // halftime show
     htClock: 0,        // seconds left in the halftime show (float)
     htIntro: 0,        // frames of "HALFTIME!" intro text
+    htGuide: 0,        // seconds left on the pre-show mechanics diagram
     lanes: [],         // per-lane cloth coverage 0..1
     sprinklers: [],
     hype: 0,           // seconds of second-half boost earned by the show
@@ -451,6 +515,82 @@ html, body {
     keys.clear();
     if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
   });
+
+  // ---------------------------------------------------------------------------
+  // PR-102: audio. A tiny WebAudio SFX layer so the master volume control on the
+  // pre-match screen governs something real. The context is created lazily on the
+  // first user gesture, which is what browser autoplay policy requires anyway.
+  // ---------------------------------------------------------------------------
+  const AUDIO_KEY = "pitchriot.audio.v1";
+  const audio = { ctx: null, gain: null, volume: 0.7, muted: false };
+
+  function loadAudioPrefs() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(AUDIO_KEY) || "null");
+      if (saved && typeof saved === "object") {
+        if (Number.isFinite(saved.volume)) audio.volume = Math.max(0, Math.min(1, saved.volume));
+        audio.muted = !!saved.muted;
+      }
+    } catch { /* corrupt prefs fall back to defaults */ }
+  }
+
+  function saveAudioPrefs() {
+    try {
+      localStorage.setItem(AUDIO_KEY, JSON.stringify({ volume: audio.volume, muted: audio.muted }));
+    } catch { /* private mode: prefs just don't persist */ }
+  }
+
+  function effectiveVolume() {
+    return audio.muted ? 0 : audio.volume;
+  }
+
+  function ensureAudio() {
+    if (audio.ctx) {
+      if (audio.ctx.state === "suspended") audio.ctx.resume().catch(() => {});
+      return audio.ctx;
+    }
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    audio.ctx = new Ctor();
+    audio.gain = audio.ctx.createGain();
+    audio.gain.gain.value = effectiveVolume();
+    audio.gain.connect(audio.ctx.destination);
+    return audio.ctx;
+  }
+
+  function applyVolume() {
+    if (audio.gain && audio.ctx) {
+      audio.gain.gain.setTargetAtTime(effectiveVolume(), audio.ctx.currentTime, 0.02);
+    }
+  }
+
+  // type -> [waveform, startHz, endHz, seconds, peak]
+  const SFX = {
+    kick:     ["square",   420, 160, 0.09, 0.22],
+    tackle:   ["sawtooth", 200,  70, 0.12, 0.18],
+    goal:     ["sawtooth", 300, 720, 0.42, 0.30],
+    conceded: ["triangle", 320, 110, 0.40, 0.24],
+    whistle:  ["sine",    1750, 1980, 0.30, 0.16],
+    cover:    ["triangle", 620, 880, 0.07, 0.14],
+  };
+
+  function sfx(type) {
+    const spec = SFX[type];
+    if (!spec || effectiveVolume() <= 0) return;
+    const ctx = ensureAudio();
+    if (!ctx || !audio.gain) return;
+    const [wave, from, to, seconds, peak] = spec;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const env = ctx.createGain();
+    osc.type = wave;
+    osc.frequency.setValueAtTime(from, t);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(1, to), t + seconds);
+    env.gain.setValueAtTime(peak, t);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + seconds);
+    osc.connect(env); env.connect(audio.gain);
+    osc.start(t); osc.stop(t + seconds + 0.02);
+  }
 
   // Touch input
   const touch = { active: false, mag: 0, dx: 0, dy: 0, shoot: false, sprint: false };
@@ -509,13 +649,64 @@ html, body {
     bindBtn("btn-sprint", "sprint");
   }
 
+  // ---------------------------------------------------------------------------
+  // PR-105: standard gamepad mapping — A shoots, RT (or B) sprints, left stick
+  // and D-pad move, Start pauses. Indices follow the W3C "standard" mapping.
+  // ---------------------------------------------------------------------------
+  const PAD_DEADZONE = 0.28;
+  const pad = { move: { x: 0, y: 0 }, shoot: false, sprint: false, start: false };
+  let padStartWasDown = false;
+
+  function firstGamepad() {
+    let pads = [];
+    try { pads = navigator.getGamepads ? navigator.getGamepads() : []; } catch { return null; }
+    for (const candidate of pads || []) if (candidate && candidate.connected) return candidate;
+    return null;
+  }
+
+  function pressed(gp, index) {
+    const button = gp.buttons && gp.buttons[index];
+    if (!button) return false;
+    return typeof button === "object" ? (button.pressed || button.value > 0.5) : button > 0.5;
+  }
+
+  function pollGamepad() {
+    pad.move.x = 0; pad.move.y = 0;
+    pad.shoot = false; pad.sprint = false; pad.start = false;
+
+    const gp = firstGamepad();
+    if (!gp) { padStartWasDown = false; return; }
+
+    const ax = gp.axes && gp.axes.length > 0 ? gp.axes[0] : 0;
+    const ay = gp.axes && gp.axes.length > 1 ? gp.axes[1] : 0;
+    if (Math.abs(ax) > PAD_DEADZONE) pad.move.x = ax;
+    if (Math.abs(ay) > PAD_DEADZONE) pad.move.y = ay;
+    if (pressed(gp, 14)) pad.move.x = -1;   // dpad left
+    if (pressed(gp, 15)) pad.move.x = 1;    // dpad right
+    if (pressed(gp, 12)) pad.move.y = -1;   // dpad up
+    if (pressed(gp, 13)) pad.move.y = 1;    // dpad down
+
+    pad.shoot = pressed(gp, 0);                        // A
+    pad.sprint = pressed(gp, 7) || pressed(gp, 1);     // RT, or B as a fallback
+    pad.start = pressed(gp, 9);                        // Start
+
+    // Start is edge-triggered: it toggles pause/menu rather than repeating.
+    if (pad.start && !padStartWasDown) {
+      if (game.state === STATE.PLAY || game.state === STATE.HALFTIME) pauseGame();
+      else if (game.state === STATE.PAUSE) resumeGame();
+      else if (game.state === STATE.MENU || game.state === STATE.RESULT) startMatch();
+    }
+    padStartWasDown = pad.start;
+  }
+
   function pollInput() {
-    input.up = keys.has("ArrowUp") || keys.has("KeyW");
-    input.down = keys.has("ArrowDown") || keys.has("KeyS");
-    input.left = keys.has("ArrowLeft") || keys.has("KeyA");
-    input.right = keys.has("ArrowRight") || keys.has("KeyD");
-    input.sprint = keys.has("ShiftLeft") || keys.has("ShiftRight") || touch.sprint;
-    input.shoot = keys.has("Space") || keys.has("KeyJ") || keys.has("KeyK") || touch.shoot;
+    pollGamepad();
+    input.up = keys.has("ArrowUp") || keys.has("KeyW") || pad.move.y < -PAD_DEADZONE;
+    input.down = keys.has("ArrowDown") || keys.has("KeyS") || pad.move.y > PAD_DEADZONE;
+    input.left = keys.has("ArrowLeft") || keys.has("KeyA") || pad.move.x < -PAD_DEADZONE;
+    input.right = keys.has("ArrowRight") || keys.has("KeyD") || pad.move.x > PAD_DEADZONE;
+    input.sprint = keys.has("ShiftLeft") || keys.has("ShiftRight") || touch.sprint || pad.sprint;
+    input.shoot = keys.has("Space") || keys.has("KeyJ") || keys.has("KeyK") || touch.shoot || pad.shoot;
   }
 
   // ---------------------------------------------------------------------------
@@ -549,9 +740,12 @@ html, body {
     game.half = 1; game.hype = 0;
     game.shake = 0; game.flash = 0; game.goalTimer = 0;
     resetPositions(1);
+    game.htGuide = 0;
     game.state = STATE.PLAY;
     hideAllOverlays();
     document.getElementById("pause-pill").hidden = false;
+    ensureAudio();   // the Kick Off click is the gesture that unlocks audio
+    sfx("whistle");
   }
 
   function pauseGame() {
@@ -582,8 +776,8 @@ html, body {
   }
 
   function scoreGoal(scorer) {
-    if (scorer === "home") { game.homeScore++; game.flashColor = "#39FF8E"; showBanner("GOAL!", "#39FF8E", -1); }
-    else { game.awayScore++; game.flashColor = "#FF2D6B"; showBanner("CONCEDED", "#FF2D6B", 1); }
+    if (scorer === "home") { game.homeScore++; game.flashColor = "#39FF8E"; showBanner("GOAL!", "#39FF8E", -1); sfx("goal"); }
+    else { game.awayScore++; game.flashColor = "#FF2D6B"; showBanner("CONCEDED", "#FF2D6B", 1); sfx("conceded"); }
     game.flash = 1;
     game.shake = 16;
   }
@@ -592,7 +786,9 @@ html, body {
   function startHalftime() {
     game.state = STATE.HALFTIME;
     game.htClock = HT_SECONDS;
-    game.htIntro = 110;
+    game.htIntro = 60;   // shortened: the guide now carries the explanation
+    game.htGuide = HT_GUIDE_SECONDS;
+    sfx("whistle");
     game.lanes = new Array(LANES).fill(0);
     game.sprinklers = [];
     const n = 2 + game.diff; // 2 / 3 / 4 by difficulty
@@ -622,6 +818,7 @@ html, body {
 
   function endMatch() {
     game.state = STATE.RESULT;
+    sfx("whistle");
     document.getElementById("pause-pill").hidden = true;
     const r = document.getElementById("result");
     const line = document.getElementById("result-line");
@@ -716,6 +913,7 @@ html, body {
       const hypeMult = game.hype > 0 ? 1.15 : 1;
       ball.vx = aimX / al * SHOOT_POWER * hypeMult;
       ball.vy = aimY / al * SHOOT_POWER * hypeMult;
+      sfx("kick");
     }
   }
 
@@ -884,6 +1082,16 @@ html, body {
       }
     } else if (game.state === STATE.HALFTIME) {
       pollInput();
+
+      // PR-103: hold the whole show — clock, sprinklers, coverage — while the
+      // mechanics diagram plays, so the guide never costs the player any time.
+      if (game.htGuide > 0) {
+        game.htGuide = Math.max(0, game.htGuide - dt);
+        if (game.shake > 0) game.shake *= 0.86;
+        if (game.flash > 0) game.flash -= 0.03;
+        return;
+      }
+
       stepPlayerMovement();
 
       // sprinklers roam and knock the crew back
@@ -900,6 +1108,7 @@ html, body {
           player.stun = 48; // ~0.8s soaked
           player.vx = nx * 7; player.vy = ny * 7;
           game.shake = 8;
+          sfx("tackle");
         }
       }
 
@@ -907,7 +1116,9 @@ html, body {
       if (player.stun <= 0) {
         const laneW = (W - WALL * 2) / LANES;
         const li = clamp(Math.floor((player.x - WALL) / laneW), 0, LANES - 1);
-        game.lanes[li] = Math.min(1, game.lanes[li] + COVER_RATE);
+        const before = game.lanes[li];
+        game.lanes[li] = Math.min(1, before + COVER_RATE);
+        if (before < 1 && game.lanes[li] >= 1) sfx("cover");
       }
 
       if (game.htIntro > 0) game.htIntro--;
@@ -947,6 +1158,9 @@ html, body {
     ctx.restore();
 
     drawHUD();
+
+    // PR-103: the guide sits above the HUD so nothing shows through it.
+    if (inHalftime && game.htGuide > 0) drawHalftimeGuide();
 
     if (game.flash > 0) {
       ctx.save();
@@ -1093,6 +1307,98 @@ html, body {
       ctx.arc(ball.x + Math.cos(a) * BALL_R * 0.5, ball.y + Math.sin(a) * BALL_R * 0.5, 1.6, 0, Math.PI * 2);
       ctx.fill();
     }
+  }
+
+  // PR-103: a 3-second animated diagram of the cover/hype loop, shown once at the
+  // top of the show. It loops a demo crew across six mini-lanes, dodging a
+  // sprinkler, while the hype bar below fills in step with the coverage.
+  function drawHalftimeGuide() {
+    const t = 1 - game.htGuide / HT_GUIDE_SECONDS;    // 0 -> 1 over the 3 seconds
+    const fade = Math.min(1, game.htGuide / 0.35) * Math.min(1, t / 0.12 + 0.001);
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, fade));
+    ctx.fillStyle = "rgba(6,6,14,0.86)";
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = "900 34px 'Anybody', sans-serif";
+    ctx.fillStyle = "#FFE23D";
+    ctx.fillText("HALFTIME SHOW", W / 2, 96);
+
+    ctx.font = "700 14px 'Space Mono', monospace";
+    ctx.fillStyle = "rgba(240,240,248,0.8)";
+    ctx.fillText("Walk a lane to roll the cloth · dodge the sprinklers", W / 2, 128);
+
+    // --- mini pitch with six lanes ---
+    const dw = 460, dh = 150, dx = (W - dw) / 2, dy = 168;
+    const laneW = dw / LANES;
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(dx, dy, dw, dh);
+
+    // demo crew sweeps left to right, covering lanes behind it
+    const sweep = Math.min(1, t / 0.78);
+    const crewX = dx + sweep * dw;
+    for (let i = 0; i < LANES; i++) {
+      const laneStart = i / LANES;
+      const laneEnd = (i + 1) / LANES;
+      const cov = Math.max(0, Math.min(1, (sweep - laneStart) / (laneEnd - laneStart)));
+      if (cov <= 0) continue;
+      const g = ctx.createLinearGradient(0, dy, 0, dy + dh);
+      g.addColorStop(0, "rgba(255,46,136,0.8)");
+      g.addColorStop(1, "rgba(180,41,249,0.7)");
+      ctx.fillStyle = g;
+      ctx.fillRect(dx + i * laneW + 2, dy, laneW - 4, dh * cov);
+      ctx.fillStyle = "rgba(240,240,248,0.85)";
+      if (cov < 1) ctx.fillRect(dx + i * laneW + 2, dy + dh * cov - 2, laneW - 4, 4);
+    }
+
+    // lane separators
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 1;
+    for (let i = 1; i < LANES; i++) {
+      ctx.beginPath();
+      ctx.moveTo(dx + i * laneW, dy);
+      ctx.lineTo(dx + i * laneW, dy + dh);
+      ctx.stroke();
+    }
+
+    // roaming sprinkler with its spray ring
+    const sx = dx + dw * (0.5 + 0.34 * Math.sin(t * Math.PI * 2.4));
+    const sy = dy + dh * 0.36;
+    ctx.beginPath();
+    ctx.arc(sx, sy, 13 + Math.sin(t * 26) * 3, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(57,213,255,0.5)"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(sx, sy, 8, 0, Math.PI * 2);
+    ctx.fillStyle = "#39d5ff"; ctx.fill();
+
+    // demo crew marker
+    ctx.beginPath();
+    ctx.arc(Math.min(crewX, dx + dw - 8), dy + dh - 22, 9, 0, Math.PI * 2);
+    ctx.fillStyle = "#00F0FF";
+    ctx.shadowColor = "rgba(0,240,255,0.7)"; ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // --- hype payoff bar ---
+    const hw = dw, hx = dx, hy = dy + dh + 34, hh = 14;
+    roundRect(hx, hy, hw, hh, 7);
+    ctx.fillStyle = "rgba(255,255,255,0.12)"; ctx.fill();
+    roundRect(hx, hy, hw * sweep, hh, 7);
+    ctx.fillStyle = sweep >= 1 ? "#39FF8E" : "#FFE23D"; ctx.fill();
+
+    ctx.font = "700 12px 'Space Mono', monospace";
+    ctx.fillStyle = "rgba(240,240,248,0.72)";
+    ctx.fillText("MORE LANES COVERED  =  MORE CROWD HYPE  =  FASTER, HARDER 2ND HALF", W / 2, hy + hh + 20);
+
+    // countdown to the live show
+    ctx.font = "900 20px 'Anybody', sans-serif";
+    ctx.fillStyle = "#F0F0F8";
+    ctx.fillText(`SHOW STARTS IN ${Math.max(1, Math.ceil(game.htGuide))}`, W / 2, H - 46);
+
+    ctx.restore();
   }
 
   function drawHalftime() {
@@ -1303,6 +1609,40 @@ html, body {
   wireSeg("seg-diff", (b) => { game.diff = parseInt(b.dataset.diff, 10); });
   wireSeg("seg-time", (b) => { game.matchTime = parseInt(b.dataset.time, 10); });
 
+  // PR-102: master volume + mute, persisted across sessions.
+  const volSlider = document.getElementById("vol-slider");
+  const volReadout = document.getElementById("vol-readout");
+  const muteBtn = document.getElementById("mute-btn");
+
+  function syncAudioUi() {
+    const pct = Math.round(audio.volume * 100);
+    volSlider.value = String(pct);
+    volReadout.textContent = audio.muted ? "Muted" : `${pct}%`;
+    muteBtn.setAttribute("aria-pressed", String(audio.muted));
+    muteBtn.textContent = audio.muted || audio.volume === 0 ? "\u{1F507}" : "\u{1F50A}";
+    muteBtn.setAttribute("aria-label", audio.muted ? "Unmute audio" : "Mute audio");
+  }
+
+  loadAudioPrefs();
+  syncAudioUi();
+
+  volSlider.addEventListener("input", () => {
+    audio.volume = Math.max(0, Math.min(1, Number(volSlider.value) / 100));
+    if (audio.volume > 0) audio.muted = false;
+    applyVolume();
+    syncAudioUi();
+    saveAudioPrefs();
+  });
+  // Release, not every input tick — one preview blip per adjustment.
+  volSlider.addEventListener("change", () => { ensureAudio(); sfx("cover"); });
+  muteBtn.addEventListener("click", () => {
+    audio.muted = !audio.muted;
+    applyVolume();
+    syncAudioUi();
+    saveAudioPrefs();
+    if (!audio.muted) { ensureAudio(); sfx("cover"); }
+  });
+
   document.getElementById("kickoff-btn").addEventListener("click", startMatch);
   document.getElementById("rematch-btn").addEventListener("click", startMatch);
   document.getElementById("menu-btn").addEventListener("click", quitToMenu);
@@ -1321,7 +1661,10 @@ html, body {
 
   // Optional debug hook for automated smoke tests (?debug in the URL).
   if (location.search.indexOf("debug") !== -1) {
-    window.__pitch = { game, ball, player, cpu, scoreGoal, startMatch, startHalftime, endHalftime, STATE };
+    window.__pitch = {
+      game, ball, player, cpu, scoreGoal, startMatch, startHalftime, endHalftime, STATE,
+      audio, pad, sfx, HT_GUIDE_SECONDS,
+    };
   }
 })();
 </script>

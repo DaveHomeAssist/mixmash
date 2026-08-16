@@ -28,6 +28,7 @@
   })();
 </script>
 <meta name="description" content="MIXMASH: the browser platform fighter. 14 fighters, 11 arenas, local versus, solo Platform Rush, CPU battles, keyboard, and gamepad support.">
+<link rel="manifest" href="/manifest.webmanifest">
 <link rel="canonical" href="https://mixmash.games/play/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MixMash Studio">
@@ -321,6 +322,190 @@
     font-size: 12px;
   }
   .menu-status:empty { display: none; }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .menu-status.is-success {
+    color: #071a10;
+    background: #39ff8e;
+    border-color: #39ff8e;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  /* MM-105: encyclopedia quick filter */
+  .mechanics-filter {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--mix-text);
+    background: var(--mix-panel-strong);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--mix-radius);
+  }
+  .mechanic-tile[hidden] { display: none; }
+  .mechanics-empty {
+    font-size: 12px;
+    color: var(--mix-dim);
+  }
+  .mechanics-empty[hidden] { display: none; }
+
+  /* MM-101: transient HUD toasts (gamepad connect, copy confirmations) */
+  .hud-toasts {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .hud-toast {
+    padding: 9px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    color: var(--mix-text);
+    background: rgba(7, 7, 17, 0.9);
+    border: 1px solid var(--mix-border);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+    animation: hud-toast-in 0.22s ease-out;
+  }
+  .hud-toast.is-success {
+    color: #071a10;
+    background: #39ff8e;
+    border-color: #39ff8e;
+    font-weight: 700;
+  }
+  .hud-toast.is-leaving { animation: hud-toast-out 0.3s ease-in forwards; }
+  @keyframes hud-toast-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hud-toast-out {
+    to { opacity: 0; transform: translateY(-10px); }
+  }
+
+  /* MM-104: audio unlock prompt when the WebAudio context is suspended */
+  .audio-prompt {
+    position: fixed;
+    left: 50%;
+    bottom: 74px;
+    z-index: 22;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #071a10;
+    background: var(--mix-orange);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(255, 122, 24, 0.4);
+  }
+  .audio-prompt.is-visible {
+    display: flex;
+    animation: audio-prompt-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes audio-prompt-pulse {
+    0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 6px 24px rgba(255, 122, 24, 0.4); }
+    50% { transform: translateX(-50%) scale(1.06); box-shadow: 0 8px 32px rgba(255, 122, 24, 0.65); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .audio-prompt.is-visible { animation: none; }
+    .hud-toast, .hud-toast.is-leaving { animation: none; }
+  }
+
+  /* MM-103: touch virtual pad for mobile/tablet viewports */
+  .touch-pad {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 18;
+    display: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    pointer-events: none;
+    touch-action: none;
+  }
+  .touch-pad.is-visible { display: flex; }
+  .touch-cluster {
+    display: grid;
+    gap: 6px;
+    pointer-events: auto;
+  }
+  .touch-dpad {
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(3, 54px);
+  }
+  .touch-buttons {
+    grid-template-columns: repeat(2, 62px);
+    grid-template-rows: repeat(2, 62px);
+  }
+  .touch-btn {
+    display: grid;
+    place-items: center;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mix-text);
+    background: rgba(18, 19, 38, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+  }
+  .touch-btn.is-pressed {
+    background: rgba(255, 122, 24, 0.75);
+    border-color: var(--mix-orange);
+    color: #071a10;
+  }
+  .touch-btn--round { border-radius: 50%; }
+  .touch-btn[data-touch-action="left"] { grid-area: 2 / 1; }
+  .touch-btn[data-touch-action="right"] { grid-area: 2 / 3; }
+  .touch-btn[data-touch-action="up"] { grid-area: 1 / 2; }
+  .touch-btn[data-touch-action="down"] { grid-area: 3 / 2; }
+  .touch-btn[data-touch-action="attack"] { grid-area: 2 / 1; }
+  .touch-btn[data-touch-action="special"] { grid-area: 2 / 2; }
+  .touch-btn[data-touch-action="shield"] { grid-area: 1 / 2; }
+  .touch-menu-btn {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 19;
+    display: none;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mix-text);
+    background: rgba(18, 19, 38, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+  }
+  .touch-menu-btn.is-visible { display: block; }
+
   .menu-overlay :focus-visible {
     outline: 3px solid var(--mix-focus);
     outline-offset: 2px;
@@ -339,6 +524,7 @@
     .control-table td:nth-child(3) { display: none; }
   }
 </style>
+<script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -374,12 +560,16 @@
           </div>
           <div class="menu-card">
             <h2>Mechanics Encyclopedia</h2>
-            <div class="mechanics-grid" aria-label="Mechanics index">
-              <div class="mechanic-tile"><h3>Movement</h3><p>Walk, short hop, double jump, air drift, and platform drop.</p></div>
-              <div class="mechanic-tile"><h3>Defense</h3><p>Shield, dodge, DI, invincibility, and recovery routes.</p></div>
-              <div class="mechanic-tile"><h3>Offense</h3><p>Neutral, tilt, aerial, special, grab, throw, clang, and armor windows.</p></div>
-              <div class="mechanic-tile"><h3>Stages</h3><p>11 arenas with readable hazards, passthrough platforms, and theme-based music cues.</p></div>
+            <label class="sr-only" for="mechanics-filter">Filter mechanics</label>
+            <input id="mechanics-filter" class="mechanics-filter" type="search" autocomplete="off"
+              placeholder="Filter terms — try DI, shield, armor…" aria-controls="mechanics-grid">
+            <div id="mechanics-grid" class="mechanics-grid" aria-label="Mechanics index">
+              <div class="mechanic-tile" data-terms="movement walk short hop double jump air drift platform drop fastfall"><h3>Movement</h3><p>Walk, short hop, double jump, air drift, and platform drop.</p></div>
+              <div class="mechanic-tile" data-terms="defense shield dodge roll DI directional influence invincibility intangible recovery ledge"><h3>Defense</h3><p>Shield, dodge, DI, invincibility, and recovery routes.</p></div>
+              <div class="mechanic-tile" data-terms="offense attack neutral tilt aerial special grab throw clang armor super armor priority"><h3>Offense</h3><p>Neutral, tilt, aerial, special, grab, throw, clang, and armor windows.</p></div>
+              <div class="mechanic-tile" data-terms="stages arenas hazards passthrough platforms music cues blast zone"><h3>Stages</h3><p>11 arenas with readable hazards, passthrough platforms, and theme-based music cues.</p></div>
             </div>
+            <p id="mechanics-empty" class="mechanics-empty" role="status" hidden>No mechanics match that filter.</p>
           </div>
         </div>
       </section>
@@ -435,6 +625,23 @@
   </section>
 </div>
 <div id="menu-status" class="menu-status" role="status" aria-live="polite"></div>
+<div id="hud-toasts" class="hud-toasts" role="status" aria-live="polite"></div>
+<button id="audio-prompt" class="audio-prompt" type="button" hidden>&#9654; Tap to start audio</button>
+<button id="touch-menu" class="touch-menu-btn" type="button" aria-label="Open command menu">Menu</button>
+<div id="touch-pad" class="touch-pad" aria-label="Touch controls">
+  <div class="touch-cluster touch-dpad">
+    <button class="touch-btn" type="button" data-touch-action="up" aria-label="Jump / up">&#9650;</button>
+    <button class="touch-btn" type="button" data-touch-action="left" aria-label="Left">&#9664;</button>
+    <button class="touch-btn" type="button" data-touch-action="right" aria-label="Right">&#9654;</button>
+    <button class="touch-btn" type="button" data-touch-action="down" aria-label="Down">&#9660;</button>
+  </div>
+  <div class="touch-cluster touch-buttons">
+    <button class="touch-btn touch-btn--round" type="button" data-touch-action="shield" aria-label="Shield">Shld</button>
+    <button class="touch-btn touch-btn--round" type="button" data-touch-action="attack" aria-label="Attack">Atk</button>
+    <button class="touch-btn touch-btn--round" type="button" data-touch-action="special" aria-label="Special">Spc</button>
+  </div>
+</div>
+<script src="../src/kit/nav.js"></script>
 <script src="../src/kit/save.js"></script>
 <script src="./stage-data.js"></script>
 <script src="./fighter-data.js"></script>
@@ -466,6 +673,13 @@ const challengeList = document.getElementById('challenge-list');
 const menuResetProfileBtn = document.getElementById('menu-reset-profile');
 const menuCopyMatchBtn = document.getElementById('menu-copy-match');
 const menuCopyChallengeBtn = document.getElementById('menu-copy-challenge');
+const hudToasts = document.getElementById('hud-toasts');
+const audioPromptBtn = document.getElementById('audio-prompt');
+const touchPad = document.getElementById('touch-pad');
+const touchMenuBtn = document.getElementById('touch-menu');
+const mechanicsFilterInput = document.getElementById('mechanics-filter');
+const mechanicsGrid = document.getElementById('mechanics-grid');
+const mechanicsEmpty = document.getElementById('mechanics-empty');
 
 // --- Constants ---
 const BASE_W = 960;
@@ -1255,11 +1469,18 @@ function buildDailyChallengeUrl() {
 }
 
 function copyShareUrl(url, label) {
-  const done = () => setMenuStatus(`${label} copied`);
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(done).catch(() => setMenuStatus(url));
-  } else {
+  const done = () => {
+    setMenuStatus(`${label} copied`, 'success');
+    pushToast('Copied!', { tone: 'success' });
+  };
+  const failed = () => {
     setMenuStatus(url);
+    pushToast('Copy failed — link shown below', { tone: 'neutral' });
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done).catch(failed);
+  } else {
+    failed();
   }
 }
 
@@ -1380,11 +1601,65 @@ function saveMixmashConfig(statusMessage) {
   if (statusMessage) setMenuStatus(statusMessage);
 }
 
-function setMenuStatus(message) {
+function setMenuStatus(message, tone = 'neutral') {
   if (!menuStatus) return;
   menuStatus.textContent = message || '';
-  if (message) window.setTimeout(() => { if (menuStatus.textContent === message) menuStatus.textContent = ''; }, 1800);
+  menuStatus.classList.toggle('is-success', !!message && tone === 'success');
+  if (message) window.setTimeout(() => {
+    if (menuStatus.textContent === message) {
+      menuStatus.textContent = '';
+      menuStatus.classList.remove('is-success');
+    }
+  }, 1800);
 }
+
+// --- MM-101/MM-102: transient HUD toasts ---
+const TOAST_TTL_MS = 2600;
+const activeToasts = [];
+
+function pushToast(message, { tone = 'neutral', ttl = TOAST_TTL_MS } = {}) {
+  const text = String(message || '').trim();
+  if (!text) return null;
+  const record = { message: text, tone, createdAt: Date.now() };
+  activeToasts.push(record);
+  if (activeToasts.length > 4) activeToasts.shift();
+  if (!hudToasts) return record;
+  const node = document.createElement('div');
+  node.className = tone === 'success' ? 'hud-toast is-success' : 'hud-toast';
+  node.textContent = text;
+  hudToasts.appendChild(node);
+  record.node = node;
+  window.setTimeout(() => {
+    node.classList.add('is-leaving');
+    window.setTimeout(() => {
+      node.remove();
+      const idx = activeToasts.indexOf(record);
+      if (idx >= 0) activeToasts.splice(idx, 1);
+    }, 320);
+  }, ttl);
+  return record;
+}
+
+function listActiveToasts() {
+  const now = Date.now();
+  return activeToasts
+    .filter(toast => now - toast.createdAt <= TOAST_TTL_MS + 400)
+    .map(toast => ({ message: toast.message, tone: toast.tone }));
+}
+
+function gamepadPlayerLabel(index) {
+  return `Player ${Number.isFinite(index) ? index + 1 : 1}`;
+}
+
+window.addEventListener('gamepadconnected', event => {
+  const pad = event && event.gamepad ? event.gamepad : null;
+  pushToast(`Controller Connected: ${gamepadPlayerLabel(pad ? pad.index : 0)}`);
+});
+
+window.addEventListener('gamepaddisconnected', event => {
+  const pad = event && event.gamepad ? event.gamepad : null;
+  pushToast(`Controller Disconnected: ${gamepadPlayerLabel(pad ? pad.index : 0)}`);
+});
 
 applyConfigToRuntime();
 
@@ -1445,6 +1720,74 @@ function mergeInput(a, b) {
     attack: a.attack || b.attack, special: a.special || b.special,
     shield: a.shield || b.shield,
   };
+}
+
+// --- MM-103: touch virtual pad ---
+const TOUCH_ACTIONS = ['left', 'right', 'up', 'down', 'attack', 'special', 'shield'];
+const touchInput = { left: false, right: false, up: false, down: false, attack: false, special: false, shield: false };
+let touchPadVisible = false;
+
+function isTouchViewport() {
+  const coarsePointer = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  const touchCapable = ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
+  return (coarsePointer || touchCapable) && window.innerWidth <= 1024;
+}
+
+function clearTouchInput() {
+  for (const action of TOUCH_ACTIONS) touchInput[action] = false;
+  if (touchPad) {
+    touchPad.querySelectorAll('.touch-btn.is-pressed').forEach(btn => btn.classList.remove('is-pressed'));
+  }
+}
+
+function hasTouchInput() {
+  return TOUCH_ACTIONS.some(action => touchInput[action]);
+}
+
+function setupTouchPad() {
+  if (!touchPad) return;
+  for (const btn of touchPad.querySelectorAll('[data-touch-action]')) {
+    const action = btn.dataset.touchAction;
+    if (!TOUCH_ACTIONS.includes(action)) continue;
+    const press = event => {
+      event.preventDefault();
+      touchInput[action] = true;
+      btn.classList.add('is-pressed');
+      try { btn.setPointerCapture(event.pointerId); } catch {}
+      // A touch is a user gesture: unlock audio the first time the pad is used.
+      initAudio();
+    };
+    const release = event => {
+      if (event) event.preventDefault();
+      touchInput[action] = false;
+      btn.classList.remove('is-pressed');
+    };
+    btn.addEventListener('pointerdown', press);
+    btn.addEventListener('pointerup', release);
+    btn.addEventListener('pointercancel', release);
+    btn.addEventListener('contextmenu', event => event.preventDefault());
+  }
+  if (touchMenuBtn) {
+    touchMenuBtn.addEventListener('click', () => {
+      clearTouchInput();
+      if (domMenuOpen) closeDomMenu(); else openDomMenu('onboarding');
+    });
+  }
+  window.addEventListener('blur', clearTouchInput);
+  updateTouchPadVisibility();
+  window.addEventListener('resize', updateTouchPadVisibility);
+}
+
+function updateTouchPadVisibility() {
+  if (!touchPad) return;
+  const supported = isTouchViewport();
+  const inMatch = state.mode === 'playing' || state.mode === 'training';
+  const shouldShow = supported && inMatch && !domMenuOpen;
+  if (shouldShow === touchPadVisible) return;
+  touchPadVisible = shouldShow;
+  touchPad.classList.toggle('is-visible', shouldShow);
+  if (touchMenuBtn) touchMenuBtn.classList.toggle('is-visible', supported && !domMenuOpen);
+  if (!shouldShow) clearTouchInput();
 }
 
 const CONTROL_ACTIONS = INPUT_DATA.CONTROL_ACTIONS;
@@ -2914,6 +3257,26 @@ function initAudio() {
   if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
   startMusicScheduler();
   syncMusicState(true);
+  updateAudioPrompt();
+}
+
+// --- MM-104: surface a pulsing unlock prompt while the context is blocked ---
+function audioNeedsUnlock() {
+  return !audioCtx || audioCtx.state === 'suspended';
+}
+
+function updateAudioPrompt() {
+  if (!audioPromptBtn) return;
+  const shouldShow = audioNeedsUnlock() && options.volume > 0 && !domMenuOpen;
+  audioPromptBtn.hidden = !shouldShow;
+  audioPromptBtn.classList.toggle('is-visible', shouldShow);
+}
+
+if (audioPromptBtn) {
+  audioPromptBtn.addEventListener('click', () => {
+    initAudio();
+    updateAudioPrompt();
+  });
 }
 
 function playSound(type) {
@@ -3035,6 +3398,8 @@ function getPlayerInput(p) {
   const binds = p.idx === 0 ? getP1Binds() : getP2Binds();
   let input = getInput(binds);
   if (p.gamepadIndex !== null) input = mergeInput(input, getGamepadInput(p.gamepadIndex));
+  // MM-103: the virtual pad drives P1 only, alongside keyboard and gamepad.
+  if (p.idx === 0 && touchPadVisible) input = mergeInput(input, touchInput);
   return input;
 }
 
@@ -8501,6 +8866,9 @@ function gameLoop(timestamp) {
   // Update particles even on results (for confetti)
   if (state.mode === 'results') updateParticles(dt);
 
+  updateTouchPadVisibility();
+  updateAudioPrompt();
+
   render();
   requestAnimationFrame(gameLoop);
 }
@@ -8575,6 +8943,18 @@ window.render_game_to_text = function () {
       musicOn: options.musicOn,
     },
     controlsTester: (state.mode === 'options' || domMenuOpen) ? getControlsTesterState() : undefined,
+    toasts: listActiveToasts(),
+    touchControls: {
+      supported: isTouchViewport(),
+      visible: touchPadVisible,
+      active: TOUCH_ACTIONS.filter(action => touchInput[action]),
+      pressed: hasTouchInput(),
+    },
+    audioPrompt: {
+      needsUnlock: audioNeedsUnlock(),
+      visible: !!(audioPromptBtn && !audioPromptBtn.hidden),
+    },
+    mechanicsFilter: getMechanicsFilterState(),
     domMenu: {
       open: domMenuOpen,
       activeTab: activeMenuTab,
@@ -8657,9 +9037,54 @@ window.render_game_to_text = function () {
   });
 };
 
+// --- MM-105: Mechanics Encyclopedia quick filter ---
+function mechanicTileHaystack(tile) {
+  return `${tile.textContent || ''} ${tile.dataset.terms || ''}`.toLowerCase();
+}
+
+function applyMechanicsFilter(rawQuery) {
+  if (!mechanicsGrid) return { query: '', visible: 0, total: 0 };
+  const query = String(rawQuery || '').trim().toLowerCase();
+  const tiles = Array.from(mechanicsGrid.querySelectorAll('.mechanic-tile'));
+  let visible = 0;
+  for (const tile of tiles) {
+    const match = !query || mechanicTileHaystack(tile).includes(query);
+    tile.hidden = !match;
+    if (match) visible++;
+  }
+  if (mechanicsEmpty) mechanicsEmpty.hidden = visible !== 0;
+  return { query, visible, total: tiles.length };
+}
+
+function setupMechanicsFilter() {
+  if (!mechanicsFilterInput) return;
+  mechanicsFilterInput.addEventListener('input', () => applyMechanicsFilter(mechanicsFilterInput.value));
+  mechanicsFilterInput.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && mechanicsFilterInput.value) {
+      event.stopPropagation();
+      mechanicsFilterInput.value = '';
+      applyMechanicsFilter('');
+    }
+  });
+  applyMechanicsFilter('');
+}
+
+function getMechanicsFilterState() {
+  if (!mechanicsGrid) return null;
+  const tiles = Array.from(mechanicsGrid.querySelectorAll('.mechanic-tile'));
+  return {
+    query: mechanicsFilterInput ? mechanicsFilterInput.value : '',
+    visible: tiles.filter(tile => !tile.hidden).length,
+    total: tiles.length,
+  };
+}
+
 // --- Init ---
 snapshotAvailable = hasActiveMatchSnapshot();
 setupDomMenu();
+setupTouchPad();
+setupMechanicsFilter();
+updateAudioPrompt();
 applySharePresetFromUrl();
 resizeCanvas();
 requestAnimationFrame(gameLoop);
