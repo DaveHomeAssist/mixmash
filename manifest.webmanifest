@@ -1,0 +1,32 @@
+{
+  "name": "MixMash Studio",
+  "short_name": "MixMash",
+  "description": "Free browser games by MixMash Studio: a platform fighter, a Mars colony skiller, a garden adventure, an RTS, and arcade soccer.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#06060E",
+  "theme_color": "#06060E",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/og-card.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    { "name": "MIXMASH", "url": "/play/", "description": "Browser platform fighter" },
+    { "name": "MarsScape", "url": "/mars/", "description": "Mars colony skiller" },
+    { "name": "Pitch Riot", "url": "/pitch/", "description": "Arcade street soccer" }
+  ]
+}

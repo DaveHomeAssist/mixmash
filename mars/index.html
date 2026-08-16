@@ -17,12 +17,14 @@
   <meta name="twitter:title" content="MarsScape" />
   <meta name="twitter:description" content="Gather, craft, build, and survive on the red planet." />
   <meta name="twitter:image" content="https://systembydave.com/png/sbd_logo_rust_dark.png" />
+  <link rel="manifest" href="/manifest.webmanifest">
   <title>MarsScape</title>
   <link rel="preload" href="./assets/manifest.json" as="fetch" type="application/json" crossorigin="anonymous" />
   <link rel="preload" href="./assets/mars-terrain.svg" as="image" type="image/svg+xml" />
   <link rel="preload" href="./assets/settlement-atlas.svg" as="image" type="image/svg+xml" />
   <link rel="modulepreload" href="./engine.mjs" />
   <link rel="stylesheet" href="./styles.css" />
+  <script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#colony">Skip to colony interface</a>
@@ -80,8 +82,9 @@
           <div class="action-readout" id="actionReadout" role="status">Ready</div>
         </div>
         <div class="iso-viewport" id="isoViewport">
-          <p class="sr-only" id="map-help">Use Tab to reach resource and building controls on the isometric colony map.</p>
+          <p class="sr-only" id="map-help">Use Tab to reach resource and building controls on the isometric colony map. Drag or pinch the map to pan and zoom; double-tap to reset the view.</p>
           <div class="iso-board" id="isoBoard" aria-label="Interactive isometric Mars map" aria-describedby="map-help"></div>
+          <button class="view-reset" id="viewReset" type="button" hidden>Reset view</button>
         </div>
       </section>
 
@@ -113,6 +116,7 @@
   </div>
 
   <div class="toast-stack" id="toastStack" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script src="../src/kit/nav.js"></script>
   <script type="module" src="./game.js"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@
 <link rel="canonical" href="https://mixmash.games/">
 <meta name="google-site-verification" content="PwUDpqqaU3YZsUKNgUq5lGEcCuRFvL149sVLZUbXb8Q" />
 <!-- <meta name="msvalidate.01" content="PASTE_BING_TOKEN_HERE"> -->
+<link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MixMash Studio">
@@ -261,6 +262,108 @@ nav {
     linear-gradient(0deg, transparent 48%, rgba(240,207,102,0.25) 49% 51%, transparent 52%);
 }
 
+/* ===== HUB-103: micro-loop previews on card hover =====
+   Each card's art comes alive only while it is hovered or keyboard-focused, so
+   the grid stays still at rest and never animates five loops at once. Pure CSS,
+   no video payload — and every loop is disabled under reduced-motion. */
+/* MIXMASH — the lasers sweep across the stage. */
+.vis-mixmash .laser { animation: laser-sweep 2.6s ease-in-out infinite alternate; }
+.vis-mixmash .laser:nth-child(2) { animation-duration: 3.4s; animation-delay: -0.7s; }
+.vis-mixmash .laser:nth-child(3) { animation-duration: 2.1s; animation-delay: -1.3s; }
+.vis-mixmash::before { animation: stage-throb 1.6s ease-in-out infinite; }
+@keyframes laser-sweep {
+  from { transform: rotate(-20deg); opacity: 0.28; }
+  to   { transform: rotate(18deg);  opacity: 0.72; }
+}
+@keyframes stage-throb {
+  0%, 100% { opacity: 0.75; }
+  50%      { opacity: 1; }
+}
+
+/* MarsScape — the planet turns slowly under a drifting dust haze. */
+.vis-mars::before { animation: mars-drift 7s ease-in-out infinite alternate; }
+.vis-mars::after  { animation: mars-dust 5s ease-in-out infinite alternate; }
+@keyframes mars-drift {
+  from { transform: translateX(-50%) translateY(0)    scale(1); }
+  to   { transform: translateX(-50%) translateY(-6px) scale(1.06); }
+}
+@keyframes mars-dust {
+  from { opacity: 0.7; transform: translateY(4px); }
+  to   { opacity: 1;   transform: translateY(0); }
+}
+
+/* Garden — the sun pulses and the canopy breathes. */
+.vis-garden::before { animation: garden-sun 3.2s ease-in-out infinite alternate; }
+.vis-garden::after  { animation: garden-grow 4.4s ease-in-out infinite alternate; }
+@keyframes garden-sun {
+  from { transform: scale(1);    opacity: 0.8; }
+  to   { transform: scale(1.14); opacity: 1; }
+}
+@keyframes garden-grow {
+  from { transform: scaleX(0.86) translateY(4px); }
+  to   { transform: scaleX(1.08) translateY(-2px); }
+}
+
+/* Pitch Riot — the ball orbits the centre circle. The negative margin puts the
+   ball's own centre on the circle's centre, so the orbit stays concentric. */
+.vis-pitch .ball {
+  margin: -7.5px 0 0 -7.5px;
+  animation: pitch-ball 3.2s linear infinite;
+}
+@keyframes pitch-ball {
+  from { transform: rotate(0deg)   translateX(30px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(30px) rotate(-360deg); }
+}
+.vis-pitch::after { animation: pitch-ring 2.4s ease-in-out infinite alternate; }
+@keyframes pitch-ring {
+  from { box-shadow: 0 0 0 1px rgba(0,240,255,0.15), inset 0 0 22px rgba(0,240,255,0.12); }
+  to   { box-shadow: 0 0 0 2px rgba(0,240,255,0.4),  inset 0 0 30px rgba(0,240,255,0.3); }
+}
+
+/* Age of Dave — the survey grid scans out from the keep. */
+.vis-empires::after  { animation: empires-scan 3.6s ease-in-out infinite alternate; }
+.vis-empires::before { animation: empires-keep 4.2s ease-in-out infinite alternate; }
+@keyframes empires-scan {
+  from { transform: translateX(-50%) rotate(45deg) scale(0.9);  opacity: 0.55; }
+  to   { transform: translateX(-50%) rotate(45deg) scale(1.08); opacity: 1; }
+}
+@keyframes empires-keep {
+  from { transform: translateX(-50%) rotate(45deg) translateY(0); }
+  to   { transform: translateX(-50%) rotate(45deg) translateY(-5px); }
+}
+
+/* The play-state gate must come AFTER every `animation:` shorthand above — the
+   shorthand resets animation-play-state to `running`, so gating declared
+   earlier at equal specificity would be silently overwritten. */
+.game-card .game-vis > *,
+.game-card .game-vis::before,
+.game-card .game-vis::after {
+  animation-play-state: paused;
+}
+.game-card:hover .game-vis > *,
+.game-card:hover .game-vis::before,
+.game-card:hover .game-vis::after,
+.game-card:focus-within .game-vis > *,
+.game-card:focus-within .game-vis::before,
+.game-card:focus-within .game-vis::after {
+  animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card .game-vis > *,
+  .game-card .game-vis::before,
+  .game-card .game-vis::after,
+  .game-card:hover .game-vis > *,
+  .game-card:hover .game-vis::before,
+  .game-card:hover .game-vis::after,
+  .game-card:focus-within .game-vis > *,
+  .game-card:focus-within .game-vis::before,
+  .game-card:focus-within .game-vis::after {
+    animation: none;
+  }
+  .game-card:hover { transform: none; }
+}
+
 .game-status {
   position: absolute; top: 12px; left: 12px;
   font-family: var(--font-mono); font-size: 0.58rem; font-weight: 700;
@@ -350,6 +453,7 @@ footer a:hover { color: var(--led-cyan); }
   .nav-links a { font-size: 0.74rem; }
 }
 </style>
+<script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
 

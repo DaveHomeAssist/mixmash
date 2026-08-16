@@ -6,6 +6,7 @@
     <title>EMPIRES — MixMash Studio</title>
     <meta name="description" content="EMPIRES is a browser build of a deterministic C++ real-time strategy sim: 7 civilizations, combat, and an AI opponent. Local skirmish only in the browser." />
     <link rel="canonical" href="https://mixmash.games/empires" />
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
     <meta name="theme-color" content="#111111" />
     <meta property="og:type" content="website" />
@@ -16,18 +17,6 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { height: 100%; background: #111; overflow: hidden; }
       #canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; background: #2b3a1e; cursor: crosshair; }
-      .back-pill {
-        position: fixed; top: 14px; left: 14px; z-index: 10;
-        font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
-        text-transform: uppercase; text-decoration: none;
-        color: #F0F0F8; background: rgba(6,6,14,0.72);
-        border: 1px solid rgba(255,255,255,0.14);
-        padding: 7px 14px; border-radius: 999px;
-        -webkit-backdrop-filter: blur(8px);
-        backdrop-filter: blur(8px);
-        opacity: 0.85; transition: opacity 0.2s;
-      }
-      .back-pill:hover { opacity: 1; }
       #status {
         position: fixed; top: 14px; right: 14px; z-index: 10;
         font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.05em;
@@ -59,6 +48,96 @@
         position: fixed; left: 0; right: 0; bottom: 40px; z-index: 10;
         display: none; justify-content: center;
       }
+
+      /* EM-102: pre-match RTS shortcut guide */
+      #shortcuts {
+        position: fixed; inset: 0; z-index: 40;
+        display: none; align-items: center; justify-content: center;
+        padding: 24px;
+        background: rgba(6, 6, 14, 0.82);
+        -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+        font-family: 'Space Mono', monospace; color: #F0F0F8;
+      }
+      #shortcuts.is-open { display: flex; }
+      .shortcuts-card {
+        width: min(520px, 100%);
+        max-height: 100%;
+        overflow: auto;
+        padding: 22px 24px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        background: #12131f;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
+      }
+      .shortcuts-card h2 {
+        margin-bottom: 4px;
+        font-size: 17px; letter-spacing: 0.06em; text-transform: uppercase;
+      }
+      .shortcuts-card p.sub { margin-bottom: 16px; font-size: 12px; color: #9A9ABB; }
+      .shortcuts-card dl { display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; align-items: baseline; }
+      .shortcuts-card dt { white-space: nowrap; }
+      .shortcuts-card dd { font-size: 12px; color: #C8C8DC; }
+      .shortcuts-card kbd {
+        display: inline-block; padding: 3px 7px;
+        border: 1px solid rgba(255, 255, 255, 0.22); border-bottom-width: 2px;
+        border-radius: 5px; background: #1d1e30;
+        font-family: inherit; font-size: 11px; color: #F0F0F8;
+      }
+      .shortcuts-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+      .shortcuts-actions button {
+        flex: 1 1 auto;
+        padding: 11px 18px; border: none; border-radius: 999px; cursor: pointer;
+        font-family: inherit; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+        color: #111; background: #39FF8E;
+      }
+      .shortcuts-actions button.secondary {
+        color: #F0F0F8; background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      #help-pill {
+        position: fixed; left: 14px; bottom: 14px; z-index: 11;
+        display: none;
+        padding: 7px 14px; border-radius: 999px; cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(6, 6, 14, 0.72);
+        font-family: 'Space Mono', monospace; font-size: 11px;
+        letter-spacing: 0.1em; text-transform: uppercase; color: #F0F0F8;
+      }
+      #help-pill.is-visible { display: block; }
+
+      /* EM-103: performance telemetry overlay */
+      #telemetry {
+        position: fixed; right: 14px; bottom: 14px; z-index: 11;
+        display: none;
+        padding: 8px 12px; border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(6, 6, 14, 0.78);
+        font-family: 'Space Mono', monospace; font-size: 11px; line-height: 1.6;
+        color: #9A9ABB; white-space: pre;
+      }
+      #telemetry.is-visible { display: block; }
+
+      /* EM-104: capability warning */
+      #capability-notice {
+        position: fixed; left: 50%; top: 14px; z-index: 41;
+        transform: translateX(-50%);
+        display: none;
+        max-width: min(560px, calc(100vw - 28px));
+        padding: 12px 16px; border-radius: 10px;
+        border: 1px solid #ffb020;
+        background: rgba(38, 26, 6, 0.95);
+        font-family: 'Space Mono', monospace; font-size: 12px; line-height: 1.5;
+        color: #ffdca8;
+      }
+      #capability-notice.is-visible { display: block; }
+      #capability-notice b { display: block; margin-bottom: 4px; color: #ffb020; }
+      #capability-notice button {
+        margin-top: 10px; padding: 6px 12px; cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 999px;
+        background: transparent; color: #ffdca8;
+        font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      }
       #start-hint button {
         font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 0.08em;
         text-transform: uppercase; color: #111; background: #39FF8E;
@@ -71,9 +150,9 @@
         50% { transform: scale(1.05); }
       }
     </style>
+    <script src="/src/kit/pwa.js" defer></script>
   </head>
   <body>
-    <a class="back-pill" href="../">&#8592; mixmash.games</a>
     <div id="status"></div>
 
     <div id="loading">
@@ -85,7 +164,52 @@
       <button type="button">&#9654; Click or press SPACE to start</button>
     </div>
 
+    <div id="capability-notice" role="alert">
+      <b>Reduced compatibility</b>
+      <span id="capability-detail"></span>
+      <button id="capability-dismiss" type="button">Continue anyway</button>
+    </div>
+
+    <div id="shortcuts" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+      <div class="shortcuts-card">
+        <h2 id="shortcuts-title">Command Basics</h2>
+        <p class="sub">EMPIRES plays like a classic RTS. These are the only bindings you need to start.</p>
+        <dl>
+          <dt><kbd>&uarr;</kbd> <kbd>&darr;</kbd> / <kbd>Tab</kbd> / <kbd>Enter</kbd></dt>
+          <dd>In the lobby: pick a civ, switch player/AI, confirm.</dd>
+          <dt><kbd>Space</kbd></dt>
+          <dd>Start the skirmish from the lobby.</dd>
+          <dt><kbd>Left-Click</kbd></dt>
+          <dd>Select a unit or building.</dd>
+          <dt><kbd>Left-Drag</kbd></dt>
+          <dd>Box-select every unit inside the rectangle.</dd>
+          <dt><kbd>Shift</kbd> + <kbd>Click</kbd></dt>
+          <dd>Add to or toggle the current selection.</dd>
+          <dt><kbd>Right-Click</kbd></dt>
+          <dd>Command the selection: move, attack, gather, or set a rally point.</dd>
+          <dt>Minimap drag</dt>
+          <dd>Navigate the camera around the map.</dd>
+          <dt>Action panel</dt>
+          <dd>Lower right — train units, age up, and open build placement.</dd>
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Cancel an active build placement preview.</dd>
+          <dt><kbd>H</kbd></dt>
+          <dd>Toggle the game's own in-match help panel.</dd>
+          <dt><kbd>F3</kbd></dt>
+          <dd>Toggle the performance overlay.</dd>
+        </dl>
+        <div class="shortcuts-actions">
+          <button id="shortcuts-start" type="button">&#9654; Start skirmish</button>
+          <button id="shortcuts-close" class="secondary" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="help-pill" type="button">? Controls</button>
+    <div id="telemetry" role="status" aria-live="off"></div>
+
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+    <script src="../src/kit/nav.js"></script>
     <script src="./assets/shell.js"></script>
     <script src="./assets/aoe2-clone.js"></script>
   </body>

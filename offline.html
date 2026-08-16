@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline — MixMash Studio</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="robots" content="noindex">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: #06060E;
+    color: #F0F0F8;
+    font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    text-align: center;
+  }
+  .kicker {
+    font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase;
+    color: #9A9ABB; margin-bottom: 12px;
+  }
+  h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); margin-bottom: 12px; }
+  p { color: #9A9ABB; line-height: 1.6; max-width: 46ch; margin: 0 auto 22px; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  a {
+    padding: 10px 18px; border-radius: 999px; text-decoration: none;
+    font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #F0F0F8; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.16);
+  }
+  a:hover { border-color: rgba(255,255,255,0.4); }
+</style>
+</head>
+<body>
+  <main>
+    <div class="kicker">MixMash Studio</div>
+    <h1>You're offline</h1>
+    <p>This page isn't in the offline cache yet. Games you've already opened stay playable — try one of these, or reconnect to load the rest.</p>
+    <div class="links">
+      <a href="/">Hub</a>
+      <a href="/play/">MIXMASH</a>
+      <a href="/mars/">MarsScape</a>
+      <a href="/pitch/">Pitch Riot</a>
+      <a href="/empires/">Age of Dave</a>
+    </div>
+  </main>
+</body>
+</html>
