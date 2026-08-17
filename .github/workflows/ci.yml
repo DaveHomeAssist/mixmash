@@ -8,7 +8,15 @@ on:
       - 'test/**'
       - 'play/**'
       - 'mars/**'
+      - 'pitch/**'
+      - 'empires/**'
+      - 'garden/**'
       - 'api/**'
+      - 'index.html'
+      - 'home.html'
+      - 'sw.js'
+      - 'manifest.webmanifest'
+      - 'offline.html'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/ci.yml'
@@ -29,3 +37,4 @@ jobs:
       - run: npm run vercel-build
       - run: npx playwright install --with-deps chromium
       - run: npm run smoke:play
+      - run: npm run smoke:catalog

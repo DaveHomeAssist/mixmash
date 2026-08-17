@@ -127,6 +127,12 @@ html, body {
 
 /* PR-102: master volume + mute on the pre-match screen. */
 .vol-row { display: flex; align-items: center; gap: 10px; }
+.vol-row--sub .vol-slider { height: 34px; }
+.vol-tag {
+  flex: none; width: 44px; text-align: center;
+  font-family: var(--font-mono); font-size: 0.6rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+}
 .vol-mute {
   flex: none; width: 44px; height: 44px; border-radius: 12px; cursor: pointer;
   display: grid; place-items: center; font-size: 1.1rem; line-height: 1;
@@ -349,6 +355,18 @@ html, body {
           aria-label="Master volume">
         <span id="vol-readout" class="vol-readout">70%</span>
       </div>
+      <div class="vol-row vol-row--sub">
+        <span class="vol-tag">SFX</span>
+        <input id="sfx-slider" class="vol-slider" type="range" min="0" max="100" step="1" value="80"
+          aria-label="Sound effects volume">
+        <span id="sfx-readout" class="vol-readout">80%</span>
+      </div>
+      <div class="vol-row vol-row--sub">
+        <span class="vol-tag">Music</span>
+        <input id="music-slider" class="vol-slider" type="range" min="0" max="100" step="1" value="50"
+          aria-label="Music volume">
+        <span id="music-readout" class="vol-readout">50%</span>
+      </div>
     </div>
     <button class="btn" id="kickoff-btn">&#9654; Kick Off</button>
   </div>
@@ -521,14 +539,20 @@ html, body {
   // pre-match screen governs something real. The context is created lazily on the
   // first user gesture, which is what browser autoplay policy requires anyway.
   // ---------------------------------------------------------------------------
-  const AUDIO_KEY = "pitchriot.audio.v1";
-  const audio = { ctx: null, gain: null, volume: 0.7, muted: false };
+  const AUDIO_KEY = "pitchriot.audio.v2";
+  const audio = {
+    ctx: null,
+    master: null, sfxGain: null, musicGain: null,
+    volume: 0.7, sfxVolume: 0.8, musicVolume: 0.5, muted: false,
+  };
 
   function loadAudioPrefs() {
     try {
       const saved = JSON.parse(localStorage.getItem(AUDIO_KEY) || "null");
       if (saved && typeof saved === "object") {
-        if (Number.isFinite(saved.volume)) audio.volume = Math.max(0, Math.min(1, saved.volume));
+        for (const key of ["volume", "sfxVolume", "musicVolume"]) {
+          if (Number.isFinite(saved[key])) audio[key] = Math.max(0, Math.min(1, saved[key]));
+        }
         audio.muted = !!saved.muted;
       }
     } catch { /* corrupt prefs fall back to defaults */ }
@@ -536,7 +560,10 @@ html, body {
 
   function saveAudioPrefs() {
     try {
-      localStorage.setItem(AUDIO_KEY, JSON.stringify({ volume: audio.volume, muted: audio.muted }));
+      localStorage.setItem(AUDIO_KEY, JSON.stringify({
+        volume: audio.volume, sfxVolume: audio.sfxVolume,
+        musicVolume: audio.musicVolume, muted: audio.muted,
+      }));
     } catch { /* private mode: prefs just don't persist */ }
   }
 
@@ -552,16 +579,28 @@ html, body {
     const Ctor = window.AudioContext || window.webkitAudioContext;
     if (!Ctor) return null;
     audio.ctx = new Ctor();
-    audio.gain = audio.ctx.createGain();
-    audio.gain.gain.value = effectiveVolume();
-    audio.gain.connect(audio.ctx.destination);
+    // master -> destination, with SFX and music on their own sub-buses so the
+    // two sliders are independent and the master still governs both.
+    audio.master = audio.ctx.createGain();
+    audio.master.gain.value = effectiveVolume();
+    audio.master.connect(audio.ctx.destination);
+
+    audio.sfxGain = audio.ctx.createGain();
+    audio.sfxGain.gain.value = audio.sfxVolume;
+    audio.sfxGain.connect(audio.master);
+
+    audio.musicGain = audio.ctx.createGain();
+    audio.musicGain.gain.value = audio.musicVolume;
+    audio.musicGain.connect(audio.master);
     return audio.ctx;
   }
 
   function applyVolume() {
-    if (audio.gain && audio.ctx) {
-      audio.gain.gain.setTargetAtTime(effectiveVolume(), audio.ctx.currentTime, 0.02);
-    }
+    if (!audio.ctx) return;
+    const t = audio.ctx.currentTime;
+    if (audio.master) audio.master.gain.setTargetAtTime(effectiveVolume(), t, 0.02);
+    if (audio.sfxGain) audio.sfxGain.gain.setTargetAtTime(audio.sfxVolume, t, 0.02);
+    if (audio.musicGain) audio.musicGain.gain.setTargetAtTime(audio.musicVolume, t, 0.02);
   }
 
   // type -> [waveform, startHz, endHz, seconds, peak]
@@ -576,9 +615,9 @@ html, body {
 
   function sfx(type) {
     const spec = SFX[type];
-    if (!spec || effectiveVolume() <= 0) return;
+    if (!spec || effectiveVolume() <= 0 || audio.sfxVolume <= 0) return;
     const ctx = ensureAudio();
-    if (!ctx || !audio.gain) return;
+    if (!ctx || !audio.sfxGain) return;
     const [wave, from, to, seconds, peak] = spec;
     const t = ctx.currentTime;
     const osc = ctx.createOscillator();
@@ -588,8 +627,80 @@ html, body {
     osc.frequency.exponentialRampToValueAtTime(Math.max(1, to), t + seconds);
     env.gain.setValueAtTime(peak, t);
     env.gain.exponentialRampToValueAtTime(0.0001, t + seconds);
-    osc.connect(env); env.connect(audio.gain);
+    osc.connect(env); env.connect(audio.sfxGain);
     osc.start(t); osc.stop(t + seconds + 0.02);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Terrace music bed: a looping bass + hat pulse scheduled a bar ahead, so the
+  // music slider has something of its own to govern. Two moods — a steady match
+  // groove and a faster halftime pulse.
+  // ---------------------------------------------------------------------------
+  const MUSIC_CUES = {
+    match:    { bpm: 104, bass: [41, null, 41, 43, 36, null, 36, 38], filter: 900 },
+    halftime: { bpm: 128, bass: [45, 45, 48, 45, 43, 43, 41, 43], filter: 1400 },
+  };
+  const music = { cue: null, step: 0, nextNoteAt: 0, timer: 0 };
+
+  function midiToHz(note) {
+    return 440 * Math.pow(2, (note - 69) / 12);
+  }
+
+  function scheduleMusicNote(note, at, spb, cue) {
+    const ctx = audio.ctx;
+    if (note != null) {
+      const osc = ctx.createOscillator();
+      const env = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = cue.filter;
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(midiToHz(note), at);
+      env.gain.setValueAtTime(0.0001, at);
+      env.gain.exponentialRampToValueAtTime(0.22, at + 0.02);
+      env.gain.exponentialRampToValueAtTime(0.0001, at + spb * 0.9);
+      osc.connect(filter); filter.connect(env); env.connect(audio.musicGain);
+      osc.start(at); osc.stop(at + spb);
+    }
+    // Off-beat hat.
+    const hat = ctx.createOscillator();
+    const hatEnv = ctx.createGain();
+    hat.type = "square";
+    hat.frequency.setValueAtTime(7400, at + spb / 2);
+    hatEnv.gain.setValueAtTime(0.05, at + spb / 2);
+    hatEnv.gain.exponentialRampToValueAtTime(0.0001, at + spb / 2 + 0.045);
+    hat.connect(hatEnv); hatEnv.connect(audio.musicGain);
+    hat.start(at + spb / 2); hat.stop(at + spb / 2 + 0.06);
+  }
+
+  function pumpMusic() {
+    if (!audio.ctx || !music.cue || !audio.musicGain) return;
+    const cue = MUSIC_CUES[music.cue];
+    const spb = 60 / cue.bpm;
+    while (music.nextNoteAt < audio.ctx.currentTime + 0.25) {
+      scheduleMusicNote(cue.bass[music.step % cue.bass.length], music.nextNoteAt, spb, cue);
+      music.step++;
+      music.nextNoteAt += spb;
+    }
+  }
+
+  // The scheduler runs whenever a cue is active and lets the gain nodes decide
+  // audibility. Gating it on volume instead would strand the bed silent when a
+  // player unmutes or raises the music slider mid-match, because nothing would
+  // be there to un-silence.
+  function startMusic(cueName) {
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    if (music.cue === cueName && music.timer) return;
+    music.cue = cueName;
+    music.step = 0;
+    music.nextNoteAt = ctx.currentTime + 0.08;
+    if (!music.timer) music.timer = window.setInterval(pumpMusic, 90);
+  }
+
+  function stopMusic() {
+    music.cue = null;
+    if (music.timer) { clearInterval(music.timer); music.timer = 0; }
   }
 
   // Touch input
@@ -746,6 +857,7 @@ html, body {
     document.getElementById("pause-pill").hidden = false;
     ensureAudio();   // the Kick Off click is the gesture that unlocks audio
     sfx("whistle");
+    startMusic("match");
   }
 
   function pauseGame() {
@@ -761,6 +873,7 @@ html, body {
     lastTime = performance.now();  // avoid a huge dt jump
   }
   function quitToMenu() {
+    stopMusic();
     game.state = STATE.MENU;
     hideAllOverlays();
     document.getElementById("menu").hidden = false;
@@ -789,6 +902,7 @@ html, body {
     game.htIntro = 60;   // shortened: the guide now carries the explanation
     game.htGuide = HT_GUIDE_SECONDS;
     sfx("whistle");
+    startMusic("halftime");
     game.lanes = new Array(LANES).fill(0);
     game.sprinklers = [];
     const n = 2 + game.diff; // 2 / 3 / 4 by difficulty
@@ -814,11 +928,13 @@ html, body {
     game.flash = 1; game.flashColor = "#FFE23D";
     resetPositions(-1);
     showBanner(perfect ? "PERFECT SHOW!" : "SHOW TIME!", "#FFE23D", -1);
+    startMusic("match");   // back to the match groove for the second half
   }
 
   function endMatch() {
     game.state = STATE.RESULT;
     sfx("whistle");
+    stopMusic();
     document.getElementById("pause-pill").hidden = true;
     const r = document.getElementById("result");
     const line = document.getElementById("result-line");
@@ -1612,12 +1728,20 @@ html, body {
   // PR-102: master volume + mute, persisted across sessions.
   const volSlider = document.getElementById("vol-slider");
   const volReadout = document.getElementById("vol-readout");
+  const sfxSlider = document.getElementById("sfx-slider");
+  const sfxReadout = document.getElementById("sfx-readout");
+  const musicSlider = document.getElementById("music-slider");
+  const musicReadout = document.getElementById("music-readout");
   const muteBtn = document.getElementById("mute-btn");
 
   function syncAudioUi() {
     const pct = Math.round(audio.volume * 100);
     volSlider.value = String(pct);
     volReadout.textContent = audio.muted ? "Muted" : `${pct}%`;
+    sfxSlider.value = String(Math.round(audio.sfxVolume * 100));
+    sfxReadout.textContent = `${Math.round(audio.sfxVolume * 100)}%`;
+    musicSlider.value = String(Math.round(audio.musicVolume * 100));
+    musicReadout.textContent = `${Math.round(audio.musicVolume * 100)}%`;
     muteBtn.setAttribute("aria-pressed", String(audio.muted));
     muteBtn.textContent = audio.muted || audio.volume === 0 ? "\u{1F507}" : "\u{1F50A}";
     muteBtn.setAttribute("aria-label", audio.muted ? "Unmute audio" : "Mute audio");
@@ -1633,13 +1757,28 @@ html, body {
     syncAudioUi();
     saveAudioPrefs();
   });
+  sfxSlider.addEventListener("input", () => {
+    audio.sfxVolume = Math.max(0, Math.min(1, Number(sfxSlider.value) / 100));
+    applyVolume();
+    syncAudioUi();
+    saveAudioPrefs();
+  });
+  musicSlider.addEventListener("input", () => {
+    audio.musicVolume = Math.max(0, Math.min(1, Number(musicSlider.value) / 100));
+    applyVolume();
+    syncAudioUi();
+    saveAudioPrefs();
+  });
   // Release, not every input tick — one preview blip per adjustment.
   volSlider.addEventListener("change", () => { ensureAudio(); sfx("cover"); });
+  sfxSlider.addEventListener("change", () => { ensureAudio(); sfx("kick"); });
   muteBtn.addEventListener("click", () => {
     audio.muted = !audio.muted;
     applyVolume();
     syncAudioUi();
     saveAudioPrefs();
+    // No stopMusic() here: the master gain already silences the bed, and
+    // keeping the scheduler alive means unmuting resumes it in place.
     if (!audio.muted) { ensureAudio(); sfx("cover"); }
   });
 
@@ -1663,7 +1802,7 @@ html, body {
   if (location.search.indexOf("debug") !== -1) {
     window.__pitch = {
       game, ball, player, cpu, scoreGoal, startMatch, startHalftime, endHalftime, STATE,
-      audio, pad, sfx, HT_GUIDE_SECONDS,
+      audio, pad, sfx, music, startMusic, stopMusic, HT_GUIDE_SECONDS,
     };
   }
 })();

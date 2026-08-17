@@ -5,6 +5,7 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import { launchOptions } from './static-server.mjs';
 
 const root = join(fileURLToPath(new URL('..', import.meta.url)));
 const port = 19_300 + Math.floor(Math.random() * 1_000);
@@ -46,7 +47,7 @@ await new Promise((resolve) => server.listen(port, '127.0.0.1', resolve));
 
 let browser;
 try {
-  browser = await chromium.launch({ headless: true, args: ['--use-gl=angle', '--use-angle=swiftshader'] });
+  browser = await chromium.launch(launchOptions());
   const page = await browser.newPage();
   const errors = [];
   const screenshotDir = join(tmpdir(), `mixmash-play-smoke-${process.pid}`);
@@ -375,7 +376,6 @@ try {
   assert.ok(rush.platformRush.recordsCollected >= 1);
   assert.ok(rush.platformRush.score >= 450);
   assert.equal(rush.platformRush.collectibles.some((item) => item.type === 'deepCut' && item.collected), true);
-  const rushBeforePause = rush;
   await page.evaluate(() => {
     const player = state.players[0];
     const spawn = currentStage.spawns[0];
@@ -391,6 +391,12 @@ try {
   const rushPaused = await readState();
   assert.equal(rushPaused.mode, 'paused');
   assert.equal(rushPaused.snapshotAvailable, true);
+  // Baseline is taken here, while paused, not before the reset above. advanceTime()
+  // steps the sim deterministically but the page's own gameLoop keeps running on
+  // rAF alongside it, so any state read before the pause can still move underneath
+  // us — a parked player picking up one more collectible, for instance. Pausing
+  // stops rush progression, so this is the state the snapshot actually captures.
+  const rushBeforePause = rushPaused;
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(250);
