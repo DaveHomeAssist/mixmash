@@ -142,7 +142,7 @@ function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 function statLabel(stat) {
-  return { o2: 'O2 efficiency', crit: 'quality chance', speed: 'walk speed', geode: 'geode find', pack: 'pack capacity' }[stat] || stat;
+  return { o2: 'O2 efficiency', crit: 'quality chance', speed: 'travel speed', geode: 'geode find', pack: 'pack capacity' }[stat] || stat;
 }
 
 export const RESEARCH = [
@@ -400,11 +400,21 @@ function gather(state, nodeId) {
   if (packSize(state) >= packCap && !state.inventory[node.item]) {
     throw new GameError('PACK_FULL', 'Pack is full.');
   }
-  const critBonus = Math.random() * 100 < equipStats(state).crit ? 1 : 0;
+  const stats = equipStats(state);
+  const critBonus = Math.random() * 100 < stats.crit ? 1 : 0;
   const drillBonus = state.research.drills && Math.random() < 0.18 ? 1 : 0;
   const bonus = Math.max(critBonus, drillBonus);
   addItem(state, node.item, (node.yieldBonus || 0) + 1 + bonus);
   gainSkill(state, node.skill, node.xp);
+
+  // The scanner's `geode` stat: a chance to spot a mineral geode in an ore seam,
+  // which cracks open into titanium. Ore nodes only — there is nothing to find
+  // in an ice scarp — and never on the titanium seam itself.
+  if (node.type === 'ore' && node.item !== 'titanium_ore' && Math.random() * 100 < stats.geode) {
+    addItem(state, 'titanium_ore', 1);
+    gainSkill(state, 'mining', 12);
+    addEvent(state, 'good', 'Scanner pinged a geode — cracked it open for 1 Titanium Ore.');
+  }
   nodeState.charges -= 1;
   if (nodeState.charges <= 0) {
     nodeState.charges = 0;
@@ -581,7 +591,11 @@ function travel(state, destRegion, now) {
 function travelDurationMs(region, state) {
   const roverMult = ROVERS[state.rover]?.mult ?? 1;
   const pilotCut = Math.floor(state.skills.piloting.level / 8);
-  const ticks = Math.max(4, Math.round(region.baseTravelTicks * roverMult) - pilotCut);
+  // Boots' `speed` is a percentage cut on the trip, applied before the flat
+  // Piloting reduction so gear and skill stack rather than one masking the other.
+  const speedMult = 1 - Math.min(90, Math.max(0, equipStats(state).speed)) / 100;
+  const geared = Math.round(region.baseTravelTicks * roverMult * speedMult);
+  const ticks = Math.max(4, geared - pilotCut);
   return ticks * TRAVEL_TICK_MS;
 }
 

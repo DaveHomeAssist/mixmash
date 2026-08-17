@@ -628,16 +628,22 @@ function skillProgress(xp) {
 }
 
 // Gear modifiers that actually change this skill's outcomes in the engine.
-// `speed` and `geode` are defined on equipment but not yet consumed by any
-// engine rule, so they are deliberately not advertised here.
+// Every entry here maps to a real rule in engine.mjs — nothing is advertised
+// that the sim does not apply.
 function skillModifiers(skillId) {
   const stats = equipStats(state);
   const mods = [];
   if (['mining', 'water'].includes(skillId) && stats.crit > 0) {
     mods.push(`+${stats.crit}% chance of a bonus unit per gather`);
   }
+  if (skillId === 'mining' && stats.geode > 0) {
+    mods.push(`+${stats.geode}% chance of a geode (1 Titanium Ore) per ore gather`);
+  }
   if (skillId === 'survival' && stats.o2 > 0) {
     mods.push(`+${stats.o2}% suit O2 efficiency`);
+  }
+  if (skillId === 'piloting' && stats.speed > 0) {
+    mods.push(`-${stats.speed}% travel time between regions`);
   }
   if (['mining', 'water'].includes(skillId) && stats.pack > 0) {
     mods.push(`+${stats.pack} pack capacity (${40 + stats.pack} total)`);
@@ -686,7 +692,7 @@ function renderPack() {
   const slots = Object.entries(ITEMS).map(([id, item]) => `<div class="slot"><span>${escapeHtml(item.short)}</span><b>${state.inventory[id] || 0}</b></div>`).join('');
   const stats = equipStats(state);
   const equipRows = EQUIP_SLOTS.map((slot) => `<div class="skill-row"><span>${escapeHtml(capitalize(slot))}</span><b>${state.equip[slot] ? escapeHtml(capitalize(state.equip[slot])) : 'empty'}</b></div>`).join('');
-  const statLine = `O2 efficiency +${stats.o2}% · quality chance +${stats.crit}% · pack capacity +${stats.pack} — craft gear at the Forge`;
+  const statLine = `O2 efficiency +${stats.o2}% · quality chance +${stats.crit}% · geode find +${stats.geode}% · travel speed +${stats.speed}% · pack capacity +${stats.pack} — craft gear at the Forge`;
   return `<div class="card"><h3>Field Pack</h3><p>Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Equipment</h3><p>${statLine}</p><div class="skill-list">${equipRows}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="plant" ${!state.built.greenhouse || state.farm.plantedAt && !state.farm.ready ? 'disabled' : ''}>Plant Greenhouse Crop</button><button data-action="harvest" ${!state.farm.ready ? 'disabled' : ''}>Harvest Food</button><button data-action="ration" ${(state.inventory.food || 0) < 1 ? 'disabled' : ''}>Ration Food</button></div>`;
 }
 

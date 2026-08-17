@@ -56,11 +56,10 @@ New `render_game_to_text()` keys: `toasts`, `touchControls`, `audioPrompt`,
 - MS-101 also fixes an unrelated layout bug found while working on it: the tab
   strip used a 5-column grid for six tabs, orphaning "Travel" onto its own row
   at 1/5 width. It is now two even rows of three.
-- MS-103 deliberately advertises only gear modifiers the engine actually
-  applies. `boots.speed` and `scanner.geode` are declared in `EQUIP_STATS` and
-  have display labels, but **no engine rule consumes either value** — see
-  `mars/engine.mjs`. They are not surfaced as active effects. Wiring them up (or
-  removing them) is worth its own ticket.
+- MS-103 advertises only gear modifiers the engine actually applies. When it
+  shipped, `boots.speed` and `scanner.geode` were declared in `EQUIP_STATS` with
+  display labels but read by no engine rule, so they were deliberately left out
+  of the tooltips. Both are now wired (see follow-up 1 below) and are surfaced.
 - MS-105 composes with the existing responsive scale via CSS custom properties
   (`--base-scale` × `--user-scale`) so JS never fights the media query.
 - Drag gestures suppress the click that would otherwise fire a gather command on
@@ -81,13 +80,18 @@ cannot be modified by the host page.
 
 | Ticket | Priority | Task & Scope | Pts | Status |
 |---|---|---|---|---|
-| GD-101 | P1 | Locked mode info modals (Daily Challenge / Speedrun) | 2 | **Out of repo** |
-| GD-102 | P1 | Save file backup / export in the Danger Zone modal | 2 | **Out of repo** |
-| GD-103 | P2 | Grid drag-and-drop for touch in the Planning bed | 5 | **Out of repo** |
-| GD-104 | P2 | Bug reporter webhook sync / Markdown export | 3 | **Out of repo** |
-| GD-105 | P3 | Sound effects for OS windows | 2 | **Out of repo** |
+| GD-101 | P1 | Locked mode info modals (Daily Challenge / Speedrun) | 2 | **Out of repo** — [garden-os#38](https://github.com/DaveHomeAssist/garden-os/issues/38) |
+| GD-102 | P1 | Save file backup / export in the Danger Zone modal | 2 | **Out of repo** — [garden-os#39](https://github.com/DaveHomeAssist/garden-os/issues/39) |
+| GD-103 | P2 | Grid drag-and-drop for touch in the Planning bed | 5 | **Out of repo** — [garden-os#40](https://github.com/DaveHomeAssist/garden-os/issues/40) |
+| GD-104 | P2 | Bug reporter webhook sync / Markdown export | 3 | **Out of repo** — [garden-os#41](https://github.com/DaveHomeAssist/garden-os/issues/41) |
+| GD-105 | P3 | Sound effects for OS windows | 2 | **Out of repo** — [garden-os#42](https://github.com/DaveHomeAssist/garden-os/issues/42) |
 
-**Action:** re-file GD-101…GD-105 against `DaveHomeAssist/garden-os`.
+**Re-filed.** All five now sit against `DaveHomeAssist/garden-os`, each checked
+against that repo's actual code first. Two were sharper than the original board
+described: GD-103 is not a tuning problem but a total failure — `backpack-panel.js`
+uses HTML5 `dragstart`/`dragover`, which touch never fires — and GD-105 is a
+coverage gap rather than new work, since `ACTION_SFX` in `ui-binder.js` already
+wires gameplay sounds and simply does not cover window chrome.
 
 The one Garden-adjacent change in this pass is platform-level: the page now
 carries the shared global nav (HUB-102) instead of its own back pill.
@@ -205,25 +209,44 @@ binary is not rebuilt.
 
 ## Follow-up tickets this pass surfaced
 
-1. **MarsScape:** `boots.speed` and `scanner.geode` are inert — no engine rule
-   reads them. Either wire them into travel duration and gather rolls, or drop
-   them from `EQUIP_STATS` and the equipment copy.
-2. **EMPIRES:** no control-group bindings exist. If they are wanted, they are an
-   engine change in the `aoe2-clone` C++ source, not a shell change.
-3. **Garden OS:** re-file GD-101…GD-105 against `DaveHomeAssist/garden-os`.
-4. **Pitch Riot:** the new SFX layer has no music bed, and the volume slider is
-   master-only. A music/SFX split would match the `/play/` audio matrix.
-5. **CI:** `npm run smoke:play` only covers `/play/`. `/pitch/`, `/mars/`, and
-   the `/empires/` shell now have testable hooks (`window.__pitch`,
-   `window.validateSaveCode`, `window.__empiresTelemetry`) and could get
-   equivalent smoke rails.
+All five are now closed out.
+
+1. **MarsScape inert gear stats — done.** `boots.speed` and `scanner.geode` were
+   declared in `EQUIP_STATS` with display labels but read by no engine rule.
+   Both are now wired:
+   - `speed` is a percentage cut on `travelDurationMs()`, applied before the
+     flat Piloting reduction so gear and skill stack instead of masking each
+     other. Composite boots (30) take the Dune Sea run from 20 ticks to 14.
+   - `geode` is a per-gather chance to crack a geode out of an **ore** seam for
+     1 Titanium Ore — never from ice, and never from the titanium seam itself.
+   The stat label changed from "walk speed" to "travel speed", which is what it
+   actually does. Covered by two new engine tests.
+2. **EMPIRES control groups — not actionable here.** They do not exist in the
+   binary, and adding them is a C++ change in the `aoe2-clone` source. Left as a
+   note rather than a ticket against this repo.
+3. **Garden OS — re-filed.** GD-101…GD-105 are now
+   [`garden-os#38`–`#42`](https://github.com/DaveHomeAssist/garden-os/issues/38),
+   each verified against that repo's real code before filing rather than copied
+   across as written.
+4. **Pitch Riot music/SFX split — done.** Audio now runs master → {SFX bus,
+   music bus}, with three independent sliders, and a looping bass+hat music bed
+   with two cues (`match`, `halftime`) so the music slider governs something
+   real. Prefs bumped to `pitchriot.audio.v2`.
+5. **CI catalog rail — done.** `npm run smoke:catalog` (`test/catalog-smoke.mjs`)
+   covers `/pitch/`, `/mars/`, the `/empires/` shell, the hub, and the shared nav
+   on every game path — 19 checks, all driven through the pages' own hooks.
+   `test/static-server.mjs` holds the shared static host and failure tracking.
+   The CI push path filter was widened to `pitch/**`, `empires/**`, `garden/**`,
+   and the root shell files, which the previous filter did not cover even though
+   CI now tests them.
 
 ## Verification
 
-- `npm test` — 48 passing.
+- `npm test` — 50 passing (48 + 2 new MarsScape engine tests).
 - `npm run vercel-build` — clean.
-- `npm run smoke:play` — the pinned Playwright Chromium revision was unavailable
-  in the authoring sandbox, so this ran in CI rather than locally. A 52-check
-  browser harness covering every ticket above (including mobile viewports for
-  MM-103, MS-101, and PR-101) was run against the local Chromium and passed in
-  full.
+- `npm run smoke:catalog` — 19 checks passing.
+- `npm run smoke:play` — the pinned Playwright Chromium revision (1228) was not
+  available in the authoring sandbox, only 1194, so this rail runs in CI. The
+  new catalog rail accepts a `PW_EXECUTABLE_PATH` override so it stays runnable
+  in constrained environments; CI leaves it unset and uses Playwright's own
+  managed browser.

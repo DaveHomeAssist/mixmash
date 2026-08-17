@@ -95,6 +95,56 @@ test('rover tier shortens travel duration; Piloting level shortens it further', 
   assert.ok(fastMs >= 4 * 600, 'duration never drops below the 4-tick floor');
 });
 
+test('boots speed cuts travel duration, and stacks with rover and Piloting', () => {
+  const NOW = 1_700_000_000_000;
+  const bare = withFuel(createState(NOW));
+  const bareMs = applyCommand(bare, { id: 'sp1', type: 'travel', destRegion: 'dune_sea' }, NOW)
+    .state.travel.arrivalAt - NOW;
+
+  const booted = withFuel(createState(NOW));
+  booted.equip.boots = 'composite'; // speed 30
+  const bootedMs = applyCommand(booted, { id: 'sp2', type: 'travel', destRegion: 'dune_sea' }, NOW)
+    .state.travel.arrivalAt - NOW;
+
+  assert.ok(bootedMs < bareMs, 'composite boots must actually shorten the trip');
+  // baseTravelTicks 20, roverMult 1, speed 30% -> round(20 * 0.7) = 14 ticks
+  assert.equal(bootedMs, 14 * 600);
+
+  const stacked = withFuel(createState(NOW));
+  stacked.equip.boots = 'composite';
+  stacked.rover = 'rover3';
+  stacked.skills.piloting = { xp: 1_000_000, level: levelForXp(1_000_000) };
+  const stackedMs = applyCommand(stacked, { id: 'sp3', type: 'travel', destRegion: 'dune_sea' }, NOW)
+    .state.travel.arrivalAt - NOW;
+  assert.ok(stackedMs <= bootedMs, 'gear, rover, and skill all compound');
+  assert.ok(stackedMs >= 4 * 600, 'duration never drops below the 4-tick floor');
+});
+
+test('scanner geode stat yields titanium from ore seams, and only from ore seams', () => {
+  const realRandom = Math.random;
+  try {
+    // 0 is below any non-zero percentage roll, so every chance-gated branch fires.
+    Math.random = () => 0;
+
+    const miner = createState(1_700_000_000_000);
+    miner.equip.scanner = 'composite'; // geode 4
+    const mined = applyCommand(miner, { id: 'g1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000).state;
+    assert.equal(mined.inventory.titanium_ore, 1, 'an ore gather should crack a geode');
+    assert.ok(mined.inventory.iron_ore >= 1, 'the node still yields its own resource');
+
+    const iceMiner = createState(1_700_000_000_000);
+    iceMiner.equip.scanner = 'composite';
+    const iced = applyCommand(iceMiner, { id: 'g2', type: 'gather', nodeId: 'ice-pocket' }, 1_700_000_005_000).state;
+    assert.equal(iced.inventory.titanium_ore || 0, 0, 'ice scarps hold no geodes');
+
+    const bare = createState(1_700_000_000_000);
+    const plain = applyCommand(bare, { id: 'g3', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000).state;
+    assert.equal(plain.inventory.titanium_ore || 0, 0, 'no scanner means no geode');
+  } finally {
+    Math.random = realRandom;
+  }
+});
+
 test('gather is region-scoped: a Dune Sea node cannot be gathered from the basin, and vice versa', () => {
   const atBasin = createState(1_700_000_000_000);
   assert.throws(
