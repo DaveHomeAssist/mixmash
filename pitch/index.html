@@ -684,8 +684,11 @@ html, body {
     }
   }
 
+  // The scheduler runs whenever a cue is active and lets the gain nodes decide
+  // audibility. Gating it on volume instead would strand the bed silent when a
+  // player unmutes or raises the music slider mid-match, because nothing would
+  // be there to un-silence.
   function startMusic(cueName) {
-    if (audio.muted || audio.musicVolume <= 0 || effectiveVolume() <= 0) { music.cue = cueName; return; }
     const ctx = ensureAudio();
     if (!ctx) return;
     if (music.cue === cueName && music.timer) return;
@@ -1774,8 +1777,9 @@ html, body {
     applyVolume();
     syncAudioUi();
     saveAudioPrefs();
-    if (audio.muted) stopMusic();
-    else { ensureAudio(); sfx("cover"); }
+    // No stopMusic() here: the master gain already silences the bed, and
+    // keeping the scheduler alive means unmuting resumes it in place.
+    if (!audio.muted) { ensureAudio(); sfx("cover"); }
   });
 
   document.getElementById("kickoff-btn").addEventListener("click", startMatch);

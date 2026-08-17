@@ -70,8 +70,9 @@ export function launchOptions() {
  * (web fonts on a sandboxed runner, for instance) are not this suite's problem
  * and would otherwise make the rail flaky.
  */
-export function trackPageFailures(page, origin) {
+export function trackPageFailures(page, origin, { ignore = [] } = {}) {
   const failures = [];
+  const ignored = (url) => ignore.some((pattern) => pattern.test(url));
   page.on('pageerror', (error) => failures.push(`pageerror: ${error}`));
   page.on('console', (msg) => {
     if (msg.type() !== 'error') return;
@@ -82,8 +83,20 @@ export function trackPageFailures(page, origin) {
     failures.push(`console: ${text}`);
   });
   page.on('requestfailed', (request) => {
-    if (request.url().startsWith(origin)) {
-      failures.push(`request: ${request.url()} (${request.failure()?.errorText})`);
+    const url = request.url();
+    if (url.startsWith(origin) && !ignored(url)) {
+      failures.push(`request: ${url} (${request.failure()?.errorText})`);
+    }
+  });
+  // A same-origin 404/500 is a *completed* request as far as Playwright is
+  // concerned, so it never reaches requestfailed — and the console's "Failed to
+  // load resource" line is filtered above. Without this listener a page missing
+  // a script or stylesheet would still assert "loads clean".
+  page.on('response', (response) => {
+    const url = response.url();
+    if (!url.startsWith(origin) || ignored(url)) return;
+    if (response.status() >= 400) {
+      failures.push(`response: ${url} (HTTP ${response.status()})`);
     }
   });
   return failures;

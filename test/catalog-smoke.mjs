@@ -30,10 +30,15 @@ try {
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
   };
 
+  // MarsScape calls its authority API, which a static file server does not
+  // serve. The game is built to fall back to offline mode when that call fails,
+  // so those 404s are expected here and are not asset regressions.
+  const IGNORED_REQUESTS = [/\/api\//];
+
   async function open(path, contextOptions = desktop) {
     const context = await browser.newContext(contextOptions);
     const page = await context.newPage();
-    const failures = trackPageFailures(page, origin);
+    const failures = trackPageFailures(page, origin, { ignore: IGNORED_REQUESTS });
     await page.goto(`${origin}${path}`, { waitUntil: 'load' });
     await page.waitForTimeout(800);
     return { context, page, failures };
@@ -69,7 +74,25 @@ try {
     await page.click('#kickoff-btn');
     await page.waitForTimeout(300);
     assert.equal(await page.evaluate(() => window.__pitch.music.cue), 'match', 'kick off starts the match bed');
+    assert.ok(await page.evaluate(() => window.__pitch.music.timer > 0), 'the music scheduler is running');
     record('music bed starts on kick off');
+
+    // Muting must not tear the scheduler down, or unmuting mid-match would
+    // leave the bed permanently silent with nothing to restart it. The control
+    // itself lives on the pre-match screen and is hidden now, so invoke its real
+    // handler via .click() rather than a user-visible click.
+    await page.evaluate(() => document.getElementById('mute-btn').click());
+    await page.waitForTimeout(120);
+    const whileMuted = await page.evaluate(() => ({
+      muted: window.__pitch.audio.muted,
+      timer: window.__pitch.music.timer,
+      cue: window.__pitch.music.cue,
+    }));
+    assert.equal(whileMuted.muted, true, 'mute engaged');
+    assert.ok(whileMuted.timer > 0, 'the music scheduler survives a mute');
+    assert.equal(whileMuted.cue, 'match', 'the cue is retained through a mute');
+    await page.evaluate(() => document.getElementById('mute-btn').click());
+    record('music survives a mute/unmute round trip');
 
     // PR-103: the guide holds the show clock for its full duration.
     await page.evaluate(() => window.__pitch.startHalftime());
