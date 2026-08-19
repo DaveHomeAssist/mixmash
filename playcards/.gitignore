@@ -1,0 +1,7 @@
+# Ant and NetBeans build output
+/build/
+/dist/
+*.class
+
+# Local NetBeans settings
+/nbproject/private/
