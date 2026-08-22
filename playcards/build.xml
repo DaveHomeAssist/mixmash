@@ -48,6 +48,12 @@
                 <pathelement location="${build.test.classes.dir}"/>
             </classpath>
         </java>
+        <java classname="playcards.holdem.TexasHoldemTest" fork="true" failonerror="true">
+            <classpath>
+                <pathelement location="${build.classes.dir}"/>
+                <pathelement location="${build.test.classes.dir}"/>
+            </classpath>
+        </java>
     </target>
     <!--
 

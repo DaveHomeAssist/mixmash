@@ -1,10 +1,13 @@
 # PlayCards
 
-PlayCards is a dependency-free Java Blackjack game with two adapters over one
-shared `BlackjackGame` state engine:
+PlayCards is a dependency-free Java card game project. Its Blackjack game has
+two adapters over one shared `BlackjackGame` state engine:
 
 - a Swing desktop table, launched by default;
 - a terminal interface, launched with `--console`.
+
+It also ships a console Texas Hold'em simulation (`playcards.holdem`),
+launched with `--holdem [seed]` — see below.
 
 ## Rules contract
 
@@ -34,6 +37,25 @@ Card / Hand / Deck / Player       immutable card values and domain state
 `HAND_COMPLETE`, and `GAME_OVER`. Neither UI path owns card dealing, score
 calculation, or chip movement.
 
+## Texas Hold'em simulation
+
+`playcards.holdem` is a self-contained console simulation: 2-10 heuristic AI
+seats play no-limit-style hands at fixed $5/$10 blinds until one player holds
+every chip. It reuses the shared immutable `Card` but owns its own table
+state (`TexasHoldemGame`), seats (`HoldemPlayer`), per-hand deck
+(`HoldemDeck`), and 5-of-7 `HandEvaluator` with full kicker tiebreaks.
+
+Engine guarantees (all enforced by `TexasHoldemTest`):
+
+- a fresh 52-card deck is built and shuffled every hand from the game's
+  seeded generator, so a given seed replays the same game;
+- blinds act pre-flop (the big blind keeps his option), a full raise reopens
+  action, and betting state resets per street;
+- chips are conserved: posts are capped at the stack, uncalled bets are
+  refunded, and side pots are layered from per-hand contributions so all-ins
+  settle correctly;
+- ties split the pot, with odd chips going to the earliest eligible seat.
+
 ## Build and run
 
 Requirements: JDK 8 or later and Apache Ant. The project is compiled as Java
@@ -43,6 +65,8 @@ Requirements: JDK 8 or later and Apache Ant. The project is compiled as Java
 ant clean test jar
 java -jar dist/PlayCards.jar
 java -jar dist/PlayCards.jar --console
+java -jar dist/PlayCards.jar --holdem        # Texas Hold'em, random seed
+java -jar dist/PlayCards.jar --holdem 42     # Texas Hold'em, reproducible game
 ```
 
 If several JDKs are installed, set `JAVA_HOME` and place its `bin` directory
@@ -50,7 +74,7 @@ before Ant on `PATH` before running the commands.
 
 ## Tests
 
-`ant test` runs five dependency-free test executables:
+`ant test` runs six dependency-free test executables:
 
 - `BlackjackRulesTest`: ace scoring, naturals, input validation, card/deck
   behavior, exhaustion, reshuffling, and the five-card limit.
@@ -66,6 +90,11 @@ before Ant on `PATH` before running the commands.
   controls, all outcome banners, contextual face-down cards, active/winner
   emphasis, focus order, keyboard bindings, accessible announcements, contrast,
   and reduced-motion behavior.
+- `TexasHoldemTest`: hand-evaluator ranking (royal/straight flush, the wheel,
+  the flush-plus-offsuit-straight trap, two trips as a full house, kickers,
+  exact board-plays ties) and engine invariants across 20 seeded full games
+  plus a heads-up game (chip conservation every hand, pots fully distributed,
+  termination with a single winner).
 
 ## Swing interface
 

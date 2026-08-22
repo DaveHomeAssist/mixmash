@@ -1,11 +1,13 @@
 # PlayCards Project Changelog
 
-This changelog records functional changes to the PlayCards Blackjack project.
+This changelog records functional changes to the PlayCards project.
 
 ## Unreleased
 
 ### Added
 
+- A console Texas Hold'em simulation in the new `playcards.holdem` package: `TexasHoldemGame` (seeded, reproducible table of 2-10 heuristic AI seats at fixed $5/$10 blinds), `HoldemPlayer`, a per-hand `HoldemDeck`, and a best-5-of-7 `HandEvaluator` with full kicker tiebreaks, wheel detection, and correct straight-flush gating. Launched with `--holdem [seed]` from the packaged JAR or by running `TexasHoldemGame` directly; Blackjack launch paths are unchanged.
+- `TexasHoldemTest`, a sixth dependency-free `ant test` executable covering evaluator rankings (royal/straight flush, the wheel, the flush-plus-offsuit-straight trap, two trips as a full house, kickers, exact board-plays ties) and engine invariants across 20 seeded full games plus a heads-up game: chips conserved after every hand, every pot fully distributed (uncalled-bet refunds and layered side pots included), and termination with a single winner holding all chips.
 - Mockup-aligned physical chip stacks for both participants and a central `Chips in Play` rail that renders the current player/dealer split directly from each `GameSnapshot`.
 - Compact turn and result badges in participant headers, including `Your Turn`, `Dealer Turn`, `Winner`, and `Push` states.
 - Rounded card faces and a navy diagonal-stripe treatment for every face-down card context.
