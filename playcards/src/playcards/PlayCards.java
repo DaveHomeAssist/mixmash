@@ -8,7 +8,10 @@ package playcards;
 
 import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.SwingUtilities;
+
+import playcards.holdem.TexasHoldemGame;
 
 /**
  *
@@ -21,7 +24,18 @@ public class PlayCards {
      */
     public static void main(String[] args)
     {
-        if (!GraphicsEnvironment.isHeadless() && !Arrays.asList(args).contains("--console"))
+        List<String> arguments = Arrays.asList(args);
+        int holdemIndex = arguments.indexOf("--holdem");
+        if (holdemIndex >= 0)
+        {
+            long seed = holdemIndex + 1 < args.length
+                    ? Long.parseLong(args[holdemIndex + 1])
+                    : System.currentTimeMillis();
+            new TexasHoldemGame(6, seed, true).startGame();
+            return;
+        }
+
+        if (!GraphicsEnvironment.isHeadless() && !arguments.contains("--console"))
         {
             SwingUtilities.invokeLater(new Runnable()
             {
