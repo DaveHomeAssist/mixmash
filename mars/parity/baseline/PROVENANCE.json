@@ -1,0 +1,24 @@
+{
+  "purpose": "Frozen gameplay baseline for the MarsScape -> mixmash/mars port. This file and data.js are a preservation artifact: they pin the exact gameplay data the port must account for, so the parity ledger stays reproducible without needing the marsscape repository checked out.",
+  "source": {
+    "repository": "DaveHomeAssist/marsscape",
+    "commit": "ab073bc89098101dd2ba51a2f41aae9ec047ebc8",
+    "version": "0.4.0",
+    "path": "src/data.js",
+    "capturedOn": "2026-08-24"
+  },
+  "target": {
+    "repository": "DaveHomeAssist/mixmash",
+    "commit": "43974c88386a4db53f3ab6c55293eeb6348786b8",
+    "path": "mars/engine.mjs",
+    "engineVersion": 3
+  },
+  "checksums": {
+    "data.js": "sha256:1671cca657b40cdd29cd455422ad7eb908ffbe2d404888e7267fbb54c9f51b76"
+  },
+  "rules": [
+    "data.js is a verbatim copy. Never edit it to make the ledger pass.",
+    "Re-capturing the baseline requires bumping source.commit and the checksum in the same commit.",
+    "marsscape must not be archived, redirected, or marked legacy until the ledger reports 100% dispositioned and every disposition is Ported or an approved retirement."
+  ]
+}
