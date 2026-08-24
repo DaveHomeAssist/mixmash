@@ -1,6 +1,7 @@
 import { spriteOrEmoji } from './sprites.mjs';
 import {
   BUILD_TIERS,
+  EXPEDITION_NODE,
   BUILDINGS,
   CRAFT_RECIPES,
   CROPS,
@@ -507,6 +508,20 @@ function renderObjective() {
     : `Objective ${state.objective + 1}/${OBJECTIVES.length}: ${OBJECTIVES[state.objective].text}`;
 }
 
+// The node set is state-dependent: the Expedition Beacon and any discovered rich
+// veins only exist after the Great Storm. Rendering the static NODES array left the
+// beacon invisible, so Exploration could never be trained and rich veins could
+// neither be discovered nor assigned to a drone. Prefer the authority's catalog when
+// it is present, and reproduce it locally when offline.
+function visibleNodes() {
+  if (Array.isArray(state.catalog?.nodes)) return state.catalog.nodes;
+  return [
+    ...NODES,
+    ...(Array.isArray(state.extraNodes) ? state.extraNodes : []),
+    ...(state.postgame ? [EXPEDITION_NODE] : []),
+  ];
+}
+
 function nodeInCurrentRegion(node) {
   return (node.regionId || 'landing_basin') === state.currentRegion;
 }
@@ -514,7 +529,7 @@ function nodeInCurrentRegion(node) {
 function renderMap() {
   const fragments = [];
   fragments.push(`<canvas class="terrain-canvas" width="${CANVAS_W}" height="${CANVAS_H}" aria-hidden="true"></canvas>`);
-  for (const node of NODES.filter(nodeInCurrentRegion)) fragments.push(renderNode(node));
+  for (const node of visibleNodes().filter(nodeInCurrentRegion)) fragments.push(renderNode(node));
   // Buildings live only at the Landing Basin — hidden (and, server-side, rejected)
   // while away, same as MarsScape v0.4.0.
   if (state.currentRegion === 'landing_basin') {
@@ -824,8 +839,8 @@ function renderDepot() {
     : '<p>The pack is empty.</p>';
   const drones = state.drones.length
     ? state.drones.map((drone, i) => {
-        const node = drone.nodeId ? NODES.find((n) => n.id === drone.nodeId) : null;
-        const targets = NODES.filter((n) => (n.regionId || 'landing_basin') === 'landing_basin')
+        const node = drone.nodeId ? visibleNodes().find((n) => n.id === drone.nodeId) : null;
+        const targets = visibleNodes().filter((n) => (n.regionId || 'landing_basin') === 'landing_basin')
           .map((n) => `<button data-action="deployDrone" data-id="${n.id}">${escapeHtml(n.name)}</button>`).join('');
         return `<div class="skill-row"><span>Drone ${i + 1}</span><b>${node ? escapeHtml(node.name) : 'idle'}</b></div>${node ? '' : `<div class="skill-list">${targets}</div>`}`;
       }).join('')
@@ -929,7 +944,7 @@ function drawTerrain(canvas) {
       drawTile(ctx, x, y);
     }
   }
-  for (const node of NODES.filter(nodeInCurrentRegion)) drawNodeModel(ctx, node);
+  for (const node of visibleNodes().filter(nodeInCurrentRegion)) drawNodeModel(ctx, node);
   if (state.currentRegion === 'landing_basin') {
     for (const building of BUILDINGS) drawBuildingModel(ctx, building);
   }

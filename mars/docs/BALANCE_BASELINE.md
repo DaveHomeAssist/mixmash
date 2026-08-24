@@ -133,6 +133,10 @@ equipment bonuses — gear makes real play faster than these tables.
 surge softening at 40, emergency beacon at 50) plus suit O2 efficiency give late-game
 colonists real storm tools.
 
+## Regression check (vs committed baseline)
+
+No method lost more than 10% xp/hr against the committed baseline.
+
 ## Verdicts
 
 - PASS — Mining flattening check
@@ -140,3 +144,4 @@ colonists real storm tools.
 - PASS — Mining 99 in 30-40 focused hours
 - PASS — Zero NO SOURCE / NO SINK flags
 - PASS — Rover and Piloting measurably cut travel time
+- PASS — No method lost more than 10% xp/hr

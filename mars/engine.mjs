@@ -1181,6 +1181,10 @@ function deployDrone(state, nodeId) {
 
 function startStorm(state, now) {
   if (state.storm.status === 'won' || state.victory) throw new GameError('STORM_DONE', 'The Great Storm is already behind you.');
+  const faulted = faultedBuildings(state);
+  if (faulted.length) {
+    throw new GameError('SYSTEM_FAULTED', `Service ${faulted.join(' and ')} before the storm — a faulted structure produces nothing.`);
+  }
   if (!allBuildingsOnline(state)) throw new GameError('COLONY_INCOMPLETE', 'All colony systems must be online before the storm.');
   if (state.meters.oxygen < 70 || state.meters.power < 70) {
     throw new GameError('RESERVES_LOW', 'Start with oxygen and power at 70% or higher.');
@@ -1260,8 +1264,14 @@ function addEvent(state, tone, text) {
   state.events = [{ tone, text }, ...state.events].slice(0, 24);
 }
 
+// "Online" means built AND not faulted. Overclock can trip a structure offline, and
+// passiveRates already treats a fault as producing nothing — so without the fault
+// check the storm could be started with a dead reactor still counted as ready.
 function allBuildingsOnline(state) {
-  return BUILDINGS.every((b) => !!state.built[b.id]);
+  return BUILDINGS.every((b) => state.built[b.id] && !state.fault[b.id]);
+}
+function faultedBuildings(state) {
+  return BUILDINGS.filter((b) => state.built[b.id] && state.fault[b.id]).map((b) => b.name);
 }
 function buildingName(id) {
   return BUILDINGS.find((b) => b.id === id)?.name || id;

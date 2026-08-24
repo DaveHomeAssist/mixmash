@@ -249,3 +249,32 @@ test('servicing is paced like every other repeatable action', () => {
   const later = applyCommand(first, { id: 's3', type: 'service', buildingId: 'habitat' }, first.busyUntil + 1).state;
   assert.ok(later.skills.engineering.xp > xpAfterOne, 'servicing still works after the pacing window');
 });
+
+test('a faulted structure blocks the storm instead of counting as online', () => {
+  // Codex review: passiveRates treats a fault as producing nothing, but the storm
+  // readiness predicate only checked `built` — so overclock could fault the reactor
+  // and the run would still start with a dead structure counted as ready.
+  const NOW = 1_700_000_000_000;
+  const state = createState(NOW);
+  for (const id of ['depot', 'solar', 'water', 'machine', 'greenhouse', 'lab', 'reactor']) state.built[id] = true;
+  state.meters = { oxygen: 100, power: 100 };
+
+  const ok = applyCommand(state, { id: 'st1', type: 'startStorm' }, NOW).state;
+  assert.equal(ok.storm.status, 'active', 'a fully online colony can start the storm');
+
+  const faulted = createState(NOW);
+  for (const id of ['depot', 'solar', 'water', 'machine', 'greenhouse', 'lab', 'reactor']) faulted.built[id] = true;
+  faulted.meters = { oxygen: 100, power: 100 };
+  faulted.fault.reactor = true;
+  assert.throws(
+    () => applyCommand(faulted, { id: 'st2', type: 'startStorm' }, NOW),
+    (err) => err.code === 'SYSTEM_FAULTED' && /Fusion Reactor/.test(err.message),
+    'a faulted reactor must block the storm and say which structure',
+  );
+
+  // servicing it clears the fault and re-opens the storm
+  const serviced = applyCommand(faulted, { id: 'sv', type: 'service', buildingId: 'reactor' }, NOW).state;
+  serviced.meters = { oxygen: 100, power: 100 };
+  const after = applyCommand(serviced, { id: 'st3', type: 'startStorm' }, serviced.busyUntil + 1).state;
+  assert.equal(after.storm.status, 'active');
+});

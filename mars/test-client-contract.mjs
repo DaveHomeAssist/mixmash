@@ -63,3 +63,16 @@ test('the v3 storage keys are still read so a key bump cannot orphan a colony', 
   assert.ok(source.includes('localStorage.getItem(LEGACY_SESSION_KEY)'), 'the v3 session id must be adopted');
   assert.ok(source.includes('readEnvelopeAt(LEGACY_STORAGE_KEY)'), 'the v3 envelope must be read');
 });
+
+test('the client renders the state-dependent postgame nodes, not the static array', () => {
+  // Codex review: renderMap, the canvas draw and the drone target list all iterated
+  // the static NODES array, so the Expedition Beacon was never rendered — Exploration
+  // could not be trained, and rich veins could not be discovered or assigned.
+  assert.match(source, /function visibleNodes\(\)/, 'a dynamic node source must exist');
+  assert.ok(source.includes('EXPEDITION_NODE'), 'the postgame beacon must be reachable client-side');
+
+  // No render path may still filter the static array directly.
+  const staticUses = [...source.matchAll(/\bNODES\.(filter|find)\(/g)];
+  assert.deepEqual(staticUses.map((m) => m[0]), [],
+    'every node lookup should go through visibleNodes()');
+});

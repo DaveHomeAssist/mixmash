@@ -586,6 +586,7 @@ async function createJsonStore() {
         state: sanitizeState(record.state),
         createdAt: Number(record.createdAt || Date.now()),
         updatedAt: Number(record.updatedAt || Date.now()),
+        legacyOriginal: record.legacyOriginal ?? null,
       };
     },
     async set(sessionId, record) {
@@ -593,6 +594,7 @@ async function createJsonStore() {
         state: sanitizeState(record.state),
         createdAt: Number(record.createdAt || Date.now()),
         updatedAt: Number(record.updatedAt || Date.now()),
+        legacyOriginal: record.legacyOriginal ?? null,
       };
       await mkdir(dirname(LEGACY_DATA_FILE), { recursive: true });
       await writeFile(LEGACY_DATA_FILE, `${JSON.stringify(data, null, 2)}\n`, 'utf8');

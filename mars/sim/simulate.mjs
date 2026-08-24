@@ -6,8 +6,13 @@
 //
 // A regression is any method losing >10% xp/hr, any new NO SOURCE / NO SINK flag, or
 // any verdict flipping to FAIL. Exits non-zero when a verdict fails, so CI catches it.
+//
+// The 10% rule is enforced against a committed machine-readable baseline
+// (mars/docs/balance-baseline.json), not just asserted in prose: a nerf to a single
+// method used to rewrite the report and still exit 0. Run with `--accept` to adopt
+// the current rates as the new baseline when a change is deliberate.
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -22,6 +27,10 @@ const lines = [];
 const out = (s = '') => lines.push(s);
 const verdicts = [];
 const num = (n) => n.toLocaleString('en-US');
+const ACCEPT = process.argv.includes('--accept');
+const BASELINE_JSON = resolve(HERE, '../docs/balance-baseline.json');
+const BANDS = [1, 10, 20, 25, 30, 40, 50, 55, 65, 75, 85, 99];
+const rates = {};
 
 // Focused-play assumptions: best pick allowed at the level, Reinforced Drills from
 // L30, Deep Drilling / Cryo Insulation from L55, no equipment bonuses.
@@ -84,8 +93,10 @@ for (const [skillKey, label] of [['mining', 'Mining'], ['water', 'Ice Harvesting
   out('');
   out('| Level | Best method | Ticks | Quality | xp/hr | items/hr |');
   out('|---|---|---:|---:|---:|---:|');
-  for (const lvl of [1, 10, 20, 25, 30, 40, 50, 55, 65, 75, 85, 99]) {
+  rates[skillKey] = {};
+  for (const lvl of BANDS) {
     const b = bestRate(skillKey, lvl);
+    rates[skillKey][lvl] = b.xpHr;
     out(`| ${lvl} | ${b.node.name} | ${b.need} | ${(b.crit * 100).toFixed(1)}% | ${num(b.xpHr)} | ${num(b.itemsHr)} |`);
   }
   out('');
@@ -229,6 +240,43 @@ out('surge softening at 40, emergency beacon at 50) plus suit O2 efficiency give
 out('colonists real storm tools.');
 out('');
 
+/* regression check against the committed baseline ---------------------------- */
+const REGRESSION_THRESHOLD = 0.10;
+let baseline = null;
+if (existsSync(BASELINE_JSON)) {
+  try { baseline = JSON.parse(readFileSync(BASELINE_JSON, 'utf8')); } catch { baseline = null; }
+}
+out('## Regression check (vs committed baseline)');
+out('');
+if (!baseline) {
+  out('No committed baseline found — writing one. Future runs compare against it.');
+  verdicts.push([`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr`, true]);
+} else {
+  const drops = [];
+  for (const [skillKey, bands] of Object.entries(rates)) {
+    for (const [lvl, current] of Object.entries(bands)) {
+      const prior = baseline.rates?.[skillKey]?.[lvl];
+      if (!Number.isFinite(prior) || prior <= 0) continue;
+      const delta = (current - prior) / prior;
+      if (delta < -REGRESSION_THRESHOLD) {
+        drops.push({ skillKey, lvl, prior, current, pct: (delta * 100).toFixed(1) });
+      }
+    }
+  }
+  if (drops.length) {
+    out('| Method | Level | Baseline xp/hr | Now | Change |');
+    out('|---|---:|---:|---:|---:|');
+    for (const d of drops) out(`| ${d.skillKey} | ${d.lvl} | ${num(d.prior)} | ${num(d.current)} | ${d.pct}% |`);
+    out('');
+    out(`**FAIL** — ${drops.length} method/level band(s) lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr.`);
+    out('If the change is deliberate, re-run with `npm run sim -- --accept`.');
+  } else {
+    out(`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr against the committed baseline.`);
+  }
+  verdicts.push([`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr`, drops.length === 0]);
+}
+out('');
+
 /* verdicts ----------------------------------------------------------------- */
 out('## Verdicts');
 out('');
@@ -241,5 +289,13 @@ mkdirSync(resolve(HERE, '../docs'), { recursive: true });
 while (lines.length && lines[lines.length - 1] === '') lines.pop();
 writeFileSync(resolve(HERE, '../docs/BALANCE_BASELINE.md'), `${lines.join('\n')}\n`);
 console.log('wrote mars/docs/BALANCE_BASELINE.md');
+
+// Only write the machine baseline when there is nothing to compare against yet, or
+// when the change is explicitly accepted — otherwise a regression would overwrite
+// the very numbers meant to catch it.
+if (!baseline || ACCEPT) {
+  writeFileSync(BASELINE_JSON, `${JSON.stringify({ threshold: REGRESSION_THRESHOLD, rates }, null, 2)}\n`);
+  console.log(`wrote mars/docs/balance-baseline.json${ACCEPT ? ' (accepted)' : ''}`);
+}
 for (const [name, ok] of verdicts) console.log(`${ok ? 'PASS' : 'FAIL'} - ${name}`);
 process.exit(verdicts.some(([, ok]) => !ok) ? 1 : 0);
