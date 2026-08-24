@@ -1010,3 +1010,18 @@ a:focus-visible {
   font-size: 0.86rem;
   line-height: 1.35;
 }
+
+/* Ported MarsScape sprites: pixel maps rendered to crisp-edge SVG, with an emoji
+   fallback for items that have no authored sprite. */
+.pspr {
+  display: block;
+  margin: 0 auto 2px;
+  image-rendering: pixelated;
+}
+.pspr-emoji {
+  text-align: center;
+}
+.slot .pspr {
+  height: 20px;
+  width: auto;
+}

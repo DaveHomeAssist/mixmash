@@ -44,6 +44,7 @@ export function parseLegacySave(input) {
   if (typeof input !== 'string' || !input.trim()) {
     throw new LegacyImportError('EMPTY', 'Paste a MarsScape save export to import.');
   }
+  const raw = input;
   const text = input.trim();
   let parsed = null;
   try {
@@ -58,11 +59,20 @@ export function parseLegacySave(input) {
       throw new LegacyImportError('UNREADABLE', 'That is not a readable MarsScape save (expected JSON or a base64 save code).');
     }
   }
-  // Unwrap a MixKit save envelope if the export came through the shared save store.
-  if (parsed && typeof parsed === 'object' && parsed.state && parsed.ns) parsed = parsed.state;
+  // Unwrap the two envelope shapes an export can arrive in: the MixKit save store's
+  // `{ns, state}`, and this client's own local envelope `{state, hmacVersion, ...}`.
+  // Missing the second one is what made a real v3 export unreadable.
+  if (parsed && typeof parsed === 'object' && parsed.state
+    && (parsed.ns || parsed.hmacVersion || parsed.signature || parsed.mode)) {
+    parsed = parsed.state;
+  }
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
     throw new LegacyImportError('NOT_A_SAVE', 'That save did not decode to a MarsScape save object.');
   }
+  // A mixmash engine save is a different thing from a standalone MarsScape save: its
+  // fields are already canonical, so it upgrades through the sanitizer rather than
+  // the field-by-field converter below.
+  if (isEngineSave(parsed)) return { legacy: parsed, version: 0, kind: 'mixmash-engine', raw };
   const version = Number(parsed.v) || 1;
   if (version > LEGACY_MAX_VERSION) {
     throw new LegacyImportError('TOO_NEW', `Save version ${version} is newer than this importer understands (max ${LEGACY_MAX_VERSION}).`);
@@ -70,11 +80,36 @@ export function parseLegacySave(input) {
   if (!parsed.skills && !parsed.inv) {
     throw new LegacyImportError('NOT_A_SAVE', 'That save has neither skills nor an inventory — it is not a MarsScape save.');
   }
-  return { legacy: parsed, version };
+  return { legacy: parsed, version, kind: 'marsscape', raw };
+}
+
+// A prior mixmash engine save: canonical field names, an engine `version`.
+function isEngineSave(save) {
+  return !!save && typeof save === 'object'
+    && (save.inventory !== undefined || save.skills?.fabrication !== undefined);
 }
 
 export function convertLegacySave(input, now = Date.now()) {
-  const { legacy, version } = parseLegacySave(input);
+  const parsedSave = parseLegacySave(input);
+  const { legacy, version, raw } = parsedSave;
+
+  // Engine saves need migrating, not converting: the sanitizer already knows how to
+  // read an older engine shape and fill in what v4 added.
+  if (parsedSave.kind === 'mixmash-engine') {
+    const migrated = sanitizeState(legacy, now);
+    migrated.legacyVersion = `mixmash.engine.v${Number(legacy.version) || 3}`;
+    return {
+      state: migrated,
+      report: {
+        legacyVersion: Number(legacy.version) || 3,
+        sourceKind: 'mixmash-engine',
+        quarantine: [],
+        notes: ['Imported a mixmash engine save. Skills, inventory, structures, research and equipment carry over; the single pre-v4 greenhouse crop does not survive the move to plots.'],
+        summary: summarize(migrated),
+        original: raw,
+      },
+    };
+  }
   const state = createState(now);
   const quarantine = [];
   const notes = [];
@@ -234,11 +269,13 @@ export function convertLegacySave(input, now = Date.now()) {
     state: clean,
     report: {
       legacyVersion: version,
+      sourceKind: 'marsscape',
       quarantine,
       notes,
       summary: summarize(clean),
-      // The original, byte-for-byte, so an import is always reversible.
-      original: JSON.stringify(legacy),
+      // The caller's input byte-for-byte — not a re-serialization of the parse,
+      // which would silently drop anything the parser normalised away.
+      original: raw,
     },
   };
 }

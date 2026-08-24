@@ -706,7 +706,7 @@ export function applyCommand(input, command, now = Date.now()) {
     case 'smelt': smelt(state, command.recipeId, now); break;
     case 'craft': craft(state, command.recipeId); break;
     case 'purify': purify(state, now); break;
-    case 'service': service(state, command.buildingId); break;
+    case 'service': service(state, command.buildingId, now); break;
     case 'plant': plant(state, command.plotIndex, command.cropId, command.useFertilizer); break;
     case 'harvest': harvest(state, command.plotIndex); break;
     case 'treat': treat(state, command.plotIndex); break;
@@ -926,9 +926,15 @@ function setOverclock(state, on) {
     : 'Overclock disengaged.');
 }
 
-function service(state, buildingId) {
+// Servicing is a paced action like gathering and smelting: it grants xp and meter
+// recovery, so leaving it unpaced left the same command-spam hole in another
+// progression path.
+const SERVICE_TICKS = 5;
+
+function service(state, buildingId, now) {
   const building = BUILDINGS.find((b) => b.id === buildingId && state.built[b.id]);
   if (!building) throw new GameError('BUILDING_NOT_FOUND', 'Online building not found', 404);
+  requireIdle(state, now);
   const faulted = !!state.fault[building.id];
   if (faulted) delete state.fault[building.id];
   const level = state.skills.engineering.level;
@@ -936,6 +942,7 @@ function service(state, buildingId) {
   state.meters.oxygen = clamp(state.meters.oxygen + 3 + Math.floor(level / 3), 0, 100);
   gainSkill(state, 'engineering', 34);
   state.player = { x: building.x, y: building.y };
+  occupy(state, now, SERVICE_TICKS);
   addEvent(state, 'good', faulted
     ? `Cleared the fault on ${building.name}. Output restored.`
     : `Serviced ${building.name}.`);

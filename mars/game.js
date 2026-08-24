@@ -1,3 +1,4 @@
+import { spriteOrEmoji } from './sprites.mjs';
 import {
   BUILD_TIERS,
   BUILDINGS,
@@ -31,6 +32,12 @@ import {
 
 const STORAGE_KEY = 'marsscape.session.v4';
 const SESSION_KEY = 'marsscape.sessionId.v4';
+// Engine v4 changed the state shape, so the keys moved. The v3 keys are still read
+// once on load: without this the key bump silently orphans an existing colony and
+// mints a fresh session id, abandoning the authority session the player was on.
+// The v3 entries are never deleted — they stay as a rollback copy.
+const LEGACY_STORAGE_KEY = 'marsscape.session.v3';
+const LEGACY_SESSION_KEY = 'marsscape.sessionId.v3';
 const ASSET_MANIFEST = './assets/manifest.json';
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '']);
 const API_BASE = resolveApiBase();
@@ -725,7 +732,7 @@ function renderSkills() {
 }
 
 function renderPack() {
-  const slots = Object.entries(ITEMS).map(([id, item]) => `<div class="slot"><span>${escapeHtml(item.short)}</span><b>${state.inventory[id] || 0}</b></div>`).join('');
+  const slots = Object.entries(ITEMS).map(([id, item]) => `<div class="slot">${spriteOrEmoji(id, 2)}<span>${escapeHtml(item.short)}</span><b>${state.inventory[id] || 0}</b></div>`).join('');
   const stats = equipStats(state);
   const equipRows = EQUIP_SLOTS.map((slot) => `<div class="skill-row"><span>${escapeHtml(capitalize(slot))}</span><b>${state.equip[slot] ? escapeHtml(capitalize(state.equip[slot])) : 'empty'}</b></div>`).join('');
   const statLine = `O2 efficiency +${stats.o2}% · quality chance +${stats.crit}% · geode find +${stats.geode}% · travel speed +${stats.speed}% · pack capacity +${stats.pack} — craft gear at the Forge`;
@@ -1226,8 +1233,20 @@ async function writeLocalEnvelope(signature = '') {
 }
 
 async function readLocalEnvelope() {
+  const envelope = await readEnvelopeAt(STORAGE_KEY);
+  if (envelope) return envelope;
+  // One-time v3 read. The state runs through the canonical sanitizer downstream,
+  // which upgrades the v3 shape; the single in-progress greenhouse crop does not
+  // survive the move to plots, but skills, inventory, structures, research and
+  // equipment all do.
+  const legacy = await readEnvelopeAt(LEGACY_STORAGE_KEY);
+  if (legacy) legacy.migratedFrom = 'v3';
+  return legacy;
+}
+
+async function readEnvelopeAt(key) {
   try {
-    const envelope = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    const envelope = JSON.parse(localStorage.getItem(key) || 'null');
     if (!envelope?.state) return null;
     if (!(await verifyLocalEnvelope(envelope))) return null;
     return envelope;
@@ -1312,6 +1331,13 @@ function getOrCreateSessionId(force = false) {
   if (!force) {
     const existing = localStorage.getItem(SESSION_KEY);
     if (existing) return existing;
+    // Adopt the v3 session so the player resumes their authority session rather
+    // than being handed a new, empty one by the key bump.
+    const legacy = localStorage.getItem(LEGACY_SESSION_KEY);
+    if (legacy) {
+      localStorage.setItem(SESSION_KEY, legacy);
+      return legacy;
+    }
   }
   const next = crypto.randomUUID();
   localStorage.setItem(SESSION_KEY, next);
@@ -1334,15 +1360,30 @@ function localEnvelopePayload(envelope) {
   });
 }
 
+// Every field a command can carry, with its type. A queued offline command is
+// replayed verbatim against the authority, so anything dropped here is silently
+// lost: a `deposit` stripped of itemId/qty replays as a BAD_ITEM failure, and a
+// `plant` stripped of plotIndex would replay against the wrong plot. Adding a
+// command field means adding it here too — the offline-payload test enforces that.
+const COMMAND_FIELDS = {
+  id: 'string', type: 'string',
+  nodeId: 'string', buildingId: 'string', recipeId: 'string', projectId: 'string',
+  destRegion: 'string', cropId: 'string', itemId: 'string',
+  plotIndex: 'number', qty: 'number',
+  useFertilizer: 'boolean', on: 'boolean',
+};
+
 function cleanPendingCommands(commands) {
   if (!Array.isArray(commands)) return [];
   return commands.slice(-80).map((command) => {
     if (!command || typeof command !== 'object') return null;
     const clean = {};
     for (const [key, value] of Object.entries(command)) {
-      if (['id', 'type', 'nodeId', 'buildingId', 'recipeId', 'projectId', 'destRegion'].includes(key) && typeof value === 'string') {
-        clean[key] = value.slice(0, 80);
-      }
+      const kind = COMMAND_FIELDS[key];
+      if (!kind) continue;
+      if (kind === 'string' && typeof value === 'string') clean[key] = value.slice(0, 80);
+      else if (kind === 'number' && Number.isFinite(value)) clean[key] = Math.trunc(value);
+      else if (kind === 'boolean') clean[key] = !!value;
     }
     return clean.id && clean.type ? clean : null;
   }).filter(Boolean);

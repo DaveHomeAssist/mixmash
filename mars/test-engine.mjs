@@ -229,3 +229,23 @@ test('sanitizer falls back to safe defaults for tampered region/rover/equip/trav
   assert.equal(clean.equip.suit, null);
   assert.equal(clean.travel, null);
 });
+
+test('servicing is paced like every other repeatable action', () => {
+  // Review finding 5: service grants xp and meter recovery, so leaving it unpaced
+  // left the command-spam hole open in another progression path.
+  const NOW = 1_700_000_000_000;
+  const state = createState(NOW);
+  const first = applyCommand(state, { id: 's1', type: 'service', buildingId: 'habitat' }, NOW).state;
+  assert.ok(first.busyUntil > NOW, 'servicing occupies the colonist');
+  const xpAfterOne = first.skills.engineering.xp;
+
+  assert.throws(
+    () => applyCommand(first, { id: 's2', type: 'service', buildingId: 'habitat' }, NOW),
+    (err) => err.code === 'BUSY',
+    'a second service at the same instant must be refused',
+  );
+
+  // once the action has elapsed it works again
+  const later = applyCommand(first, { id: 's3', type: 'service', buildingId: 'habitat' }, first.busyUntil + 1).state;
+  assert.ok(later.skills.engineering.xp > xpAfterOne, 'servicing still works after the pacing window');
+});

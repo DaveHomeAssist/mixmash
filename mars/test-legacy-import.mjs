@@ -166,3 +166,52 @@ test('an imported save cannot smuggle state past the sanitizer', () => {
   assert.equal(state.skills.mining.level, levelForXp(state.skills.mining.xp), 'level always matches xp');
   assert.ok(state.skills.mining.level <= 99);
 });
+
+test('a real v3 client export imports instead of being rejected', () => {
+  // Review finding 1: the v4 key bump orphaned v3 progress and this envelope shape
+  // — the client's own local save, not a MixKit `{ns, state}` one — was refused as
+  // NOT_A_SAVE, so the advertised recovery path could not actually recover it.
+  const v3Envelope = {
+    mode: 'online',
+    signature: 'abc',
+    savedAt: 1_700_000_000_000,
+    hmacVersion: 1,
+    pendingCommands: [],
+    state: {
+      version: 3,
+      sol: 9,
+      meters: { oxygen: 62, power: 44 },
+      inventory: { iron_ore: 11, component: 4, titanium_bar: 3 },
+      skills: { mining: { xp: 200_000, level: 40 }, fabrication: { xp: 90_000, level: 32 } },
+      built: { habitat: true, solar: true, machine: true },
+      research: { drills: true },
+      equip: { suit: 'steel', boots: 'titan' },
+      gear: { pickaxe: 'titanium' },
+      rover: 'rover2',
+      currentRegion: 'dune_sea',
+    },
+  };
+  const { state, report } = convertLegacySave(JSON.stringify(v3Envelope));
+  assert.equal(report.sourceKind, 'mixmash-engine', 'an engine save migrates, it does not go through the field converter');
+  assert.equal(state.inventory.iron_ore, 11, 'inventory survives');
+  assert.equal(state.inventory.component, 4);
+  assert.equal(state.skills.mining.xp, 200_000, 'skill xp survives');
+  assert.equal(state.built.machine, true, 'structures survive');
+  assert.equal(state.research.drills, true, 'research survives');
+  assert.equal(state.equip.boots, 'titan', 'equipment survives');
+  assert.equal(state.gear.pickaxe, 'titanium');
+  assert.equal(state.rover, 'rover2');
+  assert.equal(state.currentRegion, 'dune_sea');
+  // v4 additions are filled in rather than left undefined
+  assert.ok(Array.isArray(state.farm.plots) && state.farm.plots.length >= 3);
+  assert.equal(typeof state.bank, 'object');
+  assert.ok(report.notes.some((n) => /greenhouse crop/i.test(n)), 'the one real loss is stated');
+});
+
+test('the rollback original is the caller input byte-for-byte, not a re-serialization', () => {
+  // Review finding 2: storing JSON.stringify(parsed) silently drops anything the
+  // parse normalised, so it is not the rollback artefact the docs promise.
+  const raw = '{"v":4,  "sol":3,\n  "skills":{"mining":{"xp":10}},  "inv":{"iron_ore":1}}';
+  const { report } = convertLegacySave(raw);
+  assert.equal(report.original, raw, 'the exact bytes handed in come back out');
+});

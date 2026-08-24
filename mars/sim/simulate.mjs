@@ -236,6 +236,9 @@ for (const [name, ok] of verdicts) out(`- ${ok ? 'PASS' : 'FAIL'} — ${name}`);
 out('');
 
 mkdirSync(resolve(HERE, '../docs'), { recursive: true });
+// Trim trailing blanks so the file ends with exactly one newline — otherwise every
+// regeneration reintroduces a `new blank line at EOF` that `git diff --check` flags.
+while (lines.length && lines[lines.length - 1] === '') lines.pop();
 writeFileSync(resolve(HERE, '../docs/BALANCE_BASELINE.md'), `${lines.join('\n')}\n`);
 console.log('wrote mars/docs/BALANCE_BASELINE.md');
 for (const [name, ok] of verdicts) console.log(`${ok ? 'PASS' : 'FAIL'} - ${name}`);

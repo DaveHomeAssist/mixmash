@@ -166,6 +166,20 @@ test('legacy import previews without writing, then commits a server-owned sessio
   const readBack = await jsonFetch(`/api/sessions/${committed.sessionId}`);
   assert.equal(readBack.state.bank.iron_bar, 90, 'banked resources survive the round trip');
   assert.equal(readBack.state.inventory.iron_ore, 7);
+
+  // Review finding 2: the handler attached `legacyOriginal` but both store adapters
+  // dropped it, so the promised rollback artefact never reached storage. Check the
+  // database directly rather than trusting the 201.
+  const { DatabaseSync } = await import('node:sqlite');
+  const db = new DatabaseSync(dbFile);
+  try {
+    const row = db.prepare('SELECT legacy_original FROM sessions WHERE id = ?').get(committed.sessionId);
+    assert.ok(row, 'the imported session is in the database');
+    assert.ok(row.legacy_original, 'the rollback original is persisted, not dropped by the adapter');
+    assert.deepEqual(JSON.parse(row.legacy_original), JSON.parse(legacy), 'and it round-trips to the original save');
+  } finally {
+    db.close();
+  }
 });
 
 test('a junk legacy save is refused with a reason, not a 500', async () => {

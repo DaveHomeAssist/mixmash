@@ -350,13 +350,18 @@ async function openSessionStore() {
 }
 
 function createSqliteStore(db) {
-  const select = db.prepare('SELECT state_json, created_at, updated_at FROM sessions WHERE id = ?');
+  // A legacy import is only reversible if the original save is actually stored, so
+  // the column is part of the record rather than something the handler passes and
+  // the adapter quietly drops.
+  try { db.exec('ALTER TABLE sessions ADD COLUMN legacy_original TEXT'); } catch { /* already present */ }
+  const select = db.prepare('SELECT state_json, created_at, updated_at, legacy_original FROM sessions WHERE id = ?');
   const upsert = db.prepare(`
-    INSERT INTO sessions (id, state_json, created_at, updated_at)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO sessions (id, state_json, created_at, updated_at, legacy_original)
+    VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
       state_json = excluded.state_json,
-      updated_at = excluded.updated_at
+      updated_at = excluded.updated_at,
+      legacy_original = COALESCE(excluded.legacy_original, sessions.legacy_original)
   `);
   return {
     kind: 'sqlite',
@@ -367,12 +372,14 @@ function createSqliteStore(db) {
         state: sanitizeState(JSON.parse(row.state_json)),
         createdAt: Number(row.created_at),
         updatedAt: Number(row.updated_at),
+        legacyOriginal: row.legacy_original ?? null,
       };
     },
     async set(sessionId, record) {
       const createdAt = Number(record.createdAt || Date.now());
       const updatedAt = Number(record.updatedAt || Date.now());
-      upsert.run(sessionId, JSON.stringify(sanitizeState(record.state)), createdAt, updatedAt);
+      upsert.run(sessionId, JSON.stringify(sanitizeState(record.state)), createdAt, updatedAt,
+        record.legacyOriginal ?? null);
     },
   };
 }
@@ -390,6 +397,7 @@ async function createBlobStore() {
         state: sanitizeState(record.state),
         createdAt: Number(record.createdAt || Date.now()),
         updatedAt: Number(record.updatedAt || Date.now()),
+        legacyOriginal: record.legacyOriginal ?? null,
       };
     },
     async set(sessionId, record) {
@@ -397,6 +405,7 @@ async function createBlobStore() {
         state: sanitizeState(record.state),
         createdAt: Number(record.createdAt || Date.now()),
         updatedAt: Number(record.updatedAt || Date.now()),
+        legacyOriginal: record.legacyOriginal ?? null,
       };
       await client.putJson(blobPath(sessionId), payload, { allowOverwrite: true });
     },
