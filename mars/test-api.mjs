@@ -125,3 +125,58 @@ async function jsonFetch(path, options = {}) {
   }
   return data;
 }
+
+test('legacy import previews without writing, then commits a server-owned session', async () => {
+  await waitForServer();
+  const legacy = JSON.stringify({
+    v: 4,
+    sol: 12,
+    skills: { mining: { xp: 100_000 }, fab: { xp: 50_000 } },
+    inv: { iron_ore: 7, part: 3, voidglass: 1 },
+    bank: { iron_bar: 90 },
+    built: { habitat: true, green: true },
+    research: { scrub: true },
+    quest: 6,
+  });
+
+  // 1. preview: reports the conversion and writes nothing
+  const preview = await jsonFetch('/api/sessions/import', {
+    method: 'POST',
+    body: JSON.stringify({ legacySave: legacy }),
+  });
+  assert.equal(preview.preview, true);
+  assert.equal(preview.sessionId, undefined, 'a preview must not create a session');
+  assert.equal(preview.report.quarantinedCount, 1, 'the unknown item is reported');
+  assert.equal(preview.report.quarantine[0].path, 'inv.voidglass');
+  assert.ok(preview.report.originalBytes > 0, 'the original is retained server-side');
+  assert.equal(preview.report.original, undefined, 'the raw save is not echoed back');
+  assert.equal(preview.state.inventory.component, 3, 'renames are applied in the preview');
+
+  // 2. commit: creates the session and it is readable afterwards
+  const committed = await jsonFetch('/api/sessions/import', {
+    method: 'POST',
+    body: JSON.stringify({ legacySave: legacy, commit: true }),
+  });
+  assert.equal(committed.preview, false);
+  assert.match(committed.sessionId, /^[a-f0-9-]{36}$/);
+  assert.equal(committed.state.built.greenhouse, true);
+  assert.equal(committed.state.research.scrubbers, true);
+  assert.equal(committed.state.objective, 6);
+
+  const readBack = await jsonFetch(`/api/sessions/${committed.sessionId}`);
+  assert.equal(readBack.state.bank.iron_bar, 90, 'banked resources survive the round trip');
+  assert.equal(readBack.state.inventory.iron_ore, 7);
+});
+
+test('a junk legacy save is refused with a reason, not a 500', async () => {
+  await waitForServer();
+  const response = await fetch(`http://127.0.0.1:${port}/api/sessions/import`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ legacySave: 'this is not a save' }),
+  });
+  assert.equal(response.status, 422);
+  const body = await response.json();
+  assert.equal(body.error.code, 'UNREADABLE');
+  assert.match(body.error.message, /MarsScape save/i);
+});

@@ -4,6 +4,7 @@ import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyCommand, createState, publicState, sanitizeState } from './engine.mjs';
+import { convertLegacySave, LegacyImportError } from './legacy-import.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_PORT = Number(process.env.PORT || process.env.MARSSCAPE_PORT || 8787);
@@ -89,6 +90,41 @@ async function handleApi(request, response, apiPath, requestId) {
       await store.set(sessionId, record);
     }
     return sendSession(response, sessionId, record.state);
+  }
+
+  // Legacy MarsScape import. Two-step by design: a preview never writes anything, and
+  // only an explicit `commit` creates a server-owned session. The original save is
+  // stored alongside the converted state so an import is always reversible.
+  if (request.method === 'POST' && apiPath === '/sessions/import') {
+    const body = await readJson(request);
+    let converted;
+    try {
+      converted = convertLegacySave(body.legacySave, Date.now());
+    } catch (error) {
+      if (error instanceof LegacyImportError) {
+        return sendJson(response, 422, problem(error.code, error.message, requestId));
+      }
+      throw error;
+    }
+    const { state, report } = converted;
+    if (!body.commit) {
+      return sendJson(response, 200, { preview: true, report: publicReport(report), state: publicState(state) });
+    }
+    const store = await getSessionStore();
+    const sessionId = randomUUID();
+    const now = Date.now();
+    await store.set(sessionId, {
+      state,
+      createdAt: now,
+      updatedAt: now,
+      legacyOriginal: report.original,
+    });
+    return sendJson(response, 201, {
+      preview: false,
+      sessionId,
+      report: publicReport(report),
+      state: publicState(state),
+    });
   }
 
   const sessionMatch = apiPath.match(/^\/sessions\/([a-f0-9-]{36})(?:\/commands)?$/i);
@@ -583,6 +619,18 @@ function rateLimit(request) {
   bucket.count += 1;
   rateBuckets.set(ip, bucket);
   return bucket.count <= RATE_LIMIT;
+}
+
+// The raw original stays server-side; the client gets the decision record only.
+function publicReport(report) {
+  return {
+    legacyVersion: report.legacyVersion,
+    summary: report.summary,
+    notes: report.notes,
+    quarantine: report.quarantine,
+    quarantinedCount: report.quarantine.length,
+    originalBytes: report.original.length,
+  };
 }
 
 function problem(code, message, requestId) {

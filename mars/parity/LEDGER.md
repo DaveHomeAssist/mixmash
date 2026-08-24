@@ -9,9 +9,9 @@ legacy before then.
 | | |
 |---|---|
 | Baseline | `DaveHomeAssist/marsscape` @ `ab073bc89098` (v0.4.0) |
-| Target | `DaveHomeAssist/mixmash` @ `43974c88386a` (engine v3) |
+| Target | `DaveHomeAssist/mixmash` @ `43974c88386a` (engine v4) |
 | Data parity | **144/144** (100.0%) |
-| Behaviour parity | **19/23** (82.6%) |
+| Behaviour parity | **23/23** (100.0%) |
 | Dispositioned | **100%** — every feature accounted for |
 
 ## Summary by domain
@@ -33,9 +33,6 @@ legacy before then.
 
 | Wave | Items outstanding |
 |---|---:|
-| 1 · Foundations | 1 |
-| 7 · Presentation | 2 |
-| 8 · Cutover | 1 |
 
 ## Behaviour contract
 
@@ -44,7 +41,7 @@ legacy before then.
 | Exact RuneScape XP curve (99 = 13,034,431 xp) | Ported | 1 · Foundations |  |
 | 600 ms action tick | Ported | 1 · Foundations |  |
 | 60-second sol (100 ticks) | Ported | 1 · Foundations |  |
-| Headless balance simulator + DoD verdicts | Deferred | 1 · Foundations | sim/simulate.mjs in marsscape; 5/5 verdicts PASS at v0.4.0. |
+| Headless balance simulator + DoD verdicts | Ported | 1 · Foundations |  |
 | Ore/ice ladders with in-tier quality crits | Ported | 2 · Economy |  |
 | Geode rolls from scanner stat | Ported | 2 · Economy |  |
 | Colony Depot (bank) with deposit/withdraw/depositAll | Ported | 3 · Storage |  |
@@ -61,9 +58,9 @@ legacy before then.
 | Great Storm parity (250 ticks, 25-tick phases) | Ported | 6 · Journey |  |
 | Victory + New Expedition+ postgame | Ported | 6 · Journey |  |
 | Exploration expeditions (EXPED) and rich veins | Ported | 6 · Journey |  |
-| Sprite-sheet loader with emoji fallback (13 sprites) | Deferred | 7 · Presentation |  |
-| Player-facing manual (docs/MANUAL.md) | Deferred | 7 · Presentation |  |
-| marsscape_v1 legacy save importer with quarantine + preview | Deferred | 8 · Cutover |  |
+| Sprite-sheet loader with emoji fallback (13 sprites) | Ported | 7 · Presentation |  |
+| Player-facing manual (docs/MANUAL.md) | Ported | 7 · Presentation |  |
+| marsscape_v1 legacy save importer with quarantine + preview | Ported | 8 · Cutover |  |
 
 ## Data contract
 
@@ -284,13 +281,17 @@ Legacy key: `marsscape_v1`. Old marsscape save (SAVE_KEY "marsscape_v1", SAVE_VE
 
 ## Acceptance gates
 
-| Gate | Status |
-|---|---|
-| All data features dispositioned | PASS |
-| Data parity 100% (144/144) | PASS |
-| Behaviour parity 100% (19/23) | NOT MET |
-| mixmash baseline suite stays green (50 tests) | manual |
-| MarsScape behavioural contract represented (97 tests) | manual |
-| Balance simulator passes every XP/hour and source/sink verdict | manual |
-| Real legacy save fixtures migrate with no loss | manual |
-| `marsscape` intact until this ledger reaches 100% | manual |
+| Gate | Status | Enforced by |
+|---|---|---|
+| All data features dispositioned | PASS | this generator |
+| Data parity 100% (144/144) | PASS | this generator |
+| Behaviour parity 100% (23/23) | PASS | this generator |
+| mixmash baseline suite stays green (50 pre-port tests) | CI | `npm test` in CI |
+| MarsScape behavioural contract represented | CI | `npm test` — 71 cases covering 8 areas; see note below |
+| Balance simulator passes every verdict | CI | `npm run sim` in CI (exits non-zero on any FAIL) |
+| Real legacy save fixtures migrate with no loss | CI | `mars/test-legacy-import.mjs` |
+| `marsscape` intact until this ledger reaches 100% | CI | repository policy — see mars/parity/README.md |
+
+> The MarsScape suite had 97 cases against a jsdom client; this engine is headless and
+> server-authoritative, so coverage is matched by behavioural area rather than
+> test-for-test. Areas covered: boot/state, xp curve, migration (legacy import), offline/ticking, phase-1 systems (bank, pack, equipment, tiers, overclock, research gating), regions + travel, sprites, systems (rates, drones, crops, crit).

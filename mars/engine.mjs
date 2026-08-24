@@ -125,30 +125,35 @@ const EQUIP_STATS = {
 };
 
 // 17 nodes. `lvl` is the skill gate (the ore/ice ladder); `yield` the base quantity.
+// MarsScape depletes every node after the same number of gathers and then respawns
+// it — there are no per-node charge counts (see src/main.js: `{charges:5, cd:0}`).
+// The balance baseline's xp/hr and time-to-99 are computed against this uniform model.
+export const NODE_CHARGES = 5;
+
 export const NODES = [
-  { id: 'iron-north', name: 'North Iron Seam', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 16, hard: 3, x: 2, y: 2, charges: 5 },
-  { id: 'iron-south', name: 'South Iron Seam', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 16, hard: 3, x: 3, y: 7, charges: 5 },
-  { id: 'iron-east', name: 'East Iron Seam', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 16, hard: 3, x: 8, y: 6, charges: 5 },
-  { id: 'copper-ridge', name: 'Copper Ridge', type: 'ore', item: 'copper_ore', skill: 'mining', xp: 26, hard: 4, lvl: 10, x: 7, y: 3, charges: 4 },
-  { id: 'copper-basin', name: 'Basin Copper', type: 'ore', item: 'copper_ore', skill: 'mining', xp: 26, hard: 4, lvl: 10, x: 1, y: 8, charges: 4 },
-  { id: 'ice-pocket', name: 'Ice Pocket', type: 'ice', item: 'ice', skill: 'water', xp: 20, hard: 3, x: 4, y: 3, charges: 5 },
-  { id: 'ice-scarp', name: 'Ice Scarp', type: 'ice', item: 'ice', skill: 'water', xp: 20, hard: 3, x: 8, y: 5, charges: 5 },
-  { id: 'permafrost-bed', name: 'Permafrost Bed', type: 'ice', item: 'ice', skill: 'water', xp: 48, hard: 5, lvl: 20, x: 4, y: 6, charges: 4 },
-  { id: 'brine-well', name: 'Brine Well', type: 'ice', item: 'ice', skill: 'water', xp: 90, hard: 6, lvl: 40, yieldBase: 2, x: 9, y: 7, charges: 3 },
-  { id: 'titanium-vein', name: 'Titanium Vein', type: 'ore', item: 'titanium_ore', skill: 'mining', xp: 55, hard: 6, lvl: 25, x: 5, y: 1, charges: 3, requiresBuilding: 'machine' },
-  { id: 'silicate-bed-north', name: 'Silicate Bed', type: 'ore', item: 'silicate_ore', skill: 'mining', xp: 80, hard: 7, lvl: 30, x: 6, y: 2, charges: 3 },
-  { id: 'silicate-bed-west', name: 'West Silicate Bed', type: 'ore', item: 'silicate_ore', skill: 'mining', xp: 80, hard: 7, lvl: 30, x: 1, y: 5, charges: 3 },
-  { id: 'rare-earth-seam', name: 'Rare-Earth Seam', type: 'ore', item: 'rare_ore', skill: 'mining', xp: 150, hard: 8, lvl: 55, x: 3, y: 2, charges: 3 },
-  { id: 'iridium-lode', name: 'Iridium Lode', type: 'ore', item: 'iridium_ore', skill: 'mining', xp: 205, hard: 10, lvl: 75, x: 7, y: 2, charges: 2 },
-  { id: 'dune-iron-scree', name: 'Iron Scree', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 18, hard: 2, yieldBase: 2, x: 2, y: 4, charges: 6, regionId: 'dune_sea' },
-  { id: 'dune-wreck-site', name: 'Wreck Site', type: 'salvage', item: 'component', skill: 'mining', xp: 74, hard: 7, x: 7, y: 6, charges: 3, regionId: 'dune_sea' },
-  { id: 'dune-silicate-dunes', name: 'Silicate Dunes', type: 'ore', item: 'silicate_ore', skill: 'mining', xp: 88, hard: 6, lvl: 30, yieldBase: 2, x: 4, y: 4, charges: 4, regionId: 'dune_sea' },
+  { id: 'iron-north', name: 'North Iron Seam', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 16, hard: 3, x: 2, y: 2, charges: NODE_CHARGES },
+  { id: 'iron-south', name: 'South Iron Seam', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 16, hard: 3, x: 3, y: 7, charges: NODE_CHARGES },
+  { id: 'iron-east', name: 'East Iron Seam', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 16, hard: 3, x: 8, y: 6, charges: NODE_CHARGES },
+  { id: 'copper-ridge', name: 'Copper Ridge', type: 'ore', item: 'copper_ore', skill: 'mining', xp: 26, hard: 4, lvl: 10, x: 7, y: 3, charges: NODE_CHARGES },
+  { id: 'copper-basin', name: 'Basin Copper', type: 'ore', item: 'copper_ore', skill: 'mining', xp: 26, hard: 4, lvl: 10, x: 1, y: 8, charges: NODE_CHARGES },
+  { id: 'ice-pocket', name: 'Ice Pocket', type: 'ice', item: 'ice', skill: 'water', xp: 20, hard: 3, x: 4, y: 3, charges: NODE_CHARGES },
+  { id: 'ice-scarp', name: 'Ice Scarp', type: 'ice', item: 'ice', skill: 'water', xp: 20, hard: 3, x: 8, y: 5, charges: NODE_CHARGES },
+  { id: 'permafrost-bed', name: 'Permafrost Bed', type: 'ice', item: 'ice', skill: 'water', xp: 48, hard: 5, lvl: 20, x: 4, y: 6, charges: NODE_CHARGES },
+  { id: 'brine-well', name: 'Brine Well', type: 'ice', item: 'ice', skill: 'water', xp: 90, hard: 6, lvl: 40, yieldBase: 2, x: 9, y: 7, charges: NODE_CHARGES },
+  { id: 'titanium-vein', name: 'Titanium Vein', type: 'ore', item: 'titanium_ore', skill: 'mining', xp: 55, hard: 6, lvl: 25, x: 5, y: 1, charges: NODE_CHARGES, requiresBuilding: 'machine' },
+  { id: 'silicate-bed-north', name: 'Silicate Bed', type: 'ore', item: 'silicate_ore', skill: 'mining', xp: 80, hard: 7, lvl: 30, x: 6, y: 2, charges: NODE_CHARGES },
+  { id: 'silicate-bed-west', name: 'West Silicate Bed', type: 'ore', item: 'silicate_ore', skill: 'mining', xp: 80, hard: 7, lvl: 30, x: 1, y: 5, charges: NODE_CHARGES },
+  { id: 'rare-earth-seam', name: 'Rare-Earth Seam', type: 'ore', item: 'rare_ore', skill: 'mining', xp: 150, hard: 8, lvl: 55, x: 3, y: 2, charges: NODE_CHARGES },
+  { id: 'iridium-lode', name: 'Iridium Lode', type: 'ore', item: 'iridium_ore', skill: 'mining', xp: 205, hard: 10, lvl: 75, x: 7, y: 2, charges: NODE_CHARGES },
+  { id: 'dune-iron-scree', name: 'Iron Scree', type: 'ore', item: 'iron_ore', skill: 'mining', xp: 18, hard: 2, yieldBase: 2, x: 2, y: 4, charges: NODE_CHARGES, regionId: 'dune_sea' },
+  { id: 'dune-wreck-site', name: 'Wreck Site', type: 'salvage', item: 'component', skill: 'mining', xp: 74, hard: 7, x: 7, y: 6, charges: NODE_CHARGES, regionId: 'dune_sea' },
+  { id: 'dune-silicate-dunes', name: 'Silicate Dunes', type: 'ore', item: 'silicate_ore', skill: 'mining', xp: 88, hard: 6, lvl: 30, yieldBase: 2, x: 4, y: 4, charges: NODE_CHARGES, regionId: 'dune_sea' },
 ];
 
 // The postgame Exploration beacon — a node that only exists after the Great Storm.
 export const EXPEDITION_NODE = {
   id: 'expedition-beacon', name: 'Expedition Beacon', type: 'explore', item: 'component',
-  skill: 'exploration', xp: 120, hard: 8, x: 9, y: 3, charges: 4,
+  skill: 'exploration', xp: 120, hard: 8, x: 9, y: 3, charges: NODE_CHARGES,
 };
 
 export const BUILDINGS = [
@@ -192,12 +197,12 @@ export const FAULT_CHANCE = 0.0025;
 export const FAULTABLE = ['habitat', 'solar', 'greenhouse', 'reactor'];
 
 export const SMELT_RECIPES = [
-  { id: 'smelt-iron', name: 'Smelt Iron Bar', input: { iron_ore: 1 }, output: { iron_bar: 1 }, power: 2, xp: 18, requiresBuilding: null },
-  { id: 'smelt-copper', name: 'Smelt Copper Bar', input: { copper_ore: 1 }, output: { copper_bar: 1 }, power: 2, xp: 24, requiresBuilding: null },
-  { id: 'smelt-titanium', name: 'Smelt Titanium Bar', input: { titanium_ore: 1 }, output: { titanium_bar: 1 }, power: 4, xp: 52, requiresBuilding: 'machine' },
-  { id: 'smelt-glass', name: 'Fuse Silicate Glass', input: { silicate_ore: 1 }, output: { glass: 1 }, power: 3, xp: 64, requiresBuilding: 'machine' },
-  { id: 'smelt-alloy', name: 'Smelt RE Alloy', input: { rare_ore: 1 }, output: { alloy: 1 }, power: 4, xp: 120, requiresBuilding: 'machine' },
-  { id: 'smelt-iridium', name: 'Smelt Iridium Bar', input: { iridium_ore: 1 }, output: { iridium_bar: 1 }, power: 6, xp: 210, requiresBuilding: 'machine', requiresResearch: 'iridium_refining' },
+  { id: 'smelt-iron', ticks: 4, name: 'Smelt Iron Bar', input: { iron_ore: 1 }, output: { iron_bar: 1 }, power: 2, xp: 18, requiresBuilding: null },
+  { id: 'smelt-copper', ticks: 5, name: 'Smelt Copper Bar', input: { copper_ore: 1 }, output: { copper_bar: 1 }, power: 2, xp: 24, requiresBuilding: null },
+  { id: 'smelt-titanium', ticks: 7, name: 'Smelt Titanium Bar', input: { titanium_ore: 1 }, output: { titanium_bar: 1 }, power: 4, xp: 52, requiresBuilding: 'machine' },
+  { id: 'smelt-glass', ticks: 5, name: 'Fuse Silicate Glass', input: { silicate_ore: 1 }, output: { glass: 1 }, power: 3, xp: 64, requiresBuilding: 'machine' },
+  { id: 'smelt-alloy', ticks: 6, name: 'Smelt RE Alloy', input: { rare_ore: 1 }, output: { alloy: 1 }, power: 4, xp: 120, requiresBuilding: 'machine' },
+  { id: 'smelt-iridium', ticks: 8, name: 'Smelt Iridium Bar', input: { iridium_ore: 1 }, output: { iridium_bar: 1 }, power: 6, xp: 210, requiresBuilding: 'machine', requiresResearch: 'iridium_refining' },
 ];
 
 export const CRAFT_RECIPES = [
@@ -355,6 +360,7 @@ export function createState(now = Date.now()) {
     objective: 0,
     stats: {},
     beaconSol: 0,
+    busyUntil: 0,
     player: { x: 5, y: 9 },
     currentRegion: 'landing_basin',
     rover: 'buggy',
@@ -459,6 +465,7 @@ export function sanitizeState(raw, now = Date.now()) {
     objective: int(raw.objective, 0, OBJECTIVES.length),
     stats: cleanStats(raw.stats),
     beaconSol: int(raw.beaconSol, 0, 99_999),
+    busyUntil: int(raw.busyUntil, 0, now + 86_400_000),
     player: { x: int(raw.player?.x, 0, 10), y: int(raw.player?.y, 0, 10) },
     currentRegion: REGION_IDS.includes(raw.currentRegion) ? raw.currentRegion : 'landing_basin',
     rover: ROVER_IDS.includes(raw.rover) ? raw.rover : 'buggy',
@@ -696,9 +703,9 @@ export function applyCommand(input, command, now = Date.now()) {
     case 'build': build(state, command.buildingId); break;
     case 'upgrade': upgrade(state, command.buildingId); break;
     case 'overclock': setOverclock(state, command.on); break;
-    case 'smelt': smelt(state, command.recipeId); break;
+    case 'smelt': smelt(state, command.recipeId, now); break;
     case 'craft': craft(state, command.recipeId); break;
-    case 'purify': purify(state); break;
+    case 'purify': purify(state, now); break;
     case 'service': service(state, command.buildingId); break;
     case 'plant': plant(state, command.plotIndex, command.cropId, command.useFertilizer); break;
     case 'harvest': harvest(state, command.plotIndex); break;
@@ -752,6 +759,35 @@ export function publicState(input, now = Date.now()) {
 
 // Quality "crit" doubles yield and xp, and grows within a tier — so leveling past a
 // node's gate keeps paying off rather than only unlocking the next node.
+// Action durations, in 600 ms ticks. These are the pacing model the whole balance
+// baseline is computed from, and the authority enforces them: without a duration a
+// client could spam `gather` and mint xp as fast as it could send requests.
+export function gatherTicks(state, node) {
+  const skill = node.type === 'ice' ? 'water' : 'mining';
+  let base = node.hard || 3;
+  if (node.type !== 'ice') base = Math.round(base * PICKS[state.gear.pickaxe].mult);
+  base -= Math.floor(state.skills[skill].level / 12);
+  if (state.research.drills) base -= 1;
+  return Math.max(2, base);
+}
+
+export function smeltTicks(state, recipe) {
+  let need = recipe.ticks || 4;
+  if (state.research.loaders) need -= 1;
+  const tier = state.tier.machine || 1;
+  need -= (tier >= 2 ? 1 : 0) + (tier >= 3 ? 1 : 0);
+  return Math.max(2, need);
+}
+
+function requireIdle(state, now) {
+  if (state.busyUntil && now < state.busyUntil) {
+    throw new GameError('BUSY', 'Still working on the previous action.', 429);
+  }
+}
+function occupy(state, now, ticks) {
+  state.busyUntil = now + ticks * TICK_MS;
+}
+
 export function critChance(state, node) {
   const skill = node.type === 'ice' ? 'water' : 'mining';
   const level = state.skills[skill].level;
@@ -783,6 +819,7 @@ function gather(state, nodeId, now) {
   if (node.lvl && state.skills[skill].level < node.lvl) {
     throw new GameError('LEVEL_LOW', `${node.name} requires ${SKILLS[skill].name} level ${node.lvl}.`);
   }
+  requireIdle(state, now);
   const entry = state.nodes[node.id] || { charges: node.charges, cooldownUntil: 0 };
   if (entry.cooldownUntil > now) throw new GameError('NODE_COOLDOWN', `${node.name} is respawning.`);
   if (entry.charges <= 0) {
@@ -817,6 +854,7 @@ function gather(state, nodeId, now) {
   }
   state.nodes[node.id] = entry;
   state.player = { x: node.x, y: node.y };
+  occupy(state, now, gatherTicks(state, node));
   addEvent(state, 'good', `Gathered ${qty} ${ITEMS[node.item].name}${crit ? ' (quality strike)' : ''}.`);
 }
 
@@ -829,7 +867,7 @@ function discoverRichVein(state) {
   const index = state.extraNodes.length + 1;
   const vein = {
     id: `rich-vein-${index}`, name: `Rich Vein ${index}`, type: 'ore', item: 'titanium_ore',
-    skill: 'mining', xp: 120, hard: 6, lvl: 25, yieldBase: 2, x: 1 + index, y: 1, charges: 4,
+    skill: 'mining', xp: 120, hard: 6, lvl: 25, yieldBase: 2, x: 1 + index, y: 1, charges: NODE_CHARGES,
   };
   state.extraNodes.push(vein);
   state.nodes[vein.id] = { charges: vein.charges, cooldownUntil: 0 };
@@ -903,13 +941,14 @@ function service(state, buildingId) {
     : `Serviced ${building.name}.`);
 }
 
-function smelt(state, recipeId) {
+function smelt(state, recipeId, now) {
   const recipe = SMELT_RECIPES.find((r) => r.id === recipeId);
   if (!recipe) throw new GameError('RECIPE_NOT_FOUND', 'Smelting recipe not found', 404);
   if (state.currentRegion !== 'landing_basin') {
     throw new GameError('AWAY_FROM_BASIN', 'The Machine Shop is back at the Landing Basin. Drive home to smelt.');
   }
   requireUnlocks(state, recipe);
+  requireIdle(state, now);
   if (state.meters.power < recipe.power) throw new GameError('POWER_LOW', 'Power too low to run the machine shop.');
   spendItems(state, recipe.input);
   const multiplier = state.research.loaders && Math.random() < 0.12 ? 2 : 1;
@@ -918,6 +957,7 @@ function smelt(state, recipeId) {
   state.meters.power = clamp(state.meters.power - recipe.power, 0, 100);
   gainSkill(state, 'fabrication', recipe.xp);
   state.player = { x: 7, y: 8 };
+  occupy(state, now, smeltTicks(state, recipe));
   addEvent(state, 'good', `${recipe.name} complete${multiplier > 1 ? ' with duplicate output' : ''}.`);
 }
 
@@ -981,13 +1021,15 @@ function applyGear(state, gear) {
   }
 }
 
-function purify(state) {
+function purify(state, now) {
   if (!state.built.water) throw new GameError('BUILDING_REQUIRED', 'Build the Water Plant first.');
+  requireIdle(state, now);
   const yieldQty = 1 + (state.tier.water >= 2 ? 1 : 0) + (state.tier.water >= 3 ? 1 : 0);
   spendItems(state, { ice: 1 });
   addItem(state, 'water', yieldQty);
   gainSkill(state, 'water', 16);
   state.player = { x: 2, y: 6 };
+  occupy(state, now, Math.max(2, 4 - (state.tier.water >= 2 ? 1 : 0)));
   addEvent(state, 'good', `Purified ${yieldQty} Water.`);
 }
 
@@ -1278,7 +1320,7 @@ function cleanExtraNodes(raw) {
     .map((n) => ({
       id: n.id, name: String(n.name || n.id).slice(0, 40), type: 'ore', item: n.item,
       skill: 'mining', xp: int(n.xp, 1, 400), hard: int(n.hard, 1, 12), lvl: int(n.lvl, 1, 99),
-      yieldBase: int(n.yieldBase, 1, 3), x: int(n.x, 0, 10), y: int(n.y, 0, 10), charges: int(n.charges, 1, 8),
+      yieldBase: int(n.yieldBase, 1, 3), x: int(n.x, 0, 10), y: int(n.y, 0, 10), charges: NODE_CHARGES,
     }));
 }
 function cleanPlots(raw, state) {

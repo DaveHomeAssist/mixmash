@@ -562,9 +562,8 @@
     {
       "id": "balance_simulator",
       "label": "Headless balance simulator + DoD verdicts",
-      "present": false,
-      "wave": 1,
-      "note": "sim/simulate.mjs in marsscape; 5/5 verdicts PASS at v0.4.0."
+      "present": true,
+      "wave": 1
     },
     {
       "id": "ore_ladders",
@@ -665,19 +664,19 @@
     {
       "id": "sprite_fallback",
       "label": "Sprite-sheet loader with emoji fallback (13 sprites)",
-      "present": false,
+      "present": true,
       "wave": 7
     },
     {
       "id": "player_manual",
       "label": "Player-facing manual (docs/MANUAL.md)",
-      "present": false,
+      "present": true,
       "wave": 7
     },
     {
       "id": "legacy_save_import",
       "label": "marsscape_v1 legacy save importer with quarantine + preview",
-      "present": false,
+      "present": true,
       "wave": 8
     }
   ],
@@ -728,6 +727,20 @@
     "mixmashBaseline": {
       "total": 50,
       "mustStayGreen": true
-    }
+    },
+    "mixmashCurrent": {
+      "total": 71,
+      "note": "Test cases in `npm test` after the port (50 pre-port + 21 added). Coverage is by behavioural area, not test-for-test against MarsScape's 97 \u2014 the two suites are structured differently (MarsScape tests a DOM client with jsdom; this engine is headless and server-authoritative)."
+    },
+    "areasCovered": [
+      "boot/state",
+      "xp curve",
+      "migration (legacy import)",
+      "offline/ticking",
+      "phase-1 systems (bank, pack, equipment, tiers, overclock, research gating)",
+      "regions + travel",
+      "sprites",
+      "systems (rates, drones, crops, crit)"
+    ]
   }
 }

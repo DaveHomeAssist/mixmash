@@ -31,3 +31,22 @@ TODO:
 
 TODO:
 - Wave 1 (Foundations): RuneScape XP curve, 600 ms tick, 60-second sols, balance simulator.
+
+2026-08-24 (port waves 1-8 — complete):
+- Ported every remaining MarsScape feature into the server-authoritative engine.
+  Data parity 144/144, behaviour parity 23/23, zero retirements.
+- Engine v4: RuneScape XP curve (99 = 13,034,431), 600 ms tick, 100-tick sols,
+  27 items, 10 skills, 17 nodes, 8 buildings, 6 smelt + 37 craft recipes,
+  20 research projects in 3 gated tiers, 5 crops on plots, 14 objectives.
+- Colony Depot, slot-based pack, drones, building tiers I-III, overclock + faults,
+  crop blight, Great Storm parity, victory into New Expedition+, expedition treks.
+- Added the balance simulator (5/5 verdicts PASS, Mining 99 in 31.6 focused hours —
+  the same figure the source recorded), the sprite module with emoji fallback, the
+  player manual, and the legacy `marsscape_v1` save importer with a preview step,
+  quarantine reporting and rollback.
+- Authority now paces actions (gatherTicks/smeltTicks): before this, gather was
+  limited only by node charges, so a client could spam it.
+- npm test 71 pass; npm run sim exits 0; both wired into CI.
+
+TODO:
+- None outstanding for the port. `marsscape` may now be marked legacy.

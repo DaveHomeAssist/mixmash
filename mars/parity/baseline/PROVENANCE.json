@@ -11,7 +11,8 @@
     "repository": "DaveHomeAssist/mixmash",
     "commit": "43974c88386a4db53f3ab6c55293eeb6348786b8",
     "path": "mars/engine.mjs",
-    "engineVersion": 3
+    "engineVersion": 4,
+    "note": "Engine v4 is the ported engine: MarsScape gameplay rebuilt inside the server-authoritative command model."
   },
   "checksums": {
     "data.js": "sha256:1671cca657b40cdd29cd455422ad7eb908ffbe2d404888e7267fbb54c9f51b76"
