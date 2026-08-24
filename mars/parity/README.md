@@ -8,12 +8,13 @@ server-authoritative `mixmash/mars` engine without losing work.
 | Authority | Repository | Status |
 |---|---|---|
 | Production shell, hosting, security | `mixmash/mars` | Keep |
-| Gameplay design, balance, feature baseline | `marsscape` | **Remains authoritative** |
-| Final unified canonical implementation | `mixmash/mars` | Only after parity gates pass |
+| Gameplay design, balance, feature baseline | `marsscape` | Fully ported — safe to retire |
+| Final unified canonical implementation | `mixmash/mars` | **Canonical** — parity gates pass |
 
-`marsscape` must not be archived, redirected, or downgraded to "legacy" until every
-feature carries an explicit `Ported`, `Intentionally Retired`, or `Deferred` disposition
-and the ledger reaches 100%.
+The rule this directory enforced: `marsscape` must not be archived, redirected, or
+downgraded to "legacy" until every feature carries an explicit disposition and the
+ledger reaches 100%. That condition is now satisfied — 144/144 data features and 23/23
+behavioural systems are `Ported`, with zero retirements.
 
 ## Files
 
@@ -62,5 +63,10 @@ tagging `marsscape` needs write access to that repository.
 
 ## Current state
 
-Data parity 73/144. Behaviour parity 0/23. See `LEDGER.md` for the per-feature
-breakdown and the wave each outstanding item belongs to.
+**Data parity 144/144. Behaviour parity 23/23.** All eight port waves are complete;
+every MarsScape feature is `Ported` and nothing was retired. See `LEDGER.md` for the
+per-feature breakdown.
+
+`marsscape` can now be marked legacy — the condition this directory existed to enforce
+has been met. The baseline stays frozen here regardless, because it is what keeps the
+ledger reproducible and what the guards check against.

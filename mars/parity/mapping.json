@@ -70,25 +70,28 @@
       "key": "crops",
       "label": "Crops",
       "baseline": "CROPS",
-      "target": null,
+      "target": "CROPS",
       "wave": 5
     },
     {
       "key": "quests",
       "label": "Objectives",
       "baseline": "QUESTS",
-      "target": null,
+      "target": "OBJECTIVES",
       "wave": 6
     }
   ],
   "rename": {
     "items": {
-      "part": "component"
+      "part": "component",
+      "part2": "advanced_component",
+      "frame2": "composite_frame"
     },
     "skills": {
       "fab": "fabrication",
       "eng": "engineering",
-      "agri": "agriculture"
+      "agri": "agriculture",
+      "explore": "exploration"
     },
     "nodes": {
       "iron1": "iron-north",
@@ -99,7 +102,15 @@
       "ice2": "ice-scarp",
       "tita1": "titanium-vein",
       "dune_iron": "dune-iron-scree",
-      "dune_wreck": "dune-wreck-site"
+      "dune_wreck": "dune-wreck-site",
+      "iron3": "iron-east",
+      "perma1": "permafrost-bed",
+      "brine1": "brine-well",
+      "silica1": "silicate-bed-north",
+      "silica2": "silicate-bed-west",
+      "rare1": "rare-earth-seam",
+      "irid1": "iridium-lode",
+      "dune_silica": "dune-silicate-dunes"
     },
     "buildings": {
       "green": "greenhouse"
@@ -107,7 +118,10 @@
     "smelt": {
       "s_iron": "smelt-iron",
       "s_copper": "smelt-copper",
-      "s_tita": "smelt-titanium"
+      "s_tita": "smelt-titanium",
+      "s_glass": "smelt-glass",
+      "s_alloy": "smelt-alloy",
+      "s_irid": "smelt-iridium"
     },
     "craft": {
       "c_frame": "craft-frame",
@@ -140,13 +154,34 @@
       "c_composite_gloves": "craft-equip-composite-gloves",
       "c_composite_boots": "craft-equip-composite-boots",
       "c_composite_scanner": "craft-equip-composite-scanner",
-      "c_composite_backpack": "craft-equip-composite-backpack"
+      "c_composite_backpack": "craft-equip-composite-backpack",
+      "c_frame2": "craft-composite-frame",
+      "c_part2": "craft-advanced-component",
+      "c_insulation": "craft-insulation",
+      "c_fert": "craft-fertilizer",
+      "c_laser": "craft-laser-pick",
+      "c_drone": "craft-mining-drone"
     },
     "research": {
       "scrub": "scrubbers"
     },
     "crops": {},
-    "quests": {}
+    "quests": {
+      "q1": "obj-mine-iron",
+      "q2": "obj-smelt-iron",
+      "q3": "obj-craft-frames",
+      "q4": "obj-build-solar",
+      "q5": "obj-extract-ice",
+      "q6": "obj-build-water",
+      "q7": "obj-build-machine",
+      "q8": "obj-smelt-titanium",
+      "q9": "obj-build-greenhouse",
+      "q10": "obj-harvest-crops",
+      "q11": "obj-build-lab",
+      "q12": "obj-research-any",
+      "q13": "obj-build-reactor",
+      "q14": "obj-endure-storm"
+    }
   },
   "dispositions": {
     "items:silicate_ore": {
@@ -509,147 +544,139 @@
     {
       "id": "xp_curve_runescape",
       "label": "Exact RuneScape XP curve (99 = 13,034,431 xp)",
-      "present": false,
-      "wave": 1,
-      "note": "engine.mjs uses sqrt(xp)/5+1, reaching 99 at 240,100 xp — a 54x compression of the whole arc."
+      "present": true,
+      "wave": 1
     },
     {
       "id": "tick_600ms",
       "label": "600 ms action tick",
-      "present": false,
-      "wave": 1,
-      "note": "engine.mjs ticks at 5000 ms. Travel already compensates with a 600 ms constant; the rest does not."
+      "present": true,
+      "wave": 1
     },
     {
       "id": "sol_100_ticks",
       "label": "60-second sol (100 ticks)",
-      "present": false,
+      "present": true,
       "wave": 1
     },
     {
       "id": "balance_simulator",
       "label": "Headless balance simulator + DoD verdicts",
-      "present": false,
-      "wave": 1,
-      "note": "sim/simulate.mjs in marsscape; 5/5 verdicts PASS at v0.4.0."
+      "present": true,
+      "wave": 1
     },
     {
       "id": "ore_ladders",
       "label": "Ore/ice ladders with in-tier quality crits",
-      "present": false,
+      "present": true,
       "wave": 2
     },
     {
       "id": "geode_rolls",
       "label": "Geode rolls from scanner stat",
-      "present": false,
-      "wave": 2,
-      "note": "engine.mjs has a geode stat but no geode item or roll."
+      "present": true,
+      "wave": 2
     },
     {
       "id": "colony_depot",
       "label": "Colony Depot (bank) with deposit/withdraw/depositAll",
-      "present": false,
+      "present": true,
       "wave": 3
     },
     {
       "id": "real_pack_slots",
-      "label": "True inventory slots — stacks fill slots, full pack blocks gathering",
-      "present": false,
-      "wave": 3,
-      "note": "engine.mjs caps per-item quantity at 999 instead of modelling slots."
+      "label": "True inventory slots \u2014 stacks fill slots, full pack blocks gathering",
+      "present": true,
+      "wave": 3
     },
     {
       "id": "drone_delivery",
       "label": "Drone delivery contract + droneCap from Robotics",
-      "present": false,
+      "present": true,
       "wave": 3
     },
     {
       "id": "research_tiers",
       "label": "3 gated research tiers (RESEARCH_TIER_REQ)",
-      "present": false,
+      "present": true,
       "wave": 4
     },
     {
       "id": "research_effects",
       "label": "Permanent research unlock effects",
-      "present": false,
-      "wave": 4,
-      "note": "engine.mjs stores research booleans; the effects are largely unwired."
+      "present": true,
+      "wave": 4
     },
     {
       "id": "building_tiers",
       "label": "Building tiers I-III",
-      "present": false,
+      "present": true,
       "wave": 5
     },
     {
       "id": "overclock",
       "label": "Overclock toggle (Engineering 25) with fault risk",
-      "present": false,
+      "present": true,
       "wave": 5
     },
     {
       "id": "fault_servicing",
       "label": "Fault servicing (clears the greenhouse soft-lock)",
-      "present": false,
+      "present": true,
       "wave": 5
     },
     {
       "id": "farm_plots",
       "label": "3 farm plots with per-plot crop state",
-      "present": false,
-      "wave": 5,
-      "note": "engine.mjs has a single {plantedAt, ready} farm object."
+      "present": true,
+      "wave": 5
     },
     {
       "id": "crop_disease",
       "label": "Crop disease pauses growth (never kills) + fertilizer",
-      "present": false,
+      "present": true,
       "wave": 5
     },
     {
       "id": "objectives",
       "label": "14 objectives with completion awards",
-      "present": false,
+      "present": true,
       "wave": 6
     },
     {
       "id": "final_storm",
       "label": "Great Storm parity (250 ticks, 25-tick phases)",
-      "present": "partial",
-      "wave": 6,
-      "note": "engine.mjs has a storm with phases; totals and failure/victory handling need parity checking."
+      "present": true,
+      "wave": 6
     },
     {
       "id": "victory_postgame",
       "label": "Victory + New Expedition+ postgame",
-      "present": false,
+      "present": true,
       "wave": 6
     },
     {
       "id": "expeditions",
       "label": "Exploration expeditions (EXPED) and rich veins",
-      "present": false,
+      "present": true,
       "wave": 6
     },
     {
       "id": "sprite_fallback",
       "label": "Sprite-sheet loader with emoji fallback (13 sprites)",
-      "present": false,
+      "present": true,
       "wave": 7
     },
     {
       "id": "player_manual",
       "label": "Player-facing manual (docs/MANUAL.md)",
-      "present": false,
+      "present": true,
       "wave": 7
     },
     {
       "id": "legacy_save_import",
       "label": "marsscape_v1 legacy save importer with quarantine + preview",
-      "present": false,
+      "present": true,
       "wave": 8
     }
   ],
@@ -700,6 +727,20 @@
     "mixmashBaseline": {
       "total": 50,
       "mustStayGreen": true
-    }
+    },
+    "mixmashCurrent": {
+      "total": 71,
+      "note": "Test cases in `npm test` after the port (50 pre-port + 21 added). Coverage is by behavioural area, not test-for-test against MarsScape's 97 \u2014 the two suites are structured differently (MarsScape tests a DOM client with jsdom; this engine is headless and server-authoritative)."
+    },
+    "areasCovered": [
+      "boot/state",
+      "xp curve",
+      "migration (legacy import)",
+      "offline/ticking",
+      "phase-1 systems (bank, pack, equipment, tiers, overclock, research gating)",
+      "regions + travel",
+      "sprites",
+      "systems (rates, drones, crops, crit)"
+    ]
   }
 }

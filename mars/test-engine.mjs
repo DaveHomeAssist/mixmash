@@ -8,11 +8,19 @@ function withFuel(state, count = 1) {
 }
 
 test('gather command mutates only canonical server state', () => {
-  const before = createState(1_700_000_000_000);
-  const { state } = applyCommand(before, { id: 'cmd-1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000);
-  assert.equal(state.inventory.iron_ore, 1);
-  assert.equal(state.skills.mining.xp, 18);
-  assert.equal(state.seq, 1);
+  const realRandom = Math.random;
+  try {
+    // Pin the rolls: 0.99 clears neither the quality crit nor the 2% geode chance,
+    // both of which would otherwise add mining xp and make this assertion flaky.
+    Math.random = () => 0.99;
+    const before = createState(1_700_000_000_000);
+    const { state } = applyCommand(before, { id: 'cmd-1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000);
+    assert.equal(state.inventory.iron_ore, 1);
+    assert.equal(state.skills.mining.xp, 16); // MarsScape's iron-vein xp
+    assert.equal(state.seq, 1);
+  } finally {
+    Math.random = realRandom;
+  }
 });
 
 test('duplicate command id is idempotent', () => {
@@ -37,7 +45,7 @@ test('sanitizer clamps tampered resource values', () => {
   dirty.built.habitat = false;
   const clean = sanitizeState(dirty);
   assert.equal(clean.meters.oxygen, 100);
-  assert.equal(clean.inventory.iron_ore, 999);
+  assert.equal(clean.inventory.iron_ore, 99_999); // slot-based pack is the real bound now
   assert.equal(clean.built.habitat, true);
 });
 
@@ -120,7 +128,7 @@ test('boots speed cuts travel duration, and stacks with rover and Piloting', () 
   assert.ok(stackedMs >= 4 * 600, 'duration never drops below the 4-tick floor');
 });
 
-test('scanner geode stat yields titanium from ore seams, and only from ore seams', () => {
+test('scanner geode stat yields a geode from ore seams, and only from ore seams', () => {
   const realRandom = Math.random;
   try {
     // 0 is below any non-zero percentage roll, so every chance-gated branch fires.
@@ -129,17 +137,17 @@ test('scanner geode stat yields titanium from ore seams, and only from ore seams
     const miner = createState(1_700_000_000_000);
     miner.equip.scanner = 'composite'; // geode 4
     const mined = applyCommand(miner, { id: 'g1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000).state;
-    assert.equal(mined.inventory.titanium_ore, 1, 'an ore gather should crack a geode');
+    assert.equal(mined.inventory.geode, 1, 'an ore gather should turn up a geode');
     assert.ok(mined.inventory.iron_ore >= 1, 'the node still yields its own resource');
 
     const iceMiner = createState(1_700_000_000_000);
     iceMiner.equip.scanner = 'composite';
     const iced = applyCommand(iceMiner, { id: 'g2', type: 'gather', nodeId: 'ice-pocket' }, 1_700_000_005_000).state;
-    assert.equal(iced.inventory.titanium_ore || 0, 0, 'ice scarps hold no geodes');
+    assert.equal(iced.inventory.geode || 0, 0, 'ice scarps hold no geodes');
 
     const bare = createState(1_700_000_000_000);
     const plain = applyCommand(bare, { id: 'g3', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000).state;
-    assert.equal(plain.inventory.titanium_ore || 0, 0, 'no scanner means no geode');
+    assert.ok((plain.inventory.geode || 0) <= 1, 'the base 2% geode chance still applies without a scanner');
   } finally {
     Math.random = realRandom;
   }
@@ -220,4 +228,66 @@ test('sanitizer falls back to safe defaults for tampered region/rover/equip/trav
   assert.equal(clean.rover, 'buggy');
   assert.equal(clean.equip.suit, null);
   assert.equal(clean.travel, null);
+});
+
+test('v3 colony state migrates an in-progress farm plot instead of resetting it', () => {
+  const now = 1_700_000_090_000;
+  const legacy = createState(now);
+  legacy.version = 3;
+  legacy.farm = { plantedAt: now - 45_000, ready: false };
+  const migrated = sanitizeState(legacy, now);
+  assert.equal(migrated.version, 4);
+  assert.equal(migrated.farm.plots[0].crop, 'potato');
+  assert.ok(migrated.farm.plots[0].t > 0, 'the elapsed crop progress survives');
+  assert.ok(migrated.farm.plots[0].t < 14, 'a half-grown crop is not marked ready');
+});
+
+test('servicing is paced like every other repeatable action', () => {
+  // Review finding 5: service grants xp and meter recovery, so leaving it unpaced
+  // left the command-spam hole open in another progression path.
+  const NOW = 1_700_000_000_000;
+  const state = createState(NOW);
+  const first = applyCommand(state, { id: 's1', type: 'service', buildingId: 'habitat' }, NOW).state;
+  assert.ok(first.busyUntil > NOW, 'servicing occupies the colonist');
+  const xpAfterOne = first.skills.engineering.xp;
+
+  assert.throws(
+    () => applyCommand(first, { id: 's2', type: 'service', buildingId: 'habitat' }, NOW),
+    (err) => err.code === 'BUSY',
+    'a second service at the same instant must be refused',
+  );
+
+  // once the action has elapsed it works again
+  const later = applyCommand(first, { id: 's3', type: 'service', buildingId: 'habitat' }, first.busyUntil + 1).state;
+  assert.ok(later.skills.engineering.xp > xpAfterOne, 'servicing still works after the pacing window');
+});
+
+test('a faulted structure blocks the storm instead of counting as online', () => {
+  // Codex review: passiveRates treats a fault as producing nothing, but the storm
+  // readiness predicate only checked `built` — so overclock could fault the reactor
+  // and the run would still start with a dead structure counted as ready.
+  const NOW = 1_700_000_000_000;
+  const state = createState(NOW);
+  for (const id of ['depot', 'solar', 'water', 'machine', 'greenhouse', 'lab', 'reactor']) state.built[id] = true;
+  state.meters = { oxygen: 100, power: 100 };
+
+  const ok = applyCommand(state, { id: 'st1', type: 'startStorm' }, NOW).state;
+  assert.equal(ok.storm.status, 'active', 'a fully online colony can start the storm');
+
+  const faulted = createState(NOW);
+  for (const id of ['depot', 'solar', 'water', 'machine', 'greenhouse', 'lab', 'reactor']) faulted.built[id] = true;
+  faulted.meters = { oxygen: 100, power: 100 };
+  faulted.fault.reactor = true;
+  assert.throws(
+    () => applyCommand(faulted, { id: 'st2', type: 'startStorm' }, NOW),
+    (err) => err.code === 'SYSTEM_FAULTED' && /Fusion Reactor/.test(err.message),
+    'a faulted reactor must block the storm and say which structure',
+  );
+
+  // servicing it clears the fault and re-opens the storm
+  const serviced = applyCommand(faulted, { id: 'sv', type: 'service', buildingId: 'reactor' }, NOW).state;
+  assert.equal(serviced.storm.status, 'ready', 'repairing the final offline system re-opens the storm in the UI');
+  serviced.meters = { oxygen: 100, power: 100 };
+  const after = applyCommand(serviced, { id: 'st3', type: 'startStorm' }, serviced.busyUntil + 1).state;
+  assert.equal(after.storm.status, 'active');
 });

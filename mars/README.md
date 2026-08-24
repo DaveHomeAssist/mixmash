@@ -4,15 +4,18 @@ MarsScape is a browser colony skiller with a shared JavaScript engine, a Node au
 
 ## Gameplay Parity with MarsScape
 
-`mixmash/mars` is the production shell; the standalone `marsscape` repository remains
-**authoritative for gameplay design and balance** until the port completes. The engine
-currently carries 73 of 144 MarsScape data features and none of its 23 behavioural
-systems.
+The port from the standalone `marsscape` repository is **complete**: 144/144 data
+features and 23/23 behavioural systems, with zero retirements. `mixmash/mars` is now
+canonical for gameplay as well as production.
 
-`mars/parity/` tracks every feature with an explicit `Ported`, `Intentionally Retired`,
-or `Deferred` disposition. See `mars/parity/LEDGER.md` for current state and
-`mars/parity/README.md` for the porting workflow. Do not archive, redirect, or relabel
-`marsscape` as legacy until that ledger reaches 100%.
+`mars/parity/` holds the frozen baseline, the id mapping, and the generated ledger that
+proves it. `npm test` re-checks the mapping in both directions and fails on a stale
+ledger; `npm run sim` re-runs the balance verdicts. See `mars/docs/MANUAL.md` to play and
+`mars/docs/BALANCE_BASELINE.md` for the numbers.
+
+The simulator compares gathering rates with the committed machine baseline and fails
+on a loss greater than 10%, a removed rate band, or missing baseline evidence. For an
+intentional rebalance, review the new rates and run `npm run sim -- --accept`.
 
 ## Local Run
 

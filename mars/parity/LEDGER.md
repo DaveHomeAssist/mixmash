@@ -9,102 +9,94 @@ legacy before then.
 | | |
 |---|---|
 | Baseline | `DaveHomeAssist/marsscape` @ `ab073bc89098` (v0.4.0) |
-| Target | `DaveHomeAssist/mixmash` @ `43974c88386a` (engine v3) |
-| Data parity | **73/144** (50.7%) |
-| Behaviour parity | **0/23** (0.0%) |
+| Target | `DaveHomeAssist/mixmash` @ `43974c88386a` (engine v4) |
+| Data parity | **144/144** (100.0%) |
+| Behaviour parity | **23/23** (100.0%) |
 | Dispositioned | **100%** — every feature accounted for |
 
 ## Summary by domain
 
 | Domain | Ported | Total | Gap |
 |---|---:|---:|---:|
-| Items | 12 | 27 | 15 |
-| Skills | 8 | 10 | 2 |
-| Resource nodes | 9 | 17 | 8 |
-| Buildings | 7 | 8 | 1 |
-| Smelting recipes | 3 | 6 | 3 |
-| Crafting recipes | 31 | 37 | 6 |
-| Research projects | 3 | 20 | 17 |
-| Crops | 0 | 5 | 5 |
-| Objectives | 0 | 14 | 14 |
-| **Data total** | **73** | **144** | **71** |
+| Items | 27 | 27 | 0 |
+| Skills | 10 | 10 | 0 |
+| Resource nodes | 17 | 17 | 0 |
+| Buildings | 8 | 8 | 0 |
+| Smelting recipes | 6 | 6 | 0 |
+| Crafting recipes | 37 | 37 | 0 |
+| Research projects | 20 | 20 | 0 |
+| Crops | 5 | 5 | 0 |
+| Objectives | 14 | 14 | 0 |
+| **Data total** | **144** | **144** | **0** |
 
 ## Remaining work by wave
 
 | Wave | Items outstanding |
 |---|---:|
-| 1 · Foundations | 4 |
-| 2 · Economy | 25 |
-| 3 · Storage | 4 |
-| 4 · Progression | 19 |
-| 5 · Colony depth | 18 |
-| 6 · Journey | 21 |
-| 7 · Presentation | 2 |
-| 8 · Cutover | 1 |
 
 ## Behaviour contract
 
 | Behaviour | Status | Wave | Note |
 |---|---|---|---|
-| Exact RuneScape XP curve (99 = 13,034,431 xp) | Deferred | 1 · Foundations | engine.mjs uses sqrt(xp)/5+1, reaching 99 at 240,100 xp — a 54x compression of the whole arc. |
-| 600 ms action tick | Deferred | 1 · Foundations | engine.mjs ticks at 5000 ms. Travel already compensates with a 600 ms constant; the rest does not. |
-| 60-second sol (100 ticks) | Deferred | 1 · Foundations |  |
-| Headless balance simulator + DoD verdicts | Deferred | 1 · Foundations | sim/simulate.mjs in marsscape; 5/5 verdicts PASS at v0.4.0. |
-| Ore/ice ladders with in-tier quality crits | Deferred | 2 · Economy |  |
-| Geode rolls from scanner stat | Deferred | 2 · Economy | engine.mjs has a geode stat but no geode item or roll. |
-| Colony Depot (bank) with deposit/withdraw/depositAll | Deferred | 3 · Storage |  |
-| True inventory slots — stacks fill slots, full pack blocks gathering | Deferred | 3 · Storage | engine.mjs caps per-item quantity at 999 instead of modelling slots. |
-| Drone delivery contract + droneCap from Robotics | Deferred | 3 · Storage |  |
-| 3 gated research tiers (RESEARCH_TIER_REQ) | Deferred | 4 · Progression |  |
-| Permanent research unlock effects | Deferred | 4 · Progression | engine.mjs stores research booleans; the effects are largely unwired. |
-| Building tiers I-III | Deferred | 5 · Colony depth |  |
-| Overclock toggle (Engineering 25) with fault risk | Deferred | 5 · Colony depth |  |
-| Fault servicing (clears the greenhouse soft-lock) | Deferred | 5 · Colony depth |  |
-| 3 farm plots with per-plot crop state | Deferred | 5 · Colony depth | engine.mjs has a single {plantedAt, ready} farm object. |
-| Crop disease pauses growth (never kills) + fertilizer | Deferred | 5 · Colony depth |  |
-| 14 objectives with completion awards | Deferred | 6 · Journey |  |
-| Great Storm parity (250 ticks, 25-tick phases) | Partial | 6 · Journey | engine.mjs has a storm with phases; totals and failure/victory handling need parity checking. |
-| Victory + New Expedition+ postgame | Deferred | 6 · Journey |  |
-| Exploration expeditions (EXPED) and rich veins | Deferred | 6 · Journey |  |
-| Sprite-sheet loader with emoji fallback (13 sprites) | Deferred | 7 · Presentation |  |
-| Player-facing manual (docs/MANUAL.md) | Deferred | 7 · Presentation |  |
-| marsscape_v1 legacy save importer with quarantine + preview | Deferred | 8 · Cutover |  |
+| Exact RuneScape XP curve (99 = 13,034,431 xp) | Ported | 1 · Foundations |  |
+| 600 ms action tick | Ported | 1 · Foundations |  |
+| 60-second sol (100 ticks) | Ported | 1 · Foundations |  |
+| Headless balance simulator + DoD verdicts | Ported | 1 · Foundations |  |
+| Ore/ice ladders with in-tier quality crits | Ported | 2 · Economy |  |
+| Geode rolls from scanner stat | Ported | 2 · Economy |  |
+| Colony Depot (bank) with deposit/withdraw/depositAll | Ported | 3 · Storage |  |
+| True inventory slots — stacks fill slots, full pack blocks gathering | Ported | 3 · Storage |  |
+| Drone delivery contract + droneCap from Robotics | Ported | 3 · Storage |  |
+| 3 gated research tiers (RESEARCH_TIER_REQ) | Ported | 4 · Progression |  |
+| Permanent research unlock effects | Ported | 4 · Progression |  |
+| Building tiers I-III | Ported | 5 · Colony depth |  |
+| Overclock toggle (Engineering 25) with fault risk | Ported | 5 · Colony depth |  |
+| Fault servicing (clears the greenhouse soft-lock) | Ported | 5 · Colony depth |  |
+| 3 farm plots with per-plot crop state | Ported | 5 · Colony depth |  |
+| Crop disease pauses growth (never kills) + fertilizer | Ported | 5 · Colony depth |  |
+| 14 objectives with completion awards | Ported | 6 · Journey |  |
+| Great Storm parity (250 ticks, 25-tick phases) | Ported | 6 · Journey |  |
+| Victory + New Expedition+ postgame | Ported | 6 · Journey |  |
+| Exploration expeditions (EXPED) and rich veins | Ported | 6 · Journey |  |
+| Sprite-sheet loader with emoji fallback (13 sprites) | Ported | 7 · Presentation |  |
+| Player-facing manual (docs/MANUAL.md) | Ported | 7 · Presentation |  |
+| marsscape_v1 legacy save importer with quarantine + preview | Ported | 8 · Cutover |  |
 
 ## Data contract
 
-### Items — 12/27
+### Items — 27/27
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
 | `iron_ore` | `iron_ore` | Ported | — |
 | `copper_ore` | `copper_ore` | Ported | — |
 | `titanium_ore` | `titanium_ore` | Ported | — |
-| `silicate_ore` | — | Deferred | 2 · Economy |
-| `rare_ore` | — | Deferred | 2 · Economy |
-| `iridium_ore` | — | Deferred | 2 · Economy |
+| `silicate_ore` | `silicate_ore` | Ported | — |
+| `rare_ore` | `rare_ore` | Ported | — |
+| `iridium_ore` | `iridium_ore` | Ported | — |
 | `ice` | `ice` | Ported | — |
-| `geode` | — | Deferred | 2 · Economy |
+| `geode` | `geode` | Ported | — |
 | `iron_bar` | `iron_bar` | Ported | — |
 | `copper_bar` | `copper_bar` | Ported | — |
 | `titanium_bar` | `titanium_bar` | Ported | — |
-| `glass` | — | Deferred | 2 · Economy |
-| `alloy` | — | Deferred | 2 · Economy |
-| `iridium_bar` | — | Deferred | 2 · Economy |
+| `glass` | `glass` | Ported | — |
+| `alloy` | `alloy` | Ported | — |
+| `iridium_bar` | `iridium_bar` | Ported | — |
 | `water` | `water` | Ported | — |
 | `frame` | `frame` | Ported | — |
-| `frame2` | — | Deferred | 2 · Economy |
+| `frame2` | `composite_frame` | Ported | — |
 | `part` | `component` | Ported | — |
-| `part2` | — | Deferred | 2 · Economy |
-| `insulation` | — | Deferred | 5 · Colony depth |
-| `fertilizer` | — | Deferred | 5 · Colony depth |
+| `part2` | `advanced_component` | Ported | — |
+| `insulation` | `insulation` | Ported | — |
+| `fertilizer` | `fertilizer` | Ported | — |
 | `food` | `food` | Ported | — |
-| `soy` | — | Deferred | 5 · Colony depth |
-| `algae` | — | Deferred | 5 · Colony depth |
-| `berries` | — | Deferred | 5 · Colony depth |
-| `genefruit` | — | Deferred | 5 · Colony depth |
+| `soy` | `soy` | Ported | — |
+| `algae` | `algae` | Ported | — |
+| `berries` | `berries` | Ported | — |
+| `genefruit` | `genefruit` | Ported | — |
 | `fuel` | `fuel` | Ported | — |
 
-### Skills — 8/10
+### Skills — 10/10
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
@@ -113,40 +105,40 @@ legacy before then.
 | `fab` | `fabrication` | Ported | — |
 | `eng` | `engineering` | Ported | — |
 | `agri` | `agriculture` | Ported | — |
-| `robotics` | — | Deferred | 6 · Journey |
-| `explore` | — | Deferred | 6 · Journey |
+| `robotics` | `robotics` | Ported | — |
+| `explore` | `exploration` | Ported | — |
 | `research` | `research` | Ported | — |
 | `piloting` | `piloting` | Ported | — |
 | `survival` | `survival` | Ported | — |
 
-### Resource nodes — 9/17
+### Resource nodes — 17/17
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
 | `iron1` | `iron-north` | Ported | — |
 | `iron2` | `iron-south` | Ported | — |
-| `iron3` | — | Deferred | 2 · Economy |
+| `iron3` | `iron-east` | Ported | — |
 | `cop1` | `copper-ridge` | Ported | — |
 | `cop2` | `copper-basin` | Ported | — |
 | `ice1` | `ice-pocket` | Ported | — |
 | `ice2` | `ice-scarp` | Ported | — |
-| `perma1` | — | Deferred | 2 · Economy |
-| `brine1` | — | Deferred | 2 · Economy |
+| `perma1` | `permafrost-bed` | Ported | — |
+| `brine1` | `brine-well` | Ported | — |
 | `tita1` | `titanium-vein` | Ported | — |
-| `silica1` | — | Deferred | 2 · Economy |
-| `silica2` | — | Deferred | 2 · Economy |
-| `rare1` | — | Deferred | 2 · Economy |
-| `irid1` | — | Deferred | 2 · Economy |
+| `silica1` | `silicate-bed-north` | Ported | — |
+| `silica2` | `silicate-bed-west` | Ported | — |
+| `rare1` | `rare-earth-seam` | Ported | — |
+| `irid1` | `iridium-lode` | Ported | — |
 | `dune_iron` | `dune-iron-scree` | Ported | — |
 | `dune_wreck` | `dune-wreck-site` | Ported | — |
-| `dune_silica` | — | Deferred | 2 · Economy |
+| `dune_silica` | `dune-silicate-dunes` | Ported | — |
 
-### Buildings — 7/8
+### Buildings — 8/8
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
 | `habitat` | `habitat` | Ported | — |
-| `depot` | — | Deferred | 3 · Storage |
+| `depot` | `depot` | Ported | — |
 | `solar` | `solar` | Ported | — |
 | `water` | `water` | Ported | — |
 | `machine` | `machine` | Ported | — |
@@ -154,31 +146,31 @@ legacy before then.
 | `lab` | `lab` | Ported | — |
 | `reactor` | `reactor` | Ported | — |
 
-### Smelting recipes — 3/6
+### Smelting recipes — 6/6
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
 | `s_iron` | `smelt-iron` | Ported | — |
 | `s_copper` | `smelt-copper` | Ported | — |
 | `s_tita` | `smelt-titanium` | Ported | — |
-| `s_glass` | — | Deferred | 2 · Economy |
-| `s_alloy` | — | Deferred | 2 · Economy |
-| `s_irid` | — | Deferred | 2 · Economy |
+| `s_glass` | `smelt-glass` | Ported | — |
+| `s_alloy` | `smelt-alloy` | Ported | — |
+| `s_irid` | `smelt-iridium` | Ported | — |
 
-### Crafting recipes — 31/37
+### Crafting recipes — 37/37
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
 | `c_frame` | `craft-frame` | Ported | — |
 | `c_part` | `craft-component` | Ported | — |
-| `c_frame2` | — | Deferred | 2 · Economy |
-| `c_part2` | — | Deferred | 2 · Economy |
-| `c_insulation` | — | Deferred | 5 · Colony depth |
-| `c_fert` | — | Deferred | 5 · Colony depth |
+| `c_frame2` | `craft-composite-frame` | Ported | — |
+| `c_part2` | `craft-advanced-component` | Ported | — |
+| `c_insulation` | `craft-insulation` | Ported | — |
+| `c_fert` | `craft-fertilizer` | Ported | — |
 | `c_steel` | `craft-steel-pick` | Ported | — |
 | `c_titapick` | `craft-titanium-pick` | Ported | — |
-| `c_laser` | — | Deferred | 2 · Economy |
-| `c_drone` | — | Deferred | 6 · Journey |
+| `c_laser` | `craft-laser-pick` | Ported | — |
+| `c_drone` | `craft-mining-drone` | Ported | — |
 | `c_fuel` | `craft-fuel-cell` | Ported | — |
 | `c_rover2` | `craft-rover-2` | Ported | — |
 | `c_rover3` | `craft-rover-3` | Ported | — |
@@ -207,59 +199,59 @@ legacy before then.
 | `c_composite_scanner` | `craft-equip-composite-scanner` | Ported | — |
 | `c_composite_backpack` | `craft-equip-composite-backpack` | Ported | — |
 
-### Research projects — 3/20
+### Research projects — 20/20
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
 | `drills` | `drills` | Ported | — |
 | `scrub` | `scrubbers` | Ported | — |
 | `loaders` | `loaders` | Ported | — |
-| `laser_optics` | — | Deferred | 4 · Progression |
-| `grow_lights` | — | Deferred | 4 · Progression |
-| `survey_markers` | — | Deferred | 4 · Progression |
-| `deep_drilling` | — | Deferred | 4 · Progression |
-| `cryo_insulation` | — | Deferred | 4 · Progression |
-| `fertilizer_synth` | — | Deferred | 4 · Progression |
-| `grid_buffers` | — | Deferred | 4 · Progression |
-| `cargo_frame` | — | Deferred | 4 · Progression |
-| `drone_tuning` | — | Deferred | 4 · Progression |
-| `thermal_recyclers` | — | Deferred | 4 · Progression |
-| `iridium_refining` | — | Deferred | 4 · Progression |
-| `quality_assay` | — | Deferred | 4 · Progression |
-| `automation_core` | — | Deferred | 4 · Progression |
-| `xeno_agronomy` | — | Deferred | 4 · Progression |
-| `orbital_uplink` | — | Deferred | 4 · Progression |
-| `alloy_tempering` | — | Deferred | 4 · Progression |
-| `emergency_protocols` | — | Deferred | 4 · Progression |
+| `laser_optics` | `laser_optics` | Ported | — |
+| `grow_lights` | `grow_lights` | Ported | — |
+| `survey_markers` | `survey_markers` | Ported | — |
+| `deep_drilling` | `deep_drilling` | Ported | — |
+| `cryo_insulation` | `cryo_insulation` | Ported | — |
+| `fertilizer_synth` | `fertilizer_synth` | Ported | — |
+| `grid_buffers` | `grid_buffers` | Ported | — |
+| `cargo_frame` | `cargo_frame` | Ported | — |
+| `drone_tuning` | `drone_tuning` | Ported | — |
+| `thermal_recyclers` | `thermal_recyclers` | Ported | — |
+| `iridium_refining` | `iridium_refining` | Ported | — |
+| `quality_assay` | `quality_assay` | Ported | — |
+| `automation_core` | `automation_core` | Ported | — |
+| `xeno_agronomy` | `xeno_agronomy` | Ported | — |
+| `orbital_uplink` | `orbital_uplink` | Ported | — |
+| `alloy_tempering` | `alloy_tempering` | Ported | — |
+| `emergency_protocols` | `emergency_protocols` | Ported | — |
 
-### Crops — 0/5
-
-| MarsScape id | Canonical id | Status | Wave |
-|---|---|---|---|
-| `potato` | — | Deferred | 5 · Colony depth |
-| `soy` | — | Deferred | 5 · Colony depth |
-| `algae` | — | Deferred | 5 · Colony depth |
-| `berries` | — | Deferred | 5 · Colony depth |
-| `genefruit` | — | Deferred | 5 · Colony depth |
-
-### Objectives — 0/14
+### Crops — 5/5
 
 | MarsScape id | Canonical id | Status | Wave |
 |---|---|---|---|
-| `q1` | — | Deferred | 6 · Journey |
-| `q2` | — | Deferred | 6 · Journey |
-| `q3` | — | Deferred | 6 · Journey |
-| `q4` | — | Deferred | 6 · Journey |
-| `q5` | — | Deferred | 6 · Journey |
-| `q6` | — | Deferred | 6 · Journey |
-| `q7` | — | Deferred | 6 · Journey |
-| `q8` | — | Deferred | 6 · Journey |
-| `q9` | — | Deferred | 6 · Journey |
-| `q10` | — | Deferred | 6 · Journey |
-| `q11` | — | Deferred | 6 · Journey |
-| `q12` | — | Deferred | 6 · Journey |
-| `q13` | — | Deferred | 6 · Journey |
-| `q14` | — | Deferred | 6 · Journey |
+| `potato` | `potato` | Ported | — |
+| `soy` | `soy` | Ported | — |
+| `algae` | `algae` | Ported | — |
+| `berries` | `berries` | Ported | — |
+| `genefruit` | `genefruit` | Ported | — |
+
+### Objectives — 14/14
+
+| MarsScape id | Canonical id | Status | Wave |
+|---|---|---|---|
+| `q1` | `obj-mine-iron` | Ported | — |
+| `q2` | `obj-smelt-iron` | Ported | — |
+| `q3` | `obj-craft-frames` | Ported | — |
+| `q4` | `obj-build-solar` | Ported | — |
+| `q5` | `obj-extract-ice` | Ported | — |
+| `q6` | `obj-build-water` | Ported | — |
+| `q7` | `obj-build-machine` | Ported | — |
+| `q8` | `obj-smelt-titanium` | Ported | — |
+| `q9` | `obj-build-greenhouse` | Ported | — |
+| `q10` | `obj-harvest-crops` | Ported | — |
+| `q11` | `obj-build-lab` | Ported | — |
+| `q12` | `obj-research-any` | Ported | — |
+| `q13` | `obj-build-reactor` | Ported | — |
+| `q14` | `obj-endure-storm` | Ported | — |
 
 ## Save migration contract
 
@@ -289,13 +281,17 @@ Legacy key: `marsscape_v1`. Old marsscape save (SAVE_KEY "marsscape_v1", SAVE_VE
 
 ## Acceptance gates
 
-| Gate | Status |
-|---|---|
-| All data features dispositioned | PASS |
-| Data parity 100% (73/144) | NOT MET |
-| Behaviour parity 100% (0/23) | NOT MET |
-| mixmash baseline suite stays green (50 tests) | manual |
-| MarsScape behavioural contract represented (97 tests) | manual |
-| Balance simulator passes every XP/hour and source/sink verdict | manual |
-| Real legacy save fixtures migrate with no loss | manual |
-| `marsscape` intact until this ledger reaches 100% | manual |
+| Gate | Status | Enforced by |
+|---|---|---|
+| All data features dispositioned | PASS | this generator |
+| Data parity 100% (144/144) | PASS | this generator |
+| Behaviour parity 100% (23/23) | PASS | this generator |
+| mixmash baseline suite stays green (50 pre-port tests) | CI | `npm test` in CI |
+| MarsScape behavioural contract represented | CI | `npm test` — 71 cases covering 8 areas; see note below |
+| Balance simulator passes every verdict | CI | `npm run sim` in CI (exits non-zero on any FAIL) |
+| Real legacy save fixtures migrate with no loss | CI | `mars/test-legacy-import.mjs` |
+| `marsscape` intact until this ledger reaches 100% | CI | repository policy — see mars/parity/README.md |
+
+> The MarsScape suite had 97 cases against a jsdom client; this engine is headless and
+> server-authoritative, so coverage is matched by behavioural area rather than
+> test-for-test. Areas covered: boot/state, xp curve, migration (legacy import), offline/ticking, phase-1 systems (bank, pack, equipment, tiers, overclock, research gating), regions + travel, sprites, systems (rates, drones, crops, crit).

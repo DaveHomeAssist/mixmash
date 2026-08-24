@@ -160,6 +160,41 @@ try {
     assert.equal(await page.locator('.skill-detail').first().isVisible(), true, 'MS-103 tap expands the detail');
     record('MS-103 skill tooltips and tap-expand work');
 
+    await page.click('[data-tab="pack"]');
+    assert.ok(await page.locator('.inventory-grid .pspr').count() > 0, 'the production inventory renders the sprite registry');
+    record('MarsScape sprites are integrated into the production pack UI');
+
+    const cleanedCommands = await page.evaluate(() => window.__marsTest.cleanPendingCommands([
+      { id: 'plant-1', type: 'plant', plotIndex: 2, cropId: 'soy', useFertilizer: true, ignored: 'drop-me' },
+      { id: 'deposit-1', type: 'deposit', itemId: 'iron_ore', qty: 7 },
+      { id: 'clock-1', type: 'overclock', on: false },
+    ]));
+    assert.deepEqual(cleanedCommands, [
+      { id: 'plant-1', type: 'plant', plotIndex: 2, cropId: 'soy', useFertilizer: true },
+      { id: 'deposit-1', type: 'deposit', itemId: 'iron_ore', qty: 7 },
+      { id: 'clock-1', type: 'overclock', on: false },
+    ], 'offline commands retain every command-specific payload field');
+    record('offline queue persistence retains command payloads');
+
+    await page.evaluate(async () => {
+      const { createState } = await import('/mars/engine.mjs');
+      const next = createState(Date.now());
+      next.postgame = true;
+      next.built.depot = true;
+      next.drones = [{ nodeId: null, t: 0 }];
+      next.extraNodes = [{
+        id: 'rich-vein-1', name: 'Rich Vein 1', item: 'titanium_ore',
+        xp: 120, hard: 6, lvl: 25, yieldBase: 2, x: 2, y: 1,
+      }];
+      window.__marsTest.setState(next);
+    });
+    assert.equal(await page.locator('[data-command="gather"][data-id="expedition-beacon"]').count(), 1, 'postgame beacon renders on the map');
+    assert.equal(await page.locator('[data-command="gather"][data-id="rich-vein-1"]').count(), 1, 'discovered rich vein renders on the map');
+    await page.click('[data-tab="depot"]');
+    assert.equal(await page.locator('[data-action="deployDrone"][data-id="expedition-beacon"]').count(), 1, 'postgame beacon is a drone target');
+    assert.equal(await page.locator('[data-action="deployDrone"][data-id="rich-vein-1"]').count(), 1, 'discovered rich vein is a drone target');
+    record('dynamic postgame nodes render on the map and in drone targeting');
+
     // MS-104: every malformed shape must be rejected before any state is applied.
     const validation = await page.evaluate(() => {
       const check = window.validateSaveCode;
@@ -188,6 +223,58 @@ try {
     });
     assert.ok(Number.parseFloat(scale) > 1, 'MS-105 wheel zoom updates --user-scale');
     record('MS-105 map zoom responds');
+
+    const legacySessionId = '44444444-4444-4444-8444-444444444444';
+    await page.evaluate(async (legacyId) => {
+      const db = await new Promise((resolve, reject) => {
+        const request = indexedDB.open('marsscape-secure-v1', 1);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const key = await new Promise((resolve, reject) => {
+        const request = db.transaction('keys', 'readonly').objectStore('keys').get('local-envelope-hmac');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      db.close();
+      const state = {
+        version: 3,
+        seq: 17,
+        inventory: { iron_ore: 9 },
+        farm: { plantedAt: Date.now() - 45_000, ready: false },
+      };
+      const pendingCommands = [{ id: 'legacy-gather', type: 'gather', nodeId: 'iron-north' }];
+      const payload = JSON.stringify({ sessionId: legacyId, mode: 'offline', signature: '', state, pendingCommands });
+      const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+      let binary = '';
+      for (const byte of new Uint8Array(signature)) binary += String.fromCharCode(byte);
+      const localHmac = btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
+      localStorage.setItem('marsscape.sessionId.v3', legacyId);
+      localStorage.setItem('marsscape.session.v3', JSON.stringify({
+        sessionId: legacyId, mode: 'offline', signature: '', state, pendingCommands,
+        hmacVersion: 1, localHmac,
+      }));
+      localStorage.setItem('marsscape.sessionId.v4', '55555555-5555-4555-8555-555555555555');
+      localStorage.removeItem('marsscape.session.v4');
+      const setItem = Storage.prototype.setItem;
+      Storage.prototype.setItem = function blockOldPageSave(key, value) {
+        if (key === 'marsscape.session.v4' || key === 'marsscape.sessionId.v4') return;
+        return setItem.call(this, key, value);
+      };
+    }, legacySessionId);
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForFunction(() => localStorage.getItem('marsscape.session.v4'));
+    const migrated = await page.evaluate(() => ({
+      sessionId: localStorage.getItem('marsscape.sessionId.v4'),
+      envelope: JSON.parse(localStorage.getItem('marsscape.session.v4')),
+    }));
+    assert.equal(migrated.sessionId, legacySessionId, 'v3 authority identity replaces an orphaned v4 id');
+    assert.equal(migrated.envelope.state.version, 4, 'v3 state is rewritten as a v4 envelope');
+    assert.equal(migrated.envelope.state.seq, 17, 'v3 progression survives migration');
+    assert.equal(migrated.envelope.state.inventory.iron_ore, 9, 'v3 resources survive migration');
+    assert.equal(migrated.envelope.state.farm.plots[0].crop, 'potato', 'v3 greenhouse progress survives migration');
+    assert.equal(migrated.envelope.pendingCommands[0].nodeId, 'iron-north', 'v3 queued commands survive migration');
+    record('signed v3 session and save envelopes migrate without resetting progression');
     await context.close();
   }
 

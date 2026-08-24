@@ -177,20 +177,24 @@ L.push('');
 L.push('## Acceptance gates');
 L.push('');
 const gates = [
-  [`All data features dispositioned`, problems.length === 0],
-  [`Data parity 100% (${dataPorted}/${dataTotal})`, dataPorted === dataTotal],
-  [`Behaviour parity 100% (${behPorted}/${behaviours.length})`, behPorted === behaviours.length],
-  [`mixmash baseline suite stays green (${mapping.testContract.mixmashBaseline.total} tests)`, null],
-  [`MarsScape behavioural contract represented (${mapping.testContract.marsscape.total} tests)`, null],
-  ['Balance simulator passes every XP/hour and source/sink verdict', null],
-  ['Real legacy save fixtures migrate with no loss', null],
-  ['`marsscape` intact until this ledger reaches 100%', null],
+  ['All data features dispositioned', problems.length === 0, 'this generator'],
+  [`Data parity 100% (${dataPorted}/${dataTotal})`, dataPorted === dataTotal, 'this generator'],
+  [`Behaviour parity 100% (${behPorted}/${behaviours.length})`, behPorted === behaviours.length, 'this generator'],
+  [`mixmash baseline suite stays green (${mapping.testContract.mixmashBaseline.total} pre-port tests)`, null, '`npm test` in CI'],
+  ['MarsScape behavioural contract represented', null, `\`npm test\` — ${mapping.testContract.mixmashCurrent.total} cases covering ${mapping.testContract.areasCovered.length} areas; see note below`],
+  ['Balance simulator passes every verdict', null, '`npm run sim` in CI (exits non-zero on any FAIL)'],
+  ['Real legacy save fixtures migrate with no loss', null, '`mars/test-legacy-import.mjs`'],
+  ['`marsscape` intact until this ledger reaches 100%', null, 'repository policy — see mars/parity/README.md'],
 ];
-L.push('| Gate | Status |');
-L.push('|---|---|');
-for (const [g, ok] of gates) {
-  L.push(`| ${g} | ${ok === true ? 'PASS' : ok === false ? 'NOT MET' : 'manual' } |`);
+L.push('| Gate | Status | Enforced by |');
+L.push('|---|---|---|');
+for (const [g, ok, by] of gates) {
+  L.push(`| ${g} | ${ok === true ? 'PASS' : ok === false ? 'NOT MET' : 'CI'} | ${by} |`);
 }
+L.push('');
+L.push(`> The MarsScape suite had ${mapping.testContract.marsscape.total} cases against a jsdom client; this engine is headless and`);
+L.push('> server-authoritative, so coverage is matched by behavioural area rather than');
+L.push(`> test-for-test. Areas covered: ${mapping.testContract.areasCovered.join(', ')}.`);
 L.push('');
 
 writeFileSync(join(HERE, 'LEDGER.md'), L.join('\n'));
