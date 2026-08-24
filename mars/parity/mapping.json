@@ -1,0 +1,705 @@
+{
+  "$comment": "Explicit MarsScape -> mixmash/mars correspondence. The two codebases use different id conventions, so parity is decided by this mapping, never by a naive set diff. Every baseline feature is either resolvable to a target id (Ported) or carries a disposition below.",
+  "statuses": {
+    "Ported": "Rebuilt inside the server-authoritative engine and covered by a canonical test.",
+    "Intentionally Retired": "Deliberately not carried forward. Requires an approved reason; the ledger will not accept this status without one.",
+    "Deferred": "Will be ported in the named wave. Not yet started."
+  },
+  "waves": {
+    "0": "Preservation",
+    "1": "Foundations",
+    "2": "Economy",
+    "3": "Storage",
+    "4": "Progression",
+    "5": "Colony depth",
+    "6": "Journey",
+    "7": "Presentation",
+    "8": "Cutover"
+  },
+  "domains": [
+    {
+      "key": "items",
+      "label": "Items",
+      "baseline": "ITEMS",
+      "target": "ITEMS",
+      "wave": 2
+    },
+    {
+      "key": "skills",
+      "label": "Skills",
+      "baseline": "SKILLS",
+      "target": "SKILLS",
+      "wave": 6
+    },
+    {
+      "key": "nodes",
+      "label": "Resource nodes",
+      "baseline": "NODES",
+      "target": "NODES",
+      "wave": 2
+    },
+    {
+      "key": "buildings",
+      "label": "Buildings",
+      "baseline": "BUILDINGS",
+      "target": "BUILDINGS",
+      "wave": 3
+    },
+    {
+      "key": "smelt",
+      "label": "Smelting recipes",
+      "baseline": "SMELT",
+      "target": "SMELT_RECIPES",
+      "wave": 2
+    },
+    {
+      "key": "craft",
+      "label": "Crafting recipes",
+      "baseline": "CRAFT",
+      "target": "CRAFT_RECIPES",
+      "wave": 2
+    },
+    {
+      "key": "research",
+      "label": "Research projects",
+      "baseline": "RESEARCH",
+      "target": "RESEARCH",
+      "wave": 4
+    },
+    {
+      "key": "crops",
+      "label": "Crops",
+      "baseline": "CROPS",
+      "target": null,
+      "wave": 5
+    },
+    {
+      "key": "quests",
+      "label": "Objectives",
+      "baseline": "QUESTS",
+      "target": null,
+      "wave": 6
+    }
+  ],
+  "rename": {
+    "items": {
+      "part": "component"
+    },
+    "skills": {
+      "fab": "fabrication",
+      "eng": "engineering",
+      "agri": "agriculture"
+    },
+    "nodes": {
+      "iron1": "iron-north",
+      "iron2": "iron-south",
+      "cop1": "copper-ridge",
+      "cop2": "copper-basin",
+      "ice1": "ice-pocket",
+      "ice2": "ice-scarp",
+      "tita1": "titanium-vein",
+      "dune_iron": "dune-iron-scree",
+      "dune_wreck": "dune-wreck-site"
+    },
+    "buildings": {
+      "green": "greenhouse"
+    },
+    "smelt": {
+      "s_iron": "smelt-iron",
+      "s_copper": "smelt-copper",
+      "s_tita": "smelt-titanium"
+    },
+    "craft": {
+      "c_frame": "craft-frame",
+      "c_part": "craft-component",
+      "c_steel": "craft-steel-pick",
+      "c_titapick": "craft-titanium-pick",
+      "c_fuel": "craft-fuel-cell",
+      "c_rover2": "craft-rover-2",
+      "c_rover3": "craft-rover-3",
+      "c_canvas_suit": "craft-equip-canvas-suit",
+      "c_canvas_helmet": "craft-equip-canvas-helmet",
+      "c_canvas_gloves": "craft-equip-canvas-gloves",
+      "c_canvas_boots": "craft-equip-canvas-boots",
+      "c_canvas_scanner": "craft-equip-canvas-scanner",
+      "c_canvas_backpack": "craft-equip-canvas-backpack",
+      "c_steel_suit": "craft-equip-steel-suit",
+      "c_steel_helmet": "craft-equip-steel-helmet",
+      "c_steel_gloves": "craft-equip-steel-gloves",
+      "c_steel_boots": "craft-equip-steel-boots",
+      "c_steel_scanner": "craft-equip-steel-scanner",
+      "c_steel_backpack": "craft-equip-steel-backpack",
+      "c_titan_suit": "craft-equip-titan-suit",
+      "c_titan_helmet": "craft-equip-titan-helmet",
+      "c_titan_gloves": "craft-equip-titan-gloves",
+      "c_titan_boots": "craft-equip-titan-boots",
+      "c_titan_scanner": "craft-equip-titan-scanner",
+      "c_titan_backpack": "craft-equip-titan-backpack",
+      "c_composite_suit": "craft-equip-composite-suit",
+      "c_composite_helmet": "craft-equip-composite-helmet",
+      "c_composite_gloves": "craft-equip-composite-gloves",
+      "c_composite_boots": "craft-equip-composite-boots",
+      "c_composite_scanner": "craft-equip-composite-scanner",
+      "c_composite_backpack": "craft-equip-composite-backpack"
+    },
+    "research": {
+      "scrub": "scrubbers"
+    },
+    "crops": {},
+    "quests": {}
+  },
+  "dispositions": {
+    "items:silicate_ore": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:rare_ore": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:iridium_ore": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:geode": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:glass": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:alloy": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:iridium_bar": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:frame2": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:part2": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "items:insulation": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "items:fertilizer": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "items:soy": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "items:algae": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "items:berries": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "items:genefruit": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "skills:robotics": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "skills:explore": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "nodes:iron3": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:perma1": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:brine1": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:silica1": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:silica2": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:rare1": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:irid1": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "nodes:dune_silica": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "buildings:depot": {
+      "status": "Deferred",
+      "wave": 3,
+      "note": "Storage wave: Colony Depot / bank so advanced resources cannot overflow or vanish."
+    },
+    "smelt:s_glass": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "smelt:s_alloy": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "smelt:s_irid": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "craft:c_frame2": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "craft:c_part2": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "craft:c_insulation": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "craft:c_fert": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "craft:c_laser": {
+      "status": "Deferred",
+      "wave": 2,
+      "note": "Economy wave: restores the resource graph (ore/ice ladders, refined goods) every later system consumes."
+    },
+    "craft:c_drone": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "research:laser_optics": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:grow_lights": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:survey_markers": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:deep_drilling": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:cryo_insulation": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:fertilizer_synth": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:grid_buffers": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:cargo_frame": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:drone_tuning": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:thermal_recyclers": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:iridium_refining": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:quality_assay": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:automation_core": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:xeno_agronomy": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:orbital_uplink": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:alloy_tempering": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "research:emergency_protocols": {
+      "status": "Deferred",
+      "wave": 4,
+      "note": "Progression wave: research tiers and their permanent unlock effects."
+    },
+    "crops:potato": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "crops:soy": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "crops:algae": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "crops:berries": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "crops:genefruit": {
+      "status": "Deferred",
+      "wave": 5,
+      "note": "Colony-depth wave: building tiers, farm plots, crops, disease and fertilizer."
+    },
+    "quests:q1": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q2": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q3": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q4": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q5": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q6": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q7": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q8": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q9": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q10": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q11": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q12": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q13": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    },
+    "quests:q14": {
+      "status": "Deferred",
+      "wave": 6,
+      "note": "Journey wave: objectives, postgame, Robotics/Exploration skills and drones."
+    }
+  },
+  "behaviors": [
+    {
+      "id": "xp_curve_runescape",
+      "label": "Exact RuneScape XP curve (99 = 13,034,431 xp)",
+      "present": false,
+      "wave": 1,
+      "note": "engine.mjs uses sqrt(xp)/5+1, reaching 99 at 240,100 xp — a 54x compression of the whole arc."
+    },
+    {
+      "id": "tick_600ms",
+      "label": "600 ms action tick",
+      "present": false,
+      "wave": 1,
+      "note": "engine.mjs ticks at 5000 ms. Travel already compensates with a 600 ms constant; the rest does not."
+    },
+    {
+      "id": "sol_100_ticks",
+      "label": "60-second sol (100 ticks)",
+      "present": false,
+      "wave": 1
+    },
+    {
+      "id": "balance_simulator",
+      "label": "Headless balance simulator + DoD verdicts",
+      "present": false,
+      "wave": 1,
+      "note": "sim/simulate.mjs in marsscape; 5/5 verdicts PASS at v0.4.0."
+    },
+    {
+      "id": "ore_ladders",
+      "label": "Ore/ice ladders with in-tier quality crits",
+      "present": false,
+      "wave": 2
+    },
+    {
+      "id": "geode_rolls",
+      "label": "Geode rolls from scanner stat",
+      "present": false,
+      "wave": 2,
+      "note": "engine.mjs has a geode stat but no geode item or roll."
+    },
+    {
+      "id": "colony_depot",
+      "label": "Colony Depot (bank) with deposit/withdraw/depositAll",
+      "present": false,
+      "wave": 3
+    },
+    {
+      "id": "real_pack_slots",
+      "label": "True inventory slots — stacks fill slots, full pack blocks gathering",
+      "present": false,
+      "wave": 3,
+      "note": "engine.mjs caps per-item quantity at 999 instead of modelling slots."
+    },
+    {
+      "id": "drone_delivery",
+      "label": "Drone delivery contract + droneCap from Robotics",
+      "present": false,
+      "wave": 3
+    },
+    {
+      "id": "research_tiers",
+      "label": "3 gated research tiers (RESEARCH_TIER_REQ)",
+      "present": false,
+      "wave": 4
+    },
+    {
+      "id": "research_effects",
+      "label": "Permanent research unlock effects",
+      "present": false,
+      "wave": 4,
+      "note": "engine.mjs stores research booleans; the effects are largely unwired."
+    },
+    {
+      "id": "building_tiers",
+      "label": "Building tiers I-III",
+      "present": false,
+      "wave": 5
+    },
+    {
+      "id": "overclock",
+      "label": "Overclock toggle (Engineering 25) with fault risk",
+      "present": false,
+      "wave": 5
+    },
+    {
+      "id": "fault_servicing",
+      "label": "Fault servicing (clears the greenhouse soft-lock)",
+      "present": false,
+      "wave": 5
+    },
+    {
+      "id": "farm_plots",
+      "label": "3 farm plots with per-plot crop state",
+      "present": false,
+      "wave": 5,
+      "note": "engine.mjs has a single {plantedAt, ready} farm object."
+    },
+    {
+      "id": "crop_disease",
+      "label": "Crop disease pauses growth (never kills) + fertilizer",
+      "present": false,
+      "wave": 5
+    },
+    {
+      "id": "objectives",
+      "label": "14 objectives with completion awards",
+      "present": false,
+      "wave": 6
+    },
+    {
+      "id": "final_storm",
+      "label": "Great Storm parity (250 ticks, 25-tick phases)",
+      "present": "partial",
+      "wave": 6,
+      "note": "engine.mjs has a storm with phases; totals and failure/victory handling need parity checking."
+    },
+    {
+      "id": "victory_postgame",
+      "label": "Victory + New Expedition+ postgame",
+      "present": false,
+      "wave": 6
+    },
+    {
+      "id": "expeditions",
+      "label": "Exploration expeditions (EXPED) and rich veins",
+      "present": false,
+      "wave": 6
+    },
+    {
+      "id": "sprite_fallback",
+      "label": "Sprite-sheet loader with emoji fallback (13 sprites)",
+      "present": false,
+      "wave": 7
+    },
+    {
+      "id": "player_manual",
+      "label": "Player-facing manual (docs/MANUAL.md)",
+      "present": false,
+      "wave": 7
+    },
+    {
+      "id": "legacy_save_import",
+      "label": "marsscape_v1 legacy save importer with quarantine + preview",
+      "present": false,
+      "wave": 8
+    }
+  ],
+  "saveFields": {
+    "$comment": "Old marsscape save (SAVE_KEY \"marsscape_v1\", SAVE_VERSION 4) -> canonical mixmash state. Unsupported values must be quarantined and reported, never silently discarded.",
+    "map": {
+      "v": "legacyVersion (namespaced)",
+      "inv": "inventory",
+      "bank": "bank (restored canonical)",
+      "fab": "skills.fabrication",
+      "eng": "skills.engineering",
+      "agri": "skills.agriculture",
+      "part": "inventory.component",
+      "green": "built.greenhouse",
+      "region": "currentRegion",
+      "finalStorm": "storm (canonical storm state)",
+      "victory": "postgame.victory",
+      "postgame": "postgame",
+      "drones": "postgame.drones",
+      "extraNodes": "postgame.extraNodes"
+    },
+    "rules": [
+      "Accept a marsscape_v1 export once, preview the conversion before committing it.",
+      "Create a server-owned session from the converted state; never trust client totals.",
+      "Preserve the original save verbatim for rollback.",
+      "Quarantine and report unmapped fields; do not drop them."
+    ]
+  },
+  "testContract": {
+    "$comment": "Behavioural test contract that must be represented in the canonical suite before cutover.",
+    "marsscape": {
+      "total": 97,
+      "files": {
+        "boot.test.js": 9,
+        "dist.test.js": 2,
+        "ladder.e2e.test.js": 5,
+        "migrate.test.js": 9,
+        "offline.test.js": 11,
+        "phase1.test.js": 17,
+        "region.test.js": 10,
+        "sprites.test.js": 5,
+        "state.test.js": 6,
+        "systems.test.js": 12,
+        "travel.e2e.test.js": 6,
+        "xp.test.js": 5
+      }
+    },
+    "mixmashBaseline": {
+      "total": 50,
+      "mustStayGreen": true
+    }
+  }
+}

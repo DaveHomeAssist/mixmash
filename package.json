@@ -1,15 +1,16 @@
 {
   "name": "mixmash",
   "version": "1.0.0",
-  "description": "MIXMASH — DJ-powered platform fighter (MixMash Studio)",
+  "description": "MIXMASH \u2014 DJ-powered platform fighter (MixMash Studio)",
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node --test test/kit-save.test.mjs test/combat.test.js test/play-core.test.mjs test/play-catalog.test.mjs test/play-system-modules.test.mjs mars/test-engine.mjs mars/test-api.mjs mars/test-vercel-handler.mjs",
+    "test": "node --test test/kit-save.test.mjs test/combat.test.js test/play-core.test.mjs test/play-catalog.test.mjs test/play-system-modules.test.mjs mars/test-engine.mjs mars/test-api.mjs mars/test-vercel-handler.mjs mars/parity/parity.test.mjs",
     "smoke:play": "node test/play-resume-smoke.mjs",
     "smoke:catalog": "node test/catalog-smoke.mjs",
     "vercel-build": "node --check \"api/[...path].mjs\" && node --check api/health.mjs && node --check api/sessions.mjs && node --check \"api/sessions/[sessionId].mjs\" && node --check \"api/sessions/[sessionId]/commands.mjs\" && node --check mars/game.js && node --check mars/server.mjs && node --check mars/engine.mjs",
-    "start:mars": "node mars/server.mjs"
+    "start:mars": "node mars/server.mjs",
+    "parity": "node mars/parity/build-ledger.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

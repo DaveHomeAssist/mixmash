@@ -15,3 +15,19 @@ Original prompt: Audit targets MarsScape (mixmash.games/mars) with client author
 
 TODO:
 - Deploy the Vercel authority API, point the live GitHub Pages client at it, and rerun live end-to-end QA.
+
+2026-08-24 (port wave 0 — preservation):
+- Cloned the standalone `marsscape` gameplay repo and measured the real gap: the engine
+  holds 73 of 144 MarsScape data features and 0 of 23 behavioural systems.
+- Froze `marsscape@ab073bc` `src/data.js` as `mars/parity/baseline/data.js` with a
+  checksum and both known-good SHAs, so parity stays reproducible without that repo.
+- Added `mars/parity/mapping.json`: explicit id correspondence (the two codebases use
+  different id conventions) plus a disposition for all 71 unported features.
+- Added `mars/parity/build-ledger.mjs` + generated `LEDGER.md`, and `parity.test.mjs`
+  wired into `npm test` (57 pass; the 50 pre-existing tests stay green).
+- Recorded the save-migration field map and the 97-test MarsScape contract as cutover gates.
+- Largest single divergence found: the engine reaches level 99 at 240,100 xp against
+  MarsScape's 13,034,431 — a 54x compression of the whole progression arc (wave 1).
+
+TODO:
+- Wave 1 (Foundations): RuneScape XP curve, 600 ms tick, 60-second sols, balance simulator.

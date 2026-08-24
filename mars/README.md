@@ -2,6 +2,18 @@
 
 MarsScape is a browser colony skiller with a shared JavaScript engine, a Node authority API, signed local fallback saves, and a canvas-backed isometric client.
 
+## Gameplay Parity with MarsScape
+
+`mixmash/mars` is the production shell; the standalone `marsscape` repository remains
+**authoritative for gameplay design and balance** until the port completes. The engine
+currently carries 73 of 144 MarsScape data features and none of its 23 behavioural
+systems.
+
+`mars/parity/` tracks every feature with an explicit `Ported`, `Intentionally Retired`,
+or `Deferred` disposition. See `mars/parity/LEDGER.md` for current state and
+`mars/parity/README.md` for the porting workflow. Do not archive, redirect, or relabel
+`marsscape` as legacy until that ledger reaches 100%.
+
 ## Local Run
 
 ```bash
