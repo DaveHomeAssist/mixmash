@@ -217,6 +217,7 @@ async function boot() {
   if (local?.state) {
     state = sanitizeState(local.state);
     pendingCommands = Array.isArray(local.pendingCommands) ? local.pendingCommands.slice(0, 80) : [];
+    if (local.migratedFrom === 'v3') await writeLocalEnvelope(local.signature || '');
   }
   render();
   try {
@@ -418,6 +419,7 @@ async function runCommand(command) {
       saveLocalSoon(true);
       return;
     } catch (error) {
+      if (error.status && error.status < 500) throw error;
       mode = 'offline';
       showToast('Authority offline', 'Local fallback is active until the API returns.');
     }
@@ -1203,7 +1205,10 @@ async function apiPost(path, body) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data?.error?.message || `API request failed (${response.status})`);
+    const error = new Error(data?.error?.message || `API request failed (${response.status})`);
+    error.status = response.status;
+    error.code = data?.error?.code || 'API_ERROR';
+    throw error;
   }
   return data;
 }
@@ -1251,9 +1256,7 @@ async function readLocalEnvelope() {
   const envelope = await readEnvelopeAt(STORAGE_KEY);
   if (envelope) return envelope;
   // One-time v3 read. The state runs through the canonical sanitizer downstream,
-  // which upgrades the v3 shape; the single in-progress greenhouse crop does not
-  // survive the move to plots, but skills, inventory, structures, research and
-  // equipment all do.
+  // which upgrades the v3 shape, including its in-progress greenhouse crop.
   const legacy = await readEnvelopeAt(LEGACY_STORAGE_KEY);
   if (legacy) legacy.migratedFrom = 'v3';
   return legacy;
@@ -1263,7 +1266,10 @@ async function readEnvelopeAt(key) {
   try {
     const envelope = JSON.parse(localStorage.getItem(key) || 'null');
     if (!envelope?.state) return null;
-    if (!(await verifyLocalEnvelope(envelope))) return null;
+    const valid = key === LEGACY_STORAGE_KEY
+      ? await verifyLegacyLocalEnvelope(envelope)
+      : await verifyLocalEnvelope(envelope);
+    if (!valid) return null;
     return envelope;
   } catch {
     return null;
@@ -1326,11 +1332,15 @@ async function importSave() {
 
   const { envelope } = validation;
   try {
-    if (!(await verifyLocalEnvelope(envelope))) {
+    const valid = Number(envelope.state?.version) === 3
+      ? await verifyLegacyLocalEnvelope(envelope)
+      : await verifyLocalEnvelope(envelope);
+    if (!valid) {
       throw new Error('Unsigned or tampered envelope');
     }
     state = publicState(sanitizeState(envelope.state));
     sessionId = envelope.sessionId || getOrCreateSessionId(true);
+    localStorage.setItem(SESSION_KEY, sessionId);
     mode = 'offline';
     saveLocalSoon(true);
     render();
@@ -1344,11 +1354,15 @@ async function importSave() {
 
 function getOrCreateSessionId(force = false) {
   if (!force) {
+    const legacy = localStorage.getItem(LEGACY_SESSION_KEY);
+    if (legacy && localStorage.getItem(LEGACY_STORAGE_KEY) && !localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(SESSION_KEY, legacy);
+      return legacy;
+    }
     const existing = localStorage.getItem(SESSION_KEY);
     if (existing) return existing;
     // Adopt the v3 session so the player resumes their authority session rather
     // than being handed a new, empty one by the key bump.
-    const legacy = localStorage.getItem(LEGACY_SESSION_KEY);
     if (legacy) {
       localStorage.setItem(SESSION_KEY, legacy);
       return legacy;
@@ -1365,6 +1379,12 @@ async function verifyLocalEnvelope(envelope) {
   return !!envelope.checksum && envelope.checksum === checksum(payload);
 }
 
+async function verifyLegacyLocalEnvelope(envelope) {
+  const payload = legacyLocalEnvelopePayload(envelope);
+  if (envelope.localHmac) return localSigner.verify(payload, envelope.localHmac);
+  return !!envelope.checksum && envelope.checksum === checksum(payload);
+}
+
 function localEnvelopePayload(envelope) {
   return JSON.stringify({
     sessionId: typeof envelope.sessionId === 'string' ? envelope.sessionId : '',
@@ -1372,6 +1392,19 @@ function localEnvelopePayload(envelope) {
     signature: typeof envelope.signature === 'string' ? envelope.signature : '',
     state: sanitizeState(envelope.state),
     pendingCommands: cleanPendingCommands(envelope.pendingCommands),
+  });
+}
+
+// v3 stored an already-sanitized state and signed that exact object with the v3
+// command allowlist. Running it through the v4 sanitizer before verification changes
+// the signed bytes and rejects every genuine old envelope.
+function legacyLocalEnvelopePayload(envelope) {
+  return JSON.stringify({
+    sessionId: typeof envelope.sessionId === 'string' ? envelope.sessionId : '',
+    mode: typeof envelope.mode === 'string' ? envelope.mode : '',
+    signature: typeof envelope.signature === 'string' ? envelope.signature : '',
+    state: envelope.state,
+    pendingCommands: cleanPendingCommandsV3(envelope.pendingCommands),
   });
 }
 
@@ -1388,6 +1421,19 @@ const COMMAND_FIELDS = {
   useFertilizer: 'boolean', on: 'boolean',
 };
 
+function cleanPendingCommandsV3(commands) {
+  if (!Array.isArray(commands)) return [];
+  const fields = new Set(['id', 'type', 'nodeId', 'buildingId', 'recipeId', 'projectId', 'destRegion']);
+  return commands.slice(-80).map((command) => {
+    if (!command || typeof command !== 'object') return null;
+    const clean = {};
+    for (const [key, value] of Object.entries(command)) {
+      if (fields.has(key) && typeof value === 'string') clean[key] = value.slice(0, 80);
+    }
+    return clean.id && clean.type ? clean : null;
+  }).filter(Boolean);
+}
+
 function cleanPendingCommands(commands) {
   if (!Array.isArray(commands)) return [];
   return commands.slice(-80).map((command) => {
@@ -1398,7 +1444,7 @@ function cleanPendingCommands(commands) {
       if (!kind) continue;
       if (kind === 'string' && typeof value === 'string') clean[key] = value.slice(0, 80);
       else if (kind === 'number' && Number.isFinite(value)) clean[key] = Math.trunc(value);
-      else if (kind === 'boolean') clean[key] = !!value;
+      else if (kind === 'boolean' && typeof value === 'boolean') clean[key] = value;
     }
     return clean.id && clean.type ? clean : null;
   }).filter(Boolean);
@@ -1475,6 +1521,14 @@ function exposeTestHooks() {
     skills: Object.fromEntries(Object.keys(SKILLS).map((id) => [id, skillProgress((state.skills[id] || {}).xp)])),
   });
   window.validateSaveCode = validateSaveCode;
+  window.__marsTest = {
+    cleanPendingCommands,
+    setState(next) {
+      state = publicState(sanitizeState(next));
+      render();
+      return window.render_game_to_text();
+    },
+  };
   window.advanceTime = (ms = 5000) => {
     state = publicState(advanceState({ ...state, lastTickAt: state.lastTickAt - ms }, Date.now()));
     render();

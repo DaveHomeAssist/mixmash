@@ -13,6 +13,10 @@ proves it. `npm test` re-checks the mapping in both directions and fails on a st
 ledger; `npm run sim` re-runs the balance verdicts. See `mars/docs/MANUAL.md` to play and
 `mars/docs/BALANCE_BASELINE.md` for the numbers.
 
+The simulator compares gathering rates with the committed machine baseline and fails
+on a loss greater than 10%, a removed rate band, or missing baseline evidence. For an
+intentional rebalance, review the new rates and run `npm run sim -- --accept`.
+
 ## Local Run
 
 ```bash

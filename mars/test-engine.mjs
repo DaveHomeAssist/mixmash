@@ -230,6 +230,18 @@ test('sanitizer falls back to safe defaults for tampered region/rover/equip/trav
   assert.equal(clean.travel, null);
 });
 
+test('v3 colony state migrates an in-progress farm plot instead of resetting it', () => {
+  const now = 1_700_000_090_000;
+  const legacy = createState(now);
+  legacy.version = 3;
+  legacy.farm = { plantedAt: now - 45_000, ready: false };
+  const migrated = sanitizeState(legacy, now);
+  assert.equal(migrated.version, 4);
+  assert.equal(migrated.farm.plots[0].crop, 'potato');
+  assert.ok(migrated.farm.plots[0].t > 0, 'the elapsed crop progress survives');
+  assert.ok(migrated.farm.plots[0].t < 14, 'a half-grown crop is not marked ready');
+});
+
 test('servicing is paced like every other repeatable action', () => {
   // Review finding 5: service grants xp and meter recovery, so leaving it unpaced
   // left the command-spam hole open in another progression path.
@@ -274,6 +286,7 @@ test('a faulted structure blocks the storm instead of counting as online', () =>
 
   // servicing it clears the fault and re-opens the storm
   const serviced = applyCommand(faulted, { id: 'sv', type: 'service', buildingId: 'reactor' }, NOW).state;
+  assert.equal(serviced.storm.status, 'ready', 'repairing the final offline system re-opens the storm in the UI');
   serviced.meters = { oxygen: 100, power: 100 };
   const after = applyCommand(serviced, { id: 'st3', type: 'startStorm' }, serviced.busyUntil + 1).state;
   assert.equal(after.storm.status, 'active');

@@ -104,7 +104,7 @@ export function convertLegacySave(input, now = Date.now()) {
         legacyVersion: Number(legacy.version) || 3,
         sourceKind: 'mixmash-engine',
         quarantine: [],
-        notes: ['Imported a mixmash engine save. Skills, inventory, structures, research and equipment carry over; the single pre-v4 greenhouse crop does not survive the move to plots.'],
+        notes: ['Imported a mixmash engine save. Skills, inventory, structures, research, equipment and greenhouse progress carry over.'],
         summary: summarize(migrated),
         original: raw,
       },

@@ -15,6 +15,7 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { compareRateBaseline } from './baseline.mjs';
 import {
   TICK_MS, TICKS_PER_SOL, NODES, BUILDINGS, BUILD_TIERS, SMELT_RECIPES, CRAFT_RECIPES,
   RESEARCH, CROPS, ITEMS, EDIBLES, STORM_TOTAL, STORM_PHASE, REGIONS, ROVERS,
@@ -241,40 +242,35 @@ out('colonists real storm tools.');
 out('');
 
 /* regression check against the committed baseline ---------------------------- */
-const REGRESSION_THRESHOLD = 0.10;
 let baseline = null;
 if (existsSync(BASELINE_JSON)) {
   try { baseline = JSON.parse(readFileSync(BASELINE_JSON, 'utf8')); } catch { baseline = null; }
 }
+const REGRESSION_THRESHOLD = 0.10;
+const comparison = ACCEPT
+  ? { ok: true, problems: [] }
+  : compareRateBaseline(baseline, rates, REGRESSION_THRESHOLD);
 out('## Regression check (vs committed baseline)');
 out('');
-if (!baseline) {
-  out('No committed baseline found — writing one. Future runs compare against it.');
-  verdicts.push([`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr`, true]);
+if (ACCEPT) {
+  out('The current rates were explicitly accepted as the new committed baseline.');
+} else if (comparison.ok) {
+  out(`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr against the committed baseline.`);
 } else {
-  const drops = [];
-  for (const [skillKey, bands] of Object.entries(rates)) {
-    for (const [lvl, current] of Object.entries(bands)) {
-      const prior = baseline.rates?.[skillKey]?.[lvl];
-      if (!Number.isFinite(prior) || prior <= 0) continue;
-      const delta = (current - prior) / prior;
-      if (delta < -REGRESSION_THRESHOLD) {
-        drops.push({ skillKey, lvl, prior, current, pct: (delta * 100).toFixed(1) });
-      }
-    }
-  }
+  const drops = comparison.problems.filter((problem) => problem.kind === 'regression');
   if (drops.length) {
     out('| Method | Level | Baseline xp/hr | Now | Change |');
     out('|---|---:|---:|---:|---:|');
-    for (const d of drops) out(`| ${d.skillKey} | ${d.lvl} | ${num(d.prior)} | ${num(d.current)} | ${d.pct}% |`);
+    for (const drop of drops) out(`| ${drop.skillKey} | ${drop.level} | ${num(drop.prior)} | ${num(drop.current)} | ${drop.pct.toFixed(1)}% |`);
     out('');
-    out(`**FAIL** — ${drops.length} method/level band(s) lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr.`);
-    out('If the change is deliberate, re-run with `npm run sim -- --accept`.');
-  } else {
-    out(`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr against the committed baseline.`);
   }
-  verdicts.push([`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr`, drops.length === 0]);
+  for (const problem of comparison.problems.filter((entry) => entry.kind !== 'regression')) {
+    out(`- **FAIL** — ${problem.message}`);
+  }
+  out(`**FAIL** — ${comparison.problems.length} committed-baseline check(s) failed.`);
+  out('If the change is deliberate, re-run with `npm run sim -- --accept`.');
 }
+verdicts.push([`No method lost more than ${REGRESSION_THRESHOLD * 100}% xp/hr`, comparison.ok]);
 out('');
 
 /* verdicts ----------------------------------------------------------------- */
@@ -290,10 +286,9 @@ while (lines.length && lines[lines.length - 1] === '') lines.pop();
 writeFileSync(resolve(HERE, '../docs/BALANCE_BASELINE.md'), `${lines.join('\n')}\n`);
 console.log('wrote mars/docs/BALANCE_BASELINE.md');
 
-// Only write the machine baseline when there is nothing to compare against yet, or
-// when the change is explicitly accepted — otherwise a regression would overwrite
-// the very numbers meant to catch it.
-if (!baseline || ACCEPT) {
+// Only write the machine baseline when the change is explicitly accepted — a missing
+// baseline is a CI failure, not permission to recreate the evidence being checked.
+if (ACCEPT) {
   writeFileSync(BASELINE_JSON, `${JSON.stringify({ threshold: REGRESSION_THRESHOLD, rates }, null, 2)}\n`);
   console.log(`wrote mars/docs/balance-baseline.json${ACCEPT ? ' (accepted)' : ''}`);
 }

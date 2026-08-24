@@ -189,6 +189,7 @@ test('a real v3 client export imports instead of being rejected', () => {
       gear: { pickaxe: 'titanium' },
       rover: 'rover2',
       currentRegion: 'dune_sea',
+      farm: { plantedAt: 1_700_000_000_000, ready: true },
     },
   };
   const { state, report } = convertLegacySave(JSON.stringify(v3Envelope));
@@ -202,10 +203,12 @@ test('a real v3 client export imports instead of being rejected', () => {
   assert.equal(state.gear.pickaxe, 'titanium');
   assert.equal(state.rover, 'rover2');
   assert.equal(state.currentRegion, 'dune_sea');
-  // v4 additions are filled in rather than left undefined
+  // v4 additions are filled in rather than left undefined, including the old crop.
   assert.ok(Array.isArray(state.farm.plots) && state.farm.plots.length >= 3);
+  assert.equal(state.farm.plots[0].crop, 'potato');
+  assert.equal(state.farm.plots[0].t, 14);
   assert.equal(typeof state.bank, 'object');
-  assert.ok(report.notes.some((n) => /greenhouse crop/i.test(n)), 'the one real loss is stated');
+  assert.ok(report.notes.some((n) => /greenhouse progress/i.test(n)), 'the migrated progress is stated');
 });
 
 test('the rollback original is the caller input byte-for-byte, not a re-serialization', () => {

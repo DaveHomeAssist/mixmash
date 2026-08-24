@@ -176,7 +176,7 @@ test('legacy import previews without writing, then commits a server-owned sessio
     const row = db.prepare('SELECT legacy_original FROM sessions WHERE id = ?').get(committed.sessionId);
     assert.ok(row, 'the imported session is in the database');
     assert.ok(row.legacy_original, 'the rollback original is persisted, not dropped by the adapter');
-    assert.deepEqual(JSON.parse(row.legacy_original), JSON.parse(legacy), 'and it round-trips to the original save');
+    assert.equal(row.legacy_original, legacy, 'the exact submitted bytes survive storage');
   } finally {
     db.close();
   }

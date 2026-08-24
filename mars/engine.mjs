@@ -435,6 +435,7 @@ function award(state, itemId, n) {
 export function sanitizeState(raw, now = Date.now()) {
   const base = createState(now);
   if (!raw || typeof raw !== 'object') return base;
+  raw = migrateLegacyEngineState(raw, now);
   const research = cleanBoolMap(raw.research, RESEARCH_IDS);
   const state = {
     ...base,
@@ -934,6 +935,9 @@ const SERVICE_TICKS = 5;
 function service(state, buildingId, now) {
   const building = BUILDINGS.find((b) => b.id === buildingId && state.built[b.id]);
   if (!building) throw new GameError('BUILDING_NOT_FOUND', 'Online building not found', 404);
+  if (state.currentRegion !== 'landing_basin') {
+    throw new GameError('AWAY_FROM_BASIN', 'Building service happens at the Landing Basin. Drive home first.');
+  }
   requireIdle(state, now);
   const faulted = !!state.fault[building.id];
   if (faulted) delete state.fault[building.id];
@@ -946,6 +950,10 @@ function service(state, buildingId, now) {
   addEvent(state, 'good', faulted
     ? `Cleared the fault on ${building.name}. Output restored.`
     : `Serviced ${building.name}.`);
+  if (allBuildingsOnline(state) && state.storm.status === 'locked' && !state.victory) {
+    state.storm.status = 'ready';
+    addEvent(state, 'warn', 'Great Storm detected. Stock food, oxygen, and power before starting.');
+  }
 }
 
 function smelt(state, recipeId, now) {
@@ -1284,6 +1292,36 @@ function scaleItems(items, multiplier) {
 }
 
 /* -------------------------------------------------------------- sanitize parts */
+
+function migrateLegacyEngineState(raw, now) {
+  if (Number(raw.version) !== 3) return raw;
+  const migrated = { ...raw };
+
+  if (raw.farm && !Array.isArray(raw.farm.plots)) {
+    const plantedAt = Number(raw.farm.plantedAt) || 0;
+    const elapsed = plantedAt ? Math.max(0, now - plantedAt) : 0;
+    const ready = !!raw.farm.ready || elapsed >= 90_000;
+    const progress = plantedAt ? Math.min(13, Math.floor((elapsed / 90_000) * 14)) : 0;
+    migrated.farm = {
+      plots: [
+        plantedAt ? { crop: 'potato', t: ready ? 14 : progress, disease: false, fert: false, rolled: true } : null,
+      ],
+    };
+  }
+
+  if (raw.storm?.status === 'active' && raw.storm.remaining == null) {
+    const endsAt = Number(raw.storm.endsAt) || now;
+    migrated.storm = {
+      status: 'active',
+      phase: raw.storm.phase,
+      remaining: Math.max(1, Math.min(STORM_TOTAL, Math.ceil((endsAt - now) / TICK_MS))),
+      startedAt: raw.storm.startedAt,
+      surgeIn: 35,
+    };
+  }
+
+  return migrated;
+}
 
 function cleanNumberMap(raw, allowed, min, max) {
   const clean = Object.fromEntries(allowed.map((id) => [id, 0]));
