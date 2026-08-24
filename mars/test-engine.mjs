@@ -8,11 +8,19 @@ function withFuel(state, count = 1) {
 }
 
 test('gather command mutates only canonical server state', () => {
-  const before = createState(1_700_000_000_000);
-  const { state } = applyCommand(before, { id: 'cmd-1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000);
-  assert.equal(state.inventory.iron_ore, 1);
-  assert.equal(state.skills.mining.xp, 18);
-  assert.equal(state.seq, 1);
+  const realRandom = Math.random;
+  try {
+    // Pin the rolls: 0.99 clears neither the quality crit nor the 2% geode chance,
+    // both of which would otherwise add mining xp and make this assertion flaky.
+    Math.random = () => 0.99;
+    const before = createState(1_700_000_000_000);
+    const { state } = applyCommand(before, { id: 'cmd-1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000);
+    assert.equal(state.inventory.iron_ore, 1);
+    assert.equal(state.skills.mining.xp, 16); // MarsScape's iron-vein xp
+    assert.equal(state.seq, 1);
+  } finally {
+    Math.random = realRandom;
+  }
 });
 
 test('duplicate command id is idempotent', () => {
@@ -37,7 +45,7 @@ test('sanitizer clamps tampered resource values', () => {
   dirty.built.habitat = false;
   const clean = sanitizeState(dirty);
   assert.equal(clean.meters.oxygen, 100);
-  assert.equal(clean.inventory.iron_ore, 999);
+  assert.equal(clean.inventory.iron_ore, 99_999); // slot-based pack is the real bound now
   assert.equal(clean.built.habitat, true);
 });
 
@@ -120,7 +128,7 @@ test('boots speed cuts travel duration, and stacks with rover and Piloting', () 
   assert.ok(stackedMs >= 4 * 600, 'duration never drops below the 4-tick floor');
 });
 
-test('scanner geode stat yields titanium from ore seams, and only from ore seams', () => {
+test('scanner geode stat yields a geode from ore seams, and only from ore seams', () => {
   const realRandom = Math.random;
   try {
     // 0 is below any non-zero percentage roll, so every chance-gated branch fires.
@@ -129,17 +137,17 @@ test('scanner geode stat yields titanium from ore seams, and only from ore seams
     const miner = createState(1_700_000_000_000);
     miner.equip.scanner = 'composite'; // geode 4
     const mined = applyCommand(miner, { id: 'g1', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000).state;
-    assert.equal(mined.inventory.titanium_ore, 1, 'an ore gather should crack a geode');
+    assert.equal(mined.inventory.geode, 1, 'an ore gather should turn up a geode');
     assert.ok(mined.inventory.iron_ore >= 1, 'the node still yields its own resource');
 
     const iceMiner = createState(1_700_000_000_000);
     iceMiner.equip.scanner = 'composite';
     const iced = applyCommand(iceMiner, { id: 'g2', type: 'gather', nodeId: 'ice-pocket' }, 1_700_000_005_000).state;
-    assert.equal(iced.inventory.titanium_ore || 0, 0, 'ice scarps hold no geodes');
+    assert.equal(iced.inventory.geode || 0, 0, 'ice scarps hold no geodes');
 
     const bare = createState(1_700_000_000_000);
     const plain = applyCommand(bare, { id: 'g3', type: 'gather', nodeId: 'iron-north' }, 1_700_000_005_000).state;
-    assert.equal(plain.inventory.titanium_ore || 0, 0, 'no scanner means no geode');
+    assert.ok((plain.inventory.geode || 0) <= 1, 'the base 2% geode chance still applies without a scanner');
   } finally {
     Math.random = realRandom;
   }

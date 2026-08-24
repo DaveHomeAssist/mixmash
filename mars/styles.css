@@ -1000,3 +1000,13 @@ a:focus-visible {
     animation: none !important;
   }
 }
+
+/* Objective bar — the 14-step progression arc, always visible above the log. */
+.objective-bar {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--ochre, #e0a03a);
+  background: rgba(224, 160, 58, 0.08);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}

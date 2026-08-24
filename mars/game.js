@@ -1,6 +1,8 @@
 import {
+  BUILD_TIERS,
   BUILDINGS,
   CRAFT_RECIPES,
+  CROPS,
   EQUIP_SLOTS,
   EQUIP_TIERS,
   ITEMS,
@@ -8,19 +10,27 @@ import {
   REGIONS,
   RESEARCH,
   ROVERS,
+  MAX_TIER,
+  OBJECTIVES,
+  OVERCLOCK_LVL,
   SKILLS,
   SMELT_RECIPES,
   advanceState,
+  cropNeed,
+  droneCap,
   applyCommand,
   createState,
   equipStats,
   levelForXp,
+  packCap,
+  packSlots,
   publicState,
+  researchTierOpen,
   sanitizeState,
 } from './engine.mjs';
 
-const STORAGE_KEY = 'marsscape.session.v3';
-const SESSION_KEY = 'marsscape.sessionId.v3';
+const STORAGE_KEY = 'marsscape.session.v4';
+const SESSION_KEY = 'marsscape.sessionId.v4';
 const ASSET_MANIFEST = './assets/manifest.json';
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '']);
 const API_BASE = resolveApiBase();
@@ -461,6 +471,7 @@ function renderStatus() {
   el.oxygenMeter.setAttribute('aria-valuenow', String(oxygen));
   el.powerMeter.setAttribute('aria-valuenow', String(power));
   el.solValue.textContent = String(state.sol);
+  renderObjective();
   el.regionLabel.textContent = REGIONS[state.currentRegion]?.name || 'Landing Basin';
   el.authorityStatus.textContent = mode === 'online' ? `Server authority: ${sessionId.slice(0, 8)}` : 'Offline local fallback';
   el.authorityStatus.style.color = mode === 'online' ? 'var(--green)' : 'var(--ochre)';
@@ -470,6 +481,23 @@ function renderStatus() {
     button.tabIndex = selected ? 0 : -1;
     if (selected) el.panelBody.setAttribute('aria-labelledby', button.id);
   }
+}
+
+// The current objective, shown above the log so the 14-step arc is always visible.
+function renderObjective() {
+  let bar = document.getElementById('objectiveBar');
+  if (!bar) {
+    const host = el.eventLog && el.eventLog.parentElement;
+    if (!host) return;
+    bar = document.createElement('p');
+    bar.id = 'objectiveBar';
+    bar.className = 'objective-bar';
+    host.insertBefore(bar, el.eventLog);
+  }
+  const done = state.objective >= OBJECTIVES.length;
+  bar.textContent = done
+    ? `All ${OBJECTIVES.length} objectives complete — New Expedition+ is open.`
+    : `Objective ${state.objective + 1}/${OBJECTIVES.length}: ${OBJECTIVES[state.objective].text}`;
 }
 
 function nodeInCurrentRegion(node) {
@@ -560,7 +588,7 @@ function renderBuilding(building) {
 }
 
 function renderPanel() {
-  const renderers = { skills: renderSkills, pack: renderPack, build: renderBuild, forge: renderForge, research: renderResearch, travel: renderTravel };
+  const renderers = { skills: renderSkills, pack: renderPack, farm: renderFarm, depot: renderDepot, build: renderBuild, forge: renderForge, research: renderResearch, travel: renderTravel };
   el.panelBody.innerHTML = renderers[activeTab]();
   el.panelBody.querySelectorAll('[data-action]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -570,9 +598,17 @@ function renderPanel() {
       if (action === 'craft') enqueueCommand('craft', { recipeId: button.dataset.id });
       if (action === 'research') enqueueCommand('research', { projectId: button.dataset.id });
       if (action === 'purify') enqueueCommand('purify');
-      if (action === 'plant') enqueueCommand('plant');
-      if (action === 'harvest') enqueueCommand('harvest');
-      if (action === 'ration') enqueueCommand('ration');
+      if (action === 'plant') enqueueCommand('plant', { plotIndex: Number(button.dataset.plot), cropId: button.dataset.crop, useFertilizer: button.dataset.fert === '1' });
+      if (action === 'harvest') enqueueCommand('harvest', { plotIndex: Number(button.dataset.plot) });
+      if (action === 'treat') enqueueCommand('treat', { plotIndex: Number(button.dataset.plot) });
+      if (action === 'upgrade') enqueueCommand('upgrade', { buildingId: button.dataset.id });
+      if (action === 'overclock') enqueueCommand('overclock', { on: button.dataset.on === '1' });
+      if (action === 'service') enqueueCommand('service', { buildingId: button.dataset.id });
+      if (action === 'deposit') enqueueCommand('deposit', { itemId: button.dataset.id, qty: Number(button.dataset.qty) });
+      if (action === 'withdraw') enqueueCommand('withdraw', { itemId: button.dataset.id, qty: Number(button.dataset.qty) });
+      if (action === 'depositAll') enqueueCommand('depositAll');
+      if (action === 'deployDrone') enqueueCommand('deployDrone', { nodeId: button.dataset.id });
+      if (action === 'ration') enqueueCommand('ration', { itemId: button.dataset.id });
       if (action === 'storm') enqueueCommand('startStorm');
       if (action === 'travel') enqueueCommand('travel', { destRegion: button.dataset.id });
     });
@@ -693,7 +729,10 @@ function renderPack() {
   const stats = equipStats(state);
   const equipRows = EQUIP_SLOTS.map((slot) => `<div class="skill-row"><span>${escapeHtml(capitalize(slot))}</span><b>${state.equip[slot] ? escapeHtml(capitalize(state.equip[slot])) : 'empty'}</b></div>`).join('');
   const statLine = `O2 efficiency +${stats.o2}% · quality chance +${stats.crit}% · geode find +${stats.geode}% · travel speed +${stats.speed}% · pack capacity +${stats.pack} — craft gear at the Forge`;
-  return `<div class="card"><h3>Field Pack</h3><p>Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Equipment</h3><p>${statLine}</p><div class="skill-list">${equipRows}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="plant" ${!state.built.greenhouse || state.farm.plantedAt && !state.farm.ready ? 'disabled' : ''}>Plant Greenhouse Crop</button><button data-action="harvest" ${!state.farm.ready ? 'disabled' : ''}>Harvest Food</button><button data-action="ration" ${(state.inventory.food || 0) < 1 ? 'disabled' : ''}>Ration Food</button></div>`;
+  const cap = packCap(state);
+  const used = packSlots(state);
+  const edible = ['genefruit', 'berries', 'algae', 'soy', 'food'].find((id) => (state.inventory[id] || 0) > 0);
+  return `<div class="card"><h3>Field Pack</h3><p>${used}/${cap} slots used. Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Equipment</h3><p>${statLine}</p><div class="skill-list">${equipRows}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="ration" ${!edible ? 'disabled' : ''} data-id="${edible || ''}">Ration ${edible ? escapeHtml(ITEMS[edible].name) : 'Food'}</button></div>`;
 }
 
 function capitalize(word) {
@@ -701,10 +740,92 @@ function capitalize(word) {
 }
 
 function renderBuild() {
-  return BUILDINGS.map((building) => {
+  const engLevel = (state.skills.engineering || {}).level || 1;
+  const clockable = engLevel >= OVERCLOCK_LVL;
+  const overclock = `<div class="card"><h3>Overclock</h3><p>${clockable
+    ? `Raises every structure's output by 35%, but online systems can trip a fault and need servicing.${state.research.automation_core ? ' Automation Core halves the fault rate.' : ''}`
+    : `Needs Engineering ${OVERCLOCK_LVL}. Currently ${engLevel}.`}</p><button data-action="overclock" data-on="${state.overclock ? '0' : '1'}" ${clockable ? '' : 'disabled'}>${state.overclock ? 'Disengage overclock' : 'Engage overclock'}</button></div>`;
+
+  const cards = BUILDINGS.map((building) => {
     const online = !!state.built[building.id];
-    return `<div class="card"><h3>${escapeHtml(building.name)}</h3><p>${escapeHtml(building.description)}</p>${renderCost(building.cost)}<button data-action="build" data-id="${building.id}" ${online || !canAfford(building.cost) ? 'disabled' : ''}>${online ? 'Online' : 'Build'}</button></div>`;
+    const tier = state.tier[building.id] || 1;
+    const tiers = BUILD_TIERS[building.id];
+    const faulted = !!state.fault[building.id];
+    if (!online) {
+      return `<div class="card"><h3>${escapeHtml(building.name)}</h3><p>${escapeHtml(building.description)}</p>${renderCost(building.cost)}<button data-action="build" data-id="${building.id}" ${canAfford(building.cost) ? '' : 'disabled'}>Build</button></div>`;
+    }
+    const label = tiers ? ` — Tier ${['I', 'II', 'III'][tier - 1]}` : '';
+    const fault = faulted
+      ? `<p class="warn">Faulted: output is offline until serviced.</p><button data-action="service" data-id="${building.id}">Service now</button>`
+      : `<button data-action="service" data-id="${building.id}">Service</button>`;
+    let upgrade = '';
+    if (tiers && tier < MAX_TIER) {
+      const step = tiers[tier - 1];
+      const gated = engLevel < step.engLvl;
+      upgrade = `<p>Tier ${['I', 'II', 'III'][tier]} needs Engineering ${step.engLvl}${gated ? ` (you are ${engLevel})` : ''}.</p>${renderCost(step.cost)}<button data-action="upgrade" data-id="${building.id}" ${gated || !canAfford(step.cost) ? 'disabled' : ''}>Upgrade</button>`;
+    } else if (tiers) {
+      upgrade = '<p>Fully upgraded.</p>';
+    }
+    return `<div class="card"><h3>${escapeHtml(building.name)}${label}</h3><p>${escapeHtml(building.description)}</p>${fault}${upgrade}</div>`;
   }).join('');
+  return cards + overclock;
+}
+
+function renderFarm() {
+  if (!state.built.greenhouse) {
+    return '<div class="card"><h3>Greenhouse</h3><p>Build the Greenhouse to open farm plots.</p></div>';
+  }
+  const agri = (state.skills.agriculture || {}).level || 1;
+  const plots = state.farm.plots.map((plot, index) => {
+    if (plot.disease) {
+      return `<div class="card"><h3>Plot ${index + 1} — blighted</h3><p>Growth is paused until treated. Blight never kills the crop.</p>${renderCost({ water: 1 })}<button data-action="treat" data-plot="${index}" ${canAfford({ water: 1 }) ? '' : 'disabled'}>Treat blight</button></div>`;
+    }
+    if (plot.crop) {
+      const crop = CROPS.find((c) => c.id === plot.crop);
+      const need = cropNeed(state, plot);
+      const ready = plot.t >= need;
+      const pct = Math.min(100, Math.round((plot.t / need) * 100));
+      return `<div class="card"><h3>Plot ${index + 1} — ${escapeHtml(crop.name)}</h3><p>${ready ? 'Ready to harvest.' : `Growing: ${pct}%${plot.fert ? ' (fertilized)' : ''}`}</p><span class="skill-bar"><i style="width:${pct}%;background:var(--green)"></i></span><button data-action="harvest" data-plot="${index}" ${ready ? '' : 'disabled'}>Harvest</button></div>`;
+    }
+    const options = CROPS.map((crop) => {
+      const locked = agri < crop.lvl || (crop.requiresResearch && !state.research[crop.requiresResearch]);
+      const cost = { water: crop.water };
+      const note = locked
+        ? (agri < crop.lvl ? `Agriculture ${crop.lvl}` : 'needs research')
+        : `${crop.water} water · ${crop.ticks} ticks`;
+      const fert = (state.inventory.fertilizer || 0) > 0 && !locked
+        ? `<button data-action="plant" data-plot="${index}" data-crop="${crop.id}" data-fert="1">+ fertilizer</button>`
+        : '';
+      return `<div class="skill-row"><span>${escapeHtml(crop.name)} (${note})</span><button data-action="plant" data-plot="${index}" data-crop="${crop.id}" data-fert="0" ${locked || !canAfford(cost) ? 'disabled' : ''}>Plant</button>${fert}</div>`;
+    }).join('');
+    return `<div class="card"><h3>Plot ${index + 1} — empty</h3><div class="skill-list">${options}</div></div>`;
+  }).join('');
+  return plots;
+}
+
+function renderDepot() {
+  if (!state.built.depot) {
+    return '<div class="card"><h3>Colony Depot</h3><p>Build the Colony Depot to open unlimited colony storage. Drones deliver here.</p></div>';
+  }
+  const banked = Object.entries(state.bank).filter(([, qty]) => qty > 0);
+  const carried = Object.entries(state.inventory).filter(([, qty]) => qty > 0);
+  const bankRows = banked.length
+    ? banked.map(([id, qty]) => `<div class="skill-row"><span>${escapeHtml(ITEMS[id].name)}</span><b>${qty}</b><button data-action="withdraw" data-id="${id}" data-qty="${qty}">Withdraw all</button></div>`).join('')
+    : '<p>The Depot is empty.</p>';
+  const packRows = carried.length
+    ? carried.map(([id, qty]) => `<div class="skill-row"><span>${escapeHtml(ITEMS[id].name)}</span><b>${qty}</b><button data-action="deposit" data-id="${id}" data-qty="${qty}">Deposit all</button></div>`).join('')
+    : '<p>The pack is empty.</p>';
+  const drones = state.drones.length
+    ? state.drones.map((drone, i) => {
+        const node = drone.nodeId ? NODES.find((n) => n.id === drone.nodeId) : null;
+        const targets = NODES.filter((n) => (n.regionId || 'landing_basin') === 'landing_basin')
+          .map((n) => `<button data-action="deployDrone" data-id="${n.id}">${escapeHtml(n.name)}</button>`).join('');
+        return `<div class="skill-row"><span>Drone ${i + 1}</span><b>${node ? escapeHtml(node.name) : 'idle'}</b></div>${node ? '' : `<div class="skill-list">${targets}</div>`}`;
+      }).join('')
+    : `<p>No drones. Build one at the Forge (cap ${droneCap(state)}).</p>`;
+  return `<div class="card"><h3>Colony Depot</h3><p>Unlimited storage. Deposits never overflow.</p>${bankRows}</div>`
+    + `<div class="card"><h3>Field Pack</h3>${packRows}<button data-action="depositAll" ${carried.length ? '' : 'disabled'}>Deposit everything</button></div>`
+    + `<div class="card"><h3>Drones</h3>${drones}</div>`;
 }
 
 function renderForge() {
@@ -721,7 +842,8 @@ function renderForge() {
 function renderResearch() {
   return RESEARCH.map((project) => {
     const done = !!state.research[project.id];
-    return `<div class="card"><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p>${renderCost(project.input)}<button data-action="research" data-id="${project.id}" ${done || !state.built.lab || !canAfford(project.input) ? 'disabled' : ''}>${done ? 'Researched' : 'Research'}</button></div>`;
+    const tierOpen = researchTierOpen(state, project.tier);
+    return `<div class="card"><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p>${renderCost(project.input)}<button data-action="research" data-id="${project.id}" ${done || !tierOpen || !state.built.lab || !canAfford(project.input) ? 'disabled' : ''}>${done ? 'Researched' : tierOpen ? 'Research' : `Tier ${project.tier} locked`}</button></div>`;
   }).join('');
 }
 
