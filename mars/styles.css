@@ -29,7 +29,7 @@
 
 html,
 body {
-  min-height: 100%;
+  height: 100%;
   margin: 0;
 }
 
@@ -40,7 +40,7 @@ body {
     linear-gradient(180deg, #101715, #20170f 42%, #32180f);
   color: var(--sand);
   font-family: var(--font);
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 button,
@@ -222,12 +222,16 @@ a:focus-visible {
   text-transform: uppercase;
 }
 
+/* Zero vertical page scroll: the shell is exactly one viewport tall and every
+   overflowing region (panel body, event log, iso map) scrolls internally. */
 .app-shell {
   width: min(1440px, 100%);
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
 }
 
 .app-shell[aria-hidden="true"] {
@@ -335,6 +339,8 @@ a:focus-visible {
 
 .world-panel {
   min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
   border-right: 1px solid var(--line-soft);
 }
@@ -366,7 +372,8 @@ a:focus-visible {
 
 .iso-viewport {
   position: relative;
-  min-height: clamp(32rem, 68vh, 48rem);
+  flex: 1;
+  min-height: 0;
   border: 1px solid var(--line);
   background:
     radial-gradient(circle at 50% 18%, #e7a15a26, transparent 24rem),
@@ -878,21 +885,16 @@ a:focus-visible {
     flex: 1;
   }
 
+  /* Stacked layout still fits one viewport: map and panel split the middle
+     row and keep scrolling internally. */
   .game-layout {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
   }
 
   .world-panel {
     border-right: 0;
     border-bottom: 1px solid var(--line-soft);
-  }
-
-  .iso-viewport {
-    min-height: 34rem;
-  }
-
-  .side-panel {
-    min-height: 28rem;
   }
 }
 
@@ -900,9 +902,11 @@ a:focus-visible {
    and every control keeps a full-width, thumb-sized hit target so the resource
    and footer buttons stop getting clipped off the edge of the viewport. */
 @media (max-width: 768px) {
+  /* One row of three cards (not a stack) so the topbar stays short enough to
+     leave the middle row a workable share of the viewport. */
   .meter-pack {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.45rem;
     width: 100%;
     margin-left: 0;
@@ -948,6 +952,11 @@ a:focus-visible {
     min-height: 2.75rem;
   }
 
+  /* Shorter log so the stacked footer leaves room for the map row. */
+  #eventLog {
+    max-height: 3.6rem;
+  }
+
   .inventory-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -984,16 +993,14 @@ a:focus-visible {
     --base-scale: 0.47;
   }
 
-  .iso-viewport {
-    min-height: 28rem;
-  }
-
   .map-piece {
     width: 4.6rem;
   }
 
+  /* Two columns, not a five-button stack — the footer must stay shallow for
+     the page to hold one viewport. */
   .footer-actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
