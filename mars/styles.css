@@ -469,12 +469,19 @@ a:focus-visible {
   border: 0;
   background: transparent;
   transform: translate(-50%, -76%);
-  contain: layout paint style;
+  /* No `paint` here: it clipped labels wider than the 4.8rem piece box. */
+  contain: layout style;
 }
 
 .map-piece:focus-visible .label {
   border-color: var(--blue);
   box-shadow: 0 0 0 2px #4fb7c866;
+}
+
+/* Dense clusters overlap labels; the piece you're on wins the stack. */
+.map-piece:hover,
+.map-piece:focus-visible {
+  z-index: 5;
 }
 
 .map-piece .label {
@@ -489,7 +496,10 @@ a:focus-visible {
   box-shadow: 0 2px 0 #00000059;
   font-family: var(--mono);
   font-size: 0.62rem;
-  white-space: nowrap;
+  line-height: 1.25;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .model {
