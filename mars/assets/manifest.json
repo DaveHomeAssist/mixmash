@@ -1,15 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "assets": [
     {
       "id": "terrain",
       "type": "image",
       "src": "./mars-terrain.svg"
-    },
-    {
-      "id": "settlementAtlas",
-      "type": "image",
-      "src": "./settlement-atlas.svg"
     }
-  ]
+  ],
+  "spriteContract": {
+    "version": 1,
+    "idPattern": "sprite:<family>:<id>:<state>:<frame>",
+    "filePattern": "sprites/<family>/<id>__<state>__f<frame>.png",
+    "frameDigits": 2,
+    "fallback": "runtime-pixel-map-then-procedural-or-emoji"
+  }
 }

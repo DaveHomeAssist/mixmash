@@ -7,6 +7,7 @@ import { applyCommand, createState, publicState, sanitizeState } from './engine.
 import { convertLegacySave, LegacyImportError } from './legacy-import.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = dirname(ROOT);
 const DEFAULT_PORT = Number(process.env.PORT || process.env.MARSSCAPE_PORT || 8787);
 const DB_FILE = process.env.MARSSCAPE_DB_FILE || join(ROOT, '.data', 'sessions.sqlite');
 const LEGACY_DATA_FILE = process.env.MARSSCAPE_DATA_FILE || join(ROOT, '.data', 'sessions.json');
@@ -190,10 +191,12 @@ export function verifySignature(sessionId, state, signature) {
 }
 
 async function serveStatic(response, pathname) {
-  const cleanPath = staticPath(pathname);
-  const filePath = cleanPath.endsWith('/') ? join(ROOT, 'index.html') : join(ROOT, cleanPath);
+  const sharedPath = sharedStaticPath(pathname);
+  const staticRoot = sharedPath ? REPO_ROOT : ROOT;
+  const cleanPath = sharedPath || staticPath(pathname);
+  const filePath = cleanPath.endsWith('/') ? join(ROOT, 'index.html') : join(staticRoot, cleanPath);
   const safePath = normalize(filePath);
-  if (!safePath.startsWith(ROOT)) return send(response, 403, 'Forbidden');
+  if (!safePath.startsWith(staticRoot)) return send(response, 403, 'Forbidden');
 
   try {
     const info = await stat(safePath);
@@ -203,11 +206,19 @@ async function serveStatic(response, pathname) {
     response.setHeader('Cache-Control', finalPath.endsWith('.html') ? 'no-cache' : 'public, max-age=300');
     return send(response, 200, body);
   } catch {
+    if (sharedPath) return send(response, 404, 'Not found');
     const body = await readFile(join(ROOT, 'index.html'));
     response.setHeader('Content-Type', 'text/html; charset=utf-8');
     response.setHeader('Cache-Control', 'no-cache');
     return send(response, 200, body);
   }
+}
+
+function sharedStaticPath(pathname) {
+  const path = decodeURIComponent(pathname).replace(/^\/+/, '');
+  if (path.startsWith('src/kit/')) return path;
+  if (['manifest.webmanifest', 'sw.js', 'offline.html'].includes(path)) return path;
+  return '';
 }
 
 function staticPath(pathname) {
@@ -670,6 +681,7 @@ function contentType(filePath) {
     '.js': 'text/javascript; charset=utf-8',
     '.mjs': 'text/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.webmanifest': 'application/manifest+json; charset=utf-8',
     '.svg': 'image/svg+xml',
     '.png': 'image/png',
     '.ico': 'image/x-icon',

@@ -50,3 +50,14 @@ TODO:
 
 TODO:
 - None outstanding for the port. `marsscape` may now be marked legacy.
+
+2026-08-24 (render contract and canvas sprite pipeline):
+- Authorized prompt: implement the engineering-only art roadmap phases 0 and 1 before generating new art.
+- Locked the shipped 2:1 dimetric projection: 42×21 axis steps, 84×42 logical tile, 66×34 drawn terrain face, northwest light, tile-centre prop anchors, and feet actor anchors.
+- Added the measured `/mars/art-spec.html` handoff page, canonical render-contract module, updated art-direction document, and versioned art roadmap.
+- Added a 13-sprite ImageBitmap cache and `drawSprite()` seam for the canvas board. Supported node and actor sprites use it; missing or disabled sprites retain the procedural renderer.
+- Added the persisted Pixel Art control and kept emoji item fallback. Removed the unused `settlement-atlas.svg` preload and manifest entry.
+- Fixed the documented local authority server so it serves the shared MixMash navigation, PWA script, manifest, worker, and offline shell with correct MIME types instead of returning the Mars HTML fallback.
+
+TODO:
+- Phase 2 remains intentionally blocked on Dave's visual acceptance of the six final anchor sprites.

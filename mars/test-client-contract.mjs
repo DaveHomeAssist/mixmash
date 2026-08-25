@@ -9,6 +9,9 @@ import { dirname, join } from 'node:path';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(join(HERE, 'game.js'), 'utf8');
+const html = readFileSync(join(HERE, 'index.html'), 'utf8');
+const manifest = readFileSync(join(HERE, 'assets', 'manifest.json'), 'utf8');
+const artSpec = readFileSync(join(HERE, 'art-spec.html'), 'utf8');
 
 // Rebuild cleanPendingCommands from source so the real allowlist is exercised.
 const start = source.indexOf('const COMMAND_FIELDS');
@@ -50,9 +53,30 @@ test('unknown and malformed command fields are still dropped', () => {
 test('the sprite renderer is actually wired into the shipped client', () => {
   // Review finding 4: sprites.mjs existed and was tested, but nothing in the client
   // imported it — so the presentation work was not delivered to any player.
-  assert.match(source, /import \{ spriteOrEmoji \} from '\.\/sprites\.mjs'/, 'client must import the renderer');
+  assert.match(source, /spriteOrEmoji[^\n]+from '\.\/sprites\.mjs'/, 'client must import the renderer');
   const callSite = source.indexOf('spriteOrEmoji(', source.indexOf('function renderPack'));
   assert.ok(callSite > 0, 'renderPack must actually call it');
+});
+
+test('the canvas ImageBitmap pipeline and persisted fallback toggle are shipped', () => {
+  assert.match(source, /import \{ SpriteBitmapCache \} from '\.\/sprite-canvas\.mjs'/);
+  assert.match(source, /spriteCache\.prime\(spriteIds\(\)\)/, 'all authored sprites prime during boot');
+  assert.match(source, /spriteCache\.drawSprite\(ctx, node\.item/, 'nodes use the canvas sprite seam');
+  assert.match(source, /spriteCache\.drawSprite\(ctx, 'astro'/, 'the actor uses the feet-anchored sprite seam');
+  assert.match(source, /marsscape\.pixelMode\.v1/, 'the renderer preference has an isolated storage key');
+  assert.match(html, /id="pixelModeButton"[^>]+aria-pressed="true"/, 'the renderer toggle is a real control');
+});
+
+test('the unused settlement atlas no longer gates boot', () => {
+  assert.doesNotMatch(html, /settlement-atlas/);
+  assert.doesNotMatch(manifest, /settlementAtlas|settlement-atlas/);
+});
+
+test('the measured render-contract page is a deployable surface', () => {
+  assert.match(artSpec, /2:1 dimetric, preserving the shipped board/);
+  assert.match(artSpec, /id="specCanvas"/);
+  assert.match(artSpec, /id="spriteCanvas"/);
+  assert.match(artSpec, /src="\.\/art-spec\.js"/);
 });
 
 test('the v3 storage keys are still read so a key bump cannot orphan a colony', () => {

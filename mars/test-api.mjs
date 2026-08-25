@@ -88,6 +88,22 @@ test('travel command round-trips through the real HTTP authority server', async 
   );
 });
 
+test('local Mars server serves the shared game shell with executable MIME types', async () => {
+  await waitForServer();
+  const nav = await fetch(`http://127.0.0.1:${port}/src/kit/nav.js`);
+  assert.equal(nav.status, 200);
+  assert.match(nav.headers.get('content-type') || '', /^text\/javascript/);
+  assert.match(await nav.text(), /function mixmashNav/);
+
+  const pwa = await fetch(`http://127.0.0.1:${port}/src/kit/pwa.js`);
+  assert.equal(pwa.status, 200);
+  assert.match(pwa.headers.get('content-type') || '', /^text\/javascript/);
+
+  const manifest = await fetch(`http://127.0.0.1:${port}/manifest.webmanifest`);
+  assert.equal(manifest.status, 200);
+  assert.match(manifest.headers.get('content-type') || '', /^application\/manifest\+json/);
+});
+
 async function assertRejects(fn, pattern) {
   try {
     await fn();

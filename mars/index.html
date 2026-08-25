@@ -21,8 +21,9 @@
   <title>MarsScape</title>
   <link rel="preload" href="./assets/manifest.json" as="fetch" type="application/json" crossorigin="anonymous" />
   <link rel="preload" href="./assets/mars-terrain.svg" as="image" type="image/svg+xml" />
-  <link rel="preload" href="./assets/settlement-atlas.svg" as="image" type="image/svg+xml" />
   <link rel="modulepreload" href="./engine.mjs" />
+  <link rel="modulepreload" href="./render-contract.mjs" />
+  <link rel="modulepreload" href="./sprite-canvas.mjs" />
   <link rel="stylesheet" href="./styles.css" />
   <script src="/src/kit/pwa.js" defer></script>
 </head>
@@ -112,6 +113,7 @@
         <button type="button" id="tickButton">Advance Sol</button>
         <button type="button" id="exportButton">Export Save</button>
         <button type="button" id="importButton">Import Save</button>
+        <button type="button" id="pixelModeButton" aria-pressed="true">Pixel art: On</button>
         <button type="button" id="resetButton">Reset</button>
       </div>
     </footer>

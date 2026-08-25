@@ -150,6 +150,29 @@ try {
     await page.click('#startButton');
     await page.waitForTimeout(1200);
 
+    const pixelBoard = await page.locator('#isoBoard').evaluate((board) => ({
+      mode: board.dataset.renderMode,
+      sprites: Number(board.dataset.spritesDrawn),
+      bitmaps: Number(board.dataset.spriteBitmaps),
+    }));
+    assert.equal(pixelBoard.mode, 'pixel', 'pixel art is the default renderer');
+    assert.equal(pixelBoard.bitmaps, 13, 'all 13 authored sprites are cached as ImageBitmap assets');
+    assert.ok(pixelBoard.sprites > 0, 'supported board entities render through drawSprite');
+    record('MarsScape board renders cached ImageBitmap sprites');
+
+    await page.click('#pixelModeButton');
+    const proceduralBoard = await page.locator('#isoBoard').evaluate((board) => ({
+      mode: board.dataset.renderMode,
+      sprites: Number(board.dataset.spritesDrawn),
+      procedural: Number(board.dataset.proceduralDrawn),
+    }));
+    assert.equal(proceduralBoard.mode, 'procedural', 'the toggle switches renderers');
+    assert.equal(proceduralBoard.sprites, 0, 'pixel sprites leave the board when disabled');
+    assert.ok(proceduralBoard.procedural > 0, 'procedural fallback renders the board entities');
+    await page.click('#pixelModeButton');
+    assert.equal(await page.locator('#pixelModeButton').getAttribute('aria-pressed'), 'true');
+    record('MarsScape pixel toggle preserves the procedural fallback');
+
     assert.ok(await page.locator('.charge-track').count() > 0, 'MS-102 charge bars render');
     record('MS-102 node depletion bars render');
 
@@ -300,6 +323,20 @@ try {
       assert.ok(button.height >= 40, 'MS-101 footer buttons keep a thumb-sized target');
     }
     record('MS-101 mobile layout fits a 390px viewport');
+    await context.close();
+  }
+
+  // ------------------------------------------------------- /mars/art-spec.html
+  {
+    const { context, page, failures } = await open('/mars/art-spec.html');
+    assert.deepEqual(failures, [], '/mars/art-spec.html must load without page or same-origin request errors');
+    await page.waitForFunction(() => document.documentElement.dataset.spriteBitmaps === '13');
+    const contract = await page.evaluate(() => JSON.parse(window.render_spec_to_text()));
+    assert.equal(contract.projection, '2:1 dimetric');
+    assert.deepEqual(contract.logicalTile, [84, 42]);
+    assert.deepEqual(contract.drawnTile, [66, 34]);
+    assert.equal(contract.spriteBitmaps, 13);
+    record('MarsScape render-contract page proves geometry and bitmap cache');
     await context.close();
   }
 

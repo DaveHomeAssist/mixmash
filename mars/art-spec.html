@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MarsScape render contract: projection, tile geometry, sprite anchors, palette, light direction, footprints, and asset naming." />
+  <link rel="canonical" href="https://mixmash.games/mars/art-spec.html" />
+  <meta name="theme-color" content="#16110d" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="MarsScape Render Contract" />
+  <meta property="og:description" content="The measured art-production contract for MarsScape." />
+  <meta property="og:url" content="https://mixmash.games/mars/art-spec.html" />
+  <meta property="og:image" content="https://systembydave.com/png/sbd_logo_rust_dark.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MarsScape Render Contract" />
+  <meta name="twitter:description" content="Projection, anchors, palette, footprints, and asset naming for MarsScape art." />
+  <meta name="twitter:image" content="https://systembydave.com/png/sbd_logo_rust_dark.png" />
+  <title>MarsScape Render Contract</title>
+  <link rel="stylesheet" href="./art-spec.css" />
+</head>
+<body>
+  <a class="skip-link" href="#contract">Skip to render contract</a>
+  <header class="spec-header">
+    <div>
+      <p class="eyebrow">Render contract v1 · locked</p>
+      <h1>MarsScape art specification</h1>
+      <p>One measured source of truth for every generated sprite, building, actor, and tile.</p>
+    </div>
+    <a class="game-link" href="./">Return to MarsScape</a>
+  </header>
+
+  <main id="contract">
+    <section class="decision" aria-labelledby="decision-title">
+      <div>
+        <p class="eyebrow">Projection decision</p>
+        <h2 id="decision-title">2:1 dimetric, preserving the shipped board</h2>
+      </div>
+      <p>The grid advances 42px east/west and 21px south per axis. A logical tile occupies an 84×42 diamond; the terrain face remains the shipped 66×34 inset diamond. This choice avoids asset and input-coordinate churn.</p>
+    </section>
+
+    <section class="spec-grid" aria-label="Render contract values">
+      <article><span>Logical tile</span><strong id="logicalTile">84 × 42</strong><small>2:1 footprint</small></article>
+      <article><span>Drawn face</span><strong id="drawnTile">66 × 34</strong><small>terrain inset</small></article>
+      <article><span>Prop anchor</span><strong>Tile centre</strong><small>nodes and buildings</small></article>
+      <article><span>Actor anchor</span><strong>Feet</strong><small>bottom centre</small></article>
+      <article><span>Global light</span><strong>NW → SE</strong><small>shadows fall southeast</small></article>
+      <article><span>Board</span><strong id="boardSize">11 × 11</strong><small>940 × 620 canvas</small></article>
+    </section>
+
+    <section class="board-card" aria-labelledby="grid-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Measured grid</p>
+          <h2 id="grid-title">Generator handoff surface</h2>
+        </div>
+        <fieldset>
+          <legend>Overlays</legend>
+          <label><input id="showMeasurements" type="checkbox" checked /> Measurements</label>
+          <label><input id="showAnchors" type="checkbox" checked /> Anchors</label>
+          <label><input id="showFootprints" type="checkbox" checked /> Footprints</label>
+        </fieldset>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="specCanvas" width="940" height="620" aria-describedby="grid-caption"></canvas>
+      </div>
+      <p id="grid-caption">The solid diamonds are the drawn terrain faces; dotted outlines show logical tile bounds. Cyan marks the tile-centre prop anchor, parchment marks actor feet, and amber outlines show multi-tile footprints.</p>
+    </section>
+
+    <section class="pipeline-card" aria-labelledby="pipeline-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Phase 1 proof</p>
+          <h2 id="pipeline-title">ImageBitmap cache</h2>
+        </div>
+        <output id="bitmapStatus" role="status">Priming 13 authored sprites…</output>
+      </div>
+      <div class="canvas-wrap sprite-wrap">
+        <canvas id="spriteCanvas" width="940" height="220" aria-describedby="sprite-caption"></canvas>
+      </div>
+      <p id="sprite-caption">These are the existing runtime pixel maps rasterized once, cached as ImageBitmap objects, and drawn with smoothing disabled. They are pipeline proof, not the final anchor set.</p>
+    </section>
+
+    <section class="rules" aria-labelledby="rules-title">
+      <p class="eyebrow">Non-negotiables</p>
+      <h2 id="rules-title">Asset acceptance rules</h2>
+      <ol>
+        <li>Transparent PNG, nearest-neighbour scaling, no baked drop shadow.</li>
+        <li>Northwest key light; darkest cast shadow falls southeast.</li>
+        <li>Props register to tile centre. Actors register at the centre of the feet.</li>
+        <li>Multi-tile buildings declare width × depth in grid cells; their anchor is the footprint centre.</li>
+        <li>Every prompt repeats the locked palette and cites two approved anchors from the same material family.</li>
+        <li>Filename: <code>sprites/&lt;family&gt;/&lt;id&gt;__&lt;state&gt;__f&lt;frame&gt;.png</code>; IDs use lowercase snake_case and two-digit frames.</li>
+      </ol>
+    </section>
+
+    <section class="palette-card" aria-labelledby="palette-title">
+      <p class="eyebrow">Palette lock</p>
+      <h2 id="palette-title">Approved production colours</h2>
+      <div class="palette" id="palette"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Contract changes require a version bump in <code>render-contract.mjs</code> and explicit asset review.</p>
+  </footer>
+  <script type="module" src="./art-spec.js"></script>
+</body>
+</html>

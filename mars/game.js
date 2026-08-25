@@ -1,4 +1,6 @@
-import { spriteOrEmoji } from './sprites.mjs';
+import { emojiHTML, spriteIds, spriteOrEmoji } from './sprites.mjs';
+import { SpriteBitmapCache } from './sprite-canvas.mjs';
+import { RENDER_CONTRACT, projectGrid } from './render-contract.mjs';
 import {
   BUILD_TIERS,
   EXPEDITION_NODE,
@@ -40,15 +42,14 @@ const SESSION_KEY = 'marsscape.sessionId.v4';
 const LEGACY_STORAGE_KEY = 'marsscape.session.v3';
 const LEGACY_SESSION_KEY = 'marsscape.sessionId.v3';
 const ASSET_MANIFEST = './assets/manifest.json';
+const PIXEL_MODE_KEY = 'marsscape.pixelMode.v1';
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '']);
 const API_BASE = resolveApiBase();
-const TILE_W = 42;
-const TILE_H = 21;
-const CANVAS_W = 940;
-const CANVAS_H = 620;
-const CANVAS_ORIGIN_X = 470;
-const CANVAS_ORIGIN_Y = 86;
-const BOARD_SIZE = 11;
+const CANVAS_W = RENDER_CONTRACT.board.canvasWidth;
+const CANVAS_H = RENDER_CONTRACT.board.canvasHeight;
+const CANVAS_ORIGIN_X = RENDER_CONTRACT.board.originX;
+const CANVAS_ORIGIN_Y = RENDER_CONTRACT.board.originY;
+const BOARD_SIZE = RENDER_CONTRACT.board.columns;
 
 let state = createState();
 let sessionId = getOrCreateSessionId();
@@ -58,6 +59,9 @@ let commandQueue = Promise.resolve();
 let saveTimer = 0;
 let pendingCommands = [];
 let assetsReady = false;
+let spriteBitmapsReady = 0;
+let pixelMode = readPixelMode();
+let renderTelemetry = { pixelMode, spritesDrawn: 0, proceduralDrawn: 0, bitmapCount: 0 };
 
 const el = {
   appShell: document.querySelector('#appShell'),
@@ -84,6 +88,7 @@ const el = {
   tickButton: document.querySelector('#tickButton'),
   exportButton: document.querySelector('#exportButton'),
   importButton: document.querySelector('#importButton'),
+  pixelModeButton: document.querySelector('#pixelModeButton'),
   resetButton: document.querySelector('#resetButton'),
 };
 
@@ -190,6 +195,7 @@ class LocalEnvelopeSigner {
 }
 
 const assetLoader = new AssetLoader(ASSET_MANIFEST);
+const spriteCache = new SpriteBitmapCache();
 const localSigner = new LocalEnvelopeSigner();
 
 boot();
@@ -203,14 +209,17 @@ function resolveApiBase() {
 }
 
 async function boot() {
-  setBootStatus('Preloading terrain and colony assets...');
-  try {
-    await assetLoader.load();
-    assetsReady = true;
-    setBootStatus('Assets ready. Checking colony authority...');
-  } catch (error) {
-    assetsReady = false;
-    setBootStatus('Asset preload failed. Canvas fallback active.');
+  setBootStatus('Preloading terrain and sprite bitmaps...');
+  const [assetResult, spriteResult] = await Promise.allSettled([
+    assetLoader.load(),
+    spriteCache.prime(spriteIds()),
+  ]);
+  assetsReady = assetResult.status === 'fulfilled';
+  spriteBitmapsReady = spriteResult.status === 'fulfilled' ? spriteResult.value : 0;
+  if (assetsReady || spriteBitmapsReady > 0) {
+    setBootStatus(`Assets ready. ${spriteBitmapsReady}/13 sprite bitmaps cached. Checking colony authority...`);
+  } else {
+    setBootStatus('Asset preload failed. Procedural fallback active.');
   }
 
   const local = await readLocalEnvelope();
@@ -249,6 +258,12 @@ function wireEvents() {
   el.tickButton.addEventListener('click', () => enqueueCommand('tick'));
   el.exportButton.addEventListener('click', exportSave);
   el.importButton.addEventListener('click', importSave);
+  el.pixelModeButton.addEventListener('click', () => {
+    pixelMode = !pixelMode;
+    localStorage.setItem(PIXEL_MODE_KEY, pixelMode ? 'on' : 'off');
+    render();
+    showToast('Renderer changed', pixelMode ? 'Pixel art is on.' : 'Procedural fallback is on.');
+  });
   el.resetButton.addEventListener('click', () => {
     if (window.confirm('Reset this MarsScape session?')) enqueueCommand('reset');
   });
@@ -485,6 +500,8 @@ function renderStatus() {
   el.regionLabel.textContent = REGIONS[state.currentRegion]?.name || 'Landing Basin';
   el.authorityStatus.textContent = mode === 'online' ? `Server authority: ${sessionId.slice(0, 8)}` : 'Offline local fallback';
   el.authorityStatus.style.color = mode === 'online' ? 'var(--green)' : 'var(--ochre)';
+  el.pixelModeButton.textContent = `Pixel art: ${pixelMode ? 'On' : 'Off'}`;
+  el.pixelModeButton.setAttribute('aria-pressed', String(pixelMode));
   for (const button of el.tabs.querySelectorAll('button')) {
     const selected = button.dataset.tab === activeTab;
     button.setAttribute('aria-selected', String(selected));
@@ -541,6 +558,10 @@ function renderMap() {
   fragments.push(`<span class="player-marker" style="left:${player.x}px;top:${player.y}px" aria-hidden="true"></span>`);
   el.isoBoard.innerHTML = fragments.join('');
   drawTerrain(el.isoBoard.querySelector('.terrain-canvas'));
+  el.isoBoard.dataset.renderMode = pixelMode ? 'pixel' : 'procedural';
+  el.isoBoard.dataset.spritesDrawn = String(renderTelemetry.spritesDrawn);
+  el.isoBoard.dataset.proceduralDrawn = String(renderTelemetry.proceduralDrawn);
+  el.isoBoard.dataset.spriteBitmaps = String(renderTelemetry.bitmapCount);
   el.isoBoard.querySelectorAll('[data-command]').forEach((button) => {
     button.addEventListener('click', () => {
       if (isInputBlocked()) return;
@@ -749,7 +770,7 @@ function renderSkills() {
 }
 
 function renderPack() {
-  const slots = Object.entries(ITEMS).map(([id, item]) => `<div class="slot">${spriteOrEmoji(id, 2)}<span>${escapeHtml(item.short)}</span><b>${state.inventory[id] || 0}</b></div>`).join('');
+  const slots = Object.entries(ITEMS).map(([id, item]) => `<div class="slot">${pixelMode ? spriteOrEmoji(id, 2) : emojiHTML(id, 2)}<span>${escapeHtml(item.short)}</span><b>${state.inventory[id] || 0}</b></div>`).join('');
   const stats = equipStats(state);
   const equipRows = EQUIP_SLOTS.map((slot) => `<div class="skill-row"><span>${escapeHtml(capitalize(slot))}</span><b>${state.equip[slot] ? escapeHtml(capitalize(state.equip[slot])) : 'empty'}</b></div>`).join('');
   const statLine = `O2 efficiency +${stats.o2}% · quality chance +${stats.crit}% · geode find +${stats.geode}% · travel speed +${stats.speed}% · pack capacity +${stats.pack} — craft gear at the Forge`;
@@ -918,7 +939,7 @@ function canAfford(cost = {}) {
 }
 
 function iso(x, y) {
-  return { x: (x - y) * TILE_W, y: (x + y) * TILE_H };
+  return projectGrid(x, y);
 }
 
 function drawTerrain(canvas) {
@@ -927,6 +948,12 @@ function drawTerrain(canvas) {
   if (!ctx) return;
 
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  renderTelemetry = {
+    pixelMode,
+    spritesDrawn: 0,
+    proceduralDrawn: 0,
+    bitmapCount: spriteCache.size,
+  };
   const texture = assetsReady ? assetLoader.get('terrain') : null;
   if (texture) {
     const pattern = ctx.createPattern(texture, 'repeat');
@@ -975,7 +1002,7 @@ function drawTile(ctx, x, y) {
   const variant = hash2(x, y);
   const fills = ['#8e3f27', '#a64f2c', '#b96535', '#7d3929', '#c4783e'];
   const fill = fills[variant % fills.length];
-  diamond(ctx, pos.x, pos.y, 66, 34);
+  diamond(ctx, pos.x, pos.y, RENDER_CONTRACT.tile.drawnWidth, RENDER_CONTRACT.tile.drawnHeight);
   ctx.fillStyle = fill;
   ctx.fill();
   ctx.strokeStyle = variant % 4 === 0 ? '#d89155' : '#5f2d20';
@@ -1011,8 +1038,18 @@ function drawNodeModel(ctx, node) {
   const nodeState = state.nodes[node.id] || {};
   const locked = node.requiresBuilding && !state.built[node.requiresBuilding];
   const depleted = nodeState.charges <= 0 || nodeState.cooldownUntil > Date.now();
+  const alpha = locked || depleted ? 0.34 : 1;
+  if (pixelMode && spriteCache.drawSprite(ctx, node.item, pos.x, pos.y, {
+    scale: 3,
+    anchor: 'tile-centre',
+    alpha,
+  })) {
+    renderTelemetry.spritesDrawn += 1;
+    return;
+  }
+  renderTelemetry.proceduralDrawn += 1;
   ctx.save();
-  ctx.globalAlpha = locked || depleted ? 0.34 : 1;
+  ctx.globalAlpha = alpha;
   const color = ITEMS[node.item]?.color || '#d6d0c4';
   ctx.beginPath();
   ctx.moveTo(pos.x - 18, pos.y - 3);
@@ -1060,6 +1097,15 @@ function drawBuildingModel(ctx, building) {
   drawBuildingPad(ctx, building);
   const pos = iso(building.x, building.y);
   const online = !!state.built[building.id];
+  if (pixelMode && spriteCache.drawSprite(ctx, building.id, pos.x, pos.y, {
+    scale: 3,
+    anchor: 'tile-centre',
+    alpha: online ? 1 : 0.36,
+  })) {
+    renderTelemetry.spritesDrawn += 1;
+    return;
+  }
+  renderTelemetry.proceduralDrawn += 1;
   ctx.save();
   ctx.globalAlpha = online ? 1 : 0.36;
   const palette = {
@@ -1145,6 +1191,14 @@ function drawPrism(ctx, x, y, width, height, light, dark) {
 
 function drawPlayerModel(ctx) {
   const pos = iso(state.player.x, state.player.y);
+  if (pixelMode && spriteCache.drawSprite(ctx, 'astro', pos.x, pos.y + 4, {
+    scale: 3,
+    anchor: 'feet',
+  })) {
+    renderTelemetry.spritesDrawn += 1;
+    return;
+  }
+  renderTelemetry.proceduralDrawn += 1;
   ctx.save();
   ctx.fillStyle = 'rgba(0, 0, 0, 0.38)';
   ctx.beginPath();
@@ -1501,6 +1555,14 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+function readPixelMode() {
+  try {
+    return localStorage.getItem(PIXEL_MODE_KEY) !== 'off';
+  } catch {
+    return true;
+  }
+}
+
 function exposeTestHooks() {
   if (!LOCAL_HOSTS.has(window.location.hostname)) return;
   window.render_game_to_text = () => JSON.stringify({
@@ -1516,6 +1578,7 @@ function exposeTestHooks() {
     travel: state.travel,
     equip: state.equip,
     activeTab,
+    rendering: { ...renderTelemetry },
     events: state.events.slice(0, 5),
     viewport: { ...viewTransform },
     skills: Object.fromEntries(Object.keys(SKILLS).map((id) => [id, skillProgress((state.skills[id] || {}).xp)])),

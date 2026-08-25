@@ -188,17 +188,17 @@ export function hasSheet(id) { return !!SHEETS[id]; }
 
 /* Canonical ids the port renamed away from the sprite maps' original names. */
 const ALIAS = { component: 'part', advanced_component: 'part', composite_frame: 'frame' };
-function resolve(id) { return (MAPS[id] || SHEETS[id]) ? id : (ALIAS[id] || id); }
+export function resolveSpriteId(id) { return (MAPS[id] || SHEETS[id]) ? id : (ALIAS[id] || id); }
 
-export function hasSprite(id) { const r = resolve(id); return !!MAPS[r] || !!SHEETS[r]; }
+export function hasSprite(id) { const r = resolveSpriteId(id); return !!MAPS[r] || !!SHEETS[r]; }
 export function spriteIds() { return Object.keys(MAPS); }
-export function spriteMap(id) { return MAPS[id]; }
+export function spriteMap(id) { return MAPS[resolveSpriteId(id)]; }
 export function palette() { return PAL; }
 
 /* Render a sprite: a registered sheet cell (A2 art) wins; otherwise a
    hand-authored pixel map rendered to crisp SVG. px = on-screen pixel scale. */
 export function spriteHTML(id, px = 2) {
-  id = resolve(id);
+  id = resolveSpriteId(id);
   const sh = SHEETS[id];
   if (sh) {
     const s = px; // display each source pixel at px CSS px
@@ -240,9 +240,13 @@ export function emojiFor(id) {
   return EMOJI[id] || '\u{2B1B}';
 }
 
+export function emojiHTML(id, px = 2) {
+  return `<span class="pspr pspr-emoji" style="font-size:${px * 10}px;line-height:1" role="img" aria-hidden="true">${emojiFor(id)}</span>`;
+}
+
 /* Render a sprite if one exists, otherwise its emoji. This is what callers should
    use: it never returns an empty string. */
 export function spriteOrEmoji(id, px = 2) {
   if (hasSprite(id)) return spriteHTML(id, px);
-  return `<span class="pspr pspr-emoji" style="font-size:${px * 10}px;line-height:1" role="img" aria-hidden="true">${emojiFor(id)}</span>`;
+  return emojiHTML(id, px);
 }

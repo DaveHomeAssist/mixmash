@@ -825,10 +825,16 @@ a:focus-visible {
 }
 
 .footer-actions button {
-  min-height: 2.35rem;
+  min-height: 2.75rem;
   color: var(--sand);
   font-family: var(--mono);
   font-size: 0.72rem;
+}
+
+#pixelModeButton[aria-pressed="true"] {
+  border-color: var(--blue);
+  color: var(--paper);
+  background: linear-gradient(180deg, #326c73, #20454a);
 }
 
 .toast-stack {
