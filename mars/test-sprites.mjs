@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { hasSprite, spriteIds, spriteHTML, spriteOrEmoji, emojiFor, registerSheet } from './sprites.mjs';
 import { ITEMS } from './engine.mjs';
 
-test('the 13 hand-authored sprites render as crisp-edge SVG', () => {
-  assert.equal(spriteIds().length, 13);
+test('the 33 hand-authored sprites render as crisp-edge SVG', () => {
+  assert.equal(spriteIds().length, 33);
   for (const id of spriteIds()) {
     const html = spriteHTML(id, 2);
     assert.match(html, /^<svg class="pspr"/, `${id} should render as SVG`);

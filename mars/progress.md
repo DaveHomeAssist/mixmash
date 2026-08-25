@@ -61,3 +61,23 @@ TODO:
 
 TODO:
 - Phase 2 remains intentionally blocked on Dave's visual acceptance of the six final anchor sprites.
+
+2026-08-25 (board art overhaul):
+- Dave asked for the board to stop looking hand-scribbled, which authorized visual work.
+- Authored 20 new pixel maps in the locked palette (extended with greenhouse green, gold,
+  rare-earth purple, panel teal, window glass, iridium violet, suit shadow): all 8 buildings
+  (`bld_*` namespace — building id `water` collided with the water item sprite), 8 node
+  outcrops (`node_*`), 4 late-ore item icons, and a redrawn astronaut. 33 sprites total.
+- Root cause of the old look: the DOM `.map-piece` buttons painted their own CSS clip-path
+  and gradient models OVER the canvas, and `.player-marker` drew a CSS capsule over the
+  astro sprite. The DOM overlay is now interaction-only (hit target, label, charge bar);
+  the canvas is the single art surface, procedural fallback intact (Pixel Art off:
+  23 procedural, 0 sprites; on: 23 sprites, 0 procedural).
+- Terrain: close-toned tile fills with a NW edge light replace the checkerboard fills and
+  random bright strokes; a base regolith surface polygon under the inset tile faces kills
+  the black seam lattice; backdrop pattern alpha 0.14 -> 0.07; `image-rendering: pixelated`
+  on the board canvas so player zoom stays crisp; map-piece inset-sheen box-shadow removed.
+- Tests updated for the 33-sprite registry and the 12x18 astronaut; all suites pass.
+
+TODO:
+- Dave to accept or reject the new set as the Phase 2 style bar on the live board.

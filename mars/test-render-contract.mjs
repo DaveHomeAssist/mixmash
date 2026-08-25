@@ -27,9 +27,9 @@ test('manifest ids and filenames follow the locked naming contract', () => {
   assert.equal(assetPath('building', 'solar_array', 'faulted', 2), 'sprites/building/solar_array__faulted__f02.png');
 });
 
-test('all 13 authored maps rasterize and prime into an ImageBitmap cache seam', async () => {
+test('all 33 authored maps rasterize and prime into an ImageBitmap cache seam', async () => {
   const ids = spriteIds();
-  assert.equal(ids.length, 13);
+  assert.equal(ids.length, 33);
   for (const id of ids) {
     const raster = rasterizeSprite(id);
     assert.ok(raster.width > 0 && raster.height > 0, `${id} has dimensions`);
@@ -37,8 +37,8 @@ test('all 13 authored maps rasterize and prime into an ImageBitmap cache seam', 
   }
 
   const cache = new SpriteBitmapCache(async (raster) => ({ id: raster.id }));
-  assert.equal(await cache.prime(ids), 13);
-  assert.equal(cache.size, 13);
+  assert.equal(await cache.prime(ids), 33);
+  assert.equal(cache.size, 33);
 });
 
 test('drawSprite applies tile-centre and feet anchors and retains a fallback', async () => {
@@ -56,7 +56,7 @@ test('drawSprite applies tile-centre and feet anchors and retains a fallback', a
   assert.equal(cache.drawSprite(context, 'iron_ore', 100, 80, { scale: 2 }), true);
   assert.deepEqual(calls[0].slice(1), [88, 70, 24, 20]);
   assert.equal(cache.drawSprite(context, 'astro', 100, 80, { scale: 2, anchor: 'feet' }), true);
-  assert.deepEqual(calls[1].slice(1), [88, 52, 24, 28]);
+  assert.deepEqual(calls[1].slice(1), [88, 44, 24, 36]);
 
   let fellBack = false;
   assert.equal(cache.drawSprite(context, 'missing', 0, 0, { fallback: () => { fellBack = true; } }), false);

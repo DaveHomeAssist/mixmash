@@ -959,7 +959,7 @@ function drawTerrain(canvas) {
     const pattern = ctx.createPattern(texture, 'repeat');
     if (pattern) {
       ctx.fillStyle = pattern;
-      ctx.globalAlpha = 0.14;
+      ctx.globalAlpha = 0.07;
       ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
       ctx.globalAlpha = 1;
     }
@@ -968,6 +968,7 @@ function drawTerrain(canvas) {
   ctx.save();
   ctx.translate(CANVAS_ORIGIN_X, CANVAS_ORIGIN_Y);
   drawBoardShadow(ctx);
+  drawBoardSurface(ctx);
   for (let y = 0; y < BOARD_SIZE; y += 1) {
     for (let x = 0; x < BOARD_SIZE; x += 1) {
       drawTile(ctx, x, y);
@@ -997,27 +998,49 @@ function drawBoardShadow(ctx) {
   ctx.fill();
 }
 
+// Base regolith under the tile faces, so the seams between the inset
+// 66x34 faces read as grout instead of a black lattice.
+function drawBoardSurface(ctx) {
+  const north = iso(0, 0);
+  const east = iso(BOARD_SIZE - 1, 0);
+  const south = iso(BOARD_SIZE - 1, BOARD_SIZE - 1);
+  const west = iso(0, BOARD_SIZE - 1);
+  ctx.beginPath();
+  ctx.moveTo(north.x, north.y - 21);
+  ctx.lineTo(east.x + 42, east.y);
+  ctx.lineTo(south.x, south.y + 21);
+  ctx.lineTo(west.x - 42, west.y);
+  ctx.closePath();
+  ctx.fillStyle = '#8a4226';
+  ctx.fill();
+}
+
 function drawTile(ctx, x, y) {
   const pos = iso(x, y);
   const variant = hash2(x, y);
-  const fills = ['#8e3f27', '#a64f2c', '#b96535', '#7d3929', '#c4783e'];
+  // Close-toned regolith so the ground reads as one surface, not a checkerboard.
+  const fills = ['#9c4a2b', '#a2502e', '#a65431', '#984627', '#aa5834'];
   const fill = fills[variant % fills.length];
   diamond(ctx, pos.x, pos.y, RENDER_CONTRACT.tile.drawnWidth, RENDER_CONTRACT.tile.drawnHeight);
   ctx.fillStyle = fill;
   ctx.fill();
-  ctx.strokeStyle = variant % 4 === 0 ? '#d89155' : '#5f2d20';
-  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = 'rgba(74, 32, 21, 0.4)';
+  ctx.lineWidth = 1;
   ctx.stroke();
 
-  diamond(ctx, pos.x - 1, pos.y - 4, 45, 20);
-  ctx.fillStyle = variant % 2 ? 'rgba(255, 218, 141, 0.13)' : 'rgba(33, 18, 13, 0.18)';
-  ctx.fill();
+  // Faint NW edge light — one global key light, per the render contract.
+  ctx.beginPath();
+  ctx.moveTo(pos.x - RENDER_CONTRACT.tile.drawnWidth / 2 + 2, pos.y);
+  ctx.lineTo(pos.x, pos.y - RENDER_CONTRACT.tile.drawnHeight / 2 + 1);
+  ctx.strokeStyle = 'rgba(255, 214, 150, 0.10)';
+  ctx.lineWidth = 1.4;
+  ctx.stroke();
 
-  if (variant % 6 === 0) {
+  if (variant % 7 === 0) {
     ctx.beginPath();
-    ctx.arc(pos.x + 8, pos.y + 2, 2, 0, Math.PI * 2);
-    ctx.arc(pos.x - 12, pos.y + 7, 1.4, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(39, 21, 15, 0.36)';
+    ctx.arc(pos.x + 8, pos.y + 2, 1.6, 0, Math.PI * 2);
+    ctx.arc(pos.x - 12, pos.y + 7, 1.1, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(48, 24, 16, 0.28)';
     ctx.fill();
   }
 }
@@ -1039,6 +1062,15 @@ function drawNodeModel(ctx, node) {
   const locked = node.requiresBuilding && !state.built[node.requiresBuilding];
   const depleted = nodeState.charges <= 0 || nodeState.cooldownUntil > Date.now();
   const alpha = locked || depleted ? 0.34 : 1;
+  // Board outcrop sprite first; the item icon is the legacy fallback.
+  if (pixelMode && spriteCache.drawSprite(ctx, `node_${node.item}`, pos.x, pos.y + 12, {
+    scale: 3,
+    anchor: 'feet',
+    alpha,
+  })) {
+    renderTelemetry.spritesDrawn += 1;
+    return;
+  }
   if (pixelMode && spriteCache.drawSprite(ctx, node.item, pos.x, pos.y, {
     scale: 3,
     anchor: 'tile-centre',
@@ -1087,9 +1119,9 @@ function drawBuildingPad(ctx, building) {
   const pos = iso(building.x, building.y);
   const online = !!state.built[building.id];
   diamond(ctx, pos.x, pos.y + 5, 78, 34);
-  ctx.fillStyle = online ? 'rgba(76, 156, 151, 0.18)' : 'rgba(230, 197, 129, 0.08)';
+  ctx.fillStyle = online ? 'rgba(76, 156, 151, 0.10)' : 'rgba(230, 197, 129, 0.06)';
   ctx.fill();
-  ctx.strokeStyle = online ? 'rgba(117, 213, 203, 0.46)' : 'rgba(229, 188, 116, 0.28)';
+  ctx.strokeStyle = online ? 'rgba(117, 213, 203, 0.28)' : 'rgba(229, 188, 116, 0.22)';
   ctx.stroke();
 }
 
@@ -1097,10 +1129,11 @@ function drawBuildingModel(ctx, building) {
   drawBuildingPad(ctx, building);
   const pos = iso(building.x, building.y);
   const online = !!state.built[building.id];
-  if (pixelMode && spriteCache.drawSprite(ctx, building.id, pos.x, pos.y, {
+  // bld_ namespace keeps building art from colliding with item ids ('water').
+  if (pixelMode && spriteCache.drawSprite(ctx, `bld_${building.id}`, pos.x, pos.y + 18, {
     scale: 3,
-    anchor: 'tile-centre',
-    alpha: online ? 1 : 0.36,
+    anchor: 'feet',
+    alpha: online ? 1 : 0.5,
   })) {
     renderTelemetry.spritesDrawn += 1;
     return;
