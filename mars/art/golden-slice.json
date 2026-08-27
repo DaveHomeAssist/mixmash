@@ -1,0 +1,363 @@
+{
+  "version": 1,
+  "contractVersion": 2,
+  "decision": "DEC-79",
+  "normalGameplayZoom": 1,
+  "exportRoot": "assets/commissioned",
+  "sourceRoot": "art/sources",
+  "assets": [
+    {
+      "category": "Terrain",
+      "family": "terrain",
+      "id": "base_soil",
+      "class": "terrain",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:terrain",
+      "editableSource": "art/sources/terrain/base_soil.aseprite",
+      "artistTest": true
+    },
+    {
+      "category": "Terrain",
+      "family": "terrain",
+      "id": "rocky_soil",
+      "class": "terrain",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:terrain",
+      "editableSource": "art/sources/terrain/rocky_soil.aseprite"
+    },
+    {
+      "category": "Terrain",
+      "family": "terrain",
+      "id": "edge",
+      "class": "terrain_edge",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:board_edge",
+      "editableSource": "art/sources/terrain/edge.aseprite"
+    },
+    {
+      "category": "Terrain",
+      "family": "terrain",
+      "id": "cliff_slope",
+      "class": "terrain_edge",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:board_edge",
+      "editableSource": "art/sources/terrain/cliff_slope.aseprite"
+    },
+    {
+      "category": "Terrain",
+      "family": "terrain",
+      "id": "disturbed_ground",
+      "class": "terrain",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:terrain",
+      "editableSource": "art/sources/terrain/disturbed_ground.aseprite"
+    },
+    {
+      "category": "Buildings",
+      "family": "building",
+      "id": "habitat",
+      "class": "building",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:building",
+      "fallbackSprite": "bld_habitat",
+      "editableSource": "art/sources/building/habitat.aseprite",
+      "artistTest": true
+    },
+    {
+      "category": "Buildings",
+      "family": "building",
+      "id": "solar_array",
+      "class": "building",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:building",
+      "fallbackSprite": "bld_solar",
+      "editableSource": "art/sources/building/solar_array.aseprite"
+    },
+    {
+      "category": "Buildings",
+      "family": "building",
+      "id": "extractor",
+      "class": "building",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 4, "frameMs": 150 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:building",
+      "fallbackSprite": "bld_machine",
+      "editableSource": "art/sources/building/extractor.aseprite"
+    },
+    {
+      "category": "Buildings",
+      "family": "building",
+      "id": "storage",
+      "class": "building",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:building",
+      "fallbackSprite": "bld_depot",
+      "editableSource": "art/sources/building/storage.aseprite"
+    },
+    {
+      "category": "Units",
+      "family": "actor",
+      "id": "astronaut",
+      "class": "actor",
+      "states": [
+        { "name": "active", "frames": 4, "frameMs": 150 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 3, "frameMs": 200 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:actor",
+      "fallbackSprite": "astro",
+      "editableSource": "art/sources/actor/astronaut.aseprite",
+      "artistTest": true
+    },
+    {
+      "category": "Units",
+      "family": "actor",
+      "id": "rover",
+      "class": "rover",
+      "states": [
+        { "name": "active", "frames": 6, "frameMs": 100 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 3, "frameMs": 200 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:rover",
+      "editableSource": "art/sources/actor/rover.aseprite"
+    },
+    {
+      "category": "Infrastructure",
+      "family": "infrastructure",
+      "id": "pipe",
+      "class": "infrastructure",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:infrastructure",
+      "editableSource": "art/sources/infrastructure/pipe.aseprite"
+    },
+    {
+      "category": "Infrastructure",
+      "family": "infrastructure",
+      "id": "power_cable",
+      "class": "infrastructure",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:infrastructure",
+      "editableSource": "art/sources/infrastructure/power_cable.aseprite"
+    },
+    {
+      "category": "Infrastructure",
+      "family": "infrastructure",
+      "id": "junction",
+      "class": "infrastructure",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:infrastructure",
+      "editableSource": "art/sources/infrastructure/junction.aseprite"
+    },
+    {
+      "category": "Infrastructure",
+      "family": "infrastructure",
+      "id": "path_light",
+      "class": "infrastructure",
+      "states": [
+        { "name": "blueprint", "frames": 1, "frameMs": 600 },
+        { "name": "construction", "frames": 1, "frameMs": 600 },
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:infrastructure",
+      "editableSource": "art/sources/infrastructure/path_light.aseprite"
+    },
+    {
+      "category": "Resources",
+      "family": "resource",
+      "id": "blue_crystal",
+      "class": "resource",
+      "states": [
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:resource",
+      "fallbackSprite": "node_ice",
+      "editableSource": "art/sources/resource/blue_crystal.aseprite",
+      "artistTest": true
+    },
+    {
+      "category": "Resources",
+      "family": "resource",
+      "id": "common_ore",
+      "class": "resource",
+      "states": [
+        { "name": "active", "frames": 1, "frameMs": 600 },
+        { "name": "disabled", "frames": 1, "frameMs": 600 },
+        { "name": "damaged", "frames": 1, "frameMs": 600 }
+      ],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:resource",
+      "fallbackSprite": "node_iron_ore",
+      "editableSource": "art/sources/resource/common_ore.aseprite"
+    },
+    {
+      "category": "Props",
+      "family": "prop",
+      "id": "crate",
+      "class": "prop",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }, { "name": "damaged", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:prop",
+      "editableSource": "art/sources/prop/crate.aseprite"
+    },
+    {
+      "category": "Props",
+      "family": "prop",
+      "id": "beacon",
+      "class": "prop",
+      "states": [{ "name": "active", "frames": 4, "frameMs": 150 }, { "name": "damaged", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:prop",
+      "fallbackSprite": "node_component",
+      "editableSource": "art/sources/prop/beacon.aseprite"
+    },
+    {
+      "category": "Props",
+      "family": "prop",
+      "id": "antenna",
+      "class": "prop",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }, { "name": "damaged", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:prop",
+      "editableSource": "art/sources/prop/antenna.aseprite"
+    },
+    {
+      "category": "Props",
+      "family": "prop",
+      "id": "debris",
+      "class": "prop",
+      "states": [{ "name": "active", "frames": 1, "frameMs": 600 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:prop",
+      "fallbackSprite": "node_component",
+      "editableSource": "art/sources/prop/debris.aseprite"
+    },
+    {
+      "category": "Effects",
+      "family": "effect",
+      "id": "dust",
+      "class": "effect",
+      "states": [{ "name": "active", "frames": 6, "frameMs": 100 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:effect",
+      "editableSource": "art/sources/effect/dust.aseprite"
+    },
+    {
+      "category": "Effects",
+      "family": "effect",
+      "id": "selection",
+      "class": "effect",
+      "states": [{ "name": "active", "frames": 4, "frameMs": 150 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:effect",
+      "editableSource": "art/sources/effect/selection.aseprite"
+    },
+    {
+      "category": "Effects",
+      "family": "effect",
+      "id": "power_glow",
+      "class": "effect",
+      "states": [{ "name": "active", "frames": 4, "frameMs": 150 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:effect",
+      "editableSource": "art/sources/effect/power_glow.aseprite"
+    },
+    {
+      "category": "Effects",
+      "family": "effect",
+      "id": "warning",
+      "class": "effect",
+      "states": [{ "name": "active", "frames": 6, "frameMs": 100 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:effect",
+      "editableSource": "art/sources/effect/warning.aseprite"
+    },
+    {
+      "category": "Effects",
+      "family": "effect",
+      "id": "repair",
+      "class": "effect",
+      "states": [{ "name": "active", "frames": 6, "frameMs": 100 }],
+      "footprint": { "width": 1, "depth": 1, "origin": "centre" },
+      "fallback": "procedural:effect",
+      "editableSource": "art/sources/effect/repair.aseprite"
+    }
+  ],
+  "lightingProfiles": [
+    { "id": "dawn", "key": "northwest", "shadow": "southeast", "contrastFloor": 3 },
+    { "id": "daylight", "key": "northwest", "shadow": "southeast", "contrastFloor": 3 },
+    { "id": "storm", "key": "northwest", "shadow": "southeast", "contrastFloor": 3 },
+    { "id": "night", "key": "northwest", "shadow": "southeast", "contrastFloor": 3 }
+  ],
+  "sequence": [
+    "land_at_outpost",
+    "survey_site",
+    "place_solar_array_blueprint",
+    "build_and_connect_power",
+    "activate_extractor",
+    "dispatch_rover",
+    "dust_storm",
+    "repair_at_sunrise"
+  ]
+}

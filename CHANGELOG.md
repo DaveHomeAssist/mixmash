@@ -4,6 +4,11 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **MarsScape DEC-79 art contract:** locked renderer-native isometric pixel art, elevated procedural fallback, paid artist test, golden scene, and approval-before-scale production order.
+- **Renderer-derived art bible:** render contract v2 now owns sprite-class canvases, ground-contact offsets, footprint origins, palette, five states, 600ms-derived animation timing, export/source requirements, zoom range, and accessibility thresholds.
+- **Asset validation pipeline:** added filename, PNG dimension/alpha, anchor, footprint, animation, missing-asset, editable-source, contact-sheet, and Playwright visual-regression checks. Strict approval safely blocks on absent paid deliverables.
+- **Art proof corrections:** the boot cache count now derives from the 33-map registry, and `/mars/art-spec.html` displays all 33 cached maps instead of clipping after two rows.
+
 ## 2026-07-07 — EMPIRES replaced with the real aoe2-clone build
 - **`/empires/` replaced entirely**: the page was serving `aoe2-clone`'s very first prototype (a bare TypeScript/Canvas villager-auto-gather demo from April 2026). It's now a WebAssembly build of the actual current game — 7 civilizations, combat, AI opponent, sprite-capable rendering — compiled via a new Emscripten target added to the `aoe2-clone` CMake project.
 - **Local skirmish only in the browser.** `aoe2-clone`'s LAN/internet multiplayer (raw TCP/UDP sockets, a subprocess-spawned headless-runner) has no browser equivalent; the web build compiles `NetworkSession` down to a stub that reports unavailable. Multiplayer still works in the native SDL3 desktop build.

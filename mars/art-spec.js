@@ -87,7 +87,7 @@ function drawSpec() {
 
   specContext.fillStyle = '#f2ede6';
   specContext.font = '700 15px "Courier New", monospace';
-  specContext.fillText('2:1 DIMETRIC · CONTRACT V1', 24, 32);
+  specContext.fillText(`2:1 DIMETRIC · CONTRACT V${RENDER_CONTRACT.version} · ${RENDER_CONTRACT.decision}`, 24, 32);
   specContext.fillStyle = '#bda985';
   specContext.font = '12px "Courier New", monospace';
   specContext.fillText('Solid: 66×34 terrain face · Dotted: 84×42 logical tile', 24, 52);

@@ -1,58 +1,175 @@
-# MarsScape Art Direction
+# MarsScape Art Bible
 
-MarsScape uses a painted Mars world with crisp pixel actors, props, items, and interface accents. The renderer contract is code-owned by `mars/render-contract.mjs` and is visible at `/mars/art-spec.html`. If this document and the module differ, the module is authoritative.
+Status: DEC-79 accepted for production preparation. Artist production remains gated by the paid test and the in-renderer approvals in `ART_ROADMAP.md`.
 
-## Locked visual rules
+Authority order:
 
-1. **Projection:** 2:1 dimetric. Grid steps are 42 px horizontally and 21 px vertically per axis.
-2. **Tile geometry:** a logical tile is 84 × 42 px. The shipped terrain face is an inset 66 × 34 px diamond.
-3. **Anchors:** props use tile centre. Actors use bottom-centre feet. Multi-tile buildings declare width × depth and anchor to the footprint centre.
-4. **Light:** one global northwest key light. Cast shadows fall southeast. Do not mirror highlights per asset.
-5. **Readability:** bold `#2a2118` outlines, two or three shades per material, no dithering at item-icon size, transparent background, no baked drop shadow.
-6. **Fallback:** pixel sprites are a renderer preference. Missing or disabled art always falls back to the procedural board and emoji item icon; game logic never depends on art coverage.
+1. `mars/render-contract.mjs` owns measured renderer values.
+2. `mars/art/golden-slice.json` owns the asset and state checklist.
+3. This document explains how to apply those values.
+4. `mars/docs/ART_AUDIT.md` records what is usable today and what is still missing.
+
+If prose and code differ, stop asset approval and correct the contract. Contract changes require a version bump and fresh contact-sheet and gameplay-zoom review.
+
+## DEC-79: production direction
+
+MarsScape will use full isometric pixel art on the playable board, with elevated procedural rendering retained as the failure-safe fallback. Painterly work belongs beyond the board as sky, horizon, and distant ridge layers. Interactive entities do not mix flat painted facings, emoji, DOM models, and pixel sprites on the same production surface.
+
+The paid artist test and golden vertical slice must pass inside MarsScape at normal gameplay zoom before bulk production begins. Existing runtime pixel maps are useful reference anchors and reliable fallbacks, but they are not final paid-art approval evidence.
+
+## Renderer geometry
+
+All values below come from render contract v2 and the shipped draw path.
+
+| Property | Locked value | Renderer consequence |
+| --- | --- | --- |
+| Projection | 2:1 dimetric | East is `(+42,+21)` and south is `(-42,+21)` in screen pixels. |
+| Board | 11 x 11 | The canvas is 940 x 620 with origin `(470,86)`. |
+| Logical tile | 84 x 42 px | This is the placement and footprint diamond. |
+| Drawn terrain face | 66 x 34 px | The inset face leaves the shared regolith surface visible between tiles. |
+| Source pixel density | 1 source px | Runtime pixel maps are authored at source resolution. |
+| Gameplay scale | 3x nearest-neighbour | One source pixel becomes 3 x 3 canvas pixels. Smoothing stays off. |
+| Normal gameplay zoom | 1.0 | All art approval occurs here first. |
+| Supported viewport zoom | 0.5 to 2.5 | Zoom is a CSS transform on the board; it is not a second export set. |
+
+Do not author terrain to the 42 x 21 axis step. That is spacing, not the face or logical tile size.
+
+## Sprite-class canvases
+
+The current registry establishes the actor, resource, item, and building envelopes. New classes are bounded by the same tile and 3x draw path.
+
+| Class | Source canvas | Gameplay bounds | Registration | Default footprint |
+| --- | ---: | ---: | --- | ---: |
+| Terrain face | 84 x 42 | 84 x 42 | tile centre | 1 x 1 |
+| Terrain edge / cliff | 84 x 68 | 84 x 68 | tile centre | 1 x 1 |
+| Item icon | 12 x 12 | 36 x 36 | centre | none |
+| Resource node | 20 x 16 | 60 x 48 | bottom-centre feet | 1 x 1 |
+| Astronaut | 12 x 18 | 36 x 54 | bottom-centre feet | 1 x 1 |
+| Rover | 24 x 16 | 72 x 48 | bottom-centre feet | 1 x 1 |
+| Building | 28 x 26 | 84 x 78 | bottom-centre feet | 1 x 1 today |
+| Infrastructure | 28 x 14 | 84 x 42 | bottom-centre feet | 1 x 1 |
+| Prop | 16 x 16 | 48 x 48 | bottom-centre feet | 1 x 1 |
+| Effect | 28 x 26 | 84 x 78 | bottom-centre feet | 1 x 1 |
+
+Transparent padding is part of the fixed canvas. Do not crop individual frames. Every frame in a clip uses the same canvas and registration point.
+
+## Ground anchors and footprint origins
+
+Grid coordinates identify the logical placement point. Sprite registration then uses a measured screen offset from that projected point:
+
+| Surface | Source anchor | Screen offset from projected tile point |
+| --- | --- | ---: |
+| Resource node | `(0.5w, 1.0h)` | `(0,+12)` |
+| Building | `(0.5w, 1.0h)` | `(0,+18)` |
+| Actor | `(0.5w, 1.0h)` | `(0,+4)` |
+| Item | `(0.5w, 0.5h)` | none |
+
+All shipped buildings currently occupy one logical cell and store their grid coordinate at footprint centre. A future multi-cell asset must declare width and depth in the art manifest. Its footprint origin is the centre point; the north corner is `(centreX - width/2, centreY - depth/2)`. The footprint overlay generated by the validation pipeline is the approval source for placement. A visually plausible asset with a mismatched overlay fails review.
+
+## Light and shadow ownership
+
+- Key light comes from northwest.
+- Highlights face northwest.
+- Cast shadows fall southeast, matching screen vector `(+1,+1)`.
+- Art owns local form shading and ambient occlusion inside the silhouette.
+- The renderer owns contact shadows, cast shadows, selection rings, warning pulses, power glow, and time-of-day tint.
+- Exported sprites contain no baked drop shadow or global lighting wash.
+- Dawn, daylight, storm, and night are renderer profiles. They are not separately recoloured sprite exports.
 
 ## Palette lock
 
-| Role | Hex |
-|---|---|
+These colors match the runtime sprite registry. Alpha variation is allowed for renderer effects; new opaque base colors require a contract version bump.
+
+| Material role | Hex values |
+| --- | --- |
 | Outline | `#2a2118` |
-| Suit / highlight | `#e8e4dc` / `#f7f4ee` |
-| Crystal / crystal light | `#4db8d4` / `#9fe0f0` |
-| Rust / deep rust | `#b0603a` / `#8f3f22` |
-| Steel light / mid / dark | `#c8ccd2` / `#8f96a0` / `#5d646e` |
-| Copper / copper light | `#e2894a` / `#f2b285` |
-| Regolith / dark regolith | `#96684a` / `#6b4a33` |
+| Suit / highlight / shadow | `#e8e4dc`, `#f7f4ee`, `#c4bcab` |
+| Crystal | `#4db8d4`, `#9fe0f0` |
+| Rust | `#b0603a`, `#8f3f22` |
+| Steel | `#c8ccd2`, `#8f96a0`, `#5d646e` |
+| Copper | `#e2894a`, `#f2b285` |
+| Regolith | `#96684a`, `#6b4a33` |
+| Greenhouse | `#6fbf7a`, `#3e7d54` |
+| Gold | `#d7a74c`, `#f0d488` |
+| Rare earth | `#8f5fc0`, `#c39ae8` |
+| Panel / glass | `#2f6f80`, `#1d3a44` |
+| Iridium | `#5a4a66`, `#8d7c9c` |
 | Parchment | `#f2ede6` |
 
-Every generation prompt must repeat these hex values and include two approved anchors from the same material family. Never mix material families on one generation sheet.
+## Outline, scale, and material rules
 
-## Asset manifest contract
+- Use the outline color, not pure black.
+- Use a one-source-pixel outer silhouette at normal scale.
+- Use two or three shades per material before adding a new palette role.
+- Keep item icons free of dithering.
+- Preserve negative space around limbs, cables, struts, and resource clusters at 1.0 gameplay zoom.
+- Habitat doors establish the human scale. The astronaut must read as able to pass through one.
+- Rover height stays below the habitat door line. Solar panels and extractors may use the full 84 px gameplay width but must not obscure adjacent hit targets.
+- Steel uses hard planar value breaks. Regolith uses clustered, low-contrast texture. Glass uses a dark base plus narrow cyan or green reflections. Fabric uses broad light planes with minimal single-pixel noise.
+- Selection, power, repair, and warning colors are renderer effects and must not be baked into the base state.
 
-- ID: `sprite:<family>:<id>:<state>:<frame>`
-- File: `sprites/<family>/<id>__<state>__f<frame>.png`
-- IDs: lowercase `snake_case`
-- Frames: two-digit and one-based (`01`, `02`, …)
-- Format: transparent PNG, exact pixel dimensions in manifest metadata
-- States: `built`, `ghost`, `faulted` for buildings; animation-specific states for actors
+## Required states
 
-Examples:
+The canonical state names are:
 
-- `sprite:actor:astronaut:idle:01` → `sprites/actor/astronaut__idle__f01.png`
-- `sprite:building:solar_array:faulted:02` → `sprites/building/solar_array__faulted__f02.png`
-- `sprite:item:iron_bar:default:01` → `sprites/item/iron_bar__default__f01.png`
+| State | Visual contract | Safe fallback |
+| --- | --- | --- |
+| `blueprint` | Cyan footprint and line construction, low opacity, no finished material fill. | `active` under the renderer blueprint treatment. |
+| `construction` | Partial silhouette, scaffold or exposed frame, visible progress direction. | `blueprint`, then `active` under construction treatment. |
+| `active` | Full material, powered indicators where applicable. | Procedural model. |
+| `disabled` | Intact silhouette, power indicators off, value reduced without opacity-only communication. | `active` under renderer disabled treatment. |
+| `damaged` | Broken or displaced detail plus renderer warning marker; never hue-only. | `disabled`, then `active` under renderer damage treatment. |
 
-## Production sizes
+Buildings and powered infrastructure require all five. Units require active, disabled, and damaged. Terrain, props, and resources use only states listed in `golden-slice.json`.
 
-| Family | Source size | Anchor |
-|---|---:|---|
-| Item icon | 16 × 16 | centre |
-| Node | 24 × 24 | tile centre |
-| Actor | 24 × 32 per frame | feet |
-| 1 × 1 building | 48 × 48 maximum | tile centre |
-| 2 × 1 building | 84 × 56 maximum | footprint centre |
-| UI tab icon | 20 × 20 | centre |
-| Panel 9-slice source | 48 × 48 | n/a |
+## Animation contract
 
-## Review loop
+Animation cadence divides the engine's 600 ms tick so visible motion remains deterministic and reviewable.
 
-New work is reviewed on the real board at native and 2× scale next to shipped anchors. A near-match is a rejection, not a new style branch. Accepted anchors are versioned and then referenced by every later prompt in that family.
+| Clip | Frames | Frame time | Loop |
+| --- | ---: | ---: | --- |
+| Idle | 4 | 150 ms | yes |
+| Travel / rover drive | 6 | 100 ms | yes |
+| Functional / working | 4 | 150 ms | yes |
+| Damage reaction | 3 | 200 ms | no |
+| Dust, repair, warning effect | 6 | 100 ms | no |
+
+Allowed frame times are 100, 150, 200, 300, and 600 ms. A broken clip loads frame `01` as a static sprite and reports the defect. Gameplay timing never waits for an animation.
+
+## Export and source package
+
+- Renderer export: transparent PNG.
+- Color: sRGB, 8-bit RGBA, straight alpha.
+- Filename: `sprites/<family>/<id>__<state>__f<frame>.png`.
+- Registry ID: `sprite:<family>:<id>:<state>:<frame>`.
+- IDs: lowercase `snake_case`.
+- Frames: two-digit, one-based numbers.
+- Editable source: `.aseprite`, `.kra`, or `.psd` with layers and frames intact.
+- Source path: `sources/<family>/<id>.<extension>`.
+- No upscaled source, indexed matte, opaque background, baked drop shadow, or per-frame crop.
+
+Missing editable source blocks final approval even when renderer exports pass.
+
+## Accessibility acceptance
+
+- Text contrast is at least 4.5:1, or 3:1 for large text.
+- Controls, focus indicators, selection outlines, and essential entity boundaries are at least 3:1 against adjacent colors.
+- Every interactive canvas entity retains its semantic DOM button and descriptive label.
+- Status is never communicated only by hue or opacity. Use silhouette/detail plus the semantic label or renderer marker.
+- Test dawn, daylight, storm, and night. An entity must retain a 3:1 essential silhouette or receive a renderer-owned outline treatment.
+- Reduced motion replaces looping animation with the approved first frame and keeps status feedback visible.
+- Flashing effects stay below three flashes per second.
+
+## Approval surface
+
+Review assets in this order:
+
+1. Validation report and generated contact sheet.
+2. Footprint and anchor overlays.
+3. MarsScape at normal gameplay zoom with Pixel Art on.
+4. MarsScape at 0.5 and 2.5 viewport zoom.
+5. Procedural fallback with Pixel Art off.
+6. Dawn, daylight, storm, and night lighting.
+7. Reduced-motion mode.
+
+A clean export or attractive standalone image is not approval. Approval is recorded only after the asset works on the real board.

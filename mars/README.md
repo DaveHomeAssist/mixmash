@@ -31,6 +31,27 @@ Open <http://localhost:8787/mars/>. Use `MARSSCAPE_PORT=8788 npm run start:mars`
 npm test
 ```
 
+## Art production
+
+DEC-79 locks full isometric pixel art for the playable board while preserving the procedural renderer as a failure-safe fallback. Renderer measurements live in `render-contract.mjs`; the production contract, audit, decisions, and golden-slice gates live in:
+
+- `docs/ART_DIRECTION.md`
+- `docs/ART_ROADMAP.md`
+- `docs/ART_AUDIT.md`
+- `docs/DECISIONS.md`
+- `art/golden-slice.json`
+
+Validate a candidate package and generate its review surfaces with:
+
+```bash
+npm run art:validate
+npm run art:contact-sheet
+npm run art:visual
+npm run art:approve
+```
+
+`art:validate` reports planned missing assets and confirms their fallback path. `art:approve` is the strict paid-asset gate and fails until all PNG exports and editable sources are present.
+
 ## API
 
 - `GET /api/health` returns authority health.

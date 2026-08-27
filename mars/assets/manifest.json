@@ -8,10 +8,12 @@
     }
   ],
   "spriteContract": {
-    "version": 1,
+    "version": 2,
+    "decision": "DEC-79",
     "idPattern": "sprite:<family>:<id>:<state>:<frame>",
     "filePattern": "sprites/<family>/<id>__<state>__f<frame>.png",
     "frameDigits": 2,
+    "states": ["blueprint", "construction", "active", "disabled", "damaged"],
     "fallback": "runtime-pixel-map-then-procedural-or-emoji"
   }
 }

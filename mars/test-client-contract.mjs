@@ -65,6 +65,7 @@ test('the canvas ImageBitmap pipeline and persisted fallback toggle are shipped'
   assert.match(source, /spriteCache\.drawSprite\(ctx, 'astro'/, 'the actor uses the feet-anchored sprite seam');
   assert.match(source, /marsscape\.pixelMode\.v1/, 'the renderer preference has an isolated storage key');
   assert.match(html, /id="pixelModeButton"[^>]+aria-pressed="true"/, 'the renderer toggle is a real control');
+  assert.match(source, /\$\{spriteBitmapsReady\}\/\$\{spriteIds\(\)\.length\}/, 'boot telemetry must use the live registry count');
 });
 
 test('the unused settlement atlas no longer gates boot', () => {
@@ -77,6 +78,8 @@ test('the measured render-contract page is a deployable surface', () => {
   assert.match(artSpec, /id="specCanvas"/);
   assert.match(artSpec, /id="spriteCanvas"/);
   assert.match(artSpec, /src="\.\/art-spec\.js"/);
+  assert.match(artSpec, /Render contract v2 · DEC-79 locked/);
+  assert.match(artSpec, /id="spriteCanvas" width="940" height="540"/, 'the full 33-map proof must not be clipped');
 });
 
 test('the v3 storage keys are still read so a key bump cannot orphan a colony', () => {

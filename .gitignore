@@ -3,3 +3,4 @@ mars/.data/
 mars/output/
 .vercel
 .env*.local
+.art-validation/

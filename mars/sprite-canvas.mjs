@@ -40,10 +40,15 @@ async function createBrowserBitmap(raster) {
 }
 
 export class SpriteBitmapCache {
-  constructor(bitmapFactory = createBrowserBitmap) {
+  constructor(bitmapFactory = createBrowserBitmap, options = {}) {
     this.bitmapFactory = bitmapFactory;
     this.bitmaps = new Map();
     this.pending = new Map();
+    this.slowDecodeMs = Number.isFinite(options.slowDecodeMs) ? options.slowDecodeMs : 100;
+    this.onWarning = typeof options.onWarning === 'function'
+      ? options.onWarning
+      : (warning) => console.warn(`[MarsScape art] ${warning.code}: ${warning.id}`);
+    this.warned = new Set();
   }
 
   get size() {
@@ -64,15 +69,24 @@ export class SpriteBitmapCache {
     if (this.bitmaps.has(resolvedId)) return true;
     if (this.pending.has(resolvedId)) return this.pending.get(resolvedId);
     const raster = rasterizeSprite(resolvedId);
-    if (!raster) return false;
+    if (!raster) {
+      this.warnOnce('SPRITE_MISSING', resolvedId, 'Procedural or emoji fallback retained.');
+      return false;
+    }
+    const startedAt = Date.now();
     const request = this.bitmapFactory(raster)
       .then((bitmap) => {
         this.bitmaps.set(resolvedId, { bitmap, width: raster.width, height: raster.height });
         this.pending.delete(resolvedId);
+        const decodeMs = Date.now() - startedAt;
+        if (decodeMs > this.slowDecodeMs) {
+          this.warnOnce('SPRITE_SLOW_DECODE', resolvedId, `${decodeMs}ms; cached ImageBitmap path preserved.`);
+        }
         return true;
       })
-      .catch(() => {
+      .catch((error) => {
         this.pending.delete(resolvedId);
+        this.warnOnce('SPRITE_DECODE_FAILED', resolvedId, `${error?.message || 'Decode failed'}; procedural or emoji fallback retained.`);
         return false;
       });
     this.pending.set(resolvedId, request);
@@ -80,8 +94,10 @@ export class SpriteBitmapCache {
   }
 
   drawSprite(context, id, x, y, options = {}) {
-    const entry = this.bitmaps.get(resolveSpriteId(id));
+    const resolvedId = resolveSpriteId(id);
+    const entry = this.bitmaps.get(resolvedId);
     if (!entry) {
+      this.warnOnce('SPRITE_MISSING', resolvedId, 'Procedural or emoji fallback retained.');
       if (typeof options.fallback === 'function') options.fallback();
       return false;
     }
@@ -99,5 +115,12 @@ export class SpriteBitmapCache {
     context.drawImage(entry.bitmap, drawX, drawY, width, height);
     context.restore();
     return true;
+  }
+
+  warnOnce(code, id, response) {
+    const key = `${code}:${id}`;
+    if (this.warned.has(key)) return;
+    this.warned.add(key);
+    this.onWarning({ code, id, response });
   }
 }

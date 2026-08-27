@@ -8,6 +8,7 @@
  */
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import { spriteIds } from '../mars/sprites.mjs';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
 
 const { origin, close } = await startStaticServer();
@@ -156,7 +157,11 @@ try {
       bitmaps: Number(board.dataset.spriteBitmaps),
     }));
     assert.equal(pixelBoard.mode, 'pixel', 'pixel art is the default renderer');
-    assert.equal(pixelBoard.bitmaps, 13, 'all 13 authored sprites are cached as ImageBitmap assets');
+    assert.equal(
+      pixelBoard.bitmaps,
+      spriteIds().length,
+      'all registered sprites are cached as ImageBitmap assets',
+    );
     assert.ok(pixelBoard.sprites > 0, 'supported board entities render through drawSprite');
     record('MarsScape board renders cached ImageBitmap sprites');
 
@@ -330,12 +335,16 @@ try {
   {
     const { context, page, failures } = await open('/mars/art-spec.html');
     assert.deepEqual(failures, [], '/mars/art-spec.html must load without page or same-origin request errors');
-    await page.waitForFunction(() => document.documentElement.dataset.spriteBitmaps === '13');
+    const registeredSpriteCount = spriteIds().length;
+    await page.waitForFunction(
+      (expected) => Number(document.documentElement.dataset.spriteBitmaps) === expected,
+      registeredSpriteCount,
+    );
     const contract = await page.evaluate(() => JSON.parse(window.render_spec_to_text()));
     assert.equal(contract.projection, '2:1 dimetric');
     assert.deepEqual(contract.logicalTile, [84, 42]);
     assert.deepEqual(contract.drawnTile, [66, 34]);
-    assert.equal(contract.spriteBitmaps, 13);
+    assert.equal(contract.spriteBitmaps, registeredSpriteCount);
     record('MarsScape render-contract page proves geometry and bitmap cache');
     await context.close();
   }

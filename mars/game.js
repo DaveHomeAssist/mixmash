@@ -217,7 +217,7 @@ async function boot() {
   assetsReady = assetResult.status === 'fulfilled';
   spriteBitmapsReady = spriteResult.status === 'fulfilled' ? spriteResult.value : 0;
   if (assetsReady || spriteBitmapsReady > 0) {
-    setBootStatus(`Assets ready. ${spriteBitmapsReady}/13 sprite bitmaps cached. Checking colony authority...`);
+    setBootStatus(`Assets ready. ${spriteBitmapsReady}/${spriteIds().length} sprite bitmaps cached. Checking colony authority...`);
   } else {
     setBootStatus('Asset preload failed. Procedural fallback active.');
   }

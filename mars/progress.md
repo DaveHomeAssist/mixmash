@@ -81,3 +81,19 @@ TODO:
 
 TODO:
 - Dave to accept or reject the new set as the Phase 2 style bar on the live board.
+
+2026-08-27 (DEC-79 art contract and validation pipeline):
+- Recorded canonical start-of-run SHA `9eba6e5cdca4aa8fba8ea4ef4328e49c3ee12658`; remote default branch and local authority both confirmed as `DaveHomeAssist/mixmash:gh-pages` before the first write.
+- Audited the renderer, all 33 runtime pixel maps, terrain texture, loading path, Pixel Art toggle, procedural/emoji fallback, ImageBitmap cache, anchors, footprints, dimensions, naming, zoom, and canvas/viewport behavior in `docs/ART_AUDIT.md`.
+- Accepted DEC-79 in the repo decision log: isometric pixel art on the board, procedural safety fallback, renderer-native golden slice, paid artist test, and no bulk production before in-game approval.
+- Bumped the render contract to v2 with measured class canvases, ground-contact offsets, five canonical states, 600ms-derived animation timing, export/source rules, and accessibility thresholds.
+- Replaced stale art docs with the renderer-derived art bible and golden-slice/artist-test gates; preserved useful PR #8 rationale without copying its obsolete 13-sprite and missing-pipeline claims.
+- Added the machine-readable golden slice and validators for filenames, PNG dimensions/alpha, anchors, footprints, clips, missing exports, editable sources, contact sheets, screenshot capture, and optional visual baseline comparison.
+- Corrected two stale production surfaces: the boot cache total now derives from the registry, and the art-spec proof canvas displays all 33 maps instead of clipping after two rows.
+- Verified 104 unit/contract tests, the production build, balance simulation, play and 27-check catalog browser smokes, normal-mode art validation, and renderer screenshots at normal gameplay zoom.
+- Generated and inspected the 26-asset contact sheet with 108 expected exports, anchor marks, footprint overlays, state coverage, and procedural fallbacks.
+- Confirmed the strict approval gate fails closed with 108 missing commissioned exports and zero editable sources; no paid-art or golden-scene approval is claimed.
+
+TODO:
+- Commission the paid artist test package, add renderer-ready exports plus editable sources, and run `npm run art:approve`.
+- Review the complete golden scene inside MarsScape at normal gameplay zoom; approve or revise DEC-79 before production scaling.

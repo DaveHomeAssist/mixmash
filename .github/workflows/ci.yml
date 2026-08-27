@@ -35,6 +35,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run vercel-build
+      - run: npm run art:validate
       - run: npm run sim
       - run: npx playwright install --with-deps chromium
       - run: npm run smoke:play
