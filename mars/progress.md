@@ -93,6 +93,7 @@ TODO:
 - Verified 104 unit/contract tests, the production build, balance simulation, play and 27-check catalog browser smokes, normal-mode art validation, and renderer screenshots at normal gameplay zoom.
 - Generated and inspected the 26-asset contact sheet with 108 expected exports, anchor marks, footprint overlays, state coverage, and procedural fallbacks.
 - Confirmed the strict approval gate fails closed with 108 missing commissioned exports and zero editable sources; no paid-art or golden-scene approval is claimed.
+- Verified byte-for-byte Pages parity and the public live board, fallback, art-spec, and contact-sheet captures. The visual runner uses public board telemetry when the localhost-only test hook is intentionally absent.
 
 TODO:
 - Commission the paid artist test package, add renderer-ready exports plus editable sources, and run `npm run art:approve`.

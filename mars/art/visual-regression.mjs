@@ -48,7 +48,24 @@ async function startLocalServer(port) {
 }
 
 async function gameState(page) {
-  return JSON.parse(await page.evaluate(() => window.render_game_to_text()));
+  return page.evaluate(() => {
+    if (typeof window.render_game_to_text === 'function') {
+      return JSON.parse(window.render_game_to_text());
+    }
+    const board = document.querySelector('#isoBoard');
+    if (!board) throw new Error('MarsScape board telemetry is unavailable');
+    return {
+      viewport: {
+        scale: Number(board.style.getPropertyValue('--user-scale')) || 1,
+      },
+      rendering: {
+        pixelMode: board.dataset.renderMode === 'pixel',
+        spritesDrawn: Number(board.dataset.spritesDrawn) || 0,
+        proceduralDrawn: Number(board.dataset.proceduralDrawn) || 0,
+        bitmapCount: Number(board.dataset.spriteBitmaps) || 0,
+      },
+    };
+  });
 }
 
 function compareScreenshots(files, baselineDirectory, updateBaseline, maxDiff) {
@@ -104,7 +121,7 @@ try {
   page.on('pageerror', (error) => consoleErrors.push(error.message));
 
   await page.goto(gameUrl, { waitUntil: 'networkidle' });
-  await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
+  await page.locator('#startButton').waitFor({ state: 'visible' });
   await page.locator('#startButton').click();
   await page.locator('#boot').waitFor({ state: 'hidden' });
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
