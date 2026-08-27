@@ -1,4 +1,10 @@
-import { CommissionedArtCache } from './commissioned-art.mjs';
+import {
+  COMMISSIONED_INDEX_VERSION,
+  COMMISSIONED_RUNTIME_IDENTITY_SCHEMA,
+  CommissionedArtCache,
+  runtimeAssetIdentityHash,
+  sha256Bytes,
+} from './commissioned-art.mjs';
 import {
   RENDER_CONTRACT,
   footprintCornersFromCenter,
@@ -10,6 +16,18 @@ const SCENE_URL = new URL('./art/golden-scene.json', import.meta.url);
 const MANIFEST_URL = new URL('./art/golden-slice.json', import.meta.url);
 const COMMISSIONED_INDEX_URL = new URL('./assets/commissioned/index.json', import.meta.url);
 const COMMISSIONED_BASE_URL = new URL('./assets/commissioned/', import.meta.url);
+const REVIEW_SURFACE_RESOURCES = Object.freeze([
+  Object.freeze({ path: 'golden-scene.html', url: new URL('./golden-scene.html', import.meta.url).href }),
+  Object.freeze({ path: 'golden-scene.css', url: new URL('./golden-scene.css', import.meta.url).href }),
+  Object.freeze({ path: 'golden-scene.js', url: new URL('./golden-scene.js', import.meta.url).href }),
+  Object.freeze({ path: 'art/golden-scene.json', url: SCENE_URL.href }),
+  Object.freeze({ path: 'art/golden-slice.json', url: MANIFEST_URL.href }),
+  Object.freeze({ path: 'render-contract.mjs', url: new URL('./render-contract.mjs', import.meta.url).href }),
+  Object.freeze({ path: 'commissioned-art.mjs', url: new URL('./commissioned-art.mjs', import.meta.url).href }),
+  Object.freeze({ path: 'sprite-canvas.mjs', url: new URL('./sprite-canvas.mjs', import.meta.url).href }),
+  Object.freeze({ path: 'sprites.mjs', url: new URL('./sprites.mjs', import.meta.url).href }),
+  Object.freeze({ path: '../src/kit/nav.js', url: new URL('../src/kit/nav.js', import.meta.url).href }),
+]);
 const APPROVAL_REPORT_URLS = Object.freeze({
   'artist-test': new URL('./art/reports/artist-test-approval.json', import.meta.url),
   'golden-scene': new URL('./art/reports/golden-approval.json', import.meta.url),
@@ -18,8 +36,9 @@ const APPROVAL_REPORT_SCOPES = Object.freeze({
   'artist-test': 'artist-test',
   'golden-scene': 'full',
 });
-const APPROVAL_RECEIPT_SCHEMA = 'marsscape-art-approval-receipt/v1';
-const APPROVAL_STORAGE_PREFIX = 'marsscape.dec79.approval.v1';
+const APPROVAL_RECEIPT_SCHEMA = 'marsscape-art-approval-receipt/v3';
+const APPROVAL_STORAGE_PREFIX = 'marsscape.dec79.approval.v3';
+const RUNTIME_IDENTITY_SCHEMA = COMMISSIONED_RUNTIME_IDENTITY_SCHEMA;
 const VIEW = RENDER_CONTRACT.board;
 const VALID_LIGHTING = new Set(['auto', ...Object.keys(RENDER_CONTRACT.light.profiles)]);
 const VALID_MODES = new Set(['auto', 'commissioned', 'procedural']);
@@ -28,6 +47,18 @@ const VALID_ZOOMS = new Set([
   RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
   RENDER_CONTRACT.pixelDensity.maxViewportZoom,
 ]);
+const GOLDEN_REVIEW_ZOOMS = Object.freeze([...VALID_ZOOMS].sort((left, right) => left - right));
+const GOLDEN_REVIEW_LIGHTING = Object.freeze(Object.keys(RENDER_CONTRACT.light.profiles));
+const CANONICAL_HUMAN_CHECKS = Object.freeze([
+  Object.freeze({ id: 'reviewAnchors', value: 'anchors' }),
+  Object.freeze({ id: 'reviewFootprints', value: 'footprints' }),
+  Object.freeze({ id: 'reviewReadability', value: 'readability' }),
+  Object.freeze({ id: 'reviewScale', value: 'scale' }),
+  Object.freeze({ id: 'reviewLighting', value: 'lighting' }),
+  Object.freeze({ id: 'reviewAnimation', value: 'animation' }),
+  Object.freeze({ id: 'reviewPerformance', value: 'performance' }),
+]);
+const CANONICAL_HUMAN_CHECK_VALUES = Object.freeze(CANONICAL_HUMAN_CHECKS.map((check) => check.value));
 const LOW_EFFECTS = new Set(['selection', 'power_glow']);
 const TERRAIN_COLOURS = Object.freeze({
   base_soil: ['#a2502e', '#71351f'],
@@ -58,17 +89,22 @@ const ARTIST_TEST_SCENE = Object.freeze({
 const canvas = document.querySelector('#goldenCanvas');
 const context = canvas?.getContext('2d', { alpha: false });
 const elements = Object.freeze({
+  skipLink: document.querySelector('.skip-link'),
   loadStatus: document.querySelector('#loadStatus'),
   sceneStatus: document.querySelector('#sceneStatus'),
+  stageTitle: document.querySelector('#stageTitle'),
   canvasDescription: document.querySelector('#canvasDescription'),
+  playbackBar: document.querySelector('#playbackBar'),
   playPause: document.querySelector('#playPause'),
   timeScrubber: document.querySelector('#timeScrubber'),
   timeReadout: document.querySelector('#timeReadout'),
+  sequencePanel: document.querySelector('#sequencePanel'),
   beatButtons: [...document.querySelectorAll('[data-beat-index]')],
   previousBeat: document.querySelector('#previousBeat'),
   nextBeat: document.querySelector('#nextBeat'),
   scopeSelect: document.querySelector('#scopeSelect'),
   lightingSelect: document.querySelector('#lightingSelect'),
+  autoLightingOption: document.querySelector('#autoLightingOption'),
   renderModeSelect: document.querySelector('#renderModeSelect'),
   zoomSelect: document.querySelector('#zoomSelect'),
   showAnchors: document.querySelector('#showAnchors'),
@@ -81,7 +117,9 @@ const elements = Object.freeze({
   warningTelemetry: document.querySelector('#warningTelemetry'),
   reviewChecklist: document.querySelector('#reviewChecklist'),
   reviewHelp: document.querySelector('#reviewHelp'),
+  reviewContextStatus: document.querySelector('#reviewContextStatus'),
   approvalEvidenceStatus: document.querySelector('#approvalEvidenceStatus'),
+  approvalGateStatus: document.querySelector('#approvalGateStatus'),
   approvalReason: document.querySelector('#approvalReason'),
   recordApproval: document.querySelector('#recordApproval'),
   approvalReceiptStatus: document.querySelector('#approvalReceiptStatus'),
@@ -97,6 +135,13 @@ const state = {
   manifestAssets: new Map(),
   artistTestAssets: new Set(),
   indexMeta: null,
+  reviewSurface: {
+    status: 'loading',
+    algorithm: 'SHA-256',
+    hash: null,
+    resources: [],
+    reasons: ['Review-surface integrity has not loaded.'],
+  },
   beatOffsets: [],
   totalDurationMs: 1,
   beatIndex: 0,
@@ -133,9 +178,26 @@ const state = {
     'artist-test': new Set(),
     'golden-scene': new Set(),
   },
+  humanCheckContexts: {
+    'artist-test': null,
+    'golden-scene': null,
+  },
   reviewCoverage: {
-    'artist-test': { matrix: false, animationMs: 0, lastAnimationTime: null, frameTimings: [] },
-    'golden-scene': { beats: new Set(), frameTimings: [] },
+    'artist-test': {
+      contextKey: null,
+      matrix: false,
+      animationMs: 0,
+      lastAnimationTime: null,
+      frameTimings: [],
+    },
+    'golden-scene': {
+      contextKey: null,
+      beatZooms: new Set(),
+      lightingProfiles: new Set(),
+      proceduralFallbackAt1x: false,
+      reducedMotionCommissionedAt1x: false,
+      frameTimings: [],
+    },
   },
   approvalReceipts: {
     'artist-test': null,
@@ -143,7 +205,10 @@ const state = {
   },
   receiptDownloadUrl: null,
   receiptDownloadKey: null,
+  warningSignature: null,
 };
+
+const domUpdateSignatures = new WeakMap();
 
 function addWarning(warning) {
   const entry = {
@@ -167,6 +232,49 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function setTextIfChanged(element, value) {
+  if (!element) return false;
+  const text = String(value);
+  if (element.textContent === text) return false;
+  element.textContent = text;
+  return true;
+}
+
+function setMarkupIfChanged(element, markup, signature = markup) {
+  if (!element) return false;
+  if (domUpdateSignatures.get(element) === signature || element.innerHTML === markup) {
+    domUpdateSignatures.set(element, signature);
+    return false;
+  }
+  element.innerHTML = markup;
+  domUpdateSignatures.set(element, signature);
+  return true;
+}
+
+function setDataStateIfChanged(element, value) {
+  if (!element || element.dataset.state === value) return false;
+  element.dataset.state = value;
+  return true;
+}
+
+function placeSharedNavAfterSkipLink() {
+  const nav = globalThis.__mixmashNav?.element || document.querySelector('.mixnav');
+  if (!elements.skipLink || !nav) return false;
+  if (elements.skipLink.nextElementSibling !== nav) {
+    elements.skipLink.insertAdjacentElement('afterend', nav);
+  }
+  return true;
+}
+
+function installSharedNavFocusOrder() {
+  if (placeSharedNavAfterSkipLink() || !document.body || typeof MutationObserver !== 'function') return;
+  const observer = new MutationObserver(() => {
+    if (placeSharedNavAfterSkipLink()) observer.disconnect();
+  });
+  observer.observe(document.body, { childList: true });
+  document.addEventListener('DOMContentLoaded', placeSharedNavAfterSkipLink, { once: true });
 }
 
 function assetKey(family, id) {
@@ -217,6 +325,71 @@ function buildSceneIndexes() {
   state.totalDurationMs = Math.max(1, elapsed);
 }
 
+function canonicalRuntimeAssetsForScope(indexMeta, manifest, scope) {
+  const assets = Array.isArray(indexMeta?.assets) ? indexMeta.assets : [];
+  if (scope === 'full') return assets;
+  if (scope !== 'artist-test') return [];
+  const selectedStates = new Map((manifest?.assets || [])
+    .filter((asset) => asset.artistTest)
+    .map((asset) => [assetKey(asset.family, asset.id), new Set(asset.artistTestStates || [])]));
+  const selectedAssets = [];
+  for (const asset of assets) {
+    const selected = selectedStates.get(assetKey(asset.family, asset.id));
+    if (!selected) continue;
+    const states = {};
+    for (const [name, assetState] of Object.entries(asset.states || {})) {
+      if (selected.has(name)) states[name] = assetState;
+    }
+    if (!Object.keys(states).length) continue;
+    selectedAssets.push(Object.freeze({
+      family: asset.family,
+      id: asset.id,
+      class: asset.class,
+      anchor: asset.anchor,
+      screenOffset: asset.screenOffset,
+      canvas: asset.canvas,
+      footprint: asset.footprint,
+      fallback: asset.fallback,
+      fallbackSprite: asset.fallbackSprite,
+      states: Object.freeze(states),
+    }));
+  }
+  return Object.freeze(selectedAssets);
+}
+
+async function manifestIdentityHash(manifest) {
+  return sha256Bytes(new TextEncoder().encode(JSON.stringify(manifest)));
+}
+
+async function verifyRuntimeIndexIdentity(indexMeta, manifest) {
+  if (indexMeta?.identityVerified !== true) throw new Error('Runtime index identity was not independently verified.');
+  if (indexMeta.runtimeIdentitySchema !== RUNTIME_IDENTITY_SCHEMA) {
+    throw new Error(`Runtime identity schema must be ${RUNTIME_IDENTITY_SCHEMA}.`);
+  }
+  if (indexMeta.scope !== 'full') throw new Error('Golden-scene review requires the complete full-scope runtime index.');
+  const manifestHash = await manifestIdentityHash(manifest);
+  if (indexMeta.manifestHash !== manifestHash) {
+    throw new Error(`Runtime index manifest hash ${indexMeta.manifestHash || 'missing'} does not match computed ${manifestHash}.`);
+  }
+  const fullHash = await runtimeAssetIdentityHash(canonicalRuntimeAssetsForScope(indexMeta, manifest, 'full'));
+  const artistTestHash = await runtimeAssetIdentityHash(canonicalRuntimeAssetsForScope(indexMeta, manifest, 'artist-test'));
+  if (indexMeta.runtimeAssetHash !== fullHash || indexMeta.runtimeAssetHashes?.full !== fullHash) {
+    throw new Error('Runtime index full-scope hash does not match its complete ordered normalized assets.');
+  }
+  if (indexMeta.runtimeAssetHashes?.['artist-test'] !== artistTestHash) {
+    throw new Error('Runtime index artist-test hash does not match its complete ordered normalized scoped assets.');
+  }
+  return Object.freeze({
+    ...indexMeta,
+    manifestHash,
+    runtimeAssetHash: fullHash,
+    runtimeAssetHashes: Object.freeze({ full: fullHash, 'artist-test': artistTestHash }),
+    identityVerified: true,
+    manifestIdentityVerified: true,
+    scopedIdentityVerified: true,
+  });
+}
+
 function scopeRequirements(scope = state.scope) {
   const assets = (state.manifest?.assets || []).filter((asset) => (
     scope === 'artist-test' ? asset.artistTest : true
@@ -246,6 +419,54 @@ function scopeRequirements(scope = state.scope) {
   };
 }
 
+function scopePrimeSelection(scope = state.scope) {
+  return (state.manifest?.assets || [])
+    .filter((asset) => scope === 'artist-test' ? asset.artistTest : true)
+    .map((asset) => ({
+      family: asset.family,
+      id: asset.id,
+      states: scope === 'artist-test'
+        ? [...(asset.artistTestStates || [])]
+        : asset.states.map((candidate) => candidate.name),
+    }));
+}
+
+function scopePackageQuality(scope = state.scope) {
+  const requirements = scopeRequirements(scope);
+  const cacheCoverage = commissionedCache.getFrameCoverage({
+    assets: scopePrimeSelection(scope),
+    reducedMotion: false,
+  });
+  const quality = {
+    requiredFrames: requirements.requiredExports,
+    indexedFrames: cacheCoverage.expected,
+    cachedFrames: cacheCoverage.cached,
+    pendingFrames: cacheCoverage.pending,
+    failedFrames: cacheCoverage.failed,
+    missingFrames: cacheCoverage.missing,
+    complete: requirements.requiredExports > 0
+      && cacheCoverage.expected === requirements.requiredExports
+      && cacheCoverage.cached === requirements.requiredExports
+      && cacheCoverage.pending === 0
+      && cacheCoverage.failed === 0
+      && cacheCoverage.missing === 0
+      && cacheCoverage.complete,
+  };
+  return Object.freeze(quality);
+}
+
+function packageQualityMeetsContract(quality, scope = state.scope) {
+  const requirements = scopeRequirements(scope);
+  return requirements.requiredExports > 0
+    && quality?.requiredFrames === requirements.requiredExports
+    && quality?.indexedFrames === requirements.requiredExports
+    && quality?.cachedFrames === requirements.requiredExports
+    && quality?.pendingFrames === 0
+    && quality?.failedFrames === 0
+    && quality?.missingFrames === 0
+    && quality?.complete === true;
+}
+
 function approvalReportSummary(evidence = state.approvalEvidence[state.scope]) {
   return {
     status: evidence?.status || 'loading',
@@ -258,6 +479,106 @@ function approvalReportSummary(evidence = state.approvalEvidence[state.scope]) {
   };
 }
 
+function indexedRuntimeAssetHash(scope) {
+  if (state.indexMeta?.scopedIdentityVerified !== true) return null;
+  const reportScope = APPROVAL_REPORT_SCOPES[scope];
+  return state.indexMeta?.runtimeAssetHashes?.[reportScope]
+    || (reportScope === 'full' ? state.indexMeta?.runtimeAssetHash : null);
+}
+
+function approvalPackageContext(scope = state.scope) {
+  const evidence = state.approvalEvidence[scope];
+  const report = evidence?.report;
+  const digests = report?.artifactDigests;
+  const runtimeAssetHash = indexedRuntimeAssetHash(scope);
+  const runtimeIdentitySchema = state.indexMeta?.runtimeIdentitySchema;
+  const reviewSurfaceHash = state.reviewSurface.status === 'valid' ? state.reviewSurface.hash : null;
+  if (evidence?.valid !== true
+    || report?.scope !== APPROVAL_REPORT_SCOPES[scope]
+    || !state.indexMeta?.manifestHash
+    || report?.manifestHash !== state.indexMeta.manifestHash
+    || !digests?.packageHash
+    || !digests?.runtimeAssetHash
+    || state.indexMeta?.identityVerified !== true
+    || state.indexMeta?.manifestIdentityVerified !== true
+    || state.indexMeta?.scopedIdentityVerified !== true
+    || runtimeIdentitySchema !== RUNTIME_IDENTITY_SCHEMA
+    || digests?.runtimeIdentitySchema !== runtimeIdentitySchema
+    || digests.runtimeAssetHash !== runtimeAssetHash
+    || !/^[a-f0-9]{64}$/.test(reviewSurfaceHash || '')) return null;
+  return {
+    key: [scope, report.manifestHash, runtimeIdentitySchema, digests.packageHash, digests.runtimeAssetHash, reviewSurfaceHash].join('|'),
+    scope,
+    manifestHash: report.manifestHash,
+    packageHash: digests.packageHash,
+    runtimeAssetHash: digests.runtimeAssetHash,
+    runtimeIdentitySchema,
+    reviewSurfaceHash,
+  };
+}
+
+function createReviewCoverage(scope, contextKey = null) {
+  if (scope === 'artist-test') {
+    return {
+      contextKey,
+      matrix: false,
+      animationMs: 0,
+      lastAnimationTime: null,
+      frameTimings: [],
+    };
+  }
+  return {
+    contextKey,
+    beatZooms: new Set(),
+    lightingProfiles: new Set(),
+    proceduralFallbackAt1x: false,
+    reducedMotionCommissionedAt1x: false,
+    frameTimings: [],
+  };
+}
+
+function syncReviewCoverageContext(scope = state.scope) {
+  const context = approvalPackageContext(scope);
+  const contextKey = context?.key || null;
+  if (state.reviewCoverage[scope]?.contextKey !== contextKey) {
+    state.reviewCoverage[scope] = createReviewCoverage(scope, contextKey);
+    const receipt = state.approvalReceipts[scope];
+    if (receipt && (!context
+      || receipt.manifestHash !== context.manifestHash
+      || receipt.packageHash !== context.packageHash
+      || receipt.runtimeAssetHash !== context.runtimeAssetHash
+      || receipt.runtimeIdentitySchema !== context.runtimeIdentitySchema
+      || receipt.reviewSurfaceHash !== context.reviewSurfaceHash)) {
+      state.approvalReceipts[scope] = null;
+      if (scope === state.scope) prepareReceiptDownload(null);
+    }
+  }
+  return { coverage: state.reviewCoverage[scope], context };
+}
+
+function packageContextSummary(scope = state.scope) {
+  const context = approvalPackageContext(scope);
+  if (!context) return null;
+  return {
+    scope: context.scope,
+    manifestHash: context.manifestHash,
+    packageHash: context.packageHash,
+    runtimeAssetHash: context.runtimeAssetHash,
+    runtimeIdentitySchema: context.runtimeIdentitySchema,
+    reviewSurfaceHash: context.reviewSurfaceHash,
+  };
+}
+
+function beatZoomLightingTuple(beat, zoom, lighting = beat.lighting) {
+  return `${beat.id}@${zoom.toFixed(1)}x#${lighting}`;
+}
+
+function requiredBeatZoomConditions() {
+  return (state.scene?.beats || []).flatMap((beat) => (
+    GOLDEN_REVIEW_ZOOMS.map((zoom) => beatZoomLightingTuple(beat, zoom))
+  ));
+}
+
 function validateApprovalReport(report, scope) {
   const reasons = [];
   const requirements = scopeRequirements(scope);
@@ -265,8 +586,7 @@ function validateApprovalReport(report, scope) {
   const counts = report?.counts || {};
   const digests = report?.artifactDigests || {};
   const digestPattern = /^[a-f0-9]{64}$/;
-  const indexedRuntimeHash = state.indexMeta?.runtimeAssetHashes?.[expectedScope]
-    || (expectedScope === 'full' ? state.indexMeta?.runtimeAssetHash : null);
+  const indexedRuntimeHash = indexedRuntimeAssetHash(scope);
   const expect = (condition, message) => {
     if (!condition) reasons.push(message);
   };
@@ -277,6 +597,11 @@ function validateApprovalReport(report, scope) {
   expect(report?.decision === RENDER_CONTRACT.decision, `Report must target ${RENDER_CONTRACT.decision}.`);
   expect(Boolean(state.indexMeta?.manifestHash), 'Runtime index has no manifest hash.');
   expect(report?.manifestHash === state.indexMeta?.manifestHash, 'Report and runtime-index manifest hashes differ.');
+  expect(state.indexMeta?.version === COMMISSIONED_INDEX_VERSION, `Runtime index schema must be v${COMMISSIONED_INDEX_VERSION}.`);
+  expect(state.indexMeta?.runtimeIdentitySchema === RUNTIME_IDENTITY_SCHEMA, `Runtime identity schema must be ${RUNTIME_IDENTITY_SCHEMA}.`);
+  expect(state.indexMeta?.identityVerified === true, 'Runtime index asset identity was not independently verified.');
+  expect(state.indexMeta?.manifestIdentityVerified === true, 'Fetched manifest identity was not independently verified.');
+  expect(state.indexMeta?.scopedIdentityVerified === true, 'Runtime index scoped identities were not independently verified.');
   expect(report?.approval === true, 'Report was not generated in strict approval mode.');
   expect(report?.passed === true, 'Strict validator did not pass.');
   expect(report?.approvalReady === true, 'Strict validator did not mark the package approval-ready.');
@@ -285,6 +610,7 @@ function validateApprovalReport(report, scope) {
   expect(digests.algorithm === 'SHA-256', 'Artifact evidence must use SHA-256.');
   expect(digests.scope === expectedScope, `Artifact evidence scope must be ${expectedScope}.`);
   expect(digests.complete === true, 'Artifact byte evidence is incomplete.');
+  expect(digests.runtimeIdentitySchema === RUNTIME_IDENTITY_SCHEMA, 'Artifact evidence does not bind the runtime metadata schema.');
   expect(digestPattern.test(digests.runtimeAssetHash || ''), 'Runtime asset hash is invalid.');
   expect(digestPattern.test(digests.packageHash || ''), 'Package hash is invalid.');
   expect(digests.runtimeAssetHash === indexedRuntimeHash, 'Strict report and runtime-index asset hashes differ.');
@@ -311,6 +637,7 @@ function validateApprovalReport(report, scope) {
 
 async function loadApprovalReport(scope) {
   const url = APPROVAL_REPORT_URLS[scope];
+  invalidateHumanChecks(scope);
   try {
     const report = await fetchJson(url, `${scope} strict approval report`, { cache: 'no-store' });
     state.approvalEvidence[scope] = validateApprovalReport(report, scope);
@@ -323,6 +650,7 @@ async function loadApprovalReport(scope) {
       report: null,
     };
   }
+  syncReviewCoverageContext(scope);
 }
 
 async function loadApprovalReports() {
@@ -338,14 +666,63 @@ function stableJson(value) {
 }
 
 async function sha256(value) {
-  if (!globalThis.crypto?.subtle) throw new Error('Web Crypto is unavailable; approval cannot be checksummed.');
   const bytes = new TextEncoder().encode(stableJson(value));
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
-  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+  return sha256Bytes(bytes);
 }
 
-function approvalStorageKey(scope, packageHash = state.approvalEvidence[scope]?.report?.artifactDigests?.packageHash) {
-  return `${APPROVAL_STORAGE_PREFIX}:${scope}:${packageHash || 'missing-package'}`;
+async function computeReviewSurfaceEvidence() {
+  try {
+    const resources = await Promise.all(REVIEW_SURFACE_RESOURCES.map(async (resource) => {
+      const response = await fetch(resource.url, { cache: 'no-store' });
+      if (!response?.ok || typeof response.arrayBuffer !== 'function') {
+        throw new Error(`${resource.path} returned HTTP ${response?.status ?? 'invalid response'}`);
+      }
+      const bytes = await response.arrayBuffer();
+      return Object.freeze({
+        path: resource.path,
+        bytes: bytes.byteLength,
+        sha256: await sha256Bytes(bytes),
+      });
+    }));
+    const hash = await sha256({
+      contract: 'marsscape-review-surface/v1',
+      resources: resources.map(({ path, bytes, sha256: digest }) => ({ path, bytes, sha256: digest })),
+    });
+    return {
+      status: 'valid',
+      algorithm: 'SHA-256',
+      hash,
+      resources,
+      reasons: [],
+    };
+  } catch (error) {
+    return {
+      status: 'unavailable',
+      algorithm: 'SHA-256',
+      hash: null,
+      resources: [],
+      reasons: [error?.message || 'Review-surface bytes could not be hashed.'],
+    };
+  }
+}
+
+function reviewSurfaceSummary() {
+  return {
+    status: state.reviewSurface.status,
+    valid: state.reviewSurface.status === 'valid' && /^[a-f0-9]{64}$/.test(state.reviewSurface.hash || ''),
+    algorithm: state.reviewSurface.algorithm,
+    hash: state.reviewSurface.hash,
+    resources: state.reviewSurface.resources.map((resource) => ({ ...resource })),
+    reasons: [...state.reviewSurface.reasons],
+  };
+}
+
+function approvalStorageKey(
+  scope,
+  packageHash = state.approvalEvidence[scope]?.report?.artifactDigests?.packageHash,
+  reviewSurfaceHash = state.reviewSurface.hash,
+) {
+  return `${APPROVAL_STORAGE_PREFIX}:${scope}:${packageHash || 'missing-package'}:${reviewSurfaceHash || 'missing-review-surface'}`;
 }
 
 function receiptSummary(receipt = state.approvalReceipts[state.scope]) {
@@ -357,23 +734,33 @@ function receiptSummary(receipt = state.approvalReceipts[state.scope]) {
     scope: receipt.scope,
     manifestHash: receipt.manifestHash,
     packageHash: receipt.packageHash,
-    checksum: receipt.checksum,
+    runtimeAssetHash: receipt.runtimeAssetHash,
+    runtimeIdentitySchema: receipt.runtimeIdentitySchema,
+    reviewSurfaceHash: receipt.reviewSurfaceHash,
+    integrityDigest: receipt.integrityDigest,
     localOnly: true,
   };
 }
 
 async function verifyStoredReceipt(receipt, scope) {
   if (!receipt || receipt.schema !== APPROVAL_RECEIPT_SCHEMA) return false;
-  if (state.approvalEvidence[scope]?.valid !== true) return false;
-  if (receipt.scope !== APPROVAL_REPORT_SCOPES[scope]) return false;
-  if (receipt.manifestHash !== state.indexMeta?.manifestHash) return false;
-  const currentDigests = state.approvalEvidence[scope]?.report?.artifactDigests;
-  if (!currentDigests || receipt.packageHash !== currentDigests.packageHash) return false;
-  if (receipt.runtimeAssetHash !== currentDigests.runtimeAssetHash) return false;
+  if (!humanReviewDomMeetsContract()) return false;
+  const context = approvalPackageContext(scope);
+  if (!context || receipt.scope !== APPROVAL_REPORT_SCOPES[scope]) return false;
+  if (receipt.manifestHash !== context.manifestHash) return false;
+  if (receipt.packageHash !== context.packageHash) return false;
+  if (receipt.runtimeAssetHash !== context.runtimeAssetHash) return false;
+  if (receipt.runtimeIdentitySchema !== context.runtimeIdentitySchema) return false;
+  if (receipt.reviewSurfaceHash !== context.reviewSurfaceHash) return false;
   if (receipt.contractVersion !== RENDER_CONTRACT.version || receipt.decision !== RENDER_CONTRACT.decision) return false;
-  if (receipt.checksum?.algorithm !== 'SHA-256' || typeof receipt.checksum.value !== 'string') return false;
-  const { checksum, ...payload } = receipt;
-  return await sha256(payload) === checksum.value;
+  if (!packageQualityMeetsContract(scopePackageQuality(scope), scope)) return false;
+  if (!receiptRendererReviewMeetsContract(receipt, scope)) return false;
+  if (receipt.integrityDigest?.algorithm !== 'SHA-256'
+    || receipt.integrityDigest?.purpose !== 'client-integrity-only-not-authentication'
+    || receipt.integrityDigest?.authenticated !== false
+    || !/^[a-f0-9]{64}$/.test(receipt.integrityDigest?.value || '')) return false;
+  const { integrityDigest, ...payload } = receipt;
+  return await sha256(payload) === integrityDigest.value;
 }
 
 async function loadStoredReceipts() {
@@ -383,32 +770,123 @@ async function loadStoredReceipts() {
       if (!raw) continue;
       const receipt = JSON.parse(raw);
       if (await verifyStoredReceipt(receipt, scope)) state.approvalReceipts[scope] = receipt;
-      else addWarning({ code: 'APPROVAL_RECEIPT_INVALID', id: scope, response: 'Ignored local receipt with invalid scope, manifest, or checksum.' });
+      else addWarning({ code: 'APPROVAL_RECEIPT_INVALID', id: scope, response: 'Ignored local receipt with invalid package, review surface, human-check contract, or integrity digest.' });
     } catch (error) {
       addWarning({ code: 'APPROVAL_RECEIPT_UNREADABLE', id: scope, response: `${error?.message || 'Local receipt could not be read'}.` });
     }
   }
 }
 
+function canonicalHumanReviewInputs() {
+  if (!elements.reviewChecklist) return [];
+  const inputs = [...elements.reviewChecklist.querySelectorAll('input[name="reviewCriterion"], input[type="checkbox"]')];
+  if (inputs.length !== CANONICAL_HUMAN_CHECKS.length) return [];
+  return inputs.every((input, index) => {
+    const expected = CANONICAL_HUMAN_CHECKS[index];
+    return input.id === expected.id
+      && input.type === 'checkbox'
+      && input.name === 'reviewCriterion'
+      && input.value === expected.value;
+  }) ? inputs : [];
+}
+
+function humanReviewDomMeetsContract() {
+  return canonicalHumanReviewInputs().length === CANONICAL_HUMAN_CHECKS.length;
+}
+
 function selectedHumanChecks() {
-  return [...(state.humanChecks[state.scope] || new Set())].sort();
+  const contextKey = humanApprovalContextKey();
+  if (!contextKey || state.humanCheckContexts[state.scope] !== contextKey) return [];
+  const selected = state.humanChecks[state.scope] || new Set();
+  return CANONICAL_HUMAN_CHECK_VALUES.filter((value) => selected.has(value));
 }
 
 function captureHumanChecks() {
-  if (!elements.reviewChecklist) return;
-  state.humanChecks[state.scope] = new Set([...elements.reviewChecklist.querySelectorAll('input[name="reviewCriterion"]:checked')]
-    .map((input) => input.value));
+  const inputs = canonicalHumanReviewInputs();
+  if (inputs.length !== CANONICAL_HUMAN_CHECKS.length) {
+    invalidateHumanChecks();
+    syncHumanReviewControls();
+    return;
+  }
+  const contextKey = humanApprovalContextKey();
+  if (!contextKey) {
+    invalidateHumanChecks();
+    syncHumanReviewControls();
+    return;
+  }
+  if (state.humanCheckContexts[state.scope] !== contextKey) {
+    state.humanChecks[state.scope].clear();
+    state.humanCheckContexts[state.scope] = contextKey;
+  }
+  state.humanChecks[state.scope] = new Set(inputs.filter((input) => input.checked).map((input) => input.value));
 }
 
-function restoreHumanChecks() {
-  const selected = state.humanChecks[state.scope] || new Set();
-  for (const input of elements.reviewChecklist?.querySelectorAll('input[name="reviewCriterion"]') || []) {
-    input.checked = selected.has(input.value);
+function invalidateHumanChecks(scope = state.scope) {
+  state.humanChecks[scope]?.clear();
+  state.humanCheckContexts[scope] = null;
+}
+
+function humanApprovalContextKey(scope = state.scope) {
+  const packageContext = approvalPackageContext(scope);
+  if (scope !== state.scope
+    || !packageContext
+    || !humanReviewDomMeetsContract()
+    || state.zoom !== RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    || state.renderMode === 'procedural'
+    || state.forceFallback
+    || state.reducedMotion
+    || !currentFrameIsApprovalQuality()) return null;
+  return [
+    scope,
+    packageContext.manifestHash,
+    packageContext.runtimeIdentitySchema,
+    packageContext.packageHash,
+    packageContext.runtimeAssetHash,
+    packageContext.reviewSurfaceHash,
+    state.zoom,
+    state.renderMode,
+    state.forceFallback,
+    state.reducedMotion,
+  ].join('|');
+}
+
+function humanApprovalContextBlocker() {
+  if (!humanReviewDomMeetsContract()) return 'the seven canonical human-check IDs do not exactly match the deployed checklist';
+  if (state.reviewSurface.status !== 'valid') return `review-surface integrity is unavailable: ${state.reviewSurface.reasons[0] || 'hash could not be computed'}`;
+  if (state.approvalEvidence[state.scope]?.valid !== true) return 'strict commissioned evidence is not valid';
+  if (state.zoom !== RENDER_CONTRACT.pixelDensity.normalGameplayZoom) return 'the view is not at 1.0x normal gameplay zoom';
+  if (state.renderMode === 'procedural') return 'procedural-only mode is active';
+  if (state.forceFallback) return 'forced procedural fallback is active';
+  if (state.reducedMotion) return 'reduced-motion inspection is active; return to animation-enabled review before attesting';
+  if (!currentFrameIsApprovalQuality()) return 'the current view is not fully commissioned or has runtime fallback faults';
+  return null;
+}
+
+function syncHumanReviewControls() {
+  const canonicalInputs = canonicalHumanReviewInputs();
+  const canonicalDom = canonicalInputs.length === CANONICAL_HUMAN_CHECKS.length;
+  const contextKey = humanApprovalContextKey();
+  if (!contextKey || state.humanCheckContexts[state.scope] !== contextKey) {
+    state.humanChecks[state.scope].clear();
+    state.humanCheckContexts[state.scope] = contextKey;
   }
+  const selected = contextKey ? state.humanChecks[state.scope] : new Set();
+  for (const input of elements.reviewChecklist?.querySelectorAll('input[type="checkbox"]') || []) {
+    input.disabled = !contextKey || !canonicalDom;
+    input.checked = canonicalDom && selected.has(input.value);
+  }
+  elements.reviewChecklist?.setAttribute('aria-disabled', String(!contextKey));
+  const scopeLabel = state.scope === 'artist-test' ? 'paid artist test' : 'golden scene';
+  const contextText = contextKey
+    ? `Acceptance checks enabled for the current ${scopeLabel} package at 1.0x. Changing scope, package, zoom, render mode, fallback, or motion invalidates these checks.`
+    : `Acceptance checks disabled: ${humanApprovalContextBlocker() || 'a valid commissioned approval context is not active'}.`;
+  setDataStateIfChanged(elements.reviewContextStatus, contextKey ? 'ready' : 'blocked');
+  setTextIfChanged(elements.reviewContextStatus, contextText);
 }
 
 function approvalPerformanceSummary(scope = state.scope) {
-  const samples = state.reviewCoverage[scope]?.frameTimings || [];
+  const { coverage } = syncReviewCoverageContext(scope);
+  const samples = coverage?.frameTimings || [];
   const dropped = samples.filter((duration) => duration > RENDER_CONTRACT.performance.frameBudgetMs).length;
   const droppedRatio = samples.length ? dropped / samples.length : 0;
   const p95Ms = percentile(samples, 0.95);
@@ -419,6 +897,11 @@ function approvalPerformanceSummary(scope = state.scope) {
     p95LimitMs: RENDER_CONTRACT.performance.p95FrameMs,
     droppedRatio,
     droppedRatioLimit: RENDER_CONTRACT.performance.maxDroppedFrameRatio,
+    qualification: {
+      zoom: RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
+      sourceRequirement: 'fully-commissioned',
+      motion: 'animated',
+    },
     pass: samples.length >= RENDER_CONTRACT.performance.sampleFrames
       && p95Ms <= RENDER_CONTRACT.performance.p95FrameMs
       && droppedRatio <= RENDER_CONTRACT.performance.maxDroppedFrameRatio,
@@ -426,84 +909,286 @@ function approvalPerformanceSummary(scope = state.scope) {
 }
 
 function approvalCoverageSummary(scope = state.scope) {
+  const { coverage, context } = syncReviewCoverageContext(scope);
+  const packageContext = context ? packageContextSummary(scope) : null;
   if (scope === 'artist-test') {
-    const coverage = state.reviewCoverage[scope];
+    const requiredAnimationMs = RENDER_CONTRACT.animation.clips.idle.frames
+      * RENDER_CONTRACT.animation.clips.idle.frameMs;
+    const completedAnimationMs = Math.round(coverage.animationMs);
+    const animationComplete = coverage.animationMs >= requiredAnimationMs;
     return {
+      contract: 'artist-test-review-conditions/v2',
+      packageContext,
       matrix: coverage.matrix,
-      animationMs: Math.round(coverage.animationMs),
-      requiredAnimationMs: RENDER_CONTRACT.animation.clips.idle.frames * RENDER_CONTRACT.animation.clips.idle.frameMs,
-      complete: coverage.matrix
-        && coverage.animationMs >= RENDER_CONTRACT.animation.clips.idle.frames * RENDER_CONTRACT.animation.clips.idle.frameMs,
+      animationMs: completedAnimationMs,
+      requiredAnimationMs,
+      conditions: {
+        commissionedMatrixAt1x: {
+          completed: coverage.matrix,
+          required: true,
+          zoom: RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
+          sourceRequirement: 'fully-commissioned',
+        },
+        functionalAnimationAt1x: {
+          completed: animationComplete,
+          completedMs: completedAnimationMs,
+          requiredMs: requiredAnimationMs,
+          zoom: RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
+          sourceRequirement: 'fully-commissioned',
+          motion: 'animated',
+        },
+      },
+      complete: Boolean(packageContext && coverage.matrix && animationComplete),
     };
   }
-  const reviewedBeats = [...state.reviewCoverage[scope].beats].sort();
+  const requiredBeatZooms = requiredBeatZoomConditions();
+  const completedBeatZooms = requiredBeatZooms.filter((condition) => coverage.beatZooms.has(condition));
+  const missingBeatZooms = requiredBeatZooms.filter((condition) => !coverage.beatZooms.has(condition));
+  const completedLighting = GOLDEN_REVIEW_LIGHTING.filter((profile) => coverage.lightingProfiles.has(profile));
+  const missingLighting = GOLDEN_REVIEW_LIGHTING.filter((profile) => !coverage.lightingProfiles.has(profile));
+  const reviewedBeats = [...new Set(completedBeatZooms.map((condition) => condition.split('@')[0]))];
+  const complete = Boolean(packageContext
+    && missingBeatZooms.length === 0
+    && missingLighting.length === 0
+    && coverage.proceduralFallbackAt1x
+    && coverage.reducedMotionCommissionedAt1x);
   return {
+    contract: 'golden-scene-review-conditions/v3',
+    packageContext,
     reviewedBeats,
     requiredBeats: state.scene?.beats.map((beat) => beat.id) || [],
-    complete: reviewedBeats.length === (state.scene?.beats.length || 8),
+    beatZooms: {
+      tupleSchema: 'beat@zoom#canonical-lighting/v1',
+      completed: completedBeatZooms,
+      required: requiredBeatZooms,
+      missing: missingBeatZooms,
+      completedCount: completedBeatZooms.length,
+      requiredCount: requiredBeatZooms.length,
+      sourceRequirement: 'fully-commissioned',
+      motion: 'animated',
+    },
+    lightingProfiles: {
+      completed: completedLighting,
+      required: [...GOLDEN_REVIEW_LIGHTING],
+      missing: missingLighting,
+      completedCount: completedLighting.length,
+      requiredCount: GOLDEN_REVIEW_LIGHTING.length,
+      requiredZoom: RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
+      sourceRequirement: 'fully-commissioned',
+      motion: 'animated',
+    },
+    proceduralFallbackAt1x: {
+      completed: coverage.proceduralFallbackAt1x,
+      required: true,
+      zoom: RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
+      renderMode: 'procedural',
+    },
+    reducedMotionCommissionedAt1x: {
+      completed: coverage.reducedMotionCommissionedAt1x,
+      required: true,
+      zoom: RENDER_CONTRACT.pixelDensity.normalGameplayZoom,
+      sourceRequirement: 'fully-commissioned',
+    },
+    complete,
   };
 }
 
-function currentFrameIsApprovalQuality() {
+function sameOrderedStrings(actual, expected) {
+  return Array.isArray(actual)
+    && actual.length === expected.length
+    && actual.every((value, index) => value === expected[index]);
+}
+
+function conditionLedgerMeetsContract(ledger, scope) {
+  if (!ledger || ledger.complete !== true) return false;
+  const context = packageContextSummary(scope);
+  if (!context
+    || ledger.packageContext?.scope !== context.scope
+    || ledger.packageContext?.manifestHash !== context.manifestHash
+    || ledger.packageContext?.packageHash !== context.packageHash
+    || ledger.packageContext?.runtimeAssetHash !== context.runtimeAssetHash
+    || ledger.packageContext?.runtimeIdentitySchema !== context.runtimeIdentitySchema
+    || ledger.packageContext?.reviewSurfaceHash !== context.reviewSurfaceHash) return false;
+  if (scope === 'artist-test') {
+    const requiredAnimationMs = RENDER_CONTRACT.animation.clips.idle.frames
+      * RENDER_CONTRACT.animation.clips.idle.frameMs;
+    return ledger.contract === 'artist-test-review-conditions/v2'
+      && ledger.conditions?.commissionedMatrixAt1x?.completed === true
+      && ledger.conditions?.commissionedMatrixAt1x?.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+      && ledger.conditions?.functionalAnimationAt1x?.completed === true
+      && ledger.conditions?.functionalAnimationAt1x?.requiredMs === requiredAnimationMs
+      && ledger.conditions?.functionalAnimationAt1x?.completedMs >= requiredAnimationMs;
+  }
+  const requiredBeatZooms = requiredBeatZoomConditions();
+  return ledger.contract === 'golden-scene-review-conditions/v3'
+    && ledger.beatZooms?.tupleSchema === 'beat@zoom#canonical-lighting/v1'
+    && sameOrderedStrings(ledger.beatZooms?.required, requiredBeatZooms)
+    && sameOrderedStrings(ledger.beatZooms?.completed, requiredBeatZooms)
+    && Array.isArray(ledger.beatZooms?.missing)
+    && ledger.beatZooms.missing.length === 0
+    && ledger.beatZooms.sourceRequirement === 'fully-commissioned'
+    && ledger.beatZooms.motion === 'animated'
+    && sameOrderedStrings(ledger.lightingProfiles?.required, [...GOLDEN_REVIEW_LIGHTING])
+    && sameOrderedStrings(ledger.lightingProfiles?.completed, [...GOLDEN_REVIEW_LIGHTING])
+    && Array.isArray(ledger.lightingProfiles?.missing)
+    && ledger.lightingProfiles.missing.length === 0
+    && ledger.lightingProfiles.requiredZoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    && ledger.lightingProfiles.sourceRequirement === 'fully-commissioned'
+    && ledger.proceduralFallbackAt1x?.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    && ledger.proceduralFallbackAt1x?.renderMode === 'procedural'
+    && ledger.proceduralFallbackAt1x?.completed === true
+    && ledger.reducedMotionCommissionedAt1x?.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    && ledger.reducedMotionCommissionedAt1x?.sourceRequirement === 'fully-commissioned'
+    && ledger.reducedMotionCommissionedAt1x?.completed === true;
+}
+
+function receiptRendererReviewMeetsContract(receipt, scope) {
+  const review = receipt?.rendererReview;
+  const performance = review?.performance;
+  const sources = review?.finalFrameSources;
+  return humanReviewDomMeetsContract()
+    && conditionLedgerMeetsContract(review?.conditionLedger, scope)
+    && packageQualityMeetsContract(review?.packageQuality, scope)
+    && review?.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    && review?.renderMode !== 'procedural'
+    && review?.forceFallback === false
+    && review?.reducedMotion === false
+    && sources?.requested > 0
+    && sources?.commissioned === sources.requested
+    && sources?.legacy === 0
+    && sources?.procedural === 0
+    && performance?.pass === true
+    && performance?.samples >= RENDER_CONTRACT.performance.sampleFrames
+    && performance?.requiredSamples === RENDER_CONTRACT.performance.sampleFrames
+    && performance?.p95Ms <= RENDER_CONTRACT.performance.p95FrameMs
+    && performance?.droppedRatio <= RENDER_CONTRACT.performance.maxDroppedFrameRatio
+    && performance?.qualification?.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    && performance?.qualification?.sourceRequirement === 'fully-commissioned'
+    && performance?.qualification?.motion === 'animated'
+    && receipt?.humanReview?.attested === true
+    && receipt?.humanReview?.requiredChecks === CANONICAL_HUMAN_CHECK_VALUES.length
+    && sameOrderedStrings(receipt?.humanReview?.checks, [...CANONICAL_HUMAN_CHECK_VALUES]);
+}
+
+function currentFrameHasValidScopePackage() {
   const cache = commissionedCache.getTelemetry();
   const requirements = scopeRequirements();
-  return state.approvalEvidence[state.scope]?.valid === true
+  const packageQuality = scopePackageQuality();
+  return approvalPackageContext() !== null
     && requirements.requiredExports > 0
     && requirements.indexedExports === requirements.requiredExports
     && requirements.readyAssets === requirements.assets
-    && state.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom
+    && state.frameSources.requested > 0
+    && packageQualityMeetsContract(packageQuality)
+    && cache.stateFallbacks === 0
+    && cache.brokenClips === 0;
+}
+
+function currentFrameIsFullyCommissioned() {
+  return currentFrameHasValidScopePackage()
     && state.renderMode !== 'procedural'
     && !state.forceFallback
-    && state.frameSources.requested > 0
     && state.frameSources.commissioned === state.frameSources.requested
     && state.frameSources.legacy === 0
-    && state.frameSources.procedural === 0
-    && cache.stateFallbacks === 0
-    && cache.brokenClips === 0
-    && cache.decodeFailures === 0
-    && cache.invalidDimensions === 0;
+    && state.frameSources.procedural === 0;
+}
+
+function currentFrameIsProceduralOnly() {
+  return currentFrameHasValidScopePackage()
+    && state.renderMode === 'procedural'
+    && !state.forceFallback
+    && state.frameSources.procedural === state.frameSources.requested
+    && state.frameSources.commissioned === 0
+    && state.frameSources.legacy === 0;
+}
+
+function currentFrameIsApprovalQuality() {
+  return currentFrameIsFullyCommissioned()
+    && state.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom;
+}
+
+function recordApprovalPerformanceSample(coverage, renderMs) {
+  coverage.frameTimings.push(renderMs);
+  if (coverage.frameTimings.length > RENDER_CONTRACT.performance.sampleFrames) coverage.frameTimings.shift();
 }
 
 function noteApprovalCoverage(beat, renderMs) {
-  const coverage = state.reviewCoverage[state.scope];
-  if (!coverage || !currentFrameIsApprovalQuality()) {
+  const { coverage, context } = syncReviewCoverageContext();
+  if (!coverage || !context) {
     if (coverage && Object.hasOwn(coverage, 'lastAnimationTime')) coverage.lastAnimationTime = null;
     return;
   }
-  coverage.frameTimings.push(renderMs);
-  if (coverage.frameTimings.length > RENDER_CONTRACT.performance.sampleFrames) coverage.frameTimings.shift();
+  const normalZoom = state.zoom === RENDER_CONTRACT.pixelDensity.normalGameplayZoom;
+  const animated = !state.reducedMotion;
+  const commissioned = currentFrameIsFullyCommissioned();
   if (state.scope === 'artist-test') {
-    coverage.matrix = true;
-    if (!state.reducedMotion) {
-      if (coverage.lastAnimationTime !== null) {
-        const delta = Math.max(0, Math.min(50, state.animationTimeMs - coverage.lastAnimationTime));
-        coverage.animationMs += delta;
-      }
-      coverage.lastAnimationTime = state.animationTimeMs;
-    } else {
+    if (!commissioned || !normalZoom || !animated) {
       coverage.lastAnimationTime = null;
+      return;
     }
-  } else {
-    coverage.beats.add(beat.id);
+    coverage.matrix = true;
+    recordApprovalPerformanceSample(coverage, renderMs);
+    if (coverage.lastAnimationTime !== null) {
+      const delta = Math.max(0, Math.min(50, state.animationTimeMs - coverage.lastAnimationTime));
+      coverage.animationMs += delta;
+    }
+    coverage.lastAnimationTime = state.animationTimeMs;
+    return;
+  }
+
+  if (commissioned && animated && VALID_ZOOMS.has(state.zoom)) {
+    const lighting = effectiveLighting(beat);
+    if (lighting === beat.lighting) {
+      coverage.beatZooms.add(beatZoomLightingTuple(beat, state.zoom, lighting));
+    }
+    if (normalZoom) {
+      if (GOLDEN_REVIEW_LIGHTING.includes(lighting)) coverage.lightingProfiles.add(lighting);
+      recordApprovalPerformanceSample(coverage, renderMs);
+    }
+  }
+  if (commissioned && normalZoom && state.reducedMotion) {
+    coverage.reducedMotionCommissionedAt1x = true;
+  }
+  if (currentFrameIsProceduralOnly() && normalZoom && animated) {
+    coverage.proceduralFallbackAt1x = true;
   }
 }
 
 function approvalGate() {
   const evidence = state.approvalEvidence[state.scope];
   const requirements = scopeRequirements();
+  const packageQuality = scopePackageQuality();
   const coverage = approvalCoverageSummary();
   const approvalPerformance = approvalPerformanceSummary();
   const checks = selectedHumanChecks();
-  const requiredChecks = elements.reviewChecklist?.querySelectorAll('input[name="reviewCriterion"]').length || 7;
+  const requiredChecks = CANONICAL_HUMAN_CHECK_VALUES.length;
   const reasons = [];
-  if (!evidence?.valid) reasons.push(evidence?.reasons?.[0] || 'Strict approval evidence is unavailable.');
+  if (!evidence?.valid) reasons.push(...(evidence?.reasons?.length ? evidence.reasons : ['Strict approval evidence is unavailable.']));
+  if (state.reviewSurface.status !== 'valid') reasons.push(`Review-surface integrity is unavailable: ${state.reviewSurface.reasons[0] || 'hash could not be computed'}.`);
+  if (!humanReviewDomMeetsContract()) reasons.push('The deployed checklist does not exactly match the seven canonical DEC-79 human-check IDs.');
   if (requirements.readyAssets !== requirements.assets || requirements.indexedExports !== requirements.requiredExports) reasons.push('Runtime index does not contain every scoped export.');
+  if (!packageQualityMeetsContract(packageQuality)) {
+    reasons.push(`Commissioned package cache is incomplete: ${packageQuality.cachedFrames}/${packageQuality.requiredFrames} scoped frames cached; ${packageQuality.failedFrames} failed (${packageQuality.missingFrames} missing), ${packageQuality.pendingFrames} pending.`);
+  }
   if (state.zoom !== RENDER_CONTRACT.pixelDensity.normalGameplayZoom) reasons.push('Return to 1.0x normal gameplay zoom.');
-  if (state.renderMode === 'procedural' || state.forceFallback) reasons.push('Use commissioned-with-fallback mode without forced fallback.');
+  if (state.renderMode === 'procedural' || state.forceFallback) reasons.push('Use a commissioned view without forced fallback.');
+  if (state.reducedMotion) reasons.push('Return to animation-enabled review before recording human acceptance.');
   if (!currentFrameIsApprovalQuality()) reasons.push('The active approval view is not fully commissioned or has runtime fallback faults.');
-  if (!coverage.complete) reasons.push(state.scope === 'artist-test' ? 'Review the complete paid-test matrix and animation.' : 'Review all eight beats with commissioned assets.');
-  if (!approvalPerformance.pass) reasons.push(`Collect ${RENDER_CONTRACT.performance.sampleFrames} qualifying 1.0x performance samples.`);
-  if (checks.length !== requiredChecks) reasons.push(`Complete all ${requiredChecks} human acceptance checks.`);
+  if (state.scope === 'artist-test') {
+    if (!coverage.conditions.commissionedMatrixAt1x.completed) reasons.push('Render the complete paid-test matrix with commissioned assets at 1.0x.');
+    if (!coverage.conditions.functionalAnimationAt1x.completed) reasons.push(`Run the paid-test functional animation at 1.0x for ${coverage.conditions.functionalAnimationAt1x.requiredMs} ms (${coverage.conditions.functionalAnimationAt1x.completedMs} ms complete).`);
+  } else {
+    if (coverage.beatZooms.missing.length) reasons.push(`Review every commissioned beat at 0.5x, 1.0x, and 2.5x under that beat's canonical scene lighting (${coverage.beatZooms.completedCount}/${coverage.beatZooms.requiredCount} beat/zoom/light conditions complete; missing: ${coverage.beatZooms.missing.join(', ')}).`);
+    if (coverage.lightingProfiles.missing.length) reasons.push(`Review commissioned lighting at 1.0x for ${coverage.lightingProfiles.missing.join(', ')} (${coverage.lightingProfiles.completedCount}/${coverage.lightingProfiles.requiredCount} profiles complete).`);
+    if (!coverage.proceduralFallbackAt1x.completed) reasons.push('Render a procedural-only golden-scene fallback at 1.0x with animation enabled.');
+    if (!coverage.reducedMotionCommissionedAt1x.completed) reasons.push('Render the commissioned golden scene with reduced motion at 1.0x.');
+  }
+  if (!approvalPerformance.pass) {
+    reasons.push(approvalPerformance.samples < approvalPerformance.requiredSamples
+      ? `Collect ${approvalPerformance.requiredSamples} commissioned, animated 1.0x performance samples (${approvalPerformance.samples}/${approvalPerformance.requiredSamples} complete).`
+      : `Performance evidence failed: p95 ${approvalPerformance.p95Ms.toFixed(2)} ms (limit ${approvalPerformance.p95LimitMs} ms), over-budget ${(approvalPerformance.droppedRatio * 100).toFixed(1)}% (limit ${(approvalPerformance.droppedRatioLimit * 100).toFixed(1)}%).`);
+  }
+  if (checks.length !== requiredChecks) reasons.push(`Complete all ${requiredChecks} human acceptance checks (${checks.length}/${requiredChecks} complete in this approval context).`);
   return {
     ready: reasons.length === 0,
     status: reasons.length === 0 ? 'ready' : 'blocked',
@@ -512,6 +1197,7 @@ function approvalGate() {
     requiredChecks,
     evidence: approvalReportSummary(evidence),
     requirements,
+    packageQuality,
     coverage,
     performance: approvalPerformance,
   };
@@ -524,8 +1210,11 @@ function approvalStatusSnapshot() {
     canRecord: gate.ready,
     reasons: [...gate.reasons],
     evidence: gate.evidence,
+    reviewSurface: reviewSurfaceSummary(),
     requirements: gate.requirements,
+    packageQuality: gate.packageQuality,
     coverage: gate.coverage,
+    conditionLedger: gate.coverage,
     performance: gate.performance,
     humanChecks: {
       completed: [...gate.checks],
@@ -598,6 +1287,7 @@ function setLighting(value) {
 function setZoom(value) {
   const zoom = Number(value);
   if (!VALID_ZOOMS.has(zoom)) throw new RangeError(`Unsupported gameplay zoom: ${value}`);
+  if (zoom !== state.zoom) invalidateHumanChecks();
   state.zoom = zoom;
   if (elements.zoomSelect) elements.zoomSelect.value = String(zoom);
   render(true);
@@ -606,6 +1296,7 @@ function setZoom(value) {
 
 function setMode(value) {
   if (!VALID_MODES.has(value)) throw new RangeError(`Unknown render mode: ${value}`);
+  if (value !== state.renderMode) invalidateHumanChecks();
   state.renderMode = value;
   if (elements.renderModeSelect) elements.renderModeSelect.value = value;
   render(true);
@@ -627,7 +1318,9 @@ function setOverlays(value, enabled) {
 }
 
 function setReducedMotion(value) {
-  state.reducedMotion = Boolean(value);
+  const enabled = Boolean(value);
+  if (enabled !== state.reducedMotion) invalidateHumanChecks();
+  state.reducedMotion = enabled;
   if (elements.reducedMotion) elements.reducedMotion.checked = state.reducedMotion;
   render(true);
   return state.reducedMotion;
@@ -635,13 +1328,25 @@ function setReducedMotion(value) {
 
 function setScope(value) {
   if (!['artist-test', 'golden-scene'].includes(value)) throw new RangeError(`Unknown review scope: ${value}`);
-  captureHumanChecks();
+  if (value !== state.scope) {
+    invalidateHumanChecks(state.scope);
+    invalidateHumanChecks(value);
+  }
   state.scope = value;
+  if (value === 'artist-test') state.playing = false;
   if (elements.scopeSelect) elements.scopeSelect.value = value;
-  restoreHumanChecks();
   prepareReceiptDownload(state.approvalReceipts[value]);
   render(true);
   return value;
+}
+
+function setForceFallback(value) {
+  const enabled = Boolean(value);
+  if (enabled !== state.forceFallback) invalidateHumanChecks();
+  state.forceFallback = enabled;
+  if (elements.forceFallback) elements.forceFallback.checked = enabled;
+  render(true);
+  return enabled;
 }
 
 function setSequenceProgress(value) {
@@ -1396,7 +2101,7 @@ function drawCanvasChrome(ctx, beat, lighting) {
   const mode = state.forceFallback ? 'PROCEDURAL PROOF' : state.renderMode.toUpperCase();
   ctx.fillStyle = 'rgba(13, 11, 9, 0.88)';
   ctx.fillRect(18, 16, 324, 49);
-  ctx.strokeStyle = '#725438';
+  ctx.strokeStyle = '#9b7655';
   ctx.strokeRect(18.5, 16.5, 323, 48);
   ctx.fillStyle = '#efbd62';
   ctx.font = '700 11px "Courier New", monospace';
@@ -1426,7 +2131,7 @@ function drawLoading(message, tone = '#e4d2b3') {
   context.setTransform(1, 0, 0, 1, 0, 0);
   context.fillStyle = '#15100d';
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.strokeStyle = '#725438';
+  context.strokeStyle = '#9b7655';
   context.strokeRect(45.5, 45.5, canvas.width - 91, canvas.height - 91);
   context.fillStyle = tone;
   context.font = '700 18px "Courier New", monospace';
@@ -1538,15 +2243,22 @@ function updateTelemetryDom(force = false) {
   }
   if (elements.warningTelemetry) {
     const warnings = state.warnings.slice(-6).reverse();
-    elements.warningTelemetry.innerHTML = warnings.length
+    const warningSignature = warnings
+      .map((warning) => `${warning.code}\u001f${warning.id}\u001f${warning.response}`)
+      .join('\u001e');
+    const warningMarkup = warnings.length
       ? `<ul>${warnings.map((warning) => `<li><strong>${escapeHtml(warning.code)}</strong> · ${escapeHtml(warning.id)}<br><span>${escapeHtml(warning.response)}</span></li>`).join('')}</ul>`
       : '<p class="empty-state">No runtime warnings reported.</p>';
+    if (warningSignature !== state.warningSignature) {
+      state.warningSignature = warningSignature;
+      setMarkupIfChanged(elements.warningTelemetry, warningMarkup, `warnings:${warningSignature}`);
+    }
   }
 }
 
 function prepareReceiptDownload(receipt) {
   if (!elements.downloadApprovalReceipt) return;
-  const nextKey = receipt ? `${receipt.receiptId}:${receipt.checksum?.value || ''}` : null;
+  const nextKey = receipt ? `${receipt.receiptId}:${receipt.integrityDigest?.value || ''}` : null;
   if (nextKey && nextKey === state.receiptDownloadKey && state.receiptDownloadUrl) return;
   if (state.receiptDownloadUrl) {
     URL.revokeObjectURL(state.receiptDownloadUrl);
@@ -1580,11 +2292,14 @@ function buildApprovalReceiptPayload(gate) {
     manifestHash: report.manifestHash,
     packageHash: report.artifactDigests.packageHash,
     runtimeAssetHash: report.artifactDigests.runtimeAssetHash,
+    runtimeIdentitySchema: report.artifactDigests.runtimeIdentitySchema,
+    reviewSurfaceHash: state.reviewSurface.hash,
     scope: report.scope,
     approval: {
       status: 'approved',
       localOnly: true,
       humanRequired: true,
+      authentication: 'external-git-review-required',
     },
     strictEvidence: {
       reportUrl: evidence.url,
@@ -1600,12 +2315,14 @@ function buildApprovalReceiptPayload(gate) {
         complete: report.artifactDigests.complete,
         packageHash: report.artifactDigests.packageHash,
         runtimeAssetHash: report.artifactDigests.runtimeAssetHash,
+        runtimeIdentitySchema: report.artifactDigests.runtimeIdentitySchema,
         exportCount: report.artifactDigests.exports.length,
         editableSourceCount: report.artifactDigests.editableSources.length,
       },
     },
     runtimeIndex: {
       version: state.indexMeta.version,
+      runtimeIdentitySchema: state.indexMeta.runtimeIdentitySchema,
       scope: state.indexMeta.scope,
       manifestHash: state.indexMeta.manifestHash,
       availableExports: state.indexMeta.availableExports,
@@ -1614,11 +2331,14 @@ function buildApprovalReceiptPayload(gate) {
     },
     rendererReview: {
       page: `${location.origin}${location.pathname}`,
+      reviewSurface: reviewSurfaceSummary(),
       zoom: state.zoom,
       renderMode: state.renderMode,
       forceFallback: state.forceFallback,
       reducedMotion: state.reducedMotion,
+      packageQuality: gate.packageQuality,
       coverage: gate.coverage,
+      conditionLedger: gate.coverage,
       performance: gate.performance,
       finalFrameSources: { ...state.frameSources },
     },
@@ -1639,14 +2359,16 @@ async function recordApprovalReceipt() {
   }
   if (elements.recordApproval) {
     elements.recordApproval.disabled = true;
-    elements.recordApproval.textContent = 'Recording local receipt…';
+    setTextIfChanged(elements.recordApproval, 'Recording local receipt…');
   }
   try {
     const payload = buildApprovalReceiptPayload(gate);
     const receipt = {
       ...payload,
-      checksum: {
+      integrityDigest: {
         algorithm: 'SHA-256',
+        purpose: 'client-integrity-only-not-authentication',
+        authenticated: false,
         value: await sha256(payload),
       },
     };
@@ -1660,7 +2382,7 @@ async function recordApprovalReceipt() {
   } catch (error) {
     addWarning({ code: 'APPROVAL_RECEIPT_FAILED', id: state.scope, response: error?.message || 'Local approval receipt could not be created.' });
     if (elements.approvalReceiptStatus) {
-      elements.approvalReceiptStatus.textContent = `Receipt failed: ${error?.message || 'local storage or checksum unavailable'}.`;
+      setTextIfChanged(elements.approvalReceiptStatus, `Receipt failed: ${error?.message || 'local storage or integrity digest unavailable'}.`);
     }
     updateApproval();
     return null;
@@ -1668,70 +2390,99 @@ async function recordApprovalReceipt() {
 }
 
 function updateApproval() {
+  syncHumanReviewControls();
   const gate = approvalGate();
   const evidence = state.approvalEvidence[state.scope];
   const receipt = state.approvalReceipts[state.scope];
   document.body.dataset.reviewState = gate.status;
   if (elements.gateBadge) {
-    elements.gateBadge.dataset.state = gate.status;
-    elements.gateBadge.textContent = gate.ready ? 'Ready' : 'Blocked';
+    setDataStateIfChanged(elements.gateBadge, gate.status);
+    setTextIfChanged(elements.gateBadge, gate.ready ? 'Ready' : 'Blocked');
   }
   if (elements.recordApproval) {
     elements.recordApproval.disabled = !gate.ready;
     elements.recordApproval.setAttribute('aria-disabled', String(!gate.ready));
-    elements.recordApproval.textContent = receipt ? 'Record updated approval receipt' : 'Record golden scene approval';
+    const scopeLabel = state.scope === 'artist-test' ? 'paid artist test' : 'golden scene';
+    setTextIfChanged(elements.recordApproval, receipt
+      ? `Record updated ${scopeLabel} approval receipt`
+      : `Record ${scopeLabel} approval`);
   }
   if (elements.approvalEvidenceStatus) {
-    elements.approvalEvidenceStatus.dataset.state = evidence?.valid ? 'ready' : 'blocked';
-    elements.approvalEvidenceStatus.textContent = evidence?.valid
+    setDataStateIfChanged(elements.approvalEvidenceStatus, evidence?.valid ? 'ready' : 'blocked');
+    setTextIfChanged(elements.approvalEvidenceStatus, evidence?.valid
       ? `Strict evidence valid: ${evidence.report.scope}, manifest ${evidence.report.manifestHash.slice(0, 12)}.`
-      : `Strict evidence blocked: ${evidence?.reasons?.[0] || 'report unavailable'}`;
+      : `Strict evidence blocked: ${evidence?.reasons?.[0] || 'report unavailable'}`);
+  }
+  if (elements.approvalGateStatus) {
+    setDataStateIfChanged(elements.approvalGateStatus, gate.status);
+    setTextIfChanged(elements.approvalGateStatus, gate.ready
+      ? 'Approval ready: every machine and human requirement passed.'
+      : `Approval blocked: ${gate.reasons.length} requirement${gate.reasons.length === 1 ? '' : 's'} remain.`);
   }
   if (elements.approvalReason) {
-    elements.approvalReason.dataset.state = gate.status;
-    elements.approvalReason.innerHTML = gate.ready
-      ? `<strong>Ready to record.</strong> Strict evidence, all ${gate.requiredChecks} human checks, complete renderer coverage, and qualifying performance evidence passed at 1.0x.`
-      : `<strong>Approval blocked.</strong> ${gate.reasons.slice(0, 3).map(escapeHtml).join(' ')}${gate.reasons.length > 3 ? ` ${gate.reasons.length - 3} more gate${gate.reasons.length - 3 === 1 ? '' : 's'} remain.` : ''}`;
+    setDataStateIfChanged(elements.approvalReason, gate.status);
+    const reasonMarkup = gate.ready
+      ? `<h3 id="approvalReasonTitle">Approval ready</h3><p id="approvalReasonSummary">Strict evidence, all ${gate.requiredChecks} human checks, complete renderer coverage, and qualifying performance evidence passed at 1.0x.</p>`
+      : `<h3 id="approvalReasonTitle">Approval blockers</h3><p id="approvalReasonSummary">Approval is blocked by ${gate.reasons.length} requirement${gate.reasons.length === 1 ? '' : 's'}:</p><ul id="approvalBlockerList">${gate.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join('')}</ul>`;
+    setMarkupIfChanged(elements.approvalReason, reasonMarkup, `${gate.status}:${gate.reasons.join('\u001f')}`);
   }
   if (elements.approvalReceiptStatus) {
-    elements.approvalReceiptStatus.textContent = receipt
-      ? `Local receipt ${receipt.receiptId} recorded ${new Date(receipt.recordedAt).toLocaleString()}; package ${receipt.packageHash.slice(0, 12)}; checksum ${receipt.checksum.value.slice(0, 12)}.`
-      : 'No local approval receipt is recorded for this scope and manifest.';
+    setTextIfChanged(elements.approvalReceiptStatus, receipt
+      ? `Local receipt ${receipt.receiptId} recorded ${new Date(receipt.recordedAt).toLocaleString()}; package ${receipt.packageHash.slice(0, 12)}; client integrity digest ${receipt.integrityDigest.value.slice(0, 12)} (not authentication).`
+      : 'No local approval receipt is recorded for this scope and manifest.');
   }
   prepareReceiptDownload(receipt);
 }
 
+function syncScopeControls() {
+  const artistTest = state.scope === 'artist-test';
+  document.body.dataset.reviewScope = state.scope;
+  if (elements.sequencePanel) elements.sequencePanel.hidden = artistTest;
+  if (elements.playbackBar) elements.playbackBar.hidden = artistTest;
+  if (elements.playPause) elements.playPause.disabled = artistTest;
+  if (elements.timeScrubber) elements.timeScrubber.disabled = artistTest;
+  if (elements.autoLightingOption) {
+    setTextIfChanged(elements.autoLightingOption, artistTest ? 'Paid-test daylight' : 'Follow sequence');
+  }
+  for (const button of elements.beatButtons) button.disabled = artistTest;
+  setTextIfChanged(elements.stageTitle, artistTest ? 'Paid artist test matrix' : 'Outpost validation scene');
+}
+
 function updateUi(forceTelemetry = false) {
   if (!state.ready || !state.scene) return;
+  syncScopeControls();
   const sequenceBeat = currentBeat();
   const beat = activeReviewBeat();
   const progress = state.sequenceTimeMs / state.totalDurationMs;
   if (elements.playPause) {
-    elements.playPause.textContent = state.playing ? 'Pause sequence' : 'Play sequence';
+    setTextIfChanged(elements.playPause, state.playing ? 'Pause sequence' : 'Play sequence');
     elements.playPause.setAttribute('aria-pressed', String(state.playing));
   }
   if (elements.sceneStatus) {
-    elements.sceneStatus.dataset.state = state.playing ? 'playing' : 'paused';
-    elements.sceneStatus.textContent = state.scope === 'artist-test'
-      ? `${state.playing ? 'Playing' : 'Paused'}: paid artist test matrix at ${humanise(effectiveLighting(beat)).toLowerCase()}.`
-      : `${state.playing ? 'Playing' : 'Paused'}: Beat ${state.beatIndex + 1}, ${sequenceBeat.title.toLowerCase()}.`;
+    setDataStateIfChanged(elements.sceneStatus, state.scope === 'artist-test' ? 'ready' : state.playing ? 'playing' : 'paused');
+    setTextIfChanged(elements.sceneStatus, state.scope === 'artist-test'
+      ? `Reviewing: paid artist test matrix at ${humanise(effectiveLighting(beat)).toLowerCase()}.`
+      : `${state.playing ? 'Playing' : 'Paused'}: Beat ${state.beatIndex + 1}, ${sequenceBeat.title.toLowerCase()}.`);
   }
   if (elements.timeScrubber) elements.timeScrubber.value = String(progress);
-  if (elements.timeReadout) elements.timeReadout.textContent = `${Math.round(progress * 100)}%`;
+  if (elements.timeReadout) setTextIfChanged(elements.timeReadout, `${Math.round(progress * 100)}%`);
   for (const button of elements.beatButtons) {
     const active = Number(button.dataset.beatIndex) === state.beatIndex;
     if (active) button.setAttribute('aria-current', 'step');
     else button.removeAttribute('aria-current');
   }
-  if (elements.previousBeat) elements.previousBeat.disabled = state.beatIndex === 0;
-  if (elements.nextBeat) elements.nextBeat.disabled = state.beatIndex === state.scene.beats.length - 1;
+  if (elements.previousBeat) elements.previousBeat.disabled = state.scope === 'artist-test' || state.beatIndex === 0;
+  if (elements.nextBeat) elements.nextBeat.disabled = state.scope === 'artist-test' || state.beatIndex === state.scene.beats.length - 1;
   if (elements.canvasDescription) {
     const prefix = state.scope === 'artist-test'
       ? 'Paid artist test matrix.'
       : `Beat ${state.beatIndex + 1} of ${state.scene.beats.length}.`;
-    elements.canvasDescription.textContent = `${prefix} ${beat.description} Active lighting: ${humanise(effectiveLighting(beat))}. View: ${state.zoom.toFixed(1)}x ${state.renderMode}, ${state.reducedMotion ? 'reduced motion with static frame 01' : 'animation enabled'}.`;
+    setTextIfChanged(elements.canvasDescription, `${prefix} ${beat.description} Active lighting: ${humanise(effectiveLighting(beat))}. View: ${state.zoom.toFixed(1)}x ${state.renderMode}, ${state.reducedMotion ? 'reduced motion with static frame 01' : 'animation enabled'}.`);
   }
-  canvas.setAttribute('aria-label', `MarsScape golden scene, beat ${state.beatIndex + 1}: ${beat.title}`);
+  const canvasLabel = state.scope === 'artist-test'
+    ? 'MarsScape paid artist test matrix at normal gameplay scale'
+    : `MarsScape golden scene, beat ${state.beatIndex + 1}: ${beat.title}`;
+  if (canvas?.getAttribute('aria-label') !== canvasLabel) canvas?.setAttribute('aria-label', canvasLabel);
   updateTelemetryDom(forceTelemetry);
   updateApproval();
 }
@@ -1809,10 +2560,7 @@ function wireControls() {
   elements.showFootprints?.addEventListener('change', (event) => setOverlays('footprints', event.currentTarget.checked));
   elements.showLabels?.addEventListener('change', (event) => setOverlays('labels', event.currentTarget.checked));
   elements.reducedMotion?.addEventListener('change', (event) => setReducedMotion(event.currentTarget.checked));
-  elements.forceFallback?.addEventListener('change', (event) => {
-    state.forceFallback = event.currentTarget.checked;
-    render(true);
-  });
+  elements.forceFallback?.addEventListener('change', (event) => setForceFallback(event.currentTarget.checked));
   elements.reviewChecklist?.addEventListener('change', () => {
     captureHumanChecks();
     updateApproval();
@@ -1847,6 +2595,7 @@ function installAutomationHooks() {
     setZoom,
     setOverlays,
     setReducedMotion,
+    setForceFallback,
     setScope,
     setProgress: setSequenceProgress,
     getTelemetry,
@@ -1873,6 +2622,7 @@ function installAutomationHooks() {
   window.setGoldenSceneMode = setMode;
   window.setGoldenSceneOverlays = setOverlays;
   window.setGoldenSceneReducedMotion = setReducedMotion;
+  window.setGoldenSceneForceFallback = setForceFallback;
   window.setGoldenSceneScope = setScope;
   window.setGoldenSceneProgress = setSequenceProgress;
   window.__goldenScene = Object.freeze(automationApi);
@@ -1884,6 +2634,7 @@ function installAutomationHooks() {
     setMode,
     setOverlays,
     setReducedMotion,
+    setForceFallback,
     setScope,
     setProgress: setSequenceProgress,
     getTelemetry,
@@ -1909,7 +2660,7 @@ async function initialise() {
   wireControls();
   if (elements.reducedMotion) elements.reducedMotion.checked = state.reducedMotion;
   try {
-    const [scene, manifest, commissionedIndex] = await Promise.all([
+    const [scene, manifest, commissionedIndex, reviewSurface] = await Promise.all([
       fetchJson(SCENE_URL, 'Golden scene'),
       fetchJson(MANIFEST_URL, 'Golden-slice manifest'),
       fetchJson(COMMISSIONED_INDEX_URL, 'Commissioned-art index').catch((error) => {
@@ -1919,23 +2670,40 @@ async function initialise() {
           response: `${error.message}; legacy and procedural fallbacks retained.`,
         });
         return {
-          version: 1,
+          version: COMMISSIONED_INDEX_VERSION,
           contractVersion: RENDER_CONTRACT.version,
           decision: RENDER_CONTRACT.decision,
           assets: [],
         };
       }),
+      computeReviewSurfaceEvidence(),
     ]);
     assertSceneContract(scene, manifest);
     state.scene = scene;
     state.manifest = manifest;
-    state.indexMeta = commissionedIndex;
+    state.indexMeta = null;
+    state.reviewSurface = reviewSurface;
+    if (reviewSurface.status !== 'valid') {
+      addWarning({
+        code: 'REVIEW_SURFACE_HASH_UNAVAILABLE',
+        id: 'golden-scene',
+        response: `${reviewSurface.reasons[0] || 'Review-surface bytes could not be hashed'}; rendering retained and approval blocked.`,
+      });
+    }
     buildSceneIndexes();
 
     const legacyIds = [...new Set(manifest.assets.map((asset) => asset.fallbackSprite).filter(Boolean))];
+    const loadCommissioned = async () => {
+      const index = await commissionedCache.loadIndex(commissionedIndex, { baseUrl: COMMISSIONED_BASE_URL.href });
+      state.indexMeta = await verifyRuntimeIndexIdentity(commissionedCache.getIndexMetadata(), manifest);
+      const prime = await commissionedCache.prime({ reducedMotion: false });
+      return { index, prime };
+    };
     const [commissionedResult, legacyResult] = await Promise.all([
-      commissionedCache.loadAndPrime(commissionedIndex, { baseUrl: COMMISSIONED_BASE_URL.href })
+      loadCommissioned()
         .catch((error) => {
+          commissionedCache.clear();
+          state.indexMeta = null;
           addWarning({ code: 'COMMISSIONED_INDEX_FAILED', id: 'index.json', response: `${error.message}; legacy and procedural fallbacks retained.` });
           return { index: { assets: 0, states: 0, frames: 0, declaredFrames: 0 }, prime: { requested: 0, loaded: 0, failed: 0 } };
       }),
@@ -1944,25 +2712,29 @@ async function initialise() {
     await loadApprovalReports();
     await loadStoredReceipts();
     state.ready = true;
-    restoreHumanChecks();
+    syncHumanReviewControls();
     prepareReceiptDownload(state.approvalReceipts[state.scope]);
     const indexed = commissionedResult.index.assets;
     if (elements.loadStatus) {
-      elements.loadStatus.dataset.state = indexed === manifest.assets.length ? 'ready' : 'blocked';
-      elements.loadStatus.textContent = indexed === manifest.assets.length
-        ? `Loaded: ${indexed} commissioned assets and ${legacyResult} legacy fallbacks.`
-        : `Fallback ready: ${indexed}/${manifest.assets.length} commissioned assets indexed; ${legacyResult} legacy sprites cached.`;
+      const approvalSurfaceReady = reviewSurface.status === 'valid';
+      setDataStateIfChanged(elements.loadStatus, indexed === manifest.assets.length && approvalSurfaceReady ? 'ready' : 'blocked');
+      setTextIfChanged(elements.loadStatus, indexed === manifest.assets.length && approvalSurfaceReady
+        ? `Loaded: ${indexed} commissioned assets, ${legacyResult} legacy fallbacks, and review surface ${reviewSurface.hash.slice(0, 12)}.`
+        : indexed === manifest.assets.length
+          ? `Renderer ready: ${indexed} commissioned assets loaded; approval integrity blocked because ${reviewSurface.reasons[0] || 'the review-surface hash is unavailable'}.`
+        : `Fallback ready: ${indexed}/${manifest.assets.length} commissioned assets indexed; ${legacyResult} legacy sprites cached.`);
     }
     render(true);
   } catch (error) {
     state.fatalError = error?.message || String(error);
     if (elements.loadStatus) {
-      elements.loadStatus.dataset.state = 'error';
-      elements.loadStatus.textContent = `Load failed: ${state.fatalError}`;
+      setDataStateIfChanged(elements.loadStatus, 'error');
+      setTextIfChanged(elements.loadStatus, `Load failed: ${state.fatalError}`);
     }
     drawLoading('Golden scene unavailable — see load status.', '#ff9b89');
   }
   requestAnimationFrame(animationLoop);
 }
 
+installSharedNavFocusOrder();
 void initialise();

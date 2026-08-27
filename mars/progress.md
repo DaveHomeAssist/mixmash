@@ -111,3 +111,28 @@ TODO:
 TODO:
 - Add the real paid artist package (8 PNG exports plus 4 editable sources) and obtain Dave's in-renderer approval at 1.0 zoom.
 - After that passes, add all 108 golden exports plus 26 editable sources and record the complete golden-scene human approval before production scaling.
+
+2026-08-27 (DEC-79 goal continuation audit):
+- Re-read the canonical objective and renewed branch, PR #8, report, runtime-index, CI, Pages, and live evidence at continuation SHA `9eb3777c5f6e93d62ef3026dab55802177b50ca2` before writing.
+- Proved that no commissioned PNG, layered editable source, candidate asset branch, stash, or approval receipt exists in the scoped repository or goal attachment; Phase 7 and Phase 8 therefore remain external gates rather than stale bookkeeping.
+- Tightened `docs/ART_AUDIT.md` so every system, runtime asset, and all 26 planned commissioned assets use exactly one of the five objective classifications: Production-ready, Adaptable, Reference-only, Replace, or Missing.
+- Added a regression test that rejects unsupported audit labels and requires every manifest asset to remain explicitly classified until real commissioned evidence exists.
+- Hardened the golden-scene approval surface: meaningful-change-only live regions, complete semantic blocker disclosure, package/view-bound human checks, paid-test-specific controls and names, 3:1 control boundaries, and skip-link-first navigation order.
+- Closed a future approval bypass with a package-bound v3 evidence ledger covering all 24 canonical beat/zoom/lighting tuples, four lighting profiles, procedural fallback, commissioned reduced motion, and 300 commissioned animated 1.0x samples; wrong-light renders cannot earn canonical tuple credit, and stale package context clears active coverage and receipts.
+- Hardened native-source approval so Aseprite, Krita, and PSD files must expose valid container structure, matching canvases, and pixel-bearing editable layers; malformed or renamed files fail closed without an approval digest.
+- Added quarantined synthetic paid-test and full-golden browser rails that prove valid evidence, canonical-light coverage, context invalidation, client integrity-digest receipt export, and reload verification without adding or approving production art.
+
+TODO:
+- Keep the paid-test and complete-golden approval gates blocked until the exact renderer-ready exports, editable sources, and human 1.0x receipt exist.
+
+2026-08-27 (DEC-79 approval-evidence hardening continuation):
+- Upgraded the commissioned runtime consumer to index v2 frame records and verify each fetched PNG's exact SHA-256 bytes before `ImageBitmap` decode or commissioned-source credit. Hash mismatch now warns once and falls back; focused cache tests pass.
+- Bound package contexts, scope ledgers, v3 receipts, storage keys, and reload verification to a deterministic SHA-256 of the ten deployed golden-scene renderer resources, including the executable shared navigation. Approval fails closed when the digest is unavailable while scene rendering remains usable.
+- Locked the seven acceptance checks to immutable DOM IDs, types, names, values, and order. Both live recording and stored-receipt verification reject checklist tampering.
+- Renamed the receipt checksum to an unauthenticated client integrity digest and documented the required exported receipt plus external Git/review identity for canonical approval.
+- Added browser proofs for served-PNG digest mismatch, review-surface outage and drift, live and stored checklist tampering, paid-test v2 and full-golden v3 ledger completion, v3 receipt reload, and fail-safe nested synthetic-fixture cleanup. Focused browser smoke passes 35/35 checks.
+- Bound runtime/package/receipt identity to the complete ordered v2 render metadata, so a geometry, anchor, offset, footprint, fallback, state, cadence, loop, order, or frame-record change invalidates prior evidence even when PNG bytes are unchanged.
+- Added a per-index-generation failed-frame sentinel so persistent fetch, integrity, decode, dimension, or decoder failures retain procedural fallback without retrying work on every canvas paint.
+- Required exact manifest-scoped indexed-frame priming and receipt-bound cache census before approval; any missing or failed noncurrent frame now blocks coverage while the renderer continues through fallback.
+- Recomputed the manifest and complete runtime-index identity independently in the browser, so stale self-declared hashes, metadata-only drift, and stale asynchronous generation failures cannot earn approval credit.
+- Hardened export/source parsing with symlink containment, PNG chunk CRC/method and bounded-inflate checks, cumulative native-layer decode budgets, and bounded structural XML validation with adversarial Aseprite, PSD, and Krita fixtures.

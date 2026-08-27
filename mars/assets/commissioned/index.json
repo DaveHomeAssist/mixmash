@@ -1,13 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
+  "runtimeIdentitySchema": "marsscape-runtime-assets/v2",
   "contractVersion": 3,
   "decision": "DEC-79",
   "scope": "full",
   "manifestHash": "df939557b1c4e37a8f68e5b634857adc9942f2689116aa68f3457d3e18b742fe",
-  "runtimeAssetHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "runtimeAssetHash": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
   "runtimeAssetHashes": {
-    "full": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "artist-test": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    "full": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
+    "artist-test": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e"
   },
   "availableExports": 0,
   "assets": []

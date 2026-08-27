@@ -26,8 +26,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "terrain:base_soil",
-      "message": "art/sources/terrain/base_soil.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/terrain/base_soil.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -44,8 +44,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "building:habitat",
-      "message": "art/sources/building/habitat.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/building/habitat.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -80,8 +80,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "actor:astronaut",
-      "message": "art/sources/actor/astronaut.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/actor/astronaut.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -92,18 +92,19 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "resource:blue_crystal",
-      "message": "art/sources/resource/blue_crystal.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/resource/blue_crystal.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     }
   ],
   "warnings": [],
   "machineReady": false,
   "artifactDigests": {
     "algorithm": "SHA-256",
+    "runtimeIdentitySchema": "marsscape-runtime-assets/v2",
     "scope": "artist-test",
     "complete": false,
-    "runtimeAssetHash": "eaf5082f31230883bba66a52734e2d94c07a4b9835679a4ef776490529de595f",
-    "packageHash": "a9ce2fbe5ce90fac536a875908beb228586f9ddf639c1faea0d82d464d93bd1a",
+    "runtimeAssetHash": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
+    "packageHash": "6d33e026d2b386ff600a1857746662976f90747bef120ec92916b5888b521524",
     "exports": [
       {
         "path": "sprites/actor/astronaut__active__f01.png",

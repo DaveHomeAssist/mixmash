@@ -1,8 +1,13 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import {
+  COMMISSIONED_INDEX_VERSION,
+  COMMISSIONED_RUNTIME_IDENTITY_SCHEMA,
+} from '../commissioned-art.mjs';
 import { RENDER_CONTRACT } from '../render-contract.mjs';
 import { pngDifference } from './validate-assets.mjs';
 
@@ -19,6 +24,9 @@ const GOLDEN_BEATS = Object.freeze([
   'repair-at-sunrise',
 ]);
 const LIGHTING_PROFILES = Object.freeze(['dawn', 'daylight', 'storm', 'night']);
+const EMPTY_RUNTIME_ASSET_HASH = createHash('sha256')
+  .update(JSON.stringify({ schema: COMMISSIONED_RUNTIME_IDENTITY_SCHEMA, assets: [] }))
+  .digest('hex');
 
 function optionValue(args, name, fallback = null) {
   const index = args.indexOf(name);
@@ -496,10 +504,20 @@ try {
     status: 200,
     contentType: 'application/json',
     body: JSON.stringify({
-      version: 1,
+      version: COMMISSIONED_INDEX_VERSION,
+      runtimeIdentitySchema: COMMISSIONED_RUNTIME_IDENTITY_SCHEMA,
       contractVersion: RENDER_CONTRACT.version,
       decision: RENDER_CONTRACT.decision,
-      scope: 'visual-fallback-fixture',
+      scope: 'full',
+      manifestHash: createHash('sha256')
+        .update(JSON.stringify(JSON.parse(readFileSync(join(REPO_ROOT, 'mars', 'art', 'golden-slice.json'), 'utf8'))))
+        .digest('hex'),
+      runtimeAssetHash: EMPTY_RUNTIME_ASSET_HASH,
+      runtimeAssetHashes: {
+        full: EMPTY_RUNTIME_ASSET_HASH,
+        'artist-test': EMPTY_RUNTIME_ASSET_HASH,
+      },
+      availableExports: 0,
       assets: [],
     }),
   }));
@@ -540,8 +558,9 @@ try {
   const missingAssetFallbackProof = {
     ...missingFixtureCapture,
     fixture: {
-      strategy: 'withheld commissioned runtime index',
+      strategy: 'valid empty commissioned runtime index',
       indexedAssets: 0,
+      indexIdentityVerified: missingFixtureTelemetry.indexIdentityVerified === true,
       contractVersion: RENDER_CONTRACT.version,
       decision: RENDER_CONTRACT.decision,
     },
@@ -555,10 +574,12 @@ try {
     && missingAssetFallbackProof.state?.view?.renderMode === 'auto'
     && missingAssetFallbackProof.state?.view?.forceFallback === false
     && missingFixtureSources.requested > 0
+    && missingAssetFallbackProof.fixture.indexIdentityVerified === true
     && missingFixtureSources.commissioned === 0
     && missingFixtureSources.resolved === missingFixtureSources.requested
     && missingAssetFallbackProof.fallbackDrawn > 0
     && missingAssetFallbackProof.cacheMissing > 0
+    && !missingFixtureWarnings.some((warning) => warning.code === 'COMMISSIONED_INDEX_FAILED')
     && missingFixtureWarnings.some((warning) => warning.code === 'COMMISSIONED_SPRITE_MISSING');
   await missingContext.close();
 

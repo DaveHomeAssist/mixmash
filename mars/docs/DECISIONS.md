@@ -23,7 +23,7 @@ Bulk commissioning before the class canvases, anchors, footprints, state system,
 4. Derive export sizes, ground anchors, footprint origins, zoom, palette, lighting, state, animation, and performance rules from executable render contract v3.
 5. Require an automated validation report, footprint contact sheet, and visual-regression screenshots for commissioned exports.
 6. Run one paid artist test before bulk production.
-7. Approve the paid test and complete golden scene only inside MarsScape at 1.0 gameplay zoom.
+7. Record paid-test and complete-golden human approval only inside MarsScape at 1.0 gameplay zoom, after each scope's required renderer evidence is complete.
 8. Block production scaling until that approval is recorded.
 
 ### Required paid test
@@ -45,12 +45,18 @@ Bulk commissioning before the class canvases, anchors, footprints, state system,
 | Broken animation | Load frame `01` statically and report the broken clip. |
 | Slow decode | Warn and preserve the cached `ImageBitmap` path. |
 | Missing editable source | Block final asset approval. |
+| Invalid editable source | Reject malformed, flattened, renamed, or dimensionally invalid native files and block final asset approval. |
 
 ### Consequences
 
 - Existing runtime maps remain valid fallback/reference art but are not automatically final production anchors.
 - Canonical asset states are blueprint, construction, active, disabled, and damaged.
 - The artist contract and golden-slice manifest are versioned with the renderer.
+- Runtime index v2 binds every commissioned frame path to the exact exported PNG SHA-256; mismatched served bytes fall back and cannot earn commissioned credit. Runtime identity schema `marsscape-runtime-assets/v2` also binds all ordered render-affecting asset metadata, so geometry, anchor, footprint, fallback, state-order, or animation-timing drift invalidates existing approval evidence.
+- Persistent fetch, integrity, decode, dimension, and unavailable-decoder failures are cached for the current index generation; repeated renders stay on fallback without retry churn, while an explicit index reload starts a new retry generation.
+- Approval requires every exact manifest-scoped indexed frame cached with zero pending, missing, or failed frames. A failed noncurrent frame blocks all package coverage and the scoped frame census is bound into the receipt.
+- V3 receipts bind package identity, the deployed review-surface hash, and seven immutable checklist IDs. Paid-test receipt v3 retains the v2 commissioned 1.0x matrix and functional-animation ledger. Full-golden receipt v3 requires the v3 ledger for all 24 canonical beat/zoom/lighting tuples, all four commissioned 1.0x lighting profiles, procedural fallback, commissioned reduced motion, 300 qualifying commissioned animated 1.0x samples, and the final seven human attestations.
+- A receipt's client SHA-256 digest establishes integrity only, not reviewer authentication. Canonical approval requires the exported receipt plus an external Git author/reviewer identity linked in this decision record.
 - PR #8 was closed without merge as superseded after its useful rationale was preserved in canonical docs.
 - Production order is terrain/transitions, core buildings, resources/extraction, units/vehicles, construction/damage, props/decoration, advanced animation, then promotional paintings.
 

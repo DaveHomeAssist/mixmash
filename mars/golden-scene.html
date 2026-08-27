@@ -60,7 +60,7 @@
           </figcaption>
         </figure>
 
-        <div class="playback-bar" aria-labelledby="playbackTitle">
+        <div id="playbackBar" class="playback-bar" aria-labelledby="playbackTitle">
           <div class="playback-actions">
             <span id="playbackTitle" class="control-label">Sequence playback</span>
             <button id="playPause" class="button button-primary" type="button" aria-pressed="false">Play sequence</button>
@@ -73,7 +73,7 @@
         </div>
       </section>
 
-      <aside class="panel sequence-panel" aria-labelledby="sequenceTitle">
+      <aside id="sequencePanel" class="panel sequence-panel" aria-labelledby="sequenceTitle">
         <div class="panel-heading">
           <div>
             <p class="section-kicker">Eight-beat proof</p>
@@ -162,7 +162,7 @@
           <label class="select-control" for="lightingSelect">
             <span>Lighting</span>
             <select id="lightingSelect">
-              <option value="auto" selected>Follow sequence</option>
+              <option id="autoLightingOption" value="auto" selected>Follow sequence</option>
               <option value="dawn">Dawn</option>
               <option value="daylight">Daylight</option>
               <option value="storm">Storm</option>
@@ -261,43 +261,52 @@
           <span class="gate-badge" data-state="blocked">Blocked</span>
         </div>
 
-        <fieldset id="reviewChecklist" class="review-checklist" aria-describedby="reviewHelp">
+        <fieldset id="reviewChecklist" class="review-checklist" aria-describedby="reviewHelp reviewContextStatus">
           <legend>DEC-79 acceptance checks</legend>
-          <p id="reviewHelp">Check an item only after inspecting the selected scope at 1.0x normal gameplay zoom: all eight beats for the golden scene, or the complete paid-test matrix.</p>
+          <p id="reviewHelp">For the golden scene, first complete every beat at 0.5x, 1.0x, and 2.5x; all four lighting profiles at 1.0x; procedural-only fallback at 1.0x; and commissioned reduced motion at 1.0x. The paid artist test remains a commissioned 1.0x matrix and functional-animation review. Human checks are enabled only in the final commissioned, animated 1.0x context. The downloaded client integrity digest detects drift but does not authenticate a reviewer; canonical approval requires the exported receipt plus external Git/review identity.</p>
+          <output id="reviewContextStatus" class="status-line review-context-status" data-state="blocked" role="status" aria-live="polite" aria-atomic="true">Acceptance checks disabled until strict evidence and a fully commissioned 1.0x view are active.</output>
           <label for="reviewAnchors">
-            <input id="reviewAnchors" name="reviewCriterion" value="anchors" type="checkbox" />
+            <input id="reviewAnchors" name="reviewCriterion" value="anchors" type="checkbox" disabled />
             <span><strong>Anchors</strong><small>Ground contacts stay planted.</small></span>
           </label>
           <label for="reviewFootprints">
-            <input id="reviewFootprints" name="reviewCriterion" value="footprints" type="checkbox" />
+            <input id="reviewFootprints" name="reviewCriterion" value="footprints" type="checkbox" disabled />
             <span><strong>Footprints</strong><small>Visible occupancy matches the grid.</small></span>
           </label>
           <label for="reviewReadability">
-            <input id="reviewReadability" name="reviewCriterion" value="readability" type="checkbox" />
+            <input id="reviewReadability" name="reviewCriterion" value="readability" type="checkbox" disabled />
             <span><strong>Readability</strong><small>Entities remain distinct without labels.</small></span>
           </label>
           <label for="reviewScale">
-            <input id="reviewScale" name="reviewCriterion" value="scale" type="checkbox" />
+            <input id="reviewScale" name="reviewCriterion" value="scale" type="checkbox" disabled />
             <span><strong>Scale</strong><small>People, vehicles, buildings, and tiles relate correctly.</small></span>
           </label>
           <label for="reviewLighting">
-            <input id="reviewLighting" name="reviewCriterion" value="lighting" type="checkbox" />
+            <input id="reviewLighting" name="reviewCriterion" value="lighting" type="checkbox" disabled />
             <span><strong>Lighting</strong><small>Northwest light and southeast shadows stay coherent.</small></span>
           </label>
           <label for="reviewAnimation">
-            <input id="reviewAnimation" name="reviewCriterion" value="animation" type="checkbox" />
+            <input id="reviewAnimation" name="reviewCriterion" value="animation" type="checkbox" disabled />
             <span><strong>Animation</strong><small>Timing reads cleanly and static fallbacks are safe.</small></span>
           </label>
           <label for="reviewPerformance">
-            <input id="reviewPerformance" name="reviewCriterion" value="performance" type="checkbox" />
+            <input id="reviewPerformance" name="reviewCriterion" value="performance" type="checkbox" disabled />
             <span><strong>Performance</strong><small>Normal-zoom delivery shows no material regression.</small></span>
           </label>
         </fieldset>
 
         <div class="approval-action">
           <output id="approvalEvidenceStatus" class="status-line" data-state="loading" role="status" aria-live="polite" aria-atomic="true">Strict evidence: loading the current scope report.</output>
-          <p id="approvalReason" class="approval-reason" data-state="blocked" role="status" aria-live="polite" aria-atomic="true"><strong>Approval blocked.</strong> A strict-valid commissioned package and all seven human checks are required.</p>
-          <button id="recordApproval" class="button button-approval" type="button" disabled aria-describedby="approvalEvidenceStatus approvalReason">Record golden scene approval</button>
+          <output id="approvalGateStatus" class="status-line" data-state="blocked" role="status" aria-live="polite" aria-atomic="true">Approval blocked: requirements remain.</output>
+          <div id="approvalReason" class="approval-reason" data-state="blocked" aria-labelledby="approvalReasonTitle">
+            <h3 id="approvalReasonTitle">Approval blockers</h3>
+            <p id="approvalReasonSummary">Approval is blocked by the following requirements:</p>
+            <ul id="approvalBlockerList">
+              <li>A strict-valid commissioned package is required.</li>
+              <li>All seven human acceptance checks are required.</li>
+            </ul>
+          </div>
+          <button id="recordApproval" class="button button-approval" type="button" disabled aria-describedby="approvalEvidenceStatus approvalGateStatus approvalReason">Record golden scene approval</button>
           <p id="approvalReceiptStatus" class="empty-state" role="status" aria-live="polite">No local approval receipt is recorded for this scope and manifest.</p>
           <a id="downloadApprovalReceipt" class="button" href="#" download hidden>Download approval receipt</a>
         </div>
@@ -306,7 +315,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Approval is valid only inside MarsScape at 1.0x normal gameplay zoom. Contact-sheet approval alone does not pass DEC-79.</p>
+    <p>Approval is recorded inside MarsScape at 1.0x only after the package-bound multi-zoom, lighting, fallback, reduced-motion, animation, and performance ledger passes. Contact-sheet approval alone does not pass DEC-79.</p>
   </footer>
 
   <script src="../src/kit/nav.js" data-mixmash-nav></script>

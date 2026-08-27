@@ -26,8 +26,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "terrain:base_soil",
-      "message": "art/sources/terrain/base_soil.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/terrain/base_soil.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -38,8 +38,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "terrain:rocky_soil",
-      "message": "art/sources/terrain/rocky_soil.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/terrain/rocky_soil.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -50,8 +50,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "terrain:edge",
-      "message": "art/sources/terrain/edge.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/terrain/edge.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -62,8 +62,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "terrain:cliff_slope",
-      "message": "art/sources/terrain/cliff_slope.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/terrain/cliff_slope.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -74,8 +74,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "terrain:disturbed_ground",
-      "message": "art/sources/terrain/disturbed_ground.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/terrain/disturbed_ground.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -110,8 +110,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "building:habitat",
-      "message": "art/sources/building/habitat.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/building/habitat.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -146,8 +146,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "building:solar_array",
-      "message": "art/sources/building/solar_array.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/building/solar_array.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -206,8 +206,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "building:extractor",
-      "message": "art/sources/building/extractor.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/building/extractor.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -242,8 +242,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "building:storage",
-      "message": "art/sources/building/storage.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/building/storage.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -308,8 +308,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "actor:astronaut",
-      "message": "art/sources/actor/astronaut.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/actor/astronaut.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -386,8 +386,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "actor:rover",
-      "message": "art/sources/actor/rover.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/actor/rover.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -422,8 +422,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "infrastructure:pipe",
-      "message": "art/sources/infrastructure/pipe.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/infrastructure/pipe.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -458,8 +458,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "infrastructure:power_cable",
-      "message": "art/sources/infrastructure/power_cable.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/infrastructure/power_cable.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -494,8 +494,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "infrastructure:junction",
-      "message": "art/sources/infrastructure/junction.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/infrastructure/junction.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -530,8 +530,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "infrastructure:path_light",
-      "message": "art/sources/infrastructure/path_light.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/infrastructure/path_light.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -554,8 +554,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "resource:blue_crystal",
-      "message": "art/sources/resource/blue_crystal.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/resource/blue_crystal.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -578,8 +578,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "resource:common_ore",
-      "message": "art/sources/resource/common_ore.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/resource/common_ore.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -596,8 +596,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "prop:crate",
-      "message": "art/sources/prop/crate.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/prop/crate.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -638,8 +638,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "prop:beacon",
-      "message": "art/sources/prop/beacon.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/prop/beacon.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -656,8 +656,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "prop:antenna",
-      "message": "art/sources/prop/antenna.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/prop/antenna.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -668,8 +668,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "prop:debris",
-      "message": "art/sources/prop/debris.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/prop/debris.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -716,8 +716,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "effect:dust",
-      "message": "art/sources/effect/dust.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/effect/dust.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -752,8 +752,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "effect:selection",
-      "message": "art/sources/effect/selection.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/effect/selection.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -788,8 +788,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "effect:power_glow",
-      "message": "art/sources/effect/power_glow.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/effect/power_glow.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -836,8 +836,8 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "effect:warning",
-      "message": "art/sources/effect/warning.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/effect/warning.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -884,18 +884,19 @@
     {
       "code": "MISSING_EDITABLE_SOURCE",
       "asset": "effect:repair",
-      "message": "art/sources/effect/repair.aseprite is missing or unsupported.",
-      "response": "Block final asset approval."
+      "message": "art/sources/effect/repair.aseprite is missing.",
+      "response": "Provide the declared editable source; block final asset approval."
     }
   ],
   "warnings": [],
   "machineReady": false,
   "artifactDigests": {
     "algorithm": "SHA-256",
+    "runtimeIdentitySchema": "marsscape-runtime-assets/v2",
     "scope": "full",
     "complete": false,
-    "runtimeAssetHash": "fef48a574605c23cf83f57902b7f45e52c018316dc1222fe28539e83d1330ad8",
-    "packageHash": "23312223e465b65a6fa31f2add58aa990a8925540720850a8dfc241c079ddaff",
+    "runtimeAssetHash": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
+    "packageHash": "3eba6fffa77203f4b491ff74348475bb25cf763ebeb1d957e306db99c3dbebe7",
     "exports": [
       {
         "path": "sprites/actor/astronaut__active__f01.png",

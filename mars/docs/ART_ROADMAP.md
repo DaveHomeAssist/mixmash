@@ -12,7 +12,7 @@ DEC-79 resolves the endpoint: full isometric pixel art on the playable board, el
 | 3. Golden vertical slice specification | Complete | `golden-slice.json`, `golden-scene.json`, the generated contact sheet, and `/mars/golden-scene.html`. |
 | 4. Asset validation pipeline | Complete | Filename, PNG, alpha, anchor, footprint, animation, missing asset, source, runtime-index, contact-sheet, screenshot, and performance tooling are executable and CI-gated. |
 | 5. Paid artist test | Blocked on artist deliverables and human review | The scoped gate expects four assets, eight PNG exports, four editable sources, and approval inside the renderer; none are present yet. |
-| 6. Golden scene approval | Blocked on Phase 5 and complete golden exports | Machine review is available, but approval requires all 108 exports, 26 editable sources, and Dave's review at 1.0 gameplay zoom. |
+| 6. Golden scene approval | Blocked on Phase 5 and complete golden exports | Machine review is available, but approval requires all 108 exports, 26 editable sources, the full package-bound multi-zoom/lighting/fallback/motion/performance ledger, and Dave's final review at 1.0 gameplay zoom. |
 | 7. Production scale | Not started | Starts only after Phase 6 approval. |
 
 ## Golden vertical slice
@@ -78,7 +78,7 @@ The first paid package is deliberately small:
 
 Pass condition: Dave approves every deliverable inside MarsScape at 1.0 gameplay zoom. Contact-sheet approval alone is insufficient.
 
-The renderer receipt is deliberately local and exportable; it does not silently mutate the repository. It records the SHA-256 package identity of every scoped PNG and editable source. Before a phase is called approved, add that exact JSON receipt to the canonical repo record and link it from `DECISIONS.md`.
+The renderer receipt is deliberately local and exportable; it does not silently mutate the repository. Runtime index v2 binds each served frame to the exact exported PNG SHA-256. Runtime identity schema `marsscape-runtime-assets/v2` additionally binds the complete ordered render metadata—class, canvas, anchor, screen offset, footprint, fallback, state order/timing/loop rules, and frame records—so metadata-only drift invalidates prior evidence. Approval also requires the exact manifest-scoped indexed frame census to be fully cached with zero pending, missing, or failed frames; a noncurrent animation failure blocks coverage and is recorded in receipt identity. Strict reports record the package identity of every scoped PNG and structurally valid editable source; native Aseprite, Krita, and PSD containers must have matching canvases and pixel-bearing editable layers, so renamed or malformed files fail closed. The v3 paid-test receipt stays focused on its v2 commissioned 1.0x matrix and functional-animation ledger. The separate v3 full-golden receipt requires the v3 ledger of all 24 canonical beat/zoom/lighting tuples, four commissioned lighting profiles at 1.0x, procedural fallback at 1.0x, commissioned reduced motion at 1.0x, and 300 commissioned animated 1.0x samples. A beat rendered under non-canonical lighting cannot earn its tuple. Both ledgers, storage keys, and receipts bind the exact deployed review-surface hash. The seven immutable human attestations stay disabled until strict evidence and a fully commissioned 1.0x frame are active, and they are invalidated by scope, package, review-surface, zoom, render-mode, fallback, motion, or checklist-DOM drift. The receipt's client SHA-256 digest is integrity evidence, not authentication. Before a phase is called approved, add the exact exported JSON receipt plus external Git/review identity to the canonical repo record and link it from `DECISIONS.md`.
 
 ## Validation commands
 
@@ -92,7 +92,7 @@ npm run art:approve
 npm run art:approve:golden
 ```
 
-`art:index` writes the deterministic runtime index from only valid present frames. `art:report` refreshes normal and strict per-scope evidence. `art:validate` allows planned art to be absent but fails if the committed index or reports are stale. `art:approve` is the strict four-asset/eight-export paid-test gate. `art:approve:golden` is the separate 26-asset/108-export machine gate. Neither command records human approval; the renderer unlocks receipt recording only from a `machineReady` report plus the 1.0-zoom human checklist.
+`art:index` writes the deterministic runtime index from only valid present frames. `art:report` refreshes normal and strict per-scope evidence. `art:validate` allows planned art to be absent but fails if the committed index or reports are stale. `art:approve` is the strict four-asset/eight-export paid-test gate. `art:approve:golden` is the separate 26-asset/108-export machine gate. Neither command records human approval; the renderer unlocks receipt recording only after `machineReady` evidence, the scope-specific renderer ledger, qualifying performance, and the final commissioned 1.0x human checklist all pass.
 
 ## Production order after approval
 

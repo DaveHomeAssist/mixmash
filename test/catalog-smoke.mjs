@@ -7,16 +7,199 @@
  * so this suite tests behaviour rather than markup that will churn.
  */
 import assert from 'node:assert/strict';
+import { dirname, join } from 'node:path';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { chromium } from 'playwright';
+import { assetPath, RENDER_CONTRACT } from '../mars/render-contract.mjs';
+import {
+  loadArtManifest,
+  writeApprovalReports,
+  writeRuntimeIndex,
+} from '../mars/art/validate-assets.mjs';
 import { spriteIds } from '../mars/sprites.mjs';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
 
 const { origin, close } = await startStaticServer();
 
 const checks = [];
+const temporaryFixtureRoots = new Set();
 function record(name) {
   checks.push(name);
   console.log(`  ok  ${name}`);
+}
+
+function syntheticAsepriteSource(width, height) {
+  const layerName = Buffer.from('Synthetic layer', 'utf8');
+  const layerData = Buffer.alloc(18 + layerName.length);
+  layerData.writeUInt16LE(1, 0);
+  layerData.writeUInt16LE(0, 2);
+  layerData.writeUInt16LE(width, 6);
+  layerData.writeUInt16LE(height, 8);
+  layerData[12] = 255;
+  layerData.writeUInt16LE(layerName.length, 16);
+  layerName.copy(layerData, 18);
+  const layerChunk = Buffer.alloc(6 + layerData.length);
+  layerChunk.writeUInt32LE(layerChunk.length, 0);
+  layerChunk.writeUInt16LE(0x2004, 4);
+  layerData.copy(layerChunk, 6);
+
+  const celData = Buffer.alloc(24);
+  celData[6] = 255;
+  celData.writeUInt16LE(0, 7);
+  celData.writeUInt16LE(1, 16);
+  celData.writeUInt16LE(1, 18);
+  celData.set([77, 184, 212, 255], 20);
+  const celChunk = Buffer.alloc(6 + celData.length);
+  celChunk.writeUInt32LE(celChunk.length, 0);
+  celChunk.writeUInt16LE(0x2005, 4);
+  celData.copy(celChunk, 6);
+
+  const frameSize = 16 + layerChunk.length + celChunk.length;
+  const header = Buffer.alloc(128);
+  header.writeUInt32LE(128 + frameSize, 0);
+  header.writeUInt16LE(0xa5e0, 4);
+  header.writeUInt16LE(1, 6);
+  header.writeUInt16LE(width, 8);
+  header.writeUInt16LE(height, 10);
+  header.writeUInt16LE(32, 12);
+  header.writeUInt32LE(1, 14);
+  header.writeUInt16LE(100, 18);
+  header[34] = 1;
+  header[35] = 1;
+  header.writeUInt16LE(width, 36);
+  header.writeUInt16LE(height, 38);
+  const frame = Buffer.alloc(16);
+  frame.writeUInt32LE(frameSize, 0);
+  frame.writeUInt16LE(0xf1fa, 4);
+  frame.writeUInt16LE(0xffff, 6);
+  frame.writeUInt16LE(100, 8);
+  frame.writeUInt32LE(2, 12);
+  return Buffer.concat([header, frame, layerChunk, celChunk]);
+}
+
+async function installSyntheticApprovalFixture(page, scope = 'artist-test') {
+  const fixtureRoot = mkdtempSync(join(tmpdir(), `mars-${scope}-approval-browser-`));
+  temporaryFixtureRoots.add(fixtureRoot);
+  const manifest = loadArtManifest();
+  const pngBySize = new Map();
+  const spriteBodies = new Map();
+  const withheldSprites = new Set();
+
+  const assets = scope === 'full'
+    ? manifest.assets
+    : manifest.assets.filter((candidate) => candidate.artistTest);
+  for (const asset of assets) {
+    const spriteClass = RENDER_CONTRACT.spriteClasses[asset.class];
+    const selectedStates = scope === 'full'
+      ? new Set(asset.states.map((candidate) => candidate.name))
+      : new Set(asset.artistTestStates);
+    const sizeKey = `${spriteClass.canvasWidth}x${spriteClass.canvasHeight}`;
+    if (!pngBySize.has(sizeKey)) {
+      const dataUrl = await page.evaluate(({ width, height }) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext('2d');
+        context.clearRect(0, 0, width, height);
+        context.fillStyle = '#4db8d4';
+        context.fillRect(1, 1, Math.max(1, width - 2), Math.max(1, height - 2));
+        return canvas.toDataURL('image/png');
+      }, { width: spriteClass.canvasWidth, height: spriteClass.canvasHeight });
+      pngBySize.set(sizeKey, Buffer.from(dataUrl.split(',')[1], 'base64'));
+    }
+    for (const assetState of asset.states.filter((candidate) => selectedStates.has(candidate.name))) {
+      for (let frame = 1; frame <= assetState.frames; frame += 1) {
+        const relativePath = assetPath(asset.family, asset.id, assetState.name, frame);
+        const body = pngBySize.get(sizeKey);
+        const exportPath = join(fixtureRoot, manifest.exportRoot, relativePath);
+        mkdirSync(dirname(exportPath), { recursive: true });
+        writeFileSync(exportPath, body);
+        spriteBodies.set(relativePath, body);
+      }
+    }
+    const sourcePath = join(fixtureRoot, asset.editableSource);
+    mkdirSync(dirname(sourcePath), { recursive: true });
+    writeFileSync(sourcePath, syntheticAsepriteSource(spriteClass.canvasWidth, spriteClass.canvasHeight));
+  }
+
+  const runtimeIndexPath = join(fixtureRoot, 'assets', 'commissioned', 'index.json');
+  const runtimeIndex = writeRuntimeIndex(manifest, runtimeIndexPath, { marsRoot: fixtureRoot });
+  const reports = writeApprovalReports(manifest, join(fixtureRoot, 'art', 'reports'), {
+    marsRoot: fixtureRoot,
+    runtimeIndexPath,
+  });
+  assert.equal(reports['artist-test'].machineReady, true, 'synthetic fixture reaches the real paid-test machine gate');
+  assert.equal(reports.full.machineReady, scope === 'full', 'only the explicit full synthetic fixture reaches the golden machine gate');
+
+  await page.route('**/mars/assets/commissioned/index.json', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(runtimeIndex),
+  }));
+  await page.route('**/mars/art/reports/artist-test-approval.json', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(reports['artist-test']),
+  }));
+  await page.route('**/mars/art/reports/golden-approval.json', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(reports.full),
+  }));
+  await page.route('**/mars/assets/commissioned/sprites/**', (route) => {
+    const marker = '/mars/assets/commissioned/';
+    const pathname = decodeURIComponent(new URL(route.request().url()).pathname);
+    const relativePath = pathname.split(marker)[1] || '';
+    if (withheldSprites.has(relativePath)) {
+      return route.fulfill({ status: 404, contentType: 'text/plain', body: 'synthetic missing commissioned frame' });
+    }
+    const body = spriteBodies.get(relativePath);
+    return body
+      ? route.fulfill({ status: 200, contentType: 'image/png', body })
+      : route.abort('failed');
+  });
+
+  return {
+    manifest,
+    reports,
+    runtimeIndex,
+    tamperSprite(relativePath) {
+      const body = spriteBodies.get(relativePath);
+      assert.ok(body, `synthetic sprite ${relativePath} exists before tampering`);
+      spriteBodies.set(relativePath, Buffer.concat([body, Buffer.from([0])]));
+    },
+    withholdSprite(relativePath) {
+      assert.ok(spriteBodies.has(relativePath), `synthetic sprite ${relativePath} exists before withholding`);
+      withheldSprites.add(relativePath);
+    },
+    cleanup: () => {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+      temporaryFixtureRoots.delete(fixtureRoot);
+    },
+  };
+}
+
+async function closeSyntheticFixture(context, fixture) {
+  try {
+    await context.close();
+  } finally {
+    fixture?.cleanup();
+  }
+}
+
+function cleanupRemainingSyntheticFixtures() {
+  let firstError = null;
+  for (const fixtureRoot of [...temporaryFixtureRoots]) {
+    try {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+    } catch (error) {
+      firstError ||= error;
+    } finally {
+      temporaryFixtureRoots.delete(fixtureRoot);
+    }
+  }
+  if (firstError) throw firstError;
 }
 
 let browser;
@@ -359,13 +542,560 @@ try {
     assert.equal(review.contract.decision, 'DEC-79');
     assert.equal(await page.locator('[data-beat-index]').count(), 8);
     assert.equal(review.view.zoom, 1);
+    assert.equal(review.approval.reviewSurface.status, 'valid');
+    assert.match(review.approval.reviewSurface.hash, /^[a-f0-9]{64}$/);
+    assert.deepEqual(
+      review.approval.reviewSurface.resources.map((resource) => resource.path),
+      [
+        'golden-scene.html',
+        'golden-scene.css',
+        'golden-scene.js',
+        'art/golden-scene.json',
+        'art/golden-slice.json',
+        'render-contract.mjs',
+        'commissioned-art.mjs',
+        'sprite-canvas.mjs',
+        'sprites.mjs',
+        '../src/kit/nav.js',
+      ],
+      'review-surface digest covers the exact deployed renderer resources',
+    );
     assert.equal(review.approval.status, 'blocked');
     assert.equal(await page.locator('#recordApproval').isDisabled(), true, 'machine evidence cannot self-approve the golden scene');
+    assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:disabled').count(), 7, 'human checks stay disabled without a valid commissioned context');
+    assert.deepEqual(
+      await page.locator('#approvalBlockerList li').allTextContents(),
+      review.approval.reasons,
+      'every approval blocker is exposed in stable semantic markup',
+    );
+    const idleLiveRegionMutations = await page.evaluate(async () => {
+      const ids = ['sceneStatus', 'reviewContextStatus', 'approvalEvidenceStatus', 'approvalGateStatus', 'approvalReceiptStatus', 'warningTelemetry'];
+      const counts = Object.fromEntries(ids.map((id) => [id, 0]));
+      const observers = ids.map((id) => {
+        const observer = new MutationObserver((records) => { counts[id] += records.length; });
+        observer.observe(document.getElementById(id), { childList: true, characterData: true, subtree: true });
+        return observer;
+      });
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      for (const observer of observers) observer.disconnect();
+      return counts;
+    });
+    assert.deepEqual(
+      idleLiveRegionMutations,
+      {
+        sceneStatus: 0,
+        reviewContextStatus: 0,
+        approvalEvidenceStatus: 0,
+        approvalGateStatus: 0,
+        approvalReceiptStatus: 0,
+        warningTelemetry: 0,
+      },
+      'idle animation frames do not churn live regions',
+    );
+    await page.locator('#reviewAnchors').evaluate((input) => {
+      input.disabled = false;
+      input.checked = true;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    const staleCheck = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+    assert.deepEqual(staleCheck.approval.humanChecks.completed, [], 'an out-of-context programmatic check cannot qualify');
+    assert.equal(await page.locator('#reviewAnchors').isDisabled(), true, 'the invalidated check returns to fail-closed');
+    await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+    assert.equal(await page.locator('#sequencePanel').isHidden(), true, 'artist-test scope hides golden-sequence navigation');
+    assert.equal(await page.locator('#playbackBar').isHidden(), true, 'artist-test scope hides sequence playback');
+    assert.match(await page.locator('#goldenCanvas').getAttribute('aria-label'), /paid artist test matrix/i);
+    assert.match(await page.locator('#recordApproval').textContent(), /paid artist test/i);
+    const bodyOrder = await page.evaluate(() => [...document.body.children].map((element) => element.classList.contains('mixnav') ? 'mixnav' : element.classList.contains('skip-link') ? 'skip-link' : element.tagName.toLowerCase()));
+    assert.deepEqual(bodyOrder.slice(0, 3), ['skip-link', 'mixnav', 'header'], 'visual navigation and DOM focus order agree');
+    await page.locator('.skip-link').focus();
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(() => document.activeElement?.closest('.mixnav') !== null), true, 'Tab moves from the skip link into the visible shared navigation');
     await page.evaluate(() => window.__goldenScene.setRenderMode('procedural'));
     const fallback = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
     assert.ok(fallback.telemetry.frameSources.procedural > 0, 'forced procedural mode draws a safe fallback scene');
     record('MarsScape golden scene is renderer-backed and approval fails closed');
     await context.close();
+  }
+
+  // ------------------------------- review-surface hashing unavailable path
+  // A digest resource outage must block approval without taking down the
+  // renderer or its procedural fallback.
+  {
+    const context = await browser.newContext(desktop);
+    const page = await context.newPage();
+    try {
+      await page.route('**/mars/golden-scene.css', (route) => (
+        route.request().resourceType() === 'fetch'
+          ? route.fulfill({ status: 503, contentType: 'text/plain', body: 'synthetic review-surface outage' })
+          : route.continue()
+      ));
+      await page.goto(`${origin}/mars/golden-scene.html?synthetic-review-surface-outage=1`, { waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      const unavailable = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(unavailable.error, null, 'review-surface hashing outage is not a renderer-fatal error');
+      assert.equal(unavailable.approval.reviewSurface.status, 'unavailable');
+      assert.equal(unavailable.approval.reviewSurface.hash, null);
+      assert.match(unavailable.approval.reviewSurface.reasons[0], /golden-scene\.css returned HTTP 503/);
+      assert.equal(unavailable.approval.canRecord, false);
+      assert.ok(unavailable.approval.reasons.some((reason) => /Review-surface integrity is unavailable/.test(reason)));
+      assert.ok(unavailable.telemetry.frameSources.requested > 0, 'scene rendering continues while approval is blocked');
+      assert.ok(unavailable.entities.length > 0, 'renderer still describes the visible scene');
+      assert.equal(await page.locator('#recordApproval').isDisabled(), true);
+      record('MarsScape retains rendering and blocks approval when review-surface hashing is unavailable');
+    } finally {
+      await context.close();
+    }
+  }
+
+  // --------------------------- commissioned PNG byte-integrity mismatch path
+  // The report and index remain internally valid, but one served Blob differs
+  // from its immutable v2 frame digest. It must never enter ImageBitmap cache
+  // or contribute commissioned review evidence.
+  {
+    const context = await browser.newContext(desktop);
+    const page = await context.newPage();
+    let fixture;
+    try {
+      fixture = await installSyntheticApprovalFixture(page, 'artist-test');
+      fixture.tamperSprite(assetPath('terrain', 'base_soil', 'active', 1));
+      const failures = trackPageFailures(page, origin, { ignore: IGNORED_REQUESTS });
+      await page.goto(`${origin}/mars/golden-scene.html?synthetic-integrity-mismatch=1`, { waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+      await page.waitForFunction(() => window.__goldenScene.getTelemetry().cache.integrityFailures > 0);
+
+      const mismatch = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(mismatch.approval.evidence.valid, true, 'strict reports stay valid independently of served-byte verification');
+      assert.equal(mismatch.telemetry.cache.integrityFailures, 1, 'a repeated bad frame emits one deduplicated integrity failure');
+      assert.ok(mismatch.telemetry.frameSources.commissioned < mismatch.telemetry.frameSources.requested, 'digest-mismatched bytes never count as commissioned');
+      assert.ok(mismatch.telemetry.frameSources.legacy + mismatch.telemetry.frameSources.procedural > 0, 'digest mismatch renders through a safe fallback');
+      assert.equal(mismatch.approval.canRecord, false);
+      assert.equal(await page.locator('#recordApproval').isDisabled(), true);
+      assert.equal(await page.evaluate(() => window.__goldenScene.getApprovalReceipt()), null);
+      assert.equal(
+        mismatch.telemetry.warnings.filter((warning) => warning.code === 'COMMISSIONED_FRAME_INTEGRITY_MISMATCH').length,
+        1,
+        'runtime warning identifies the exact byte-integrity failure once',
+      );
+      assert.deepEqual(failures, [], 'integrity mismatch falls back without browser or request failures');
+      record('MarsScape rejects commissioned PNG bytes that do not match runtime index v2');
+    } finally {
+      await closeSyntheticFixture(context, fixture);
+    }
+  }
+
+  // ----------------------- incomplete scoped commissioned-frame cache path
+  // Frame 01 remains visible and valid, but another indexed animation frame
+  // is unavailable. Approval must judge the complete scoped package rather
+  // than granting coverage from only the frame currently on canvas.
+  {
+    const context = await browser.newContext(desktop);
+    const page = await context.newPage();
+    let fixture;
+    try {
+      fixture = await installSyntheticApprovalFixture(page, 'artist-test');
+      const missingFrame = assetPath('actor', 'astronaut', 'active', 4);
+      fixture.withholdSprite(missingFrame);
+      const missingFrameRequest = /\/mars\/assets\/commissioned\/sprites\/actor\/astronaut__active__f04\.png$/;
+      const failures = trackPageFailures(page, origin, { ignore: [...IGNORED_REQUESTS, missingFrameRequest] });
+      await page.goto(`${origin}/mars/golden-scene.html?synthetic-missing-noncurrent-frame=1`, { waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => {
+        window.__goldenScene.setScope('artist-test');
+        window.advanceTime(0);
+      });
+
+      const frameOne = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(frameOne.approval.evidence.valid, true, 'strict generated evidence remains valid independently of the served 404');
+      assert.deepEqual(frameOne.approval.packageQuality, {
+        requiredFrames: 8,
+        indexedFrames: 8,
+        cachedFrames: 7,
+        pendingFrames: 0,
+        failedFrames: 1,
+        missingFrames: 1,
+        complete: false,
+      });
+      assert.equal(frameOne.telemetry.frameSources.commissioned, frameOne.telemetry.frameSources.requested, 'visible frame 01 still uses commissioned art');
+      assert.equal(frameOne.telemetry.frameSources.legacy, 0);
+      assert.equal(frameOne.telemetry.frameSources.procedural, 0);
+      assert.equal(frameOne.approval.coverage.conditions.commissionedMatrixAt1x.completed, false, 'a visible commissioned frame cannot earn matrix credit for an incomplete scoped cache');
+      assert.equal(frameOne.approval.coverage.conditions.functionalAnimationAt1x.completedMs, 0);
+      assert.equal(frameOne.approval.performance.samples, 0, 'an incomplete scoped cache earns no performance samples');
+      assert.equal(frameOne.approval.canRecord, false);
+      assert.ok(frameOne.approval.reasons.some((reason) => /Commissioned package cache is incomplete: 7\/8 scoped frames cached; 1 failed \(1 missing\), 0 pending/.test(reason)));
+      assert.equal(frameOne.telemetry.cache.failedFrames, 1);
+      assert.equal(frameOne.telemetry.cache.missingFrames, 1);
+      assert.equal(await page.locator('#reviewChecklist input[type="checkbox"]:disabled').count(), 7);
+      await page.locator('#recordApproval').evaluate((button) => button.click());
+      assert.equal(await page.evaluate(() => window.__goldenScene.getApprovalReceipt()), null, 'incomplete scoped cache cannot create a receipt');
+
+      await page.evaluate(() => window.advanceTime(450));
+      const missingVisible = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.ok(missingVisible.telemetry.frameSources.commissioned < missingVisible.telemetry.frameSources.requested, 'the missing frame does not count as commissioned when its animation time is visible');
+      assert.ok(missingVisible.telemetry.frameSources.legacy + missingVisible.telemetry.frameSources.procedural > 0, 'the missing frame retains safe renderer fallback');
+      assert.ok(missingVisible.entities.length > 0, 'the scene remains renderable after the missing frame becomes current');
+      assert.equal(missingVisible.approval.packageQuality.complete, false);
+      assert.deepEqual(failures, [], 'the deliberate, quarantined 404 causes no unrelated browser failures');
+      record('MarsScape blocks all approval credit when any scoped indexed frame is unavailable');
+    } finally {
+      await closeSyntheticFixture(context, fixture);
+    }
+  }
+
+  // ---------------------- runtime index ordered-metadata identity mismatch
+  // Renderer metadata is part of the immutable v2 identity. Retaining the old
+  // declared hashes after changing any render-affecting field must discard the
+  // commissioned index before a frame can earn approval credit.
+  {
+    const context = await browser.newContext(desktop);
+    const page = await context.newPage();
+    let fixture;
+    try {
+      fixture = await installSyntheticApprovalFixture(page, 'artist-test');
+      const asset = fixture.runtimeIndex.assets[0];
+      const firstState = Object.values(asset.states)[0];
+      asset.screenOffset.x += 1;
+      firstState.frameMs = firstState.frameMs === 150 ? 200 : 150;
+      firstState.loop = !firstState.loop;
+      const failures = trackPageFailures(page, origin, { ignore: IGNORED_REQUESTS });
+      await page.goto(`${origin}/mars/golden-scene.html?synthetic-runtime-index-drift=1`, { waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+
+      const drifted = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(drifted.telemetry.cache.indexIdentityVerified, false);
+      assert.equal(drifted.telemetry.cache.indexedAssets, 0, 'mismatched ordered metadata is not retained as a commissioned index');
+      assert.equal(drifted.telemetry.frameSources.commissioned, 0, 'mismatched index metadata earns no commissioned frame credit');
+      assert.ok(drifted.telemetry.frameSources.legacy + drifted.telemetry.frameSources.procedural > 0, 'renderer remains available through safe fallbacks');
+      assert.equal(drifted.approval.canRecord, false);
+      assert.equal(await page.locator('#recordApproval').isDisabled(), true);
+      assert.ok(drifted.approval.reasons.some((reason) => /Runtime index has no manifest hash/.test(reason)), 'approval exposes the discarded runtime index as a blocker');
+      assert.deepEqual(failures, [], 'runtime-index identity rejection preserves a clean fallback browser path');
+      record('MarsScape independently rejects stale runtime hashes after screen offset, timing, and loop drift');
+    } finally {
+      await closeSyntheticFixture(context, fixture);
+    }
+  }
+
+  let syntheticArtistReceiptStorage = null;
+
+  // ----------------------------------------- synthetic paid-test ready path
+  // This fixture proves the approval state machine, browser bitmap path, and
+  // receipt persistence only. Its generated PNGs and synthetic native sources
+  // are temporary test inputs and are never evidence of paid-art completion.
+  {
+    const context = await browser.newContext(desktop);
+    const page = await context.newPage();
+    let fixture;
+    try {
+      fixture = await installSyntheticApprovalFixture(page, 'artist-test');
+      const failures = trackPageFailures(page, origin, { ignore: IGNORED_REQUESTS });
+      await page.goto(`${origin}/mars/golden-scene.html?synthetic-artist-approval=1`, { waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+      await page.waitForFunction(() => {
+        const state = JSON.parse(window.render_golden_scene_to_text());
+        return state.view.scope === 'artist-test'
+          && state.approval.evidence.valid === true
+          && state.telemetry.frameSources.commissioned > 0;
+      });
+
+      const initial = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.deepEqual(initial.approval.requirements, {
+        assets: 4,
+        readyAssets: 4,
+        requiredExports: 8,
+        indexedExports: 8,
+      });
+      assert.equal(initial.telemetry.frameSources.commissioned, initial.telemetry.frameSources.requested, 'synthetic fixture uses the production commissioned bitmap path');
+      assert.equal(initial.telemetry.frameSources.legacy, 0);
+      assert.equal(initial.telemetry.frameSources.procedural, 0);
+      assert.equal(initial.approval.reviewSurface.status, 'valid');
+      assert.match(initial.approval.reviewSurface.hash, /^[a-f0-9]{64}$/);
+      assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:enabled').count(), 7, 'valid commissioned evidence enables all human checks');
+
+      await page.evaluate(() => {
+        for (let frame = 0; frame < 320; frame += 1) window.advanceTime(1000 / 60);
+      });
+      const qualified = await page.evaluate(() => window.__goldenScene.getApprovalStatus());
+      assert.equal(qualified.coverage.contract, 'artist-test-review-conditions/v2');
+      assert.equal(qualified.coverage.packageContext.packageHash, fixture.reports['artist-test'].artifactDigests.packageHash);
+      assert.equal(qualified.coverage.packageContext.reviewSurfaceHash, initial.approval.reviewSurface.hash);
+      assert.equal(qualified.coverage.conditions.commissionedMatrixAt1x.completed, true);
+      assert.equal(qualified.coverage.conditions.functionalAnimationAt1x.completed, true);
+      assert.ok(qualified.coverage.conditions.functionalAnimationAt1x.completedMs >= 600);
+      assert.equal(qualified.coverage.complete, true);
+      assert.equal(qualified.performance.samples, 300);
+      assert.equal(qualified.performance.pass, true);
+
+      await page.locator('#reviewAnchors').evaluate((input) => { input.value = 'tampered'; });
+      await page.evaluate(() => window.__goldenScene.setMode('commissioned'));
+      const domTampered = await page.evaluate(() => window.__goldenScene.getApprovalStatus());
+      assert.equal(domTampered.canRecord, false, 'tampered checklist DOM blocks approval recording');
+      assert.ok(domTampered.reasons.some((reason) => /seven canonical DEC-79 human-check IDs/.test(reason)));
+      assert.equal(await page.locator('#reviewChecklist input[type="checkbox"]:disabled').count(), 7);
+      await page.locator('#recordApproval').evaluate((button) => button.click());
+      assert.equal(await page.evaluate(() => window.__goldenScene.getApprovalReceipt()), null);
+      await page.locator('#reviewAnchors').evaluate((input) => { input.value = 'anchors'; });
+      await page.evaluate(() => window.__goldenScene.setMode('auto'));
+      assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:enabled').count(), 7, 'restoring the exact immutable DOM contract re-enables review');
+
+      for (const checkbox of await page.locator('#reviewChecklist input[name="reviewCriterion"]').all()) {
+        await checkbox.check();
+      }
+      assert.equal((await page.evaluate(() => window.__goldenScene.getApprovalStatus())).canRecord, true);
+      assert.equal(await page.locator('#recordApproval').isEnabled(), true);
+
+      await page.evaluate(() => window.__goldenScene.setZoom(0.5));
+      const invalidated = await page.evaluate(() => window.__goldenScene.getApprovalStatus());
+      assert.deepEqual(invalidated.humanChecks.completed, [], 'changing review context invalidates prior attestations');
+      assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:disabled').count(), 7);
+      assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:checked').count(), 0);
+      assert.equal(await page.locator('#recordApproval').isDisabled(), true);
+
+      await page.evaluate(() => window.__goldenScene.setZoom(1));
+      assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:enabled').count(), 7);
+      assert.equal((await page.evaluate(() => window.__goldenScene.getApprovalStatus())).humanChecks.completed.length, 0, 'returning to 1.0x does not restore stale attestations');
+      for (const checkbox of await page.locator('#reviewChecklist input[name="reviewCriterion"]').all()) {
+        await checkbox.check();
+      }
+      await page.locator('#recordApproval').click();
+      await page.waitForFunction(() => window.__goldenScene.getApprovalReceipt() !== null);
+
+      const receipt = await page.evaluate(() => window.__goldenScene.getApprovalReceipt());
+      assert.equal(receipt.schema, 'marsscape-art-approval-receipt/v3');
+      assert.equal(receipt.scope, 'artist-test');
+      assert.equal(receipt.manifestHash, fixture.runtimeIndex.manifestHash);
+      assert.equal(receipt.packageHash, fixture.reports['artist-test'].artifactDigests.packageHash);
+      assert.equal(receipt.runtimeAssetHash, fixture.reports['artist-test'].artifactDigests.runtimeAssetHash);
+      assert.equal(receipt.reviewSurfaceHash, initial.approval.reviewSurface.hash);
+      assert.equal(receipt.rendererReview.reviewSurface.hash, receipt.reviewSurfaceHash);
+      assert.equal(receipt.rendererReview.conditionLedger.packageContext.reviewSurfaceHash, receipt.reviewSurfaceHash);
+      assert.equal(receipt.rendererReview.conditionLedger.complete, true);
+      assert.equal(receipt.rendererReview.performance.pass, true);
+      assert.equal(receipt.humanReview.attested, true);
+      assert.equal(receipt.humanReview.checks.length, 7);
+      assert.equal(receipt.approval.authentication, 'external-git-review-required');
+      assert.equal(receipt.integrityDigest.algorithm, 'SHA-256');
+      assert.equal(receipt.integrityDigest.purpose, 'client-integrity-only-not-authentication');
+      assert.equal(receipt.integrityDigest.authenticated, false);
+      assert.match(receipt.integrityDigest.value, /^[a-f0-9]{64}$/);
+      const stored = await page.evaluate(() => Object.entries(localStorage)
+        .filter(([key]) => key.startsWith('marsscape.dec79.approval.v3:artist-test:'))
+        .map(([key, value]) => ({ key, value, receipt: JSON.parse(value) })));
+      assert.equal(stored.length, 1);
+      assert.equal(stored[0].receipt.receiptId, receipt.receiptId);
+      assert.ok(stored[0].key.endsWith(`:${receipt.reviewSurfaceHash}`), 'storage identity includes the review-surface digest');
+      syntheticArtistReceiptStorage = { key: stored[0].key, value: stored[0].value };
+      assert.equal(await page.locator('#downloadApprovalReceipt').isVisible(), true);
+      assert.match(await page.locator('#downloadApprovalReceipt').getAttribute('href'), /^blob:/);
+
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+      await page.waitForFunction((receiptId) => window.__goldenScene.getApprovalReceipt()?.receiptId === receiptId, receipt.receiptId);
+      const restored = await page.evaluate(() => window.__goldenScene.getApprovalReceipt());
+      assert.equal(restored.receiptId, receipt.receiptId, 'integrity-bound receipt survives a same-package, same-surface reload');
+      assert.equal(restored.integrityDigest.value, receipt.integrityDigest.value);
+      assert.equal(await page.locator('#downloadApprovalReceipt').isVisible(), true, 'receipt download is restored after verification');
+
+      await page.route('**/src/kit/nav.js', async (route) => {
+        const response = await route.fetch();
+        const body = await response.body();
+        await route.fulfill({
+          response,
+          body: Buffer.concat([body, Buffer.from('\n/* synthetic nav review-surface drift */\n')]),
+        });
+      });
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+      const drifted = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(drifted.approval.reviewSurface.status, 'valid');
+      assert.notEqual(drifted.approval.reviewSurface.hash, receipt.reviewSurfaceHash, 'executed navigation dependency drift changes review-surface identity');
+      assert.equal(await page.evaluate(() => window.__goldenScene.getApprovalReceipt()), null, 'renderer drift invalidates the stored receipt');
+      assert.equal(drifted.approval.coverage.complete, false, 'renderer drift starts a fresh condition ledger');
+      assert.equal(drifted.approval.coverage.packageContext.reviewSurfaceHash, drifted.approval.reviewSurface.hash);
+
+      await page.unroute('**/src/kit/nav.js');
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+      await page.waitForFunction((receiptId) => window.__goldenScene.getApprovalReceipt()?.receiptId === receiptId, receipt.receiptId);
+      await page.route('**/mars/art/golden-slice.json', async (route) => {
+        const response = await route.fetch();
+        const manifest = JSON.parse((await response.body()).toString('utf8'));
+        manifest.assets[0].editableSource = 'art/sources/terrain/stale_manifest_bypass.aseprite';
+        await route.fulfill({ response, body: JSON.stringify(manifest) });
+      });
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+      const manifestDrifted = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(manifestDrifted.telemetry.cache.indexIdentityVerified, false, 'stale index manifest identity is discarded');
+      assert.equal(manifestDrifted.telemetry.frameSources.commissioned, 0, 'stale manifest metadata earns no commissioned credit');
+      assert.ok(manifestDrifted.telemetry.frameSources.legacy + manifestDrifted.telemetry.frameSources.procedural > 0, 'manifest drift retains fallback rendering');
+      assert.equal(manifestDrifted.approval.canRecord, false);
+      assert.equal(await page.evaluate(() => window.__goldenScene.getApprovalReceipt()), null, 'manifest metadata drift invalidates the stored receipt');
+      assert.ok(manifestDrifted.approval.reasons.some((reason) => /Runtime index has no manifest hash/.test(reason)), 'approval exposes the discarded stale-manifest index as a blocker');
+      assert.deepEqual(failures, [], 'synthetic positive approval path loads without browser or same-origin request failures');
+      record('MarsScape paid-test approval binds checklist, package, manifest, and every executed review-surface dependency');
+    } finally {
+      await closeSyntheticFixture(context, fixture);
+    }
+  }
+
+  // ---------------------------- stored receipt + checklist DOM tamper path
+  // Seed the valid receipt from the prior context, pause the module until the
+  // parsed checklist is altered, then prove reload verification fails closed.
+  {
+    assert.ok(syntheticArtistReceiptStorage, 'paid-test rail captured a v3 receipt for stored-verification proof');
+    const context = await browser.newContext(desktop);
+    await context.addInitScript(({ expectedOrigin, key, value }) => {
+      if (location.origin === expectedOrigin) localStorage.setItem(key, value);
+    }, { expectedOrigin: origin, ...syntheticArtistReceiptStorage });
+    const page = await context.newPage();
+    let fixture;
+    let releaseModule = () => {};
+    try {
+      fixture = await installSyntheticApprovalFixture(page, 'artist-test');
+      let modulePaused = false;
+      await page.route('**/mars/golden-scene.js', async (route) => {
+        if (!modulePaused && route.request().resourceType() === 'script') {
+          modulePaused = true;
+          await new Promise((resolve) => { releaseModule = resolve; });
+        }
+        await route.continue();
+      });
+      const navigation = page.goto(`${origin}/mars/golden-scene.html?synthetic-stored-dom-tamper=1`, { waitUntil: 'load' });
+      await page.locator('#reviewAnchors').waitFor({ state: 'attached' });
+      await page.locator('#reviewAnchors').evaluate((input) => { input.value = 'tampered'; });
+      releaseModule();
+      await navigation;
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.evaluate(() => window.__goldenScene.setScope('artist-test'));
+
+      const rejected = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.equal(await page.evaluate(() => window.__goldenScene.getApprovalReceipt()), null, 'stored receipt is rejected when deployed checklist DOM is altered');
+      assert.equal(rejected.approval.canRecord, false);
+      assert.ok(rejected.approval.reasons.some((reason) => /seven canonical DEC-79 human-check IDs/.test(reason)));
+      assert.ok(rejected.telemetry.warnings.some((warning) => warning.code === 'APPROVAL_RECEIPT_INVALID'));
+      assert.equal(await page.locator('#reviewChecklist input[type="checkbox"]:disabled').count(), 7);
+      record('MarsScape rejects stored receipts when canonical human-check DOM is tampered');
+    } finally {
+      releaseModule();
+      await closeSyntheticFixture(context, fixture);
+    }
+  }
+
+  // -------------------------------------- synthetic full-golden ledger path
+  // Like the paid-test fixture above, this is temporary state-machine proof.
+  // It must never be treated as commissioned art or human approval evidence.
+  {
+    const context = await browser.newContext(desktop);
+    const page = await context.newPage();
+    let fixture;
+    try {
+      fixture = await installSyntheticApprovalFixture(page, 'full');
+      const failures = trackPageFailures(page, origin, { ignore: IGNORED_REQUESTS });
+      await page.goto(`${origin}/mars/golden-scene.html?synthetic-golden-approval=1`, { waitUntil: 'load' });
+      await page.waitForFunction(() => {
+        const state = JSON.parse(window.render_golden_scene_to_text());
+        return state.ready === true
+          && state.approval.evidence.valid === true
+          && state.telemetry.frameSources.commissioned > 0;
+      });
+
+      const initial = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+      assert.deepEqual(initial.approval.requirements, {
+        assets: 26,
+        readyAssets: 26,
+        requiredExports: 108,
+        indexedExports: 108,
+      });
+      assert.equal(initial.telemetry.frameSources.commissioned, initial.telemetry.frameSources.requested);
+      assert.equal(initial.telemetry.frameSources.legacy, 0);
+      assert.equal(initial.telemetry.frameSources.procedural, 0);
+      assert.equal(initial.approval.reviewSurface.status, 'valid');
+      assert.match(initial.approval.reviewSurface.hash, /^[a-f0-9]{64}$/);
+
+      await page.evaluate(() => {
+        window.__goldenScene.setZoom(1);
+        window.__goldenScene.setLighting('daylight');
+        window.__goldenScene.setBeat('dust_storm');
+      });
+      const wrongLighting = await page.evaluate(() => window.__goldenScene.getApprovalStatus());
+      const stormTuple = 'dust_storm@1.0x#storm';
+      assert.ok(wrongLighting.coverage.beatZooms.missing.includes(stormTuple), 'wrong lighting cannot credit the canonical storm tuple');
+      assert.ok(!wrongLighting.coverage.beatZooms.completed.includes(stormTuple));
+
+      const beats = wrongLighting.coverage.requiredBeats;
+      await page.evaluate(({ beatIds, zooms }) => {
+        const review = window.__goldenScene;
+        review.setLighting('auto');
+        for (const zoom of zooms) {
+          review.setZoom(zoom);
+          for (const beat of beatIds) review.setBeat(beat);
+        }
+        review.setZoom(1);
+        review.setBeat('land_at_outpost');
+        review.setMode('procedural');
+        review.setMode('auto');
+        review.setReducedMotion(true);
+        review.setReducedMotion(false);
+        for (let frame = 0; frame < 320; frame += 1) window.advanceTime(1000 / 60);
+      }, { beatIds: beats, zooms: [0.5, 1, 2.5] });
+
+      const qualified = await page.evaluate(() => window.__goldenScene.getApprovalStatus());
+      assert.equal(qualified.coverage.contract, 'golden-scene-review-conditions/v3');
+      assert.equal(qualified.coverage.packageContext.packageHash, fixture.reports.full.artifactDigests.packageHash);
+      assert.equal(qualified.coverage.packageContext.reviewSurfaceHash, initial.approval.reviewSurface.hash);
+      assert.equal(qualified.coverage.beatZooms.tupleSchema, 'beat@zoom#canonical-lighting/v1');
+      assert.equal(qualified.coverage.beatZooms.completedCount, 24);
+      assert.equal(qualified.coverage.beatZooms.missing.length, 0);
+      assert.equal(qualified.coverage.lightingProfiles.completedCount, 4);
+      assert.equal(qualified.coverage.lightingProfiles.missing.length, 0);
+      assert.equal(qualified.coverage.proceduralFallbackAt1x.completed, true);
+      assert.equal(qualified.coverage.reducedMotionCommissionedAt1x.completed, true);
+      assert.equal(qualified.coverage.complete, true);
+      assert.equal(qualified.performance.samples, 300);
+      assert.equal(qualified.performance.pass, true);
+      assert.equal(await page.locator('#reviewChecklist input[name="reviewCriterion"]:enabled').count(), 7);
+
+      for (const checkbox of await page.locator('#reviewChecklist input[name="reviewCriterion"]').all()) {
+        await checkbox.check();
+      }
+      assert.equal((await page.evaluate(() => window.__goldenScene.getApprovalStatus())).canRecord, true);
+      await page.locator('#recordApproval').click();
+      await page.waitForFunction(() => window.__goldenScene.getApprovalReceipt() !== null);
+      const receipt = await page.evaluate(() => window.__goldenScene.getApprovalReceipt());
+      assert.equal(receipt.schema, 'marsscape-art-approval-receipt/v3');
+      assert.equal(receipt.scope, 'full');
+      assert.equal(receipt.reviewSurfaceHash, initial.approval.reviewSurface.hash);
+      assert.equal(receipt.rendererReview.reviewSurface.hash, receipt.reviewSurfaceHash);
+      assert.equal(receipt.rendererReview.conditionLedger.contract, 'golden-scene-review-conditions/v3');
+      assert.equal(receipt.rendererReview.conditionLedger.packageContext.reviewSurfaceHash, receipt.reviewSurfaceHash);
+      assert.equal(receipt.rendererReview.conditionLedger.complete, true);
+      assert.equal(receipt.rendererReview.conditionLedger.beatZooms.completedCount, 24);
+      assert.equal(receipt.rendererReview.performance.pass, true);
+      assert.equal(receipt.humanReview.attested, true);
+      assert.equal(receipt.approval.authentication, 'external-git-review-required');
+      assert.equal(receipt.integrityDigest.purpose, 'client-integrity-only-not-authentication');
+      assert.equal(receipt.integrityDigest.authenticated, false);
+      assert.match(receipt.integrityDigest.value, /^[a-f0-9]{64}$/);
+
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForFunction(() => JSON.parse(window.render_golden_scene_to_text()).ready === true);
+      await page.waitForFunction((receiptId) => window.__goldenScene.getApprovalReceipt()?.receiptId === receiptId, receipt.receiptId);
+      const restored = await page.evaluate(() => window.__goldenScene.getApprovalReceipt());
+      assert.equal(restored.receiptId, receipt.receiptId, 'full-golden v3 receipt verifies on same-package, same-surface reload');
+      assert.equal(restored.integrityDigest.value, receipt.integrityDigest.value);
+      assert.deepEqual(failures, [], 'synthetic full-golden path loads without browser or same-origin request failures');
+      record('MarsScape full-golden ledger rejects wrong lighting and verifies every required condition');
+    } finally {
+      await closeSyntheticFixture(context, fixture);
+    }
   }
 
   // -------------------------------------------------------------- /empires/
@@ -432,6 +1162,13 @@ try {
 
   console.log(`\ncatalog smoke: ${checks.length} checks passed`);
 } finally {
-  if (browser) await browser.close();
-  await close();
+  try {
+    if (browser) await browser.close();
+  } finally {
+    try {
+      cleanupRemainingSyntheticFixtures();
+    } finally {
+      await close();
+    }
+  }
 }

@@ -30,13 +30,13 @@ Classification meanings:
 | Dimensions | Production-ready | Contract v3 owns every class canvas; both build-time PNG decoding and runtime bitmap decoding reject actual dimensions that differ. | Re-export invalid art; never scale or crop it at load. |
 | Naming rules | Production-ready | The validator enforces lowercase snake_case family/id, canonical state, and two-digit one-based frame paths. | Keep the generated index as the only network-discovery surface. |
 | Zoom levels | Production-ready | Board fit and user zoom compose through CSS; player zoom is clamped to 0.5 through 2.5; normal approval zoom is 1.0. | Test all three review zooms; approve only at 1.0 first. |
-| Canvas / viewport performance | Production-ready tooling / approval pending | The golden scene uses the same 940 x 620 canvas and contract geometry, exposes 0.5, 1.0, and 2.5 review zooms, and checks a 60-frame warm-up plus 300-frame p95/drop benchmark at the required 1.0 approval zoom. | Repeat with the complete animated commissioned set before approval. |
+| Canvas / viewport performance | Production-ready | The golden scene uses the same 940 x 620 canvas and contract geometry, exposes 0.5, 1.0, and 2.5 review zooms, and checks a 60-frame warm-up plus 300-frame p95/drop benchmark at the required 1.0 approval zoom. | Repeat with the complete animated commissioned set before approval. |
 | State rendering | Adaptable | The runtime consumes all five commissioned states and applies renderer-owned blueprint/disabled/damaged markers through the fallback ladder. Final state silhouettes are absent because commissioned exports are absent. | Paid art must prove non-color-only distinctions at gameplay zoom. |
-| Animation playback | Production-ready infrastructure | Indexed clips use contract cadence, loop/clamp rules, reduced-motion frame `01`, and broken-clip static `f01`; gameplay timing never waits on a clip. | Benchmark complete clips in the golden scene. |
+| Animation playback | Production-ready | Indexed clips use contract cadence, loop/clamp rules, reduced-motion frame `01`, and broken-clip static `f01`; gameplay timing never waits on a clip. | Benchmark complete clips in the golden scene. |
 | Contact-sheet review | Production-ready | The generated 26-card sheet uses each declared footprint and the class's real ground offset instead of a universal 1 x 1 centred diamond. | Regenerate after manifest or export changes. |
-| Visual regression | Production-ready tooling / baseline pending | Playwright captures both game modes, art spec, contact sheet, every golden beat, lighting/state evidence, and runtime telemetry; an approved image baseline does not yet exist. | Establish the baseline only after human golden approval. |
-| Editable-source approval | Production-ready | Paid-test and full-golden strict scopes fail closed without supported `.aseprite`, `.kra`, or `.psd` sources. | Keep source approval distinct from PNG runtime readiness. |
-| Approval evidence | Production-ready tooling / human approval pending | Deterministic per-scope strict reports SHA-256 every PNG and editable source and expose a fail-closed `machineReady` result. The renderer additionally requires fully commissioned 1.0x coverage, qualifying performance samples, and all seven human checks before it stores and exports a package-bound, checksummed local receipt. | Add the exported receipt to the canonical repo decision record before production scaling. |
+| Visual regression | Production-ready | Playwright captures both game modes, art spec, contact sheet, every golden beat, lighting/state evidence, and runtime telemetry; an approved image baseline does not yet exist. | Establish the baseline only after human golden approval. |
+| Editable-source approval | Production-ready | Paid-test and full-golden strict scopes fail closed unless `.aseprite`, `.kra`, or `.psd` sources have valid native structure, matching class canvases, and pixel-bearing editable layers. Renamed, flattened, malformed, or unsupported files do not earn an approval digest. | Keep source approval distinct from PNG runtime readiness. |
+| Approval evidence | Production-ready | Deterministic per-scope strict reports SHA-256 every valid PNG and editable source and expose a fail-closed `machineReady` result. Runtime index v2 binds every frame to its exact PNG bytes; `marsscape-runtime-assets/v2` binds the complete ordered render metadata so metadata-only drift invalidates receipts. Approval primes and requires all exact scoped frames cached with zero pending/missing/failed entries, and binds that census into the receipt. The full-golden v3 receipt additionally binds the package and deployed review-surface digest to a v3 ledger of all 24 canonical beat/zoom/lighting tuples, four 1.0x lighting profiles, 1.0x procedural fallback, 1.0x commissioned reduced motion, 300 commissioned animated 1.0x samples, and all seven immutable human checks. The paid-test v3 receipt retains its focused v2 commissioned 1.0x matrix and functional-animation ledger. | Treat the client digest as integrity evidence, not authentication. Add the exported receipt plus external Git/review identity to the canonical repo decision record before production scaling. |
 
 ## Asset inventory
 
@@ -81,18 +81,19 @@ No existing runtime map is classified Production-ready as paid final art. They a
 
 ## Missing golden-slice art
 
-All paid production exports and editable sources in `mars/art/golden-slice.json` are currently Missing. This is expected before the artist test. Normal validation warns and demonstrates fallback; strict approval blocks.
+All paid production exports and editable sources in `mars/art/golden-slice.json` are currently **Missing**. This is expected before the artist test. Normal validation warns and demonstrates fallback; strict approval blocks. Every asset below is individually classified with one of this audit's five allowed labels; grouped rows do not imply partial availability.
 
-Missing categories:
+| Commissioned asset family | Assets | Classification | Current evidence |
+| --- | --- | --- | --- |
+| Terrain | `base_soil`, `rocky_soil`, `edge`, `cliff_slope`, `disturbed_ground` | Missing | 0 of 5 source files and all declared PNG exports are absent. |
+| Buildings | `habitat`, `solar_array`, `extractor`, `storage` | Missing | 0 of 4 source files and every required state export are absent. |
+| Units | `astronaut`, `rover` | Missing | 0 of 2 source files and every state/animation export are absent. |
+| Infrastructure | `pipe`, `power_cable`, `junction`, `path_light` | Missing | 0 of 4 source files and every required state export are absent. |
+| Resources | `blue_crystal`, `common_ore` | Missing | 0 of 2 source files and every declared export are absent. |
+| Props | `crate`, `beacon`, `antenna`, `debris` | Missing | 0 of 4 source files and every declared export are absent. |
+| Effects | `dust`, `selection`, `power_glow`, `warning`, `repair` | Missing | 0 of 5 source files and every animation export are absent. |
 
-- Five terrain assets.
-- Four buildings across required states.
-- Astronaut and rover state/animation coverage.
-- Four infrastructure assets.
-- Blue crystal and common ore production nodes.
-- Four props.
-- Five effects.
-- Four renderer lighting profiles still need golden-scene tuning evidence.
+The four renderer-owned lighting profiles are **Production-ready** as executable profiles. Their final interaction with commissioned silhouettes is unverified until the missing art exists, so human golden-scene approval remains blocked.
 
 ## PR #8 disposition
 
