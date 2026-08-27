@@ -5,8 +5,10 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 ## [Unreleased]
 
 - **MarsScape DEC-79 art contract:** locked renderer-native isometric pixel art, elevated procedural fallback, paid artist test, golden scene, and approval-before-scale production order.
-- **Renderer-derived art bible:** render contract v2 now owns sprite-class canvases, ground-contact offsets, footprint origins, palette, five states, 600ms-derived animation timing, export/source requirements, zoom range, and accessibility thresholds.
-- **Asset validation pipeline:** added filename, PNG dimension/alpha, anchor, footprint, animation, missing-asset, editable-source, contact-sheet, and Playwright visual-regression checks. Strict approval safely blocks on absent paid deliverables.
+- **Renderer-derived art bible:** render contract v3 now owns sprite-class canvases and offsets, four executable lighting profiles, palette, five states, 600ms-derived animation timing, export/source requirements, zoom range, accessibility thresholds, and a 300-frame performance gate.
+- **Commissioned-art runtime:** added a generated valid-assets-only index and fetch/Blob/`ImageBitmap` cache with dimension defense, state ladders, reduced motion, broken-clip frame-01 safety, warning-once telemetry, and commissioned → code-owned → procedural fallback on the playable board.
+- **Golden-scene review:** added the deterministic eight-beat mission sequence and responsive in-renderer review surface for every golden asset, state, effect, lighting profile, anchor, footprint, zoom, render mode, and performance condition. Strict evidence plus 1.0-zoom human checks unlocks an exportable receipt; current approval remains blocked until real deliverables exist.
+- **Asset validation pipeline:** added filename, PNG dimension/alpha, anchor, footprint, animation, missing-asset, editable-source, content-hashed runtime-index, deterministic byte-bound strict reports, contact-sheet, and Playwright visual-regression checks. Paid-test approval is correctly scoped to four assets/eight exports; full-golden approval remains a separate 108-export gate.
 - **Art proof corrections:** the boot cache count now derives from the 33-map registry, and `/mars/art-spec.html` displays all 33 cached maps instead of clipping after two rows.
 
 ## 2026-07-07 — EMPIRES replaced with the real aoe2-clone build

@@ -1,19 +1,102 @@
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync } from 'node:zlib';
-import { RENDER_CONTRACT, assetPath } from '../render-contract.mjs';
+import { RENDER_CONTRACT, assetPath, footprintCornersFromCenter } from '../render-contract.mjs';
 import { spriteHTML } from '../sprites.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_MANIFEST_PATH = join(HERE, 'golden-slice.json');
 export const DEFAULT_MARS_ROOT = dirname(HERE);
+export const DEFAULT_RUNTIME_INDEX_PATH = join(DEFAULT_MARS_ROOT, 'assets', 'commissioned', 'index.json');
+export const APPROVAL_REPORT_FILENAMES = Object.freeze({
+  'artist-test': 'artist-test-approval.json',
+  full: 'golden-approval.json',
+});
+export const ART_SCOPES = Object.freeze(['full', 'artist-test']);
 const ID_PATTERN = /^[a-z0-9]+(?:_[a-z0-9]+)*$/;
 const FILE_PATTERN = /^sprites\/[a-z0-9]+(?:_[a-z0-9]+)*\/[a-z0-9]+(?:_[a-z0-9]+)*__[a-z0-9]+(?:_[a-z0-9]+)*__f\d{2}\.png$/;
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
 export function loadArtManifest(path = DEFAULT_MANIFEST_PATH) {
   return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+export function artManifestHash(manifest) {
+  return createHash('sha256').update(JSON.stringify(manifest)).digest('hex');
+}
+
+function fileSha256(path) {
+  if (!path || !existsSync(path) || !statSync(path).isFile()) return null;
+  return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+function digestEntries(entries) {
+  const sorted = [...entries].sort((left, right) => left.path.localeCompare(right.path));
+  return createHash('sha256').update(JSON.stringify(sorted)).digest('hex');
+}
+
+export function artPackageDigests(manifest, options = {}) {
+  const marsRoot = resolve(options.marsRoot || DEFAULT_MARS_ROOT);
+  const scope = options.scope || 'full';
+  const exportRoot = safePath(marsRoot, manifest?.exportRoot);
+  const exports = [];
+  const editableSources = [];
+
+  for (const asset of selectAssets(manifest, scope)) {
+    for (const state of asset.states || []) {
+      if (!Number.isInteger(state.frames) || state.frames < 1) continue;
+      for (let frame = 1; frame <= state.frames; frame += 1) {
+        const path = assetPath(asset.family, asset.id, state.name, frame);
+        const file = exportRoot ? safePath(exportRoot, path) : null;
+        exports.push({ path, sha256: fileSha256(file) });
+      }
+    }
+    const path = asset.editableSource || '';
+    const extension = extname(path).slice(1).toLowerCase();
+    const file = RENDER_CONTRACT.export.editableExtensions.includes(extension) ? safePath(marsRoot, path) : null;
+    editableSources.push({ path, sha256: fileSha256(file) });
+  }
+
+  exports.sort((left, right) => left.path.localeCompare(right.path));
+  editableSources.sort((left, right) => left.path.localeCompare(right.path));
+  const runtimeAssetHash = digestEntries(exports);
+  const packageHash = createHash('sha256')
+    .update(JSON.stringify({ exports, editableSources }))
+    .digest('hex');
+  return {
+    algorithm: 'SHA-256',
+    scope,
+    complete: exports.length > 0
+      && editableSources.length > 0
+      && exports.every((entry) => entry.sha256)
+      && editableSources.every((entry) => entry.sha256),
+    runtimeAssetHash,
+    packageHash,
+    exports,
+    editableSources,
+  };
+}
+
+function selectAssets(manifest, scope = 'full') {
+  const assets = Array.isArray(manifest?.assets) ? manifest.assets : [];
+  if (scope === 'full') return assets;
+  if (scope !== 'artist-test') return [];
+  return assets
+    .filter((asset) => asset.artistTest)
+    .map((asset) => {
+      const names = new Set(Array.isArray(asset.artistTestStates) ? asset.artistTestStates : []);
+      return { ...asset, states: asset.states.filter((state) => names.has(state.name)) };
+    });
+}
+
+function allDeclaredExports(manifest) {
+  return new Set((manifest?.assets || []).flatMap((asset) => (asset.states || []).flatMap((state) => (
+    Number.isInteger(state.frames)
+      ? Array.from({ length: state.frames }, (_, index) => assetPath(asset.family, asset.id, state.name, index + 1))
+      : []
+  ))));
 }
 
 function safePath(root, value) {
@@ -40,7 +123,7 @@ function listPngFiles(root) {
   if (!existsSync(root)) return [];
   const files = [];
   const visit = (directory) => {
-    for (const entry of readdirSync(directory)) {
+    for (const entry of readdirSync(directory).sort()) {
       const path = join(directory, entry);
       const stats = statSync(path);
       if (stats.isDirectory()) visit(path);
@@ -161,13 +244,19 @@ export function pngDifference(leftBuffer, rightBuffer) {
 export function validateArtManifest(manifest, options = {}) {
   const marsRoot = resolve(options.marsRoot || DEFAULT_MARS_ROOT);
   const approval = !!options.approval;
+  const scope = options.scope || 'full';
   const errors = [];
   const warnings = [];
-  const assets = Array.isArray(manifest?.assets) ? manifest.assets : [];
+  const assets = selectAssets(manifest, scope);
   const expectedFiles = new Set();
+  const declaredFiles = allDeclaredExports(manifest);
   let presentExports = 0;
   let missingExports = 0;
   let editableSources = 0;
+
+  if (!ART_SCOPES.includes(scope)) {
+    addIssue(errors, 'INVALID_SCOPE', null, `Unknown validation scope ${scope}.`, `Use one of: ${ART_SCOPES.join(', ')}.`);
+  }
 
   if (manifest?.contractVersion !== RENDER_CONTRACT.version) {
     addIssue(errors, 'CONTRACT_VERSION', null, `Manifest contract ${manifest?.contractVersion} does not match renderer contract ${RENDER_CONTRACT.version}.`, 'Regenerate or migrate the manifest.');
@@ -175,7 +264,7 @@ export function validateArtManifest(manifest, options = {}) {
   if (manifest?.decision !== RENDER_CONTRACT.decision) {
     addIssue(errors, 'DECISION_LINK', null, `Manifest decision ${manifest?.decision || 'missing'} does not match ${RENDER_CONTRACT.decision}.`, 'Link the active renderer decision.');
   }
-  if (!assets.length) addIssue(errors, 'EMPTY_MANIFEST', null, 'No art assets are declared.', 'Declare the golden vertical slice.');
+  if (!assets.length) addIssue(errors, 'EMPTY_MANIFEST', null, `No art assets are declared for scope ${scope}.`, 'Declare the required assets and state subset.');
 
   const exportRoot = safePath(marsRoot, manifest?.exportRoot);
   if (!exportRoot) addIssue(errors, 'EXPORT_ROOT', null, 'exportRoot must be a safe relative path.', 'Use a path beneath mars/.');
@@ -279,7 +368,7 @@ export function validateArtManifest(manifest, options = {}) {
       const relativeFile = relative(exportRoot, file).split(sep).join('/');
       if (!FILE_PATTERN.test(relativeFile)) {
         addIssue(errors, 'INVALID_FILENAME', null, `${relativeFile} does not match the naming contract.`, 'Rename to family/id__state__fNN.png.');
-      } else if (!expectedFiles.has(relativeFile)) {
+      } else if (!expectedFiles.has(relativeFile) && !declaredFiles.has(relativeFile)) {
         addIssue(warnings, 'UNLISTED_EXPORT', null, `${relativeFile} is not declared in the golden manifest.`, 'Declare it or remove it from the approval package.');
       }
     }
@@ -289,6 +378,10 @@ export function validateArtManifest(manifest, options = {}) {
   return {
     passed: errors.length === 0,
     approval,
+    scope,
+    contractVersion: RENDER_CONTRACT.version,
+    decision: RENDER_CONTRACT.decision,
+    manifestHash: artManifestHash(manifest),
     approvalReady: approval && errors.length === 0 && warnings.length === 0,
     counts: {
       assets: assets.length,
@@ -302,6 +395,185 @@ export function validateArtManifest(manifest, options = {}) {
     errors,
     warnings,
   };
+}
+
+function runtimeLoop(asset, state) {
+  if (state.frames <= 1) return false;
+  if (asset.class === 'effect' || state.name === 'damaged') return false;
+  return true;
+}
+
+function validRuntimeFrame(file, spriteClass) {
+  if (!file || !existsSync(file)) return false;
+  try {
+    const png = decodePng(readFileSync(file));
+    return png.width === spriteClass.canvasWidth
+      && png.height === spriteClass.canvasHeight
+      && png.transparentPixels > 0
+      && png.visiblePixels > 0;
+  } catch {
+    return false;
+  }
+}
+
+export function generateRuntimeIndex(manifest, options = {}) {
+  const marsRoot = resolve(options.marsRoot || DEFAULT_MARS_ROOT);
+  const scope = options.scope || 'full';
+  const exportRoot = safePath(marsRoot, manifest?.exportRoot);
+  const assets = [];
+  const runtimeFiles = [];
+  const artistTestRuntimeFiles = [];
+  let availableExports = 0;
+
+  if (exportRoot && ART_SCOPES.includes(scope)) {
+    for (const asset of selectAssets(manifest, scope)) {
+      const spriteClass = RENDER_CONTRACT.spriteClasses[asset.class];
+      if (!spriteClass) continue;
+      const states = {};
+      for (const state of asset.states || []) {
+        if (!RENDER_CONTRACT.states.includes(state.name) || !Number.isInteger(state.frames) || state.frames < 1) continue;
+        const frames = [];
+        const frameEntries = [];
+        for (let frame = 1; frame <= state.frames; frame += 1) {
+          const relativeExport = assetPath(asset.family, asset.id, state.name, frame);
+          const file = safePath(exportRoot, relativeExport);
+          if (validRuntimeFrame(file, spriteClass)) {
+            frames.push(relativeExport);
+            frameEntries.push({ path: relativeExport, sha256: fileSha256(file) });
+          }
+        }
+        // Frame 01 is the only safe broken-clip fallback. Never index a later
+        // frame when the first frame is absent or invalid.
+        const firstFrame = assetPath(asset.family, asset.id, state.name, 1);
+        if (frames[0] !== firstFrame) continue;
+        runtimeFiles.push(...frameEntries);
+        if (asset.artistTest && (asset.artistTestStates || []).includes(state.name)) {
+          artistTestRuntimeFiles.push(...frameEntries);
+        }
+        availableExports += frames.length;
+        states[state.name] = {
+          declaredFrames: state.frames,
+          frameMs: state.frameMs,
+          loop: runtimeLoop(asset, state),
+          frames,
+        };
+      }
+      if (!Object.keys(states).length) continue;
+      assets.push({
+        family: asset.family,
+        id: asset.id,
+        class: asset.class,
+        anchor: expectedAnchor(spriteClass),
+        screenOffset: { x: spriteClass.screenOffsetX || 0, y: spriteClass.screenOffsetY || 0 },
+        canvas: { width: spriteClass.canvasWidth, height: spriteClass.canvasHeight, scale: spriteClass.scale },
+        footprint: asset.footprint,
+        fallback: asset.fallback || null,
+        fallbackSprite: asset.fallbackSprite || null,
+        states,
+      });
+    }
+  }
+
+  return {
+    version: 1,
+    contractVersion: RENDER_CONTRACT.version,
+    decision: RENDER_CONTRACT.decision,
+    scope,
+    manifestHash: artManifestHash(manifest),
+    runtimeAssetHash: digestEntries(runtimeFiles),
+    runtimeAssetHashes: {
+      full: digestEntries(runtimeFiles),
+      'artist-test': digestEntries(artistTestRuntimeFiles),
+    },
+    availableExports,
+    assets,
+  };
+}
+
+export function serializeRuntimeIndex(index) {
+  return `${JSON.stringify(index, null, 2)}\n`;
+}
+
+export function writeRuntimeIndex(manifest, outputPath = DEFAULT_RUNTIME_INDEX_PATH, options = {}) {
+  const index = generateRuntimeIndex(manifest, options);
+  mkdirSync(dirname(outputPath), { recursive: true });
+  writeFileSync(outputPath, serializeRuntimeIndex(index));
+  return index;
+}
+
+export function verifyRuntimeIndex(manifest, indexPath = DEFAULT_RUNTIME_INDEX_PATH, options = {}) {
+  const expected = serializeRuntimeIndex(generateRuntimeIndex(manifest, options));
+  if (!existsSync(indexPath)) {
+    return { passed: false, reason: 'missing', expected, actual: null };
+  }
+  const actual = readFileSync(indexPath, 'utf8');
+  return { passed: actual === expected, reason: actual === expected ? null : 'stale', expected, actual };
+}
+
+function conciseIndexVerification(verification) {
+  return verification
+    ? { passed: verification.passed === true, reason: verification.reason || null }
+    : undefined;
+}
+
+export function reportDocument(report, options = {}) {
+  const runtimeIndex = options.runtimeIndex;
+  const indexVerification = conciseIndexVerification(options.indexVerification);
+  const artifactDigests = options.artifactDigests;
+  const machineReady = report.approval === true
+    && report.approvalReady === true
+    && indexVerification?.passed === true
+    && artifactDigests?.complete === true;
+  return {
+    reportVersion: 1,
+    ...report,
+    machineReady,
+    ...(artifactDigests ? { artifactDigests } : {}),
+    ...(runtimeIndex ? { runtimeIndex: { assets: runtimeIndex.assets.length, availableExports: runtimeIndex.availableExports } } : {}),
+    ...(indexVerification ? { indexVerification } : {}),
+  };
+}
+
+export function serializeReportDocument(document) {
+  return `${JSON.stringify(document, null, 2)}\n`;
+}
+
+export function buildApprovalReportDocuments(manifest, options = {}) {
+  const marsRoot = resolve(options.marsRoot || DEFAULT_MARS_ROOT);
+  const runtimeIndexPath = resolve(options.runtimeIndexPath || join(marsRoot, 'assets', 'commissioned', 'index.json'));
+  const indexVerification = options.indexVerification || verifyRuntimeIndex(manifest, runtimeIndexPath, { marsRoot, scope: 'full' });
+  const documents = {};
+  for (const scope of ['artist-test', 'full']) {
+    documents[scope] = reportDocument(
+      validateArtManifest(manifest, { marsRoot, approval: true, scope }),
+      { indexVerification, artifactDigests: artPackageDigests(manifest, { marsRoot, scope }) },
+    );
+  }
+  return documents;
+}
+
+export function writeApprovalReports(manifest, outputDirectory, options = {}) {
+  const documents = buildApprovalReportDocuments(manifest, options);
+  mkdirSync(outputDirectory, { recursive: true });
+  for (const [scope, filename] of Object.entries(APPROVAL_REPORT_FILENAMES)) {
+    writeFileSync(join(outputDirectory, filename), serializeReportDocument(documents[scope]));
+  }
+  return documents;
+}
+
+export function verifyApprovalReports(manifest, outputDirectory, options = {}) {
+  const documents = buildApprovalReportDocuments(manifest, options);
+  const reports = {};
+  let passed = true;
+  for (const [scope, filename] of Object.entries(APPROVAL_REPORT_FILENAMES)) {
+    const path = join(outputDirectory, filename);
+    const expected = serializeReportDocument(documents[scope]);
+    const actual = existsSync(path) ? readFileSync(path, 'utf8') : null;
+    const current = actual === expected;
+    reports[scope] = { passed: current, reason: actual === null ? 'missing' : current ? null : 'stale' };
+    if (!current) passed = false;
+  }
+  return { passed, reports };
 }
 
 function escapeHtml(value) {
@@ -318,6 +590,20 @@ function firstExpectedExport(asset) {
   return assetPath(asset.family, asset.id, preferred.name, 1);
 }
 
+function contactGeometry(asset, spriteClass) {
+  const center = { x: 130, y: 112 };
+  const corners = footprintCornersFromCenter(0, 0, asset.footprint.width, asset.footprint.depth);
+  const points = ['north', 'east', 'south', 'west']
+    .map((key) => `${center.x + corners[key].x},${center.y + corners[key].y}`)
+    .join(' ');
+  const anchor = expectedAnchor(spriteClass);
+  const screenOffset = {
+    x: spriteClass.screenOffsetX || 0,
+    y: spriteClass.screenOffsetY || 0,
+  };
+  return { center, points, anchor, screenOffset };
+}
+
 function previewMarkup(asset, manifest, marsRoot, outputDirectory) {
   const spriteClass = RENDER_CONTRACT.spriteClasses[asset.class];
   const expected = firstExpectedExport(asset);
@@ -328,12 +614,16 @@ function previewMarkup(asset, manifest, marsRoot, outputDirectory) {
     : asset.fallbackSprite
       ? `<div class="fallback">${spriteHTML(asset.fallbackSprite, 3)}</div>`
       : '<div class="missing">PROCEDURAL<br />FALLBACK</div>';
-  const anchor = expectedAnchor(spriteClass);
+  const geometry = contactGeometry(asset, spriteClass);
   return `<div class="preview">
-      <svg class="footprint" viewBox="0 0 84 42" aria-hidden="true"><path d="M42 1 83 21 42 41 1 21Z" /></svg>
-      <div class="asset-box" style="width:${spriteClass.canvasWidth * spriteClass.scale}px;height:${spriteClass.canvasHeight * spriteClass.scale}px;--anchor-x:${anchor.x * 100}%;--anchor-y:${anchor.y * 100}%">
+      <svg class="footprint" viewBox="0 0 260 190" aria-hidden="true">
+        <polygon points="${geometry.points}" />
+        <line class="offset-line" x1="${geometry.center.x}" y1="${geometry.center.y}" x2="${geometry.center.x + geometry.screenOffset.x}" y2="${geometry.center.y + geometry.screenOffset.y}" />
+        <circle class="ground-point" cx="${geometry.center.x}" cy="${geometry.center.y}" r="4" />
+      </svg>
+      <div class="asset-box" style="width:${spriteClass.canvasWidth * spriteClass.scale}px;height:${spriteClass.canvasHeight * spriteClass.scale}px;left:${geometry.center.x + geometry.screenOffset.x}px;top:${geometry.center.y + geometry.screenOffset.y}px;--anchor-x:${geometry.anchor.x * 100}%;--anchor-y:${geometry.anchor.y * 100}%;--anchor-shift-x:${-geometry.anchor.x * 100}%;--anchor-shift-y:${-geometry.anchor.y * 100}%">
         ${image}
-        <span class="anchor" title="${escapeHtml(anchor.type)} anchor"></span>
+        <span class="anchor" title="${escapeHtml(geometry.anchor.type)} anchor"></span>
       </div>
     </div>`;
 }
@@ -349,7 +639,7 @@ export function generateContactSheet(manifest, outputPath, options = {}) {
       <header><span>${escapeHtml(asset.category)}</span><strong>${escapeHtml(asset.id)}</strong></header>
       ${previewMarkup(asset, manifest, marsRoot, outputDirectory)}
       <p>${spriteClass.canvasWidth}x${spriteClass.canvasHeight} source | ${spriteClass.scale}x gameplay | ${escapeHtml(spriteClass.anchor)}</p>
-      <p>Footprint ${asset.footprint.width}x${asset.footprint.depth} from ${escapeHtml(asset.footprint.origin)}</p>
+      <p>Footprint ${asset.footprint.width}x${asset.footprint.depth} from ${escapeHtml(asset.footprint.origin)} | ground offset (${spriteClass.screenOffsetX || 0},${spriteClass.screenOffsetY || 0})</p>
       <small>${escapeHtml(states)}</small>
       <code>${escapeHtml(firstExpectedExport(asset))}</code>
     </article>`;
@@ -370,11 +660,13 @@ export function generateContactSheet(manifest, outputPath, options = {}) {
     article { min-width:0; padding:14px; border:1px solid #6b4a33; background:#211812; }
     header { display:flex; justify-content:space-between; gap:12px; margin-bottom:12px; color:#9fe0f0; }
     header strong { color:#f2ede6; }
-    .preview { position:relative; display:grid; place-items:center; height:150px; overflow:hidden; background:linear-gradient(160deg,#1d3a44,#6b4a33); image-rendering:pixelated; }
-    .asset-box { position:relative; z-index:2; display:grid; place-items:center; }
+    .preview { position:relative; height:190px; overflow:hidden; background:linear-gradient(160deg,#1d3a44,#6b4a33); image-rendering:pixelated; }
+    .asset-box { position:absolute; z-index:2; display:grid; place-items:center; transform:translate(var(--anchor-shift-x),var(--anchor-shift-y)); }
     .preview img, .fallback { position:relative; z-index:2; max-width:100%; max-height:100%; image-rendering:pixelated; }
-    .footprint { position:absolute; z-index:1; width:84px; height:42px; opacity:.75; }
-    .footprint path { fill:#4db8d422; stroke:#9fe0f0; stroke-width:2; stroke-dasharray:4 3; }
+    .footprint { position:absolute; inset:0; z-index:1; width:100%; height:100%; opacity:.84; }
+    .footprint polygon { fill:#4db8d422; stroke:#9fe0f0; stroke-width:2; stroke-dasharray:4 3; }
+    .footprint .offset-line { stroke:#f0d488; stroke-width:2; }
+    .footprint .ground-point { fill:#15100d; stroke:#9fe0f0; stroke-width:2; }
     .anchor { position:absolute; z-index:3; left:var(--anchor-x); top:var(--anchor-y); width:12px; height:12px; border:2px solid #f0d488; border-radius:50%; transform:translate(-50%,-50%); }
     .anchor::before, .anchor::after { content:""; position:absolute; background:#f0d488; }
     .anchor::before { width:18px; height:1px; left:-3px; top:5px; }
@@ -417,17 +709,59 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const manifestPath = resolve(optionValue(args, '--manifest', DEFAULT_MANIFEST_PATH));
   const marsRoot = resolve(optionValue(args, '--mars-root', DEFAULT_MARS_ROOT));
   const approval = args.includes('--approval');
+  const scope = optionValue(args, '--scope', 'full');
   const manifest = loadArtManifest(manifestPath);
-  const report = validateArtManifest(manifest, { marsRoot, approval });
+  const report = validateArtManifest(manifest, { marsRoot, approval, scope });
   const contactSheet = optionValue(args, '--contact-sheet');
   if (contactSheet) generateContactSheet(manifest, resolve(contactSheet), { marsRoot, report });
+  const runtimeIndexPath = optionValue(args, '--runtime-index');
+  let runtimeIndex = null;
+  if (runtimeIndexPath) runtimeIndex = writeRuntimeIndex(manifest, resolve(runtimeIndexPath), { marsRoot, scope: 'full' });
+  const verifyIndexPath = optionValue(args, '--verify-runtime-index');
+  const indexVerification = verifyIndexPath
+    ? verifyRuntimeIndex(manifest, resolve(verifyIndexPath), { marsRoot, scope: 'full' })
+    : null;
+  const approvalReportsPath = optionValue(args, '--approval-reports');
+  const approvalReports = approvalReportsPath
+    ? writeApprovalReports(manifest, resolve(approvalReportsPath), {
+      marsRoot,
+      runtimeIndexPath: verifyIndexPath ? resolve(verifyIndexPath) : join(marsRoot, 'assets', 'commissioned', 'index.json'),
+      indexVerification,
+    })
+    : null;
+  const verifyApprovalReportsPath = optionValue(args, '--verify-approval-reports');
+  const approvalReportVerification = verifyApprovalReportsPath
+    ? verifyApprovalReports(manifest, resolve(verifyApprovalReportsPath), {
+      marsRoot,
+      runtimeIndexPath: verifyIndexPath ? resolve(verifyIndexPath) : join(marsRoot, 'assets', 'commissioned', 'index.json'),
+      indexVerification,
+    })
+    : null;
+  const reportPath = optionValue(args, '--report');
+  if (reportPath) {
+    const output = resolve(reportPath);
+    mkdirSync(dirname(output), { recursive: true });
+    const artifactDigests = approval ? artPackageDigests(manifest, { marsRoot, scope }) : null;
+    writeFileSync(output, serializeReportDocument(reportDocument(report, { runtimeIndex, indexVerification, artifactDigests })));
+  }
   if (args.includes('--json')) console.log(JSON.stringify(report, null, 2));
   else {
     console.log(`MarsScape art validation: ${report.passed ? 'PASS' : 'FAIL'}`);
+    console.log(`Scope: ${scope}; contract v${report.contractVersion}; manifest ${report.manifestHash.slice(0, 12)}`);
     console.log(JSON.stringify(report.counts));
     printIssues('Errors', report.errors);
     printIssues('Warnings', report.warnings);
     if (contactSheet) console.log(`Contact sheet: ${resolve(contactSheet)}`);
+    if (runtimeIndexPath) console.log(`Runtime index: ${resolve(runtimeIndexPath)} (${runtimeIndex.assets.length} assets; ${runtimeIndex.availableExports} exports)`);
+    if (indexVerification) console.log(`Runtime index verification: ${indexVerification.passed ? 'PASS' : `FAIL (${indexVerification.reason})`}`);
+    if (approvalReportsPath) console.log(`Approval reports: ${resolve(approvalReportsPath)} (${Object.keys(approvalReports).length} scopes)`);
+    if (approvalReportVerification) console.log(`Approval report verification: ${approvalReportVerification.passed ? 'PASS' : 'FAIL'}`);
+    if (reportPath) console.log(`Report: ${resolve(reportPath)}`);
   }
-  if (!report.passed) process.exitCode = 1;
+  if (
+    !report.passed
+    || (approval && !report.approvalReady)
+    || (indexVerification && !indexVerification.passed)
+    || (approvalReportVerification && !approvalReportVerification.passed)
+  ) process.exitCode = 1;
 }

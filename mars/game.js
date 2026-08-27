@@ -1,5 +1,6 @@
 import { emojiHTML, spriteIds, spriteOrEmoji } from './sprites.mjs';
 import { SpriteBitmapCache } from './sprite-canvas.mjs';
+import { CommissionedArtCache } from './commissioned-art.mjs';
 import { RENDER_CONTRACT, projectGrid } from './render-contract.mjs';
 import {
   BUILD_TIERS,
@@ -50,6 +51,15 @@ const CANVAS_H = RENDER_CONTRACT.board.canvasHeight;
 const CANVAS_ORIGIN_X = RENDER_CONTRACT.board.originX;
 const CANVAS_ORIGIN_Y = RENDER_CONTRACT.board.originY;
 const BOARD_SIZE = RENDER_CONTRACT.board.columns;
+const COMMISSIONED_NODE_IDS = Object.freeze({
+  ice: 'blue_crystal',
+  iron_ore: 'common_ore',
+});
+const COMMISSIONED_BUILDING_IDS = Object.freeze({
+  habitat: 'habitat',
+  depot: 'storage',
+  solar: 'solar_array',
+});
 
 let state = createState();
 let sessionId = getOrCreateSessionId();
@@ -60,8 +70,21 @@ let saveTimer = 0;
 let pendingCommands = [];
 let assetsReady = false;
 let spriteBitmapsReady = 0;
+let commissionedBitmapsReady = 0;
 let pixelMode = readPixelMode();
-let renderTelemetry = { pixelMode, spritesDrawn: 0, proceduralDrawn: 0, bitmapCount: 0 };
+let commissionedWarnings = [];
+let artAnimationFrame = 0;
+let renderTelemetry = {
+  pixelMode,
+  spritesDrawn: 0,
+  commissionedDrawn: 0,
+  legacySpritesDrawn: 0,
+  proceduralDrawn: 0,
+  bitmapCount: 0,
+  commissionedBitmaps: 0,
+  commissionedIndexedAssets: 0,
+  commissionedWarnings: 0,
+};
 
 const el = {
   appShell: document.querySelector('#appShell'),
@@ -196,6 +219,12 @@ class LocalEnvelopeSigner {
 
 const assetLoader = new AssetLoader(ASSET_MANIFEST);
 const spriteCache = new SpriteBitmapCache();
+const commissionedCache = new CommissionedArtCache({
+  onWarning(warning) {
+    commissionedWarnings = [...commissionedWarnings.slice(-19), warning];
+    console.warn(`[MarsScape commissioned art] ${warning.code}: ${warning.id}. ${warning.response}`);
+  },
+});
 const localSigner = new LocalEnvelopeSigner();
 
 boot();
@@ -209,15 +238,18 @@ function resolveApiBase() {
 }
 
 async function boot() {
-  setBootStatus('Preloading terrain and sprite bitmaps...');
-  const [assetResult, spriteResult] = await Promise.allSettled([
+  setBootStatus('Preloading terrain, commissioned art, and fallback sprite bitmaps...');
+  const [assetResult, spriteResult, commissionedResult] = await Promise.allSettled([
     assetLoader.load(),
     spriteCache.prime(spriteIds()),
+    commissionedCache.loadAndPrime(),
   ]);
   assetsReady = assetResult.status === 'fulfilled';
   spriteBitmapsReady = spriteResult.status === 'fulfilled' ? spriteResult.value : 0;
-  if (assetsReady || spriteBitmapsReady > 0) {
-    setBootStatus(`Assets ready. ${spriteBitmapsReady}/${spriteIds().length} sprite bitmaps cached. Checking colony authority...`);
+  commissionedBitmapsReady = commissionedResult.status === 'fulfilled' ? commissionedResult.value.prime.loaded : 0;
+  if (assetsReady || spriteBitmapsReady > 0 || commissionedResult.status === 'fulfilled') {
+    const indexed = commissionedCache.getTelemetry().indexedAssets;
+    setBootStatus(`Assets ready. ${commissionedBitmapsReady} commissioned and ${spriteBitmapsReady}/${spriteIds().length} fallback bitmaps cached from ${indexed} indexed commissioned assets. Checking colony authority...`);
   } else {
     setBootStatus('Asset preload failed. Procedural fallback active.');
   }
@@ -558,10 +590,8 @@ function renderMap() {
   fragments.push(`<span class="player-marker" style="left:${player.x}px;top:${player.y}px" aria-hidden="true"></span>`);
   el.isoBoard.innerHTML = fragments.join('');
   drawTerrain(el.isoBoard.querySelector('.terrain-canvas'));
-  el.isoBoard.dataset.renderMode = pixelMode ? 'pixel' : 'procedural';
-  el.isoBoard.dataset.spritesDrawn = String(renderTelemetry.spritesDrawn);
-  el.isoBoard.dataset.proceduralDrawn = String(renderTelemetry.proceduralDrawn);
-  el.isoBoard.dataset.spriteBitmaps = String(renderTelemetry.bitmapCount);
+  syncRenderTelemetryDataset();
+  syncArtAnimation();
   el.isoBoard.querySelectorAll('[data-command]').forEach((button) => {
     button.addEventListener('click', () => {
       if (isInputBlocked()) return;
@@ -574,6 +604,41 @@ function renderMap() {
       }
     });
   });
+}
+
+function syncRenderTelemetryDataset() {
+  el.isoBoard.dataset.renderMode = pixelMode ? 'pixel' : 'procedural';
+  el.isoBoard.dataset.spritesDrawn = String(renderTelemetry.spritesDrawn);
+  el.isoBoard.dataset.proceduralDrawn = String(renderTelemetry.proceduralDrawn);
+  el.isoBoard.dataset.spriteBitmaps = String(renderTelemetry.bitmapCount);
+  el.isoBoard.dataset.commissionedDrawn = String(renderTelemetry.commissionedDrawn);
+  el.isoBoard.dataset.commissionedBitmaps = String(renderTelemetry.commissionedBitmaps);
+  el.isoBoard.dataset.commissionedIndexedAssets = String(renderTelemetry.commissionedIndexedAssets);
+}
+
+function artAnimationAllowed() {
+  const art = commissionedCache.getTelemetry();
+  return pixelMode
+    && art.indexedFrames > art.indexedStates
+    && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
+
+function syncArtAnimation() {
+  if (!artAnimationAllowed()) {
+    if (artAnimationFrame) cancelAnimationFrame(artAnimationFrame);
+    artAnimationFrame = 0;
+    return;
+  }
+  if (artAnimationFrame) return;
+  artAnimationFrame = requestAnimationFrame(drawArtAnimationFrame);
+}
+
+function drawArtAnimationFrame() {
+  artAnimationFrame = 0;
+  if (!artAnimationAllowed()) return;
+  drawTerrain(el.isoBoard.querySelector('.terrain-canvas'));
+  syncRenderTelemetryDataset();
+  artAnimationFrame = requestAnimationFrame(drawArtAnimationFrame);
 }
 
 function renderNode(node) {
@@ -948,11 +1013,17 @@ function drawTerrain(canvas) {
   if (!ctx) return;
 
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  const commissioned = commissionedCache.getTelemetry();
   renderTelemetry = {
     pixelMode,
     spritesDrawn: 0,
+    commissionedDrawn: 0,
+    legacySpritesDrawn: 0,
     proceduralDrawn: 0,
-    bitmapCount: spriteCache.size,
+    bitmapCount: spriteCache.size + commissionedCache.size,
+    commissionedBitmaps: commissioned.cachedBitmaps,
+    commissionedIndexedAssets: commissioned.indexedAssets,
+    commissionedWarnings: commissioned.warningKeys,
   };
   const texture = assetsReady ? assetLoader.get('terrain') : null;
   if (texture) {
@@ -971,7 +1042,7 @@ function drawTerrain(canvas) {
   drawBoardSurface(ctx);
   for (let y = 0; y < BOARD_SIZE; y += 1) {
     for (let x = 0; x < BOARD_SIZE; x += 1) {
-      drawTile(ctx, x, y);
+      drawTerrainCell(ctx, x, y);
     }
   }
   for (const node of visibleNodes().filter(nodeInCurrentRegion)) drawNodeModel(ctx, node);
@@ -981,6 +1052,30 @@ function drawTerrain(canvas) {
   drawPlayerModel(ctx);
   drawBoardEdge(ctx);
   ctx.restore();
+  const afterDraw = commissionedCache.getTelemetry();
+  renderTelemetry.commissionedBitmaps = afterDraw.cachedBitmaps;
+  renderTelemetry.commissionedIndexedAssets = afterDraw.indexedAssets;
+  renderTelemetry.commissionedWarnings = afterDraw.warningKeys;
+  renderTelemetry.bitmapCount = spriteCache.size + afterDraw.cachedBitmaps;
+}
+
+function commissionedTerrainId(x, y) {
+  const variant = hash2(x, y);
+  if (variant % 17 === 0) return 'disturbed_ground';
+  if (variant % 5 === 0) return 'rocky_soil';
+  return 'base_soil';
+}
+
+function drawTerrainCell(ctx, x, y) {
+  const pos = iso(x, y);
+  if (pixelMode && commissionedCache.draw(ctx, 'terrain', commissionedTerrainId(x, y), pos.x, pos.y, {
+    state: 'active',
+  })) {
+    renderTelemetry.commissionedDrawn += 1;
+    renderTelemetry.spritesDrawn += 1;
+    return;
+  }
+  drawTile(ctx, x, y);
 }
 
 function drawBoardShadow(ctx) {
@@ -1062,13 +1157,26 @@ function drawNodeModel(ctx, node) {
   const locked = node.requiresBuilding && !state.built[node.requiresBuilding];
   const depleted = nodeState.charges <= 0 || nodeState.cooldownUntil > Date.now();
   const alpha = locked || depleted ? 0.34 : 1;
+  const visualState = locked || depleted ? 'disabled' : 'active';
+  const commissionedId = COMMISSIONED_NODE_IDS[node.item];
+  if (pixelMode && commissionedId && commissionedCache.draw(ctx, 'resource', commissionedId, pos.x, pos.y, {
+    state: visualState,
+    alpha: visualState === 'active' ? 1 : 0.7,
+  })) {
+    renderTelemetry.commissionedDrawn += 1;
+    renderTelemetry.spritesDrawn += 1;
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
+    return;
+  }
   // Board outcrop sprite first; the item icon is the legacy fallback.
   if (pixelMode && spriteCache.drawSprite(ctx, `node_${node.item}`, pos.x, pos.y + 12, {
     scale: 3,
     anchor: 'feet',
     alpha,
   })) {
+    renderTelemetry.legacySpritesDrawn += 1;
     renderTelemetry.spritesDrawn += 1;
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
     return;
   }
   if (pixelMode && spriteCache.drawSprite(ctx, node.item, pos.x, pos.y, {
@@ -1076,7 +1184,9 @@ function drawNodeModel(ctx, node) {
     anchor: 'tile-centre',
     alpha,
   })) {
+    renderTelemetry.legacySpritesDrawn += 1;
     renderTelemetry.spritesDrawn += 1;
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
     return;
   }
   renderTelemetry.proceduralDrawn += 1;
@@ -1113,11 +1223,12 @@ function drawNodeModel(ctx, node) {
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.restore();
+  if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
 }
 
 function drawBuildingPad(ctx, building) {
   const pos = iso(building.x, building.y);
-  const online = !!state.built[building.id];
+  const online = !!state.built[building.id] && !state.fault[building.id];
   diamond(ctx, pos.x, pos.y + 5, 78, 34);
   ctx.fillStyle = online ? 'rgba(76, 156, 151, 0.10)' : 'rgba(230, 197, 129, 0.06)';
   ctx.fill();
@@ -1128,14 +1239,29 @@ function drawBuildingPad(ctx, building) {
 function drawBuildingModel(ctx, building) {
   drawBuildingPad(ctx, building);
   const pos = iso(building.x, building.y);
-  const online = !!state.built[building.id];
+  const built = !!state.built[building.id];
+  const faulted = !!state.fault[building.id];
+  const online = built && !faulted;
+  const visualState = faulted ? 'disabled' : built ? 'active' : 'blueprint';
+  const commissionedId = COMMISSIONED_BUILDING_IDS[building.id];
+  if (pixelMode && commissionedId && commissionedCache.draw(ctx, 'building', commissionedId, pos.x, pos.y, {
+    state: visualState,
+    alpha: visualState === 'active' ? 1 : 0.72,
+  })) {
+    renderTelemetry.commissionedDrawn += 1;
+    renderTelemetry.spritesDrawn += 1;
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
+    return;
+  }
   // bld_ namespace keeps building art from colliding with item ids ('water').
   if (pixelMode && spriteCache.drawSprite(ctx, `bld_${building.id}`, pos.x, pos.y + 18, {
     scale: 3,
     anchor: 'feet',
-    alpha: online ? 1 : 0.5,
+    alpha: visualState === 'active' ? 1 : 0.5,
   })) {
+    renderTelemetry.legacySpritesDrawn += 1;
     renderTelemetry.spritesDrawn += 1;
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
     return;
   }
   renderTelemetry.proceduralDrawn += 1;
@@ -1162,6 +1288,7 @@ function drawBuildingModel(ctx, building) {
       ctx.stroke();
     }
     ctx.restore();
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
     return;
   }
 
@@ -1176,6 +1303,7 @@ function drawBuildingModel(ctx, building) {
     ctx.strokeStyle = '#173c37';
     ctx.stroke();
     ctx.restore();
+    if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
     return;
   }
 
@@ -1191,6 +1319,59 @@ function drawBuildingModel(ctx, building) {
     ctx.strokeStyle = '#63c7e1';
     ctx.lineWidth = 3;
     ctx.stroke();
+  }
+  ctx.restore();
+  if (visualState !== 'active') drawStateTreatment(ctx, pos.x, pos.y, visualState);
+}
+
+function drawStateTreatment(ctx, x, y, visualState) {
+  ctx.save();
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'square';
+  if (visualState === 'blueprint') {
+    ctx.setLineDash([6, 4]);
+    diamond(ctx, x, y + 4, 72, 34);
+    ctx.strokeStyle = RENDER_CONTRACT.palette.crystalLight;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x - 21, y + 10);
+    ctx.lineTo(x - 21, y - 19);
+    ctx.lineTo(x + 21, y - 2);
+    ctx.lineTo(x + 21, y + 10);
+    ctx.stroke();
+  } else if (visualState === 'construction') {
+    ctx.strokeStyle = RENDER_CONTRACT.palette.goldLight;
+    ctx.beginPath();
+    ctx.moveTo(x - 26, y + 12);
+    ctx.lineTo(x - 16, y - 24);
+    ctx.lineTo(x + 18, y + 9);
+    ctx.moveTo(x + 26, y + 12);
+    ctx.lineTo(x + 16, y - 24);
+    ctx.lineTo(x - 18, y + 9);
+    ctx.stroke();
+  } else if (visualState === 'disabled') {
+    ctx.strokeStyle = RENDER_CONTRACT.palette.steelLight;
+    ctx.beginPath();
+    ctx.arc(x, y - 10, 10, -Math.PI * 0.75, Math.PI * 0.75);
+    ctx.moveTo(x, y - 25);
+    ctx.lineTo(x, y - 8);
+    ctx.moveTo(x - 16, y + 8);
+    ctx.lineTo(x + 16, y - 28);
+    ctx.stroke();
+  } else if (visualState === 'damaged') {
+    ctx.fillStyle = RENDER_CONTRACT.palette.goldLight;
+    ctx.strokeStyle = RENDER_CONTRACT.palette.outline;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 35);
+    ctx.lineTo(x + 14, y - 10);
+    ctx.lineTo(x - 14, y - 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = RENDER_CONTRACT.palette.outline;
+    ctx.fillRect(x - 1, y - 28, 3, 9);
+    ctx.fillRect(x - 1, y - 16, 3, 3);
   }
   ctx.restore();
 }
@@ -1224,10 +1405,18 @@ function drawPrism(ctx, x, y, width, height, light, dark) {
 
 function drawPlayerModel(ctx) {
   const pos = iso(state.player.x, state.player.y);
+  if (pixelMode && commissionedCache.draw(ctx, 'actor', 'astronaut', pos.x, pos.y, {
+    state: 'active',
+  })) {
+    renderTelemetry.commissionedDrawn += 1;
+    renderTelemetry.spritesDrawn += 1;
+    return;
+  }
   if (pixelMode && spriteCache.drawSprite(ctx, 'astro', pos.x, pos.y + 4, {
     scale: 3,
     anchor: 'feet',
   })) {
+    renderTelemetry.legacySpritesDrawn += 1;
     renderTelemetry.spritesDrawn += 1;
     return;
   }
@@ -1612,6 +1801,8 @@ function exposeTestHooks() {
     equip: state.equip,
     activeTab,
     rendering: { ...renderTelemetry },
+    commissionedArt: commissionedCache.getTelemetry(),
+    commissionedWarnings: commissionedWarnings.slice(-10),
     events: state.events.slice(0, 5),
     viewport: { ...viewTransform },
     skills: Object.fromEntries(Object.keys(SKILLS).map((id) => [id, skillProgress((state.skills[id] || {}).xp)])),

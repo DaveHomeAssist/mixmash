@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -38,6 +38,20 @@ const PRECACHE = [
   './mars/styles.css',
   './mars/game.js',
   './mars/engine.mjs',
+  './mars/render-contract.mjs',
+  './mars/sprites.mjs',
+  './mars/sprite-canvas.mjs',
+  './mars/commissioned-art.mjs',
+  './mars/assets/manifest.json',
+  './mars/assets/mars-terrain.svg',
+  './mars/assets/commissioned/index.json',
+  './mars/golden-scene.html',
+  './mars/golden-scene.css',
+  './mars/golden-scene.js',
+  './mars/art/golden-slice.json',
+  './mars/art/golden-scene.json',
+  './mars/art/reports/artist-test-approval.json',
+  './mars/art/reports/golden-approval.json',
   './garden/',
   './garden/index.html',
   './empires/',

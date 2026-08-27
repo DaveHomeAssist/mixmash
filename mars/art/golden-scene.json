@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "contractVersion": 3,
+  "decision": "DEC-79",
+  "title": "MarsScape golden scene",
+  "normalGameplayZoom": 1,
+  "coordinateSystem": "isometric grid, x east, y south, entity coordinates are footprint centres",
+  "defaultReview": {
+    "renderMode": "auto",
+    "lighting": "daylight",
+    "zoom": 1,
+    "labels": false,
+    "anchorOverlay": false,
+    "footprintOverlay": false,
+    "reducedMotion": false
+  },
+  "terrain": [
+    { "asset": "terrain:base_soil", "region": "board" },
+    { "asset": "terrain:rocky_soil", "cells": [[6, 3], [7, 3], [6, 4], [7, 4], [8, 4]] },
+    { "asset": "terrain:disturbed_ground", "cells": [[5, 5], [6, 5], [7, 5]] },
+    { "asset": "terrain:edge", "cells": [[1, 7], [2, 8], [3, 9]] },
+    { "asset": "terrain:cliff_slope", "cells": [[8, 2], [9, 3]] }
+  ],
+  "beats": [
+    {
+      "id": "land_at_outpost",
+      "title": "Land at outpost",
+      "durationMs": 2400,
+      "lighting": "daylight",
+      "camera": { "centre": [4.5, 4.5], "zoom": 1 },
+      "description": "The astronaut arrives at a readable working outpost with habitat, storage, antenna, and supplies.",
+      "entities": [
+        { "asset": "building:habitat", "state": "active", "at": [4, 3] },
+        { "asset": "building:storage", "state": "active", "at": [5, 4] },
+        { "asset": "actor:astronaut", "state": "active", "at": [4, 5] },
+        { "asset": "prop:crate", "state": "active", "at": [5, 5] },
+        { "asset": "prop:antenna", "state": "active", "at": [3, 3] }
+      ],
+      "assertions": ["outpost silhouettes remain distinct without labels", "northwest highlights and southeast shadows agree"]
+    },
+    {
+      "id": "survey_site",
+      "title": "Survey site",
+      "durationMs": 2400,
+      "lighting": "daylight",
+      "camera": { "centre": [6.5, 4.5], "zoom": 1 },
+      "description": "The astronaut and rover survey common ore and a blue crystal node beside the beacon.",
+      "entities": [
+        { "asset": "actor:astronaut", "state": "active", "at": [5, 5] },
+        { "asset": "actor:rover", "state": "active", "at": [6, 5] },
+        { "asset": "resource:common_ore", "state": "active", "at": [7, 4] },
+        { "asset": "resource:blue_crystal", "state": "active", "at": [8, 4] },
+        { "asset": "prop:beacon", "state": "active", "at": [7, 6] },
+        { "asset": "effect:selection", "state": "active", "at": [8, 4] }
+      ],
+      "assertions": ["astronaut and rover scale relationship reads at 1.0 zoom", "resources remain distinguishable without hue alone"]
+    },
+    {
+      "id": "place_solar_array_blueprint",
+      "title": "Place solar-array blueprint",
+      "durationMs": 1800,
+      "lighting": "daylight",
+      "camera": { "centre": [5.5, 5.5], "zoom": 1 },
+      "description": "A solar-array blueprint is placed with its centre-origin footprint visible for registration review.",
+      "entities": [
+        { "asset": "building:habitat", "state": "active", "at": [4, 3] },
+        { "asset": "building:solar_array", "state": "blueprint", "at": [6, 5] },
+        { "asset": "actor:astronaut", "state": "active", "at": [5, 6] },
+        { "asset": "effect:selection", "state": "active", "at": [6, 5] }
+      ],
+      "assertions": ["blueprint is not communicated by opacity or cyan alone", "solar footprint is centred on its declared cell"]
+    },
+    {
+      "id": "build_and_connect_power",
+      "title": "Build and connect power",
+      "durationMs": 2400,
+      "lighting": "daylight",
+      "camera": { "centre": [6, 5], "zoom": 1 },
+      "description": "Construction resolves into a powered solar array connected through cable, junction, and path light.",
+      "entities": [
+        { "asset": "building:solar_array", "state": "construction", "at": [6, 5] },
+        { "asset": "infrastructure:power_cable", "state": "active", "at": [6, 6] },
+        { "asset": "infrastructure:junction", "state": "active", "at": [5, 6] },
+        { "asset": "infrastructure:path_light", "state": "active", "at": [7, 6] },
+        { "asset": "effect:power_glow", "state": "active", "at": [5, 6] }
+      ],
+      "assertions": ["construction state has visible structural progress", "infrastructure does not merge into the terrain"]
+    },
+    {
+      "id": "activate_extractor",
+      "title": "Activate extractor",
+      "durationMs": 2400,
+      "lighting": "daylight",
+      "camera": { "centre": [7, 4.5], "zoom": 1 },
+      "description": "The completed solar array powers an extractor and pipe at the blue crystal site.",
+      "entities": [
+        { "asset": "building:solar_array", "state": "active", "at": [6, 5] },
+        { "asset": "building:extractor", "state": "active", "at": [8, 4] },
+        { "asset": "resource:blue_crystal", "state": "active", "at": [8, 5] },
+        { "asset": "infrastructure:pipe", "state": "active", "at": [7, 5] },
+        { "asset": "effect:power_glow", "state": "active", "at": [8, 4] }
+      ],
+      "assertions": ["functional animation never controls gameplay timing", "extractor and crystal remain separately readable"]
+    },
+    {
+      "id": "dispatch_rover",
+      "title": "Dispatch rover",
+      "durationMs": 2400,
+      "lighting": "night",
+      "camera": { "centre": [5, 7], "zoom": 1 },
+      "description": "The rover crosses the terrain edge along a lit route while the beacon marks its destination.",
+      "entities": [
+        { "asset": "actor:rover", "state": "active", "at": [4, 7] },
+        { "asset": "infrastructure:path_light", "state": "active", "at": [5, 7] },
+        { "asset": "prop:beacon", "state": "active", "at": [6, 7] },
+        { "asset": "effect:dust", "state": "active", "at": [3.5, 7] }
+      ],
+      "assertions": ["rover silhouette retains 3:1 essential contrast at night", "reduced motion freezes travel and dust on frame 01"]
+    },
+    {
+      "id": "dust_storm",
+      "title": "Dust storm",
+      "durationMs": 3000,
+      "lighting": "storm",
+      "camera": { "centre": [6.5, 4.5], "zoom": 1 },
+      "description": "A dust storm disables the array, damages the extractor, and leaves physical debris with a warning marker.",
+      "entities": [
+        { "asset": "building:solar_array", "state": "disabled", "at": [6, 5] },
+        { "asset": "building:extractor", "state": "damaged", "at": [8, 4] },
+        { "asset": "prop:debris", "state": "active", "at": [7, 5] },
+        { "asset": "effect:dust", "state": "active", "at": [7, 4] },
+        { "asset": "effect:warning", "state": "active", "at": [8, 4] }
+      ],
+      "assertions": ["disabled and damaged states differ without hue alone", "warning stays visible with animation frozen"]
+    },
+    {
+      "id": "repair_at_sunrise",
+      "title": "Repair at sunrise",
+      "durationMs": 3000,
+      "lighting": "dawn",
+      "camera": { "centre": [6.5, 4.5], "zoom": 1 },
+      "description": "Repair at dawn restores solar and extraction power while the crew clears the site.",
+      "entities": [
+        { "asset": "building:solar_array", "state": "active", "at": [6, 5] },
+        { "asset": "building:extractor", "state": "active", "at": [8, 4] },
+        { "asset": "actor:astronaut", "state": "active", "at": [7, 5] },
+        { "asset": "effect:repair", "state": "active", "at": [8, 4] },
+        { "asset": "effect:power_glow", "state": "active", "at": [6, 5] }
+      ],
+      "assertions": ["repair and powered status remain visible in reduced motion", "dawn treatment preserves northwest light ownership"]
+    }
+  ],
+  "reviewChecks": [
+    "anchors",
+    "footprints",
+    "label_free_readability",
+    "scale_relationships",
+    "lighting",
+    "states",
+    "animation",
+    "performance",
+    "procedural_fallback",
+    "reduced_motion"
+  ],
+  "approval": {
+    "status": "blocked",
+    "reason": "Commissioned exports, editable sources, and human in-renderer review are absent.",
+    "requiredScope": "full",
+    "requiredZoom": 1,
+    "requiresHuman": true
+  }
+}

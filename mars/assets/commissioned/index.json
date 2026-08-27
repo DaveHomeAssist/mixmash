@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "contractVersion": 3,
+  "decision": "DEC-79",
+  "scope": "full",
+  "manifestHash": "df939557b1c4e37a8f68e5b634857adc9942f2689116aa68f3457d3e18b742fe",
+  "runtimeAssetHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "runtimeAssetHashes": {
+    "full": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "artist-test": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "availableExports": 0,
+  "assets": []
+}

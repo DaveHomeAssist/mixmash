@@ -6,13 +6,13 @@ DEC-79 resolves the endpoint: full isometric pixel art on the playable board, el
 
 | Phase | Status | Evidence or blocker |
 | --- | --- | --- |
-| 0. Render contract | Complete | `render-contract.mjs` v2 and `/mars/art-spec.html`. |
-| 1. Canvas sprite pipeline | Complete | 33 runtime maps, cached `ImageBitmap`, Pixel Art toggle, procedural and emoji fallback. |
+| 0. Render contract | Complete | `render-contract.mjs` v3 and `/mars/art-spec.html`. |
+| 1. Canvas sprite pipeline | Complete | Validated commissioned-PNG cache, 33 code-owned fallback maps, Pixel Art toggle, and procedural/emoji fallback are wired into the playable board. |
 | 2. Audit and production contract | Complete | `ART_AUDIT.md`, `ART_DIRECTION.md`, and DEC-79. |
-| 3. Golden vertical slice specification | Complete | `mars/art/golden-slice.json` and generated contact sheet. |
-| 4. Asset validation pipeline | Complete when CI and browser checks pass | Filename, PNG, alpha, anchor, footprint, animation, missing asset, source, contact-sheet, and screenshot tooling. |
-| 5. Paid artist test | Blocked on artist deliverables | No paid test package exists in the repository yet. |
-| 6. Golden scene approval | Blocked on Phase 5 | Approval must occur inside MarsScape at 1.0 gameplay zoom. |
+| 3. Golden vertical slice specification | Complete | `golden-slice.json`, `golden-scene.json`, the generated contact sheet, and `/mars/golden-scene.html`. |
+| 4. Asset validation pipeline | Complete | Filename, PNG, alpha, anchor, footprint, animation, missing asset, source, runtime-index, contact-sheet, screenshot, and performance tooling are executable and CI-gated. |
+| 5. Paid artist test | Blocked on artist deliverables and human review | The scoped gate expects four assets, eight PNG exports, four editable sources, and approval inside the renderer; none are present yet. |
+| 6. Golden scene approval | Blocked on Phase 5 and complete golden exports | Machine review is available, but approval requires all 108 exports, 26 editable sources, and Dave's review at 1.0 gameplay zoom. |
 | 7. Production scale | Not started | Starts only after Phase 6 approval. |
 
 ## Golden vertical slice
@@ -41,9 +41,8 @@ The machine-readable checklist is `mars/art/golden-slice.json`. It contains exac
 4. Show construction, connect the power cable and junction, then enter active state.
 5. Activate the extractor on the blue crystal node.
 6. Dispatch the rover across the terrain edge and path-light route.
-7. Enter the storm lighting profile; disable power and show warning without color-only status.
-8. Show damaged solar and extractor states.
-9. Repair at sunrise and return both systems to active state with repair and power-glow effects.
+7. Enter the storm lighting profile; disable the solar array, damage the extractor, and show dust, debris, and warning without color-only status.
+8. Repair at sunrise and return both systems to active state with repair and power-glow effects.
 
 ## Golden scene acceptance
 
@@ -79,16 +78,21 @@ The first paid package is deliberately small:
 
 Pass condition: Dave approves every deliverable inside MarsScape at 1.0 gameplay zoom. Contact-sheet approval alone is insufficient.
 
+The renderer receipt is deliberately local and exportable; it does not silently mutate the repository. It records the SHA-256 package identity of every scoped PNG and editable source. Before a phase is called approved, add that exact JSON receipt to the canonical repo record and link it from `DECISIONS.md`.
+
 ## Validation commands
 
 ```bash
+npm run art:index
 npm run art:validate
+npm run art:report
 npm run art:contact-sheet
 npm run art:visual
 npm run art:approve
+npm run art:approve:golden
 ```
 
-`art:validate` allows planned assets to be missing and reports the required fallback. `art:approve` is strict and fails on any missing export, broken clip, or absent editable source.
+`art:index` writes the deterministic runtime index from only valid present frames. `art:report` refreshes normal and strict per-scope evidence. `art:validate` allows planned art to be absent but fails if the committed index or reports are stale. `art:approve` is the strict four-asset/eight-export paid-test gate. `art:approve:golden` is the separate 26-asset/108-export machine gate. Neither command records human approval; the renderer unlocks receipt recording only from a `machineReady` report plus the 1.0-zoom human checklist.
 
 ## Production order after approval
 
@@ -120,4 +124,4 @@ Superseded claims:
 - `settlement-atlas.svg` no longer gates boot.
 - Existing 24 x 24 node and 48 x 32 building targets are replaced by renderer-derived class canvases.
 
-PR #8 must not be merged over these canonical documents. Close it as superseded after the DEC-79 commit is present on `gh-pages`.
+PR #8 was closed without merge as superseded after DEC-79 landed on `gh-pages`. It remains historical context and must not be reopened or merged over these canonical documents.

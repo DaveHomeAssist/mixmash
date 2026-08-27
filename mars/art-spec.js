@@ -18,6 +18,7 @@ const overlayState = {
 document.querySelector('#logicalTile').textContent = `${RENDER_CONTRACT.tile.logicalWidth} × ${RENDER_CONTRACT.tile.logicalHeight}`;
 document.querySelector('#drawnTile').textContent = `${RENDER_CONTRACT.tile.drawnWidth} × ${RENDER_CONTRACT.tile.drawnHeight}`;
 document.querySelector('#boardSize').textContent = `${RENDER_CONTRACT.board.columns} × ${RENDER_CONTRACT.board.rows}`;
+document.querySelector('#contractVersion').textContent = `Render contract v${RENDER_CONTRACT.version} · ${RENDER_CONTRACT.decision} locked`;
 
 for (const [name, color] of Object.entries(RENDER_CONTRACT.palette)) {
   const swatch = document.createElement('div');

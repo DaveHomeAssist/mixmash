@@ -60,9 +60,17 @@ test('the sprite renderer is actually wired into the shipped client', () => {
 
 test('the canvas ImageBitmap pipeline and persisted fallback toggle are shipped', () => {
   assert.match(source, /import \{ SpriteBitmapCache \} from '\.\/sprite-canvas\.mjs'/);
+  assert.match(source, /import \{ CommissionedArtCache \} from '\.\/commissioned-art\.mjs'/);
   assert.match(source, /spriteCache\.prime\(spriteIds\(\)\)/, 'all authored sprites prime during boot');
+  assert.match(source, /commissionedCache\.loadAndPrime\(\)/, 'validated commissioned exports prime during boot');
+  assert.match(html, /assets\/commissioned\/index\.json/, 'the generated commissioned index is preloaded with the game shell');
+  assert.match(source, /commissionedCache\.draw\(ctx, 'terrain'/, 'commissioned terrain is in the playable renderer');
+  assert.match(source, /commissionedCache\.draw\(ctx, 'resource'/, 'commissioned resources are in the playable renderer');
+  assert.match(source, /commissionedCache\.draw\(ctx, 'building'/, 'commissioned buildings are in the playable renderer');
+  assert.match(source, /commissionedCache\.draw\(ctx, 'actor', 'astronaut'/, 'commissioned astronaut art is in the playable renderer');
   assert.match(source, /spriteCache\.drawSprite\(ctx, node\.item/, 'nodes use the canvas sprite seam');
   assert.match(source, /spriteCache\.drawSprite\(ctx, 'astro'/, 'the actor uses the feet-anchored sprite seam');
+  assert.match(source, /function drawStateTreatment\(/, 'renderer-owned state treatment backs missing state exports');
   assert.match(source, /marsscape\.pixelMode\.v1/, 'the renderer preference has an isolated storage key');
   assert.match(html, /id="pixelModeButton"[^>]+aria-pressed="true"/, 'the renderer toggle is a real control');
   assert.match(source, /\$\{spriteBitmapsReady\}\/\$\{spriteIds\(\)\.length\}/, 'boot telemetry must use the live registry count');
@@ -78,7 +86,7 @@ test('the measured render-contract page is a deployable surface', () => {
   assert.match(artSpec, /id="specCanvas"/);
   assert.match(artSpec, /id="spriteCanvas"/);
   assert.match(artSpec, /src="\.\/art-spec\.js"/);
-  assert.match(artSpec, /Render contract v2 · DEC-79 locked/);
+  assert.match(artSpec, /Render contract v3 · DEC-79 locked/);
   assert.match(artSpec, /id="spriteCanvas" width="940" height="540"/, 'the full 33-map proof must not be clipped');
 });
 

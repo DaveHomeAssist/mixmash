@@ -20,7 +20,7 @@ Bulk commissioning before the class canvases, anchors, footprints, state system,
 1. Use full isometric pixel art for interactive board entities.
 2. Keep elevated procedural rendering as the missing-asset and Pixel Art off fallback.
 3. Keep painterly art beyond the board as horizon, sky, and distant ridges.
-4. Derive export sizes, ground anchors, footprint origins, zoom, palette, lighting, state, and animation rules from render contract v2.
+4. Derive export sizes, ground anchors, footprint origins, zoom, palette, lighting, state, animation, and performance rules from executable render contract v3.
 5. Require an automated validation report, footprint contact sheet, and visual-regression screenshots for commissioned exports.
 6. Run one paid artist test before bulk production.
 7. Approve the paid test and complete golden scene only inside MarsScape at 1.0 gameplay zoom.
@@ -51,15 +51,20 @@ Bulk commissioning before the class canvases, anchors, footprints, state system,
 - Existing runtime maps remain valid fallback/reference art but are not automatically final production anchors.
 - Canonical asset states are blueprint, construction, active, disabled, and damaged.
 - The artist contract and golden-slice manifest are versioned with the renderer.
-- PR #8 is closed as superseded after its useful rationale is preserved in canonical docs.
+- PR #8 was closed without merge as superseded after its useful rationale was preserved in canonical docs.
 - Production order is terrain/transitions, core buildings, resources/extraction, units/vehicles, construction/damage, props/decoration, advanced animation, then promotional paintings.
 
 ### Evidence and links
 
 - `mars/render-contract.mjs`
 - `mars/sprite-canvas.mjs`
+- `mars/commissioned-art.mjs`
+- `mars/golden-scene.html`
 - `mars/docs/ART_DIRECTION.md`
 - `mars/docs/ART_ROADMAP.md`
 - `mars/docs/ART_AUDIT.md`
 - `mars/art/golden-slice.json`
+- `mars/art/golden-scene.json`
+- `mars/art/reports/artist-test-approval.json`
+- `mars/art/reports/golden-approval.json`
 - Historical review: `https://github.com/DaveHomeAssist/mixmash/pull/8`

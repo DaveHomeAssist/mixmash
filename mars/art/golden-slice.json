@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "contractVersion": 2,
+  "contractVersion": 3,
   "decision": "DEC-79",
   "normalGameplayZoom": 1,
   "exportRoot": "assets/commissioned",
@@ -15,7 +15,8 @@
       "footprint": { "width": 1, "depth": 1, "origin": "centre" },
       "fallback": "procedural:terrain",
       "editableSource": "art/sources/terrain/base_soil.aseprite",
-      "artistTest": true
+      "artistTest": true,
+      "artistTestStates": ["active"]
     },
     {
       "category": "Terrain",
@@ -73,7 +74,8 @@
       "fallback": "procedural:building",
       "fallbackSprite": "bld_habitat",
       "editableSource": "art/sources/building/habitat.aseprite",
-      "artistTest": true
+      "artistTest": true,
+      "artistTestStates": ["active", "damaged"]
     },
     {
       "category": "Buildings",
@@ -140,7 +142,8 @@
       "fallback": "procedural:actor",
       "fallbackSprite": "astro",
       "editableSource": "art/sources/actor/astronaut.aseprite",
-      "artistTest": true
+      "artistTest": true,
+      "artistTestStates": ["active"]
     },
     {
       "category": "Units",
@@ -234,7 +237,8 @@
       "fallback": "procedural:resource",
       "fallbackSprite": "node_ice",
       "editableSource": "art/sources/resource/blue_crystal.aseprite",
-      "artistTest": true
+      "artistTest": true,
+      "artistTestStates": ["active"]
     },
     {
       "category": "Resources",

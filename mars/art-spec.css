@@ -108,6 +108,14 @@ h2 {
   text-decoration: none;
 }
 
+.spec-links {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
 main {
   display: grid;
   min-width: 0;
@@ -275,6 +283,7 @@ footer { padding: 1.4rem 0 3rem; }
   .section-head { align-items: stretch; flex-direction: column; }
   .spec-header { display: flex; }
   .game-link { align-self: flex-start; }
+  .spec-links { justify-content: flex-start; }
   .decision { grid-template-columns: 1fr; gap: 0.4rem; }
   .spec-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .palette { grid-template-columns: repeat(2, minmax(0, 1fr)); }

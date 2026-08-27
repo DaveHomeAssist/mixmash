@@ -40,17 +40,23 @@ DEC-79 locks full isometric pixel art for the playable board while preserving th
 - `docs/ART_AUDIT.md`
 - `docs/DECISIONS.md`
 - `art/golden-slice.json`
+- `art/golden-scene.json`
+- `commissioned-art.mjs`
+- `golden-scene.html`
 
 Validate a candidate package and generate its review surfaces with:
 
 ```bash
+npm run art:index
 npm run art:validate
+npm run art:report
 npm run art:contact-sheet
 npm run art:visual
 npm run art:approve
+npm run art:approve:golden
 ```
 
-`art:validate` reports planned missing assets and confirms their fallback path. `art:approve` is the strict paid-asset gate and fails until all PNG exports and editable sources are present.
+`art:index` regenerates the network-safe runtime index from valid present frames. `art:report` refreshes the normal report plus fail-closed paid-test and full-golden reports; `art:validate` reports planned missing art and rejects index or report drift. `art:approve` is the deliberately small paid-test gate (four assets, eight PNG exports, four editable sources); `art:approve:golden` is the full 26-asset/108-export machine gate. Neither command records human approval. `/mars/golden-scene.html` consumes their `machineReady` evidence and can create an exportable human receipt only after the 1.0-zoom review checks pass.
 
 ## API
 

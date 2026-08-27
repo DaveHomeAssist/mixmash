@@ -1,0 +1,897 @@
+{
+  "reportVersion": 1,
+  "passed": true,
+  "approval": false,
+  "scope": "full",
+  "contractVersion": 3,
+  "decision": "DEC-79",
+  "manifestHash": "df939557b1c4e37a8f68e5b634857adc9942f2689116aa68f3457d3e18b742fe",
+  "approvalReady": false,
+  "counts": {
+    "assets": 26,
+    "expectedExports": 108,
+    "presentExports": 0,
+    "missingExports": 108,
+    "editableSources": 0,
+    "errors": 0,
+    "warnings": 145
+  },
+  "errors": [],
+  "warnings": [
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "terrain:base_soil",
+      "message": "sprites/terrain/base_soil__active__f01.png is missing.",
+      "response": "Render procedural:terrain and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "terrain:base_soil",
+      "message": "art/sources/terrain/base_soil.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "terrain:rocky_soil",
+      "message": "sprites/terrain/rocky_soil__active__f01.png is missing.",
+      "response": "Render procedural:terrain and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "terrain:rocky_soil",
+      "message": "art/sources/terrain/rocky_soil.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "terrain:edge",
+      "message": "sprites/terrain/edge__active__f01.png is missing.",
+      "response": "Render procedural:board_edge and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "terrain:edge",
+      "message": "art/sources/terrain/edge.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "terrain:cliff_slope",
+      "message": "sprites/terrain/cliff_slope__active__f01.png is missing.",
+      "response": "Render procedural:board_edge and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "terrain:cliff_slope",
+      "message": "art/sources/terrain/cliff_slope.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "terrain:disturbed_ground",
+      "message": "sprites/terrain/disturbed_ground__active__f01.png is missing.",
+      "response": "Render procedural:terrain and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "terrain:disturbed_ground",
+      "message": "art/sources/terrain/disturbed_ground.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__blueprint__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__construction__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__active__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__disabled__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__damaged__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "building:habitat",
+      "message": "art/sources/building/habitat.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:solar_array",
+      "message": "sprites/building/solar_array__blueprint__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:solar_array",
+      "message": "sprites/building/solar_array__construction__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:solar_array",
+      "message": "sprites/building/solar_array__active__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:solar_array",
+      "message": "sprites/building/solar_array__disabled__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:solar_array",
+      "message": "sprites/building/solar_array__damaged__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "building:solar_array",
+      "message": "art/sources/building/solar_array.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__blueprint__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__construction__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__active__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__active__f02.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__active__f03.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__active__f04.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "building:extractor",
+      "message": "active is missing 4 of 4 frames.",
+      "response": "Use procedural:building because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__disabled__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:extractor",
+      "message": "sprites/building/extractor__damaged__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "building:extractor",
+      "message": "art/sources/building/extractor.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:storage",
+      "message": "sprites/building/storage__blueprint__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:storage",
+      "message": "sprites/building/storage__construction__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:storage",
+      "message": "sprites/building/storage__active__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:storage",
+      "message": "sprites/building/storage__disabled__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:storage",
+      "message": "sprites/building/storage__damaged__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "building:storage",
+      "message": "art/sources/building/storage.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f01.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f02.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f03.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f04.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "actor:astronaut",
+      "message": "active is missing 4 of 4 frames.",
+      "response": "Use procedural:actor because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__disabled__f01.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__damaged__f01.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__damaged__f02.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__damaged__f03.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "actor:astronaut",
+      "message": "damaged is missing 3 of 3 frames.",
+      "response": "Use procedural:actor because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "actor:astronaut",
+      "message": "art/sources/actor/astronaut.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__active__f01.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__active__f02.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__active__f03.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__active__f04.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__active__f05.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__active__f06.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "actor:rover",
+      "message": "active is missing 6 of 6 frames.",
+      "response": "Use procedural:rover because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__disabled__f01.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__damaged__f01.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__damaged__f02.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:rover",
+      "message": "sprites/actor/rover__damaged__f03.png is missing.",
+      "response": "Render procedural:rover and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "actor:rover",
+      "message": "damaged is missing 3 of 3 frames.",
+      "response": "Use procedural:rover because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "actor:rover",
+      "message": "art/sources/actor/rover.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:pipe",
+      "message": "sprites/infrastructure/pipe__blueprint__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:pipe",
+      "message": "sprites/infrastructure/pipe__construction__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:pipe",
+      "message": "sprites/infrastructure/pipe__active__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:pipe",
+      "message": "sprites/infrastructure/pipe__disabled__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:pipe",
+      "message": "sprites/infrastructure/pipe__damaged__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "infrastructure:pipe",
+      "message": "art/sources/infrastructure/pipe.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:power_cable",
+      "message": "sprites/infrastructure/power_cable__blueprint__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:power_cable",
+      "message": "sprites/infrastructure/power_cable__construction__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:power_cable",
+      "message": "sprites/infrastructure/power_cable__active__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:power_cable",
+      "message": "sprites/infrastructure/power_cable__disabled__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:power_cable",
+      "message": "sprites/infrastructure/power_cable__damaged__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "infrastructure:power_cable",
+      "message": "art/sources/infrastructure/power_cable.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:junction",
+      "message": "sprites/infrastructure/junction__blueprint__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:junction",
+      "message": "sprites/infrastructure/junction__construction__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:junction",
+      "message": "sprites/infrastructure/junction__active__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:junction",
+      "message": "sprites/infrastructure/junction__disabled__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:junction",
+      "message": "sprites/infrastructure/junction__damaged__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "infrastructure:junction",
+      "message": "art/sources/infrastructure/junction.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:path_light",
+      "message": "sprites/infrastructure/path_light__blueprint__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:path_light",
+      "message": "sprites/infrastructure/path_light__construction__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:path_light",
+      "message": "sprites/infrastructure/path_light__active__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:path_light",
+      "message": "sprites/infrastructure/path_light__disabled__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "infrastructure:path_light",
+      "message": "sprites/infrastructure/path_light__damaged__f01.png is missing.",
+      "response": "Render procedural:infrastructure and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "infrastructure:path_light",
+      "message": "art/sources/infrastructure/path_light.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:blue_crystal",
+      "message": "sprites/resource/blue_crystal__active__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:blue_crystal",
+      "message": "sprites/resource/blue_crystal__disabled__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:blue_crystal",
+      "message": "sprites/resource/blue_crystal__damaged__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "resource:blue_crystal",
+      "message": "art/sources/resource/blue_crystal.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:common_ore",
+      "message": "sprites/resource/common_ore__active__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:common_ore",
+      "message": "sprites/resource/common_ore__disabled__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:common_ore",
+      "message": "sprites/resource/common_ore__damaged__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "resource:common_ore",
+      "message": "art/sources/resource/common_ore.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:crate",
+      "message": "sprites/prop/crate__active__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:crate",
+      "message": "sprites/prop/crate__damaged__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "prop:crate",
+      "message": "art/sources/prop/crate.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:beacon",
+      "message": "sprites/prop/beacon__active__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:beacon",
+      "message": "sprites/prop/beacon__active__f02.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:beacon",
+      "message": "sprites/prop/beacon__active__f03.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:beacon",
+      "message": "sprites/prop/beacon__active__f04.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "prop:beacon",
+      "message": "active is missing 4 of 4 frames.",
+      "response": "Use procedural:prop because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:beacon",
+      "message": "sprites/prop/beacon__damaged__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "prop:beacon",
+      "message": "art/sources/prop/beacon.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:antenna",
+      "message": "sprites/prop/antenna__active__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:antenna",
+      "message": "sprites/prop/antenna__damaged__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "prop:antenna",
+      "message": "art/sources/prop/antenna.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "prop:debris",
+      "message": "sprites/prop/debris__active__f01.png is missing.",
+      "response": "Render procedural:prop and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "prop:debris",
+      "message": "art/sources/prop/debris.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:dust",
+      "message": "sprites/effect/dust__active__f01.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:dust",
+      "message": "sprites/effect/dust__active__f02.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:dust",
+      "message": "sprites/effect/dust__active__f03.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:dust",
+      "message": "sprites/effect/dust__active__f04.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:dust",
+      "message": "sprites/effect/dust__active__f05.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:dust",
+      "message": "sprites/effect/dust__active__f06.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "effect:dust",
+      "message": "active is missing 6 of 6 frames.",
+      "response": "Use procedural:effect because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "effect:dust",
+      "message": "art/sources/effect/dust.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:selection",
+      "message": "sprites/effect/selection__active__f01.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:selection",
+      "message": "sprites/effect/selection__active__f02.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:selection",
+      "message": "sprites/effect/selection__active__f03.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:selection",
+      "message": "sprites/effect/selection__active__f04.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "effect:selection",
+      "message": "active is missing 4 of 4 frames.",
+      "response": "Use procedural:effect because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "effect:selection",
+      "message": "art/sources/effect/selection.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:power_glow",
+      "message": "sprites/effect/power_glow__active__f01.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:power_glow",
+      "message": "sprites/effect/power_glow__active__f02.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:power_glow",
+      "message": "sprites/effect/power_glow__active__f03.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:power_glow",
+      "message": "sprites/effect/power_glow__active__f04.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "effect:power_glow",
+      "message": "active is missing 4 of 4 frames.",
+      "response": "Use procedural:effect because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "effect:power_glow",
+      "message": "art/sources/effect/power_glow.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:warning",
+      "message": "sprites/effect/warning__active__f01.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:warning",
+      "message": "sprites/effect/warning__active__f02.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:warning",
+      "message": "sprites/effect/warning__active__f03.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:warning",
+      "message": "sprites/effect/warning__active__f04.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:warning",
+      "message": "sprites/effect/warning__active__f05.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:warning",
+      "message": "sprites/effect/warning__active__f06.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "effect:warning",
+      "message": "active is missing 6 of 6 frames.",
+      "response": "Use procedural:effect because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "effect:warning",
+      "message": "art/sources/effect/warning.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:repair",
+      "message": "sprites/effect/repair__active__f01.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:repair",
+      "message": "sprites/effect/repair__active__f02.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:repair",
+      "message": "sprites/effect/repair__active__f03.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:repair",
+      "message": "sprites/effect/repair__active__f04.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:repair",
+      "message": "sprites/effect/repair__active__f05.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "effect:repair",
+      "message": "sprites/effect/repair__active__f06.png is missing.",
+      "response": "Render procedural:effect and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "effect:repair",
+      "message": "active is missing 6 of 6 frames.",
+      "response": "Use procedural:effect because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "effect:repair",
+      "message": "art/sources/effect/repair.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    }
+  ],
+  "machineReady": false,
+  "indexVerification": {
+    "passed": true,
+    "reason": null
+  }
+}

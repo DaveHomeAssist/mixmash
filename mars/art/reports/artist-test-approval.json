@@ -1,0 +1,164 @@
+{
+  "reportVersion": 1,
+  "passed": false,
+  "approval": true,
+  "scope": "artist-test",
+  "contractVersion": 3,
+  "decision": "DEC-79",
+  "manifestHash": "df939557b1c4e37a8f68e5b634857adc9942f2689116aa68f3457d3e18b742fe",
+  "approvalReady": false,
+  "counts": {
+    "assets": 4,
+    "expectedExports": 8,
+    "presentExports": 0,
+    "missingExports": 8,
+    "editableSources": 0,
+    "errors": 13,
+    "warnings": 0
+  },
+  "errors": [
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "terrain:base_soil",
+      "message": "sprites/terrain/base_soil__active__f01.png is missing.",
+      "response": "Render procedural:terrain and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "terrain:base_soil",
+      "message": "art/sources/terrain/base_soil.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__active__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "building:habitat",
+      "message": "sprites/building/habitat__damaged__f01.png is missing.",
+      "response": "Render procedural:building and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "building:habitat",
+      "message": "art/sources/building/habitat.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f01.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f02.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f03.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "actor:astronaut",
+      "message": "sprites/actor/astronaut__active__f04.png is missing.",
+      "response": "Render procedural:actor and log a warning."
+    },
+    {
+      "code": "BROKEN_ANIMATION",
+      "asset": "actor:astronaut",
+      "message": "active is missing 4 of 4 frames.",
+      "response": "Use procedural:actor because frame 01 is absent."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "actor:astronaut",
+      "message": "art/sources/actor/astronaut.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    },
+    {
+      "code": "MISSING_SPRITE",
+      "asset": "resource:blue_crystal",
+      "message": "sprites/resource/blue_crystal__active__f01.png is missing.",
+      "response": "Render procedural:resource and log a warning."
+    },
+    {
+      "code": "MISSING_EDITABLE_SOURCE",
+      "asset": "resource:blue_crystal",
+      "message": "art/sources/resource/blue_crystal.aseprite is missing or unsupported.",
+      "response": "Block final asset approval."
+    }
+  ],
+  "warnings": [],
+  "machineReady": false,
+  "artifactDigests": {
+    "algorithm": "SHA-256",
+    "scope": "artist-test",
+    "complete": false,
+    "runtimeAssetHash": "eaf5082f31230883bba66a52734e2d94c07a4b9835679a4ef776490529de595f",
+    "packageHash": "a9ce2fbe5ce90fac536a875908beb228586f9ddf639c1faea0d82d464d93bd1a",
+    "exports": [
+      {
+        "path": "sprites/actor/astronaut__active__f01.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/actor/astronaut__active__f02.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/actor/astronaut__active__f03.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/actor/astronaut__active__f04.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/building/habitat__active__f01.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/building/habitat__damaged__f01.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/resource/blue_crystal__active__f01.png",
+        "sha256": null
+      },
+      {
+        "path": "sprites/terrain/base_soil__active__f01.png",
+        "sha256": null
+      }
+    ],
+    "editableSources": [
+      {
+        "path": "art/sources/actor/astronaut.aseprite",
+        "sha256": null
+      },
+      {
+        "path": "art/sources/building/habitat.aseprite",
+        "sha256": null
+      },
+      {
+        "path": "art/sources/resource/blue_crystal.aseprite",
+        "sha256": null
+      },
+      {
+        "path": "art/sources/terrain/base_soil.aseprite",
+        "sha256": null
+      }
+    ]
+  },
+  "indexVerification": {
+    "passed": true,
+    "reason": null
+  }
+}

@@ -36,7 +36,12 @@ jobs:
       - run: npm test
       - run: npm run vercel-build
       - run: npm run art:validate
+      - run: npm run art:report
+      - run: git diff --exit-code -- mars/art/reports/art-validation.json mars/art/reports/artist-test-approval.json mars/art/reports/golden-approval.json
+      - run: npm run art:contact-sheet
+      - run: git diff --exit-code -- mars/art/reports/golden-contact-sheet.html
       - run: npm run sim
       - run: npx playwright install --with-deps chromium
+      - run: npm run art:visual
       - run: npm run smoke:play
       - run: npm run smoke:catalog

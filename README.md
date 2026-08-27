@@ -15,6 +15,7 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `ROADMAP.md` | Production roadmap **for the MIXMASH fighter specifically** — phased DoD/checkpoints/verification standards |
 | `src/combat.js` | Canonical, tested knockback math for the fighter (`finite()` guard + `calcKnockback`) |
 | `mars/engine.mjs`, `mars/server.mjs` | Shared MarsScape game engine + the Node authority server (SQLite locally) |
+| `mars/commissioned-art.mjs`, `mars/golden-scene.html` | DEC-79 validated commissioned-art cache and in-renderer golden-scene review surface |
 | `api/` | Vercel serverless functions — the production authority API (Blob-backed sessions) |
 | `test/combat.test.js`, `mars/test-*.mjs` | Node's built-in test runner (`node --test`) — fighter combat math + MarsScape engine/API/handler tests |
 | `.github/workflows/ci.yml` | CI — runs `npm test` on pushes to `gh-pages` touching `src/`, `test/`, or `package*.json` |
@@ -27,17 +28,22 @@ npm test          # node --test — combat math + MarsScape engine/API/handler t
 npm run smoke:play      # fighter resume/snapshot smoke test
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
+npm run art:validate    # validate DEC-79 and verify the runtime index plus strict-report parity
+npm run art:report      # refresh normal, paid-test, and full-golden machine evidence
+npm run art:visual      # capture game, fallback, contract, contact-sheet, and golden-scene evidence
+npm run art:approve     # strict paid-test gate: 4 assets, 8 PNGs, 4 editable sources
 ```
 
 > **Windows note:** `mars/test-vercel-handler.mjs` can fail with `EBUSY: resource busy or locked` deleting a temp `.sqlite-shm` file — a Windows file-locking quirk in test teardown (`node:sqlite` WAL mode), not a real defect. All assertion-level tests pass; only the cleanup hook is affected.
 
 There is no build step for the static site itself — `index.html`, `home.html`, `/play/`, and `/empires/` are served as-is by GitHub Pages. `/mars/` is a static client too, but talks to a **separate live backend**.
 
-## MarsScape's architecture (as of 2026-07-06)
+## MarsScape's architecture (as of 2026-08-27)
 
 `/mars/` stopped being a build snapshot of the `marsscape` source repo — it was rebuilt in place as a server-authoritative game:
 
-- **Client:** `mars/index.html` + `mars/game.js` (canvas isometric board) + `mars/styles.css`, reading `mars/assets/manifest.json`.
+- **Client:** `mars/index.html` + `mars/game.js` (canvas isometric board) + `mars/styles.css`. Valid commissioned PNGs are discovered only through `mars/assets/commissioned/index.json`, decoded to cached `ImageBitmap` objects, and fall back through code-owned maps and procedural rendering without blocking play.
+- **Art production:** `mars/render-contract.mjs` v3 owns geometry, states, animation, lighting, accessibility, and performance values. `/mars/golden-scene.html` renders the eight-beat DEC-79 review sequence. Deterministic strict reports bind every PNG and editable source by SHA-256 and prove runtime-index readiness; only Dave's review at 1.0 gameplay zoom can create a package-bound human approval receipt.
 - **Authority API:** `mars/engine.mjs` (shared game rules) served two ways — `mars/server.mjs` (Node/SQLite, for local dev via `npm run start:mars`) and `api/*.mjs` (Vercel functions, for production). The client picks the API base from a `<meta name="marsscape-api-base">` tag in `mars/index.html`, currently pointed at `https://mixmash-marsscape-authority.vercel.app/api/`.
 - **Trust model:** the server is authoritative — submitted client resource totals are ignored; new sessions always start from server state, and commands (`gather`, `build`, `smelt`, `craft`, `research`, `startStorm`) are applied server-side.
 - **Offline fallback:** if the authority API is unreachable, the client runs a local, HMAC-signed offline mode (WebCrypto/IndexedDB) and replays queued commands once the API returns; tampered offline saves are rejected on restore.

@@ -349,6 +349,25 @@ try {
     await context.close();
   }
 
+  // --------------------------------------------------- /mars/golden-scene.html
+  {
+    const { context, page, failures } = await open('/mars/golden-scene.html');
+    await page.waitForFunction(() => typeof window.render_golden_scene_to_text === 'function');
+    assert.deepEqual(failures, [], '/mars/golden-scene.html must load without page or same-origin request errors');
+    const review = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+    assert.equal(review.contract.version, 3);
+    assert.equal(review.contract.decision, 'DEC-79');
+    assert.equal(await page.locator('[data-beat-index]').count(), 8);
+    assert.equal(review.view.zoom, 1);
+    assert.equal(review.approval.status, 'blocked');
+    assert.equal(await page.locator('#recordApproval').isDisabled(), true, 'machine evidence cannot self-approve the golden scene');
+    await page.evaluate(() => window.__goldenScene.setRenderMode('procedural'));
+    const fallback = await page.evaluate(() => JSON.parse(window.render_golden_scene_to_text()));
+    assert.ok(fallback.telemetry.frameSources.procedural > 0, 'forced procedural mode draws a safe fallback scene');
+    record('MarsScape golden scene is renderer-backed and approval fails closed');
+    await context.close();
+  }
+
   // -------------------------------------------------------------- /empires/
   {
     const { context, page } = await open('/empires/');
@@ -394,7 +413,7 @@ try {
     await context.close();
   }
 
-  for (const path of ['/play/', '/mars/', '/pitch/', '/garden/', '/empires/']) {
+  for (const path of ['/play/', '/mars/', '/mars/golden-scene.html', '/pitch/', '/garden/', '/empires/']) {
     const { context, page } = await open(path);
     const nav = await page.evaluate(() => {
       const bar = document.querySelector('.mixnav');

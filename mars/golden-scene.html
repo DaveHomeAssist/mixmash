@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Review the MarsScape DEC-79 golden scene, commissioned assets, renderer fallbacks, animation, and performance at normal gameplay zoom." />
+  <link rel="canonical" href="https://mixmash.games/mars/golden-scene.html" />
+  <meta name="theme-color" content="#15100d" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="MarsScape Golden Scene Review" />
+  <meta property="og:description" content="The in-renderer approval surface for MarsScape's DEC-79 golden vertical slice." />
+  <meta property="og:url" content="https://mixmash.games/mars/golden-scene.html" />
+  <meta property="og:image" content="https://systembydave.com/png/sbd_logo_rust_dark.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MarsScape Golden Scene Review" />
+  <meta name="twitter:description" content="Review anchors, footprints, readability, lighting, animation, and performance inside MarsScape." />
+  <meta name="twitter:image" content="https://systembydave.com/png/sbd_logo_rust_dark.png" />
+  <title>MarsScape Golden Scene Review</title>
+  <link rel="modulepreload" href="./render-contract.mjs" />
+  <link rel="stylesheet" href="./golden-scene.css" />
+</head>
+<body data-review-state="blocked">
+  <a class="skip-link" href="#reviewWorkspace">Skip to golden scene review</a>
+
+  <header class="site-header">
+    <div class="title-block">
+      <p class="eyebrow">DEC-79 production gate</p>
+      <h1>Golden Scene Review</h1>
+      <p class="lede">Judge commissioned art in the renderer, at the scale and conditions players will actually see.</p>
+    </div>
+    <nav class="page-links" aria-label="MarsScape review links">
+      <a href="./">Return to MarsScape</a>
+      <a href="./art-spec.html">Open art contract</a>
+    </nav>
+  </header>
+
+  <main id="reviewWorkspace" class="review-shell" tabindex="-1">
+    <section class="review-workspace" aria-label="Golden scene player and sequence">
+      <section class="panel stage-panel" aria-labelledby="stageTitle">
+        <div class="panel-heading stage-heading">
+          <div>
+            <p class="section-kicker">Renderer viewport</p>
+            <h2 id="stageTitle">Outpost validation scene</h2>
+          </div>
+          <div class="stage-statuses" aria-label="Scene loading status">
+            <output id="loadStatus" class="status-line" data-state="loading" role="status" aria-live="polite" aria-atomic="true">Loading: reading the golden slice manifest.</output>
+            <output id="sceneStatus" class="status-line" data-state="paused" role="status" aria-live="polite" aria-atomic="true">Paused: Beat 1, land at the outpost.</output>
+          </div>
+        </div>
+
+        <figure class="scene-stage">
+          <div class="canvas-frame">
+            <canvas id="goldenCanvas" width="940" height="620" role="img" aria-label="MarsScape golden scene renderer" aria-describedby="canvasDescription sceneStatus">
+              The golden scene renderer is unavailable. Use the eight scene descriptions and telemetry panels to review the sequence.
+            </canvas>
+          </div>
+          <figcaption id="canvasDescription">
+            A 940 by 620 pixel MarsScape renderer view. Use the sequence controls to inspect the outpost from landing through sunrise repair. Labels can be removed to test silhouette readability; anchor and footprint overlays are optional review aids.
+          </figcaption>
+        </figure>
+
+        <div class="playback-bar" aria-labelledby="playbackTitle">
+          <div class="playback-actions">
+            <span id="playbackTitle" class="control-label">Sequence playback</span>
+            <button id="playPause" class="button button-primary" type="button" aria-pressed="false">Play sequence</button>
+          </div>
+          <div class="scrubber-control">
+            <label for="timeScrubber">Scene progress</label>
+            <input id="timeScrubber" type="range" min="0" max="1" step="0.001" value="0" aria-describedby="timeReadout" />
+            <output id="timeReadout" for="timeScrubber">0%</output>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel sequence-panel" aria-labelledby="sequenceTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Eight-beat proof</p>
+            <h2 id="sequenceTitle">Mission sequence</h2>
+          </div>
+          <p class="panel-note">Select any beat to inspect it without playing the full sequence.</p>
+        </div>
+
+        <ol id="beatList" class="beat-list" aria-label="Golden scene sequence">
+          <li>
+            <button class="beat-button" type="button" data-beat-index="0" aria-current="step">
+              <span class="beat-index" aria-hidden="true">01</span>
+              <span class="beat-copy"><strong>Land at outpost</strong><small>Daylight establishes terrain, habitat, crew, and scale.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="1">
+              <span class="beat-index" aria-hidden="true">02</span>
+              <span class="beat-copy"><strong>Survey site</strong><small>Astronaut and rover cross base and rocky soil.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="2">
+              <span class="beat-index" aria-hidden="true">03</span>
+              <span class="beat-copy"><strong>Place blueprint</strong><small>Solar-array anchor and footprint become reviewable.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="3">
+              <span class="beat-index" aria-hidden="true">04</span>
+              <span class="beat-copy"><strong>Build and connect</strong><small>Construction resolves into cable, junction, and power.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="4">
+              <span class="beat-index" aria-hidden="true">05</span>
+              <span class="beat-copy"><strong>Activate extractor</strong><small>Functional animation begins on the blue crystal node.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="5">
+              <span class="beat-index" aria-hidden="true">06</span>
+              <span class="beat-copy"><strong>Dispatch rover</strong><small>Travel crosses the edge, cable route, and path lights.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="6">
+              <span class="beat-index" aria-hidden="true">07</span>
+              <span class="beat-copy"><strong>Dust storm</strong><small>Warning, disabled, and damaged states hold in low light.</small></span>
+            </button>
+          </li>
+          <li>
+            <button class="beat-button" type="button" data-beat-index="7">
+              <span class="beat-index" aria-hidden="true">08</span>
+              <span class="beat-copy"><strong>Repair at sunrise</strong><small>Repair and power glow return systems to active state.</small></span>
+            </button>
+          </li>
+        </ol>
+
+        <div class="sequence-navigation" aria-label="Sequence navigation">
+          <button id="previousBeat" class="button" type="button" disabled>Previous beat</button>
+          <button id="nextBeat" class="button" type="button">Next beat</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="operator-grid" aria-label="Golden scene controls and approval">
+      <section class="panel controls-panel" aria-labelledby="controlsTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Review setup</p>
+            <h2 id="controlsTitle">Scene controls</h2>
+          </div>
+          <p class="panel-note">Normal gameplay zoom is the approval view.</p>
+        </div>
+
+        <fieldset class="control-group select-grid">
+          <legend>View conditions</legend>
+          <label class="select-control" for="scopeSelect">
+            <span>Review scope</span>
+            <select id="scopeSelect">
+              <option value="artist-test">Paid artist test</option>
+              <option value="golden-scene" selected>Golden scene</option>
+            </select>
+          </label>
+          <label class="select-control" for="lightingSelect">
+            <span>Lighting</span>
+            <select id="lightingSelect">
+              <option value="auto" selected>Follow sequence</option>
+              <option value="dawn">Dawn</option>
+              <option value="daylight">Daylight</option>
+              <option value="storm">Storm</option>
+              <option value="night">Night</option>
+            </select>
+          </label>
+          <label class="select-control" for="renderModeSelect">
+            <span>Render mode</span>
+            <select id="renderModeSelect">
+              <option value="auto" selected>Commissioned with fallback</option>
+              <option value="commissioned">Commissioned asset check</option>
+              <option value="procedural">Procedural baseline</option>
+            </select>
+          </label>
+          <label class="select-control" for="zoomSelect">
+            <span>Gameplay zoom</span>
+            <select id="zoomSelect">
+              <option value="0.5">0.5x overview</option>
+              <option value="1" selected>1.0x normal</option>
+              <option value="2.5">2.5x detail</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset class="control-group overlay-grid">
+          <legend>Renderer overlays and fallbacks</legend>
+          <label class="check-control" for="showAnchors">
+            <input id="showAnchors" type="checkbox" checked />
+            <span><strong>Anchors</strong><small>Show ground-contact marks.</small></span>
+          </label>
+          <label class="check-control" for="showFootprints">
+            <input id="showFootprints" type="checkbox" checked />
+            <span><strong>Footprints</strong><small>Show occupied tile diamonds.</small></span>
+          </label>
+          <label class="check-control" for="showLabels">
+            <input id="showLabels" type="checkbox" checked />
+            <span><strong>Labels</strong><small>Turn off for silhouette review.</small></span>
+          </label>
+          <label class="check-control" for="reducedMotion">
+            <input id="reducedMotion" type="checkbox" />
+            <span><strong>Reduced motion</strong><small>Use safe static animation frames.</small></span>
+          </label>
+          <label class="check-control overlay-wide" for="forceFallback">
+            <input id="forceFallback" type="checkbox" />
+            <span><strong>Force procedural fallback</strong><small>Prove missing commissioned art does not block play.</small></span>
+          </label>
+        </fieldset>
+      </section>
+
+      <section class="panel telemetry-panel" aria-labelledby="telemetryTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Runtime evidence</p>
+            <h2 id="telemetryTitle">Telemetry</h2>
+          </div>
+          <p class="panel-note">Values update from the active renderer, not the contact sheet.</p>
+        </div>
+
+        <article class="telemetry-card" aria-labelledby="assetTelemetryTitle">
+          <div class="telemetry-heading">
+            <h3 id="assetTelemetryTitle">Assets</h3>
+            <span class="telemetry-tag">Manifest</span>
+          </div>
+          <div id="assetTelemetry" class="telemetry-body" aria-busy="true">
+            <p class="empty-state">Waiting for the commissioned-asset scan.</p>
+          </div>
+        </article>
+
+        <article class="telemetry-card" aria-labelledby="performanceTelemetryTitle">
+          <div class="telemetry-heading">
+            <h3 id="performanceTelemetryTitle">Performance</h3>
+            <span class="telemetry-tag">Viewport</span>
+          </div>
+          <div id="performanceTelemetry" class="telemetry-body">
+            <p class="empty-state">Waiting for the first rendered frame.</p>
+          </div>
+        </article>
+
+        <article class="telemetry-card telemetry-card-warning" aria-labelledby="warningTelemetryTitle">
+          <div class="telemetry-heading">
+            <h3 id="warningTelemetryTitle">Warnings</h3>
+            <span class="telemetry-tag">Fallback log</span>
+          </div>
+          <div id="warningTelemetry" class="telemetry-body" role="log" aria-live="polite" aria-relevant="additions text">
+            <p class="empty-state">No runtime warnings reported.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel approval-panel" aria-labelledby="approvalTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">Human review</p>
+            <h2 id="approvalTitle">Approval gate</h2>
+          </div>
+          <span class="gate-badge" data-state="blocked">Blocked</span>
+        </div>
+
+        <fieldset id="reviewChecklist" class="review-checklist" aria-describedby="reviewHelp">
+          <legend>DEC-79 acceptance checks</legend>
+          <p id="reviewHelp">Check an item only after inspecting the selected scope at 1.0x normal gameplay zoom: all eight beats for the golden scene, or the complete paid-test matrix.</p>
+          <label for="reviewAnchors">
+            <input id="reviewAnchors" name="reviewCriterion" value="anchors" type="checkbox" />
+            <span><strong>Anchors</strong><small>Ground contacts stay planted.</small></span>
+          </label>
+          <label for="reviewFootprints">
+            <input id="reviewFootprints" name="reviewCriterion" value="footprints" type="checkbox" />
+            <span><strong>Footprints</strong><small>Visible occupancy matches the grid.</small></span>
+          </label>
+          <label for="reviewReadability">
+            <input id="reviewReadability" name="reviewCriterion" value="readability" type="checkbox" />
+            <span><strong>Readability</strong><small>Entities remain distinct without labels.</small></span>
+          </label>
+          <label for="reviewScale">
+            <input id="reviewScale" name="reviewCriterion" value="scale" type="checkbox" />
+            <span><strong>Scale</strong><small>People, vehicles, buildings, and tiles relate correctly.</small></span>
+          </label>
+          <label for="reviewLighting">
+            <input id="reviewLighting" name="reviewCriterion" value="lighting" type="checkbox" />
+            <span><strong>Lighting</strong><small>Northwest light and southeast shadows stay coherent.</small></span>
+          </label>
+          <label for="reviewAnimation">
+            <input id="reviewAnimation" name="reviewCriterion" value="animation" type="checkbox" />
+            <span><strong>Animation</strong><small>Timing reads cleanly and static fallbacks are safe.</small></span>
+          </label>
+          <label for="reviewPerformance">
+            <input id="reviewPerformance" name="reviewCriterion" value="performance" type="checkbox" />
+            <span><strong>Performance</strong><small>Normal-zoom delivery shows no material regression.</small></span>
+          </label>
+        </fieldset>
+
+        <div class="approval-action">
+          <output id="approvalEvidenceStatus" class="status-line" data-state="loading" role="status" aria-live="polite" aria-atomic="true">Strict evidence: loading the current scope report.</output>
+          <p id="approvalReason" class="approval-reason" data-state="blocked" role="status" aria-live="polite" aria-atomic="true"><strong>Approval blocked.</strong> A strict-valid commissioned package and all seven human checks are required.</p>
+          <button id="recordApproval" class="button button-approval" type="button" disabled aria-describedby="approvalEvidenceStatus approvalReason">Record golden scene approval</button>
+          <p id="approvalReceiptStatus" class="empty-state" role="status" aria-live="polite">No local approval receipt is recorded for this scope and manifest.</p>
+          <a id="downloadApprovalReceipt" class="button" href="#" download hidden>Download approval receipt</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Approval is valid only inside MarsScape at 1.0x normal gameplay zoom. Contact-sheet approval alone does not pass DEC-79.</p>
+  </footer>
+
+  <script src="../src/kit/nav.js" data-mixmash-nav></script>
+  <script type="module" src="./golden-scene.js"></script>
+</body>
+</html>

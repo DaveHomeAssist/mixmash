@@ -98,3 +98,16 @@ TODO:
 TODO:
 - Commission the paid artist test package, add renderer-ready exports plus editable sources, and run `npm run art:approve`.
 - Review the complete golden scene inside MarsScape at normal gameplay zoom; approve or revise DEC-79 before production scaling.
+
+2026-08-27 (DEC-79 commissioned runtime and approval readiness):
+- Bumped the executable art contract to v3 so every sprite class owns its canvas, normalized anchor, screen offset, scale, lighting profile, accessibility thresholds, and a 60-warmup/300-sample performance gate.
+- Added a deterministic valid-assets-only runtime index plus `CommissionedArtCache`: safe index validation, fetch/Blob/`ImageBitmap` decoding, state ladders, frame timing, reduced motion, broken-clip `f01`, dimension defense, slow-decode warnings, and warning-once telemetry.
+- Wired the playable board to commissioned terrain, habitat/storage/solar, blue-crystal/common-ore, and astronaut assets with the exact commissioned → code-owned sprite → procedural fallback chain. Missing state exports receive renderer-owned non-color-only state markers.
+- Corrected the paid test to its intended four assets, eight PNG exports, and four editable sources. The separate full-golden gate remains 26 assets and 108 exports.
+- Corrected contact-sheet geometry to use declared footprint size and real class ground offsets; added content-hashed runtime-index verification plus normal, paid-test, and full-golden machine reports whose package identity covers every scoped PNG and editable source.
+- Added the complete eight-beat `golden-scene.json` and `/mars/golden-scene.html` operator surface for every required asset, state, effect, lighting profile, zoom, fallback, overlay, reduced-motion, and performance condition. Machine evidence and human approval remain separate, and future valid packages can produce an exportable review receipt without pre-approving current placeholders.
+- Updated CI, PWA shell caching, art docs, decisions, READMEs, changelog, and sitemap to the executable v3 contract and the already-closed PR #8 disposition.
+
+TODO:
+- Add the real paid artist package (8 PNG exports plus 4 editable sources) and obtain Dave's in-renderer approval at 1.0 zoom.
+- After that passes, add all 108 golden exports plus 26 editable sources and record the complete golden-scene human approval before production scaling.

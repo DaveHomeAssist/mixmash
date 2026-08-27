@@ -2,7 +2,7 @@
    Art and renderer code import this module instead of repeating projection math.
    Contract changes require an explicit version bump and regenerated assets. */
 
-export const RENDER_CONTRACT_VERSION = 2;
+export const RENDER_CONTRACT_VERSION = 3;
 
 export const RENDER_CONTRACT = Object.freeze({
   version: RENDER_CONTRACT_VERSION,
@@ -28,15 +28,57 @@ export const RENDER_CONTRACT = Object.freeze({
     prop: 'tile-centre',
     actor: 'feet',
     ground: Object.freeze({
+      terrain: Object.freeze({ type: 'tile-centre', x: 0.5, y: 0.5, screenOffsetX: 0, screenOffsetY: 0 }),
+      terrain_edge: Object.freeze({ type: 'tile-centre', x: 0.5, y: 0.5, screenOffsetX: 0, screenOffsetY: 0 }),
+      item: Object.freeze({ type: 'centre', x: 0.5, y: 0.5, screenOffsetX: 0, screenOffsetY: 0 }),
       node: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 12 }),
+      resource: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 12 }),
       building: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 18 }),
       actor: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 4 }),
+      rover: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 4 }),
+      infrastructure: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 4 }),
+      prop: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 4 }),
+      effect: Object.freeze({ type: 'feet', x: 0.5, y: 1, screenOffsetX: 0, screenOffsetY: 4 }),
     }),
   }),
   light: Object.freeze({
     source: 'northwest',
     shadow: 'southeast',
     screenVector: Object.freeze({ x: 1, y: 1 }),
+    profiles: Object.freeze({
+      dawn: Object.freeze({
+        overlay: '#b0603a',
+        overlayAlpha: 0.14,
+        shadowAlpha: 0.3,
+        outline: '#2a2118',
+        outlineAlpha: 0.82,
+        effectAlpha: 1,
+      }),
+      daylight: Object.freeze({
+        overlay: '#f2b285',
+        overlayAlpha: 0.04,
+        shadowAlpha: 0.28,
+        outline: '#2a2118',
+        outlineAlpha: 0.74,
+        effectAlpha: 1,
+      }),
+      storm: Object.freeze({
+        overlay: '#5d646e',
+        overlayAlpha: 0.28,
+        shadowAlpha: 0.4,
+        outline: '#f2ede6',
+        outlineAlpha: 0.72,
+        effectAlpha: 1,
+      }),
+      night: Object.freeze({
+        overlay: '#1d3a44',
+        overlayAlpha: 0.46,
+        shadowAlpha: 0.48,
+        outline: '#9fe0f0',
+        outlineAlpha: 0.78,
+        effectAlpha: 1,
+      }),
+    }),
   }),
   palette: Object.freeze({
     outline: '#2a2118',
@@ -75,16 +117,16 @@ export const RENDER_CONTRACT = Object.freeze({
     imageSmoothing: false,
   }),
   spriteClasses: Object.freeze({
-    terrain: Object.freeze({ canvasWidth: 84, canvasHeight: 42, scale: 1, anchor: 'tile-centre', footprintWidth: 1, footprintDepth: 1 }),
-    terrain_edge: Object.freeze({ canvasWidth: 84, canvasHeight: 68, scale: 1, anchor: 'tile-centre', footprintWidth: 1, footprintDepth: 1 }),
-    item: Object.freeze({ canvasWidth: 12, canvasHeight: 12, scale: 3, anchor: 'centre', footprintWidth: 0, footprintDepth: 0 }),
-    resource: Object.freeze({ canvasWidth: 20, canvasHeight: 16, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
-    actor: Object.freeze({ canvasWidth: 12, canvasHeight: 18, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
-    rover: Object.freeze({ canvasWidth: 24, canvasHeight: 16, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
-    building: Object.freeze({ canvasWidth: 28, canvasHeight: 26, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
-    infrastructure: Object.freeze({ canvasWidth: 28, canvasHeight: 14, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
-    prop: Object.freeze({ canvasWidth: 16, canvasHeight: 16, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
-    effect: Object.freeze({ canvasWidth: 28, canvasHeight: 26, scale: 3, anchor: 'feet', footprintWidth: 1, footprintDepth: 1 }),
+    terrain: Object.freeze({ canvasWidth: 84, canvasHeight: 42, scale: 1, anchor: 'tile-centre', screenOffsetX: 0, screenOffsetY: 0, footprintWidth: 1, footprintDepth: 1 }),
+    terrain_edge: Object.freeze({ canvasWidth: 84, canvasHeight: 68, scale: 1, anchor: 'tile-centre', screenOffsetX: 0, screenOffsetY: 0, footprintWidth: 1, footprintDepth: 1 }),
+    item: Object.freeze({ canvasWidth: 12, canvasHeight: 12, scale: 3, anchor: 'centre', screenOffsetX: 0, screenOffsetY: 0, footprintWidth: 0, footprintDepth: 0 }),
+    resource: Object.freeze({ canvasWidth: 20, canvasHeight: 16, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 12, footprintWidth: 1, footprintDepth: 1 }),
+    actor: Object.freeze({ canvasWidth: 12, canvasHeight: 18, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 4, footprintWidth: 1, footprintDepth: 1 }),
+    rover: Object.freeze({ canvasWidth: 24, canvasHeight: 16, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 4, footprintWidth: 1, footprintDepth: 1 }),
+    building: Object.freeze({ canvasWidth: 28, canvasHeight: 26, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 18, footprintWidth: 1, footprintDepth: 1 }),
+    infrastructure: Object.freeze({ canvasWidth: 28, canvasHeight: 14, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 4, footprintWidth: 1, footprintDepth: 1 }),
+    prop: Object.freeze({ canvasWidth: 16, canvasHeight: 16, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 4, footprintWidth: 1, footprintDepth: 1 }),
+    effect: Object.freeze({ canvasWidth: 28, canvasHeight: 26, scale: 3, anchor: 'feet', screenOffsetX: 0, screenOffsetY: 4, footprintWidth: 1, footprintDepth: 1 }),
   }),
   states: Object.freeze(['blueprint', 'construction', 'active', 'disabled', 'damaged']),
   stateFallbacks: Object.freeze({
@@ -121,6 +163,15 @@ export const RENDER_CONTRACT = Object.freeze({
     entitySilhouetteContrast: 3,
     reducedMotionRequired: true,
     colorAloneForbidden: true,
+  }),
+  performance: Object.freeze({
+    targetFramesPerSecond: 60,
+    frameBudgetMs: 16.67,
+    warmupFrames: 60,
+    sampleFrames: 300,
+    p95FrameMs: 20,
+    maxDroppedFrameRatio: 0.05,
+    slowDecodeMs: 100,
   }),
   naming: Object.freeze({
     idPattern: 'sprite:<family>:<id>:<state>:<frame>',
