@@ -12,6 +12,7 @@ const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.jpg': 'image/jpeg',
   '.json': 'application/json; charset=utf-8',
   '.wasm': 'application/wasm',
   '.webmanifest': 'application/manifest+json',

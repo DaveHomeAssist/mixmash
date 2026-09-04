@@ -26,6 +26,8 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 npm install       # once
 npm test          # node --test — combat math + MarsScape engine/API/handler tests
 npm run smoke:play      # fighter resume/snapshot smoke test
+npm run smoke:catalog   # catalog runtime smoke tests
+npm run smoke:landing   # five-width landing, keyboard, motion, hit targets, screenshots
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
 npm run art:validate    # validate DEC-79 and verify the runtime index plus strict-report parity
@@ -37,6 +39,14 @@ npm run art:approve     # strict paid-test gate: 4 assets, 8 PNGs, 4 editable so
 > **Windows note:** `mars/test-vercel-handler.mjs` can fail with `EBUSY: resource busy or locked` deleting a temp `.sqlite-shm` file — a Windows file-locking quirk in test teardown (`node:sqlite` WAL mode), not a real defect. All assertion-level tests pass; only the cleanup hook is affected.
 
 There is no build step for the static site itself — `index.html`, `home.html`, `/play/`, and `/empires/` are served as-is by GitHub Pages. `/mars/` is a static client too, but talks to a **separate live backend**.
+
+The landing smoke rail checks 320, 390, 768, 1024, and 1440px. It writes screenshots
+and `report.json` into a temporary directory printed on completion. Set
+`LANDING_SCREENSHOT_DIR` to keep them in a specific evidence directory. For
+post-deployment readback, run
+`LANDING_BASE_URL=https://mixmash.games/ npm run smoke:landing`.
+Gameplay-preview provenance and refresh guidance live in
+[`assets/previews/README.md`](assets/previews/README.md).
 
 ## MarsScape's architecture (as of 2026-08-27)
 

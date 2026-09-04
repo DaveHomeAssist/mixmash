@@ -38,428 +38,161 @@
   --surface-mid: #1A1A2E;
   --surface-light: #252540;
   --text-primary: #F0F0F8;
-  --text-secondary: #9A9ABB;
-  --text-muted: #5A5A78;
+  --text-secondary: #B4B4CC;
+  --text-muted: #A0A0B8;
   --gradient-headliner: linear-gradient(135deg, #FF2D6B 0%, #B429F9 50%, #00F0FF 100%);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255,255,255,0.14);
   --font-display: 'Anybody', 'Outfit', sans-serif;
   --font-body: 'Outfit', sans-serif;
   --font-mono: 'Space Mono', monospace;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--void);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
+html { scroll-behavior: smooth; scroll-padding-top: 92px; scroll-padding-bottom: 24px; }
+body { background: var(--void); color: var(--text-primary); font-family: var(--font-body); line-height: 1.6; }
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 99;
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
 }
+a { color: inherit; }
+a:focus-visible { outline: 3px solid var(--strobe-yellow); outline-offset: 5px; }
+a, main { scroll-margin-top: 92px; scroll-margin-bottom: 16px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.skip-link { position: fixed; top: 12px; left: 12px; z-index: 200; padding: 12px 20px; background: var(--strobe-yellow); color: var(--void); border-radius: 8px; transform: translateY(-160%); font-weight: 800; }
+.skip-link:focus { transform: none; }
 
-/* ===== NAV ===== */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 32px;
-  background: rgba(6,6,14,0.82);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--glass-border);
+/* Navigation stays in flow; small screens get a deliberate second row. */
+.site-nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 10px max(24px, calc((100% - 1112px) / 2));
+  background: rgba(6,6,14,0.94); border-bottom: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
 }
-.nav-logo {
-  display: flex; align-items: center; gap: 12px;
-  font-family: var(--font-display); font-weight: 900;
-  font-size: 1.05rem; letter-spacing: 0.04em;
-  text-decoration: none; color: var(--text-primary);
-}
-.nav-logo .mm {
-  width: 34px; height: 34px; border-radius: 9px;
-  background: var(--deep-black);
-  display: grid; place-items: center;
-  font-size: 0.8rem; font-weight: 900;
-  background-image: var(--gradient-headliner);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  border: 1.5px solid var(--surface-light);
-}
+.nav-logo { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-family: var(--font-display); font-weight: 900; font-size: 1rem; letter-spacing: 0.02em; text-decoration: none; white-space: nowrap; }
+.nav-logo .mm { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--surface-light); border-radius: 9px; font-size: 0.75rem; color: var(--led-cyan); }
 .nav-logo .studio { color: var(--text-muted); font-weight: 400; }
-.nav-links { display: flex; gap: 26px; list-style: none; }
-.nav-links a {
-  color: var(--text-secondary); text-decoration: none;
-  font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em;
-  text-transform: uppercase; transition: color 0.2s;
-}
-.nav-links a:hover { color: var(--led-cyan); }
+.nav-links { display: flex; gap: 8px; list-style: none; }
+.nav-links a { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 14px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.nav-links a:hover { color: var(--led-cyan); background: var(--surface-dark); }
 
-/* ===== HERO ===== */
-.hero {
-  min-height: 72vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 140px 24px 80px;
-  position: relative;
-}
+/* Keep the studio's neon wordmark; bring the playable lineup closer to the fold. */
+.hero { position: relative; text-align: center; padding: 40px 24px 28px; }
 .hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 55% 45% at 25% 20%, rgba(180,41,249,0.16) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 78% 30%, rgba(0,240,255,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 35% at 50% 100%, rgba(255,45,107,0.12) 0%, transparent 55%);
-  pointer-events: none;
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 55% 70% at 25% 20%, rgba(180,41,249,0.16), transparent 70%), radial-gradient(ellipse 50% 65% at 78% 30%, rgba(0,240,255,0.10), transparent 70%);
 }
-.hero-kicker {
-  font-family: var(--font-mono); font-size: 0.72rem;
-  letter-spacing: 0.35em; text-transform: uppercase;
-  color: var(--led-cyan); margin-bottom: 20px;
-}
-.hero h1 {
-  font-family: var(--font-display); font-weight: 900;
-  font-size: clamp(2.6rem, 9vw, 6.2rem);
-  line-height: 0.95; letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
-.hero h1 .grad {
-  background: var(--gradient-headliner);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.hero-sub {
-  max-width: 560px; margin: 26px auto 0;
-  color: var(--text-secondary); font-size: 1.05rem; font-weight: 300;
-}
-.hero-cta {
-  margin-top: 38px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-}
-.btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 14px 30px; border-radius: 999px;
-  font-family: var(--font-body); font-weight: 800; font-size: 0.9rem;
-  letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
-  transition: transform 0.18s, box-shadow 0.18s;
-}
-.btn-primary {
-  background: var(--gradient-headliner); color: #fff;
-  box-shadow: 0 0 32px rgba(180,41,249,0.35);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 46px rgba(180,41,249,0.55); }
-.btn-ghost {
-  border: 1px solid var(--surface-light); color: var(--text-secondary);
-}
-.btn-ghost:hover { color: var(--led-cyan); border-color: var(--led-cyan); }
+.hero > * { position: relative; }
+.hero-kicker, .eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--led-cyan); }
+.hero-kicker { margin-bottom: 18px; }
+.hero h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.35rem, 8vw, 6rem); line-height: 1; letter-spacing: -0.035em; text-transform: uppercase; }
+.hero h1 .grad, .footer-logo { background: var(--gradient-headliner); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero-sub { max-width: 540px; margin: 22px auto 0; color: var(--text-secondary); font-size: 1.05rem; }
+.hero-cta, .closing-actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 12px 24px; border-radius: 999px; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; transition: transform 0.18s, box-shadow 0.18s; }
+.btn-primary { background: var(--led-cyan); color: var(--void); box-shadow: 0 0 28px rgba(0,240,255,0.16); }
+.btn-ghost { border: 1px solid var(--glass-border); color: var(--text-primary); background: var(--deep-black); }
+.btn-ghost:hover { border-color: var(--led-cyan); color: var(--led-cyan); }
 
-/* ===== GAMES ===== */
-.section { max-width: 1160px; margin: 0 auto; padding: 70px 24px; }
-.section-h {
-  display: flex; align-items: baseline; gap: 16px; margin-bottom: 36px;
-}
-.section-h h2 {
-  font-family: var(--font-display); font-weight: 900;
-  font-size: clamp(1.6rem, 4vw, 2.4rem); text-transform: uppercase; letter-spacing: -0.01em;
-}
-.section-h .count { font-family: var(--font-mono); color: var(--text-muted); font-size: 0.8rem; }
-
-.games-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 22px;
-}
-.game-card {
-  background: var(--surface-dark);
-  border: 1px solid var(--glass-border);
-  border-radius: 18px; overflow: hidden;
-  display: flex; flex-direction: column;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-.game-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--card-glow, var(--uv-violet));
-  box-shadow: 0 14px 44px -18px var(--card-glow, var(--uv-violet));
-}
-.game-vis { position: relative; height: 158px; overflow: hidden; }
-
-.vis-mixmash { background: linear-gradient(180deg, #080818 0%, #1A0830 45%, #2D0A4A 100%); }
-.vis-mixmash::before {
-  content: ''; position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse at 25% 90%, rgba(255,45,107,0.35) 0%, transparent 50%),
-    radial-gradient(ellipse at 75% 80%, rgba(0,240,255,0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 95%, rgba(180,41,249,0.4) 0%, transparent 40%);
-}
-.vis-mixmash .laser { position: absolute; width: 2px; height: 100%; top: 0; opacity: 0.4; transform-origin: top; }
-.vis-mixmash .laser:nth-child(1) { left: 24%; background: linear-gradient(180deg, var(--laser-pink), transparent 75%); transform: rotate(-14deg); }
-.vis-mixmash .laser:nth-child(2) { left: 50%; background: linear-gradient(180deg, var(--uv-violet), transparent 75%); transform: rotate(-2deg); }
-.vis-mixmash .laser:nth-child(3) { left: 72%; background: linear-gradient(180deg, var(--led-cyan), transparent 75%); transform: rotate(11deg); }
-
-.vis-mars { background: linear-gradient(180deg, #0B0508 0%, #2A0E12 40%, #6E2A1C 78%, #B0603A 100%); }
-.vis-mars::before {
-  content: ''; position: absolute; top: 22%; left: 50%; transform: translateX(-50%);
-  width: 74px; height: 74px; border-radius: 50%;
-  background: radial-gradient(circle at 38% 34%, #E8956B 0%, #B0603A 55%, #7A3A24 100%);
-  box-shadow: 0 0 44px rgba(232,149,107,0.4);
-}
-.vis-mars::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
-  background: linear-gradient(180deg, transparent, rgba(11,5,8,0.55));
-}
-
-.vis-garden { background: linear-gradient(180deg, #04120A 0%, #0C2E16 45%, #1E5A2E 80%, #3D7A4F 100%); }
-.vis-garden::before {
-  content: ''; position: absolute; top: 18%; right: 20%;
-  width: 46px; height: 46px; border-radius: 50%;
-  background: radial-gradient(circle, #FFE98A 0%, #E8C84A 60%, transparent 100%);
-  box-shadow: 0 0 38px rgba(232,200,74,0.5);
-}
-.vis-garden::after {
-  content: ''; position: absolute; bottom: -14px; left: 12%;
-  width: 110px; height: 46px; border-radius: 50%;
-  background: rgba(57,255,142,0.22); filter: blur(9px);
-}
-
-.vis-pitch { background: linear-gradient(180deg, #04120A 0%, #0c4a28 45%, #0f6234 78%, #0d5730 100%); }
-.vis-pitch::before {
-  content: ''; position: absolute; inset: 0;
-  background:
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 22px, transparent 22px 44px);
-}
-.vis-pitch::after {
-  content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  width: 74px; height: 74px; border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.5);
-  box-shadow: 0 0 0 1px rgba(0,240,255,0.15), inset 0 0 22px rgba(0,240,255,0.12);
-}
-.vis-pitch .ball {
-  position: absolute; top: 50%; left: 50%; transform: translate(20px,-6px);
-  width: 15px; height: 15px; border-radius: 50%; background: #fff;
-  box-shadow: 0 0 16px rgba(255,255,255,0.7);
-}
-
-.vis-empires { background: linear-gradient(180deg, #96b7a5 0%, #5c7b44 42%, #28311f 74%, #15170f 100%); }
-.vis-empires::before {
-  content: ''; position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%) rotate(45deg);
-  width: 68px; height: 68px;
-  background:
-    linear-gradient(135deg, rgba(240,207,102,0.8), rgba(111,145,72,0.42)),
-    repeating-linear-gradient(0deg, rgba(18,19,14,0.28) 0 4px, transparent 4px 8px);
-  box-shadow: 0 18px 34px rgba(0,0,0,0.3);
-}
-.vis-empires::after {
-  content: ''; position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%) rotate(45deg);
-  width: 118px; height: 118px;
-  border: 1px solid rgba(240,207,102,0.4);
-  background:
-    linear-gradient(90deg, transparent 48%, rgba(240,207,102,0.25) 49% 51%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(240,207,102,0.25) 49% 51%, transparent 52%);
-}
-
-/* ===== HUB-103: micro-loop previews on card hover =====
-   Each card's art comes alive only while it is hovered or keyboard-focused, so
-   the grid stays still at rest and never animates five loops at once. Pure CSS,
-   no video payload — and every loop is disabled under reduced-motion. */
-/* MIXMASH — the lasers sweep across the stage. */
-.vis-mixmash .laser { animation: laser-sweep 2.6s ease-in-out infinite alternate; }
-.vis-mixmash .laser:nth-child(2) { animation-duration: 3.4s; animation-delay: -0.7s; }
-.vis-mixmash .laser:nth-child(3) { animation-duration: 2.1s; animation-delay: -1.3s; }
-.vis-mixmash::before { animation: stage-throb 1.6s ease-in-out infinite; }
-@keyframes laser-sweep {
-  from { transform: rotate(-20deg); opacity: 0.28; }
-  to   { transform: rotate(18deg);  opacity: 0.72; }
-}
-@keyframes stage-throb {
-  0%, 100% { opacity: 0.75; }
-  50%      { opacity: 1; }
-}
-
-/* MarsScape — the planet turns slowly under a drifting dust haze. */
-.vis-mars::before { animation: mars-drift 7s ease-in-out infinite alternate; }
-.vis-mars::after  { animation: mars-dust 5s ease-in-out infinite alternate; }
-@keyframes mars-drift {
-  from { transform: translateX(-50%) translateY(0)    scale(1); }
-  to   { transform: translateX(-50%) translateY(-6px) scale(1.06); }
-}
-@keyframes mars-dust {
-  from { opacity: 0.7; transform: translateY(4px); }
-  to   { opacity: 1;   transform: translateY(0); }
-}
-
-/* Garden — the sun pulses and the canopy breathes. */
-.vis-garden::before { animation: garden-sun 3.2s ease-in-out infinite alternate; }
-.vis-garden::after  { animation: garden-grow 4.4s ease-in-out infinite alternate; }
-@keyframes garden-sun {
-  from { transform: scale(1);    opacity: 0.8; }
-  to   { transform: scale(1.14); opacity: 1; }
-}
-@keyframes garden-grow {
-  from { transform: scaleX(0.86) translateY(4px); }
-  to   { transform: scaleX(1.08) translateY(-2px); }
-}
-
-/* Pitch Riot — the ball orbits the centre circle. The negative margin puts the
-   ball's own centre on the circle's centre, so the orbit stays concentric. */
-.vis-pitch .ball {
-  margin: -7.5px 0 0 -7.5px;
-  animation: pitch-ball 3.2s linear infinite;
-}
-@keyframes pitch-ball {
-  from { transform: rotate(0deg)   translateX(30px) rotate(0deg); }
-  to   { transform: rotate(360deg) translateX(30px) rotate(-360deg); }
-}
-.vis-pitch::after { animation: pitch-ring 2.4s ease-in-out infinite alternate; }
-@keyframes pitch-ring {
-  from { box-shadow: 0 0 0 1px rgba(0,240,255,0.15), inset 0 0 22px rgba(0,240,255,0.12); }
-  to   { box-shadow: 0 0 0 2px rgba(0,240,255,0.4),  inset 0 0 30px rgba(0,240,255,0.3); }
-}
-
-/* Age of Dave — the survey grid scans out from the keep. */
-.vis-empires::after  { animation: empires-scan 3.6s ease-in-out infinite alternate; }
-.vis-empires::before { animation: empires-keep 4.2s ease-in-out infinite alternate; }
-@keyframes empires-scan {
-  from { transform: translateX(-50%) rotate(45deg) scale(0.9);  opacity: 0.55; }
-  to   { transform: translateX(-50%) rotate(45deg) scale(1.08); opacity: 1; }
-}
-@keyframes empires-keep {
-  from { transform: translateX(-50%) rotate(45deg) translateY(0); }
-  to   { transform: translateX(-50%) rotate(45deg) translateY(-5px); }
-}
-
-/* The play-state gate must come AFTER every `animation:` shorthand above — the
-   shorthand resets animation-play-state to `running`, so gating declared
-   earlier at equal specificity would be silently overwritten. */
-.game-card .game-vis > *,
-.game-card .game-vis::before,
-.game-card .game-vis::after {
-  animation-play-state: paused;
-}
-.game-card:hover .game-vis > *,
-.game-card:hover .game-vis::before,
-.game-card:hover .game-vis::after,
-.game-card:focus-within .game-vis > *,
-.game-card:focus-within .game-vis::before,
-.game-card:focus-within .game-vis::after {
-  animation-play-state: running;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .game-card .game-vis > *,
-  .game-card .game-vis::before,
-  .game-card .game-vis::after,
-  .game-card:hover .game-vis > *,
-  .game-card:hover .game-vis::before,
-  .game-card:hover .game-vis::after,
-  .game-card:focus-within .game-vis > *,
-  .game-card:focus-within .game-vis::before,
-  .game-card:focus-within .game-vis::after {
-    animation: none;
-  }
-  .game-card:hover { transform: none; }
-}
-
-.game-status {
-  position: absolute; top: 12px; left: 12px;
-  font-family: var(--font-mono); font-size: 0.58rem; font-weight: 700;
-  letter-spacing: 0.16em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 999px;
-  background: rgba(6,6,14,0.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  border: 1px solid var(--glass-border);
-}
-.st-live { color: var(--festival-green); border-color: rgba(57,255,142,0.4); }
-.st-early { color: var(--strobe-yellow); border-color: rgba(255,226,61,0.4); }
-.st-beta { color: var(--led-cyan); border-color: rgba(0,240,255,0.4); }
-.st-proto { color: var(--text-secondary); }
-
-.game-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
-.game-genre {
-  font-family: var(--font-mono); font-size: 0.58rem;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--card-glow, var(--laser-pink)); margin-bottom: 7px;
-}
-.game-name {
-  font-family: var(--font-display); font-weight: 900;
-  font-size: 1.28rem; letter-spacing: -0.01em; text-transform: uppercase;
-}
-.game-desc { font-size: 0.85rem; color: var(--text-secondary); margin: 8px 0 18px; flex: 1; }
-.game-actions { display: flex; gap: 10px; align-items: center; }
-.play-link {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 20px; border-radius: 999px;
-  font-weight: 800; font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase;
-  text-decoration: none; color: #fff;
-  background: var(--surface-light);
-  border: 1px solid var(--glass-border);
-  transition: background 0.2s, box-shadow 0.2s;
-}
-.game-card:hover .play-link {
-  background: var(--card-glow, var(--uv-violet));
-  box-shadow: 0 4px 22px -6px var(--card-glow, var(--uv-violet));
-}
-.info-link {
-  font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--text-muted); text-decoration: none;
-}
+/* One headliner, then four equal supporting cards. */
+.section { max-width: 1160px; margin: 0 auto; padding: 32px 24px 72px; }
+.section-h { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 24px; }
+.section-h h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.25rem); text-transform: uppercase; letter-spacing: -0.02em; }
+.count, .catalog-note { font-family: var(--font-mono); color: var(--text-muted); font-size: 0.72rem; }
+.catalog-note { margin-top: 20px; line-height: 1.8; }
+.games-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.game-card { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--surface-dark); border: 1px solid var(--glass-border); border-radius: 18px; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+.game-card:focus-within { border-color: var(--strobe-yellow); box-shadow: 0 0 0 1px var(--strobe-yellow); }
+.game-vis { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 17px 17px 0 0; background: var(--surface-mid); }
+.game-vis img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.game-status { position: absolute; top: 14px; left: 14px; padding: 5px 10px; border-radius: 999px; background: var(--void); border: 1px solid currentColor; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.st-live { color: var(--festival-green); }
+.st-preview { color: var(--strobe-yellow); }
+.game-body { display: flex; flex-direction: column; flex: 1; padding: 24px; }
+.game-genre { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.game-name { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.2rem, 2.5vw, 1.55rem); line-height: 1.25; letter-spacing: -0.02em; text-transform: uppercase; }
+.game-desc { color: var(--text-secondary); font-size: 0.95rem; margin: 12px 0 24px; flex: 1; max-width: 52ch; }
+.game-actions { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+.play-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 20px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--text-primary); background: var(--surface-light); border: 1px solid var(--glass-border); transition: background 0.2s, color 0.2s; }
+/* The native Play anchor covers the card. Secondary links stay above it. */
+.play-link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: 18px; }
+.play-link:focus-visible::after { outline: 3px solid var(--strobe-yellow); outline-offset: 4px; }
+.info-link { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 4px; color: var(--text-secondary); font-size: 0.8rem; text-underline-offset: 4px; }
 .info-link:hover { color: var(--led-cyan); }
-
-/* ===== ABOUT ===== */
-.about {
-  border-top: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
-  background: var(--deep-black);
-}
-.about-inner {
-  max-width: 760px; margin: 0 auto; padding: 64px 24px; text-align: center;
-}
-.about-inner h2 {
-  font-family: var(--font-display); font-weight: 900; font-size: 1.5rem;
-  text-transform: uppercase; margin-bottom: 14px;
-}
-.about-inner p { color: var(--text-secondary); font-weight: 300; }
-.about-pills {
-  margin-top: 26px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-}
-.pill {
-  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--text-secondary);
-  padding: 7px 16px; border-radius: 999px;
-  border: 1px solid var(--surface-light);
+.featured { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); border-color: rgba(180,41,249,0.6); box-shadow: 0 12px 60px -36px var(--uv-violet); }
+.featured .game-vis { height: 100%; min-height: 360px; aspect-ratio: auto; border-radius: 17px 0 0 17px; }
+.featured .game-body { justify-content: center; padding: 36px; }
+.featured .eyebrow { margin-bottom: 16px; }
+.featured .game-name { font-size: clamp(2.2rem, 4vw, 3.3rem); }
+.featured .game-desc { flex: 0; }
+.featured .play-link { background: var(--led-cyan); color: var(--void); }
+.laser { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--gradient-headliner); animation: laser-pulse 2s ease-in-out infinite; animation-play-state: paused; }
+@keyframes laser-pulse { 50% { opacity: 0.4; } }
+.game-card:focus-within .laser { animation-play-state: running; }
+@media (hover: hover) and (pointer: fine) {
+  .game-card:hover { transform: translateY(-4px); border-color: var(--card-glow); box-shadow: 0 14px 44px -26px var(--card-glow); }
+  .game-card:hover .laser { animation-play-state: running; }
+  .game-card:hover .play-link { background: var(--led-cyan); color: var(--void); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(0,240,255,0.3); }
 }
 
-/* ===== FOOTER ===== */
-footer {
-  padding: 44px 32px; text-align: center;
-}
-.footer-logo {
-  font-family: var(--font-display); font-weight: 900; letter-spacing: 0.04em;
-  background: var(--gradient-headliner);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  font-size: 1.1rem; margin-bottom: 10px;
-}
+/* Studio context and a clear next step after the lineup. */
+.about { border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); background: var(--deep-black); }
+.about-inner { max-width: 760px; margin: 0 auto; padding: 56px 24px; text-align: center; }
+.about-inner h2, .closing h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.4rem, 4vw, 2rem); line-height: 1.25; text-transform: uppercase; margin-bottom: 16px; }
+.about-inner p, .closing p { color: var(--text-secondary); }
+.about-pills { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.pill { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--glass-border); }
+.closing { max-width: 760px; margin: 0 auto; padding: 64px 24px 48px; text-align: center; }
+.closing .eyebrow { margin-bottom: 16px; color: var(--led-cyan); }
+.closing .feedback-note { margin-top: 16px; color: var(--text-muted); font-size: 0.8rem; }
+footer { padding: 24px 24px 36px; text-align: center; border-top: 1px solid var(--glass-border); }
+.footer-logo { font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; letter-spacing: 0.04em; }
 footer p { color: var(--text-muted); font-size: 0.78rem; }
-footer a { color: var(--text-secondary); text-decoration: none; }
-footer a:hover { color: var(--led-cyan); }
-.footer-links { display: flex; gap: 22px; justify-content: center; margin: 14px 0; font-size: 0.8rem; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: center; margin: 12px 0; }
+.footer-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px; color: var(--text-secondary); font-size: 0.8rem; text-decoration: none; }
+.footer-links a:hover { color: var(--led-cyan); }
 
-@media (max-width: 640px) {
-  nav { padding: 14px 18px; }
-  .nav-links { gap: 16px; }
-  .nav-links a { font-size: 0.74rem; }
+@media (max-width: 767px) {
+  .featured { display: flex; }
+  .featured .game-vis { height: auto; min-height: 0; aspect-ratio: 3 / 2; border-radius: 17px 17px 0 0; }
+  .featured .game-body { padding: 24px; }
+  .game-body { padding: 20px; }
+}
+@media (max-width: 540px) {
+  html { scroll-padding-top: 128px; }
+  a, main { scroll-margin-top: 128px; }
+  .site-nav { flex-direction: column; gap: 0; padding: 6px 16px; }
+  .nav-logo { align-self: flex-start; font-size: 0.95rem; }
+  .nav-links { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .nav-links a { padding: 8px; }
+  .hero { padding: 40px 20px 32px; }
+  .hero h1 { max-width: 360px; margin: auto; }
+  .hero h1 .grad { display: block; }
+  .hero-sub { font-size: 1rem; }
+  .hero-cta { gap: 10px; }
+  .btn { padding: 12px 20px; font-size: 0.78rem; }
+  .section { padding: 24px 16px 48px; }
+  .games-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .featured .game-body { padding: 22px; }
+  .game-name { font-size: 1.4rem; }
+  .closing { padding: 48px 20px 40px; }
+}
+@media (max-height: 500px) { .site-nav { position: static; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .game-card:hover, .btn-primary:hover { transform: none; }
 }
 </style>
 <script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#games">Skip to games</a>
 
-<nav>
-  <a class="nav-logo" href="./">
-    <span class="mm">MM</span>
+<nav class="site-nav" aria-label="Main navigation">
+  <a class="nav-logo" href="./" aria-label="MixMash Studio home">
+    <span class="mm" aria-hidden="true">MM</span>
     MIXMASH <span class="studio">STUDIO</span>
   </a>
   <ul class="nav-links">
@@ -472,96 +205,100 @@ footer a:hover { color: var(--led-cyan); }
 <header class="hero">
   <div class="hero-kicker">mixmash.games</div>
   <h1>MIXMASH <span class="grad">STUDIO</span></h1>
-  <p class="hero-sub">Small, loud, instantly playable games. Everything runs in your browser — no installs, no accounts, no waiting.</p>
+  <p class="hero-sub">Small, loud, instantly playable games. Everything runs in your browser — no installs, no accounts.</p>
   <div class="hero-cta">
-    <a class="btn btn-primary" href="#games">&#9654; Pick a Game</a>
-    <a class="btn btn-ghost" href="home.html">Flagship: MIXMASH</a>
+    <a class="btn btn-primary" href="play/"><span aria-hidden="true">▶</span> Play MIXMASH</a>
+    <a class="btn btn-ghost" href="#games">Explore games <span aria-hidden="true">↓</span></a>
   </div>
 </header>
 
-<main class="section" id="games">
+<main class="section" id="games" tabindex="-1">
   <div class="section-h">
     <h2>The Lineup</h2>
     <span class="count">5 GAMES / ALL FREE</span>
   </div>
 
   <div class="games-grid">
-
-    <article class="game-card" style="--card-glow: var(--uv-violet)">
+    <article class="game-card featured" style="--card-glow: var(--uv-violet)" aria-labelledby="mixmash-title">
       <div class="game-vis vis-mixmash">
-        <span class="laser"></span><span class="laser"></span><span class="laser"></span>
-        <span class="game-status st-live">&#9679; Live</span>
+        <img src="assets/previews/mixmash.jpg" width="1000" height="650" alt="Flume and Zomboy battle on floating platforms in Electric Forest." fetchpriority="high" decoding="async">
+        <span class="game-status st-live">Released</span>
+        <span class="laser" aria-hidden="true"></span>
       </div>
       <div class="game-body">
+        <div class="eyebrow">The headliner</div>
         <div class="game-genre">Platform Fighter</div>
-        <h3 class="game-name">MIXMASH</h3>
-        <p class="game-desc">The DJ-powered platform fighter. 14 headliners, 11 arenas, couch versus, and CPU opponents. Drop the beat, throw the punch.</p>
+        <h3 class="game-name" id="mixmash-title">MIXMASH</h3>
+        <p class="game-desc">Drop the beat. Throw the punch. Pick from 14 headliners and 11 arenas in the DJ-powered platform fighter. Take on a friend in couch versus or battle the CPU.</p>
         <div class="game-actions">
-          <a class="play-link" href="play/">&#9654; Play</a>
-          <a class="info-link" href="home.html">Game Site</a>
+          <a class="play-link" href="play/" aria-label="Play MIXMASH"><span aria-hidden="true">▶</span> Play</a>
+          <a class="info-link" href="home.html">Game details</a>
         </div>
       </div>
     </article>
 
-    <article class="game-card" style="--card-glow: var(--sunset-orange)">
-      <div class="game-vis vis-mars">
-        <span class="game-status st-early">&#9679; Early Access</span>
+    <article class="game-card" style="--card-glow: var(--sunset-orange)" aria-labelledby="mars-title">
+      <div class="game-vis">
+        <img src="assets/previews/mars.jpg" width="1000" height="650" alt="An isometric Mars colony with mineral deposits, a habitat, and resource controls." loading="lazy" decoding="async">
+        <span class="game-status st-preview">In development</span>
       </div>
       <div class="game-body">
-        <div class="game-genre">Colony Skiller</div>
-        <h3 class="game-name">MarsScape</h3>
-        <p class="game-desc">Gather, craft, and build to survive the red planet. Nine skills, offline progress, and a final storm to outlast. Your save lives in your browser.</p>
+        <div class="game-genre">Colony Skiller · Early Access</div>
+        <h3 class="game-name" id="mars-title">MarsScape</h3>
+        <p class="game-desc">Gather, craft, and build to survive the red planet. Train your skills, grow a colony, and prepare for the final storm. Your save stays in your browser.</p>
         <div class="game-actions">
-          <a class="play-link" href="mars/">&#9654; Play</a>
+          <a class="play-link" href="mars/" aria-label="Play MarsScape"><span aria-hidden="true">▶</span> Play</a>
         </div>
       </div>
     </article>
 
-    <article class="game-card" style="--card-glow: var(--festival-green)">
-      <div class="game-vis vis-garden">
-        <span class="game-status st-beta">&#9679; Beta</span>
+    <article class="game-card" style="--card-glow: var(--festival-green)" aria-labelledby="garden-title">
+      <div class="game-vis">
+        <img src="assets/previews/garden.jpg" width="1000" height="650" alt="Garden OS’s 3D raised bed and opening story dialog in Mom’s backyard." loading="lazy" decoding="async">
+        <span class="game-status st-preview">In development</span>
       </div>
       <div class="game-body">
-        <div class="game-genre">Open-World Adventure</div>
-        <h3 class="game-name">Garden OS: Story Mode</h3>
+        <div class="game-genre">Open-World Adventure · Beta</div>
+        <h3 class="game-name" id="garden-title">Garden OS: Story Mode</h3>
         <p class="game-desc">A 3D open-world garden adventure. Explore the plot, meet the characters, and grow a season from seed to harvest.</p>
         <div class="game-actions">
-          <a class="play-link" href="garden/">&#9654; Play</a>
+          <a class="play-link" href="garden/" aria-label="Play Garden OS: Story Mode"><span aria-hidden="true">▶</span> Play</a>
         </div>
       </div>
     </article>
 
-    <article class="game-card" style="--card-glow: var(--strobe-yellow)">
-      <div class="game-vis vis-empires">
-        <span class="game-status st-proto">&#9679; Native Alpha</span>
+    <article class="game-card" style="--card-glow: var(--strobe-yellow)" aria-labelledby="empires-title">
+      <div class="game-vis">
+        <img src="assets/previews/empires.jpg" width="1000" height="650" alt="Villagers and buildings in an isometric Age of Dave settlement, surrounded by unexplored terrain." loading="lazy" decoding="async">
+        <span class="game-status st-preview">In development</span>
       </div>
       <div class="game-body">
-        <div class="game-genre">Real-Time Strategy</div>
-        <h3 class="game-name">Age of Dave</h3>
-        <p class="game-desc">The restored RTS alpha backed by the real C++/SDL project: deterministic sim, sprite atlases, lockstep networking, and native app smoke coverage.</p>
+        <div class="game-genre">Real-Time Strategy · Alpha</div>
+        <h3 class="game-name" id="empires-title">Age of Dave</h3>
+        <p class="game-desc">Choose a civilization, gather resources, and build your settlement. Raise an army and take on the AI in a classic strategy skirmish, right in your browser.</p>
         <div class="game-actions">
-          <a class="play-link" href="empires/">&#9654; Open</a>
+          <a class="play-link" href="empires/" aria-label="Play Age of Dave"><span aria-hidden="true">▶</span> Play</a>
         </div>
       </div>
     </article>
 
-    <article class="game-card" style="--card-glow: var(--led-cyan)">
-      <div class="game-vis vis-pitch">
-        <span class="ball"></span>
-        <span class="game-status st-live">&#9679; Live</span>
+    <article class="game-card" style="--card-glow: var(--led-cyan)" aria-labelledby="pitch-title">
+      <div class="game-vis">
+        <img src="assets/previews/pitch.jpg" width="1000" height="650" alt="Neon soccer players face off against the CPU on Pitch Riot’s green pitch." loading="lazy" decoding="async">
+        <span class="game-status st-live">Released</span>
       </div>
       <div class="game-body">
         <div class="game-genre">Arcade Soccer</div>
-        <h3 class="game-name">Pitch Riot</h3>
-        <p class="game-desc">Street soccer with the volume up. Beat the CPU across two halves — and at halftime, cover the pitch for the show to hype up your second half. Keyboard or touch.</p>
+        <h3 class="game-name" id="pitch-title">Pitch Riot</h3>
+        <p class="game-desc">Street soccer with the volume up. Beat the CPU across two halves, then cover the pitch for the halftime show to boost your second half. Keyboard or touch.</p>
         <div class="game-actions">
-          <a class="play-link" href="pitch/">&#9654; Play</a>
-          <a class="info-link" href="https://systembydave.com/fifa-pitch-crew/">Full Cover Ops</a>
+          <a class="play-link" href="pitch/" aria-label="Play Pitch Riot"><span aria-hidden="true">▶</span> Play</a>
+          <a class="info-link" href="https://systembydave.com/fifa-pitch-crew/">Full Cover Ops <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>
         </div>
       </div>
     </article>
-
   </div>
+  <p class="catalog-note">Real gameplay shown. Games marked “In development” are playable previews and may change.</p>
 </main>
 
 <section class="about" id="about">
@@ -577,15 +314,25 @@ footer a:hover { color: var(--led-cyan); }
   </div>
 </section>
 
+<section class="closing" aria-labelledby="closing-title">
+  <p class="eyebrow">One more round?</p>
+  <h2 id="closing-title">Find your next favorite.</h2>
+  <p>Jump into a game. Found a bug or have an idea? Help shape what comes next.</p>
+  <div class="closing-actions">
+    <a class="btn btn-primary" href="#games">Explore games <span aria-hidden="true">↑</span></a>
+    <a class="btn btn-ghost" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span aria-hidden="true">↗</span><span class="sr-only"> (external site: GitHub)</span></a>
+  </div>
+  <p class="feedback-note">Feedback opens GitHub; an account is required to post.</p>
+</section>
+
 <footer>
   <div class="footer-logo">MIXMASH STUDIO</div>
   <div class="footer-links">
     <a href="#games">Games</a>
     <a href="brand.html">Brand Guide</a>
-    <a href="https://github.com/DaveHomeAssist">GitHub</a>
+    <a href="https://github.com/DaveHomeAssist">GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>
   </div>
   <p>&copy; 2026 MixMash Studio &middot; mixmash.games</p>
 </footer>
-
 </body>
 </html>
