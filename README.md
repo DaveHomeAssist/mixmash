@@ -12,6 +12,7 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `/empires/` | EMPIRES (aka "Age of Dave") — WebAssembly build of the real [aoe2-clone](https://github.com/DaveHomeAssist/aoe2-clone) RTS (7 civs, combat, AI opponent; local skirmish only — no multiplayer in-browser) |
 | `/garden/` | Full-viewport iframe embed of the live Garden OS story mode (`davehomeassist.github.io/garden-os/story-mode/`) — never drifts |
 | `/pitch/` | **PITCH RIOT** — a self-contained arcade soccer game (single `index.html`, canvas + vanilla JS). One outfielder vs a CPU (auto keepers) across two halves; at halftime you play a built-in cover-ops minigame (a mini homage to [FIFA Pitch Crew](https://systembydave.com/fifa-pitch-crew/) from the system-by-dave repo) — show quality earns a timed "HYPED" boost for the second half. Difficulty select, keyboard + touch. No build step, no backend. |
+| `/zelda2mario/` | Evidence-bound public status dashboard for the source-only Zelda2MarioCoop project. The game itself is not yet published as a playable route. |
 | `ROADMAP.md` | Production roadmap **for the MIXMASH fighter specifically** — phased DoD/checkpoints/verification standards |
 | `src/combat.js` | Canonical, tested knockback math for the fighter (`finite()` guard + `calcKnockback`) |
 | `mars/engine.mjs`, `mars/server.mjs` | Shared MarsScape game engine + the Node authority server (SQLite locally) |
