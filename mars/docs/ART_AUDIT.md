@@ -3,6 +3,7 @@
 - Audit date: 2026-08-27
 - Canonical source: `DaveHomeAssist/mixmash`, branch `gh-pages`
 - Start-of-run SHA: `9eba6e5cdca4aa8fba8ea4ef4328e49c3ee12658`
+- Candidate update: 2026-09-23; Codex-authored paid-test reference art is machine-ready, without artist provenance or human approval.
 
 Classification meanings:
 
@@ -31,7 +32,7 @@ Classification meanings:
 | Naming rules | Production-ready | The validator enforces lowercase snake_case family/id, canonical state, and two-digit one-based frame paths. | Keep the generated index as the only network-discovery surface. |
 | Zoom levels | Production-ready | Board fit and user zoom compose through CSS; player zoom is clamped to 0.5 through 2.5; normal approval zoom is 1.0. | Test all three review zooms; approve only at 1.0 first. |
 | Canvas / viewport performance | Production-ready | The golden scene uses the same 940 x 620 canvas and contract geometry, exposes 0.5, 1.0, and 2.5 review zooms, and checks a 60-frame warm-up plus 300-frame p95/drop benchmark at the required 1.0 approval zoom. | Repeat with the complete animated commissioned set before approval. |
-| State rendering | Adaptable | The runtime consumes all five commissioned states and applies renderer-owned blueprint/disabled/damaged markers through the fallback ladder. Final state silhouettes are absent because commissioned exports are absent. | Paid art must prove non-color-only distinctions at gameplay zoom. |
+| State rendering | Adaptable | The runtime consumes all five commissioned states and applies renderer-owned blueprint/disabled/damaged markers through the fallback ladder. The candidate has distinct habitat active/damaged images, but full final state coverage is absent. | Paid art must prove non-color-only distinctions at gameplay zoom. |
 | Animation playback | Production-ready | Indexed clips use contract cadence, loop/clamp rules, reduced-motion frame `01`, and broken-clip static `f01`; gameplay timing never waits on a clip. | Benchmark complete clips in the golden scene. |
 | Contact-sheet review | Production-ready | The generated 26-card sheet uses each declared footprint and the class's real ground offset instead of a universal 1 x 1 centred diamond. | Regenerate after manifest or export changes. |
 | Visual regression | Production-ready | Playwright captures both game modes, art spec, contact sheet, every golden beat, lighting/state evidence, and runtime telemetry; an approved image baseline does not yet exist. | Establish the baseline only after human golden approval. |
@@ -79,21 +80,25 @@ No existing runtime map is classified Production-ready as paid final art. They a
 | `geode` | 12 x 10 | Adaptable | Later item coverage. |
 | `mars-terrain.svg` | 192 x 192 | Reference-only | Low-alpha background texture, not a tile export. |
 
-## Missing golden-slice art
+## Candidate and missing golden-slice art
 
-All paid production exports and editable sources in `mars/art/golden-slice.json` are currently **Missing**. This is expected before the artist test. Normal validation warns and demonstrates fallback; strict approval blocks. Every asset below is individually classified with one of this audit's five allowed labels; grouped rows do not imply partial availability.
+The Codex-authored candidate supplies only the four paid-test assets. Strict paid-test machine validation passes, while full-golden approval remains blocked. These assets are **Adaptable** candidates, not final commissioned art. Every remaining asset below is **Missing**.
 
 | Commissioned asset family | Assets | Classification | Current evidence |
 | --- | --- | --- | --- |
-| Terrain | `base_soil`, `rocky_soil`, `edge`, `cliff_slope`, `disturbed_ground` | Missing | 0 of 5 source files and all declared PNG exports are absent. |
-| Buildings | `habitat`, `solar_array`, `extractor`, `storage` | Missing | 0 of 4 source files and every required state export are absent. |
-| Units | `astronaut`, `rover` | Missing | 0 of 2 source files and every state/animation export are absent. |
+| Terrain | `base_soil` | Adaptable | One candidate active PNG and layered source; human review pending. |
+| Terrain | `rocky_soil`, `edge`, `cliff_slope`, `disturbed_ground` | Missing | No source or PNG exports. |
+| Buildings | `habitat` | Adaptable | Candidate active/damaged PNGs and layered source; three other states missing. |
+| Buildings | `solar_array`, `extractor`, `storage` | Missing | No source or PNG exports. |
+| Units | `astronaut` | Adaptable | Candidate four-frame active clip and layered source; other states missing. |
+| Units | `rover` | Missing | No source or PNG exports. |
 | Infrastructure | `pipe`, `power_cable`, `junction`, `path_light` | Missing | 0 of 4 source files and every required state export are absent. |
-| Resources | `blue_crystal`, `common_ore` | Missing | 0 of 2 source files and every declared export are absent. |
+| Resources | `blue_crystal` | Adaptable | One candidate active PNG and layered source; other states missing. |
+| Resources | `common_ore` | Missing | No source or PNG exports. |
 | Props | `crate`, `beacon`, `antenna`, `debris` | Missing | 0 of 4 source files and every declared export are absent. |
 | Effects | `dust`, `selection`, `power_glow`, `warning`, `repair` | Missing | 0 of 5 source files and every animation export are absent. |
 
-The four renderer-owned lighting profiles are **Production-ready** as executable profiles. Their final interaction with commissioned silhouettes is unverified until the missing art exists, so human golden-scene approval remains blocked.
+The four renderer-owned lighting profiles are **Production-ready** as executable profiles. Their final interaction with a complete commissioned package is unverified, so human golden-scene approval remains blocked.
 
 ## PR #8 disposition
 

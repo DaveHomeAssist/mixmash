@@ -5,11 +5,191 @@
   "decision": "DEC-79",
   "scope": "full",
   "manifestHash": "df939557b1c4e37a8f68e5b634857adc9942f2689116aa68f3457d3e18b742fe",
-  "runtimeAssetHash": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
+  "runtimeAssetHash": "1dbfe68f951226ce7bea21419c8c5f61343a0699516f56014da1f13d3c43da44",
   "runtimeAssetHashes": {
-    "full": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
-    "artist-test": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e"
+    "full": "1dbfe68f951226ce7bea21419c8c5f61343a0699516f56014da1f13d3c43da44",
+    "artist-test": "1dbfe68f951226ce7bea21419c8c5f61343a0699516f56014da1f13d3c43da44"
   },
-  "availableExports": 0,
-  "assets": []
+  "availableExports": 8,
+  "assets": [
+    {
+      "family": "terrain",
+      "id": "base_soil",
+      "class": "terrain",
+      "anchor": {
+        "type": "tile-centre",
+        "x": 0.5,
+        "y": 0.5
+      },
+      "screenOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "canvas": {
+        "width": 84,
+        "height": 42,
+        "scale": 1
+      },
+      "footprint": {
+        "width": 1,
+        "depth": 1,
+        "origin": "centre"
+      },
+      "fallback": "procedural:terrain",
+      "fallbackSprite": null,
+      "states": {
+        "active": {
+          "declaredFrames": 1,
+          "frameMs": 600,
+          "loop": false,
+          "frames": [
+            {
+              "path": "sprites/terrain/base_soil__active__f01.png",
+              "sha256": "aa147186921a0fd93c4c99f05a08349097b3ce0e524240c65e831a107e022566"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "family": "building",
+      "id": "habitat",
+      "class": "building",
+      "anchor": {
+        "type": "feet",
+        "x": 0.5,
+        "y": 1
+      },
+      "screenOffset": {
+        "x": 0,
+        "y": 18
+      },
+      "canvas": {
+        "width": 28,
+        "height": 26,
+        "scale": 3
+      },
+      "footprint": {
+        "width": 1,
+        "depth": 1,
+        "origin": "centre"
+      },
+      "fallback": "procedural:building",
+      "fallbackSprite": "bld_habitat",
+      "states": {
+        "active": {
+          "declaredFrames": 1,
+          "frameMs": 600,
+          "loop": false,
+          "frames": [
+            {
+              "path": "sprites/building/habitat__active__f01.png",
+              "sha256": "757c8241ebc44920cb7b39db6882076bd33de9dc865e8e606d9c5871f274dfc3"
+            }
+          ]
+        },
+        "damaged": {
+          "declaredFrames": 1,
+          "frameMs": 600,
+          "loop": false,
+          "frames": [
+            {
+              "path": "sprites/building/habitat__damaged__f01.png",
+              "sha256": "bbd0ebb620abf7b1836679a030c562e0fede52b121085f8e1b9aa5eb3ffc4a52"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "family": "actor",
+      "id": "astronaut",
+      "class": "actor",
+      "anchor": {
+        "type": "feet",
+        "x": 0.5,
+        "y": 1
+      },
+      "screenOffset": {
+        "x": 0,
+        "y": 4
+      },
+      "canvas": {
+        "width": 12,
+        "height": 18,
+        "scale": 3
+      },
+      "footprint": {
+        "width": 1,
+        "depth": 1,
+        "origin": "centre"
+      },
+      "fallback": "procedural:actor",
+      "fallbackSprite": "astro",
+      "states": {
+        "active": {
+          "declaredFrames": 4,
+          "frameMs": 150,
+          "loop": true,
+          "frames": [
+            {
+              "path": "sprites/actor/astronaut__active__f01.png",
+              "sha256": "6f816ee889e758a9ed9615a8e531622076775f94f0c8558b60f2b6554a1a7ee6"
+            },
+            {
+              "path": "sprites/actor/astronaut__active__f02.png",
+              "sha256": "de6f4d2da74c42247bf5e2272a6e2d6571f249c023eba961bc5d816f01658147"
+            },
+            {
+              "path": "sprites/actor/astronaut__active__f03.png",
+              "sha256": "3de116709c0bc95e383eec30f17b72f43168837b1b91873d048882cf5a37b603"
+            },
+            {
+              "path": "sprites/actor/astronaut__active__f04.png",
+              "sha256": "e0809d760dc339972be228d9c28c248022af3cea70e63372fafa27eda09dc603"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "family": "resource",
+      "id": "blue_crystal",
+      "class": "resource",
+      "anchor": {
+        "type": "feet",
+        "x": 0.5,
+        "y": 1
+      },
+      "screenOffset": {
+        "x": 0,
+        "y": 12
+      },
+      "canvas": {
+        "width": 20,
+        "height": 16,
+        "scale": 3
+      },
+      "footprint": {
+        "width": 1,
+        "depth": 1,
+        "origin": "centre"
+      },
+      "fallback": "procedural:resource",
+      "fallbackSprite": "node_ice",
+      "states": {
+        "active": {
+          "declaredFrames": 1,
+          "frameMs": 600,
+          "loop": false,
+          "frames": [
+            {
+              "path": "sprites/resource/blue_crystal__active__f01.png",
+              "sha256": "bba6741df6a148ab0ac277f49d9e280b7389ef0299065ba0c157ba692d85572a"
+            }
+          ]
+        }
+      }
+    }
+  ]
 }

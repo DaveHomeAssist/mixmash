@@ -10,25 +10,13 @@
   "counts": {
     "assets": 26,
     "expectedExports": 108,
-    "presentExports": 0,
-    "missingExports": 108,
-    "editableSources": 0,
-    "errors": 145,
+    "presentExports": 8,
+    "missingExports": 100,
+    "editableSources": 4,
+    "errors": 132,
     "warnings": 0
   },
   "errors": [
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "terrain:base_soil",
-      "message": "sprites/terrain/base_soil__active__f01.png is missing.",
-      "response": "Render procedural:terrain and log a warning."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "terrain:base_soil",
-      "message": "art/sources/terrain/base_soil.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
-    },
     {
       "code": "MISSING_SPRITE",
       "asset": "terrain:rocky_soil",
@@ -92,26 +80,8 @@
     {
       "code": "MISSING_SPRITE",
       "asset": "building:habitat",
-      "message": "sprites/building/habitat__active__f01.png is missing.",
-      "response": "Render procedural:building and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "building:habitat",
       "message": "sprites/building/habitat__disabled__f01.png is missing.",
       "response": "Render procedural:building and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "building:habitat",
-      "message": "sprites/building/habitat__damaged__f01.png is missing.",
-      "response": "Render procedural:building and log a warning."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "building:habitat",
-      "message": "art/sources/building/habitat.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -248,36 +218,6 @@
     {
       "code": "MISSING_SPRITE",
       "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f01.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f02.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f03.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f04.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "BROKEN_ANIMATION",
-      "asset": "actor:astronaut",
-      "message": "active is missing 4 of 4 frames.",
-      "response": "Use procedural:actor because frame 01 is absent."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
       "message": "sprites/actor/astronaut__disabled__f01.png is missing.",
       "response": "Render procedural:actor and log a warning."
     },
@@ -304,12 +244,6 @@
       "asset": "actor:astronaut",
       "message": "damaged is missing 3 of 3 frames.",
       "response": "Use procedural:actor because frame 01 is absent."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "actor:astronaut",
-      "message": "art/sources/actor/astronaut.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -536,12 +470,6 @@
     {
       "code": "MISSING_SPRITE",
       "asset": "resource:blue_crystal",
-      "message": "sprites/resource/blue_crystal__active__f01.png is missing.",
-      "response": "Render procedural:resource and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "resource:blue_crystal",
       "message": "sprites/resource/blue_crystal__disabled__f01.png is missing.",
       "response": "Render procedural:resource and log a warning."
     },
@@ -550,12 +478,6 @@
       "asset": "resource:blue_crystal",
       "message": "sprites/resource/blue_crystal__damaged__f01.png is missing.",
       "response": "Render procedural:resource and log a warning."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "resource:blue_crystal",
-      "message": "art/sources/resource/blue_crystal.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -895,24 +817,24 @@
     "runtimeIdentitySchema": "marsscape-runtime-assets/v2",
     "scope": "full",
     "complete": false,
-    "runtimeAssetHash": "c3bd6f449d83fa1ba63d3de8ef8caf174a30bc2f0840e44bef9c6522060d294e",
-    "packageHash": "3eba6fffa77203f4b491ff74348475bb25cf763ebeb1d957e306db99c3dbebe7",
+    "runtimeAssetHash": "1dbfe68f951226ce7bea21419c8c5f61343a0699516f56014da1f13d3c43da44",
+    "packageHash": "9ff326f803118b88b3cf1f220387d4955ab45ec33d22bd55037284912c2b336a",
     "exports": [
       {
         "path": "sprites/actor/astronaut__active__f01.png",
-        "sha256": null
+        "sha256": "6f816ee889e758a9ed9615a8e531622076775f94f0c8558b60f2b6554a1a7ee6"
       },
       {
         "path": "sprites/actor/astronaut__active__f02.png",
-        "sha256": null
+        "sha256": "de6f4d2da74c42247bf5e2272a6e2d6571f249c023eba961bc5d816f01658147"
       },
       {
         "path": "sprites/actor/astronaut__active__f03.png",
-        "sha256": null
+        "sha256": "3de116709c0bc95e383eec30f17b72f43168837b1b91873d048882cf5a37b603"
       },
       {
         "path": "sprites/actor/astronaut__active__f04.png",
-        "sha256": null
+        "sha256": "e0809d760dc339972be228d9c28c248022af3cea70e63372fafa27eda09dc603"
       },
       {
         "path": "sprites/actor/astronaut__damaged__f01.png",
@@ -1004,7 +926,7 @@
       },
       {
         "path": "sprites/building/habitat__active__f01.png",
-        "sha256": null
+        "sha256": "757c8241ebc44920cb7b39db6882076bd33de9dc865e8e606d9c5871f274dfc3"
       },
       {
         "path": "sprites/building/habitat__blueprint__f01.png",
@@ -1016,7 +938,7 @@
       },
       {
         "path": "sprites/building/habitat__damaged__f01.png",
-        "sha256": null
+        "sha256": "bbd0ebb620abf7b1836679a030c562e0fede52b121085f8e1b9aa5eb3ffc4a52"
       },
       {
         "path": "sprites/building/habitat__disabled__f01.png",
@@ -1288,7 +1210,7 @@
       },
       {
         "path": "sprites/resource/blue_crystal__active__f01.png",
-        "sha256": null
+        "sha256": "bba6741df6a148ab0ac277f49d9e280b7389ef0299065ba0c157ba692d85572a"
       },
       {
         "path": "sprites/resource/blue_crystal__damaged__f01.png",
@@ -1312,7 +1234,7 @@
       },
       {
         "path": "sprites/terrain/base_soil__active__f01.png",
-        "sha256": null
+        "sha256": "aa147186921a0fd93c4c99f05a08349097b3ce0e524240c65e831a107e022566"
       },
       {
         "path": "sprites/terrain/cliff_slope__active__f01.png",
@@ -1334,7 +1256,7 @@
     "editableSources": [
       {
         "path": "art/sources/actor/astronaut.aseprite",
-        "sha256": null
+        "sha256": "1ec00dee34a152c23fe112439ca6e30d5af464e597ece3e7d61d200d119f0aeb"
       },
       {
         "path": "art/sources/actor/rover.aseprite",
@@ -1346,7 +1268,7 @@
       },
       {
         "path": "art/sources/building/habitat.aseprite",
-        "sha256": null
+        "sha256": "7994762cb848a1dfcedd0b441450d53fc389c038821624de16b2598339a9ae4e"
       },
       {
         "path": "art/sources/building/solar_array.aseprite",
@@ -1410,7 +1332,7 @@
       },
       {
         "path": "art/sources/resource/blue_crystal.aseprite",
-        "sha256": null
+        "sha256": "b4a7b3e8e51f89c3d3e79ee02442a82f16411d04b979af6074401a06380fb1d0"
       },
       {
         "path": "art/sources/resource/common_ore.aseprite",
@@ -1418,7 +1340,7 @@
       },
       {
         "path": "art/sources/terrain/base_soil.aseprite",
-        "sha256": null
+        "sha256": "0cbcb604a477cb7ba259948a6910adb1837ad71bac3e8cd309a90d25013529c9"
       },
       {
         "path": "art/sources/terrain/cliff_slope.aseprite",

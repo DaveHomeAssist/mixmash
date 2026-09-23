@@ -179,13 +179,15 @@ test('shared navigation follows the skip link in focus order on this page', () =
   assert.match(client, /installSharedNavFocusOrder\(\);\s*void initialise\(\);/);
 });
 
-test('strict per-scope reports are validated against the live contract and remain blocked today', () => {
+test('the paid-test machine gate is ready while the full golden gate remains blocked', () => {
   assert.equal(artistApproval.scope, 'artist-test');
   assert.equal(artistApproval.counts.assets, 4);
   assert.equal(artistApproval.counts.expectedExports, 8);
-  assert.equal(artistApproval.approvalReady, false);
-  assert.equal(artistApproval.machineReady, false);
-  assert.equal(artistApproval.artifactDigests.complete, false);
+  assert.equal(artistApproval.counts.presentExports, 8);
+  assert.equal(artistApproval.counts.editableSources, 4);
+  assert.equal(artistApproval.approvalReady, true);
+  assert.equal(artistApproval.machineReady, true);
+  assert.equal(artistApproval.artifactDigests.complete, true);
   assert.match(artistApproval.artifactDigests.packageHash, /^[a-f0-9]{64}$/);
   assert.equal(goldenApproval.scope, 'full');
   assert.equal(goldenApproval.counts.assets, 26);
