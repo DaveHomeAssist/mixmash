@@ -24,58 +24,58 @@
     "runtimeIdentitySchema": "marsscape-runtime-assets/v2",
     "scope": "artist-test",
     "complete": true,
-    "runtimeAssetHash": "1dbfe68f951226ce7bea21419c8c5f61343a0699516f56014da1f13d3c43da44",
-    "packageHash": "bd527ef9bb9c0f14036c5fd6f80ac5b3a9a76b291f3110fc0eb0b5d4cedd4c5a",
+    "runtimeAssetHash": "60fd028419d9de0d045a8a84dda75fce237c459872e43355f90ca4c67e8defde",
+    "packageHash": "7d9ef79c0d364adca0c30e3d8f6455cd9ea2e4033d2912c54b329d0e79bf7b2a",
     "exports": [
       {
         "path": "sprites/actor/astronaut__active__f01.png",
-        "sha256": "6f816ee889e758a9ed9615a8e531622076775f94f0c8558b60f2b6554a1a7ee6"
+        "sha256": "ed3d1c27f5e08edc5dd7c61ae6d6a821008af6cd9e100f33079b9c8eab10c304"
       },
       {
         "path": "sprites/actor/astronaut__active__f02.png",
-        "sha256": "de6f4d2da74c42247bf5e2272a6e2d6571f249c023eba961bc5d816f01658147"
+        "sha256": "470f31100940d88deeef1f6c159d349b2423a39fad0db6e731fd88d4fdb874ba"
       },
       {
         "path": "sprites/actor/astronaut__active__f03.png",
-        "sha256": "3de116709c0bc95e383eec30f17b72f43168837b1b91873d048882cf5a37b603"
+        "sha256": "cbc2c17e3fa336ac897dbf12251bf6005f60d95d2bacb61e15eb73f4b81a93d6"
       },
       {
         "path": "sprites/actor/astronaut__active__f04.png",
-        "sha256": "e0809d760dc339972be228d9c28c248022af3cea70e63372fafa27eda09dc603"
+        "sha256": "d4194f87ab77ec320d056192e8a52e6749d1392b668f3dd66bdda8ce0d1b63c3"
       },
       {
         "path": "sprites/building/habitat__active__f01.png",
-        "sha256": "757c8241ebc44920cb7b39db6882076bd33de9dc865e8e606d9c5871f274dfc3"
+        "sha256": "c57a41fd4455c8fc97eb65bbccf9dd9febbe4fe558b5f0392caa8f35942abc6f"
       },
       {
         "path": "sprites/building/habitat__damaged__f01.png",
-        "sha256": "bbd0ebb620abf7b1836679a030c562e0fede52b121085f8e1b9aa5eb3ffc4a52"
+        "sha256": "83ce0074a756efcc6d7f556fa49a044819f814b3a3efd60e9d73d845c6513c67"
       },
       {
         "path": "sprites/resource/blue_crystal__active__f01.png",
-        "sha256": "bba6741df6a148ab0ac277f49d9e280b7389ef0299065ba0c157ba692d85572a"
+        "sha256": "61df9e31f36f49d3009a1ab19a80c9c609f448df08720f1f7e576205d0a5f447"
       },
       {
         "path": "sprites/terrain/base_soil__active__f01.png",
-        "sha256": "aa147186921a0fd93c4c99f05a08349097b3ce0e524240c65e831a107e022566"
+        "sha256": "8dd2ade828e768a9f2461d625d950a3e574e7fa99df2fab24a6bc8df24a719a3"
       }
     ],
     "editableSources": [
       {
         "path": "art/sources/actor/astronaut.aseprite",
-        "sha256": "1ec00dee34a152c23fe112439ca6e30d5af464e597ece3e7d61d200d119f0aeb"
+        "sha256": "91d71f715519e42786083282a6c14e039ecd56fc2f1ff772c40462e64738dcd1"
       },
       {
         "path": "art/sources/building/habitat.aseprite",
-        "sha256": "7994762cb848a1dfcedd0b441450d53fc389c038821624de16b2598339a9ae4e"
+        "sha256": "cd0b3c3f9cb8bf7ff5d55ca121ef457d94c999b549e1ffdf6515e630eba80da5"
       },
       {
         "path": "art/sources/resource/blue_crystal.aseprite",
-        "sha256": "b4a7b3e8e51f89c3d3e79ee02442a82f16411d04b979af6074401a06380fb1d0"
+        "sha256": "1e8227ccb5578594c2efda2474dc956b1e0104cc7fef33eb331ca9262abac4c5"
       },
       {
         "path": "art/sources/terrain/base_soil.aseprite",
-        "sha256": "0cbcb604a477cb7ba259948a6910adb1837ad71bac3e8cd309a90d25013529c9"
+        "sha256": "8a4cd16ffd8691411cb59b35af5552fcd11a0d33210c5db4eb3cd1a3a2094881"
       }
     ]
   },
