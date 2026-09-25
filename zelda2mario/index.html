@@ -209,7 +209,7 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       <div class="overview-grid">
         <article class="card overview-main"><div><div class="kicker">Status snapshot / <span class="snapshot-date"></span></div><h2 id="summary"></h2><p class="intro" id="description"></p><div class="metrics" id="metrics"></div></div><aside class="signal"><span id="signal-chip"></span><p><strong>Playable prototype, not a release. Two controllers play in Mesen, and the dual-player lane and single-player parity pass on the current build.</strong></p><p>A successful input check, static analysis, baseline boot, or dashboard deployment does not close the game’s runtime gates.</p><p>Shared health and progression. P1 camera leadership. No commercial ROM distribution.</p></aside></article>
         <article class="card"><div class="kicker">Verification, separated</div><h3>What passes. What doesn’t.</h3><div class="gate-list" id="gates"></div><p class="derived-note" id="derived-note"></p></article>
-        <article class="card"><div class="kicker">Next execution boundary</div><h3>Re-gather runtime evidence</h3><ol class="next-list"><li><strong>Gate assembly changes on refreshed lane evidence.</strong><span>The dual-update pins drifted because assembly merged without re-running the ROM-backed lanes, which CI cannot run. Fail CI when a change touches asm/ or scripts/mesen/ without refreshed docs/generated evidence, and give byte-identical re-runs a way to prove they are current without loosening the drift signal.</span></li><li><strong>Re-gather every drifted runtime lane.</strong><span>No runtime lane is current. Re-run each against the live Makefile pin rather than re-pinning reports to match old evidence.</span></li><li><strong>Re-measure the actor cycle budget.</strong><span>The tightest recorded margin is 48 cycles of 4,467, measured against a ROM the build no longer produces. The ceiling is fixed; the margin must be re-proven, not assumed.</span></li><li><strong>Resume the six M2 gates in plan order.</strong><span>Full-game input ownership, actor/shared separation, timing, NMI/mapper proof, ABI, then fresh movement proof and soak.</span></li></ol><div class="notice">No committed completion date. Remaining work is ordered by dependencies, not invented calendar deadlines.</div></article>
+        <article class="card"><div class="kicker">Next execution boundary</div><h3>Harden the prototype</h3><ol class="next-list"><li><strong>Rejoin Luigi on a vertical room change.</strong><span>Luigi cannot ride palace elevators and is carried into the next room at his old coordinates. Each fix starts with a failing scripted scenario. The steady per-frame path uses 4,466 of 4,467 cycles, so anything added there needs a matching saving first; rejoin and combat frames have room.</span></li><li><strong>Finish Luigi&#x27;s presentation.</strong><span>Hide him outside side-view gameplay (death, lives and Game Over screens), give him a fixed palette instead of the scene&#x27;s, and give him his own pose and animation instead of Mario&#x27;s tiles.</span></li><li><strong>Close the verification gaps.</strong><span>Script a town-house door entry, check controller two on an independent emulator or hardware, and commit cold-boot scenarios for palace exit, overworld encounter, town, elevator, death, Game Over and Continue.</span></li><li><strong>Resume the six M2 gates in plan order.</strong><span>Full-game input ownership, actor/shared separation, timing, NMI/mapper proof, ABI, then fresh movement proof and soak.</span></li></ol><div class="notice">No committed completion date. Remaining work is ordered by dependencies, not invented calendar deadlines.</div></article>
         <article class="card wide-card"><div class="section-head"><div><div class="kicker">Full scope, no skipped phases</div><h3>Roadmap at a glance</h3></div><span class="intro">Implementation status; verification is tracked separately.</span></div><div id="phase-board" class="phase-board"></div></article>
       </div>
     </section>
@@ -234,7 +234,7 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
     "sourceCommit": "fe2986e33e357310240dcf339a416f6ccaec9e3c",
     "sourceCommitShort": "fe2986e",
     "sourceCommittedAt": "2026-09-25T05:32:11-04:00",
-    "generatedAt": "2026-09-25T09:32:12Z",
+    "generatedAt": "2026-09-25T13:21:01Z",
     "status": "Current",
     "summary": "Every gate passes against the current build.",
     "derivedNote": "meta, gates and lanes are derived from repository artifacts by scripts/status/build_dashboard.py. Only phases, M2 actions and milestones are hand-authored, in docs/status/status-narrative.json."
@@ -1141,6 +1141,17 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "verification": "All six done criteria of the playable-prototype prompt hold",
       "dependency": "Scoped milestone; does not close the full game",
       "notes": "A rudimentary co-op build: Luigi joins from controller two, both players move independently, and scene changes, damage and death do not crash or softlock. Known quirks remain. Not a release; human release approval stays with Dave.",
+      "completedAt": "2026-09-25",
+      "observedAt": "2026-09-25",
+      "plannedAt": null
+    },
+    {
+      "id": "prototype-hardening",
+      "name": "Prototype hardening, items 1-7",
+      "status": "Complete",
+      "verification": "CI evidence gate, verification ledger, all runtime lanes current (8/8); rejoin-hop and team-immunity assertions fail on the old build and pass on the new one",
+      "dependency": "Scoped milestone; does not close the full game",
+      "notes": "CI now fails runtime changes that arrive without lane evidence, and byte-identical re-runs prove currency through a ledger without loosening the drift signal. Holding A through a rejoin no longer makes Luigi hop, and a hit on either brother now protects both for one invulnerability window. Elevators and Luigi's presentation remain open.",
       "completedAt": "2026-09-25",
       "observedAt": "2026-09-25",
       "plannedAt": null
