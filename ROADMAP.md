@@ -103,7 +103,7 @@ Status: Implemented locally; verified 2026-07-06.
 Definition of done:
 - New mode is selectable from mode select.
 - A player collects vinyl records and hidden "Deep Cuts" across stage geometry.
-- Placement never spawns collectibles outside reachable bounds on all 9 current stages.
+- Placement never spawns collectibles outside reachable bounds on all 11 current stages.
 - Mode has timer, score, restart, pause, result screen, and resume snapshot compatibility.
 - Solo mode has a clean text-state contract for automation.
 

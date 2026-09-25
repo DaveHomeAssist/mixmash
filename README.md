@@ -88,7 +88,7 @@ alter other game routes, the authority API, hosting configuration or ROM data.
 
 ## Conventions
 
-- **`gh-pages` is the real default branch** and the one served at mixmash.games. A separate, older `main` branch holds an earlier, unrelated development history for the fighter and is not part of the live site — don't merge between them without checking first.
+- **`gh-pages` is the real default branch** and the only one served at mixmash.games. There is no `main` branch. The other branches are work branches that aren't part of the live site: `dec79-paid-test-candidate` (draft PR #11, the MarsScape DEC-79 paid-test art awaiting in-game review) and `claude/mars-art-roadmap` (an Aug 2026 docs branch whose MarsScape art roadmap has since landed on `gh-pages`). Check with `git branch -r` before relying on this list.
 - The fighter's combat math is duplicated: `src/combat.js` (tested, canonical) and an inline copy inside `play/index.html` (the shipped game). Keep them hand-synced until the game imports the module directly (tracked in `ROADMAP.md` Phase 1).
 - `mixmash_opts` in `localStorage` persists match options (volume, music, hitbox display, stage hazards, both players' control binds) — don't reset it casually.
 - **Do not run the old MarsScape redeploy recipe** (copying `dist/index.html` from the `marsscape` repo into `mars/`) — see "MarsScape's architecture" above. `/mars/` is now its own multi-file app with a live backend, independent of the `marsscape` source repo.
