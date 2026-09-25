@@ -231,10 +231,10 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
     "project": "Zelda2MarioCoop",
     "target": "Adventure of Mario v2.0.1",
     "description": "Mario and Luigi co-op, reconstructed on the Mario/MMC5 foundation. A source-only project; no commercial ROM data or playable release is published here.",
-    "sourceCommit": "fe2986e33e357310240dcf339a416f6ccaec9e3c",
-    "sourceCommitShort": "fe2986e",
-    "sourceCommittedAt": "2026-09-25T05:32:11-04:00",
-    "generatedAt": "2026-09-25T13:21:01Z",
+    "sourceCommit": "b6166f2123375c8f442116ee7f798ad10ad31587",
+    "sourceCommitShort": "b6166f2",
+    "sourceCommittedAt": "2026-09-25T09:47:44-04:00",
+    "generatedAt": "2026-09-25T13:47:46Z",
     "status": "Current",
     "summary": "Every gate passes against the current build.",
     "derivedNote": "meta, gates and lanes are derived from repository artifacts by scripts/status/build_dashboard.py. Only phases, M2 actions and milestones are hand-authored, in docs/status/status-narrative.json."
@@ -258,15 +258,15 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "id": "freshness",
       "name": "Evidence freshness",
       "state": "Passed",
-      "value": "8 / 8 current",
+      "value": "9 / 9 current",
       "detail": "A runtime lane counts as current only when it passes and no commit touching asm/ or scripts/mesen/ has landed since it was regenerated, or since a lane run re-verified its exact bytes (verification ledger). No lane asserts a ROM the build no longer produces."
     },
     {
       "id": "budget",
       "name": "Actor cycle ceiling",
       "state": "Passed",
-      "value": "4445 / 4467",
-      "detail": "Tightest measured lane is dual_update_gameplay_summary, 22 cycles of headroom. The ceiling is fixed and is never raised to accommodate a result."
+      "value": "4466 / 4467",
+      "detail": "Tightest measured lane is cycle_probe_summary, 1 cycles of headroom. The ceiling is fixed and is never raised to accommodate a result."
     }
   ],
   "lanes": [
@@ -279,11 +279,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -300,11 +300,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 829dbce4 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "Ran against 829dbce4 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -326,11 +326,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:35Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:35Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -382,6 +382,40 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "budget": null,
       "headroom": null,
       "cases": []
+    },
+    {
+      "id": "cycle_probe_summary",
+      "report": "docs/generated/cycle_probe_summary.json",
+      "pass": true,
+      "state": "current",
+      "ranAgainst": "b7bea1443716c23146bb268b78010467ebbffe5b",
+      "expectedRom": "b7bea1443716c23146bb268b78010467ebbffe5b",
+      "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
+      "pinState": "current",
+      "pinDetail": "Asserted ROM matches the live Makefile pin b7bea144.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T09:47:44-04:00",
+      "regeneratedIn": "b6166f2",
+      "budget": {
+        "used": 4466,
+        "ceiling": 4467
+      },
+      "headroom": 1,
+      "cases": [
+        {
+          "label": "steady",
+          "pass": true
+        },
+        {
+          "label": "soft_tethered",
+          "pass": true
+        },
+        {
+          "label": "rejoin",
+          "pass": true
+        }
+      ]
     },
     {
       "id": "dual_update_gameplay_summary",
@@ -452,11 +486,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -473,11 +507,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 7274c395 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "Ran against 7274c395 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 35,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-05T05:43:23-04:00",
       "regeneratedIn": "c7e3f03",
@@ -503,11 +537,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -524,11 +558,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -558,11 +592,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 61,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-02T02:27:49-04:00",
       "regeneratedIn": "3bffeae",
@@ -610,11 +644,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 50e85863 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "Ran against 50e85863 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -636,11 +670,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -657,11 +691,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 6,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-22T03:15:46-04:00",
       "regeneratedIn": "a186fbe",
@@ -678,11 +712,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against f219880f but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "Ran against f219880f but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 6,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-22T03:15:46-04:00",
       "regeneratedIn": "a186fbe",
@@ -708,11 +742,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:17Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 6,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:17Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-22T03:15:46-04:00",
       "regeneratedIn": "a186fbe",
@@ -729,11 +763,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 5590514 at 2026-09-25T09:31:35Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 43,
       "verified": {
-        "sourceCommit": "5590514",
-        "verifiedAt": "2026-09-25T09:31:35Z"
+        "sourceCommit": "0d4db9c",
+        "verifiedAt": "2026-09-25T13:47:31Z"
       },
       "regeneratedAt": "2026-09-04T12:31:53-04:00",
       "regeneratedIn": "9a7ae57",
