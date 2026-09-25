@@ -56,7 +56,9 @@ try {
     assert.equal(data.phases.length, 11);
     assert.equal(data.m2.length, 6);
     assert.match(data.meta.sourceCommit, /^[a-f0-9]{40}$/);
-    assert.match(data.meta.checkedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/);
+    // The dashboard is generated from the evidence (Zelda2MarioCoop
+    // scripts/status/build_dashboard.py); generatedAt is its check time.
+    assert.match(data.meta.generatedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/);
     data.phases.forEach((item, i) => { assert.equal(item.id, `phase-${i}`); assert.ok(item.name.includes(phaseNames[i])); });
     data.m2.forEach((item, i) => { assert.equal(item.id, `m2-${i + 1}`); assert.ok(item.name.includes(m2Names[i])); });
     const items = [...data.milestones, ...data.phases, ...data.m2];
@@ -69,7 +71,15 @@ try {
       }
     }
     assert.equal(await page.locator('[data-work-id]').count(), items.length);
-    assert.deepEqual(await page.locator('#metrics strong').allTextContents(), ['11', '6', String(data.gates.find(g => g.id === 'inputs').value), String(data.gates.find(g => g.id === 'tests').value)]);
+    // Every metric must be counted from the embedded data, never typed.
+    const runtimeLanes = data.lanes.filter(lane => lane.pinState !== 'static');
+    const complete = list => list.filter(item => item.status === 'Complete').length;
+    assert.deepEqual(await page.locator('#metrics strong').allTextContents(), [
+      `${data.gates.filter(gate => gate.state === 'Passed').length} / ${data.gates.length}`,
+      `${runtimeLanes.filter(lane => lane.state === 'current').length} / ${runtimeLanes.length}`,
+      `${complete(data.phases)} / 11`,
+      `${complete(data.m2)} / 6`,
+    ]);
     const dates = await page.locator('#events time').evaluateAll(nodes => nodes.map(node => node.dateTime));
     assert.deepEqual(dates, [...dates].sort(), 'timeline is chronological');
     assert.equal(dates.length, data.milestones.length);
