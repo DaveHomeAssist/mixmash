@@ -10,9 +10,34 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; background: #06060E; overflow: hidden; }
-#game-frame {
+/* The wrapper is one container: a slim control strip above the game, then the
+   game frame filling the rest. Garden OS draws its own HUD in every corner of
+   the frame (menu and chapter top-left, counters and theme top-right, Plant
+   and pack bottom-left, Next bottom-right), so the shared MixKit controls sit
+   outside the frame instead of floating over it. Fullscreen targets this
+   container, which is sized to the whole viewport. */
+#garden-stage {
   position: fixed; inset: 0;
-  width: 100%; height: 100%;
+  width: 100vw; height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  background: #06060E;
+}
+#garden-stage:fullscreen { width: 100vw; height: 100vh; height: 100dvh; }
+.garden-bar {
+  flex: 0 0 auto;
+  height: 48px;
+  display: flex; align-items: center;
+  padding: 0 8px;
+  background: #06060E;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* nav.js floats its bar over the page and idle-dims it; here it lives in the
+   strip, so it stays in normal flow at full opacity. */
+.garden-bar .mixnav,
+.garden-bar .mixnav.is-idle { position: static; opacity: 1; }
+#game-frame {
+  flex: 1 1 auto;
+  width: 100%; min-height: 0;
   border: 0; display: block;
 }
 </style>
@@ -20,15 +45,42 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
 </head>
 <body>
 <script src="../src/kit/nav.js"></script>
+<div id="garden-stage">
+<div class="garden-bar"></div>
 <iframe id="game-frame"
   src="https://davehomeassist.github.io/garden-os/story-mode/"
   title="Garden OS: Story Mode"
   allow="fullscreen; gamepad; autoplay"></iframe>
+</div>
 <script>
 const frame = document.getElementById('game-frame');
+const stage = document.getElementById('garden-stage');
 window.addEventListener('load', () => { try { frame.contentWindow.focus(); } catch(e) {} });
 window.addEventListener('mousedown', () => { try { frame.contentWindow.focus(); } catch(e) {} });
-// The shared nav (src/kit/nav.js) owns the idle-dim behaviour the old back pill had.
+
+// Move the shared nav (src/kit/nav.js) into the strip above the game, and make
+// its Fullscreen button fullscreen the whole stage (strip + game) instead of
+// the document, so the game fills the screen and Exit stays reachable.
+function adoptNav() {
+  const nav = window.__mixmashNav && window.__mixmashNav.element;
+  if (!nav) return;
+  stage.querySelector('.garden-bar').appendChild(nav);
+  const fsBtn = Array.from(nav.querySelectorAll('button')).find((b) => /fullscreen/i.test(b.title));
+  if (!fsBtn) return;
+  nav.addEventListener('click', (event) => {
+    if (!fsBtn.contains(event.target)) return;
+    event.stopPropagation();
+    if (document.fullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    } else if (stage.requestFullscreen) {
+      stage.requestFullscreen().catch(() => {});
+    } else if (stage.webkitRequestFullscreen) {
+      stage.webkitRequestFullscreen();
+    }
+  }, true);
+}
+if (window.__mixmashNav) adoptNav();
+else document.addEventListener('DOMContentLoaded', adoptNav, { once: true });
 </script>
 </body>
 </html>
