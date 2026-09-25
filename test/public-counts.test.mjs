@@ -15,7 +15,7 @@ import vm from 'node:vm';
 const ROOT = path.resolve(import.meta.dirname, '..');
 
 // Every public surface that states a roster or arena total.
-const PUBLIC_SURFACES = ['index.html', 'home.html', 'brand.html', 'play/index.html'];
+const PUBLIC_SURFACES = ['index.html', 'home.html', 'brand.html', 'play/index.html', 'docs/PLAYER_GUIDE.md'];
 
 const FIGHTER_NOUNS = /^(headliner|fighter|producer)s?$/i;
 const ARENA_NOUNS = /^(arena|stage|venue)s?$/i;
