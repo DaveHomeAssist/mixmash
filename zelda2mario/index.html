@@ -209,7 +209,7 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       <div class="overview-grid">
         <article class="card overview-main"><div><div class="kicker">Status snapshot / <span class="snapshot-date"></span></div><h2 id="summary"></h2><p class="intro" id="description"></p><div class="metrics" id="metrics"></div></div><aside class="signal"><span id="signal-chip"></span><p><strong>Playable prototype, not a release. Two controllers play in Mesen, and the dual-player lane and single-player parity pass on the current build.</strong></p><p>A successful input check, static analysis, baseline boot, or dashboard deployment does not close the game’s runtime gates.</p><p>Shared health and progression. P1 camera leadership. No commercial ROM distribution.</p></aside></article>
         <article class="card"><div class="kicker">Verification, separated</div><h3>What passes. What doesn’t.</h3><div class="gate-list" id="gates"></div><p class="derived-note" id="derived-note"></p></article>
-        <article class="card"><div class="kicker">Next execution boundary</div><h3>Harden the prototype</h3><ol class="next-list"><li><strong>Rejoin Luigi on a vertical room change.</strong><span>Luigi cannot ride palace elevators and is carried into the next room at his old coordinates. Each fix starts with a failing scripted scenario. The steady per-frame path uses 4,466 of 4,467 cycles, so anything added there needs a matching saving first; rejoin and combat frames have room.</span></li><li><strong>Finish Luigi&#x27;s presentation.</strong><span>Hide him outside side-view gameplay (death, lives and Game Over screens), give him a fixed palette instead of the scene&#x27;s, and give him his own pose and animation instead of Mario&#x27;s tiles.</span></li><li><strong>Close the verification gaps.</strong><span>Script a town-house door entry, check controller two on an independent emulator or hardware, and commit cold-boot scenarios for palace exit, overworld encounter, town, elevator, death, Game Over and Continue.</span></li><li><strong>Resume the six M2 gates in plan order.</strong><span>Full-game input ownership, actor/shared separation, timing, NMI/mapper proof, ABI, then fresh movement proof and soak.</span></li></ol><div class="notice">No committed completion date. Remaining work is ordered by dependencies, not invented calendar deadlines.</div></article>
+        <article class="card"><div class="kicker">Next execution boundary</div><h3>Harden the prototype</h3><ol class="next-list"><li><strong>Rejoin Luigi on a vertical room change.</strong><span>Luigi cannot ride palace elevators and is carried into the next room at his old coordinates. The native vertical room change is located; the fix must run only on room-transition frames, because the steady per-frame path uses 4,466 of 4,467 cycles. Next: reproduce it from a saved elevator position, then fix and prove it; the committed cold-boot scenario is deferred to the verification work below.</span></li><li><strong>Finish Luigi&#x27;s presentation.</strong><span>Hide him outside side-view gameplay (death, lives and Game Over screens), give him a fixed palette instead of the scene&#x27;s, and give him his own pose and animation instead of Mario&#x27;s tiles.</span></li><li><strong>Close the verification gaps.</strong><span>Script a town-house door entry, check controller two on an independent emulator or hardware, and commit cold-boot scenarios for palace exit, overworld encounter, town, elevator, death, Game Over and Continue.</span></li><li><strong>Resume the six M2 gates in plan order.</strong><span>Full-game input ownership, actor/shared separation, timing, NMI/mapper proof, ABI, then fresh movement proof and soak.</span></li></ol><div class="notice">No committed completion date. Remaining work is ordered by dependencies, not invented calendar deadlines.</div></article>
         <article class="card wide-card"><div class="section-head"><div><div class="kicker">Full scope, no skipped phases</div><h3>Roadmap at a glance</h3></div><span class="intro">Implementation status; verification is tracked separately.</span></div><div id="phase-board" class="phase-board"></div></article>
       </div>
     </section>
@@ -231,10 +231,10 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
     "project": "Zelda2MarioCoop",
     "target": "Adventure of Mario v2.0.1",
     "description": "Mario and Luigi co-op, reconstructed on the Mario/MMC5 foundation. A source-only project; no commercial ROM data or playable release is published here.",
-    "sourceCommit": "b6166f2123375c8f442116ee7f798ad10ad31587",
-    "sourceCommitShort": "b6166f2",
-    "sourceCommittedAt": "2026-09-25T09:47:44-04:00",
-    "generatedAt": "2026-09-25T13:47:46Z",
+    "sourceCommit": "10363261b1ced45ea08e5f3593e4cfedf6e229bf",
+    "sourceCommitShort": "1036326",
+    "sourceCommittedAt": "2026-09-25T10:57:25-04:00",
+    "generatedAt": "2026-09-25T15:07:46Z",
     "status": "Current",
     "summary": "Every gate passes against the current build.",
     "derivedNote": "meta, gates and lanes are derived from repository artifacts by scripts/status/build_dashboard.py. Only phases, M2 actions and milestones are hand-authored, in docs/status/status-narrative.json."
@@ -279,14 +279,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -300,14 +297,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 829dbce4 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "Ran against 829dbce4 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -326,11 +320,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 9c54b5a at 2026-09-25T14:50:42Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 2,
       "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
+        "sourceCommit": "9c54b5a",
+        "verifiedAt": "2026-09-25T14:50:42Z"
       },
       "regeneratedAt": "2026-09-25T05:02:27-04:00",
       "regeneratedIn": "07df6c6",
@@ -350,8 +344,8 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "pinDetail": "Ran against b7bea144 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
       "codeDrift": 0,
       "verified": null,
-      "regeneratedAt": "2026-09-25T05:32:11-04:00",
-      "regeneratedIn": "fe2986e",
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -377,8 +371,8 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
       "codeDrift": 0,
       "verified": null,
-      "regeneratedAt": "2026-09-25T05:32:11-04:00",
-      "regeneratedIn": "fe2986e",
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -429,8 +423,8 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "pinDetail": "Asserted ROM matches the live Makefile pin b7bea144.",
       "codeDrift": 0,
       "verified": null,
-      "regeneratedAt": "2026-09-25T05:32:11-04:00",
-      "regeneratedIn": "fe2986e",
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": {
         "used": 4445,
         "ceiling": 4467
@@ -471,8 +465,8 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
       "codeDrift": 0,
       "verified": null,
-      "regeneratedAt": "2026-09-25T05:32:11-04:00",
-      "regeneratedIn": "fe2986e",
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -486,14 +480,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -507,14 +498,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 7274c395 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 35,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-05T05:43:23-04:00",
-      "regeneratedIn": "c7e3f03",
+      "pinDetail": "Ran against 7274c395 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -537,14 +525,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -558,14 +543,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -592,14 +574,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 61,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-02T02:27:49-04:00",
-      "regeneratedIn": "3bffeae",
+      "pinDetail": "Ran against 353489a5 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -629,8 +608,8 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
       "codeDrift": 0,
       "verified": null,
-      "regeneratedAt": "2026-09-25T05:32:11-04:00",
-      "regeneratedIn": "fe2986e",
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -644,14 +623,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against 50e85863 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "Ran against 50e85863 but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -670,14 +646,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 2,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-25T05:02:27-04:00",
-      "regeneratedIn": "07df6c6",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -691,14 +664,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 6,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-22T03:15:46-04:00",
-      "regeneratedIn": "a186fbe",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -712,14 +682,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "not-asserted",
-      "pinDetail": "Ran against f219880f but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 6,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-22T03:15:46-04:00",
-      "regeneratedIn": "a186fbe",
+      "pinDetail": "Ran against f219880f but asserts no expected identity, so pin drift is not decidable from this report. Freshness rests on code drift alone.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": [
@@ -742,14 +709,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
-      "codeDrift": 6,
-      "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
-      },
-      "regeneratedAt": "2026-09-22T03:15:46-04:00",
-      "regeneratedIn": "a186fbe",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply.",
+      "codeDrift": 0,
+      "verified": null,
+      "regeneratedAt": "2026-09-25T10:57:25-04:00",
+      "regeneratedIn": "1036326",
       "budget": null,
       "headroom": null,
       "cases": []
@@ -763,11 +727,11 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "expectedRom": null,
       "livePin": "b7bea1443716c23146bb268b78010467ebbffe5b",
       "pinState": "static",
-      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 0d4db9c at 2026-09-25T13:47:31Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
+      "pinDetail": "No ROM identity recorded. Pin freshness does not apply. Re-verified byte-identical by a lane run of 9c54b5a at 2026-09-25T14:50:42Z (verification ledger); no asm/ or scripts/mesen/ commit has landed since.",
       "codeDrift": 43,
       "verified": {
-        "sourceCommit": "0d4db9c",
-        "verifiedAt": "2026-09-25T13:47:31Z"
+        "sourceCommit": "9c54b5a",
+        "verifiedAt": "2026-09-25T14:50:42Z"
       },
       "regeneratedAt": "2026-09-04T12:31:53-04:00",
       "regeneratedIn": "9a7ae57",
@@ -1189,6 +1153,28 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "completedAt": "2026-09-25",
       "observedAt": "2026-09-25",
       "plannedAt": null
+    },
+    {
+      "dependency": "Scoped milestone; does not close the full game",
+      "plannedAt": null,
+      "id": "cycle-evidence",
+      "name": "Cycle ceiling measured as evidence",
+      "status": "Complete",
+      "verification": "The steady, soft-tethered and rejoin cycle probes are a lane report; the budget gate reads 4,466 of 4,467",
+      "notes": "The gate previously read the tightest lane report it could see (4,445) while the real steady figure was 4,466. The ceiling is unchanged.",
+      "completedAt": "2026-09-25",
+      "observedAt": "2026-09-25"
+    },
+    {
+      "dependency": "Scoped milestone; does not close the full game",
+      "plannedAt": null,
+      "id": "second-lane-runner",
+      "name": "Second lane runner proven equivalent",
+      "status": "Complete",
+      "verification": "All 20 lanes pass on a Linux runner (Mesen 2.1.1 Linux build); every report matches the macOS evidence apart from the recorded emulator identity",
+      "notes": "Dave approved a second pinned emulator build. Each report records the build that produced it; only the two pinned builds are accepted.",
+      "completedAt": "2026-09-25",
+      "observedAt": "2026-09-25"
     }
   ]
 }</script>
