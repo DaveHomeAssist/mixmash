@@ -1,8 +1,9 @@
 // Front of House isometric board.
 //
 // Draws the lot, the placed objects, the sightline cone, the build cursor and the
-// show-night crowd and lighting on one canvas. Props use the sprites in ./sprites
-// when they have loaded, and fall back to the code-drawn boxes until then.
+// show-night crowd and lighting on one canvas. Props use the stand-in sprites in
+// ./sprites once all of them have loaded, and the code-drawn boxes until then (and
+// for a stage turned away from the viewer, which has no art).
 
 import * as D from './data.mjs';
 import { footprint } from './engine.mjs';
@@ -30,45 +31,65 @@ const FLOORS = {
   festival: { lot: '#303626', lotAlt: '#38422c', edge: '#22281c' },
 };
 
-// Box colours and heights (in tile units) for each object type. Exported so the
-// panel's palette swatches match the board.
-export const LOOK = {
-  stage: { top: '#3a3d45', side: '#1c1d21', front: '#141518', height: 0.5 },
-  'pa-s': { top: '#4b4f5a', side: '#22242a', front: '#1a1b20', height: 1.4 },
-  'pa-m': { top: '#5d6270', side: '#2a2c33', front: '#1f2026', height: 1.9 },
-  lights: { top: '#9ca3af', side: '#6b7280', front: '#4b5563', height: 2.6, thin: true },
-  bar: { top: '#f43f5e', side: '#a8263c', front: '#7f1d2e', height: 0.8 },
-  restroom: { top: '#3b82f6', side: '#1d4ed8', front: '#1e3a8a', height: 1.3 },
-  gate: { top: '#84cc16', side: '#4d7c0f', front: '#3f6212', height: 0.25 },
-  exit: { top: '#ef4444', side: '#b91c1c', front: '#7f1d1d', height: 0.25 },
+// Every prop's geometry in one table: the interim render contract for the stand-in
+// sprites until the one ART_DIRECTION.md asks for replaces it.
+//   box     the code-drawn fallback: face colours and height in tiles.
+//   sprite  the stand-in image: `w` is its width as a fraction of the footprint's
+//           on-screen width, or `h` its height in the same unit (the PAs, so the
+//           medium PA reads taller than the small one); `foot` is the fraction of the
+//           image above its base point; `lamp` is the light tower's lamp head as a
+//           fraction of the image height from the top.
+// Markers and beams anchor to the drawn sprite, so they follow the art, not the box.
+const PROPS = {
+  stage: { box: { top: '#3a3d45', side: '#1c1d21', front: '#141518', height: 0.5 }, sprite: { w: 1.08, foot: 0.93 } },
+  'pa-s': { box: { top: '#4b4f5a', side: '#22242a', front: '#1a1b20', height: 1.4 }, sprite: { h: 1.15, foot: 0.97 } },
+  'pa-m': { box: { top: '#5d6270', side: '#2a2c33', front: '#1f2026', height: 1.9 }, sprite: { h: 1.55, foot: 0.97 } },
+  lights: { box: { top: '#9ca3af', side: '#6b7280', front: '#4b5563', height: 2.6, thin: true }, sprite: { w: 0.62, foot: 0.98, lamp: 0.1 } },
+  bar: { box: { top: '#f43f5e', side: '#a8263c', front: '#7f1d2e', height: 0.8 }, sprite: { w: 1.35, foot: 0.94 } },
+  restroom: { box: { top: '#3b82f6', side: '#1d4ed8', front: '#1e3a8a', height: 1.3 }, sprite: { w: 0.72, foot: 0.97 } },
+  gate: { box: { top: '#84cc16', side: '#4d7c0f', front: '#3f6212', height: 0.25 }, sprite: { w: 1.15, foot: 0.96 } },
+  exit: { box: { top: '#ef4444', side: '#b91c1c', front: '#7f1d1d', height: 0.25 }, sprite: { w: 1.05, foot: 0.96 } },
 };
 
-// Sprite width as a fraction of the footprint's on-screen width, and where the base sits.
-const FIT = {
-  stage: { w: 1.08, foot: 0.93 },
-  'pa-s': { w: 0.78, foot: 0.97 },
-  'pa-m': { w: 0.82, foot: 0.97 },
-  lights: { w: 0.62, foot: 0.98 },
-  bar: { w: 1.35, foot: 0.94 },
-  restroom: { w: 0.72, foot: 0.97 },
-  gate: { w: 1.15, foot: 0.96 },
-  exit: { w: 1.05, foot: 0.96 },
-};
+// Box colours and heights, exported so the panel's palette swatches match the board.
+export const LOOK = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, p.box]));
+// A room's pillars are part of the building: always a code-drawn box, never placed or removed.
+const PILLAR = { top: '#5c534c', side: '#3f3833', front: '#2c2724', height: 2.4 };
+const lookOf = (o) => (o.type === 'pillar' ? PILLAR : LOOK[o.type]);
 
+// The sprites switch on together, once every image has decoded, with one redraw.
 const spriteImages = {};
 const spriteListeners = new Set();
-
-function pingSprites() {
-  spriteListeners.forEach((fn) => fn());
-}
+let spritesReady = false;
 
 if (typeof Image !== 'undefined') {
-  for (const id of Object.keys(FIT)) {
+  const loads = Object.keys(PROPS).map((id) => {
     const img = new Image();
-    img.onload = pingSprites;
     img.src = new URL(`./sprites/${id}.png`, import.meta.url).href;
     spriteImages[id] = img;
-  }
+    return img.decode().catch(() => {}); // a sprite that fails to load keeps its box
+  });
+  Promise.all(loads).then(() => {
+    spritesReady = true;
+    spriteListeners.forEach((fn) => fn());
+    spriteListeners.clear();
+  });
+}
+
+// Alpha masks for hit-testing clicks against the drawn sprites, built on first use.
+const spriteMasks = {};
+function spriteMask(type) {
+  if (spriteMasks[type]) return spriteMasks[type];
+  const img = spriteImages[type];
+  const c = document.createElement('canvas');
+  c.width = img.naturalWidth; c.height = img.naturalHeight;
+  const g = c.getContext('2d');
+  g.drawImage(img, 0, 0);
+  const data = g.getImageData(0, 0, c.width, c.height).data;
+  const mask = new Uint8Array(c.width * c.height);
+  for (let i = 0; i < mask.length; i += 1) mask[i] = data[i * 4 + 3] > 32 ? 1 : 0;
+  spriteMasks[type] = { w: c.width, h: c.height, mask };
+  return spriteMasks[type];
 }
 
 const FIXTURES = {
@@ -83,6 +104,10 @@ export function createBoard(canvas) {
   let view = { tw: 32, th: 16, ox: 0, oy: 0, cssW: 0, cssH: 0, dpr: 1 };
   let crowdCache = { key: '', tiles: [] };
   let lastScene = null;
+  let drawn = []; // the props drawn as sprites in the last frame, back to front
+  let hits = []; // every prop in final paint order, show-through repaints included, for clicks
+  let layers = []; // the last frame's paint order, for placing ground points in it
+  const stats = { spriteRedraws: 0, markers: [], washSource: null, crowd: [] };
   let facing = 0;
   let room = { w: D.GRID.w, h: D.GRID.h };
 
@@ -182,16 +207,31 @@ export function createBoard(canvas) {
     ctx.fillStyle = color; ctx.fill();
   }
 
+  // The two side faces of a box that face the viewer in the current view, as [corner,
+  // corner, outward normal]; the lower-left one on screen comes first.
+  function visibleFaces(x0, y0, x1, y1) {
+    const faces = [
+      [[x0, y1], [x1, y1], [0, 1]], [[x1, y0], [x1, y1], [1, 0]],
+      [[x0, y0], [x1, y0], [0, -1]], [[x0, y0], [x0, y1], [-1, 0]],
+    ];
+    const toView = ([nx, ny]) => {
+      const a = worldToView(x0, y0); const b = worldToView(x0 + nx, y0 + ny);
+      return [b[0] - a[0], b[1] - a[1]];
+    };
+    // Facing the viewer means the normal points down the screen (+u or +v in view terms).
+    return faces.map((f) => ({ f, v: toView(f[2]) })).filter(({ v }) => v[0] + v[1] > 0)
+      .sort((p, q) => q.v[1] - p.v[1]).map(({ f }) => f);
+  }
+
   // An extruded box over a footprint: the two faces toward the viewer, then the top.
   function box(x, y, w, h, height, look, alpha = 1) {
     ctx.globalAlpha = alpha;
     const inset = look.thin ? 0.3 : 0.06;
-    const x0 = x + inset; const y0 = y + inset; const w0 = w - inset * 2; const h0 = h - inset * 2;
-    // The face toward +y (lower left on screen)
-    quad(iso(x0, y0 + h0), iso(x0 + w0, y0 + h0), iso(x0 + w0, y0 + h0, height), iso(x0, y0 + h0, height), look.front);
-    // The face toward +x (lower right on screen)
-    quad(iso(x0 + w0, y0), iso(x0 + w0, y0 + h0), iso(x0 + w0, y0 + h0, height), iso(x0 + w0, y0, height), look.side);
-    fillDiamond(x0, y0, w0, h0, look.top, height);
+    const x0 = x + inset; const y0 = y + inset; const x1 = x + w - inset; const y1 = y + h - inset;
+    visibleFaces(x0, y0, x1, y1).forEach(([a, b], i) => {
+      quad(iso(a[0], a[1]), iso(b[0], b[1]), iso(b[0], b[1], height), iso(a[0], a[1], height), i === 0 ? look.front : look.side);
+    });
+    fillDiamond(x0, y0, x1 - x0, y1 - y0, look.top, height);
     ctx.globalAlpha = 1;
   }
 
@@ -210,24 +250,141 @@ export function createBoard(canvas) {
     return { facing, front, w: stage.rot % 2 ? h : w };
   }
 
-  function drawSprite(o, alpha) {
+  // The stand-ins are painted for one orientation on screen. What counts is how a prop
+  // sits on screen: its own rotation less the view's quarter turns. A footprint a quarter
+  // turn the other way is the same art mirrored; a stage that faces away from the viewer
+  // has no art, so it keeps the code-drawn box with its facing arrow.
+  function spriteMode(o) {
+    const onScreen = (o.rot - facing + 4) % 4;
+    if (o.type === 'stage') return onScreen === 0 ? 'sprite' : onScreen === 3 ? 'mirrored' : null;
+    return onScreen % 2 ? 'mirrored' : 'sprite';
+  }
+
+  // Where a prop's sprite goes on screen, or null when it draws as a box.
+  function spriteRect(o) {
     const img = spriteImages[o.type];
-    if (!img || !img.complete || img.naturalWidth === 0) return false;
+    const mode = spriteMode(o);
+    if (!spritesReady || !mode || !img || img.naturalWidth === 0) return null;
     const { w, h } = dims(o);
-    const west = iso(o.x, o.y + h);
-    const east = iso(o.x + w, o.y);
-    const south = iso(o.x + w, o.y + h);
-    const footW = Math.hypot(east[0] - west[0], east[1] - west[1]);
-    const fit = FIT[o.type] || { w: 1, foot: 0.96 };
-    const destW = footW * fit.w;
-    const destH = destW * (img.naturalHeight / img.naturalWidth);
-    const cx = (west[0] + east[0]) / 2;
+    // The footprint's corners on screen, whichever way the view is turned.
+    const corners = [iso(o.x, o.y), iso(o.x + w, o.y), iso(o.x + w, o.y + h), iso(o.x, o.y + h)];
+    const left = Math.min(...corners.map((c) => c[0]));
+    const right = Math.max(...corners.map((c) => c[0]));
+    const bottom = Math.max(...corners.map((c) => c[1]));
+    const footW = right - left;
+    const fit = PROPS[o.type].sprite;
+    const aspect = img.naturalHeight / img.naturalWidth;
+    const destW = fit.h ? (footW * fit.h) / aspect : footW * fit.w;
+    const destH = destW * aspect;
+    const cx = (left + right) / 2;
+    return { x: cx - destW / 2, y: bottom - destH * fit.foot, w: destW, h: destH, mirrored: mode === 'mirrored' };
+  }
+
+  function drawSprite(o, alpha) {
+    const r = spriteRect(o);
+    if (!r) return null;
     ctx.save();
     ctx.imageSmoothingEnabled = true;
     ctx.globalAlpha = alpha;
-    ctx.drawImage(img, cx - destW / 2, south[1] - destH * fit.foot, destW, destH);
+    if (r.mirrored) {
+      ctx.translate(r.x + r.w, r.y);
+      ctx.scale(-1, 1);
+      ctx.drawImage(spriteImages[o.type], 0, 0, r.w, r.h);
+    } else {
+      ctx.drawImage(spriteImages[o.type], r.x, r.y, r.w, r.h);
+    }
     ctx.restore();
-    return true;
+    return r;
+  }
+
+  // Height in tiles of a screen point above the ground at the prop's centre.
+  function zAbove(o, screenY) {
+    const { w, h } = dims(o);
+    return (iso(o.x + w / 2, o.y + h / 2)[1] - screenY) / view.th;
+  }
+
+  // The top of a prop as drawn (sprite or box), in tiles above the ground.
+  function topOf(o) {
+    const hit = drawn.find((d) => d.o === o);
+    return hit ? zAbove(o, hit.r.y) : PROPS[o.type].box.height;
+  }
+
+  // Where a ground point (a crowd dot, a sightline tile) goes in the paint order. Only
+  // the layers whose drawn shape covers the point on screen matter. In view coordinates
+  // the point is behind a prop when it lies toward the far corner from the prop's front
+  // edges. The point is drawn right after the last covering layer it is in front of, so
+  // a dot in front of the PA but behind the stage lands between the two. When the order
+  // cannot honour both (in front of a later layer, behind an earlier one), behind wins.
+  function placement(px, py, list) {
+    const [pu, pv] = worldToView(px, py);
+    const [sx, sy] = iso(px, py);
+    const covering = [];
+    list.forEach(({ o, d, g }, i) => {
+      const covers = g.r
+        ? sx >= g.r.x && sx < g.r.x + g.r.w && sy >= g.r.y && sy < g.r.y + g.r.h
+        : insidePolygon(sx, sy, g.poly);
+      if (!covers) return;
+      const c = [worldToView(o.x, o.y), worldToView(o.x + d.w, o.y + d.h)];
+      const u0 = Math.min(c[0][0], c[1][0]); const u1 = Math.max(c[0][0], c[1][0]);
+      const v0 = Math.min(c[0][1], c[1][1]); const v1 = Math.max(c[0][1], c[1][1]);
+      covering.push({ i, behind: pu < u1 && pv < v1 && !(pu >= u0 && pv >= v0) });
+    });
+    const firstBehind = Math.min(Infinity, ...covering.filter((c) => c.behind).map((c) => c.i));
+    const slot = Math.max(-1, ...covering.filter((c) => !c.behind && c.i < firstBehind).map((c) => c.i));
+    return { slot, covering };
+  }
+
+  // A code-drawn box's outline on screen: the convex hull of its ground and top corners.
+  function boxOutline(o, d) {
+    const look = lookOf(o);
+    const inset = look.thin ? 0.3 : 0.06;
+    const x0 = o.x + inset; const y0 = o.y + inset; const x1 = o.x + d.w - inset; const y1 = o.y + d.h - inset;
+    const pts = [];
+    for (const z of [0, look.height]) pts.push(iso(x0, y0, z), iso(x1, y0, z), iso(x1, y1, z), iso(x0, y1, z));
+    pts.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const cross = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+    const half = (list) => {
+      const out = [];
+      for (const q of list) {
+        while (out.length >= 2 && cross(out[out.length - 2], out[out.length - 1], q) <= 0) out.pop();
+        out.push(q);
+      }
+      out.pop();
+      return out;
+    };
+    return [...half(pts), ...half([...pts].reverse())];
+  }
+
+  function insidePolygon(px, py, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i, i += 1) {
+      const [xi, yi] = poly[i]; const [xj, yj] = poly[j];
+      if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+
+  // The prop under a screen point, front first in the final paint order: a sprite by its
+  // opaque pixels, a code-drawn box by its outline.
+  function objectAt(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    for (let i = hits.length - 1; i >= 0; i -= 1) {
+      const { o, r, poly } = hits[i];
+      if (poly) {
+        if (insidePolygon(px, py, poly)) return o;
+        continue;
+      }
+      if (px < r.x || py < r.y || px >= r.x + r.w || py >= r.y + r.h) continue;
+      const m = spriteMask(o.type);
+      let u = (px - r.x) / r.w;
+      if (r.mirrored) u = 1 - u;
+      const ix = Math.min(m.w - 1, Math.floor(u * m.w));
+      const iy = Math.min(m.h - 1, Math.floor(((py - r.y) / r.h) * m.h));
+      if (m.mask[iy * m.w + ix]) return o;
+    }
+    return null;
   }
 
   function drawStageFacing(o) {
@@ -354,8 +511,11 @@ export function createBoard(canvas) {
       beam(rig(-1, 3.4), at(0, 5.5, Math.sin(t * 0.9) * 3), FIXTURES.cyan);
       beam(rig(1, 3.4), at(0, 5.5, Math.sin(t * 0.9 + Math.PI) * 3), FIXTURES.magenta);
       const tower = scene.objects.find((o) => o.type === 'lights');
-      const src = [tower.x + 0.5, tower.y + 0.5, LOOK.lights.height];
-      beam(src, at(Math.cos(t * 0.4) * 2, 4), FIXTURES.wash);
+      // The wash comes from the lamp head: on the sprite when one is drawn, else the box top.
+      const drawnTower = drawn.find((d) => d.o === tower);
+      const z = drawnTower ? zAbove(tower, drawnTower.r.y + drawnTower.r.h * PROPS.lights.sprite.lamp) : LOOK.lights.height;
+      stats.washSource = z;
+      beam([tower.x + 0.5, tower.y + 0.5, z], at(Math.cos(t * 0.4) * 2, 4), FIXTURES.wash);
     }
     ctx.restore();
   }
@@ -374,16 +534,60 @@ export function createBoard(canvas) {
   function draw(scene) {
     lastScene = scene;
     useRoom(scene.grid);
+    drawn = [];
+    hits = [];
+    stats.markers = [];
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
     ctx.clearRect(0, 0, view.cssW, view.cssH);
     const floor = FLOORS[scene.floor] || FLOORS.lot;
+
+    // Each prop's drawn shape (sprite rectangle or box outline), known before anything is
+    // drawn. A room's pillars are boxes in the same order.
+    const sorted = [
+      ...scene.objects.filter((o) => !D.OBJECT_TYPES[o.type].kit).map((o) => ({ o, d: dims(o) })),
+      ...(scene.pillars || []).map(([x, y]) => ({ o: { type: 'pillar', x, y, rot: 0 }, d: { w: 1, h: 1 } })),
+    ]
+      .map(({ o, d }) => { const r = spriteRect(o); return { o, d, g: r ? { r } : { poly: boxOutline(o, d) } }; })
+      .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
+    // A sprite mostly hidden behind much taller sprites drawn after it (a PA behind the
+    // stage) shows through at reduced strength, so the player can see what they rented.
+    // The repaint comes right after the last of those sprites, so whatever stands in
+    // front of it later in the order still covers it.
+    const sprites = sorted.filter((p) => p.g.r);
+    const repaintAfter = new Map();
+    sprites.forEach((a, k) => {
+      const ra = a.g.r;
+      let covered = 0;
+      let last = null;
+      for (const b of sprites.slice(k + 1)) {
+        // Only a much taller sprite counts, so neighbours of one size (a restroom bank) never ghost.
+        if (b.g.r.h <= ra.h * 1.5) continue;
+        const w = Math.min(ra.x + ra.w, b.g.r.x + b.g.r.w) - Math.max(ra.x, b.g.r.x);
+        const h = Math.min(ra.y + ra.h, b.g.r.y + b.g.r.h) - Math.max(ra.y, b.g.r.y);
+        if (w > 0 && h > 0) { covered += w * h; last = b; }
+      }
+      if (covered > ra.w * ra.h * 0.4) repaintAfter.set(last, [...(repaintAfter.get(last) || []), { ...a, repaint: true }]);
+    });
+    layers = sorted.flatMap((p) => [p, ...(repaintAfter.get(p) || [])]);
+    // Sightline tiles and crowd dots go into the paint order by placement: slot -1 before
+    // every layer, slot i right after layer i.
+    const tilesAt = new Map();
+    const crowdAt = new Map();
+    const bucket = (map, slot, item) => { if (!map.has(slot)) map.set(slot, []); map.get(slot).push(item); };
+    const overlay = (x, y) => {
+      if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
+      if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
+    };
 
     for (let y = 0; y < room.h; y += 1) {
       for (let x = 0; x < room.w; x += 1) {
         const edge = x === 0 || y === 0 || x === room.w - 1 || y === room.h - 1;
         fillDiamond(x, y, 1, 1, edge ? floor.edge : (x + y) % 2 ? floor.lot : floor.lotAlt);
-        if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
-        if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
+        // A sightline tile in front of a prop is drawn after it, so a sprite that
+        // overhangs its footprint cannot hide the tile.
+        const { slot } = placement(x + 0.5, y + 0.5, layers);
+        if (slot < 0) overlay(x, y);
+        else bucket(tilesAt, slot, [x, y]);
       }
     }
     ctx.lineWidth = 1;
@@ -406,25 +610,29 @@ export function createBoard(canvas) {
       ctx.setLineDash([]);
     }
 
+    // Each crowd dot is placed the same way, so the props it stands behind cover it and
+    // the ones it stands in front of do not. A dot is in front when nothing covering it
+    // is drawn after it.
     const points = crowdPoints(scene);
-    drawCrowd(points, scene.t);
+    stats.crowd = points.map((p) => {
+      const { slot, covering } = placement(p.x, p.y, layers);
+      bucket(crowdAt, slot, p);
+      return { x: p.x, y: p.y, front: covering.every((c) => c.i <= slot) };
+    });
+    drawCrowd(crowdAt.get(-1) || [], scene.t);
 
-    const pillarLook = { top: '#5c534c', side: '#3f3833', front: '#2c2724' };
-    const sorted = [
-      ...scene.objects.filter((o) => !D.OBJECT_TYPES[o.type].kit).map((o) => ({ o, d: dims(o) })),
-      ...(scene.pillars || []).map(([x, y]) => ({ o: { type: 'pillar', x, y, rot: 0 }, d: { w: 1, h: 1 } })),
-    ].sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
-    for (const { o, d } of sorted) {
-      if (o.type === 'pillar') {
-        box(o.x, o.y, 1, 1, 2.4, pillarLook, 1);
-        continue;
-      }
-      const look = LOOK[o.type];
-      const flicker = scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
-        ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1;
-      if (!drawSprite(o, flicker)) box(o.x, o.y, d.w, d.h, look.height, look, flicker);
-      if (o.type === 'stage') drawStageFacing(o);
-    }
+    const flickerOf = (o) => (scene.incident === 'pa-dropout' && (D.OBJECT_TYPES[o.type] || {}).paTier && scene.t
+      ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1);
+    // Clicks follow the same paint order: a prop that shows through is above the one hiding it.
+    layers.forEach(({ o, d, g, repaint }, i) => {
+      if (repaint) drawSprite(o, 0.6 * flickerOf(o));
+      else if (g.r) { drawSprite(o, flickerOf(o)); drawn.push({ o, r: g.r }); }
+      else box(o.x, o.y, d.w, d.h, lookOf(o).height, lookOf(o), flickerOf(o));
+      hits.push(g.r ? { o, d, r: g.r } : { o, d, poly: g.poly });
+      if (o.type === 'stage' && !repaint) drawStageFacing(o);
+      (tilesAt.get(i) || []).forEach(([x, y]) => overlay(x, y));
+      drawCrowd(crowdAt.get(i) || [], scene.t);
+    });
 
     if (scene.night) {
       ctx.fillStyle = COLORS.night;
@@ -443,12 +651,18 @@ export function createBoard(canvas) {
       }
     }
 
+    // Incident markers float just above the prop as drawn.
+    const markAbove = (o) => {
+      const z = topOf(o) + 0.5;
+      stats.markers.push({ type: o.type, z, top: topOf(o) });
+      marker(o.x + 0.5, o.y + 0.5, z);
+    };
     if (scene.incident === 'pa-dropout') {
       const pa = scene.objects.find((o) => D.OBJECT_TYPES[o.type].paTier);
-      if (pa) marker(pa.x + 0.5, pa.y + 0.5, LOOK[pa.type].height + 0.8);
+      if (pa) markAbove(pa);
     }
     if (scene.incident === 'gate-jam') {
-      scene.objects.filter((o) => o.type === 'gate').forEach((g) => marker(g.x + 0.5, g.y + 0.5, 1.2));
+      scene.objects.filter((o) => o.type === 'gate').forEach(markAbove);
     }
 
     if (scene.ghost) {
@@ -456,6 +670,8 @@ export function createBoard(canvas) {
       const t = D.OBJECT_TYPES[g.type];
       if (t && !t.kit) {
         const d = dims(g);
+        // The footprint itself, so the preview shows exactly which tiles it takes.
+        fillDiamond(g.x, g.y, d.w, d.h, g.valid ? 'rgba(250,204,21,0.28)' : 'rgba(239,68,68,0.35)');
         if (!(g.valid && drawSprite(g, 0.45))) {
           const look = g.valid ? LOOK[g.type] : { top: COLORS.invalid, side: COLORS.invalid, front: COLORS.invalid };
           box(g.x, g.y, d.w, d.h, LOOK[g.type].height, look, 0.45);
@@ -481,7 +697,34 @@ export function createBoard(canvas) {
     }
   }
 
-  spriteListeners.add(() => { if (lastScene) draw(lastScene); });
+  // One redraw when the sprites switch on; a board made after that needs none.
+  const onSprites = () => { stats.spriteRedraws += 1; if (lastScene) draw(lastScene); };
+  if (!spritesReady) spriteListeners.add(onSprites);
 
-  return { resize, draw, tileAt, turnView };
+  // For tests and the smoke rail: what the last frame drew.
+  function info() {
+    return {
+      spritesReady,
+      facing,
+      spriteRedraws: stats.spriteRedraws,
+      drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
+      markers: stats.markers,
+      washSource: stats.washSource,
+      hitStack: hits.map(({ o, d, r, poly }) => {
+        const faces = poly ? visibleFaces(o.x, o.y, o.x + d.w, o.y + d.h).map((f) => f[2]) : null;
+        return { type: o.type, rect: r || null, poly: poly || null, faces };
+      }),
+      crowd: stats.crowd,
+    };
+  }
+
+  // For tests: where a ground point falls in the last frame's paint order, as the props
+  // covering it on screen that are drawn before it (after) and after it (before).
+  function placeOf(x, y) {
+    const { slot, covering } = placement(x, y, layers);
+    const types = (list) => [...new Set(list.map((c) => layers[c.i].o.type))];
+    return { after: types(covering.filter((c) => c.i <= slot)), before: types(covering.filter((c) => c.i > slot)) };
+  }
+
+  return { resize, draw, tileAt, turnView, objectAt, info, placeOf, destroy: () => spriteListeners.delete(onSprites) };
 }

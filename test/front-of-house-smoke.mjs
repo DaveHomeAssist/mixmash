@@ -17,7 +17,7 @@ import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
 import {
-  applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, settlementFor, showPreview, termsFor,
+  applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, rollShow, settlementFor, showPreview, termsFor,
 } from '../front-of-house/engine.mjs';
 import {
   AD_STEP, ARTISTS, DEFAULT_ARTIST, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SAVE_NAMESPACE, SCHEMA_VERSION, START_CASH, STARTER_LAYOUT,
@@ -213,6 +213,138 @@ try {
   assert.equal(restarted.career.shows, 0, 'Start over begins a new career');
   ok('an unaffordable next show is stopped on the Done screen with the amount it needs, and Start over stays open');
 
+  // Sprites: they switch on with one redraw, follow rotation, keep the PA tiers apart,
+  // let a PA behind the stage show through, anchor markers and beams to the art, and
+  // a click on a tall prop's body finds that prop.
+  const spritesCtx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
+  const { page: page5, failures: failures5 } = await open(spritesCtx);
+  await page5.waitForFunction(() => window.__frontOfHouse.board().spritesReady);
+  const boardInfo = () => page5.evaluate(() => window.__frontOfHouse.board());
+  assert.ok((await boardInfo()).spriteRedraws <= 1, 'one redraw when the sprites switch on');
+  await page5.click('[data-deal="door"]');
+  await page5.click('[data-act="starter"]');
+  const drawnOf = (info, type) => info.drawn.find((d) => d.type === type);
+  const layoutWith = (swap) => STARTER_LAYOUT.map((o) => swap[o.type] ? { ...o, ...swap[o.type] } : o);
+  const setLayout = (objects) => page5.evaluate((o) => window.__frontOfHouse.act({ type: 'setLayout', objects: o }), objects);
+  const snapshot = () => page5.evaluate(() => {
+    const c = document.querySelector('#board');
+    window.__snap = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  });
+  const changedPixels = () => page5.evaluate(() => {
+    const c = document.querySelector('#board');
+    const now = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+    let n = 0;
+    for (let i = 0; i < now.length; i += 4) if (Math.abs(now[i] - window.__snap[i]) + Math.abs(now[i + 1] - window.__snap[i + 1]) + Math.abs(now[i + 2] - window.__snap[i + 2]) > 30) n += 1;
+    return n;
+  });
+  const withM = await boardInfo();
+  await snapshot();
+  await setLayout(layoutWith({ 'pa-m': { type: 'pa-s' } }));
+  const withS = await boardInfo();
+  assert.ok(await changedPixels() > 400, 'swapping the PA behind the stage visibly changes the board');
+  assert.ok(drawnOf(withM, 'pa-m').rect.h > drawnOf(withS, 'pa-s').rect.h * 1.2, 'the medium PA draws taller than the small one');
+  for (const [rot, expected] of [[0, false], [3, true]]) {
+    await setLayout([{ type: 'stage', x: 9, y: 5, rot }]);
+    assert.equal(drawnOf(await boardInfo(), 'stage')?.rect.mirrored, expected, `stage rot ${rot} draws ${expected ? 'mirrored' : 'as drawn'}`);
+  }
+  for (const rot of [1, 2]) {
+    await setLayout([{ type: 'stage', x: 9, y: 5, rot }]);
+    assert.equal(drawnOf(await boardInfo(), 'stage'), undefined, `stage rot ${rot} faces away, so it keeps the code-drawn box`);
+  }
+  // The view turn: a stage at rot 0 sits a quarter turn the other way on screen after one
+  // turn (mirrored), faces away after two (box), and is back as painted after four.
+  await setLayout([{ type: 'stage', x: 9, y: 5, rot: 0 }]);
+  const turns = [];
+  const faceKey = (faces) => faces.map((n) => n.join(',')).sort().join(' ');
+  for (let i = 0; i < 4; i += 1) {
+    await page5.click('#turn-view');
+    const info = await boardInfo();
+    turns.push([info.facing, drawnOf(info, 'stage')?.rect.mirrored ?? 'box']);
+    const asBox = info.hitStack.find((h) => h.type === 'stage' && h.faces);
+    if (asBox) {
+      // A box paints the two side faces that face the viewer in this view, not always +x and +y.
+      const expected = { 2: [[0, -1], [-1, 0]], 3: [[1, 0], [0, -1]] }[info.facing];
+      assert.equal(faceKey(asBox.faces), faceKey(expected), `view ${info.facing}: the stage box paints its viewer-facing sides`);
+    }
+  }
+  assert.deepEqual(turns, [[1, true], [2, 'box'], [3, 'box'], [0, false]], 'the stage follows the view turn');
+  await setLayout(STARTER_LAYOUT);
+  const canvasBox = await page5.locator('#board').boundingBox();
+  const objectsNow = () => page5.evaluate(() => window.__frontOfHouse.state().venue.objects);
+  // The PA shows through the stage, so a click on the visible PA removes the PA.
+  const paRect = drawnOf(await boardInfo(), 'pa-m').rect;
+  await page5.mouse.click(canvasBox.x + paRect.x + paRect.w / 2, canvasBox.y + paRect.y + paRect.h / 2, { button: 'right' });
+  assert.deepEqual((await objectsNow()).map((o) => o.type).sort(), STARTER_LAYOUT.map((o) => o.type).filter((t) => t !== 'pa-m').sort(), 'right-clicking the PA that shows through the stage removes the PA');
+  // Shift+click on the light tower's lamp, above the ground grid, removes the tower.
+  await setLayout(STARTER_LAYOUT);
+  const towerRect = drawnOf(await boardInfo(), 'lights').rect;
+  await page5.keyboard.down('Shift');
+  await page5.mouse.click(canvasBox.x + towerRect.x + towerRect.w / 2, canvasBox.y + towerRect.y + towerRect.h * 0.06);
+  await page5.keyboard.up('Shift');
+  assert.equal((await objectsNow()).some((o) => o.type === 'lights'), false, 'Shift+clicking the lamp head removes the light tower');
+  // After three view turns the stage faces away and is drawn as a box, painted over the
+  // PA's sprite; a right-click where they overlap removes the stage, not the PA behind it.
+  await setLayout(STARTER_LAYOUT);
+  for (let i = 0; i < 3; i += 1) await page5.click('#turn-view');
+  const stack = (await boardInfo()).hitStack;
+  const stageAt = stack.findIndex((h) => h.type === 'stage');
+  const paAt = stack.findIndex((h) => h.type === 'pa-m');
+  assert.ok(stack[stageAt].poly && stageAt > paAt, 'the stage is a box painted after the PA in this view');
+  const inPoly = (x, y, poly) => poly.reduce((inside, [xi, yi], i) => {
+    const [xj, yj] = poly[(i + poly.length - 1) % poly.length];
+    return (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi ? !inside : inside;
+  }, false);
+  const pr = stack[paAt].rect;
+  // The overlap point nearest the PA sprite's centre, where the sprite is opaque.
+  let overlap = null;
+  let best = Infinity;
+  for (let fy = 0.02; fy < 1; fy += 0.02) {
+    for (let fx = 0.02; fx < 1; fx += 0.02) {
+      const pt = [pr.x + pr.w * fx, pr.y + pr.h * fy];
+      const dist = Math.hypot(fx - 0.5, fy - 0.5);
+      if (dist < best && inPoly(pt[0], pt[1], stack[stageAt].poly)) { overlap = pt; best = dist; }
+    }
+  }
+  assert.ok(overlap, 'the stage box overlaps the middle of the PA sprite');
+  await page5.mouse.click(canvasBox.x + overlap[0], canvasBox.y + overlap[1], { button: 'right' });
+  const types = (await objectsNow()).map((o) => o.type);
+  assert.ok(!types.includes('stage') && types.includes('pa-m'), 'right-clicking the stage box over the PA removes the stage');
+  await page5.click('#turn-view');
+  assert.equal((await boardInfo()).facing, 0);
+  await setLayout(STARTER_LAYOUT);
+  const stageRect = drawnOf(await boardInfo(), 'stage').rect;
+  const roof = { x: canvasBox.x + stageRect.x + stageRect.w / 2, y: canvasBox.y + stageRect.y + stageRect.h * 0.22 };
+  await page5.mouse.click(roof.x, roof.y, { button: 'right' });
+  const afterRemove = await page5.evaluate(() => window.__frontOfHouse.state().venue.objects);
+  assert.equal(afterRemove.some((o) => o.type === 'stage'), false, 'right-clicking the stage roof removes the stage');
+  assert.equal(afterRemove.length, STARTER_LAYOUT.length - 1, 'and nothing else');
+
+  // A ground point in front of the PA but behind the stage, where both sprites cover it on
+  // screen, is drawn between them: after the PA, before the stage.
+  await setLayout([{ type: 'stage', x: 0, y: 1, rot: 0 }, { type: 'pa-m', x: 0, y: 0, rot: 0 }]);
+  const between = await page5.evaluate(() => window.__frontOfHouse.boardPlace(1.2, 0.5));
+  assert.ok(between.after.includes('pa-m') && between.before.includes('stage'), `a dot in front of the PA and behind the stage is drawn between them (${JSON.stringify(between)})`);
+
+  let paSeed = 1;
+  while (rollShow(paSeed, DEFAULT_ARTIST).incidentId !== 'pa-dropout') paSeed += 1;
+  if (!(await page5.isVisible('#save-code'))) await page5.click('#save-menu summary');
+  await page5.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
+  await page5.click('[data-save="import"]');
+  await page5.click('[data-deal="door"]');
+  await page5.click('[data-act="starter"]');
+  await page5.click('[data-act="confirm-build"]');
+  await page5.click('[data-act="confirm-promo"]');
+  await page5.waitForSelector('[data-act="respond"]', { timeout: 2000 });
+  const night = await boardInfo();
+  const paMarker = night.markers.find((m) => m.type === 'pa-m');
+  assert.ok(paMarker && paMarker.top > 2.5 && Math.abs(paMarker.z - paMarker.top - 0.5) < 1e-9, 'the PA-dropout marker sits above the drawn PA');
+  assert.ok(night.washSource > 4, `the wash beam starts at the light tower's lamp head (z ${night.washSource})`);
+  // Crowd right in front of the stage is drawn after it, even though those dots lie behind
+  // props elsewhere on the lot (the restrooms, the gate, the far exit).
+  const frontRow = night.crowd.filter((p) => Math.floor(p.x) === 11 && Math.floor(p.y) === 3);
+  assert.ok(frontRow.length > 0 && frontRow.every((p) => p.front), 'the crowd in front of the stage is drawn in front of it');
+  ok('sprites switch on once, follow rotation and PA tiers, anchor markers and beams, clicks find tall props, and ground points sit between overlapping props');
+
   // 4. Reduced motion goes straight to the incident.
   const calm = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const { page: page3, failures: failures3 } = await open(calm);
@@ -249,10 +381,10 @@ try {
   assert.deepEqual(lowContrast, [], 'small text meets 4.5:1');
   ok('small text meets the 4.5:1 contrast ratio');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4], [], 'no page errors, console errors or failed requests');
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
-  await Promise.all([context, other, calm, phone].map((c) => c.close()));
+  await Promise.all([context, other, calm, phone, spritesCtx].map((c) => c.close()));
 } finally {
   await browser.close();
   await server.close();

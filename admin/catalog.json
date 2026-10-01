@@ -297,7 +297,7 @@
       "commands": [
         {
           "name": "npm run smoke:front-of-house",
-          "description": "Lot Night end to end: reload, save codes and version 1 conversion, keyboard building, reduced motion, phone width, contrast."
+          "description": "Lot Night end to end: reload, save codes and version 1 conversion, the next show, the out-of-money stop, keyboard building, the board sprites, reduced motion, phone width, contrast."
         },
         {
           "name": "npm run sim:front-of-house",
@@ -1429,7 +1429,7 @@
       "category": "surface",
       "kind": "HTML",
       "title": "Front of House: Lot Night · MixMash Studio",
-      "description": "Front of House is a concert-promotion management game. Book a band, build a venue on a parking lot, sell the show, get through show night and settle the money. Early playable.",
+      "description": "Front of House is a concert-promotion management game. Book a band, build the room, sell the show, get through show night and settle the money. The career runs from a parking lot to a festival field. Early playable.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/index.html",
       "open": "/front-of-house/"
     },
@@ -1979,7 +1979,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "front-of-house-smoke.mjs",
-      "description": "Playwright rail for Lot Night end to end: reload, save codes, keyboard building, reduced motion, phone width and contrast (smoke:front-of-house).",
+      "description": "Playwright rail for Lot Night end to end: reload, save codes, the next show, the out-of-money stop, keyboard building, the board sprites, reduced motion, phone width and contrast (smoke:front-of-house).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-smoke.mjs",
       "open": null
     },
@@ -2019,7 +2019,7 @@
       "category": "source",
       "kind": "JS",
       "title": "board.js",
-      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the sprites in ./sprites when they have loaded, and…",
+      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the stand-in sprites in ./sprites once all of them…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
       "open": null
     },

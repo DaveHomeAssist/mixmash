@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v10';
+const VERSION = 'v11';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -64,14 +64,8 @@ const PRECACHE = [
   './front-of-house/board.js',
   './front-of-house/engine.mjs',
   './front-of-house/data.mjs',
-  './front-of-house/sprites/stage.png',
-  './front-of-house/sprites/pa-s.png',
-  './front-of-house/sprites/pa-m.png',
-  './front-of-house/sprites/lights.png',
-  './front-of-house/sprites/bar.png',
-  './front-of-house/sprites/restroom.png',
-  './front-of-house/sprites/gate.png',
-  './front-of-house/sprites/exit.png',
+  // The Front of House sprites (about 920 KB) are not precached: like other large
+  // binaries they are cached on first use, so only players of that game fetch them.
 ];
 
 self.addEventListener('install', (event) => {
