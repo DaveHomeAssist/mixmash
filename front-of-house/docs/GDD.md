@@ -1,6 +1,6 @@
-# Concert Tycoon: Game Design Document
+# Front of House: Game Design Document
 
-**Status:** Draft; decisions CT-DEC-01 to CT-DEC-05 accepted · **Last updated:** 2026-10-01 · **Owner:** Dave Robertson
+*Working title: Concert Tycoon.* **Status:** Draft; every decision in the log is accepted · **Last updated:** 2026-10-01 · **Owner:** Dave Robertson
 **Decisions:** [DECISIONS.md](DECISIONS.md) · **Formulas:** [RULES.md](RULES.md) · **Saves:** [SAVE_FORMAT.md](SAVE_FORMAT.md)
 
 This document is the canonical design. It combines both drafts from the Notion capture page "Concert Tycoon Ideas" (2026-10-01) with the one-page design for the first playable loop. Where they differed, the choice made is noted in the "Reconciled from the Notion drafts" section.
@@ -119,7 +119,7 @@ The Notion page originally listed Unity, Godot and Unreal Engine 5, with FMOD or
 
 ## 10. Open questions
 
-1. **Name and route:** "Concert Tycoon" is a working title. A 2026-10-01 search found Idle Concert Tycoon on Google Play and Festival Tycoon on Steam, a close concept; the recommendation is a distinct name ([CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route)).
-2. **Universe:** a standalone game, or part of the MIXMASH DJ and festival world? This affects CT-DEC-03.
+1. ~~Name and route~~: settled. The game is **Front of House** at `mixmash.games/front-of-house/` ([CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route)).
+2. ~~Universe~~: settled. A standalone game outside the MIXMASH universe ([CT-DEC-08](DECISIONS.md#ct-dec-08-standalone-game)).
 3. **Pro-mode realism:** should production depth follow real AV paperwork (section 7)?
 4. **Multiplayer:** co-promotion with other players suits the theme but adds a lot of complexity, so it is deferred by CT-DEC-05.

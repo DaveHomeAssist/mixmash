@@ -1,11 +1,11 @@
-# Concert Tycoon Rules Specification
+# Front of House Rules Specification
 
-**Status:** Implemented in `tycoon/engine.mjs` (engine version 1) · **Scope:** the first playable loop, "Lot Night" ([GDD section 4](GDD.md#4-the-first-playable-loop-lot-night))
+**Status:** Implemented in `front-of-house/engine.mjs` (engine version 1) · **Scope:** the first playable loop, "Lot Night" ([GDD section 4](GDD.md#4-the-first-playable-loop-lot-night))
 **Decisions:** [CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art) (deterministic engine), [CT-DEC-07](DECISIONS.md#ct-dec-07-documentation-source-of-truth) (numbers live in code)
 
-Each rule has an ID (`R-NN`), its inputs and output, a formula, and the names of the adjustable values it uses. Tests in `tycoon/test-engine.mjs` and comments in `tycoon/engine.mjs` cite the rule ID.
+Each rule has an ID (`R-NN`), its inputs and output, a formula, and the names of the adjustable values it uses. Tests in `front-of-house/test-engine.mjs` and comments in `front-of-house/engine.mjs` cite the rule ID.
 
-> **Where the numbers live:** every adjustable value and content table (objects, artists, incidents) is in [`tycoon/data.mjs`](../data.mjs). This document names values instead of repeating them. The worked example at the end is the exception; it is engine test `R-WORKED-01` and a balance simulator verdict, so it can't drift. After changing a value, run `npm run sim:tycoon` and commit the regenerated [balance baseline](BALANCE_BASELINE.md).
+> **Where the numbers live:** every adjustable value and content table (objects, artists, incidents) is in [`front-of-house/data.mjs`](../data.mjs). This document names values instead of repeating them. The worked example at the end is the exception; it is engine test `R-WORKED-01` and a balance simulator verdict, so it can't drift. After changing a value, run `npm run sim:front-of-house` and commit the regenerated [balance baseline](BALANCE_BASELINE.md).
 
 ## General conventions
 
@@ -143,7 +143,7 @@ Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + 
 
 ## Worked example
 
-This is a balance reference, engine test `R-WORKED-01`, and a verdict in the balance baseline. Its fixture is `WORKED_EXAMPLE` in `tycoon/sim/reference.mjs`.
+This is a balance reference, engine test `R-WORKED-01`, and a verdict in the balance baseline. Its fixture is `WORKED_EXAMPLE` in `front-of-house/sim/reference.mjs`.
 
 **Inputs:** draw 200 · price $20 · ads: social $300, radio $300 · venue reputation 0 · capacity 300 · PA M, lights, 1 bar, 4 restrooms, 1 gate · 50 clear-view tiles · incident: PA dropout, answered with "Wait it out".
 

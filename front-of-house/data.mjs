@@ -1,9 +1,11 @@
-// Concert Tycoon adjustable values and content tables.
+// Front of House adjustable values and content tables.
 //
 // This file is canonical for every number the rules use (CT-DEC-07). The rules
-// themselves are specified by name in tycoon/docs/RULES.md; change a value here,
-// then run `npm run sim:tycoon` and commit the regenerated balance baseline.
+// themselves are specified by name in front-of-house/docs/RULES.md; change a value here,
+// then run `npm run sim:front-of-house` and commit the regenerated balance baseline.
 
+export const GAME_TITLE = 'Front of House';
+export const SAVE_NAMESPACE = 'front_of_house_v1'; // localStorage key (CT-DEC-06, SAVE_FORMAT.md)
 export const SCHEMA_VERSION = 1;
 
 // Lot and money
@@ -124,7 +126,7 @@ export const INCIDENTS = {
 };
 export const INCIDENT_ORDER = ['rain', 'pa-dropout', 'gate-jam'];
 
-// Balance simulation targets (tycoon/sim/simulate.mjs). Changing one is a design decision.
+// Balance simulation targets (front-of-house/sim/simulate.mjs). Changing one is a design decision.
 export const SIM_SEEDS = 500;
 export const BALANCE_TARGETS = {
   referencePassRateMin: 0.25,
