@@ -54,7 +54,7 @@ This follows the MarsScape split in `mars/`:
 | --- | --- |
 | `npm test` (includes `front-of-house/test-engine.mjs`) | Every rule in `docs/RULES.md`, the worked example to the dollar, determinism, save validation |
 | `npm run sim:front-of-house` | Regenerates `docs/BALANCE_BASELINE.md` (single shows and Lot careers on 300 seeds) and exits non-zero on a FAIL verdict; CI then fails if the committed copy differs |
-| `npm run smoke:front-of-house` | Plays Book through Settle in Chromium through the real interface, then checks reload, save codes (a bad code changes nothing, and a version 1 code converts), the next show, the out-of-money stop and Start over, keyboard building, reduced motion, the board camera (zoom, pan, view turns, and tiles and clicks exact at every zoom), a 390px phone and small-text contrast, with no console errors |
+| `npm run smoke:front-of-house` | Plays Book through Settle in Chromium through the real interface, then checks reload, save codes (a bad code changes nothing, and a version 1 code converts), the next show, the out-of-money stop and Start over, keyboard building, reduced motion, the board camera (zoom, pan, view turns, and tiles and clicks exact at every zoom), no page scroll in any phase from 1024 × 700 to 1920 × 1080, the menu, a 390px phone and small-text contrast, with no console errors |
 
 ## Publication note
 

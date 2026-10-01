@@ -51,6 +51,10 @@ const el = {
   steps: [...document.querySelectorAll('.stepper li')],
   saveCode: $('#save-code'),
   saveStatus: $('#save-status'),
+  topbar: $('.topbar'),
+  menu: $('#menu'),
+  menuBtn: $('#menu-btn'),
+  fullscreen: $('#fullscreen'),
 };
 
 const store = window.MixKitSave
@@ -142,6 +146,7 @@ function renderTop() {
 function mount() {
   const builders = { book: bookPanel, build: buildPanel, promote: promotePanel, show: showPanel, settle: settlePanel, done: donePanel };
   el.panel.innerHTML = builders[state.phase]();
+  el.panel.scrollTop = 0;
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
   if (state.phase === 'show') startPlayback();
@@ -844,9 +849,38 @@ function draw() {
   updateZoomButtons();
 }
 
-function resizeBoard() {
+// The page never scrolls (docs/HUD.md): the canvas fills the window, and the lot is fit
+// into the part the top strip and the panel leave clear. On a phone the panel is a sheet
+// across the bottom, so the clear part is above it.
+let laidOut = '';
+function layoutBoard() {
+  const root = document.documentElement.style;
+  const nav = window.__mixmashNav && window.__mixmashNav.element;
+  if (nav) root.setProperty('--nav-room', `${Math.ceil(nav.getBoundingClientRect().right) + 12}px`);
+  const strip = Math.ceil(el.topbar.getBoundingClientRect().bottom);
+  root.setProperty('--strip-h', `${strip}px`);
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const p = el.panel.getBoundingClientRect();
+  const sheet = p.left < width / 2;
+  root.setProperty('--board-bottom', `${sheet ? Math.max(0, Math.round(height - p.top)) : 0}px`);
+  const clear = sheet
+    ? { x: 0, y: strip, w: width, h: Math.max(120, p.top - strip) }
+    : { x: 0, y: strip, w: Math.max(240, p.left), h: height - strip };
+  const key = [width, height, clear.x, clear.y, clear.w, clear.h].join();
+  if (key === laidOut) return;
+  laidOut = key;
+  board.setClear(clear);
   board.resize();
   draw();
+}
+
+// Resize callbacks wait a frame, so laying out never loops inside one.
+let layoutQueued = false;
+function queueLayout() {
+  if (layoutQueued) return;
+  layoutQueued = true;
+  requestAnimationFrame(() => { layoutQueued = false; layoutBoard(); });
 }
 
 // The camera (docs/HUD.md section 5). Zoom keeps the point under the pointer still;
@@ -917,10 +951,11 @@ el.canvas.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   removeUnder(e);
 });
+// The page doesn't scroll, so the wheel zooms about the pointer (docs/HUD.md decision 3).
+// Line and page deltas (Firefox's wheel) are scaled to pixels.
 el.canvas.addEventListener('wheel', (e) => {
-  if (!e.ctrlKey && !e.metaKey) return;
   e.preventDefault();
-  ui.wheel = (ui.wheel || 0) + e.deltaY;
+  ui.wheel = (ui.wheel || 0) + e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 100 : 1);
   if (Math.abs(ui.wheel) < 40) return;
   const rect = el.canvas.getBoundingClientRect();
   zoomStep(ui.wheel < 0 ? 1 : -1, e.clientX - rect.left, e.clientY - rect.top);
@@ -1061,6 +1096,40 @@ el.panel.addEventListener('change', (e) => {
 });
 
 // ---------------------------------------------------------------------------
+// The menu: full screen, the source link, the keys, save and load, the credit.
+
+function setMenu(open, { focus = true } = {}) {
+  if (open === !el.menu.hidden) return;
+  el.menu.hidden = !open;
+  el.menuBtn.setAttribute('aria-expanded', String(open));
+  if (!focus) return;
+  if (open) el.fullscreen.focus();
+  else el.menuBtn.focus();
+}
+
+el.menuBtn.addEventListener('click', () => setMenu(el.menu.hidden));
+$('#menu-close').addEventListener('click', () => setMenu(false));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !el.menu.hidden) { e.preventDefault(); setMenu(false); return; }
+  if (e.key === '?' && !e.target.closest('input, textarea, select')) { e.preventDefault(); setMenu(el.menu.hidden); }
+});
+document.addEventListener('pointerdown', (e) => {
+  if (!el.menu.hidden && !el.menu.contains(e.target) && !el.menuBtn.contains(e.target)) setMenu(false, { focus: false });
+});
+
+function syncFullscreen() {
+  const on = !!document.fullscreenElement;
+  el.fullscreen.setAttribute('aria-pressed', String(on));
+  el.fullscreen.textContent = on ? 'Leave full screen' : 'Full screen';
+}
+if (!document.documentElement.requestFullscreen) el.fullscreen.hidden = true;
+el.fullscreen.addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(() => { /* the browser said no */ });
+});
+document.addEventListener('fullscreenchange', syncFullscreen);
+
+// ---------------------------------------------------------------------------
 // Save and load
 
 function setSaveStatus(text) { el.saveStatus.textContent = text; }
@@ -1092,6 +1161,7 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
     ui.mounted = null;
     render();
     setSaveStatus('Started a new game.');
+    setMenu(false);
   }
 });
 
@@ -1112,6 +1182,7 @@ function importCode(code) {
   ui.mounted = null;
   render();
   setSaveStatus('Loaded the save code.');
+  setMenu(false, { focus: !el.menu.hidden });
   return true;
 }
 
@@ -1155,7 +1226,13 @@ window.__frontOfHouse = {
 // Boot
 
 persist();
-if ('ResizeObserver' in window) new ResizeObserver(resizeBoard).observe(el.canvas.parentElement);
-else window.addEventListener('resize', resizeBoard);
-board.resize();
+window.addEventListener('resize', queueLayout);
+if ('ResizeObserver' in window) {
+  const watch = new ResizeObserver(queueLayout);
+  watch.observe(el.topbar);
+  watch.observe(el.panel);
+}
+// The shared nav is built when the document finishes parsing; the strip makes room for it.
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', queueLayout, { once: true });
+layoutBoard();
 render();

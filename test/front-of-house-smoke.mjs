@@ -4,7 +4,8 @@
  * Plays the first playable through its real interface (book, build with the
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
- * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, the board camera, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, the board camera, the
+ * no-scroll layout and the menu, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -20,7 +21,7 @@ import {
   applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, rollShow, settlementFor, showPreview, termsFor,
 } from '../front-of-house/engine.mjs';
 import {
-  AD_STEP, ARTISTS, DEFAULT_ARTIST, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SANDBOX_CASH, SAVE_NAMESPACE, SCENARIO_CASH, SCHEMA_VERSION, START_CASH,
+  AD_STEP, ARTISTS, DEFAULT_ARTIST, GRID, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SANDBOX_CASH, SAVE_NAMESPACE, SCENARIO_CASH, SCHEMA_VERSION, START_CASH,
   STARTER_LAYOUT,
 } from '../front-of-house/data.mjs';
 import { readFile } from 'node:fs/promises';
@@ -41,12 +42,62 @@ async function open(context) {
   return { page, failures };
 }
 const game = async (page) => JSON.parse(await page.evaluate(() => window.render_game_to_text()));
+// Save and load live in the menu. Loading a good code closes it; a bad code leaves it open.
+async function openSaves(page) {
+  if (await page.isHidden('#menu')) await page.click('#menu-btn');
+  if (!(await page.isVisible('#save-code'))) await page.click('#save-menu summary');
+}
+async function loadCode(page, code) {
+  await openSaves(page);
+  await page.fill('#save-code', code);
+  await page.click('[data-save="import"]');
+}
+
+// The page never scrolls (docs/HUD.md step 2). At every desktop size the canvas fills the
+// window, the document has nothing to scroll, the panel fits on screen (it scrolls inside
+// itself), and the whole lot is fit clear of the top strip and the panel.
+const DESKTOP = [[1024, 700], [1024, 768], [1280, 800], [1440, 900], [1920, 1080]];
+async function resizeTo(page, width, height) {
+  await page.setViewportSize({ width, height });
+  await page.waitForFunction(([w, h]) => {
+    const { view } = window.__frontOfHouse.board();
+    return view.cssW === w && view.cssH === h;
+  }, [width, height]);
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+}
+const measureLayout = (page) => page.evaluate(([W, H]) => {
+  const d = document.documentElement;
+  const { view } = window.__frontOfHouse.board();
+  const corners = [[0, 0], [W, 0], [W, H], [0, H]].map(([x, y]) => window.__frontOfHouse.boardClientOf(x, y));
+  const panel = document.querySelector('#panel').getBoundingClientRect();
+  return {
+    scroll: [d.scrollWidth - innerWidth, d.scrollHeight - innerHeight, scrollX, scrollY],
+    canvas: [view.cssW, view.cssH],
+    clear: view.safe,
+    lotClear: corners.every((c) => c.clear),
+    panelOnScreen: panel.top >= 0 && panel.bottom <= innerHeight + 0.5 && panel.right <= innerWidth + 0.5,
+  };
+}, [GRID.w, GRID.h]);
+async function checkNoScroll(page, phase) {
+  const back = page.viewportSize();
+  for (const [width, height] of DESKTOP) {
+    await resizeTo(page, width, height);
+    const m = await measureLayout(page);
+    const at = `${phase} at ${width}x${height}`;
+    assert.deepEqual(m.scroll, [0, 0, 0, 0], `${at}: the page doesn't scroll`);
+    assert.deepEqual(m.canvas, [width, height], `${at}: the board fills the window`);
+    assert.ok(m.lotClear, `${at}: the lot is fit clear of the strip and the panel (${JSON.stringify(m.clear)})`);
+    assert.ok(m.panelOnScreen, `${at}: the panel fits on screen`);
+  }
+  await resizeTo(page, back.width, back.height);
+}
 
 try {
   // 1. The full loop through the interface.
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const { page, failures } = await open(context);
   assert.equal((await game(page)).phase, 'book');
+  await checkNoScroll(page, 'book');
   await page.click('[data-deal="guarantee"]');
   assert.equal((await game(page)).phase, 'build');
   assert.equal(await page.isDisabled('[data-act="confirm-build"]'), true, 'an empty lot cannot be confirmed');
@@ -54,9 +105,11 @@ try {
   const built = await game(page);
   assert.equal(built.venue.ready, true);
   assert.equal(built.venue.capacity, PERMIT_CAP, 'the suggested layout fills the Lot permit');
+  await checkNoScroll(page, 'build');
   await page.screenshot({ path: join(output, 'build.png') });
   await page.click('[data-act="confirm-build"]');
   assert.equal((await game(page)).phase, 'promote');
+  await checkNoScroll(page, 'promote');
   await page.focus('#price');
   await page.keyboard.press('ArrowRight');
   assert.equal((await game(page)).promotion.price, 21, 'the price slider drives the engine');
@@ -67,6 +120,7 @@ try {
   assert.equal((await game(page)).phase, 'show');
   await page.click('[data-act="skip"]');
   await page.waitForSelector('[data-act="respond"]');
+  await checkNoScroll(page, 'show');
   await page.screenshot({ path: join(output, 'show.png') });
   await page.click('[data-act="respond"]:not([disabled])');
   const settling = await game(page);
@@ -74,13 +128,16 @@ try {
   assert.ok(settling.settlement && Number.isInteger(settling.settlement.net));
   const sheet = await page.textContent('#panel');
   assert.ok(sheet.includes('SECTION A') && sheet.includes('SECTION B') && sheet.includes('SECTION C'), 'the settlement sheet has its three sections');
-  await page.screenshot({ path: join(output, 'settle.png'), fullPage: true });
+  await checkNoScroll(page, 'settle');
+  await page.screenshot({ path: join(output, 'settle.png') });
   await page.click('[data-act="accept"]');
   const done = await game(page);
   assert.equal(done.phase, 'done');
   assert.equal(done.history, 1);
   assert.equal(done.cash, START_CASH + done.settlement.net, 'cash after settlement is the starting cash plus the net');
+  await checkNoScroll(page, 'done');
   ok('plays Book through Settle and the cash adds up');
+  ok('the page never scrolls: in every phase at 1024x700 to 1920x1080 the board fills the window and the lot is fit clear of the strip and the panel');
 
   await page.reload();
   await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
@@ -90,25 +147,33 @@ try {
   ok('the game survives a reload');
 
   // 2. Save codes: export, import elsewhere, and refuse a bad code without touching the save.
-  await page.click('#save-menu summary');
+  await openSaves(page);
   await page.click('[data-save="export"]');
   const code = await page.inputValue('#save-code');
   assert.ok(code.length > 20, 'a save code is shown');
+  assert.equal(await page.getAttribute('#menu-btn', 'aria-expanded'), 'true');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.isHidden('#menu'), true, 'Escape closes the menu');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'menu-btn', 'focus goes back to the menu button');
+  await page.focus('#board');
+  await page.keyboard.press('?');
+  assert.equal(await page.isVisible('#menu'), true, '? opens the menu');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'fullscreen', 'focus moves into the menu');
+  assert.ok((await page.textContent('#board-help')).includes('mouse wheel'), 'the keys help is in the menu');
+  await page.mouse.click(300, 400);
+  assert.equal(await page.isHidden('#menu'), true, 'a click outside closes the menu');
+  ok('the menu opens from its button and ?, holds the keys and the saves, and closes with Escape or a click outside');
   const other = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const { page: page2, failures: failures2 } = await open(other);
-  await page2.click('#save-menu summary');
-  await page2.fill('#save-code', Buffer.from('{"evil":true}').toString('base64'));
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, Buffer.from('{"evil":true}').toString('base64'));
   assert.match(await page2.textContent('#save-status'), /isn't a Front of House save/);
   assert.equal((await game(page2)).phase, 'book', 'a bad code changes nothing');
-  await page2.fill('#save-code', code);
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, code);
   const imported = await game(page2);
   assert.equal(imported.phase, 'done');
   assert.equal(imported.cash, done.cash);
   const v1 = JSON.parse(await readFile(new URL('../front-of-house/test/fixtures/save-v1.json', import.meta.url), 'utf8'));
-  await page2.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: 1, savedAt: '2026-10-01T00:00:00.000Z', state: v1 })).toString('base64'));
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: 1, savedAt: '2026-10-01T00:00:00.000Z', state: v1 })).toString('base64'));
   const migrated = await game(page2);
   assert.equal(migrated.phase, 'book', 'a finished version 1 show moves on to the next show');
   assert.equal(migrated.cash, Math.round(v1.cash / 2), 'version 1 cash converts to the Lot scale');
@@ -126,6 +191,7 @@ try {
   ok('the next show offers two acts and carries the cash');
 
   // 3. Keyboard placement on the board.
+  await openSaves(page2);
   await page2.click('[data-save="new"]');
   await page2.click('[data-save="new"]');
   assert.equal((await game(page2)).phase, 'book');
@@ -153,8 +219,7 @@ try {
   const previewCrowd = showPreview(rehearsal).attendance;
   rehearsal = applyAction(rehearsal, { type: 'respond', responseId: INCIDENTS[rehearsal.show.incidentId].responses.find((r) => r.cost <= rehearsal.cash).id }).state;
   assert.notEqual(settlementFor(rehearsal).attendance, previewCrowd, 'the pinned seed changes the crowd, so this check can catch a stale board');
-  await page2.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(RAIN_SEED) })).toString('base64'));
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(RAIN_SEED) })).toString('base64'));
   await page2.click('[data-deal="door"]');
   await page2.click('[data-act="starter"]');
   await page2.click('[data-act="confirm-build"]');
@@ -187,13 +252,11 @@ try {
   const need = nextShowCost(career);
   assert.ok(need > cheapestShowCost(), 'neither act on offer takes the door deal');
   const asCode = (state) => Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state })).toString('base64');
-  await page2.fill('#save-code', asCode({ ...career, cash: need - 1 }));
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, asCode({ ...career, cash: need - 1 }));
   assert.equal((await game(page2)).phase, 'done');
   assert.equal(await page2.isDisabled('#panel .actions .primary'), true, 'Book the next show is disabled');
   assert.ok((await page2.textContent('#panel .lede')).includes(`$${need.toLocaleString('en-US')}`), 'the Done screen names what the next show needs');
-  await page2.fill('#save-code', asCode({ ...career, cash: need }));
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, asCode({ ...career, cash: need }));
   await page2.click('[data-act="next"]');
   const pick = offersFor(await page2.evaluate(() => window.__frontOfHouse.state()))
     .find((id) => cheapestShowCost('guarantee', termsFor(id, career.reputation.artists[id]).ask) === need);
@@ -205,8 +268,7 @@ try {
   assert.doesNotMatch(advice, /door deal/, 'no door deal is suggested to an act that refuses one');
   await page2.click('[data-act="back"]');
   await page2.click('[data-act="back"]');
-  await page2.fill('#save-code', asCode({ ...career, cash: need - 1 }));
-  await page2.click('[data-save="import"]');
+  await loadCode(page2, asCode({ ...career, cash: need - 1 }));
   await page2.click('[data-act="retry"]');
   const restarted = await game(page2);
   assert.equal(restarted.phase, 'book');
@@ -296,14 +358,16 @@ try {
     return (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi ? !inside : inside;
   }, false);
   const pr = stack[paAt].rect;
-  // The overlap point nearest the PA sprite's centre, where the sprite is opaque.
+  // The overlap point nearest the PA sprite's centre, where the sprite is opaque. It sits at
+  // least 2 px inside the stage box, since mouse events land on whole pixels.
+  const wellInside = ([x, y]) => [[0, 0], [-2, -2], [2, -2], [-2, 2], [2, 2]].every(([dx, dy]) => inPoly(x + dx, y + dy, stack[stageAt].poly));
   let overlap = null;
   let best = Infinity;
   for (let fy = 0.02; fy < 1; fy += 0.02) {
     for (let fx = 0.02; fx < 1; fx += 0.02) {
       const pt = [pr.x + pr.w * fx, pr.y + pr.h * fy];
       const dist = Math.hypot(fx - 0.5, fy - 0.5);
-      if (dist < best && inPoly(pt[0], pt[1], stack[stageAt].poly)) { overlap = pt; best = dist; }
+      if (dist < best && wellInside(pt)) { overlap = pt; best = dist; }
     }
   }
   assert.ok(overlap, 'the stage box overlaps the middle of the PA sprite');
@@ -399,6 +463,10 @@ try {
   await page5.keyboard.up('Control');
   assert.equal((await cam()).zoom, 1.5, 'Ctrl and the wheel zoom in');
   assert.deepEqual(await page5.evaluate(([x, y]) => window.__frontOfHouse.boardTileAt(x, y), [under.x, under.y]), tileBefore, 'the tile under the pointer stays put');
+  await page5.mouse.wheel(0, -120);
+  assert.equal((await cam()).zoom, 2, 'the plain wheel zooms too, since the page never scrolls');
+  assert.deepEqual(await page5.evaluate(([x, y]) => window.__frontOfHouse.boardTileAt(x, y), [under.x, under.y]), tileBefore, 'the tile under the pointer still stays put');
+  assert.equal(await page5.evaluate(() => scrollY), 0, 'the wheel never scrolls the page');
   await page5.evaluate(() => window.__frontOfHouse.boardZoom(2));
   const zoomedStage = drawnOf(await boardInfo(), 'stage').rect;
   await page5.mouse.click(boardBox.x + zoomedStage.x + zoomedStage.w / 2, boardBox.y + Math.max(4, zoomedStage.y + zoomedStage.h * 0.3), { button: 'right' });
@@ -409,9 +477,7 @@ try {
 
   let paSeed = 1;
   while (rollShow(paSeed, DEFAULT_ARTIST).incidentId !== 'pa-dropout') paSeed += 1;
-  if (!(await page5.isVisible('#save-code'))) await page5.click('#save-menu summary');
-  await page5.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
-  await page5.click('[data-save="import"]');
+  await loadCode(page5, Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
   await page5.click('[data-deal="door"]');
   await page5.click('[data-act="starter"]');
   await page5.click('[data-act="confirm-build"]');
@@ -442,8 +508,17 @@ try {
   const { page: page4, failures: failures4 } = await open(phone);
   const overflow = await page4.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   assert.ok(overflow <= 0, `no horizontal scroll at 390px (overflow ${overflow}px)`);
-  await page4.screenshot({ path: join(output, 'phone.png'), fullPage: true });
-  ok('fits a 390px phone without horizontal scrolling');
+  const onPhone = await measureLayout(page4);
+  assert.deepEqual(onPhone.scroll, [0, 0, 0, 0], 'the page does not scroll on a phone either');
+  assert.ok(onPhone.lotClear && onPhone.clear.h >= 844 * 0.45, `the board takes at least 45% of the phone's height, clear of the sheet (${JSON.stringify(onPhone.clear)})`);
+  const sheetBox = await page4.evaluate(() => {
+    const p = document.querySelector('#panel');
+    const r = p.getBoundingClientRect();
+    return { left: r.left, bottom: r.bottom, scrolls: p.scrollHeight > p.clientHeight };
+  });
+  assert.ok(sheetBox.left === 0 && Math.abs(sheetBox.bottom - 844) < 1 && sheetBox.scrolls, `the phase panel is a bottom sheet that scrolls inside itself (${JSON.stringify(sheetBox)})`);
+  await page4.screenshot({ path: join(output, 'phone.png') });
+  ok('fits a 390px phone with no page scroll, the board on top and the panel in a bottom sheet');
 
   // The mode buttons start a new game, redraw the page at once and save it.
   const shownCash = async () => Number((await page4.textContent('#meter-cash')).replace(/[^\d]/g, ''));
