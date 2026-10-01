@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "seed": 42,
+  "phase": "done",
+  "cash": 6945,
+  "venue": {
+    "id": "lot",
+    "grid": {
+      "w": 24,
+      "h": 16
+    },
+    "objects": [
+      {
+        "type": "fence",
+        "x": 0,
+        "y": 0,
+        "rot": 0
+      },
+      {
+        "type": "stage",
+        "x": 9,
+        "y": 0,
+        "rot": 0
+      },
+      {
+        "type": "pa-m",
+        "x": 8,
+        "y": 0,
+        "rot": 0
+      },
+      {
+        "type": "lights",
+        "x": 15,
+        "y": 0,
+        "rot": 0
+      },
+      {
+        "type": "bar",
+        "x": 1,
+        "y": 8,
+        "rot": 0
+      },
+      {
+        "type": "restroom",
+        "x": 20,
+        "y": 12,
+        "rot": 0
+      },
+      {
+        "type": "restroom",
+        "x": 21,
+        "y": 12,
+        "rot": 0
+      },
+      {
+        "type": "restroom",
+        "x": 22,
+        "y": 12,
+        "rot": 0
+      },
+      {
+        "type": "restroom",
+        "x": 20,
+        "y": 13,
+        "rot": 0
+      },
+      {
+        "type": "gate",
+        "x": 12,
+        "y": 15,
+        "rot": 0
+      },
+      {
+        "type": "exit",
+        "x": 0,
+        "y": 5,
+        "rot": 0
+      },
+      {
+        "type": "exit",
+        "x": 23,
+        "y": 5,
+        "rot": 0
+      },
+      {
+        "type": "exit",
+        "x": 0,
+        "y": 14,
+        "rot": 0
+      }
+    ]
+  },
+  "booking": {
+    "artistId": "velvet-static",
+    "deal": "guarantee"
+  },
+  "promotion": {
+    "price": 20,
+    "ads": {
+      "flyers": 0,
+      "social": 300,
+      "radio": 300
+    },
+    "confirmed": true
+  },
+  "show": {
+    "incidentId": "pa-dropout",
+    "responseId": "backup-amp"
+  },
+  "reputation": {
+    "venue": 19,
+    "artists": {
+      "velvet-static": 5
+    }
+  },
+  "history": [
+    {
+      "showId": 1,
+      "seed": 42,
+      "deal": "guarantee",
+      "attendance": 270,
+      "satisfaction": 97,
+      "net": 945,
+      "artistPay": 1000,
+      "result": "pass",
+      "weakest": "incident",
+      "settledAt": "2026-10-01T00:00:00.000Z"
+    }
+  ]
+}
