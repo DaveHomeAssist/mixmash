@@ -84,6 +84,10 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - New smoke check: one redraw on load, mirrored and box stages by rotation and by view turn, the PA swap visibly changes the board, the medium PA draws taller, the PA-dropout marker sits above the drawn PA, the wash starts at the lamp head, and a right-click on the stage roof removes the stage.
 - Merged with the rooms after the Lot (`40da936`): the board keeps each room's size, floor tint and pillars. Pillars are code-drawn boxes in the same paint order, so crowd dots and sightline tiles are placed against them and a click on a pillar finds the pillar, not a prop behind it.
 
+## 2026-10-01: Mode button fix
+
+- The Career, Sandbox and Wet lot buttons called an undefined `save()` (from the rooms push, `40da936`), which threw before the redraw, so the page kept showing the old game until the next action. They now call `persist()` and redraw at once. A smoke check clicks each button and checks the cash meter right away and after a reload. Service worker v12.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

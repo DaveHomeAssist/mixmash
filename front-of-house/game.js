@@ -894,7 +894,7 @@ el.panel.addEventListener('click', (e) => {
     const mode = target.dataset.mode;
     state = mode === 'career' ? createGame(state.seed) : createGame(state.seed, { mode, scenario: 'wet-lot' });
     ui.mounted = null;
-    save();
+    persist();
     render();
   }
   else if (a === 'rotate') rotate();
