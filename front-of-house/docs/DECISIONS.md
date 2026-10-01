@@ -263,3 +263,35 @@ Tier 1 was one night. The GDD's career needs a run of shows on the Lot with a re
 - No save version bump: `booking.terms` and `unlocks` are optional fields with defaults, so a version 2 save from Phase 3 keeps playing exactly as it was booked.
 - The careful strategy always prefers the budget layout at the Lot's scale, which suggests the light tower and the medium PA are rarely worth their cost on the Lot. Left as is for now; it is a balance question for Dave.
 
+## CT-DEC-11: Rooms after the Lot
+
+- Date: 2026-10-01
+- Status: Proposed (built so it can be played; every value is in `data.mjs`, and Dave may change any of them)
+- Owner: Dave Robertson
+- Affects: the Club, the Amphitheater, the Festival Grounds, Sandbox, one scenario ([FUTURE.md](FUTURE.md), [WORLD.md](WORLD.md))
+
+### Context
+
+[FUTURE.md](FUTURE.md) listed gates before Phase 5, including a playtest sign-off and accepting CT-DEC-10. Those gates are still open for a public release. The build on 2026-10-01 was an explicit request to implement the planned phases anyway, keep `noindex`, and leave the hub card off. This decision records the calls that file left open, so the code is not an unspoken change.
+
+### Decision
+
+1. **The Club is a grid**, the same builder as the Lot. Not a fixed floor plan, and not both.
+2. **The Lot stays bookable** after the unlock. Each room keeps its own layout. Offers, the permit and the goal do not reset when the player changes rooms.
+3. **House PA.** Fathom Hall, Loam Shell and Split Acre have a house rig (`housePa: 'M'`). A rented PA is optional there and costs nothing when it is not placed. The Lot still rents one.
+4. **Pillars.** Fathom Hall has four pillars. They occupy tiles and block sightlines with the same overlay as a restroom.
+5. **Loam Shell.** 400 seats sell first, at their own price, then the lawn. A hold is 1, 2 or 3 nights. Each night has its own attendance, incident and sheet. Reputation and the relationship move once, on the last night. Each night charges its upfront cost again. A curfew is an incident on the shell and on the grounds, not on the Lot.
+6. **Split Acre.** A second stage is a door-deal opener capped at `secondCap` (500). The site is not charged twice. A sponsor deal pays `SPONSOR_PAY` before doors and the ask is still paid to the act. Broadcast pays `BROADCAST_PER_HEAD` per head at settlement. The career is complete when the festival goal is met, and another day can still be booked.
+7. **Goals** are `CLUB_GOAL`, `AMP_GOAL` and `FEST_GOAL` in `data.mjs`. They are not invented in the client.
+8. **Modes.** Sandbox starts with `SANDBOX_CASH`, every room open, and no cash gate. The one scenario is a wet Lot: the suggested layout, `SCENARIO_CASH`, and rain forced.
+9. **Saves stay on schema 2.** The new fields are optional. A Lot save from before this phase still plays. `normalizeState` fills the defaults.
+
+### Not in this pass
+
+A ticketing platform, a real slope (the shell is a grid with seats, not a hillside model), cancelling a remaining night, owning gear, a calendar, crew skills, Challenge and Endless. The Lot's numbers and the balance baseline are unchanged. The new tiers have engine tests and no simulator verdicts in CI yet. Art is a floor tint on the same prop sprites, not four venue looks. `noindex` stays, and there is no hub card, until Dave signs off the first playable.
+
+### Consequences
+
+- Name checks for the new acts and rooms are in [WORLD.md](WORLD.md). Cinder Meridian is a real act and is not used. Relay Hall was too close to Relay Town Hall. Marrow Shell was too close to the band Marrow.
+- The cheapest Lot show is still $1,025. Careful Lot careers in the baseline are unchanged.
+

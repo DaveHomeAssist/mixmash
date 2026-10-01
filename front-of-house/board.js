@@ -24,6 +24,13 @@ const COLORS = {
   night: 'rgba(11,15,25,0.74)',
 };
 
+const FLOORS = {
+  lot: { lot: '#2a2d34', lotAlt: '#2e3139', edge: '#23262c' },
+  club: { lot: '#2c2428', lotAlt: '#34282e', edge: '#1c1618' },
+  amphitheater: { lot: '#243028', lotAlt: '#2c3a2e', edge: '#1a241c' },
+  festival: { lot: '#303626', lotAlt: '#38422c', edge: '#22281c' },
+};
+
 // Every prop's geometry in one table: the interim render contract for the stand-in
 // sprites until the one ART_DIRECTION.md asks for replaces it.
 //   box     the code-drawn fallback: face colours and height in tiles.
@@ -46,6 +53,9 @@ const PROPS = {
 
 // Box colours and heights, exported so the panel's palette swatches match the board.
 export const LOOK = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, p.box]));
+// A room's pillars are part of the building: always a code-drawn box, never placed or removed.
+const PILLAR = { top: '#5c534c', side: '#3f3833', front: '#2c2724', height: 2.4 };
+const lookOf = (o) => (o.type === 'pillar' ? PILLAR : LOOK[o.type]);
 
 // The sprites switch on together, once every image has decoded, with one redraw.
 const spriteImages = {};
@@ -99,10 +109,20 @@ export function createBoard(canvas) {
   let layers = []; // the last frame's paint order, for placing ground points in it
   const stats = { spriteRedraws: 0, markers: [], washSource: null, crowd: [] };
   let facing = 0;
+  let room = { w: D.GRID.w, h: D.GRID.h };
+
+  function useRoom(next) {
+    const w = next && next.w ? next.w : D.GRID.w;
+    const h = next && next.h ? next.h : D.GRID.h;
+    if (w === room.w && h === room.h) return;
+    room = { w, h };
+    crowdCache = { key: '', tiles: [] };
+    resize();
+  }
 
   function worldToView(x, y) {
-    const W = D.GRID.w;
-    const H = D.GRID.h;
+    const W = room.w;
+    const H = room.h;
     if (facing === 1) return [y, W - x];
     if (facing === 2) return [W - x, H - y];
     if (facing === 3) return [H - y, x];
@@ -113,14 +133,14 @@ export function createBoard(canvas) {
     const rect = canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cssW = Math.max(280, Math.round(rect.width));
-    const tw = Math.max(12, Math.floor((cssW - 24) / ((D.GRID.w + D.GRID.h) / 2)));
+    const tw = Math.max(12, Math.floor((cssW - 24) / ((room.w + room.h) / 2)));
     const th = tw / 2;
-    const cssH = Math.round(((D.GRID.w + D.GRID.h) * th) / 2 + th * 5);
+    const cssH = Math.round(((room.w + room.h) * th) / 2 + th * 5);
     canvas.style.height = `${cssH}px`;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
-    const diamondW = ((D.GRID.w + D.GRID.h) * tw) / 2;
-    const gh = facing % 2 ? D.GRID.w : D.GRID.h;
+    const diamondW = ((room.w + room.h) * tw) / 2;
+    const gh = facing % 2 ? room.w : room.h;
     view = {
       tw, th,
       ox: (cssW - diamondW) / 2 + (gh * tw) / 2,
@@ -140,8 +160,8 @@ export function createBoard(canvas) {
     const b = (clientY - rect.top - view.oy) / (view.th / 2);
     const u = (a + b) / 2;
     const v = (b - a) / 2;
-    const W = D.GRID.w;
-    const H = D.GRID.h;
+    const W = room.w;
+    const H = room.h;
     let x = u;
     let y = v;
     if (facing === 1) { x = W - v; y = u; }
@@ -316,7 +336,7 @@ export function createBoard(canvas) {
 
   // A code-drawn box's outline on screen: the convex hull of its ground and top corners.
   function boxOutline(o, d) {
-    const look = LOOK[o.type];
+    const look = lookOf(o);
     const inset = look.thin ? 0.3 : 0.06;
     const x0 = o.x + inset; const y0 = o.y + inset; const x1 = o.x + d.w - inset; const y1 = o.y + d.h - inset;
     const pts = [];
@@ -378,16 +398,17 @@ export function createBoard(canvas) {
   }
 
   // Crowd placement: clear-view tiles nearest the stage fill first, about three people a tile.
-  function crowdTiles(objects, clearSet) {
-    const key = JSON.stringify(objects);
+  function crowdTiles(objects, clearSet, pillars) {
+    const key = `${room.w}x${room.h}:${JSON.stringify(pillars || [])}:${JSON.stringify(objects)}`;
     if (crowdCache.key === key) return crowdCache.tiles;
     const occupied = new Set();
     objects.forEach((o) => footprint(o).forEach(([x, y]) => occupied.add(`${x},${y}`)));
+    (pillars || []).forEach(([x, y]) => occupied.add(`${x},${y}`));
     const stage = objects.find((o) => o.type === 'stage');
-    const [fx, fy] = stage ? stageFront(stage).front : [D.GRID.w / 2, 0];
+    const [fx, fy] = stage ? stageFront(stage).front : [room.w / 2, 0];
     const tiles = [];
-    for (let y = 0; y < D.GRID.h; y += 1) {
-      for (let x = 0; x < D.GRID.w; x += 1) {
+    for (let y = 0; y < room.h; y += 1) {
+      for (let x = 0; x < room.w; x += 1) {
         if (occupied.has(`${x},${y}`)) continue;
         tiles.push({ x, y, rank: (clearSet.has(`${x},${y}`) ? 0 : 100) + Math.hypot(x + 0.5 - fx, y + 0.5 - fy) });
       }
@@ -400,11 +421,12 @@ export function createBoard(canvas) {
   function crowdPoints(scene) {
     const points = [];
     if (scene.crowd <= 0) return points;
-    const tiles = crowdTiles(scene.objects, scene.clearSet);
-    let remaining = scene.crowd;
+    const tiles = crowdTiles(scene.objects, scene.clearSet, scene.pillars);
+    const cap = scene.density || D.FLOOR_DENSITY;
+    let remaining = Math.min(scene.crowd, 1600);
     for (let i = 0; i < tiles.length && remaining > 0; i += 1) {
       const t = tiles[i];
-      const here = Math.min(D.FLOOR_DENSITY, remaining);
+      const here = Math.min(cap, remaining);
       remaining -= here;
       for (let k = 0; k < here; k += 1) {
         const jx = ((t.x * 7 + t.y * 13 + k * 5) % 10) / 14 + 0.15;
@@ -511,16 +533,21 @@ export function createBoard(canvas) {
   // scene: { objects, clearSet, blockedSet, showClear, cursor, ghost, crowd, incident, night, lightTower, t }
   function draw(scene) {
     lastScene = scene;
+    useRoom(scene.grid);
     drawn = [];
     hits = [];
     stats.markers = [];
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
     ctx.clearRect(0, 0, view.cssW, view.cssH);
+    const floor = FLOORS[scene.floor] || FLOORS.lot;
 
-    // Each prop's drawn shape (sprite rectangle or box outline), known before anything is drawn.
-    const sorted = scene.objects
-      .filter((o) => !D.OBJECT_TYPES[o.type].kit)
-      .map((o) => { const d = dims(o); const r = spriteRect(o); return { o, d, g: r ? { r } : { poly: boxOutline(o, d) } }; })
+    // Each prop's drawn shape (sprite rectangle or box outline), known before anything is
+    // drawn. A room's pillars are boxes in the same order.
+    const sorted = [
+      ...scene.objects.filter((o) => !D.OBJECT_TYPES[o.type].kit).map((o) => ({ o, d: dims(o) })),
+      ...(scene.pillars || []).map(([x, y]) => ({ o: { type: 'pillar', x, y, rot: 0 }, d: { w: 1, h: 1 } })),
+    ]
+      .map(({ o, d }) => { const r = spriteRect(o); return { o, d, g: r ? { r } : { poly: boxOutline(o, d) } }; })
       .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
     // A sprite mostly hidden behind much taller sprites drawn after it (a PA behind the
     // stage) shows through at reduced strength, so the player can see what they rented.
@@ -552,10 +579,10 @@ export function createBoard(canvas) {
       if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
     };
 
-    for (let y = 0; y < D.GRID.h; y += 1) {
-      for (let x = 0; x < D.GRID.w; x += 1) {
-        const edge = x === 0 || y === 0 || x === D.GRID.w - 1 || y === D.GRID.h - 1;
-        fillDiamond(x, y, 1, 1, edge ? COLORS.edge : (x + y) % 2 ? COLORS.lot : COLORS.lotAlt);
+    for (let y = 0; y < room.h; y += 1) {
+      for (let x = 0; x < room.w; x += 1) {
+        const edge = x === 0 || y === 0 || x === room.w - 1 || y === room.h - 1;
+        fillDiamond(x, y, 1, 1, edge ? floor.edge : (x + y) % 2 ? floor.lot : floor.lotAlt);
         // A sightline tile in front of a prop is drawn after it, so a sprite that
         // overhangs its footprint cannot hide the tile.
         const { slot } = placement(x + 0.5, y + 0.5, layers);
@@ -565,19 +592,20 @@ export function createBoard(canvas) {
     }
     ctx.lineWidth = 1;
     ctx.strokeStyle = COLORS.grid;
-    for (let i = 0; i <= D.GRID.w; i += 1) { ctx.beginPath(); ctx.moveTo(...iso(i, 0)); ctx.lineTo(...iso(i, D.GRID.h)); ctx.stroke(); }
-    for (let j = 0; j <= D.GRID.h; j += 1) { ctx.beginPath(); ctx.moveTo(...iso(0, j)); ctx.lineTo(...iso(D.GRID.w, j)); ctx.stroke(); }
-    // Faint painted parking stalls on the far rows.
-    ctx.strokeStyle = COLORS.stall;
-    for (let x = 3; x < D.GRID.w - 1; x += 3) {
-      ctx.beginPath(); ctx.moveTo(...iso(x, D.GRID.h - 4)); ctx.lineTo(...iso(x, D.GRID.h - 1.4)); ctx.stroke();
+    for (let i = 0; i <= room.w; i += 1) { ctx.beginPath(); ctx.moveTo(...iso(i, 0)); ctx.lineTo(...iso(i, room.h)); ctx.stroke(); }
+    for (let j = 0; j <= room.h; j += 1) { ctx.beginPath(); ctx.moveTo(...iso(0, j)); ctx.lineTo(...iso(room.w, j)); ctx.stroke(); }
+    if (!scene.floor || scene.floor === 'lot') {
+      ctx.strokeStyle = COLORS.stall;
+      for (let x = 3; x < room.w - 1; x += 3) {
+        ctx.beginPath(); ctx.moveTo(...iso(x, room.h - 4)); ctx.lineTo(...iso(x, room.h - 1.4)); ctx.stroke();
+      }
     }
 
     if (scene.objects.some((o) => o.type === 'fence')) {
       ctx.strokeStyle = COLORS.fence;
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 3]);
-      diamond(0, 0, D.GRID.w, D.GRID.h, 0.35);
+      diamond(0, 0, room.w, room.h, 0.35);
       ctx.stroke();
       ctx.setLineDash([]);
     }
@@ -593,14 +621,14 @@ export function createBoard(canvas) {
     });
     drawCrowd(crowdAt.get(-1) || [], scene.t);
 
-    const flickerOf = (o) => (scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
+    const flickerOf = (o) => (scene.incident === 'pa-dropout' && (D.OBJECT_TYPES[o.type] || {}).paTier && scene.t
       ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1);
     // Clicks follow the same paint order: a prop that shows through is above the one hiding it.
     layers.forEach(({ o, d, g, repaint }, i) => {
       if (repaint) drawSprite(o, 0.6 * flickerOf(o));
       else if (g.r) { drawSprite(o, flickerOf(o)); drawn.push({ o, r: g.r }); }
-      else box(o.x, o.y, d.w, d.h, LOOK[o.type].height, LOOK[o.type], flickerOf(o));
-      hits.push(g.r ? { o, r: g.r } : { o, poly: g.poly });
+      else box(o.x, o.y, d.w, d.h, lookOf(o).height, lookOf(o), flickerOf(o));
+      hits.push(g.r ? { o, d, r: g.r } : { o, d, poly: g.poly });
       if (o.type === 'stage' && !repaint) drawStageFacing(o);
       (tilesAt.get(i) || []).forEach(([x, y]) => overlay(x, y));
       drawCrowd(crowdAt.get(i) || [], scene.t);
@@ -682,8 +710,7 @@ export function createBoard(canvas) {
       drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
       markers: stats.markers,
       washSource: stats.washSource,
-      hitStack: hits.map(({ o, r, poly }) => {
-        const d = dims(o);
+      hitStack: hits.map(({ o, d, r, poly }) => {
         const faces = poly ? visibleFaces(o.x, o.y, o.x + d.w, o.y + d.h).map((f) => f[2]) : null;
         return { type: o.type, rect: r || null, poly: poly || null, faces };
       }),

@@ -1,6 +1,6 @@
 # Front of House
 
-**Status:** early playable at `mixmash.games/front-of-house/` ("Lot Night", one show from booking to settlement, on tier 1 of the career: the Lot, for up to 150 people), now a run of shows with three acts and a goal that unlocks the Club. Phases are in [`ROADMAP.md`](ROADMAP.md). The page is `noindex` and has no hub card until Dave signs off the first playable.
+**Status:** early playable at `mixmash.games/front-of-house/`. The career runs from the Oak St. Lot through Fathom Hall, Loam Shell and Split Acre, with Sandbox and a wet-lot scenario ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). Phases are in [`ROADMAP.md`](ROADMAP.md). The page is `noindex` and has no hub card until Dave signs off the first playable.
 The name was decided on 2026-10-01 ([CT-DEC-06](docs/DECISIONS.md#ct-dec-06-name-and-route)); "Concert Tycoon" was the working title, and this folder was `tycoon/` until then. It is a standalone game ([CT-DEC-08](docs/DECISIONS.md#ct-dec-08-standalone-game)).
 
 Front of House is a management game in the tradition of RollerCoaster Tycoon and Zoo Tycoon, set in concert promotion and live production. The player builds a venue, books an artist, sells the show, gets through show night and settles the money. A career starts with a rented parking lot and a PA, and ends with the player running their own festival grounds.

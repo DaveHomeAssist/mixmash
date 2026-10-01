@@ -6,7 +6,7 @@ import * as D from './data.mjs';
 import {
   applyAction, buzz, careerProgress, cheapestShowCost, createGame, evaluateShow, evaluateVenue, forecast, migrateSave,
   nextSeed, nextShowCost, normalizeState, offersFor, termsFor,
-  presaleSplit, priceFactor, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor, validateLayout,
+  presaleSplit, priceFactor, rollShow, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
 
@@ -278,10 +278,17 @@ test('the frozen version 2 save fixture loads, gaining only the career defaults'
   const newActs = Object.fromEntries(Object.keys(D.ARTISTS).map((id) => [id, 0]));
   assert.deepEqual(normalizeState(v2, 1), {
     ...v2,
-    booking: { ...v2.booking, terms: null },
+    mode: 'career',
+    scenario: null,
+    forcedIncident: null,
+    layouts: { lot: [], club: [], amphitheater: [], festival: [] },
+    booking: { ...v2.booking, terms: null, nights: 1, secondId: null, secondTerms: null },
+    promotion: { ...v2.promotion, seatPrice: null },
+    show: { ...v2.show, night: 1, repHold: 0, relHold: 0 },
     reputation: { ...v2.reputation, artists: { ...newActs, ...v2.reputation.artists } },
-    unlocks: { club: false },
-  }, 'a save from before the Lot career keeps everything and gets the new optional fields');
+    history: v2.history.map((h) => ({ ...h, venueId: 'lot', night: 1 })),
+    unlocks: { club: false, amphitheater: false, festival: false, complete: false },
+  }, 'a save from before the later tiers keeps the Lot and gains the new optional fields');
   assert.equal(migrateSave(v2), v2, 'a current save is left alone');
 
   // A Phase 3 save finished its show; the Lot career lets it carry on or start over.
@@ -301,7 +308,7 @@ test('a version 1 save migrates to the Lot scale', async () => {
   const v2 = migrateSave(v1);
   assert.equal(v2.schema, 2);
   assert.equal(v2.cash, 3473, 'cash halves: 6945 / 2, rounded');
-  assert.deepEqual(v2.history, [{ ...v1.history[0], attendance: 135, net: 473, artistPay: 500 }]);
+  assert.deepEqual(v2.history, [{ ...v1.history[0], attendance: 135, net: 473, artistPay: 500, venueId: 'lot', night: 1 }]);
   assert.equal(v2.phase, 'book', 'a finished show that passed moves on to the next show');
   assert.equal(v2.seed, nextSeed(v1.seed));
   assert.equal(v2.reputation.venue, v1.reputation.venue);
@@ -610,3 +617,122 @@ test('R-20: meeting the Lot goal at settlement unlocks the Club, and the unlock 
   assert.equal(normalizeState(after, 1).unlocks.club, true);
   assert.equal(normalizeState({ ...after, unlocks: { club: 'yes' } }, 1).unlocks.club, false);
 });
+
+// ---------------------------------------------------------------------------
+// Later tiers (CT-DEC-11). The Lot tests above stay the balance contract.
+
+test('CT-DEC-11: the Club plays on a house rig, and a locked room stays locked', () => {
+  const locked = applyAction(createGame(1), { type: 'chooseVenue', venueId: 'club' });
+  assert.match(locked.error, /locked/);
+  const hall = evaluateVenue({ id: 'club', objects: D.CLUB_STARTER });
+  assert.equal(hall.ready, true, hall.missing.join('; '));
+  assert.equal(hall.housePa, true);
+  assert.equal(hall.capacity, D.VENUES.club.permit);
+  assert.ok(hall.blockedTiles > 0, 'the pillars cut a sightline');
+  let s = createGame(2);
+  s.unlocks.club = true;
+  s.cash = 40000;
+  s = run(s, [
+    { type: 'chooseVenue', venueId: 'club' },
+    { type: 'chooseDeal', deal: 'guarantee', artistId: 'salt-ledger' },
+    { type: 'setLayout', objects: D.CLUB_STARTER },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: 28 },
+    { type: 'confirmPromotion' },
+  ]);
+  assert.equal(s.venue.id, 'club');
+  s = run(s, [{ type: 'respond', responseId: D.INCIDENTS[s.show.incidentId].responses[0].id }]);
+  assert.equal(settlementFor(s).costs.pa, 0, 'the house rig is not a second rental');
+  const done = run(s, [{ type: 'acceptSettlement' }]);
+  assert.equal(done.history[0].venueId, 'club');
+  assert.equal(done.venue.id, 'club');
+  const back = run(done, [{ type: 'nextShow' }, { type: 'chooseVenue', venueId: 'lot' }]);
+  assert.equal(back.venue.id, 'lot', 'the Lot stays bookable');
+  assert.equal(back.layouts.club.length, D.CLUB_STARTER.length, 'the hall layout is kept');
+});
+
+test('CT-DEC-11: a two-night hold settles twice and moves reputation once', () => {
+  let s = createGame(4);
+  s.unlocks.club = true;
+  s.unlocks.amphitheater = true;
+  s.cash = 200000;
+  s = run(s, [{ type: 'chooseVenue', venueId: 'amphitheater' }]);
+  const act = offersFor(s)[0];
+  s = run(s, [
+    { type: 'chooseDeal', deal: 'guarantee', artistId: act, nights: 2 },
+    { type: 'setLayout', objects: D.AMP_STARTER },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: 42, seatPrice: 55 },
+    { type: 'confirmPromotion' },
+  ]);
+  assert.equal(s.booking.nights, 2);
+  assert.equal(evaluateVenue(s.venue).capacity, D.VENUES.amphitheater.permit);
+  assert.equal(evaluateVenue(s.venue).seats, 400);
+  const rep = s.reputation.venue;
+  s = run(s, [
+    { type: 'respond', responseId: D.INCIDENTS[s.show.incidentId].responses[0].id },
+    { type: 'acceptSettlement' },
+  ]);
+  assert.equal(s.phase, 'show');
+  assert.equal(s.show.night, 2);
+  assert.equal(s.history.length, 1);
+  assert.equal(s.reputation.venue, rep, 'reputation waits for the last night');
+  const held = s.show.repHold;
+  s = run(s, [{ type: 'respond', responseId: D.INCIDENTS[s.show.incidentId].responses[0].id }]);
+  const second = settlementFor(s).repDelta;
+  s = run(s, [{ type: 'acceptSettlement' }]);
+  assert.equal(s.phase, 'done');
+  assert.equal(s.history.length, 2);
+  assert.equal(s.history[1].night, 2);
+  assert.equal(s.reputation.venue, Math.min(100, Math.max(0, rep + held + second)));
+});
+
+test('CT-DEC-11: a festival day has a sponsor, a broadcast line and a second stage', () => {
+  let s = createGame(8);
+  s.unlocks = { club: true, amphitheater: true, festival: true, complete: false };
+  s.cash = 400000;
+  s = run(s, [
+    { type: 'chooseVenue', venueId: 'festival' },
+    { type: 'chooseDeal', deal: 'sponsor', artistId: 'paper-voltage', secondId: 'north-kettle' },
+    { type: 'setLayout', objects: D.FEST_STARTER },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: 80 },
+    { type: 'confirmPromotion' },
+  ]);
+  assert.equal(evaluateVenue(s.venue).capacity, D.VENUES.festival.permit);
+  s = run(s, [{ type: 'respond', responseId: D.INCIDENTS[s.show.incidentId].responses[0].id }]);
+  const sheet = settlementFor(s);
+  assert.equal(sheet.sponsor, D.SPONSOR_PAY);
+  assert.ok(sheet.broadcast > 0);
+  assert.ok(sheet.second && sheet.second.attendance > 0);
+  assert.ok(sheet.second.attendance <= D.VENUES.festival.secondCap);
+  const before = s.cash;
+  const done = run(s, [{ type: 'acceptSettlement' }]);
+  assert.equal(done.cash, before + settlementPayout(sheet, 'sponsor'));
+  assert.equal(done.history[0].venueId, 'festival');
+});
+
+test('sandbox removes the cash gate, and the wet lot forces rain', () => {
+  const box = createGame(1, { mode: 'sandbox' });
+  assert.equal(box.cash, D.SANDBOX_CASH);
+  assert.equal(applyAction(box, { type: 'chooseVenue', venueId: 'festival' }).error, null);
+  let broke = run(createGame(3, { mode: 'sandbox' }), [
+    { type: 'chooseDeal', deal: 'guarantee' },
+    { type: 'setLayout', objects: D.STARTER_LAYOUT },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: 20 },
+  ]);
+  broke = { ...broke, cash: 0 };
+  assert.equal(applyAction(broke, { type: 'confirmPromotion' }).error, null, 'sandbox can open the doors with no cash');
+  const wet = createGame(9, { mode: 'scenario', scenario: 'wet-lot' });
+  assert.equal(wet.cash, D.SCENARIO_CASH);
+  assert.equal(wet.forcedIncident, 'rain');
+  const show = run(wet, [
+    { type: 'chooseDeal', deal: 'door' },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: 15 },
+    { type: 'confirmPromotion' },
+  ]);
+  assert.equal(show.show.incidentId, 'rain');
+});
+

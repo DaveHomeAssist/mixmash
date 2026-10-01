@@ -80,18 +80,28 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - A review of the sprite push (`252833b`) and the feature plan (`264b63c`) found `gh-pages` CI red: the catalog was not regenerated, so `npm test` failed and nothing after it ran. The catalog and admin fixes went in first (PR #29).
 - Board fixes, all in `board.js`: sprites follow rotation (a quarter turn the other way draws mirrored; a stage facing away keeps the code-drawn box and its arrow); the build ghost fills its footprint; a sprite mostly hidden behind a later, taller one is drawn again at 60% right after the last of those sprites (the suggested layout's PA behind the stage); the PAs are sized by height, so the medium PA draws taller (the small PA's art is the taller image); markers and the wash beam anchor to the drawn sprite (the lamp head at 10% of the tower image); right-click and Shift+click remove the prop under the pointer by the sprite's opaque pixels; each crowd dot and sightline tile is drawn right after the last prop covering it on screen that it stands in front of, so a dot in front of the PA but behind the stage lands between the two (behind wins when the order cannot honour both); the eight images switch on together after decoding, with one redraw and no lingering listener. `FIT` and the box heights became one `PROPS` table.
 - The view turn (`cb6555`, Q and the Turn the view button) landed while this was in review. The fixes follow it: what decides mirrored, as drawn or box is the prop's rotation on screen (its own rotation less the view's quarter turns), sprites sit on their footprint's screen corners in every view, and the in-front test runs in view coordinates.
-- The sprites left the service worker's precache (v10) and are cached on first use. CT-DEC-02 has a dated note that the stand-ins exist and that `PROPS` is the interim render contract; whether they stay before the real contract is Dave's call.
+- The sprites left the service worker's precache (v11, after the rooms' v10) and are cached on first use. CT-DEC-02 has a dated note that the stand-ins exist and that `PROPS` is the interim render contract; whether they stay before the real contract is Dave's call.
 - New smoke check: one redraw on load, mirrored and box stages by rotation and by view turn, the PA swap visibly changes the board, the medium PA draws taller, the PA-dropout marker sits above the drawn PA, the wash starts at the lamp head, and a right-click on the stage roof removes the stage.
+- Merged with the rooms after the Lot (`40da936`): the board keeps each room's size, floor tint and pillars. Pillars are code-drawn boxes in the same paint order, so crowd dots and sightline tiles are placed against them and a click on a pillar finds the pillar, not a prop behind it.
 
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
-- Dave: accept or change CT-DEC-10 (the Lot career's roster, terms, goal and carrying-on rule).
-- Phase 5 (the Club, `ROADMAP.md`): decide how the Club's room is built and whether the Lot stays playable after the unlock.
+- Dave: accept or change CT-DEC-10 (the Lot career) and CT-DEC-11 (the rooms after the Lot).
+- Not built with the rooms: a ticketing platform, a hillside model, cancelling a held night, simulator verdicts for the Club and later, and four venue art looks.
 - Balance: careful play always picks the budget layout on the Lot, so the light tower and the medium PA rarely pay for themselves at this scale. The paired comparisons confirm it across every pairing; the question for Dave, after a playtest, is whether satisfaction should cost more on the Lot. No retune until then.
 - The Done screen's out-of-money figure assumes the cheapest layout with no ads. Consider saying so there, or pointing to Cut ads or rentals (Dave, with the playtest).
 - The simulator's careful strategy picks each incident response by computing its settlement, which uses the seed's hidden draw, so its verdicts are an upper bound on informed play; `paired.mjs` uses only what the screen shows.
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.
+
+## 2026-10-01: Phases 5 to 7, Sandbox, and one scenario
+
+- Built the rooms after the Lot in one pass, on an explicit request to implement the planned phases through testing and deploy. The public-release gates were not cleared: `noindex` stays, there is no hub card, and CT-DEC-10 stays Proposed. The calls that [FUTURE.md](docs/FUTURE.md) left open are now [CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot) (Proposed).
+- **Fathom Hall** (Club, permit 360, house PA, four pillars). **Loam Shell** (permit 700, 400 seats, holds of 1 to 3 nights, curfew). **Split Acre** (permit 6,000, sponsor, broadcast, a second stage capped at 500). The Lot stays bookable. Layouts are stored per room. Schema stays 2.
+- **Sandbox** starts with $1,000,000 and no cash gate. **Wet lot** starts on the suggested layout with $2,600 and rain forced.
+- Name checks are in [WORLD.md](docs/WORLD.md). Cinder Meridian is a real act and was not used. Relay Hall and Marrow Shell were too close to a real hall and a real band.
+- The Lot balance baseline was regenerated and is unchanged: cheapest show $1,025, all 11 verdicts pass. 36 engine tests. Not in this pass: a ticketing platform, a hillside model, cancelling a held night, new-tier simulator verdicts, and four venue art looks (the board tints the floor).
+- Service worker cache is v10. The strategy is still network-first, so an online refresh picks this up; a hard refresh covers a stuck worker.
 
 ## 2026-10-01: Feature plan
 
