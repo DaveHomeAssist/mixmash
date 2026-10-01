@@ -337,7 +337,10 @@ function syncOrientation() {
 phone.addEventListener('change', syncOrientation);
 
 function applyHash() {
-  const [id, category] = decodeURIComponent(window.location.hash.slice(1)).split(':');
+  const raw = window.location.hash.slice(1);
+  let hash = raw;
+  try { hash = decodeURIComponent(raw); } catch { /* a malformed escape such as #% stays as typed */ }
+  const [id, category] = hash.split(':');
   selectTab(id || OVERVIEW, { category: category || (id && id !== OVERVIEW ? ALL : null) });
 }
 window.addEventListener('hashchange', applyHash);

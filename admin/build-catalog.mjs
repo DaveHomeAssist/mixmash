@@ -8,14 +8,14 @@
 //
 //   npm run admin:index
 //
-// Run it after adding, removing or renaming any tracked file:
+// Run it after adding (git add first), removing or renaming any tracked file:
 // test/admin-catalog.test.mjs fails when the catalog and the tree disagree.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { CATEGORIES, COMMAND_NOTES, FILE_NOTES, PROJECTS, REPO } from './catalog-sources.mjs';
+import { CATEGORIES, COMMAND_NOTES, FILE_NOTES, PATTERN_NOTES, PROJECTS, REPO } from './catalog-sources.mjs';
 
 export const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const CATALOG_PATH = path.join(ROOT, 'admin', 'catalog.json');
@@ -72,9 +72,10 @@ export function classify(file) {
   return { project, category };
 }
 
-/** Tracked and new (not ignored) files that exist on disk, sorted. */
+/** Tracked files (including staged new files) that exist on disk, sorted. Untracked
+ *  scratch files are left out, so they never reach the public catalog. */
 export function listFiles(root = ROOT) {
-  const out = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' });
+  const out = execFileSync('git', ['ls-files', '-z', '--cached'], { cwd: root, encoding: 'utf8' });
   return [...new Set(out.split('\0').filter(Boolean))].filter((file) => existsSync(path.join(root, file))).sort();
 }
 
@@ -170,7 +171,8 @@ function describe(root, file) {
     const text = readFileSync(path.join(root, file), 'utf8');
     found = ext === '.md' ? fromMarkdown(text) : ext === '.html' ? fromHtml(text) : fromComment(text);
   }
-  const note = FILE_NOTES[file] || {};
+  const pattern = PATTERN_NOTES.find((p) => p.match.test(file));
+  const note = FILE_NOTES[file] || (pattern ? pattern.note(file.match(pattern.match)) : {});
   return {
     title: note.title || found.title || path.basename(file),
     description: note.description || found.description || null,

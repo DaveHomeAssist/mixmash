@@ -169,9 +169,9 @@
         },
         {
           "private": true,
-          "note": "Independent single-file build; diverged from /mars/.",
+          "note": "Private; not linked from public pages. An independent single-file build that has diverged from /mars/.",
           "label": "marsscape source repository",
-          "url": "https://github.com/DaveHomeAssist/marsscape",
+          "url": null,
           "kind": "repository"
         }
       ],
@@ -377,9 +377,9 @@
         },
         {
           "private": true,
-          "note": "Owns the C++ source and tools/build_web.sh.",
+          "note": "Private; not linked from public pages. Owns the C++ source and tools/build_web.sh.",
           "label": "aoe2-clone source repository",
-          "url": "https://github.com/DaveHomeAssist/aoe2-clone",
+          "url": null,
           "kind": "repository"
         }
       ],
@@ -1444,6 +1444,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/FUTURE.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House: the feature plan",
+      "description": "This document owns the order of features after the Lot career. The design of each system stays in GDD.md. The accepted choices stay in DECISIONS.md. What already shipped is in progress.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FUTURE.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/GDD.md",
       "project": "front-of-house",
       "category": "docs",
@@ -1534,6 +1544,406 @@
       "open": null
     },
     {
+      "path": "front-of-house/sprites/bar.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "bar.png",
+      "description": "Board sprite for the bar (1 x 1 tile), drawn by board.js.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/bar.png",
+      "open": "/front-of-house/sprites/bar.png"
+    },
+    {
+      "path": "front-of-house/sprites/exit.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "exit.png",
+      "description": "Board sprite for the emergency exit on the lot boundary.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/exit.png",
+      "open": "/front-of-house/sprites/exit.png"
+    },
+    {
+      "path": "front-of-house/sprites/gate.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "gate.png",
+      "description": "Board sprite for the entry gate on the lot boundary.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/gate.png",
+      "open": "/front-of-house/sprites/gate.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/backline.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "backline.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: backline. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/backline.png",
+      "open": "/front-of-house/sprites/library/backline.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/barricade.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "barricade.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: barricade. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/barricade.png",
+      "open": "/front-of-house/sprites/library/barricade.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/cable-ramp.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "cable-ramp.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: cable ramp. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/cable-ramp.png",
+      "open": "/front-of-house/sprites/library/cable-ramp.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/camera-riser.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "camera-riser.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: camera riser. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/camera-riser.png",
+      "open": "/front-of-house/sprites/library/camera-riser.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/cart.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "cart.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: cart. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/cart.png",
+      "open": "/front-of-house/sprites/library/cart.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/cooler.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "cooler.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: cooler. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/cooler.png",
+      "open": "/front-of-house/sprites/library/cooler.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/crank-pa.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "crank-pa.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: crank pa. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/crank-pa.png",
+      "open": "/front-of-house/sprites/library/crank-pa.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/crowd-cheer.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "crowd-cheer.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: crowd cheer. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/crowd-cheer.png",
+      "open": "/front-of-house/sprites/library/crowd-cheer.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/crowd-phones.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "crowd-phones.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: crowd phones. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/crowd-phones.png",
+      "open": "/front-of-house/sprites/library/crowd-phones.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/delay-tower.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "delay-tower.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: delay tower. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/delay-tower.png",
+      "open": "/front-of-house/sprites/library/delay-tower.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/distro.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "distro.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: distro. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/distro.png",
+      "open": "/front-of-house/sprites/library/distro.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/drums.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "drums.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: drums. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/drums.png",
+      "open": "/front-of-house/sprites/library/drums.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/engineer.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "engineer.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: engineer. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/engineer.png",
+      "open": "/front-of-house/sprites/library/engineer.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/flight-case.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "flight-case.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: flight case. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/flight-case.png",
+      "open": "/front-of-house/sprites/library/flight-case.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/foh-tent.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "foh-tent.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: foh tent. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/foh-tent.png",
+      "open": "/front-of-house/sprites/library/foh-tent.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/followspot.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "followspot.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: followspot. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/followspot.png",
+      "open": "/front-of-house/sprites/library/followspot.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/generator-fault.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "generator-fault.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: generator fault. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/generator-fault.png",
+      "open": "/front-of-house/sprites/library/generator-fault.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/generator.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "generator.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: generator. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/generator.png",
+      "open": "/front-of-house/sprites/library/generator.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/green-room.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "green-room.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: green room. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/green-room.png",
+      "open": "/front-of-house/sprites/library/green-room.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/hazer.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "hazer.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: hazer. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/hazer.png",
+      "open": "/front-of-house/sprites/library/hazer.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/led-wall.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "led-wall.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: led wall. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/led-wall.png",
+      "open": "/front-of-house/sprites/library/led-wall.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/lift.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "lift.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: lift. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/lift.png",
+      "open": "/front-of-house/sprites/library/lift.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/medic.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "medic.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: medic. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/medic.png",
+      "open": "/front-of-house/sprites/library/medic.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/merch.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "merch.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: merch. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/merch.png",
+      "open": "/front-of-house/sprites/library/merch.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/par-bar.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "par-bar.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: par bar. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/par-bar.png",
+      "open": "/front-of-house/sprites/library/par-bar.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/snake.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "snake.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: snake. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/snake.png",
+      "open": "/front-of-house/sprites/library/snake.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/sub.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "sub.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: sub. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/sub.png",
+      "open": "/front-of-house/sprites/library/sub.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/tour-bus.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "tour-bus.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: tour bus. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/tour-bus.png",
+      "open": "/front-of-house/sprites/library/tour-bus.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/truss.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "truss.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: truss. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/truss.png",
+      "open": "/front-of-house/sprites/library/truss.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/vip-deck.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "vip-deck.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: vip deck. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/vip-deck.png",
+      "open": "/front-of-house/sprites/library/vip-deck.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/water.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "water.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: water. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/water.png",
+      "open": "/front-of-house/sprites/library/water.png"
+    },
+    {
+      "path": "front-of-house/sprites/library/wedge.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "wedge.png",
+      "description": "High-detail prop sprite from the Front of House sprite library: wedge. Not drawn by the board yet.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/library/wedge.png",
+      "open": "/front-of-house/sprites/library/wedge.png"
+    },
+    {
+      "path": "front-of-house/sprites/lights.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "lights.png",
+      "description": "Board sprite for the light tower (truss mast and lamp head).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/lights.png",
+      "open": "/front-of-house/sprites/lights.png"
+    },
+    {
+      "path": "front-of-house/sprites/pa-m.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "pa-m.png",
+      "description": "Board sprite for the medium PA rental.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/pa-m.png",
+      "open": "/front-of-house/sprites/pa-m.png"
+    },
+    {
+      "path": "front-of-house/sprites/pa-s.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "pa-s.png",
+      "description": "Board sprite for the small PA rental.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/pa-s.png",
+      "open": "/front-of-house/sprites/pa-s.png"
+    },
+    {
+      "path": "front-of-house/sprites/restroom.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "restroom.png",
+      "description": "Board sprite for a portable restroom unit.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/restroom.png",
+      "open": "/front-of-house/sprites/restroom.png"
+    },
+    {
+      "path": "front-of-house/sprites/stage.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "stage.png",
+      "description": "Board sprite for the 6 x 3 stage, drawn facing the crowd.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/stage.png",
+      "open": "/front-of-house/sprites/stage.png"
+    },
+    {
       "path": "front-of-house/test-engine.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -1609,7 +2019,7 @@
       "category": "source",
       "kind": "JS",
       "title": "board.js",
-      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas, with shapes drawn in code (Phase 1 of docs/ART_DIRECTION.md).…",
+      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the sprites in ./sprites when they have loaded, and…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
       "open": null
     },
@@ -2539,7 +2949,7 @@
       "category": "ops",
       "kind": "YAML",
       "title": "CI workflow",
-      "description": "Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.",
+      "description": "Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on every push to gh-pages.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/ci.yml",
       "open": null
     },
