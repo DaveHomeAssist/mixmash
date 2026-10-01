@@ -319,6 +319,12 @@ try {
   assert.equal(afterRemove.some((o) => o.type === 'stage'), false, 'right-clicking the stage roof removes the stage');
   assert.equal(afterRemove.length, STARTER_LAYOUT.length - 1, 'and nothing else');
 
+  // A ground point in front of the PA but behind the stage, where both sprites cover it on
+  // screen, is drawn between them: after the PA, before the stage.
+  await setLayout([{ type: 'stage', x: 0, y: 1, rot: 0 }, { type: 'pa-m', x: 0, y: 0, rot: 0 }]);
+  const between = await page5.evaluate(() => window.__frontOfHouse.boardPlace(1.2, 0.5));
+  assert.ok(between.after.includes('pa-m') && between.before.includes('stage'), `a dot in front of the PA and behind the stage is drawn between them (${JSON.stringify(between)})`);
+
   let paSeed = 1;
   while (rollShow(paSeed, DEFAULT_ARTIST).incidentId !== 'pa-dropout') paSeed += 1;
   if (!(await page5.isVisible('#save-code'))) await page5.click('#save-menu summary');
@@ -337,7 +343,7 @@ try {
   // props elsewhere on the lot (the restrooms, the gate, the far exit).
   const frontRow = night.crowd.filter((p) => Math.floor(p.x) === 11 && Math.floor(p.y) === 3);
   assert.ok(frontRow.length > 0 && frontRow.every((p) => p.front), 'the crowd in front of the stage is drawn in front of it');
-  ok('sprites switch on once, follow rotation and PA tiers, anchor markers and beams, and clicks find tall props');
+  ok('sprites switch on once, follow rotation and PA tiers, anchor markers and beams, clicks find tall props, and ground points sit between overlapping props');
 
   // 4. Reduced motion goes straight to the incident.
   const calm = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });

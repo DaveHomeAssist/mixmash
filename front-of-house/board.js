@@ -95,7 +95,8 @@ export function createBoard(canvas) {
   let crowdCache = { key: '', tiles: [] };
   let lastScene = null;
   let drawn = []; // the props drawn as sprites in the last frame, back to front
-  let hits = []; // the same in final paint order, show-through repaints included, for clicks
+  let hits = []; // every prop in final paint order, show-through repaints included, for clicks
+  let layers = []; // the last frame's paint order, for placing ground points in it
   const stats = { spriteRedraws: 0, markers: [], washSource: null, crowd: [] };
   let facing = 0;
 
@@ -288,24 +289,29 @@ export function createBoard(canvas) {
     return hit ? zAbove(o, hit.r.y) : PROPS[o.type].box.height;
   }
 
-  // A point is behind a prop when, in view coordinates, it lies toward the far corner
-  // from the prop's front edges. Only props whose drawn shape covers the point on screen
-  // matter: the point is drawn before the props when it is behind one of those, and after
-  // them otherwise, so a dot in front of the stage stays in front however many props it
-  // is behind elsewhere on the lot.
-  function behindCovering(px, py, props) {
+  // Where a ground point (a crowd dot, a sightline tile) goes in the paint order. Only
+  // the layers whose drawn shape covers the point on screen matter. In view coordinates
+  // the point is behind a prop when it lies toward the far corner from the prop's front
+  // edges. The point is drawn right after the last covering layer it is in front of, so
+  // a dot in front of the PA but behind the stage lands between the two. When the order
+  // cannot honour both (in front of a later layer, behind an earlier one), behind wins.
+  function placement(px, py, list) {
     const [pu, pv] = worldToView(px, py);
     const [sx, sy] = iso(px, py);
-    return props.some(({ o, d, g }) => {
+    const covering = [];
+    list.forEach(({ o, d, g }, i) => {
       const covers = g.r
         ? sx >= g.r.x && sx < g.r.x + g.r.w && sy >= g.r.y && sy < g.r.y + g.r.h
         : insidePolygon(sx, sy, g.poly);
-      if (!covers) return false;
+      if (!covers) return;
       const c = [worldToView(o.x, o.y), worldToView(o.x + d.w, o.y + d.h)];
       const u0 = Math.min(c[0][0], c[1][0]); const u1 = Math.max(c[0][0], c[1][0]);
       const v0 = Math.min(c[0][1], c[1][1]); const v1 = Math.max(c[0][1], c[1][1]);
-      return pu < u1 && pv < v1 && !(pu >= u0 && pv >= v0);
+      covering.push({ i, behind: pu < u1 && pv < v1 && !(pu >= u0 && pv >= v0) });
     });
+    const firstBehind = Math.min(Infinity, ...covering.filter((c) => c.behind).map((c) => c.i));
+    const slot = Math.max(-1, ...covering.filter((c) => !c.behind && c.i < firstBehind).map((c) => c.i));
+    return { slot, covering };
   }
 
   // A code-drawn box's outline on screen: the convex hull of its ground and top corners.
@@ -516,20 +522,45 @@ export function createBoard(canvas) {
       .filter((o) => !D.OBJECT_TYPES[o.type].kit)
       .map((o) => { const d = dims(o); const r = spriteRect(o); return { o, d, g: r ? { r } : { poly: boxOutline(o, d) } }; })
       .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
+    // A sprite mostly hidden behind much taller sprites drawn after it (a PA behind the
+    // stage) shows through at reduced strength, so the player can see what they rented.
+    // The repaint comes right after the last of those sprites, so whatever stands in
+    // front of it later in the order still covers it.
+    const sprites = sorted.filter((p) => p.g.r);
+    const repaintAfter = new Map();
+    sprites.forEach((a, k) => {
+      const ra = a.g.r;
+      let covered = 0;
+      let last = null;
+      for (const b of sprites.slice(k + 1)) {
+        // Only a much taller sprite counts, so neighbours of one size (a restroom bank) never ghost.
+        if (b.g.r.h <= ra.h * 1.5) continue;
+        const w = Math.min(ra.x + ra.w, b.g.r.x + b.g.r.w) - Math.max(ra.x, b.g.r.x);
+        const h = Math.min(ra.y + ra.h, b.g.r.y + b.g.r.h) - Math.max(ra.y, b.g.r.y);
+        if (w > 0 && h > 0) { covered += w * h; last = b; }
+      }
+      if (covered > ra.w * ra.h * 0.4) repaintAfter.set(last, [...(repaintAfter.get(last) || []), { ...a, repaint: true }]);
+    });
+    layers = sorted.flatMap((p) => [p, ...(repaintAfter.get(p) || [])]);
+    // Sightline tiles and crowd dots go into the paint order by placement: slot -1 before
+    // every layer, slot i right after layer i.
+    const tilesAt = new Map();
+    const crowdAt = new Map();
+    const bucket = (map, slot, item) => { if (!map.has(slot)) map.set(slot, []); map.get(slot).push(item); };
     const overlay = (x, y) => {
       if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
       if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
     };
-    const frontTiles = [];
 
     for (let y = 0; y < D.GRID.h; y += 1) {
       for (let x = 0; x < D.GRID.w; x += 1) {
         const edge = x === 0 || y === 0 || x === D.GRID.w - 1 || y === D.GRID.h - 1;
         fillDiamond(x, y, 1, 1, edge ? COLORS.edge : (x + y) % 2 ? COLORS.lot : COLORS.lotAlt);
-        // Sightline tiles in front of every prop are drawn after the props, so a sprite
-        // that overhangs its footprint cannot hide them.
-        if (behindCovering(x + 0.5, y + 0.5, sorted)) overlay(x, y);
-        else frontTiles.push([x, y]);
+        // A sightline tile in front of a prop is drawn after it, so a sprite that
+        // overhangs its footprint cannot hide the tile.
+        const { slot } = placement(x + 0.5, y + 0.5, layers);
+        if (slot < 0) overlay(x, y);
+        else bucket(tilesAt, slot, [x, y]);
       }
     }
     ctx.lineWidth = 1;
@@ -551,47 +582,29 @@ export function createBoard(canvas) {
       ctx.setLineDash([]);
     }
 
-    // The crowd behind a prop is drawn first so the prop covers it; the crowd in front
-    // of every prop is drawn after the props.
+    // Each crowd dot is placed the same way, so the props it stands behind cover it and
+    // the ones it stands in front of do not. A dot is in front when nothing covering it
+    // is drawn after it.
     const points = crowdPoints(scene);
-    const front = [];
-    const back = [];
-    for (const p of points) (behindCovering(p.x, p.y, sorted) ? back : front).push(p);
-    stats.crowd = points.map((p) => ({ x: p.x, y: p.y, front: front.includes(p) }));
-    drawCrowd(back, scene.t);
+    stats.crowd = points.map((p) => {
+      const { slot, covering } = placement(p.x, p.y, layers);
+      bucket(crowdAt, slot, p);
+      return { x: p.x, y: p.y, front: covering.every((c) => c.i <= slot) };
+    });
+    drawCrowd(crowdAt.get(-1) || [], scene.t);
 
     const flickerOf = (o) => (scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
       ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1);
-    const painted = [];
-    for (const { o, d } of sorted) {
-      const look = LOOK[o.type];
-      const r = drawSprite(o, flickerOf(o));
-      if (r) {
-        drawn.push({ o, r });
-        painted.push({ o, r });
-      } else {
-        box(o.x, o.y, d.w, d.h, look.height, look, flickerOf(o));
-        painted.push({ o, poly: boxOutline(o, d) });
-      }
-      if (o.type === 'stage') drawStageFacing(o);
-    }
-    // A prop mostly hidden behind a taller sprite drawn after it (a PA behind the stage)
-    // shows through at reduced strength, so the player can see what they rented.
-    const reshown = [];
-    drawn.forEach((a, i) => {
-      const area = a.r.w * a.r.h;
-      // Only a much taller sprite counts, so neighbours of one size (a restroom bank) never ghost.
-      const covered = drawn.slice(i + 1).filter((b) => b.r.h > a.r.h * 1.5).reduce((sum, b) => {
-        const w = Math.min(a.r.x + a.r.w, b.r.x + b.r.w) - Math.max(a.r.x, b.r.x);
-        const h = Math.min(a.r.y + a.r.h, b.r.y + b.r.h) - Math.max(a.r.y, b.r.y);
-        return sum + (w > 0 && h > 0 ? w * h : 0);
-      }, 0);
-      if (covered > area * 0.4) { drawSprite(a.o, 0.6 * flickerOf(a.o)); reshown.push(a); }
+    // Clicks follow the same paint order: a prop that shows through is above the one hiding it.
+    layers.forEach(({ o, d, g, repaint }, i) => {
+      if (repaint) drawSprite(o, 0.6 * flickerOf(o));
+      else if (g.r) { drawSprite(o, flickerOf(o)); drawn.push({ o, r: g.r }); }
+      else box(o.x, o.y, d.w, d.h, LOOK[o.type].height, LOOK[o.type], flickerOf(o));
+      hits.push(g.r ? { o, r: g.r } : { o, poly: g.poly });
+      if (o.type === 'stage' && !repaint) drawStageFacing(o);
+      (tilesAt.get(i) || []).forEach(([x, y]) => overlay(x, y));
+      drawCrowd(crowdAt.get(i) || [], scene.t);
     });
-    // Clicks follow the final paint order: a prop that shows through is on top.
-    hits = [...painted, ...reshown];
-    frontTiles.forEach(([x, y]) => overlay(x, y));
-    drawCrowd(front, scene.t);
 
     if (scene.night) {
       ctx.fillStyle = COLORS.night;
@@ -678,5 +691,13 @@ export function createBoard(canvas) {
     };
   }
 
-  return { resize, draw, tileAt, turnView, objectAt, info, destroy: () => spriteListeners.delete(onSprites) };
+  // For tests: where a ground point falls in the last frame's paint order, as the props
+  // covering it on screen that are drawn before it (after) and after it (before).
+  function placeOf(x, y) {
+    const { slot, covering } = placement(x, y, layers);
+    const types = (list) => [...new Set(list.map((c) => layers[c.i].o.type))];
+    return { after: types(covering.filter((c) => c.i <= slot)), before: types(covering.filter((c) => c.i > slot)) };
+  }
+
+  return { resize, draw, tileAt, turnView, objectAt, info, placeOf, destroy: () => spriteListeners.delete(onSprites) };
 }

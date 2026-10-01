@@ -940,6 +940,7 @@ window.__frontOfHouse = {
   skip: () => skipToIncident(),
   importCode,
   board: () => board.info(),
+  boardPlace: (x, y) => board.placeOf(x, y),
 };
 
 // ---------------------------------------------------------------------------
