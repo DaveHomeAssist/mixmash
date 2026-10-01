@@ -74,6 +74,7 @@ test('admin references are well formed and site routes resolve', () => {
     assert.ok(project.references.length > 0, `${project.id} has references`);
     for (const ref of project.references) {
       assert.ok(ref.label && ref.kind, `${project.id}: reference has a label and kind`);
+      if (ref.private) assert.equal(ref.url, null, `${ref.label}: private repositories are named but never linked`);
       if (ref.url === null) {
         assert.equal(ref.private, true, `${ref.label}: only a private reference may be unlinked`);
         assert.ok(ref.note, `${ref.label}: an unlinked reference explains why`);

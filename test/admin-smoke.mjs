@@ -208,6 +208,11 @@ try {
       const unlinked = page.locator('#panel-zelda2mario .ref-unlinked');
       assert.equal(await unlinked.count(), 1);
       assert.ok((await page.locator('#panel-zelda2mario [data-box="references"]').textContent()).includes('Private'));
+      for (const id of ['mars', 'empires']) {
+        await page.locator(`#tab-${id}`).click();
+        assert.equal(await page.locator(`#panel-${id} .ref-unlinked`).count(), 1, `${id}: the private source repository is not linked`);
+      }
+      await page.locator('#tab-zelda2mario').click();
 
       // Copy puts the path on the clipboard.
       if (!process.env.ADMIN_BASE_URL) {
@@ -225,6 +230,9 @@ try {
       await page.goto(`${url}#not-a-game`, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
       assert.equal(await page.locator('#tab-overview').getAttribute('aria-selected'), 'true');
+      await page.goto(`${url}#%E0`, { waitUntil: 'networkidle' });
+      await page.waitForFunction(() => document.documentElement.dataset.ready === 'true');
+      assert.equal(await page.locator('#tab-overview').getAttribute('aria-selected'), 'true', 'a malformed hash falls back to the overview');
 
       // The skip link is the first stop and reaches the index.
       await page.reload({ waitUntil: 'networkidle' });

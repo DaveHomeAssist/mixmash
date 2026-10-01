@@ -8,7 +8,7 @@
 //
 //   npm run admin:index
 //
-// Run it after adding, removing or renaming any tracked file:
+// Run it after adding (git add first), removing or renaming any tracked file:
 // test/admin-catalog.test.mjs fails when the catalog and the tree disagree.
 
 import { execFileSync } from 'node:child_process';
@@ -72,9 +72,10 @@ export function classify(file) {
   return { project, category };
 }
 
-/** Tracked and new (not ignored) files that exist on disk, sorted. */
+/** Tracked files (including staged new files) that exist on disk, sorted. Untracked
+ *  scratch files are left out, so they never reach the public catalog. */
 export function listFiles(root = ROOT) {
-  const out = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' });
+  const out = execFileSync('git', ['ls-files', '-z', '--cached'], { cwd: root, encoding: 'utf8' });
   return [...new Set(out.split('\0').filter(Boolean))].filter((file) => existsSync(path.join(root, file))).sort();
 }
 

@@ -9,7 +9,7 @@
 //
 // The page is publicly reachable, like every route on GitHub Pages. Keep it
 // public-safe: no local paths, no Notion links, and private repositories named
-// but not linked where the published Zelda2Mario projection forbids it.
+// but never linked (url: null, with a note), as the page itself promises.
 
 export const REPO = {
   owner: 'DaveHomeAssist',
@@ -70,7 +70,7 @@ export const PROJECTS = [
       { label: 'Render contract proof', url: '/mars/art-spec.html', kind: 'review surface' },
       { label: 'Authority API health', url: 'https://mixmash-marsscape-authority.vercel.app/api/health', kind: 'backend' },
       pr(11, 'DEC-79 paid-test candidate'),
-      { label: 'marsscape source repository', url: 'https://github.com/DaveHomeAssist/marsscape', kind: 'repository', private: true, note: 'Independent single-file build; diverged from /mars/.' },
+      { label: 'marsscape source repository', url: null, kind: 'repository', private: true, note: 'Private; not linked from public pages. An independent single-file build that has diverged from /mars/.' },
     ],
   },
   {
@@ -120,7 +120,7 @@ export const PROJECTS = [
     statusSources: ['empires/progress.md', 'docs/SPRINT_BOARDS.md'],
     references: [
       { label: 'Play EMPIRES', url: '/empires/', kind: 'live route' },
-      { label: 'aoe2-clone source repository', url: 'https://github.com/DaveHomeAssist/aoe2-clone', kind: 'repository', private: true, note: 'Owns the C++ source and tools/build_web.sh.' },
+      { label: 'aoe2-clone source repository', url: null, kind: 'repository', private: true, note: 'Private; not linked from public pages. Owns the C++ source and tools/build_web.sh.' },
     ],
   },
   {
@@ -225,7 +225,7 @@ const vercelFn = (route, what) => ({ description: `Vercel function for ${route}:
 
 export const FILE_NOTES = {
   // Studio root and hosting
-  '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.' },
+  '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on every push to gh-pages.' },
   '.gitignore': { description: 'Ignored paths: node_modules, MarsScape local data and output, Vercel state, local env files and art-validation scratch.' },
   '.nojekyll': { description: 'Tells GitHub Pages to serve files as-is, without Jekyll processing.' },
   '404.html': { description: 'Not-found page for every unknown path on mixmash.games.' },
@@ -319,6 +319,14 @@ export const FILE_NOTES = {
   'front-of-house/docs/GDD.md': { description: 'The canonical game design: career ladder, core loop, systems and the first playable, merged from both early drafts.' },
   'front-of-house/docs/SAVE_FORMAT.md': { description: 'Save schema (the player\'s choices and the seed, not computed results), save codes and the version 1 to version 2 migration.' },
   'front-of-house/progress.md': { title: 'Front of House progress log', description: 'Phase-by-phase session log from pre-production to the Lot career, with review fixes and the open sign-off TODO.' },
+  'front-of-house/sprites/bar.png': { description: 'Board sprite for the bar (1 x 1 tile), drawn by board.js.' },
+  'front-of-house/sprites/exit.png': { description: 'Board sprite for the emergency exit on the lot boundary.' },
+  'front-of-house/sprites/gate.png': { description: 'Board sprite for the entry gate on the lot boundary.' },
+  'front-of-house/sprites/lights.png': { description: 'Board sprite for the light tower (truss mast and lamp head).' },
+  'front-of-house/sprites/pa-m.png': { description: 'Board sprite for the medium PA rental.' },
+  'front-of-house/sprites/pa-s.png': { description: 'Board sprite for the small PA rental.' },
+  'front-of-house/sprites/restroom.png': { description: 'Board sprite for a portable restroom unit.' },
+  'front-of-house/sprites/stage.png': { description: 'Board sprite for the 6 x 3 stage, drawn facing the crowd.' },
   'front-of-house/styles.css': { description: 'Styles for the Lot Night client.' },
   'front-of-house/test-engine.mjs': { description: 'Engine tests for the rules, actions, settlement, saves and migrations, including the worked example.' },
   'front-of-house/test/fixtures/save-v1.json': { description: 'Frozen schema version 1 save, kept to prove migration to the current format.' },

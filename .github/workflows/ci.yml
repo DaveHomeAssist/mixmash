@@ -1,29 +1,10 @@
 name: CI
 
 on:
+  # Every push: the admin catalog check in npm test covers every tracked file,
+  # so a path filter would let a stale catalog through to the next unrelated change.
   push:
     branches: [gh-pages]
-    paths:
-      - 'src/**'
-      - 'test/**'
-      - 'play/**'
-      - 'mars/**'
-      - 'pitch/**'
-      - 'empires/**'
-      - 'garden/**'
-      - 'zelda2mario/**'
-      - 'front-of-house/**'
-      - 'admin/**'
-      - 'api/**'
-      - 'index.html'
-      - 'assets/previews/**'
-      - 'home.html'
-      - 'sw.js'
-      - 'manifest.webmanifest'
-      - 'offline.html'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/ci.yml'
   pull_request:
   workflow_dispatch:
 
