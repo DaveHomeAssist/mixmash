@@ -72,6 +72,7 @@ A red exclamation mark over a tripped generator, a broken-wave icon over a faili
 - A phase stepper across the top: Book › Build › Promote › Show › Settle.
 - **The settlement sheet** follows a real day-of-show settlement: a meta strip (headliner, venue, deal, attendance, satisfaction); Section A, gross revenue; Section B, production and site expenses; Section C, the deal reconciliation (the door split worked out step by step, or the guarantee); an outcomes strip (reputation change, artist sentiment, cash on hand); and a rubber stamp, green for a pass ("Show settled") and red for a retry ("Net negative"). Every figure comes from the engine (`settlementFor`), never from the mockup.
 - Interaction rules: no inline event handlers (the CSP blocks them); targets at least 44 by 44 px; visible focus; pass and retry stated in words as well as colour.
+- **Proposed HUD layout** ([HUD.md](HUD.md), CT-DEC-12): the board fills the window, and these panels float over it in the lot's empty corners on near-opaque backplates. The rules above stay.
 
 ## 6. Sprite sheet specifications (draft)
 

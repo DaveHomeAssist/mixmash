@@ -61,4 +61,5 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 
 - **Public release of the first playable** waits on Dave's playtest sign-off. On sign-off: a hub card on the landing page with a gameplay preview and its provenance, a sitemap entry, and `noindex` removed.
 - **Art.** Provisional prop sprites are on the board as of 2026-10-01. They are a stand-in. The style anchor still waits on the render contract and the open conflicts in `docs/ART_DIRECTION.md` section 8. The order is in `docs/FUTURE.md`.
+- **HUD layout.** Spec drafted 2026-10-01 ([`docs/HUD.md`](docs/HUD.md), CT-DEC-12 proposed): the board fills the window and the controls float in its corners. Six build steps, starting with the board camera, once Dave settles the open questions.
 - **Documents that start later:** `docs/MANUAL.md` once the loop is stable. `docs/WORLD.md` started in Phase 4.
