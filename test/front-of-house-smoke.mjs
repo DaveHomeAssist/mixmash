@@ -4,7 +4,7 @@
  * Plays the first playable through its real interface (book, build with the
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
- * motion, a phone-width layout and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -20,7 +20,8 @@ import {
   applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, rollShow, settlementFor, showPreview, termsFor,
 } from '../front-of-house/engine.mjs';
 import {
-  AD_STEP, ARTISTS, DEFAULT_ARTIST, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SAVE_NAMESPACE, SCHEMA_VERSION, START_CASH, STARTER_LAYOUT,
+  AD_STEP, ARTISTS, DEFAULT_ARTIST, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SANDBOX_CASH, SAVE_NAMESPACE, SCENARIO_CASH, SCHEMA_VERSION, START_CASH,
+  STARTER_LAYOUT,
 } from '../front-of-house/data.mjs';
 import { readFile } from 'node:fs/promises';
 
@@ -362,6 +363,17 @@ try {
   assert.ok(overflow <= 0, `no horizontal scroll at 390px (overflow ${overflow}px)`);
   await page4.screenshot({ path: join(output, 'phone.png'), fullPage: true });
   ok('fits a 390px phone without horizontal scrolling');
+
+  // The mode buttons start a new game, redraw the page at once and save it.
+  const shownCash = async () => Number((await page4.textContent('#meter-cash')).replace(/[^\d]/g, ''));
+  for (const [mode, cash] of [['sandbox', SANDBOX_CASH], ['scenario', SCENARIO_CASH], ['career', START_CASH]]) {
+    await page4.click(`[data-act="mode"][data-mode="${mode}"]`);
+    assert.equal(await shownCash(), cash, `${mode} redraws the cash meter at once`);
+    await page4.reload();
+    await page4.waitForFunction(() => typeof window.render_game_to_text === 'function');
+    assert.equal((await game(page4)).cash, cash, `${mode} is saved across a reload`);
+  }
+  ok('the Career, Sandbox and Wet lot buttons redraw the page and save the new game');
 
   const lowContrast = await page.evaluate(() => {
     const rgb = (v) => (v.match(/[\d.]+/g) || []).map(Number);
