@@ -3,7 +3,7 @@
  *
  * Plays the first playable through its real interface (book, build with the
  * suggested layout, promote, show night, settle), then checks reload, keyboard
- * placement, save codes, signing during the post-incident wind-down, reduced
+ * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
  * motion, a phone-width layout and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
@@ -16,8 +16,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
-import { applyAction, createGame, settlementFor, showPreview } from '../front-of-house/engine.mjs';
-import { AD_STEP, INCIDENTS, PERMIT_CAP, SAVE_NAMESPACE, SCHEMA_VERSION, START_CASH, STARTER_LAYOUT } from '../front-of-house/data.mjs';
+import {
+  applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, settlementFor, showPreview, termsFor,
+} from '../front-of-house/engine.mjs';
+import {
+  AD_STEP, ARTISTS, DEFAULT_ARTIST, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SAVE_NAMESPACE, SCHEMA_VERSION, START_CASH, STARTER_LAYOUT,
+} from '../front-of-house/data.mjs';
 import { readFile } from 'node:fs/promises';
 
 const server = await startStaticServer();
@@ -162,6 +166,52 @@ try {
   assert.equal(signedEarly.phase, 'done');
   assert.equal(signedEarly.crowd, signedEarly.settlement.attendance, 'the board crowd matches the signed attendance');
   ok('signing during the wind-down settles the board on the signed crowd');
+
+  // When the next show's acts both want a guarantee (Juniper Switchboard and an act soured past the
+  // door rule), the Done screen stops a player who could only afford a door deal, and says how much
+  // the next show needs; Start over stays open.
+  let career = null;
+  for (let seed = 1; seed < 500 && !career; seed += 1) {
+    let s = { ...createGame(seed), cash: 20000 };
+    for (const action of [
+      { type: 'chooseDeal', deal: 'guarantee', artistId: DEFAULT_ARTIST }, { type: 'setLayout', objects: STARTER_LAYOUT },
+      { type: 'confirmBuild' }, { type: 'setPromotion', price: ARTISTS[DEFAULT_ARTIST].fairPrice }, { type: 'confirmPromotion' },
+    ]) s = applyAction(s, action).state;
+    s = applyAction(s, { type: 'respond', responseId: INCIDENTS[s.show.incidentId].responses[0].id }).state;
+    s = applyAction(s, { type: 'acceptSettlement' }).state;
+    if (offersFor({ seed: nextSeed(s.seed), history: s.history }).includes('juniper-switchboard')) career = s;
+  }
+  const soured = offersFor({ seed: nextSeed(career.seed), history: career.history }).find((id) => id !== 'juniper-switchboard');
+  career = { ...career, reputation: { ...career.reputation, artists: { ...career.reputation.artists, [soured]: REL_DOOR_FLOOR } } };
+  const need = nextShowCost(career);
+  assert.ok(need > cheapestShowCost(), 'neither act on offer takes the door deal');
+  const asCode = (state) => Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state })).toString('base64');
+  await page2.fill('#save-code', asCode({ ...career, cash: need - 1 }));
+  await page2.click('[data-save="import"]');
+  assert.equal((await game(page2)).phase, 'done');
+  assert.equal(await page2.isDisabled('#panel .actions .primary'), true, 'Book the next show is disabled');
+  assert.ok((await page2.textContent('#panel .lede')).includes(`$${need.toLocaleString('en-US')}`), 'the Done screen names what the next show needs');
+  await page2.fill('#save-code', asCode({ ...career, cash: need }));
+  await page2.click('[data-save="import"]');
+  await page2.click('[data-act="next"]');
+  const pick = offersFor(await page2.evaluate(() => window.__frontOfHouse.state()))
+    .find((id) => cheapestShowCost('guarantee', termsFor(id, career.reputation.artists[id]).ask) === need);
+  await page2.click(`[data-deal="guarantee"][data-artist="${pick}"]`);
+  await page2.click('[data-act="confirm-build"]');
+  assert.equal(await page2.isDisabled('[data-act="confirm-promo"]'), true, 'the carried layout costs more than the cheapest show');
+  const advice = await page2.textContent('#msg');
+  assert.match(advice, /Cut ads or rentals/);
+  assert.doesNotMatch(advice, /door deal/, 'no door deal is suggested to an act that refuses one');
+  await page2.click('[data-act="back"]');
+  await page2.click('[data-act="back"]');
+  await page2.fill('#save-code', asCode({ ...career, cash: need - 1 }));
+  await page2.click('[data-save="import"]');
+  await page2.click('[data-act="retry"]');
+  const restarted = await game(page2);
+  assert.equal(restarted.phase, 'book');
+  assert.equal(restarted.cash, START_CASH);
+  assert.equal(restarted.career.shows, 0, 'Start over begins a new career');
+  ok('an unaffordable next show is stopped on the Done screen with the amount it needs, and Start over stays open');
 
   // 4. Reduced motion goes straight to the incident.
   const calm = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });

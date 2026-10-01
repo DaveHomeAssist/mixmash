@@ -141,6 +141,15 @@ Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + 
 
 `relationship[artist] = clamp(relationship[artist] + clamp(REL_BASE + round(REL_SLOPE × (artistPay / ARTIST_ASK − 1)), REL_MIN_STEP, REL_MAX_STEP), −100, 100)`, where `ARTIST_ASK` is the ask quoted at booking (R-19). Paying the quoted guarantee in full counts as fair (`REL_BASE`).
 
+The step depends only on what the act was paid against its ask, not on the deal type. A guarantee pays exactly the ask, so it always gives `REL_BASE`. A door deal pays `DOOR_SPLIT` of what is left after costs, which can be below, at or above the ask:
+
+- below 72.5% of the ask the relationship falls (the worked example's door deal pays $77 against a $500 ask: −12);
+- from 72.5% to just under 77.5% the step is 0, and from 77.5% it is positive, so a share a little below the ask can still build trust (86% of the ask gives +2);
+- at the ask it gives `REL_BASE`, as a guarantee does;
+- above the ask it gives more than a guarantee, up to `REL_MAX_STEP` at 125% or more.
+
+Pay is never negative, so the lowest step a show can give is `REL_BASE − REL_SLOPE` (−15 with the current values); `REL_MIN_STEP` does not bind. `front-of-house/test-engine.mjs` checks each of these cases.
+
 ## The Lot career
 
 ### R-19: Offers and terms

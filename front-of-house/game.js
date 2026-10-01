@@ -375,7 +375,8 @@ function updatePromote() {
     <div><dt>Due before doors</dt><dd class="${short ? 'bad' : ''}">${money(upfront)}</dd></div>
     <div><dt>Cash</dt><dd>${money(state.cash)}</dd></div>`;
   $('#confirm-promo').disabled = short;
-  if (short) say(`This show needs ${money(upfront)} before doors and you have ${money(state.cash)}. Cut ads or rentals${state.booking.deal === 'guarantee' ? ', or go back and offer a door deal' : ''}.`, 'error');
+  const doorOk = termsFor(state.booking.artistId, state.reputation.artists[state.booking.artistId]).doorOk;
+  if (short) say(`This show needs ${money(upfront)} before doors and you have ${money(state.cash)}. Cut ads or rentals${state.booking.deal === 'guarantee' && doorOk ? ', or go back and offer a door deal' : ''}.`, 'error');
   else if ($('#msg').classList.contains('error') && $('#msg').textContent.startsWith('This show needs')) say('');
 
   // Presale chart: cumulative tickets sold over 14 days for the slowest and strongest draw.
@@ -640,7 +641,7 @@ function careerHtml() {
       </ul>
       <p class="hint">${p.clubUnlocked
         ? 'The Club opens in a later update. Until then, keep running shows on the Lot.'
-        : 'Fair guarantees build trust; door deals pay more on a good night but sour an act.'}</p>
+        : 'A guarantee always builds trust. A door deal builds more when the act\'s share beats their ask, and sours them when it falls well short.'}</p>
     </section>`;
 }
 

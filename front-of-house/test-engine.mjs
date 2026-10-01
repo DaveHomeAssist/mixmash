@@ -283,6 +283,17 @@ test('the frozen version 2 save fixture loads, gaining only the career defaults'
     unlocks: { club: false },
   }, 'a save from before the Lot career keeps everything and gets the new optional fields');
   assert.equal(migrateSave(v2), v2, 'a current save is left alone');
+
+  // A Phase 3 save finished its show; the Lot career lets it carry on or start over.
+  const loaded = normalizeState(v2, 1);
+  assert.equal(loaded.phase, 'done');
+  const next = run(loaded, [{ type: 'nextShow' }]);
+  assert.equal(next.cash, loaded.cash, 'Next show keeps the cash');
+  assert.deepEqual(next.history, loaded.history, 'and the history');
+  assert.ok(offersFor(next).includes(next.booking.artistId));
+  const over = run(loaded, [{ type: 'retry' }]);
+  assert.equal(over.cash, D.START_CASH);
+  assert.deepEqual(over.history, []);
 });
 
 test('a version 1 save migrates to the Lot scale', async () => {
@@ -306,6 +317,7 @@ test('a version 1 save migrates to the Lot scale', async () => {
   const broke = migrateSave({ ...v1, cash: 0 });
   assert.equal(broke.phase, 'book');
   assert.equal(broke.cash, D.START_CASH, 'a finished show with no money for the next one starts over');
+  assert.deepEqual(broke.history, [], 'and, like any Start over, keeps no history');
 
   // A show in progress converts exactly: the money already spent halves with everything else.
   const mid = run(builtGame(42, 'guarantee'), [{ type: 'confirmPromotion' }]);
@@ -427,6 +439,33 @@ test('R-19: booking checks the offer and stores the terms the show is settled wi
   assert.equal(show.relDelta, D.REL_BASE, 'paying the quoted ask in full counts as fair');
 });
 
+test('R-17: a door deal moves the relationship by its pay against the quoted ask, like any deal', () => {
+  const door = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door' });
+  const pay = door.artistPay;
+  assert.equal(pay, 77, 'the worked example pays the act $77 on the door');
+  const rule = (ask) => Math.min(D.REL_MAX_STEP, Math.max(D.REL_MIN_STEP, D.REL_BASE + Math.round(D.REL_SLOPE * (pay / ask - 1))));
+  // The door pay does not depend on the ask, so only the ask changes the step.
+  const cases = [
+    [10000, -15, 'paying almost nothing'],
+    [500, -12, 'the worked example: well below the ask'],
+    [100, 0, 'below the ask at 77%'],
+    [90, 2, 'below the ask at 86%: still a small gain'],
+    [77, D.REL_BASE, 'exactly the ask: the same as a guarantee'],
+    [70, 7, 'above the ask at 110%'],
+    [60, D.REL_MAX_STEP, 'far above the ask: capped'],
+  ];
+  for (const [ask, expected, label] of cases) {
+    const r = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', ask });
+    assert.equal(r.artistPay, pay);
+    assert.equal(r.relDelta, expected, label);
+    assert.equal(r.relDelta, rule(ask), `${label}: matches R-17`);
+  }
+  assert.ok(evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', ask: 60 }).relDelta > evaluateShow({ ...WORKED_EXAMPLE, deal: 'guarantee', ask: 60 }).relDelta,
+    'a door deal that beats the ask builds more trust than a guarantee');
+  assert.equal(evaluateShow({ ...WORKED_EXAMPLE, deal: 'guarantee', ask: 60 }).relDelta, D.REL_BASE, 'a guarantee always gives the base step');
+  assert.equal(D.REL_BASE - D.REL_SLOPE, -15, 'the lowest step a show can give (pay of $0) is above REL_MIN_STEP');
+});
+
 test('R-21: a career carries on after a bad night and stops only when no show is affordable', () => {
   let seed = 1;
   let done;
@@ -493,6 +532,41 @@ test('R-21: Start over begins a new career, so earlier shows count toward nothin
   assert.equal(careerProgress(over).shows, 0);
   assert.equal(offersFor(over)[0], D.DEFAULT_ARTIST, 'the new career opens with the first show offer');
   assert.equal(over.unlocks.club, false);
+
+  const veteran = {
+    ...done,
+    cash: 9000,
+    unlocks: { club: true },
+    reputation: { venue: 80, artists: Object.fromEntries(D.ROSTER.map((id, i) => [id, 10 * (i + 1)])) },
+  };
+  const fresh = run(veteran, [{ type: 'retry' }]);
+  assert.equal(fresh.cash, D.START_CASH);
+  assert.equal(fresh.reputation.venue, 0);
+  assert.deepEqual(fresh.reputation.artists, createGame(1).reputation.artists, 'every relationship resets');
+  assert.equal(fresh.unlocks.club, false, 'the Club unlock belongs to the old career');
+  assert.deepEqual(fresh.venue.objects, veteran.venue.objects, 'only the layout carries over');
+  const carried = run(veteran, [{ type: 'nextShow' }]);
+  assert.equal(carried.unlocks.club, true);
+  assert.equal(carried.history.length, veteran.history.length);
+});
+
+test('R-21: the Done screen flag, the nextShow action and nextShowCost agree', () => {
+  let checked = 0;
+  for (let seed = 1; seed <= 40; seed += 1) {
+    const done = playShow({ ...createGame(seed), cash: 20000 }, offersFor(createGame(seed))[0], 'guarantee');
+    for (const rel of [0, D.REL_DOOR_FLOOR]) {
+      const s = { ...done, reputation: { ...done.reputation, artists: Object.fromEntries(D.ROSTER.map((id) => [id, rel])) } };
+      const cost = nextShowCost(s);
+      for (const cash of [cost - 1, cost]) {
+        const at = { ...s, cash };
+        const p = careerProgress(at);
+        assert.equal(p.nextShowCost, cost);
+        assert.equal(p.canAffordAShow, applyAction(at, { type: 'nextShow' }).error === null, `seed ${seed}, rel ${rel}, cash ${cash}`);
+        checked += 1;
+      }
+    }
+  }
+  assert.equal(checked, 160);
 });
 
 test('normalizeState drops a quoted ask below $1, so settlement never divides by zero', () => {
@@ -507,7 +581,11 @@ test('normalizeState drops a quoted ask below $1, so settlement never divides by
     const signed = run(loaded, [{ type: 'acceptSettlement' }]);
     assert.ok(Number.isFinite(signed.reputation.artists[D.DEFAULT_ARTIST]), 'the relationship stays a number');
   }
-  assert.ok(Number.isFinite(evaluateShow({ ...WORKED_EXAMPLE, deal: 'guarantee', ask: 0 }).relDelta), 'the engine also ignores a zero ask');
+  for (const ask of [0, -50]) {
+    const direct = evaluateShow({ ...WORKED_EXAMPLE, deal: 'guarantee', ask });
+    assert.ok(Number.isFinite(direct.relDelta) && Number.isFinite(direct.net), `evaluateShow ignores an ask of ${ask}`);
+    assert.equal(direct.artistPay, D.ARTISTS[D.DEFAULT_ARTIST].ask, 'and settles on the base ask');
+  }
 });
 
 test('R-20: meeting the Lot goal at settlement unlocks the Club, and the unlock stays', () => {
