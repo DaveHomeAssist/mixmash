@@ -49,24 +49,59 @@ export function rollShow(seed, artistId = D.DEFAULT_ARTIST) {
   return { draw, incidentId, incidentAt };
 }
 
+// The incident is a pure function of the seed, the room and the night, so a save
+// never stores a choice the loader could disagree with.
+export function incidentFor(seed, artistId, venue, forced = null, night = 1) {
+  if (forced && D.INCIDENTS[forced]) return forced;
+  const spec = venueSpec(venue);
+  const useSeed = (night > 1 ? (seed ^ night) : seed) >>> 0;
+  if (!spec.incidents) return rollShow(useSeed, artistId).incidentId;
+  const rng = mulberry32(useSeed);
+  rng();
+  return spec.incidents[Math.floor(rng() * spec.incidents.length)];
+}
+
 // ---------------------------------------------------------------------------
 // State
 
-export function createGame(seed = 1) {
+export function createGame(seed = 1, opts = {}) {
   const artist = artistFor(D.DEFAULT_ARTIST);
-  return {
+  const mode = opts.mode === 'sandbox' || opts.mode === 'scenario' ? opts.mode : 'career';
+  const scenario = mode === 'scenario' ? (opts.scenario || 'wet-lot') : null;
+  const unlocked = mode === 'sandbox';
+  const game = {
     schema: D.SCHEMA_VERSION,
     seed: seed >>> 0,
     phase: 'book',
-    cash: D.START_CASH,
-    venue: { id: 'lot', grid: { w: D.GRID.w, h: D.GRID.h }, objects: [] },
-    booking: { artistId: D.DEFAULT_ARTIST, deal: null, terms: null },
-    promotion: { price: artist.fairPrice, ads: zeroAds(), confirmed: false },
+    mode,
+    scenario,
+    forcedIncident: scenario === 'wet-lot' ? 'rain' : null,
+    cash: mode === 'sandbox' ? D.SANDBOX_CASH : (scenario ? D.SCENARIO_CASH : D.START_CASH),
+    venue: { id: 'lot', grid: { w: D.GRID.w, h: D.GRID.h }, objects: scenario ? D.STARTER_LAYOUT.map((o) => ({ ...o })) : [] },
+    layouts: { lot: [], club: [], amphitheater: [], festival: [] },
+    booking: { artistId: D.DEFAULT_ARTIST, deal: null, terms: null, nights: 1, secondId: null, secondTerms: null },
+    promotion: { price: artist.fairPrice, ads: zeroAds(), confirmed: false, seatPrice: null },
     show: null,
     reputation: { venue: 0, artists: Object.fromEntries(Object.keys(D.ARTISTS).map((id) => [id, 0])) },
     history: [],
-    unlocks: { club: false },
+    unlocks: { club: unlocked, amphitheater: unlocked, festival: unlocked, complete: false },
   };
+  if (scenario) game.layouts.lot = game.venue.objects.map((o) => ({ ...o }));
+  return game;
+}
+
+export function venueSpec(venue) {
+  const id = isObj(venue) && D.VENUES[venue.id] ? venue.id : 'lot';
+  return D.VENUES[id];
+}
+
+function venueUnlocked(state, id) {
+  if (id === 'lot') return true;
+  if (state.mode === 'sandbox') return true;
+  if (id === 'club') return !!(state.unlocks && state.unlocks.club);
+  if (id === 'amphitheater') return !!(state.unlocks && state.unlocks.amphitheater);
+  if (id === 'festival') return !!(state.unlocks && state.unlocks.festival);
+  return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -75,17 +110,18 @@ export function createGame(seed = 1) {
 // R-19: the acts on offer for this show. The first show always offers the default act, so the
 // first night is the one the balance baseline describes; later shows draw from the roster.
 export function offersFor(state) {
-  return offersForSeed(state.seed, !state.history.length);
+  const spec = venueSpec(state.venue);
+  return offersForSeed(state.seed, !state.history.length && spec.id === 'lot', spec.roster, spec.defaultArtist);
 }
 
-function offersForSeed(seed, firstShow) {
+function offersForSeed(seed, firstShow, roster = D.ROSTER, defaultArtist = D.DEFAULT_ARTIST) {
   const rng = mulberry32((seed ^ 0x5bd1e995) >>> 0);
-  const pool = D.ROSTER.slice();
+  const pool = roster.slice();
   for (let i = pool.length - 1; i > 0; i -= 1) {
     const j = Math.floor(rng() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  if (firstShow) return [D.DEFAULT_ARTIST, ...pool.filter((id) => id !== D.DEFAULT_ARTIST)].slice(0, D.OFFERS_PER_SHOW);
+  if (firstShow) return [defaultArtist, ...pool.filter((id) => id !== defaultArtist)].slice(0, D.OFFERS_PER_SHOW);
   return pool.slice(0, D.OFFERS_PER_SHOW);
 }
 
@@ -110,15 +146,24 @@ export function cheapestShowCost(deal = 'door', ask = undefined) {
 // will take, at the terms its relationship sets. Two acts that both want a guarantee cost more
 // than the door-deal floor.
 export function nextShowCost(state) {
-  return Math.min(...offersForSeed(nextSeed(state.seed), false).map((id) => {
+  const spec = venueSpec(state.venue);
+  return Math.min(...offersForSeed(nextSeed(state.seed), false, spec.roster, spec.defaultArtist).map((id) => {
     const terms = termsFor(id, state.reputation.artists[id]);
-    return terms.doorOk ? cheapestShowCost('door') : cheapestShowCost('guarantee', terms.ask);
+    return showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
   }));
+}
+
+function showCost(spec, deal, ask) {
+  return evaluateShow({
+    venue: evaluateVenue({ id: spec.id, objects: spec.cheapest }), deal, ask, price: D.PRICE_MIN,
+    ads: zeroAds(), venueRep: 0, draw: 0, artistId: spec.defaultArtist, incidentId: null, responseId: null,
+  }).upfront;
 }
 
 // R-20: progress toward the Lot goal that unlocks the Club.
 export function careerProgress(state) {
-  const sellouts = state.history.filter((h) => h.attendance >= D.PERMIT_CAP).length;
+  const lotShows = state.history.filter((h) => !h.venueId || h.venueId === 'lot');
+  const sellouts = lotShows.filter((h) => h.attendance >= D.PERMIT_CAP).length;
   const loyalAct = Math.max(...D.ROSTER.map((id) => state.reputation.artists[id] || 0));
   const met = {
     sellouts: sellouts >= D.LOT_GOAL.sellouts,
@@ -126,6 +171,7 @@ export function careerProgress(state) {
     cash: state.cash >= D.LOT_GOAL.cash,
     loyalAct: loyalAct >= D.LOT_GOAL.loyalAct,
   };
+  const tierMet = tierGoals(state);
   return {
     shows: state.history.length,
     sellouts,
@@ -136,8 +182,55 @@ export function careerProgress(state) {
     met,
     goalMet: met.sellouts && met.venueRep && met.cash && met.loyalAct,
     clubUnlocked: !!(state.unlocks && state.unlocks.club),
-    nextShowCost: nextShowCost(state),
-    canAffordAShow: state.cash >= nextShowCost(state),
+    amphitheaterUnlocked: !!(state.unlocks && state.unlocks.amphitheater),
+    festivalUnlocked: !!(state.unlocks && state.unlocks.festival),
+    complete: !!(state.unlocks && state.unlocks.complete),
+    tier: tierMet,
+    nextShowCost: state.mode === 'sandbox' ? 0 : nextShowCost(state),
+    canAffordAShow: state.mode === 'sandbox' || state.cash >= nextShowCost(state),
+  };
+}
+
+function countTier(state, id, permit) {
+  return state.history.filter((h) => h.venueId === id && h.attendance >= permit).length;
+}
+
+function bestRel(state, roster) {
+  return Math.max(...roster.map((id) => state.reputation.artists[id] || 0));
+}
+
+function tierGoals(state) {
+  const club = D.VENUES.club;
+  const amp = D.VENUES.amphitheater;
+  const fest = D.VENUES.festival;
+  const festAttendance = state.history.filter((h) => h.venueId === 'festival').reduce((s, h) => Math.max(s, h.attendance), 0);
+  return {
+    club: {
+      goal: D.CLUB_GOAL,
+      sellouts: countTier(state, 'club', club.permit),
+      loyalAct: bestRel(state, D.CLUB_ROSTER),
+      met: countTier(state, 'club', club.permit) >= D.CLUB_GOAL.sellouts
+        && state.reputation.venue >= D.CLUB_GOAL.venueRep
+        && state.cash >= D.CLUB_GOAL.cash
+        && bestRel(state, D.CLUB_ROSTER) >= D.CLUB_GOAL.loyalAct,
+    },
+    amphitheater: {
+      goal: D.AMP_GOAL,
+      sellouts: countTier(state, 'amphitheater', amp.permit),
+      loyalAct: bestRel(state, D.AMP_ROSTER),
+      met: countTier(state, 'amphitheater', amp.permit) >= D.AMP_GOAL.sellouts
+        && state.reputation.venue >= D.AMP_GOAL.venueRep
+        && state.cash >= D.AMP_GOAL.cash
+        && bestRel(state, D.AMP_ROSTER) >= D.AMP_GOAL.loyalAct,
+    },
+    festival: {
+      goal: D.FEST_GOAL,
+      attendance: festAttendance,
+      loyalAct: bestRel(state, D.FEST_ROSTER),
+      met: festAttendance >= D.FEST_GOAL.attendance
+        && state.cash >= D.FEST_GOAL.cash
+        && bestRel(state, D.FEST_ROSTER) >= D.FEST_GOAL.loyalAct,
+    },
   };
 }
 
@@ -162,20 +255,21 @@ export function footprint(obj) {
   return tiles;
 }
 
-function onEdge(x, y) {
-  return x === 0 || y === 0 || x === D.GRID.w - 1 || y === D.GRID.h - 1;
+function onEdge(x, y, grid) {
+  return x === 0 || y === 0 || x === grid.w - 1 || y === grid.h - 1;
 }
 
-// Validates a layout in placement order. Returns the objects that pass, plus a problem
-// for each one that doesn't. Placement checks run in order; the "touches the stage"
-// check runs against the accepted stage wherever it sits in the list.
-export function validateLayout(objects) {
+export function validateLayout(objects, venue) {
+  const spec = venueSpec(venue);
+  const grid = spec.grid;
   const accepted = [];
   const problems = [];
   const occupied = new Set();
   const groupCounts = {};
   let watts = 0;
 
+  const place = spec.id === 'lot' ? 'lot' : 'room';
+  const powerName = spec.id === 'lot' ? 'generator' : 'power budget';
   objects.forEach((raw, index) => {
     const reject = (message) => problems.push({ index, type: raw && raw.type, message });
     if (!isObj(raw)) return reject('Not an object');
@@ -187,17 +281,17 @@ export function validateLayout(objects) {
         return reject(`${t.label} needs whole-number x, y and a rotation from 0 to 3`);
       }
       const tiles = footprint(obj);
-      if (tiles.some(([x, y]) => x < 0 || y < 0 || x >= D.GRID.w || y >= D.GRID.h)) {
-        return reject(`${t.label} does not fit inside the lot`);
+      if (tiles.some(([x, y]) => x < 0 || y < 0 || x >= grid.w || y >= grid.h)) {
+        return reject(`${t.label} does not fit inside the ${place}`);
       }
       if (tiles.some(([x, y]) => occupied.has(key(x, y)))) return reject(`${t.label} overlaps another object`);
-      if (t.edge && !tiles.every(([x, y]) => onEdge(x, y))) return reject(`${t.label} must sit on the lot boundary`);
+      if (t.edge && !tiles.every(([x, y]) => onEdge(x, y, grid))) return reject(`${t.label} must sit on the ${place} boundary`);
     }
     if (t.group && t.max !== undefined && (groupCounts[t.group] || 0) >= t.max) {
       return reject(t.group === 'pa' ? 'Only one PA can be rented' : `Only ${t.max} ${t.label} allowed`);
     }
-    if (watts + t.watts > D.GENERATOR_WATTS) {
-      return reject(`${t.label} would draw ${watts + t.watts} W, over the ${D.GENERATOR_WATTS} W generator`);
+    if (watts + t.watts > spec.watts) {
+      return reject(`${t.label} would draw ${watts + t.watts} W, over the ${spec.watts} W ${powerName}`);
     }
     footprint(obj).forEach(([x, y]) => occupied.add(key(x, y)));
     if (t.group) groupCounts[t.group] = (groupCounts[t.group] || 0) + 1;
@@ -238,7 +332,7 @@ function stageGeometry(stage) {
 
 // R-03: open tiles inside the sight cone with a clear line to the middle of the stage front
 // (clear), and the cone tiles whose line is cut by a blocking object (blocked).
-function sightTileSets(objects, occupied) {
+function sightTileSets(objects, occupied, spec) {
   const clear = new Set();
   const blocked = new Set();
   const stage = objects.find((o) => o.type === 'stage');
@@ -247,10 +341,11 @@ function sightTileSets(objects, occupied) {
   for (const o of objects) {
     if (D.OBJECT_TYPES[o.type].blocksSight) footprint(o).forEach(([x, y]) => blocking.add(key(x, y)));
   }
+  for (const [x, y] of spec.pillars) blocking.add(key(x, y));
   const { facing, front } = stageGeometry(stage);
   const cosHalf = Math.cos(((D.SIGHT_CONE_DEGREES / 2) * Math.PI) / 180);
-  for (let y = 0; y < D.GRID.h; y += 1) {
-    for (let x = 0; x < D.GRID.w; x += 1) {
+  for (let y = 0; y < spec.grid.h; y += 1) {
+    for (let x = 0; x < spec.grid.w; x += 1) {
       if (occupied.has(key(x, y))) continue;
       const dx = x + 0.5 - front[0];
       const dy = y + 0.5 - front[1];
@@ -270,26 +365,28 @@ function sightTileSets(objects, occupied) {
   return { clear, blocked };
 }
 
-// The sight cone's tiles as "x,y" keys, for drawing: { clear, blocked }.
 export function sightlineTiles(venue) {
   const objects = isObj(venue) && Array.isArray(venue.objects) ? venue.objects : [];
-  const { accepted } = validateLayout(objects);
+  const spec = venueSpec(venue);
+  const { accepted } = validateLayout(objects, venue);
   const occupied = new Set();
   accepted.forEach((o) => footprint(o).forEach(([x, y]) => occupied.add(key(x, y))));
-  return sightTileSets(accepted, occupied);
+  for (const [x, y] of spec.pillars) occupied.add(key(x, y));
+  return sightTileSets(accepted, occupied, spec);
 }
 
-// Everything the rules need to know about a layout.
 export function evaluateVenue(venue) {
+  const spec = venueSpec(venue);
   const objects = isObj(venue) && Array.isArray(venue.objects) ? venue.objects : [];
-  const { accepted, problems } = validateLayout(objects);
+  const { accepted, problems } = validateLayout(objects, venue);
   const occupied = new Set();
   accepted.forEach((o) => footprint(o).forEach(([x, y]) => occupied.add(key(x, y))));
+  for (const [x, y] of spec.pillars) occupied.add(key(x, y));
   const count = (type) => accepted.filter((o) => o.type === type).length;
-  const pa = accepted.find((o) => D.OBJECT_TYPES[o.type].paTier);
+  const placedPa = accepted.find((o) => D.OBJECT_TYPES[o.type].paTier);
   const stats = {
     stage: count('stage'),
-    paTier: pa ? D.OBJECT_TYPES[pa.type].paTier : null,
+    paTier: placedPa ? D.OBJECT_TYPES[placedPa.type].paTier : spec.housePa,
     lights: count('lights'),
     bars: count('bar'),
     restrooms: count('restroom'),
@@ -297,17 +394,26 @@ export function evaluateVenue(venue) {
     exits: count('exit'),
     fence: count('fence'),
     watts: accepted.reduce((sum, o) => sum + D.OBJECT_TYPES[o.type].watts, 0),
-    openFloorTiles: D.GRID.w * D.GRID.h - occupied.size,
+    openFloorTiles: spec.grid.w * spec.grid.h - occupied.size,
+    rental: spec.rental,
+    permitFee: spec.permitFee,
+    housePa: !!(spec.housePa && !placedPa),
+    seats: spec.seats,
+    permit: spec.permit,
+    venueId: spec.id,
+    broadcast: spec.broadcast,
+    density: spec.density || D.FLOOR_DENSITY,
   };
-  const sight = sightTileSets(accepted, occupied);
+  const sight = sightTileSets(accepted, occupied, spec);
   stats.clearTiles = sight.clear.size;
   stats.blockedTiles = sight.blocked.size;
-  // R-01
-  stats.capacity = Math.min(D.PERMIT_CAP, Math.floor(D.FLOOR_DENSITY * stats.openFloorTiles), D.EXIT_CAPACITY * stats.exits);
-  stats.capacityLimit = stats.capacity === D.PERMIT_CAP ? 'permit'
-    : stats.capacity === D.EXIT_CAPACITY * stats.exits ? 'exits' : 'floor';
+  const perExit = spec.exitCapacity || D.EXIT_CAPACITY;
+  const density = stats.density;
+  const exitCap = perExit * stats.exits;
+  stats.capacity = Math.min(spec.permit, Math.floor(density * stats.openFloorTiles), exitCap);
+  stats.capacityLimit = stats.capacity === spec.permit ? 'permit'
+    : stats.capacity === exitCap ? 'exits' : 'floor';
   stats.staff = staffFor(stats);
-  // R-18 build requirements
   const missing = [];
   if (!stats.stage) missing.push('Place the stage');
   if (!stats.paTier) missing.push('Rent a PA and place it touching the stage');
@@ -371,12 +477,13 @@ export function evaluateShow(inputs) {
   const { share, presale, walkup } = presaleSplit(dem, bz, v.capacity);
   const walkupAfterIncident = Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
   const attendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
-
-  // R-09
+  const seatPrice = isInt(inputs.seatPrice) ? inputs.seatPrice : inputs.price;
+  const seated = v.seats ? Math.min(v.seats, attendance) : 0;
+  const ticketGross = seated * seatPrice + (attendance - seated) * inputs.price;
   const per = (supply) => (attendance > 0 ? Math.min(1, supply / attendance) : 1);
   const parts = {
     sound: v.paTier ? per(D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
-    sightlines: per(v.clearTiles * D.FLOOR_DENSITY),
+    sightlines: per(v.clearTiles * (v.density || D.FLOOR_DENSITY)),
     amenities: (per(v.bars * D.BAR_RATIO) + per(v.restrooms * D.RESTROOM_RATIO)) / 2,
     flow: per(v.gates * D.GATE_RATE * D.DOORS_MINUTES) * (response && response.flowMult !== undefined ? response.flowMult : 1),
     incident: inputs.incidentId ? (response ? response.score : 0) : 1,
@@ -387,15 +494,14 @@ export function evaluateShow(inputs) {
     (weights[k] * (1 - parts[k]) > weights[worst] * (1 - parts[worst]) ? k : worst), 'sound');
 
   // R-10, R-13, R-14, R-15
-  const ticketGross = attendance * inputs.price;
   const served = Math.min(attendance, v.bars * D.BAR_RATIO);
   const bar = Math.round(D.BAR_NET_PER_HEAD * (satisfaction / 100)
     * (served + (attendance - served) * D.BAR_SHORTFALL));
   const adSpend = D.AD_CHANNELS.reduce((s, c) => s + ((inputs.ads && inputs.ads[c]) || 0), 0);
   const costs = {
-    lot: D.LOT_RENTAL,
-    permit: D.PERMIT,
-    pa: v.paTier ? D.PA_RENTAL[v.paTier] : 0,
+    lot: typeof v.rental === 'number' ? v.rental : D.LOT_RENTAL,
+    permit: typeof v.permitFee === 'number' ? v.permitFee : D.PERMIT,
+    pa: v.housePa ? 0 : (v.paTier ? D.PA_RENTAL[v.paTier] : 0),
     lights: v.lights ? D.LIGHTS_RENTAL : 0,
     bars: v.bars * D.BAR_SETUP,
     restrooms: v.restrooms * D.RESTROOM_UNIT,
@@ -406,12 +512,14 @@ export function evaluateShow(inputs) {
   };
   costs.total = Object.values(costs).reduce((a, b) => a + b, 0);
   const guarantee = ask;
-  const artistPay = inputs.deal === 'guarantee' ? guarantee : Math.round(D.DOOR_SPLIT * Math.max(0, ticketGross - costs.total));
-  const net = ticketGross + bar - costs.total - artistPay;
+  const paidUpFront = inputs.deal === 'guarantee' || inputs.deal === 'sponsor';
+  const artistPay = paidUpFront ? guarantee : Math.round(D.DOOR_SPLIT * Math.max(0, ticketGross - costs.total));
+  const sponsor = inputs.deal === 'sponsor' ? D.SPONSOR_PAY : 0;
+  const broadcast = inputs.broadcast ? attendance * D.BROADCAST_PER_HEAD : 0;
+  const net = ticketGross + bar + sponsor + broadcast - costs.total - artistPay;
   const result = net >= 0 && satisfaction >= D.PASS_SATISFACTION ? 'pass' : 'retry';
 
-  // R-12
-  const upfront = costs.total - costs.incident + (inputs.deal === 'guarantee' ? guarantee : 0);
+  const upfront = costs.total - costs.incident + (paidUpFront ? guarantee : 0) - sponsor;
 
   // R-16, R-17
   const repDelta = Math.round(D.REP_SAT_SLOPE * (satisfaction - D.PASS_SATISFACTION));
@@ -420,6 +528,7 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
+    sponsor, broadcast, seated, seatPrice,
   };
 }
 
@@ -437,6 +546,8 @@ function showInputs(state, venueStats, withIncident) {
     ask: state.booking.terms ? state.booking.terms.ask : undefined,
     drawMult: state.booking.terms ? state.booking.terms.drawMult : undefined,
     artistId: state.booking.artistId,
+    seatPrice: state.promotion.seatPrice,
+    broadcast: !!(venueStats && venueStats.broadcast),
     incidentId: withIncident && state.show ? state.show.incidentId : null,
     responseId: withIncident && state.show ? state.show.responseId : null,
   };
@@ -469,13 +580,91 @@ export function showPreview(state) {
 // The settlement sheet for a show whose incident has been answered.
 export function settlementFor(state) {
   if (!state.show || !state.show.responseId) return null;
-  return evaluateShow(showInputs(state, evaluateVenue(state.venue), true));
+  const main = evaluateShow(showInputs(state, evaluateVenue(state.venue), true));
+  const second = secondStage(state);
+  if (!second) return main;
+  return {
+    ...main,
+    second,
+    net: main.net + second.cash,
+    secondCash: second.cash,
+  };
+}
+
+function secondStage(state) {
+  if (!state.booking || !state.booking.secondId) return null;
+  const spec = venueSpec(state.venue);
+  const id = state.booking.secondId;
+  const artist = artistFor(id);
+  const terms = state.booking.secondTerms || termsFor(id, state.reputation.artists[id]);
+  const roll = rollShow((state.seed ^ 0x9e3779b9) >>> 0, id);
+  const full = evaluateVenue(state.venue);
+  const cap = Math.min(full.capacity, spec.secondCap || 400);
+  const small = {
+    ...full,
+    capacity: cap,
+    seats: 0,
+    rental: 0,
+    permitFee: 0,
+    lights: 0,
+    bars: 0,
+    restrooms: 0,
+    fence: 0,
+    gates: 1,
+    exits: 1,
+    housePa: true,
+    paTier: full.paTier || 'M',
+    clearTiles: Math.min(full.clearTiles, cap),
+    broadcast: false,
+    density: D.FLOOR_DENSITY,
+  };
+  const result = evaluateShow({
+    venue: small,
+    deal: 'door',
+    price: artist.fairPrice,
+    ads: zeroAds(),
+    venueRep: state.show && isInt(state.show.venueRep) ? state.show.venueRep : state.reputation.venue,
+    draw: roll.draw,
+    ask: terms.ask,
+    drawMult: terms.drawMult,
+    artistId: id,
+    incidentId: null,
+    responseId: null,
+    broadcast: false,
+  });
+  const cash = result.ticketGross + result.bar - result.artistPay;
+  return {
+    artistId: id, name: artist.name, attendance: result.attendance, artistPay: result.artistPay,
+    ticketGross: result.ticketGross, bar: result.bar, cash,
+  };
+}
+
+export function settlementPayout(result, deal) {
+  if (!result) return 0;
+  // Sponsor money arrives before doors (it reduces upfront). Counting it again here
+  // would pay the same check twice. Broadcast and the second stage arrive at settlement.
+  return result.ticketGross + result.bar + (result.broadcast || 0)
+    + (result.secondCash || 0) - (deal === 'door' ? result.artistPay : 0);
 }
 
 // ---------------------------------------------------------------------------
 // Actions
 
 const fail = (state, error) => ({ state, error });
+
+function applyRep(s, repHold, relHold) {
+  s.reputation.venue = clamp(s.reputation.venue + repHold, 0, 100);
+  const id = s.booking.artistId;
+  s.reputation.artists[id] = clamp((s.reputation.artists[id] || 0) + relHold, -100, 100);
+}
+
+function applyUnlocks(s) {
+  const p = careerProgress(s);
+  if (p.goalMet) s.unlocks.club = true;
+  if (s.unlocks.club && p.tier.club.met) s.unlocks.amphitheater = true;
+  if (s.unlocks.amphitheater && p.tier.amphitheater.met) s.unlocks.festival = true;
+  if (s.unlocks.festival && p.tier.festival.met) s.unlocks.complete = true;
+}
 
 export function applyAction(state, action) {
   if (!isObj(action)) return fail(state, 'Unknown action');
@@ -486,7 +675,8 @@ export function applyAction(state, action) {
   switch (action.type) {
     case 'chooseDeal': {
       if ((err = need('book'))) return fail(state, err);
-      if (!DEALS.includes(action.deal)) return fail(state, 'Choose a guarantee or a door deal');
+      if (!DEALS.includes(action.deal) && action.deal !== 'sponsor') return fail(state, 'Choose a guarantee or a door deal');
+      if (action.deal === 'sponsor' && !venueSpec(s.venue).sponsor) return fail(state, 'This room does not take a sponsor');
       const offers = offersFor(s);
       const artistId = action.artistId === undefined ? offers[0] : action.artistId;
       if (!offers.includes(artistId)) return fail(state, 'That act is not on offer for this show');
@@ -497,8 +687,30 @@ export function applyAction(state, action) {
           : `${a.name} will only play for a guarantee after the last door deal`);
       }
       if (artistId !== s.booking.artistId) s.promotion.price = artistFor(artistId).fairPrice;
-      s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult } };
+      const spec = venueSpec(s.venue);
+      const nights = spec.nights.includes(action.nights) ? action.nights : (s.booking.nights || 1);
+      let secondId = null;
+      let secondTerms = null;
+      if (spec.secondStage && typeof action.secondId === 'string' && action.secondId !== artistId && D.ARTISTS[action.secondId]) {
+        const st = termsFor(action.secondId, s.reputation.artists[action.secondId]);
+        secondId = action.secondId;
+        secondTerms = { ask: st.ask, drawMult: st.drawMult };
+      }
+      s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (spec.seats) s.promotion.seatPrice = s.promotion.price + 10;
       s.phase = 'build';
+      return { state: s, error: null };
+    }
+    case 'chooseVenue': {
+      if ((err = need('book'))) return fail(state, err);
+      const id = action.venueId;
+      if (!D.VENUES[id]) return fail(state, 'Unknown room');
+      if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
+      if (s.venue.id !== id) {
+        s.layouts[s.venue.id] = s.venue.objects;
+        const spec = D.VENUES[id];
+        s.venue = { id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: s.layouts[id] || [] };
+      }
       return { state: s, error: null };
     }
     case 'place': {
@@ -506,7 +718,7 @@ export function applyAction(state, action) {
       const o = action.object;
       if (!isObj(o)) return fail(state, 'Nothing to place');
       const obj = { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot };
-      const { problems } = validateLayout([...s.venue.objects, obj]);
+      const { problems } = validateLayout([...s.venue.objects, obj], s.venue);
       const mine = problems.find((p) => p.index === s.venue.objects.length);
       if (mine) return fail(state, mine.message);
       const t = D.OBJECT_TYPES[obj.type];
@@ -517,7 +729,7 @@ export function applyAction(state, action) {
       if ((err = need('build'))) return fail(state, err);
       if (!Array.isArray(action.objects)) return fail(state, 'A layout is a list of objects');
       const objects = action.objects.map((o) => (isObj(o) ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o));
-      const { accepted, problems } = validateLayout(objects);
+      const { accepted, problems } = validateLayout(objects, s.venue);
       if (problems.length) return fail(state, problems[0].message);
       s.venue.objects = accepted;
       return { state: s, error: null };
@@ -539,9 +751,11 @@ export function applyAction(state, action) {
     }
     case 'setPromotion': {
       if ((err = need('promote'))) return fail(state, err);
+      const spec = venueSpec(s.venue);
       const price = action.price === undefined ? s.promotion.price : action.price;
-      if (!isInt(price) || price < D.PRICE_MIN || price > D.PRICE_MAX) {
-        return fail(state, `Ticket price must be a whole number from ${D.PRICE_MIN} to ${D.PRICE_MAX}`);
+      const priceMax = spec.priceMax || D.PRICE_MAX;
+      if (!isInt(price) || price < D.PRICE_MIN || price > priceMax) {
+        return fail(state, `Ticket price must be a whole number from ${D.PRICE_MIN} to ${priceMax}`);
       }
       const ads = { ...s.promotion.ads, ...(isObj(action.ads) ? action.ads : {}) };
       for (const c of Object.keys(ads)) {
@@ -552,15 +766,22 @@ export function applyAction(state, action) {
       }
       s.promotion.price = price;
       s.promotion.ads = ads;
+      if (spec.seats && action.seatPrice !== undefined) {
+        if (!isInt(action.seatPrice) || action.seatPrice < D.PRICE_MIN || action.seatPrice > priceMax) {
+          return fail(state, `Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax}`);
+        }
+        s.promotion.seatPrice = action.seatPrice;
+      }
       return { state: s, error: null };
     }
     case 'confirmPromotion': {
       if ((err = need('promote'))) return fail(state, err);
       const upfront = upfrontFor(s);
-      if (upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
+      if (s.mode !== 'sandbox' && upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
       s.cash -= upfront;
       s.promotion.confirmed = true;
-      s.show = { incidentId: rollShow(s.seed, s.booking.artistId).incidentId, responseId: null, venueRep: s.reputation.venue };
+      const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, 1);
+      s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
       s.phase = 'show';
       return { state: s, error: null };
     }
@@ -577,10 +798,9 @@ export function applyAction(state, action) {
     case 'acceptSettlement': {
       if ((err = need('settle'))) return fail(state, err);
       const r = settlementFor(s);
-      s.cash += r.ticketGross + r.bar - (s.booking.deal === 'door' ? r.artistPay : 0);
-      s.reputation.venue = clamp(s.reputation.venue + r.repDelta, 0, 100);
-      const id = s.booking.artistId;
-      s.reputation.artists[id] = clamp((s.reputation.artists[id] || 0) + r.relDelta, -100, 100);
+      s.cash += settlementPayout(r, s.booking.deal);
+      const night = s.show.night || 1;
+      const nights = s.booking.nights || 1;
       s.history.push({
         showId: s.history.length + 1,
         seed: s.seed,
@@ -592,8 +812,34 @@ export function applyAction(state, action) {
         result: r.result,
         weakest: r.weakest,
         settledAt: typeof action.at === 'string' ? action.at : null,
+        venueId: s.venue.id,
+        night,
       });
-      if (careerProgress(s).goalMet) s.unlocks.club = true;
+      const repHold = (s.show.repHold || 0) + r.repDelta;
+      const relHold = (s.show.relHold || 0) + r.relDelta;
+      if (night < nights) {
+        const upfront = upfrontFor(s);
+        if (s.mode !== 'sandbox' && upfront > s.cash) {
+          applyRep(s, repHold, relHold);
+          applyUnlocks(s);
+          s.phase = 'done';
+          return { state: s, error: null };
+        }
+        s.cash -= upfront;
+        const nextNight = night + 1;
+        s.show = {
+          night: nextNight,
+          incidentId: incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, nextNight),
+          responseId: null,
+          venueRep: s.show.venueRep,
+          repHold,
+          relHold,
+        };
+        s.phase = 'show';
+        return { state: s, error: null };
+      }
+      applyRep(s, repHold, relHold);
+      applyUnlocks(s);
       s.phase = 'done';
       return { state: s, error: null };
     }
@@ -607,18 +853,21 @@ export function applyAction(state, action) {
     case 'retry': {
       if ((err = need('done'))) return fail(state, err);
       // R-21: a career carries on after a bad night; it ends only when the next show is unaffordable.
-      if (action.type === 'nextShow' && s.cash < nextShowCost(s)) {
+      if (action.type === 'nextShow' && s.mode !== 'sandbox' && s.cash < nextShowCost(s)) {
         return fail(state, `The next show needs at least $${nextShowCost(s)} before doors and you have $${s.cash}. Start over to try again.`);
       }
-      const fresh = createGame(nextSeed(s.seed));
+      if (action.type === 'retry' && s.mode === 'scenario') {
+        return { state: createGame(nextSeed(s.seed), { mode: 'scenario', scenario: s.scenario }), error: null };
+      }
+      const fresh = createGame(nextSeed(s.seed), { mode: s.mode, scenario: s.scenario });
       fresh.venue = s.venue;
-      // Start over begins a new career that keeps only the layout, so earlier shows count
-      // toward neither the new goal nor the first show's offer.
+      fresh.layouts = s.layouts || fresh.layouts;
       if (action.type === 'nextShow') {
         fresh.cash = s.cash;
         fresh.reputation = s.reputation;
         fresh.unlocks = s.unlocks;
         fresh.history = s.history;
+        if (s.mode === 'sandbox') fresh.cash = s.cash;
       }
       const first = offersFor(fresh)[0];
       fresh.booking.artistId = first;
@@ -699,12 +948,16 @@ export function normalizeState(raw, fallbackSeed = 1) {
   s.cash = clamp(intOr(raw.cash, D.START_CASH), -1e9, 1e9);
 
   const rawObjects = isObj(raw.venue) && Array.isArray(raw.venue.objects) ? raw.venue.objects.slice(0, 1000) : [];
+  if (isObj(raw.venue) && D.VENUES[raw.venue.id]) {
+    const spec = D.VENUES[raw.venue.id];
+    s.venue = { id: spec.id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: [] };
+  }
   s.venue.objects = validateLayout(rawObjects.map((o) => (isObj(o)
-    ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o))).accepted;
+    ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), s.venue).accepted;
 
   const booking = isObj(raw.booking) ? raw.booking : {};
   if (typeof booking.artistId === 'string' && D.ARTISTS[booking.artistId]) s.booking.artistId = booking.artistId;
-  s.booking.deal = DEALS.includes(booking.deal) ? booking.deal : null;
+  s.booking.deal = DEALS.includes(booking.deal) || booking.deal === 'sponsor' ? booking.deal : null;
   // Terms arrived with the Lot career; a booking made before them has none and uses the act's
   // base ask and draw, as it did when it was made. An ask below $1 is dropped the same way:
   // settlement divides by it (R-17).
@@ -713,12 +966,40 @@ export function normalizeState(raw, fallbackSeed = 1) {
     s.booking.terms = { ask: clamp(terms.ask, 1, 1e6), drawMult: clamp(terms.drawMult, 0.5, 1.5) };
   }
   s.unlocks.club = isObj(raw.unlocks) && raw.unlocks.club === true;
+  s.unlocks.amphitheater = isObj(raw.unlocks) && raw.unlocks.amphitheater === true;
+  s.unlocks.festival = isObj(raw.unlocks) && raw.unlocks.festival === true;
+  s.unlocks.complete = isObj(raw.unlocks) && raw.unlocks.complete === true;
+  if (raw.mode === 'sandbox' || raw.mode === 'scenario') s.mode = raw.mode;
+  if (s.mode === 'scenario') {
+    s.scenario = 'wet-lot';
+    s.forcedIncident = 'rain';
+  }
+  const room = venueSpec(s.venue);
+  if (s.booking.deal === 'sponsor' && !room.sponsor) s.booking.deal = null;
+  s.booking.nights = room.nights.includes(booking.nights) ? booking.nights : 1;
+  if (room.secondStage && typeof booking.secondId === 'string' && D.ARTISTS[booking.secondId]) {
+    s.booking.secondId = booking.secondId;
+    const st = isObj(booking.secondTerms) ? booking.secondTerms : null;
+    if (st && isInt(st.ask) && st.ask > 0 && typeof st.drawMult === 'number' && Number.isFinite(st.drawMult)) {
+      s.booking.secondTerms = { ask: clamp(st.ask, 1, 1e6), drawMult: clamp(st.drawMult, 0.5, 1.5) };
+    }
+  }
+  if (isObj(raw.layouts)) {
+    for (const id of D.VENUE_ORDER) {
+      if (!Array.isArray(raw.layouts[id])) continue;
+      const spec = D.VENUES[id];
+      const asVenue = { id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: [] };
+      s.layouts[id] = validateLayout(raw.layouts[id].map((o) => (isObj(o)
+        ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), asVenue).accepted;
+    }
+  }
 
   const promo = isObj(raw.promotion) ? raw.promotion : {};
-  s.promotion.price = clamp(intOr(promo.price, artistFor(s.booking.artistId).fairPrice), D.PRICE_MIN, D.PRICE_MAX);
+  s.promotion.price = clamp(intOr(promo.price, artistFor(s.booking.artistId).fairPrice), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
   const ads = isObj(promo.ads) ? promo.ads : {};
   for (const c of D.AD_CHANNELS) s.promotion.ads[c] = clamp(intOr(ads[c], 0), 0, D.AD_MAX_PER_CHANNEL);
   s.promotion.confirmed = promo.confirmed === true;
+  if (room.seats) s.promotion.seatPrice = clamp(intOr(promo.seatPrice, s.promotion.price + 10), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
 
   const rep = isObj(raw.reputation) ? raw.reputation : {};
   s.reputation.venue = clamp(intOr(rep.venue, 0), 0, 100);
@@ -729,7 +1010,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
     s.history = raw.history.filter(isObj).slice(-200).map((h, i) => ({
       showId: i + 1,
       seed: isInt(h.seed) ? h.seed >>> 0 : 0,
-      deal: DEALS.includes(h.deal) ? h.deal : null,
+      deal: DEALS.includes(h.deal) || h.deal === 'sponsor' ? h.deal : null,
       attendance: intOr(h.attendance, 0),
       satisfaction: clamp(intOr(h.satisfaction, 0), 0, 100),
       net: intOr(h.net, 0),
@@ -737,16 +1018,22 @@ export function normalizeState(raw, fallbackSeed = 1) {
       result: h.result === 'pass' ? 'pass' : 'retry',
       weakest: typeof h.weakest === 'string' ? h.weakest : null,
       settledAt: typeof h.settledAt === 'string' ? h.settledAt : null,
+      venueId: D.VENUES[h.venueId] ? h.venueId : 'lot',
+      night: isInt(h.night) && h.night > 0 ? h.night : 1,
     }));
   }
 
   // The incident is re-derived from the seed, never read from the save.
   if (isObj(raw.show)) {
-    const incidentId = rollShow(s.seed, s.booking.artistId).incidentId;
+    const night = isInt(raw.show.night) && raw.show.night > 0 ? raw.show.night : 1;
+    const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, night);
     s.show = {
       incidentId,
       responseId: findResponse(incidentId, raw.show.responseId) ? raw.show.responseId : null,
       venueRep: clamp(intOr(raw.show.venueRep, s.reputation.venue), 0, 100),
+      night: isInt(raw.show.night) && raw.show.night > 0 ? raw.show.night : 1,
+      repHold: intOr(raw.show.repHold, 0),
+      relHold: intOr(raw.show.relHold, 0),
     };
   }
 

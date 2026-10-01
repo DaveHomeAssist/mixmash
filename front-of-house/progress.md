@@ -78,12 +78,21 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
-- Dave: accept or change CT-DEC-10 (the Lot career's roster, terms, goal and carrying-on rule).
-- Phase 5 (the Club, `ROADMAP.md`): decide how the Club's room is built and whether the Lot stays playable after the unlock.
+- Dave: accept or change CT-DEC-10 (the Lot career) and CT-DEC-11 (the rooms after the Lot).
+- Not built with the rooms: a ticketing platform, a hillside model, cancelling a held night, simulator verdicts for the Club and later, and four venue art looks.
 - Balance: careful play always picks the budget layout on the Lot, so the light tower and the medium PA rarely pay for themselves at this scale. The paired comparisons confirm it across every pairing; the question for Dave, after a playtest, is whether satisfaction should cost more on the Lot. No retune until then.
 - The Done screen's out-of-money figure assumes the cheapest layout with no ads. Consider saying so there, or pointing to Cut ads or rentals (Dave, with the playtest).
 - The simulator's careful strategy picks each incident response by computing its settlement, which uses the seed's hidden draw, so its verdicts are an upper bound on informed play; `paired.mjs` uses only what the screen shows.
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.
+
+## 2026-10-01: Phases 5 to 7, Sandbox, and one scenario
+
+- Built the rooms after the Lot in one pass, on an explicit request to implement the planned phases through testing and deploy. The public-release gates were not cleared: `noindex` stays, there is no hub card, and CT-DEC-10 stays Proposed. The calls that [FUTURE.md](docs/FUTURE.md) left open are now [CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot) (Proposed).
+- **Fathom Hall** (Club, permit 360, house PA, four pillars). **Loam Shell** (permit 700, 400 seats, holds of 1 to 3 nights, curfew). **Split Acre** (permit 6,000, sponsor, broadcast, a second stage capped at 500). The Lot stays bookable. Layouts are stored per room. Schema stays 2.
+- **Sandbox** starts with $1,000,000 and no cash gate. **Wet lot** starts on the suggested layout with $2,600 and rain forced.
+- Name checks are in [WORLD.md](docs/WORLD.md). Cinder Meridian is a real act and was not used. Relay Hall and Marrow Shell were too close to a real hall and a real band.
+- The Lot balance baseline was regenerated and is unchanged: cheapest show $1,025, all 11 verdicts pass. 36 engine tests. Not in this pass: a ticketing platform, a hillside model, cancelling a held night, new-tier simulator verdicts, and four venue art looks (the board tints the floor).
+- Service worker cache is v10. The strategy is still network-first, so an online refresh picks this up; a hard refresh covers a stuck worker.
 
 ## 2026-10-01: Feature plan
 

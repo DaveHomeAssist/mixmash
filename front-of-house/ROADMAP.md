@@ -1,6 +1,6 @@
 # Front of House Roadmap
 
-**Status:** Phases 0 to 4 are shipped (see [`progress.md`](progress.md)). The plan after the Lot is [`docs/FUTURE.md`](docs/FUTURE.md).
+**Status:** Phases 0 to 7 are in the tree (see [`progress.md`](progress.md)). Phases 5 to 7 shipped in one pass ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed), not as separate pull requests. The public release still waits on Dave's sign-off.
 
 The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its **Done when** line. The career tiers come from [CT-DEC-09](docs/DECISIONS.md#ct-dec-09-career-tier-ladder); what each tier contains is in [GDD section 5](docs/GDD.md#5-progression).
 
@@ -14,6 +14,25 @@ The phases from the first document to the last career tier. Each phase ships as 
 | 2. First playable | Lot Night: the page, the client, the isometric board, the settlement sheet, save codes and the smoke rail | [#22](https://github.com/DaveHomeAssist/mixmash/pull/22) |
 | 3. The Lot | Retuned to 50 to 150 people, schema version 2, Sodium Arcade | [#24](https://github.com/DaveHomeAssist/mixmash/pull/24) |
 | 4. A Lot career | Three acts, relationships, the Club unlock | [#25](https://github.com/DaveHomeAssist/mixmash/pull/25) |
+| 5 to 7, plus modes | Fathom Hall, Loam Shell, Split Acre, Sandbox, wet lot. One pass, schema stays 2 | This branch |
+
+## Next: Phase 5, the Club
+
+Shipped in the same pass as Phases 6 and 7. See CT-DEC-11. The Club is a grid with a house PA. The Lot stays bookable. What that pass does not include (a ticketing platform, a real slope, new simulator verdicts, four venue art looks) is listed in the decision.
+
+## Later phases
+
+The table below is the original scope. The playable slice is the decision, not this table.
+
+| Phase | Tier | Scope (from GDD section 5) | Done when |
+| --- | --- | --- | --- |
+| 5 | The Club (150 to 600) | An indoor venue with a house PA and lighting rig, regional touring acts, ticketing platforms | The Club plays a full show and a run of shows from the Lot goal's unlock, and the simulator verdicts pass at its scale |
+| 6 | The Amphitheater (600 to 2,500) | National acts, runs of several nights, seated and general-admission zones | The same, plus multi-night runs settle correctly night by night |
+| 7 | The Festival Grounds (2,500 to 25,000+) | Headliners, sponsorship deals, multi-stage festival operations, broadcast rights | The same, plus a multi-stage day settles stage by stage |
+
+Sandbox and the wet-lot scenario are in the same pass. Challenge and Endless are still after v1.
+
+A ticketing platform was in the Phase 5 list and is not built. The shell is a grid with seats, not a hillside. Simulator verdicts for the new tiers are not in CI. The Lot baseline is unchanged (all 11 verdicts still pass).
 
 ## Phase 3: tier 1, the Lot (shipped)
 
@@ -37,22 +56,6 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 - **Simulator coverage:** careful and careless careers on 300 seeds, with five new verdicts (careful play reaches the Club, it takes a run of shows, care matters, every act gets booked, careful careers never run out of money).
 
 **Done when:** a player can play at least five shows in a row on the Lot with cash, reputation and relationships carried between them; relationship changes the next offer; the tier goal is reachable in the simulator but not on every seed (careless play reaches it on about 42%); and any save change keeps old saves playing (two optional fields, no version bump).
-
-## Next: Phase 5, the Club
-
-Tier 2, unlocked by the Lot goal. The feature list, the two decisions to make first, and the build order are in [`docs/FUTURE.md`](docs/FUTURE.md). Do not start it until the gates in that file are done.
-
-An indoor venue for 150 to 600 people with a house PA and lighting rig, regional touring acts, and ticketing platforms. Decide first how the Club's room is built (a fixed floor plan or a grid like the Lot) and whether the Lot stays playable after the unlock.
-
-## Later phases
-
-| Phase | Tier | Scope (from GDD section 5) | Done when |
-| --- | --- | --- | --- |
-| 5 | The Club (150 to 600) | An indoor venue with a house PA and lighting rig, regional touring acts, ticketing platforms | The Club plays a full show and a run of shows from the Lot goal's unlock, and the simulator verdicts pass at its scale |
-| 6 | The Amphitheater (600 to 2,500) | National acts, runs of several nights, seated and general-admission zones | The same, plus multi-night runs settle correctly night by night |
-| 7 | The Festival Grounds (2,500 to 25,000+) | Headliners, sponsorship deals, multi-stage festival operations, broadcast rights | The same, plus a multi-stage day settles stage by stage |
-
-Sandbox and Scenario modes (CT-DEC-01) reuse the career systems and follow once tier 2 is playable.
 
 ## Separate tracks
 

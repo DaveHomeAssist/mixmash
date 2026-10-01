@@ -176,6 +176,18 @@ The unlock is stored (`unlocks.club`) and stays, even if cash or reputation fall
 
 After any settlement the player may book the next show, keeping cash, venue reputation, relationships, the layout and the history. The next show is refused only when cash is below the cheapest show its offer allows (`nextShowCost(state)`): for each act on the next show's offer, the upfront cost of `CHEAPEST_LAYOUT` with no ads (`cheapestShowCost()`) on a door deal if the act's terms allow one, otherwise on a guarantee of its quoted ask; the cheapest act sets the figure. When both acts on offer want a guarantee (Juniper Switchboard, or an act soured past `REL_DOOR_FLOOR`), it is higher than the door-deal floor. Start over (`retry`) is always available and begins a new career: it resets cash, reputation, relationships, the unlock and the history, and keeps only the layout, so earlier shows count toward neither the new goal nor the first show's offer.
 
+### Rooms after the Lot (CT-DEC-11)
+
+The Lot rules above are unchanged. Later rooms are rows in `VENUES`. Each has its own grid, permit, power budget, rental, roster and price ceiling. `nextShowCost` uses that room's cheapest layout, not the Lot's, once the player has changed rooms.
+
+- **House PA.** A room with `housePa` is heard without a rented PA. Placing a PA is still allowed and then costs the usual rental.
+- **Seats.** When `seats` is above 0, that many of the attendance pay `seatPrice` and the rest pay the lawn price. Seats are 0 on the Lot, so the worked example is unchanged.
+- **Nights.** A hold longer than one night settles each night, charges upfront again, and applies reputation and relationship once, on the last night.
+- **Sponsor.** Allowed only where `sponsor` is true. `SPONSOR_PAY` arrives before doors (it reduces upfront). The ask is still paid. It is not added a second time at settlement.
+- **Broadcast.** Where `broadcast` is true, settlement adds `attendance × BROADCAST_PER_HEAD`.
+- **Second stage.** Where `secondStage` is true, an opener plays a door deal capped at `secondCap`. Site costs are not charged again. The opener's cash is a line on the headliner's sheet.
+- **Sandbox** skips the cash gate. **Wet lot** forces the rain incident and starts from the suggested layout.
+
 ## Worked example
 
 This is a balance reference, engine test `R-WORKED-01`, and a verdict in the balance baseline. Its fixture is `WORKED_EXAMPLE` in `front-of-house/sim/reference.mjs`.

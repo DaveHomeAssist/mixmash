@@ -148,6 +148,14 @@ export const ARTISTS = {
     ask: 800,
     guaranteeOnly: true, // an established act: it never plays for the door
   },
+  'salt-ledger': { name: 'Salt Ledger', genre: 'Regional rock', drawMin: 180, drawMax: 380, fairPrice: 28, ask: 1600 },
+  'pallet-chorus': { name: 'Pallet Chorus', genre: 'Indie', drawMin: 140, drawMax: 300, fairPrice: 24, ask: 1100 },
+  'tin-relay': { name: 'Tin Relay', genre: 'Electronic', drawMin: 200, drawMax: 420, fairPrice: 32, ask: 2200, guaranteeOnly: true },
+  'gutter-census': { name: 'Gutter Census', genre: 'National rock', drawMin: 700, drawMax: 1600, fairPrice: 48, ask: 8000, guaranteeOnly: true },
+  'hollow-census': { name: 'Hollow Census', genre: 'National folk', drawMin: 500, drawMax: 1200, fairPrice: 42, ask: 5500 },
+  'amber-turnout': { name: 'Amber Turnout', genre: 'Pop', drawMin: 900, drawMax: 2000, fairPrice: 60, ask: 12000, guaranteeOnly: true },
+  'paper-voltage': { name: 'Paper Voltage', genre: 'Headliner', drawMin: 3500, drawMax: 8000, fairPrice: 90, ask: 35000, guaranteeOnly: true },
+  'north-kettle': { name: 'North Kettle', genre: 'Headliner', drawMin: 2800, drawMax: 6500, fairPrice: 80, ask: 24000, guaranteeOnly: true },
 };
 export const DEFAULT_ARTIST = 'sodium-arcade';
 
@@ -161,6 +169,121 @@ export const REL_DOOR_FLOOR = -20; // at or below this, an act only plays for a 
 export const ASK_ROUNDING = 10;
 // Meeting all three unlocks the Club, tier 2 (CT-DEC-09). The unlock stays once earned.
 export const LOT_GOAL = { sellouts: 1, venueRep: 60, cash: 6000, loyalAct: 20 }; // loyalAct: one act's relationship
+
+// Later tiers (CT-DEC-11). The Lot's numbers above stay the source for tier 1.
+// New acts are fictional; the name check is in docs/WORLD.md.
+export const SPONSOR_PAY = 8000;
+export const BROADCAST_PER_HEAD = 2;
+export const SANDBOX_CASH = 1000000;
+export const SCENARIO_CASH = 2600;
+
+export const CLUB_ROSTER = ['salt-ledger', 'pallet-chorus', 'tin-relay'];
+export const AMP_ROSTER = ['gutter-census', 'hollow-census', 'amber-turnout'];
+export const FEST_ROSTER = ['paper-voltage', 'north-kettle', 'gutter-census'];
+
+export const CLUB_GOAL = { sellouts: 1, venueRep: 70, cash: 18000, loyalAct: 15 };
+export const AMP_GOAL = { sellouts: 1, venueRep: 80, cash: 50000, loyalAct: 15 };
+export const FEST_GOAL = { attendance: 5000, cash: 80000, loyalAct: 10 };
+
+export const CLUB_STARTER = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 7, y: 0, rot: 0 },
+  { type: 'lights', x: 14, y: 0, rot: 0 },
+  { type: 'bar', x: 1, y: 6, rot: 0 },
+  { type: 'bar', x: 16, y: 6, rot: 0 },
+  { type: 'restroom', x: 1, y: 12, rot: 0 },
+  { type: 'restroom', x: 2, y: 12, rot: 0 },
+  { type: 'restroom', x: 17, y: 12, rot: 0 },
+  { type: 'restroom', x: 18, y: 12, rot: 0 },
+  { type: 'gate', x: 10, y: 13, rot: 0 },
+  { type: 'exit', x: 0, y: 7, rot: 0 },
+  { type: 'exit', x: 19, y: 7, rot: 0 },
+];
+export const CLUB_CHEAPEST = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 7, y: 0, rot: 0 },
+  { type: 'gate', x: 10, y: 13, rot: 0 },
+  { type: 'exit', x: 0, y: 7, rot: 0 },
+];
+export const AMP_STARTER = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 11, y: 0, rot: 0 },
+  { type: 'lights', x: 18, y: 0, rot: 0 },
+  { type: 'bar', x: 2, y: 8, rot: 0 },
+  { type: 'bar', x: 22, y: 8, rot: 0 },
+  { type: 'restroom', x: 2, y: 16, rot: 0 },
+  { type: 'restroom', x: 3, y: 16, rot: 0 },
+  { type: 'restroom', x: 24, y: 16, rot: 0 },
+  { type: 'restroom', x: 25, y: 16, rot: 0 },
+  { type: 'gate', x: 14, y: 17, rot: 0 },
+  { type: 'exit', x: 0, y: 9, rot: 0 },
+  { type: 'exit', x: 27, y: 9, rot: 0 },
+  { type: 'exit', x: 0, y: 16, rot: 0 },
+];
+export const AMP_CHEAPEST = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 11, y: 0, rot: 0 },
+  { type: 'gate', x: 14, y: 17, rot: 0 },
+  { type: 'exit', x: 0, y: 9, rot: 0 },
+];
+export const FEST_STARTER = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 16, y: 0, rot: 0 },
+  { type: 'lights', x: 24, y: 0, rot: 0 },
+  { type: 'bar', x: 2, y: 10, rot: 0 },
+  { type: 'bar', x: 34, y: 10, rot: 0 },
+  { type: 'bar', x: 18, y: 14, rot: 0 },
+  { type: 'restroom', x: 2, y: 22, rot: 0 },
+  { type: 'restroom', x: 3, y: 22, rot: 0 },
+  { type: 'restroom', x: 36, y: 22, rot: 0 },
+  { type: 'restroom', x: 37, y: 22, rot: 0 },
+  { type: 'gate', x: 20, y: 23, rot: 0 },
+  { type: 'exit', x: 0, y: 12, rot: 0 },
+  { type: 'exit', x: 39, y: 12, rot: 0 },
+  { type: 'exit', x: 0, y: 22, rot: 0 },
+  { type: 'exit', x: 39, y: 22, rot: 0 },
+];
+export const FEST_CHEAPEST = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 16, y: 0, rot: 0 },
+  { type: 'gate', x: 20, y: 23, rot: 0 },
+  { type: 'exit', x: 0, y: 12, rot: 0 },
+];
+
+export const VENUES = {
+  lot: {
+    id: 'lot', name: 'Oak St. Lot', tier: 1,
+    grid: { w: 24, h: 16 }, permit: 150, watts: 20000, rental: 400, permitFee: 125,
+    housePa: null, seats: 0, priceMax: 40, roster: ROSTER, defaultArtist: DEFAULT_ARTIST,
+    incidents: null, sponsor: false, broadcast: false, secondStage: false, nights: [1],
+    pillars: [], starter: STARTER_LAYOUT, cheapest: CHEAPEST_LAYOUT,
+  },
+  club: {
+    id: 'club', name: 'Fathom Hall', tier: 2,
+    grid: { w: 20, h: 14 }, permit: 360, watts: 60000, rental: 1200, permitFee: 400,
+    housePa: 'M', seats: 0, priceMax: 50, exitCapacity: 200, roster: CLUB_ROSTER, defaultArtist: 'salt-ledger',
+    incidents: null, sponsor: false, broadcast: false, secondStage: false, nights: [1],
+    pillars: [[6, 5], [6, 6], [13, 5], [13, 6]],
+    starter: CLUB_STARTER, cheapest: CLUB_CHEAPEST,
+  },
+  amphitheater: {
+    id: 'amphitheater', name: 'Loam Shell', tier: 3,
+    grid: { w: 28, h: 18 }, permit: 700, watts: 120000, rental: 4000, permitFee: 1500,
+    housePa: 'M', seats: 400, priceMax: 80, exitCapacity: 400, roster: AMP_ROSTER, defaultArtist: 'hollow-census',
+    incidents: ['rain', 'pa-dropout', 'gate-jam', 'curfew'],
+    sponsor: false, broadcast: false, secondStage: false, nights: [1, 2, 3],
+    pillars: [], starter: AMP_STARTER, cheapest: AMP_CHEAPEST,
+  },
+  festival: {
+    id: 'festival', name: 'Split Acre', tier: 4,
+    grid: { w: 40, h: 24 }, permit: 6000, watts: 250000, rental: 12000, permitFee: 4000,
+    housePa: 'M', seats: 0, priceMax: 120, density: 8, exitCapacity: 2000, roster: FEST_ROSTER, defaultArtist: 'paper-voltage',
+    incidents: ['rain', 'pa-dropout', 'gate-jam', 'curfew'],
+    sponsor: true, broadcast: true, secondStage: true, secondCap: 500, nights: [1],
+    pillars: [], starter: FEST_STARTER, cheapest: FEST_CHEAPEST,
+  },
+};
+export const VENUE_ORDER = ['lot', 'club', 'amphitheater', 'festival'];
 
 // Incidents (R-11). Exactly one per show, chosen by the seeded generator.
 export const INCIDENTS = {
@@ -184,6 +307,13 @@ export const INCIDENTS = {
     responses: [
       { id: 'ride-out', label: 'Ride it out', cost: 0, score: 0.3, flowMult: 0.6 },
       { id: 'second-lane', label: 'Open a second lane', cost: 75, score: 0.9 },
+    ],
+  },
+  curfew: {
+    label: 'Noise curfew cuts the set',
+    responses: [
+      { id: 'obey', label: 'End the set', cost: 0, score: 0.4, walkupMult: 0.7 },
+      { id: 'appeal', label: 'Appeal and finish the song', cost: 400, score: 0.75, walkupMult: 0.9 },
     ],
   },
 };

@@ -23,6 +23,13 @@ const COLORS = {
   night: 'rgba(11,15,25,0.74)',
 };
 
+const FLOORS = {
+  lot: { lot: '#2a2d34', lotAlt: '#2e3139', edge: '#23262c' },
+  club: { lot: '#2c2428', lotAlt: '#34282e', edge: '#1c1618' },
+  amphitheater: { lot: '#243028', lotAlt: '#2c3a2e', edge: '#1a241c' },
+  festival: { lot: '#303626', lotAlt: '#38422c', edge: '#22281c' },
+};
+
 // Box colours and heights (in tile units) for each object type. Exported so the
 // panel's palette swatches match the board.
 export const LOOK = {
@@ -77,10 +84,20 @@ export function createBoard(canvas) {
   let crowdCache = { key: '', tiles: [] };
   let lastScene = null;
   let facing = 0;
+  let room = { w: D.GRID.w, h: D.GRID.h };
+
+  function useRoom(next) {
+    const w = next && next.w ? next.w : D.GRID.w;
+    const h = next && next.h ? next.h : D.GRID.h;
+    if (w === room.w && h === room.h) return;
+    room = { w, h };
+    crowdCache = { key: '', tiles: [] };
+    resize();
+  }
 
   function worldToView(x, y) {
-    const W = D.GRID.w;
-    const H = D.GRID.h;
+    const W = room.w;
+    const H = room.h;
     if (facing === 1) return [y, W - x];
     if (facing === 2) return [W - x, H - y];
     if (facing === 3) return [H - y, x];
@@ -91,14 +108,14 @@ export function createBoard(canvas) {
     const rect = canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cssW = Math.max(280, Math.round(rect.width));
-    const tw = Math.max(12, Math.floor((cssW - 24) / ((D.GRID.w + D.GRID.h) / 2)));
+    const tw = Math.max(12, Math.floor((cssW - 24) / ((room.w + room.h) / 2)));
     const th = tw / 2;
-    const cssH = Math.round(((D.GRID.w + D.GRID.h) * th) / 2 + th * 5);
+    const cssH = Math.round(((room.w + room.h) * th) / 2 + th * 5);
     canvas.style.height = `${cssH}px`;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
-    const diamondW = ((D.GRID.w + D.GRID.h) * tw) / 2;
-    const gh = facing % 2 ? D.GRID.w : D.GRID.h;
+    const diamondW = ((room.w + room.h) * tw) / 2;
+    const gh = facing % 2 ? room.w : room.h;
     view = {
       tw, th,
       ox: (cssW - diamondW) / 2 + (gh * tw) / 2,
@@ -118,8 +135,8 @@ export function createBoard(canvas) {
     const b = (clientY - rect.top - view.oy) / (view.th / 2);
     const u = (a + b) / 2;
     const v = (b - a) / 2;
-    const W = D.GRID.w;
-    const H = D.GRID.h;
+    const W = room.w;
+    const H = room.h;
     let x = u;
     let y = v;
     if (facing === 1) { x = W - v; y = u; }
@@ -224,16 +241,17 @@ export function createBoard(canvas) {
   }
 
   // Crowd placement: clear-view tiles nearest the stage fill first, about three people a tile.
-  function crowdTiles(objects, clearSet) {
-    const key = JSON.stringify(objects);
+  function crowdTiles(objects, clearSet, pillars) {
+    const key = `${room.w}x${room.h}:${JSON.stringify(pillars || [])}:${JSON.stringify(objects)}`;
     if (crowdCache.key === key) return crowdCache.tiles;
     const occupied = new Set();
     objects.forEach((o) => footprint(o).forEach(([x, y]) => occupied.add(`${x},${y}`)));
+    (pillars || []).forEach(([x, y]) => occupied.add(`${x},${y}`));
     const stage = objects.find((o) => o.type === 'stage');
-    const [fx, fy] = stage ? stageFront(stage).front : [D.GRID.w / 2, 0];
+    const [fx, fy] = stage ? stageFront(stage).front : [room.w / 2, 0];
     const tiles = [];
-    for (let y = 0; y < D.GRID.h; y += 1) {
-      for (let x = 0; x < D.GRID.w; x += 1) {
+    for (let y = 0; y < room.h; y += 1) {
+      for (let x = 0; x < room.w; x += 1) {
         if (occupied.has(`${x},${y}`)) continue;
         tiles.push({ x, y, rank: (clearSet.has(`${x},${y}`) ? 0 : 100) + Math.hypot(x + 0.5 - fx, y + 0.5 - fy) });
       }
@@ -246,11 +264,12 @@ export function createBoard(canvas) {
   function crowdPoints(scene) {
     const points = [];
     if (scene.crowd <= 0) return points;
-    const tiles = crowdTiles(scene.objects, scene.clearSet);
-    let remaining = scene.crowd;
+    const tiles = crowdTiles(scene.objects, scene.clearSet, scene.pillars);
+    const cap = scene.density || D.FLOOR_DENSITY;
+    let remaining = Math.min(scene.crowd, 1600);
     for (let i = 0; i < tiles.length && remaining > 0; i += 1) {
       const t = tiles[i];
-      const here = Math.min(D.FLOOR_DENSITY, remaining);
+      const here = Math.min(cap, remaining);
       remaining -= here;
       for (let k = 0; k < here; k += 1) {
         const jx = ((t.x * 7 + t.y * 13 + k * 5) % 10) / 14 + 0.15;
@@ -354,32 +373,35 @@ export function createBoard(canvas) {
   // scene: { objects, clearSet, blockedSet, showClear, cursor, ghost, crowd, incident, night, lightTower, t }
   function draw(scene) {
     lastScene = scene;
+    useRoom(scene.grid);
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
     ctx.clearRect(0, 0, view.cssW, view.cssH);
+    const floor = FLOORS[scene.floor] || FLOORS.lot;
 
-    for (let y = 0; y < D.GRID.h; y += 1) {
-      for (let x = 0; x < D.GRID.w; x += 1) {
-        const edge = x === 0 || y === 0 || x === D.GRID.w - 1 || y === D.GRID.h - 1;
-        fillDiamond(x, y, 1, 1, edge ? COLORS.edge : (x + y) % 2 ? COLORS.lot : COLORS.lotAlt);
+    for (let y = 0; y < room.h; y += 1) {
+      for (let x = 0; x < room.w; x += 1) {
+        const edge = x === 0 || y === 0 || x === room.w - 1 || y === room.h - 1;
+        fillDiamond(x, y, 1, 1, edge ? floor.edge : (x + y) % 2 ? floor.lot : floor.lotAlt);
         if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
         if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
       }
     }
     ctx.lineWidth = 1;
     ctx.strokeStyle = COLORS.grid;
-    for (let i = 0; i <= D.GRID.w; i += 1) { ctx.beginPath(); ctx.moveTo(...iso(i, 0)); ctx.lineTo(...iso(i, D.GRID.h)); ctx.stroke(); }
-    for (let j = 0; j <= D.GRID.h; j += 1) { ctx.beginPath(); ctx.moveTo(...iso(0, j)); ctx.lineTo(...iso(D.GRID.w, j)); ctx.stroke(); }
-    // Faint painted parking stalls on the far rows.
-    ctx.strokeStyle = COLORS.stall;
-    for (let x = 3; x < D.GRID.w - 1; x += 3) {
-      ctx.beginPath(); ctx.moveTo(...iso(x, D.GRID.h - 4)); ctx.lineTo(...iso(x, D.GRID.h - 1.4)); ctx.stroke();
+    for (let i = 0; i <= room.w; i += 1) { ctx.beginPath(); ctx.moveTo(...iso(i, 0)); ctx.lineTo(...iso(i, room.h)); ctx.stroke(); }
+    for (let j = 0; j <= room.h; j += 1) { ctx.beginPath(); ctx.moveTo(...iso(0, j)); ctx.lineTo(...iso(room.w, j)); ctx.stroke(); }
+    if (!scene.floor || scene.floor === 'lot') {
+      ctx.strokeStyle = COLORS.stall;
+      for (let x = 3; x < room.w - 1; x += 3) {
+        ctx.beginPath(); ctx.moveTo(...iso(x, room.h - 4)); ctx.lineTo(...iso(x, room.h - 1.4)); ctx.stroke();
+      }
     }
 
     if (scene.objects.some((o) => o.type === 'fence')) {
       ctx.strokeStyle = COLORS.fence;
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 3]);
-      diamond(0, 0, D.GRID.w, D.GRID.h, 0.35);
+      diamond(0, 0, room.w, room.h, 0.35);
       ctx.stroke();
       ctx.setLineDash([]);
     }
@@ -387,11 +409,16 @@ export function createBoard(canvas) {
     const points = crowdPoints(scene);
     drawCrowd(points, scene.t);
 
-    const sorted = scene.objects
-      .filter((o) => !D.OBJECT_TYPES[o.type].kit)
-      .map((o) => ({ o, d: dims(o) }))
-      .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
+    const pillarLook = { top: '#5c534c', side: '#3f3833', front: '#2c2724' };
+    const sorted = [
+      ...scene.objects.filter((o) => !D.OBJECT_TYPES[o.type].kit).map((o) => ({ o, d: dims(o) })),
+      ...(scene.pillars || []).map(([x, y]) => ({ o: { type: 'pillar', x, y, rot: 0 }, d: { w: 1, h: 1 } })),
+    ].sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
     for (const { o, d } of sorted) {
+      if (o.type === 'pillar') {
+        box(o.x, o.y, 1, 1, 2.4, pillarLook, 1);
+        continue;
+      }
       const look = LOOK[o.type];
       const flicker = scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
         ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1;

@@ -1,6 +1,6 @@
 # Front of House: the feature plan
 
-**Status:** Plan, not a decision. Written 2026-10-01, after Phases 0 to 4. Nothing in this file changes a rule, a number, or a save. `data.mjs` still owns every value. A phase here becomes work only when its open decisions are settled and it is the next row in [`ROADMAP.md`](../ROADMAP.md).
+**Status:** The rooms in Phases 5 to 7, plus Sandbox and the wet-lot scenario, are in the tree as of 2026-10-01 ([CT-DEC-11](DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). The public-release gates below still stand: `noindex` stays, and there is no hub card, until Dave signs off the first playable. CT-DEC-10 is still Proposed. The Lot's numbers were not retuned.
 
 This document owns the order of features after the Lot career. The design of each system stays in [`GDD.md`](GDD.md). The accepted choices stay in [`DECISIONS.md`](DECISIONS.md). What already shipped is in [`progress.md`](../progress.md).
 

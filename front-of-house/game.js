@@ -8,7 +8,7 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, evaluateVenue, findResponse, forecast,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor,
-  showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout,
+  settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { createBoard, LOOK } from './board.js';
 
@@ -164,7 +164,16 @@ function update() {
 // Book
 
 function bookPanel() {
+  const spec = venueSpec(state.venue);
   const offers = offersFor(state);
+  const rooms = D.VENUE_ORDER.map((id) => {
+    const v = D.VENUES[id];
+    const open = id === 'lot' || state.mode === 'sandbox' || state.unlocks[id];
+    const on = state.venue.id === id;
+    return `<button type="button" data-act="venue" data-venue="${id}" ${on ? 'class="primary"' : ''} ${open ? '' : 'disabled'}>${esc(v.name)}${open ? '' : ' (locked)'}</button>`;
+  }).join('');
+  const nights = spec.nights.length > 1 ? `<div class="row">${spec.nights.map((n) =>
+    `<button type="button" data-act="nights" data-nights="${n}" ${(state.booking.nights || 1) === n ? 'class="primary"' : ''}>${n} night${n > 1 ? 's' : ''}</button>`).join('')}</div>` : '';
   const cards = offers.map((id) => {
     const a = artistFor(id);
     const rel = state.reputation.artists[id] || 0;
@@ -175,28 +184,45 @@ function bookPanel() {
       : rel === 0 ? 'has not worked with you yet' : rel > D.REL_DOOR_FLOOR ? 'remembers a small payout' : 'wants money up front';
     const doorNote = a.guaranteeOnly ? `${esc(a.name)} only plays for a guarantee.`
       : `${esc(a.name)} will only play for a guarantee after another short payout.`;
+    const opener = spec.secondStage ? offers.find((oid) => oid !== id) : null;
+    const extra = opener ? ` data-second="${opener}"` : '';
+    const sponsor = spec.sponsor ? `<button type="button" class="choice" data-act="deal" data-deal="sponsor" data-artist="${id}"${extra}>
+        <strong>Take a sponsor</strong>
+        <span class="cost">${money(D.SPONSOR_PAY)} up front, and you still pay the ${money(t.ask)} ask</span>
+        <span>The sponsor wants the ticket at the usual price. Broadcast pays on top if the grounds are big enough.</span>
+      </button>` : '';
     return `
     <section class="card offer" aria-label="${esc(a.name)}">
       <p class="eyebrow">Offer · relationship ${signed(rel)}, ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p>${esc(a.genre)} · draws ${lo} to ${hi} people · usually plays at ${money(a.fairPrice)}</p>
       <p class="lede">Their ask: a ${money(t.ask)} guarantee${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.</p>
-      <button type="button" class="choice" data-act="deal" data-deal="guarantee" data-artist="${id}">
+      ${opener ? `<p class="lede">The other stage opens with ${esc(artistFor(opener).name)}.</p>` : ''}
+      <button type="button" class="choice" data-act="deal" data-deal="guarantee" data-artist="${id}"${extra}>
         <strong>Pay the guarantee</strong>
         <span class="cost">${money(t.ask)}, paid before doors</span>
         <span>You keep every dollar after costs, and the act is happy however the night goes.</span>
       </button>
-      <button type="button" class="choice" data-act="deal" data-deal="door" data-artist="${id}" ${t.doorOk ? '' : 'disabled'}>
+      <button type="button" class="choice" data-act="deal" data-deal="door" data-artist="${id}" ${t.doorOk ? '' : 'disabled'}${extra}>
         <strong>Offer a door deal</strong>
         <span class="cost">${Math.round(D.DOOR_SPLIT * 100)}% of ticket money after show costs, paid at settlement</span>
         <span>${t.doorOk ? `Cheaper on a slow night, but the act expected ${money(t.ask)} and will remember a small payout.` : doorNote}</span>
       </button>
+      ${sponsor}
     </section>`;
   }).join('');
+  const modes = state.history.length ? '' : `<div class="row">
+      <button type="button" data-act="mode" data-mode="career">Career</button>
+      <button type="button" data-act="mode" data-mode="sandbox">Sandbox</button>
+      <button type="button" data-act="mode" data-mode="scenario">Wet lot</button>
+    </div>`;
   return `
-    <p class="eyebrow">Show ${state.history.length + 1} · ${esc(D.VENUE_NAME)}</p>
+    <p class="eyebrow">Show ${state.history.length + 1} · ${esc(spec.name)}</p>
     <h2>Book the act</h2>
     <p id="msg" class="message" aria-live="polite"></p>
+    ${modes}
+    <div class="row">${rooms}</div>
+    ${nights}
     <p class="lede">${state.history.length ? 'Two acts want this date. Pick one and a deal.' : 'Your first night. Two acts want the date; Sodium Arcade is the safe first booking.'}</p>
     ${cards}`;
 }
@@ -216,6 +242,7 @@ const COSTS = {
 };
 
 function buildPanel() {
+  const spec = venueSpec(state.venue);
   const options = PLACEABLE.map((type) => {
     const t = D.OBJECT_TYPES[type];
     const watts = t.watts ? ` · ${t.watts / 1000} kW` : '';
@@ -223,10 +250,11 @@ function buildPanel() {
       <span class="swatch" style="background:${LOOK[type].top}"></span>
       <span>${esc(t.label)}<span class="meta">${t.w}×${t.h} · ${COSTS[type]}${watts}</span></span></label>`;
   }).join('');
+  const paLine = spec.housePa ? 'The house rig covers sound, so a rented PA is optional.' : 'You need a stage, a PA touching it, the fence, a gate and an exit.';
   return `
-    <p class="eyebrow">${esc(D.VENUE_NAME)} · ${D.GRID.w} × ${D.GRID.h} tiles</p>
-    <h2>Build the lot</h2>
-    <p class="lede">Pick an object, then click the tile for its top corner. You need a stage, a PA touching it, the fence, a gate and an exit.</p>
+    <p class="eyebrow">${esc(spec.name)} · ${spec.grid.w} × ${spec.grid.h} tiles</p>
+    <h2>Build the room</h2>
+    <p class="lede">Pick an object, then click the tile for its top corner. ${paLine}</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <fieldset><legend>Object to place</legend><div class="palette">${options}</div></fieldset>
     <div class="row">
@@ -254,16 +282,22 @@ function quotedAsk() {
 }
 
 function costsSoFar() {
-  return upfrontFor(state) - (state.booking.deal === 'guarantee' ? quotedAsk() : 0) - adTotal(state.promotion.ads);
+  const deal = state.booking.deal;
+  const artistDue = deal === 'guarantee' || deal === 'sponsor' ? quotedAsk() : 0;
+  const sponsor = deal === 'sponsor' ? D.SPONSOR_PAY : 0;
+  return upfrontFor(state) - artistDue - adTotal(state.promotion.ads) + sponsor;
 }
 
 function updateBuild() {
   const v = evaluateVenue(state.venue);
+  const spec = venueSpec(state.venue);
+  const wattsCap = spec.watts;
+  const density = spec.density || D.FLOOR_DENSITY;
   const limits = { permit: 'the permit', floor: 'floor space', exits: 'exits' };
   $('#venue-stats').innerHTML = `
     <div><dt>Capacity</dt><dd>${v.capacity} <span class="lede">(${limits[v.capacityLimit]})</span></dd></div>
-    <div><dt>Power</dt><dd class="${v.watts > D.GENERATOR_WATTS * 0.9 ? 'warn' : ''}">${(v.watts / 1000).toFixed(1)} / ${D.GENERATOR_WATTS / 1000} kW</dd></div>
-    <div><dt>Clear view</dt><dd>${v.clearTiles} tiles · fits ${v.clearTiles * D.FLOOR_DENSITY}</dd></div>
+    <div><dt>Power</dt><dd class="${v.watts > wattsCap * 0.9 ? 'warn' : ''}">${(v.watts / 1000).toFixed(1)} / ${wattsCap / 1000} kW</dd></div>
+    <div><dt>Clear view</dt><dd>${v.clearTiles} tiles · fits ${Math.floor(v.clearTiles * density)}</dd></div>
     <div><dt>View blocked</dt><dd class="${v.blockedTiles ? 'bad' : ''}">${v.blockedTiles} tiles</dd></div>
     <div><dt>Staff</dt><dd>${v.staff}</dd></div>
     <div><dt>Costs so far</dt><dd>${money(costsSoFar())}</dd></div>
@@ -271,7 +305,7 @@ function updateBuild() {
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
     ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>`
-    : '<p class="checklist ok">✓ The lot is ready for a show.</p>';
+    : `<p class="checklist ok">✓ The ${spec.id === 'lot' ? 'lot' : 'room'} is ready for a show.</p>`;
   $('#obj-count').textContent = String(state.venue.objects.length);
   $('#obj-list').innerHTML = state.venue.objects.map((o, i) => {
     const where = D.OBJECT_TYPES[o.type].kit ? 'around the lot' : `at ${o.x}, ${o.y}${o.type === 'stage' ? `, facing ${FACING[o.rot]}` : ''}`;
@@ -296,7 +330,7 @@ function objectIndexAt(x, y) {
 
 function ghostAt(tile) {
   const ghost = { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot };
-  const { problems } = validateLayout([...state.venue.objects, ghost]);
+  const { problems } = validateLayout([...state.venue.objects, ghost], state.venue);
   return { ...ghost, valid: !problems.some((p) => p.index === state.venue.objects.length) };
 }
 
@@ -327,20 +361,29 @@ function describeTile(tile) {
 // Promote
 
 function promotePanel() {
+  const spec = venueSpec(state.venue);
+  const priceMax = spec.priceMax || D.PRICE_MAX;
   const sliders = D.AD_CHANNELS.map((c) => `
     <div class="slider">
       <label for="ad-${c}">${AD_LABELS[c]} <output id="ad-${c}-out" for="ad-${c}"></output></label>
       <input type="range" id="ad-${c}" min="0" max="${D.AD_SLIDER_MAX}" step="${D.AD_STEP}" data-input="ad" data-channel="${c}" />
     </div>`).join('');
+  const seats = spec.seats ? `
+    <div class="slider">
+      <label for="seat-price">Seat price <output id="seat-out" for="seat-price"></output></label>
+      <input type="range" id="seat-price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="seat" />
+    </div>
+    <p class="lede">${spec.seats} seats sell first, then the lawn at the lawn price.</p>` : '';
   return `
-    <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)}</p>
+    <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <h2>Promote the show</h2>
     <p class="lede">Set the ticket price and the ads. The band's real draw stays hidden; the forecast shows the range.</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="slider">
-      <label for="price">Ticket price <output id="price-out" for="price"></output></label>
-      <input type="range" id="price" min="${D.PRICE_MIN}" max="${D.PRICE_MAX}" step="1" data-input="price" />
+      <label for="price">${spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
+      <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" />
     </div>
+    ${seats}
     <fieldset><legend>Ad spend</legend>${sliders}</fieldset>
     <dl class="stats" id="promo-stats"></dl>
     <figure>
@@ -348,7 +391,7 @@ function promotePanel() {
       <figcaption id="presale-cap"></figcaption>
     </figure>
     <div class="actions">
-      <button type="button" data-act="back">Back to the lot</button>
+      <button type="button" data-act="back">Back to the build</button>
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open the doors</button>
     </div>`;
 }
@@ -359,6 +402,11 @@ function updatePromote() {
   const price = $('#price');
   if (document.activeElement !== price) price.value = String(p.price);
   $('#price-out').textContent = money(p.price);
+  const seat = $('#seat-price');
+  if (seat) {
+    if (document.activeElement !== seat) seat.value = String(p.seatPrice || p.price);
+    $('#seat-out').textContent = money(p.seatPrice || p.price);
+  }
   for (const c of D.AD_CHANNELS) {
     const input = $(`#ad-${c}`);
     if (document.activeElement !== input) input.value = String(p.ads[c]);
@@ -366,7 +414,7 @@ function updatePromote() {
   }
   const f = forecast(state);
   const upfront = upfrontFor(state);
-  const short = upfront > state.cash;
+  const short = state.mode !== 'sandbox' && upfront > state.cash;
   $('#promo-stats').innerHTML = `
     <div><dt>Forecast crowd</dt><dd>${f.low} to ${f.high} <span class="lede">of ${f.capacity}</span></dd></div>
     <div><dt>Buzz</dt><dd>×${buzz(p.ads).toFixed(2)}</dd></div>
@@ -536,7 +584,7 @@ function sheetHtml(r, { signed: done }) {
   const deal = state.booking.deal;
   const response = findResponse(state.show.incidentId, state.show.responseId);
   const incident = D.INCIDENTS[state.show.incidentId];
-  const cashAfter = done ? state.cash : state.cash + r.ticketGross + r.bar - (deal === 'door' ? r.artistPay : 0);
+  const cashAfter = done ? state.cash : state.cash + settlementPayout(r, deal);
   const cashBefore = cashAfter - r.net;
   const cost = (n) => `<td class="num neg">${money(-n)}</td>`;
   const rows = [
@@ -564,11 +612,11 @@ function sheetHtml(r, { signed: done }) {
     ? 'The night lost money. Try a door deal, a different ticket price, or fewer rentals.'
     : TIPS[r.weakest];
   return `
-    <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')} · LOT NIGHT</span><span>${clock(1)} CURFEW</span></div>
+    <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${clock(1)} CURFEW</span></div>
     <div class="meta-strip">
       <div><span class="meta-label">Headliner</span><span class="meta-val">${esc(a.name)}</span></div>
-      <div><span class="meta-label">Venue</span><span class="meta-val">${esc(D.VENUE_NAME)}</span></div>
-      <div><span class="meta-label">Deal</span><span class="meta-val hl">${deal === 'door' ? `Door (${Math.round(D.DOOR_SPLIT * 100)}%)` : 'Guarantee'}</span></div>
+      <div><span class="meta-label">Venue</span><span class="meta-val">${esc(venueSpec(state.venue).name)}</span></div>
+      <div><span class="meta-label">Deal</span><span class="meta-val hl">${deal === 'door' ? `Door (${Math.round(D.DOOR_SPLIT * 100)}%)` : deal === 'sponsor' ? 'Sponsor' : 'Guarantee'}</span></div>
       <div><span class="meta-label">Attendance</span><span class="meta-val">${r.attendance} / ${v.capacity}</span></div>
       <div><span class="meta-label">Satisfaction</span><span class="meta-val score">${r.satisfaction}/100</span></div>
     </div>
@@ -577,11 +625,14 @@ function sheetHtml(r, { signed: done }) {
       <table>
         <thead><tr><th scope="col">Source</th><th scope="col">Units</th><th scope="col" class="num">Total</th></tr></thead>
         <tbody>
-          <tr><td>Tickets (presale and gate)</td><td>${r.attendance} × ${money(state.promotion.price)}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
+          <tr><td>Tickets (presale and gate)</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(state.promotion.price)}` : `${r.attendance} × ${money(state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
           <tr><td>Bar</td><td>${r.attendance} guests</td><td class="num pos">${money(r.bar)}</td></tr>
+          ${r.sponsor ? `<tr><td>Sponsor</td><td>Site deal</td><td class="num pos">${money(r.sponsor)}</td></tr>` : ''}
+          ${r.broadcast ? `<tr><td>Broadcast</td><td>${r.attendance} viewers</td><td class="num pos">${money(r.broadcast)}</td></tr>` : ''}
+          ${r.second ? `<tr><td>${esc(r.second.name)} (second stage)</td><td>${r.second.attendance} people</td><td class="num pos">${money(r.second.cash)}</td></tr>` : ''}
           <tr class="faint"><td>Merch</td><td>No merch tent yet</td><td class="num">$0</td></tr>
         </tbody>
-        <tfoot><tr><td colspan="2">Total revenue</td><td class="num pos">${money(r.ticketGross + r.bar)}</td></tr></tfoot>
+        <tfoot><tr><td colspan="2">Total revenue</td><td class="num pos">${money(r.ticketGross + r.bar + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0))}</td></tr></tfoot>
       </table>
     </div>
     <div class="ledger">
@@ -628,20 +679,39 @@ function settlePanel() {
 
 function careerHtml() {
   const p = careerProgress(state);
+  const spec = venueSpec(state.venue);
   const row = (ok, text) => `<li class="${ok ? 'met' : ''}"><span aria-hidden="true">${ok ? '✓' : '○'}</span> ${text}</li>`;
+  const club = p.tier.club;
+  const amp = p.tier.amphitheater;
+  const fest = p.tier.festival;
+  const clubName = D.VENUES.club.name;
+  const ampName = D.VENUES.amphitheater.name;
+  const festName = D.VENUES.festival.name;
+  const block = spec.id === 'club'
+    ? `${row(club.sellouts >= club.goal.sellouts, `Sell out ${clubName} (${D.VENUES.club.permit}): ${club.sellouts}`)}
+       ${row(p.venueRep >= club.goal.venueRep, `Reputation ${club.goal.venueRep}: now ${p.venueRep}`)}
+       ${row(p.cash >= club.goal.cash, `${money(club.goal.cash)} banked: ${money(p.cash)}`)}
+       ${row(club.loyalAct >= club.goal.loyalAct, `A hall act at +${club.goal.loyalAct}: best ${signed(club.loyalAct)}`)}`
+    : spec.id === 'amphitheater'
+      ? `${row(amp.sellouts >= amp.goal.sellouts, `Sell out ${ampName} (${D.VENUES.amphitheater.permit}): ${amp.sellouts}`)}
+         ${row(p.venueRep >= amp.goal.venueRep, `Reputation ${amp.goal.venueRep}: now ${p.venueRep}`)}
+         ${row(p.cash >= amp.goal.cash, `${money(amp.goal.cash)} banked: ${money(p.cash)}`)}
+         ${row(amp.loyalAct >= amp.goal.loyalAct, `A shell act at +${amp.goal.loyalAct}: best ${signed(amp.loyalAct)}`)}`
+      : spec.id === 'festival'
+        ? `${row(fest.attendance >= fest.goal.attendance, `A day of ${fest.goal.attendance}: best ${fest.attendance}`)}
+           ${row(p.cash >= fest.goal.cash, `${money(fest.goal.cash)} banked: ${money(p.cash)}`)}
+           ${row(fest.loyalAct >= fest.goal.loyalAct, `A grounds act at +${fest.goal.loyalAct}: best ${signed(fest.loyalAct)}`)}`
+        : `${row(p.met.sellouts, `Sell out the Lot (${D.PERMIT_CAP} people): ${p.sellouts} so far`)}
+           ${row(p.met.venueRep, `Venue reputation ${D.LOT_GOAL.venueRep}: now ${p.venueRep}`)}
+           ${row(p.met.cash, `${money(D.LOT_GOAL.cash)} in the bank: now ${money(p.cash)}`)}
+           ${row(p.met.loyalAct, `An act that trusts you (relationship +${D.LOT_GOAL.loyalAct}): best is ${signed(p.loyalAct)}`)}`;
+  const title = p.complete ? 'The career is complete' : p.festivalUnlocked ? `${festName} is open` : p.amphitheaterUnlocked ? `${ampName} is open` : p.clubUnlocked ? `${clubName} is open` : `Goal: unlock ${clubName}`;
   return `
     <section class="card career" aria-labelledby="career-title">
-      <p class="eyebrow">Tier 1 · the Lot</p>
-      <h3 id="career-title">${p.clubUnlocked ? 'The Club is unlocked' : 'Goal: unlock the Club'}</h3>
-      <ul class="goal">
-        ${row(p.met.sellouts, `Sell out the Lot (${D.PERMIT_CAP} people): ${p.sellouts} so far`)}
-        ${row(p.met.venueRep, `Venue reputation ${D.LOT_GOAL.venueRep}: now ${p.venueRep}`)}
-        ${row(p.met.cash, `${money(D.LOT_GOAL.cash)} in the bank: now ${money(p.cash)}`)}
-        ${row(p.met.loyalAct, `An act that trusts you (relationship +${D.LOT_GOAL.loyalAct}): best is ${signed(p.loyalAct)}`)}
-      </ul>
-      <p class="hint">${p.clubUnlocked
-        ? 'The Club opens in a later update. Until then, keep running shows on the Lot.'
-        : 'A guarantee always builds trust. A door deal builds more when the act\'s share beats their ask, and sours them when it falls well short.'}</p>
+      <p class="eyebrow">Tier ${spec.tier} · ${esc(spec.name)}</p>
+      <h3 id="career-title">${title}</h3>
+      <ul class="goal">${block}</ul>
+      <p class="hint">${p.clubUnlocked ? 'Book the next show, then pick the room on the Book screen.' : 'A guarantee builds trust. A door deal builds more when the share beats the ask.'}</p>
     </section>`;
 }
 
@@ -651,12 +721,12 @@ function donePanel() {
   const pass = last && last.result === 'pass';
   const p = careerProgress(state);
   const history = state.history.slice().reverse().map((h) =>
-    `<li>Show ${h.showId}: ${h.deal === 'door' ? 'door deal' : 'guarantee'} · ${h.attendance} people · ${money(h.net)} · ${h.result === 'pass' ? 'pass' : 'retry'}</li>`).join('');
+    `<li>Show ${h.showId}${h.night > 1 ? ` night ${h.night}` : ''}: ${h.deal === 'door' ? 'door deal' : h.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${D.VENUES[h.venueId] ? D.VENUES[h.venueId].name : 'Oak St. Lot'} · ${h.attendance} people · ${money(h.net)} · ${h.result === 'pass' ? 'pass' : 'retry'}</li>`).join('');
   const next = p.canAffordAShow
     ? '<button type="button" class="primary" data-act="next">Book the next show</button>'
     : `<button type="button" class="primary" disabled>Book the next show</button>`;
   return `
-    <h2>${pass ? 'A good night on the Lot' : 'A rough night'}</h2>
+    <h2>${pass ? `A good night at ${esc(venueSpec(state.venue).name)}` : 'A rough night'}</h2>
     <p id="msg" class="message" aria-live="polite"></p>
     <p class="lede">${pass
       ? 'The show made money and kept the crowd happy. Cash, reputation and every relationship carry into the next show.'
@@ -699,6 +769,10 @@ function draw() {
   const night = ['show', 'settle', 'done'].includes(state.phase);
   const scene = {
     objects: state.venue.objects,
+    grid: state.venue.grid,
+    floor: state.venue.id,
+    pillars: venueSpec(state.venue).pillars,
+    density: venueSpec(state.venue).density || D.FLOOR_DENSITY,
     clearSet: clearSet(),
     blockedSet: sight().blocked,
     showClear: state.phase === 'build' && ui.showClear,
@@ -765,9 +839,10 @@ el.canvas.addEventListener('keydown', (e) => {
   const moves = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
   if (moves[e.key]) {
     e.preventDefault();
+    const g = state.venue.grid;
     ui.cursor = {
-      x: Math.min(D.GRID.w - 1, Math.max(0, ui.cursor.x + moves[e.key][0])),
-      y: Math.min(D.GRID.h - 1, Math.max(0, ui.cursor.y + moves[e.key][1])),
+      x: Math.min(g.w - 1, Math.max(0, ui.cursor.x + moves[e.key][0])),
+      y: Math.min(g.h - 1, Math.max(0, ui.cursor.y + moves[e.key][1])),
     };
     ui.hover = null;
     el.boardStatus.textContent = describeTile(ui.cursor);
@@ -805,14 +880,23 @@ el.panel.addEventListener('click', (e) => {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1 });
+  else if (a === 'venue') act({ type: 'chooseVenue', venueId: target.dataset.venue });
+  else if (a === 'nights') { state.booking.nights = Number(target.dataset.nights); render(); }
+  else if (a === 'mode') {
+    const mode = target.dataset.mode;
+    state = mode === 'career' ? createGame(state.seed) : createGame(state.seed, { mode, scenario: 'wet-lot' });
+    ui.mounted = null;
+    save();
+    render();
+  }
   else if (a === 'rotate') rotate();
   else if (a === 'fence') {
     const i = state.venue.objects.findIndex((o) => o.type === 'fence');
     if (i >= 0) act({ type: 'remove', index: i });
     else act({ type: 'place', object: { type: 'fence', x: 0, y: 0, rot: 0 } });
   } else if (a === 'starter') {
-    if (act({ type: 'setLayout', objects: D.STARTER_LAYOUT }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
+    if (act({ type: 'setLayout', objects: venueSpec(state.venue).starter }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
   } else if (a === 'clear-lot') {
     if (act({ type: 'setLayout', objects: [] }, { quiet: true })) say('Cleared the lot.');
   } else if (a === 'remove') {
@@ -833,6 +917,7 @@ el.panel.addEventListener('click', (e) => {
 el.panel.addEventListener('input', (e) => {
   const t = e.target;
   if (t.dataset.input === 'price') act({ type: 'setPromotion', price: Number(t.value) }, { quiet: true });
+  else if (t.dataset.input === 'seat') act({ type: 'setPromotion', seatPrice: Number(t.value) }, { quiet: true });
   else if (t.dataset.input === 'ad') act({ type: 'setPromotion', ads: { [t.dataset.channel]: Number(t.value) } }, { quiet: true });
 });
 
