@@ -307,6 +307,14 @@ function placeAt(tile) {
   }
 }
 
+// Removal by pointer goes to the prop drawn under the pointer (a tall sprite rises well
+// above its footprint), and to the ground tile when no prop is there.
+function removeUnder(e) {
+  const hit = board.objectAt(e.clientX, e.clientY);
+  const tile = hit ? { x: hit.x, y: hit.y } : board.tileAt(e.clientX, e.clientY);
+  if (tile) removeAt(tile);
+}
+
 function removeAt(tile) {
   const i = objectIndexAt(tile.x, tile.y);
   if (i < 0) { say('Nothing to remove on that tile.'); return; }
@@ -743,14 +751,13 @@ el.canvas.addEventListener('click', (e) => {
   const tile = board.tileAt(e.clientX, e.clientY);
   if (!tile) return;
   ui.cursor = tile;
-  if (e.shiftKey) removeAt(tile);
+  if (e.shiftKey) removeUnder(e);
   else placeAt(tile);
 });
 el.canvas.addEventListener('contextmenu', (e) => {
   if (state.phase !== 'build') return;
   e.preventDefault();
-  const tile = board.tileAt(e.clientX, e.clientY);
-  if (tile) removeAt(tile);
+  removeUnder(e);
 });
 el.canvas.addEventListener('focus', () => { ui.focused = true; draw(); });
 el.canvas.addEventListener('blur', () => { ui.focused = false; draw(); });
@@ -921,6 +928,7 @@ window.__frontOfHouse = {
   act: (action) => act(action),
   skip: () => skipToIncident(),
   importCode,
+  board: () => board.info(),
 };
 
 // ---------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 
 ## 2. Palette
 
-The code owns the exact values (`COLORS` and `LOOK` in `board.js`, custom properties in `styles.css`). This table records the roles and starting values; if the two disagree, the code wins.
+The code owns the exact values (`COLORS` and `PROPS` in `board.js`, whose box colours are exported as `LOOK`, and custom properties in `styles.css`). This table records the roles and starting values; if the two disagree, the code wins.
 
 | Role | Starting values |
 | --- | --- |

@@ -17,7 +17,7 @@ import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
 import {
-  applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, settlementFor, showPreview, termsFor,
+  applyAction, cheapestShowCost, createGame, nextSeed, nextShowCost, offersFor, rollShow, settlementFor, showPreview, termsFor,
 } from '../front-of-house/engine.mjs';
 import {
   AD_STEP, ARTISTS, DEFAULT_ARTIST, INCIDENTS, PERMIT_CAP, REL_DOOR_FLOOR, SAVE_NAMESPACE, SCHEMA_VERSION, START_CASH, STARTER_LAYOUT,
@@ -213,6 +213,69 @@ try {
   assert.equal(restarted.career.shows, 0, 'Start over begins a new career');
   ok('an unaffordable next show is stopped on the Done screen with the amount it needs, and Start over stays open');
 
+  // Sprites: they switch on with one redraw, follow rotation, keep the PA tiers apart,
+  // let a PA behind the stage show through, anchor markers and beams to the art, and
+  // a click on a tall prop's body finds that prop.
+  const spritesCtx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
+  const { page: page5, failures: failures5 } = await open(spritesCtx);
+  await page5.waitForFunction(() => window.__frontOfHouse.board().spritesReady);
+  const boardInfo = () => page5.evaluate(() => window.__frontOfHouse.board());
+  assert.ok((await boardInfo()).spriteRedraws <= 1, 'one redraw when the sprites switch on');
+  await page5.click('[data-deal="door"]');
+  await page5.click('[data-act="starter"]');
+  const drawnOf = (info, type) => info.drawn.find((d) => d.type === type);
+  const layoutWith = (swap) => STARTER_LAYOUT.map((o) => swap[o.type] ? { ...o, ...swap[o.type] } : o);
+  const setLayout = (objects) => page5.evaluate((o) => window.__frontOfHouse.act({ type: 'setLayout', objects: o }), objects);
+  const snapshot = () => page5.evaluate(() => {
+    const c = document.querySelector('#board');
+    window.__snap = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  });
+  const changedPixels = () => page5.evaluate(() => {
+    const c = document.querySelector('#board');
+    const now = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+    let n = 0;
+    for (let i = 0; i < now.length; i += 4) if (Math.abs(now[i] - window.__snap[i]) + Math.abs(now[i + 1] - window.__snap[i + 1]) + Math.abs(now[i + 2] - window.__snap[i + 2]) > 30) n += 1;
+    return n;
+  });
+  const withM = await boardInfo();
+  await snapshot();
+  await setLayout(layoutWith({ 'pa-m': { type: 'pa-s' } }));
+  const withS = await boardInfo();
+  assert.ok(await changedPixels() > 400, 'swapping the PA behind the stage visibly changes the board');
+  assert.ok(drawnOf(withM, 'pa-m').rect.h > drawnOf(withS, 'pa-s').rect.h * 1.2, 'the medium PA draws taller than the small one');
+  for (const [rot, expected] of [[0, false], [3, true]]) {
+    await setLayout([{ type: 'stage', x: 9, y: 5, rot }]);
+    assert.equal(drawnOf(await boardInfo(), 'stage')?.rect.mirrored, expected, `stage rot ${rot} draws ${expected ? 'mirrored' : 'as drawn'}`);
+  }
+  for (const rot of [1, 2]) {
+    await setLayout([{ type: 'stage', x: 9, y: 5, rot }]);
+    assert.equal(drawnOf(await boardInfo(), 'stage'), undefined, `stage rot ${rot} faces away, so it keeps the code-drawn box`);
+  }
+  await setLayout(STARTER_LAYOUT);
+  const stageRect = drawnOf(await boardInfo(), 'stage').rect;
+  const canvasBox = await page5.locator('#board').boundingBox();
+  const roof = { x: canvasBox.x + stageRect.x + stageRect.w / 2, y: canvasBox.y + stageRect.y + stageRect.h * 0.22 };
+  await page5.mouse.click(roof.x, roof.y, { button: 'right' });
+  const afterRemove = await page5.evaluate(() => window.__frontOfHouse.state().venue.objects);
+  assert.equal(afterRemove.some((o) => o.type === 'stage'), false, 'right-clicking the stage roof removes the stage');
+  assert.equal(afterRemove.length, STARTER_LAYOUT.length - 1, 'and nothing else');
+
+  let paSeed = 1;
+  while (rollShow(paSeed, DEFAULT_ARTIST).incidentId !== 'pa-dropout') paSeed += 1;
+  if (!(await page5.isVisible('#save-code'))) await page5.click('#save-menu summary');
+  await page5.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
+  await page5.click('[data-save="import"]');
+  await page5.click('[data-deal="door"]');
+  await page5.click('[data-act="starter"]');
+  await page5.click('[data-act="confirm-build"]');
+  await page5.click('[data-act="confirm-promo"]');
+  await page5.waitForSelector('[data-act="respond"]', { timeout: 2000 });
+  const night = await boardInfo();
+  const paMarker = night.markers.find((m) => m.type === 'pa-m');
+  assert.ok(paMarker && paMarker.top > 2.5 && Math.abs(paMarker.z - paMarker.top - 0.5) < 1e-9, 'the PA-dropout marker sits above the drawn PA');
+  assert.ok(night.washSource > 4, `the wash beam starts at the light tower's lamp head (z ${night.washSource})`);
+  ok('sprites switch on once, follow rotation and PA tiers, anchor markers and beams, and clicks find tall props');
+
   // 4. Reduced motion goes straight to the incident.
   const calm = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
   const { page: page3, failures: failures3 } = await open(calm);
@@ -249,10 +312,10 @@ try {
   assert.deepEqual(lowContrast, [], 'small text meets 4.5:1');
   ok('small text meets the 4.5:1 contrast ratio');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4], [], 'no page errors, console errors or failed requests');
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
-  await Promise.all([context, other, calm, phone].map((c) => c.close()));
+  await Promise.all([context, other, calm, phone, spritesCtx].map((c) => c.close()));
 } finally {
   await browser.close();
   await server.close();

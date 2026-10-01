@@ -55,6 +55,8 @@ The Notion page listed Unity, Godot and Unreal Engine 5 to evaluate. Every MixMa
 3. Commission isometric pixel art only after the loop is fun, and only once a render contract and art direction document exist (see MarsScape DEC-79).
 4. Treat the crowd as density values per tile, not individual simulated people.
 
+*Note, 2026-10-01 (a record, not a change to this decision):* item 2 said the first playable draws placeholder tiles in code. Since commit `252833b` the board also draws eight provisional stand-in sprites from `front-of-house/sprites/`, with the code-drawn boxes as the fallback. They are not the commissioned pixel art item 3 governs (`ART_DIRECTION.md` section 7 calls them stand-ins). Their geometry lives in one table, `PROPS` in `board.js`, which serves as the interim render contract until the contract item 3 requires is written; markers, beams and click hit-testing read from it. Whether the stand-ins stay before that contract is Dave's call.
+
 ### Consequences
 
 - No install is needed, and the game can share the studio's hosting, CI and save store.
