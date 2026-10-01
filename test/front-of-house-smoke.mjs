@@ -255,10 +255,17 @@ try {
   // turn (mirrored), faces away after two (box), and is back as painted after four.
   await setLayout([{ type: 'stage', x: 9, y: 5, rot: 0 }]);
   const turns = [];
+  const faceKey = (faces) => faces.map((n) => n.join(',')).sort().join(' ');
   for (let i = 0; i < 4; i += 1) {
     await page5.click('#turn-view');
     const info = await boardInfo();
     turns.push([info.facing, drawnOf(info, 'stage')?.rect.mirrored ?? 'box']);
+    const asBox = info.hitStack.find((h) => h.type === 'stage' && h.faces);
+    if (asBox) {
+      // A box paints the two side faces that face the viewer in this view, not always +x and +y.
+      const expected = { 2: [[0, -1], [-1, 0]], 3: [[1, 0], [0, -1]] }[info.facing];
+      assert.equal(faceKey(asBox.faces), faceKey(expected), `view ${info.facing}: the stage box paints its viewer-facing sides`);
+    }
   }
   assert.deepEqual(turns, [[1, true], [2, 'box'], [3, 'box'], [0, false]], 'the stage follows the view turn');
   await setLayout(STARTER_LAYOUT);
@@ -326,6 +333,10 @@ try {
   const paMarker = night.markers.find((m) => m.type === 'pa-m');
   assert.ok(paMarker && paMarker.top > 2.5 && Math.abs(paMarker.z - paMarker.top - 0.5) < 1e-9, 'the PA-dropout marker sits above the drawn PA');
   assert.ok(night.washSource > 4, `the wash beam starts at the light tower's lamp head (z ${night.washSource})`);
+  // Crowd right in front of the stage is drawn after it, even though those dots lie behind
+  // props elsewhere on the lot (the restrooms, the gate, the far exit).
+  const frontRow = night.crowd.filter((p) => Math.floor(p.x) === 11 && Math.floor(p.y) === 3);
+  assert.ok(frontRow.length > 0 && frontRow.every((p) => p.front), 'the crowd in front of the stage is drawn in front of it');
   ok('sprites switch on once, follow rotation and PA tiers, anchor markers and beams, and clicks find tall props');
 
   // 4. Reduced motion goes straight to the incident.

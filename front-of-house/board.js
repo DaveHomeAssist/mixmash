@@ -96,7 +96,7 @@ export function createBoard(canvas) {
   let lastScene = null;
   let drawn = []; // the props drawn as sprites in the last frame, back to front
   let hits = []; // the same in final paint order, show-through repaints included, for clicks
-  const stats = { spriteRedraws: 0, markers: [], washSource: null };
+  const stats = { spriteRedraws: 0, markers: [], washSource: null, crowd: [] };
   let facing = 0;
 
   function worldToView(x, y) {
@@ -186,16 +186,31 @@ export function createBoard(canvas) {
     ctx.fillStyle = color; ctx.fill();
   }
 
+  // The two side faces of a box that face the viewer in the current view, as [corner,
+  // corner, outward normal]; the lower-left one on screen comes first.
+  function visibleFaces(x0, y0, x1, y1) {
+    const faces = [
+      [[x0, y1], [x1, y1], [0, 1]], [[x1, y0], [x1, y1], [1, 0]],
+      [[x0, y0], [x1, y0], [0, -1]], [[x0, y0], [x0, y1], [-1, 0]],
+    ];
+    const toView = ([nx, ny]) => {
+      const a = worldToView(x0, y0); const b = worldToView(x0 + nx, y0 + ny);
+      return [b[0] - a[0], b[1] - a[1]];
+    };
+    // Facing the viewer means the normal points down the screen (+u or +v in view terms).
+    return faces.map((f) => ({ f, v: toView(f[2]) })).filter(({ v }) => v[0] + v[1] > 0)
+      .sort((p, q) => q.v[1] - p.v[1]).map(({ f }) => f);
+  }
+
   // An extruded box over a footprint: the two faces toward the viewer, then the top.
   function box(x, y, w, h, height, look, alpha = 1) {
     ctx.globalAlpha = alpha;
     const inset = look.thin ? 0.3 : 0.06;
-    const x0 = x + inset; const y0 = y + inset; const w0 = w - inset * 2; const h0 = h - inset * 2;
-    // The face toward +y (lower left on screen)
-    quad(iso(x0, y0 + h0), iso(x0 + w0, y0 + h0), iso(x0 + w0, y0 + h0, height), iso(x0, y0 + h0, height), look.front);
-    // The face toward +x (lower right on screen)
-    quad(iso(x0 + w0, y0), iso(x0 + w0, y0 + h0), iso(x0 + w0, y0 + h0, height), iso(x0 + w0, y0, height), look.side);
-    fillDiamond(x0, y0, w0, h0, look.top, height);
+    const x0 = x + inset; const y0 = y + inset; const x1 = x + w - inset; const y1 = y + h - inset;
+    visibleFaces(x0, y0, x1, y1).forEach(([a, b], i) => {
+      quad(iso(a[0], a[1]), iso(b[0], b[1]), iso(b[0], b[1], height), iso(a[0], a[1], height), i === 0 ? look.front : look.side);
+    });
+    fillDiamond(x0, y0, x1 - x0, y1 - y0, look.top, height);
     ctx.globalAlpha = 1;
   }
 
@@ -274,10 +289,18 @@ export function createBoard(canvas) {
   }
 
   // A point is behind a prop when, in view coordinates, it lies toward the far corner
-  // from the prop's front edges; props are drawn over such points and before the rest.
-  function behindProp(px, py, props) {
+  // from the prop's front edges. Only props whose drawn shape covers the point on screen
+  // matter: the point is drawn before the props when it is behind one of those, and after
+  // them otherwise, so a dot in front of the stage stays in front however many props it
+  // is behind elsewhere on the lot.
+  function behindCovering(px, py, props) {
     const [pu, pv] = worldToView(px, py);
-    return props.some(({ o, d }) => {
+    const [sx, sy] = iso(px, py);
+    return props.some(({ o, d, g }) => {
+      const covers = g.r
+        ? sx >= g.r.x && sx < g.r.x + g.r.w && sy >= g.r.y && sy < g.r.y + g.r.h
+        : insidePolygon(sx, sy, g.poly);
+      if (!covers) return false;
       const c = [worldToView(o.x, o.y), worldToView(o.x + d.w, o.y + d.h)];
       const u0 = Math.min(c[0][0], c[1][0]); const u1 = Math.max(c[0][0], c[1][0]);
       const v0 = Math.min(c[0][1], c[1][1]); const v1 = Math.max(c[0][1], c[1][1]);
@@ -488,9 +511,10 @@ export function createBoard(canvas) {
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
     ctx.clearRect(0, 0, view.cssW, view.cssH);
 
+    // Each prop's drawn shape (sprite rectangle or box outline), known before anything is drawn.
     const sorted = scene.objects
       .filter((o) => !D.OBJECT_TYPES[o.type].kit)
-      .map((o) => ({ o, d: dims(o) }))
+      .map((o) => { const d = dims(o); const r = spriteRect(o); return { o, d, g: r ? { r } : { poly: boxOutline(o, d) } }; })
       .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
     const overlay = (x, y) => {
       if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
@@ -504,7 +528,7 @@ export function createBoard(canvas) {
         fillDiamond(x, y, 1, 1, edge ? COLORS.edge : (x + y) % 2 ? COLORS.lot : COLORS.lotAlt);
         // Sightline tiles in front of every prop are drawn after the props, so a sprite
         // that overhangs its footprint cannot hide them.
-        if (behindProp(x + 0.5, y + 0.5, sorted)) overlay(x, y);
+        if (behindCovering(x + 0.5, y + 0.5, sorted)) overlay(x, y);
         else frontTiles.push([x, y]);
       }
     }
@@ -532,7 +556,8 @@ export function createBoard(canvas) {
     const points = crowdPoints(scene);
     const front = [];
     const back = [];
-    for (const p of points) (behindProp(p.x, p.y, sorted) ? back : front).push(p);
+    for (const p of points) (behindCovering(p.x, p.y, sorted) ? back : front).push(p);
+    stats.crowd = points.map((p) => ({ x: p.x, y: p.y, front: front.includes(p) }));
     drawCrowd(back, scene.t);
 
     const flickerOf = (o) => (scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
@@ -644,7 +669,12 @@ export function createBoard(canvas) {
       drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
       markers: stats.markers,
       washSource: stats.washSource,
-      hitStack: hits.map(({ o, r, poly }) => ({ type: o.type, rect: r || null, poly: poly || null })),
+      hitStack: hits.map(({ o, r, poly }) => {
+        const d = dims(o);
+        const faces = poly ? visibleFaces(o.x, o.y, o.x + d.w, o.y + d.h).map((f) => f[2]) : null;
+        return { type: o.type, rect: r || null, poly: poly || null, faces };
+      }),
+      crowd: stats.crowd,
     };
   }
 
