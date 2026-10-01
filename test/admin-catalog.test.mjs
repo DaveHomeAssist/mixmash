@@ -10,7 +10,7 @@ import path from 'node:path';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CATALOG_PATH, ROOT, classify, listFiles } from '../admin/build-catalog.mjs';
-import { CATEGORIES, FILE_NOTES, PROJECTS } from '../admin/catalog-sources.mjs';
+import { CATEGORIES, FILE_NOTES, PATTERN_NOTES, PROJECTS } from '../admin/catalog-sources.mjs';
 
 const catalog = JSON.parse(await readFile(CATALOG_PATH, 'utf8'));
 const paths = catalog.files.map((file) => file.path);
@@ -67,6 +67,7 @@ test('admin start-here, status and note paths exist in the catalog', () => {
   }
   const stale = Object.keys(FILE_NOTES).filter((file) => !byPath.has(file));
   assert.deepEqual(stale, [], 'every note in catalog-sources.mjs names a tracked file');
+  for (const { match } of PATTERN_NOTES) assert.ok(paths.some((file) => match.test(file)), `pattern note ${match} matches a tracked file`);
 });
 
 test('admin references are well formed and site routes resolve', () => {
