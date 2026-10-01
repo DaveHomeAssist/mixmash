@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MixMash Admin</title>
+<meta name="description" content="Internal index of every support file, document and reference behind the MixMash Studio games, organised by game and purpose.">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,600..900&family=Outfit:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#stage">Skip to the index</a>
+<div class="shell">
+  <a class="brand" href="/" aria-label="MixMash Studio home">
+    <span class="brand-mark">MIXMASH</span>
+    <span class="brand-sub">Admin · support index</span>
+  </a>
+
+  <header class="topbar">
+    <div class="search">
+      <label class="sr-only" for="search">Search every file, document and reference</label>
+      <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4.5 4.5"/></svg>
+      <input id="search" type="search" placeholder="Search files, docs, references" autocomplete="off" spellcheck="false" aria-describedby="search-hint search-count" aria-controls="results">
+      <kbd id="search-hint" class="search-hint" aria-label="Press slash to search">/</kbd>
+    </div>
+    <p id="search-count" class="search-count" aria-live="polite"></p>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
+      <svg class="icon-moon" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M15.5 12.5A6.5 6.5 0 0 1 7.5 4.5a6.5 6.5 0 1 0 8 8Z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6 16 16M4 16l1.4-1.4M14.6 5.4 16 4"/></svg>
+      <span class="theme-label">Dark mode</span>
+    </button>
+  </header>
+
+  <nav class="rail" aria-label="Games and studio">
+    <div id="tabs" class="tabs" role="tablist" aria-orientation="vertical"></div>
+  </nav>
+
+  <main id="stage" class="stage" tabindex="-1">
+    <div id="panels" class="panels"></div>
+    <section id="results" class="panel results" aria-labelledby="results-title" hidden></section>
+    <div id="status" class="status" role="status">
+      <p class="status-title">Loading the index…</p>
+    </div>
+  </main>
+</div>
+<p id="announcer" class="sr-only" aria-live="polite"></p>
+</body>
+</html>

@@ -1,0 +1,2647 @@
+{
+  "schemaVersion": 1,
+  "generator": "admin/build-catalog.mjs",
+  "repo": {
+    "owner": "DaveHomeAssist",
+    "name": "mixmash",
+    "branch": "gh-pages",
+    "url": "https://github.com/DaveHomeAssist/mixmash",
+    "site": "https://mixmash.games"
+  },
+  "categories": [
+    {
+      "id": "surface",
+      "label": "Live pages",
+      "description": "Routes and review surfaces served on mixmash.games."
+    },
+    {
+      "id": "docs",
+      "label": "Design & reference",
+      "description": "Design documents, manuals, guides, specifications and brand references."
+    },
+    {
+      "id": "decisions",
+      "label": "Decisions & governance",
+      "description": "Decision logs, agent rules and licensing."
+    },
+    {
+      "id": "planning",
+      "label": "Roadmaps & logs",
+      "description": "Roadmaps, sprint boards, changelogs and session progress logs."
+    },
+    {
+      "id": "evidence",
+      "label": "Evidence & baselines",
+      "description": "Generated reports, balance baselines, parity ledgers and frozen provenance."
+    },
+    {
+      "id": "art",
+      "label": "Art & media",
+      "description": "Images, previews, art specifications and asset indexes."
+    },
+    {
+      "id": "tests",
+      "label": "Tests & QA",
+      "description": "Unit tests, Playwright smoke rails and test fixtures."
+    },
+    {
+      "id": "tooling",
+      "label": "Tooling & simulators",
+      "description": "Validators, simulators, generators and ledger builders."
+    },
+    {
+      "id": "source",
+      "label": "Source code",
+      "description": "Game logic, clients, styles and shared runtime modules."
+    },
+    {
+      "id": "backend",
+      "label": "Servers & API",
+      "description": "The MarsScape authority server and its Vercel functions."
+    },
+    {
+      "id": "build",
+      "label": "Compiled builds",
+      "description": "Generated binaries copied in from another repository."
+    },
+    {
+      "id": "ops",
+      "label": "Hosting, CI & config",
+      "description": "CI, hosting, PWA, SEO and package configuration."
+    }
+  ],
+  "projects": [
+    {
+      "id": "mixmash",
+      "name": "MIXMASH",
+      "kind": "DJ platform fighter",
+      "lifecycle": "Live",
+      "route": "/play/",
+      "summary": "The flagship: a DJ-powered platform fighter on one static page. Combat math is canonical in src/combat.js; the shipped page keeps an inline copy that a parity test guards, and every public roster or arena count is tested against the catalog modules.",
+      "pinned": [
+        "ROADMAP.md",
+        "docs/PLAYER_GUIDE.md",
+        "play/progress.md",
+        "src/combat.js"
+      ],
+      "statusSources": [
+        "ROADMAP.md",
+        "play/progress.md",
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "Play MIXMASH",
+          "url": "/play/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Marketing page",
+          "url": "/home.html",
+          "kind": "live route"
+        }
+      ],
+      "commands": [
+        {
+          "name": "npm run smoke:play",
+          "description": "Fighter resume, snapshot, Platform Rush, profile and share-link smoke rail."
+        }
+      ]
+    },
+    {
+      "id": "mars",
+      "name": "MarsScape",
+      "kind": "Mars colony skiller",
+      "lifecycle": "Live + API",
+      "route": "/mars/",
+      "summary": "An isometric canvas client over a server-authoritative engine: Vercel functions with private Blob storage in production, Node and SQLite locally, and a signed offline mode. The DEC-79 pipeline gates commissioned art behind machine reports and a human receipt. It has diverged from the private marsscape repository; never copy one over the other.",
+      "pinned": [
+        "mars/README.md",
+        "mars/docs/DECISIONS.md",
+        "mars/docs/ART_DIRECTION.md",
+        "mars/docs/MANUAL.md"
+      ],
+      "statusSources": [
+        "mars/progress.md",
+        "mars/docs/ART_ROADMAP.md",
+        "mars/art/reports/art-validation.json",
+        "mars/parity/LEDGER.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "Play MarsScape",
+          "url": "/mars/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Golden scene review",
+          "url": "/mars/golden-scene.html",
+          "kind": "review surface"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Render contract proof",
+          "url": "/mars/art-spec.html",
+          "kind": "review surface"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Authority API health",
+          "url": "https://mixmash-marsscape-authority.vercel.app/api/health",
+          "kind": "backend"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #11: DEC-79 paid-test candidate",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/11",
+          "kind": "pull request"
+        },
+        {
+          "private": true,
+          "note": "Independent single-file build; diverged from /mars/.",
+          "label": "marsscape source repository",
+          "url": "https://github.com/DaveHomeAssist/marsscape",
+          "kind": "repository"
+        }
+      ],
+      "commands": [
+        {
+          "name": "npm run art:index",
+          "description": "Regenerate the commissioned-art runtime index from valid present frames."
+        },
+        {
+          "name": "npm run art:validate",
+          "description": "Validate DEC-79 assets and verify the runtime index and strict-report parity."
+        },
+        {
+          "name": "npm run art:report",
+          "description": "Refresh the normal, paid-test and full-golden machine reports."
+        },
+        {
+          "name": "npm run art:contact-sheet",
+          "description": "Regenerate the golden contact sheet. CI fails on drift."
+        },
+        {
+          "name": "npm run art:visual",
+          "description": "Capture game, fallback, contract, contact-sheet and golden-scene visual evidence."
+        },
+        {
+          "name": "npm run art:approve",
+          "description": "Strict paid-test machine gate: four assets, eight PNG exports, four layered sources."
+        },
+        {
+          "name": "npm run art:approve:golden",
+          "description": "Full-golden machine gate: 26 assets and 108 exports. Records no human approval."
+        },
+        {
+          "name": "npm run start:mars",
+          "description": "Run the authority server locally with SQLite at http://localhost:8787/mars/."
+        },
+        {
+          "name": "npm run parity",
+          "description": "Rebuild mars/parity/LEDGER.md from the frozen baseline, the live engine and mapping.json."
+        },
+        {
+          "name": "npm run sim",
+          "description": "Headless balance simulator; writes mars/docs/BALANCE_BASELINE.md."
+        }
+      ]
+    },
+    {
+      "id": "front-of-house",
+      "name": "Front of House",
+      "kind": "Concert promotion management",
+      "lifecycle": "Unlisted",
+      "route": "/front-of-house/",
+      "summary": "A concert-promotion management game at the Lot tier: a pure rules engine, a balance simulator whose baseline CI checks for drift, and a full design-document set. The route is noindex with no hub card until Dave signs off the first playable.",
+      "pinned": [
+        "front-of-house/README.md",
+        "front-of-house/docs/GDD.md",
+        "front-of-house/docs/RULES.md",
+        "front-of-house/ROADMAP.md"
+      ],
+      "statusSources": [
+        "front-of-house/ROADMAP.md",
+        "front-of-house/progress.md",
+        "front-of-house/docs/DECISIONS.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": "noindex; no hub card yet.",
+          "label": "Play Lot Night",
+          "url": "/front-of-house/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #19: pre-production documents",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/19",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #20: rules engine and simulator",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/20",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #21: named Front of House",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/21",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #22: first playable",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/22",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #24: Phase 3, the Lot tier",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/24",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #25: Phase 4, a Lot career",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/25",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #26: Phase 4 verification",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/26",
+          "kind": "pull request"
+        }
+      ],
+      "commands": [
+        {
+          "name": "npm run smoke:front-of-house",
+          "description": "Lot Night end to end: reload, save codes and version 1 conversion, keyboard building, reduced motion, phone width, contrast."
+        },
+        {
+          "name": "npm run sim:front-of-house",
+          "description": "Regenerate docs/BALANCE_BASELINE.md. CI fails on drift or a FAIL verdict."
+        }
+      ]
+    },
+    {
+      "id": "pitch",
+      "name": "PITCH RIOT",
+      "kind": "Arcade soccer",
+      "lifecycle": "Live",
+      "route": "/pitch/",
+      "summary": "A self-contained arcade soccer game in one HTML file: one outfielder against a CPU, with a halftime cover-ops minigame that homages FIFA Pitch Crew. No build step and no backend.",
+      "pinned": [
+        "pitch/index.html",
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "statusSources": [
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "Play PITCH RIOT",
+          "url": "/pitch/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "PR #1: add PITCH RIOT",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pull/1",
+          "kind": "pull request"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "FIFA Pitch Crew",
+          "url": "https://systembydave.com/fifa-pitch-crew/",
+          "kind": "inspiration"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "system-by-dave repository",
+          "url": "https://github.com/DaveHomeAssist/system-by-dave",
+          "kind": "repository"
+        }
+      ],
+      "commands": []
+    },
+    {
+      "id": "empires",
+      "name": "EMPIRES",
+      "kind": "RTS · Age of Dave",
+      "lifecycle": "Live",
+      "route": "/empires/",
+      "summary": "An Emscripten WebAssembly build of the private aoe2-clone C++/SDL RTS: seven civilisations, combat and an AI opponent, local skirmish only. Rebuild in aoe2-clone with tools/build_web.sh, then copy the generated loader and binary into empires/assets/.",
+      "pinned": [
+        "empires/progress.md",
+        "empires/index.html",
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "statusSources": [
+        "empires/progress.md",
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "Play EMPIRES",
+          "url": "/empires/",
+          "kind": "live route"
+        },
+        {
+          "private": true,
+          "note": "Owns the C++ source and tools/build_web.sh.",
+          "label": "aoe2-clone source repository",
+          "url": "https://github.com/DaveHomeAssist/aoe2-clone",
+          "kind": "repository"
+        }
+      ],
+      "commands": []
+    },
+    {
+      "id": "garden",
+      "name": "Garden OS",
+      "kind": "Story mode embed",
+      "lifecycle": "Live embed",
+      "route": "/garden/",
+      "summary": "A full-viewport iframe of the live Garden OS story mode, so it never drifts and needs no redeploy here. Gameplay issues belong in the garden-os repository.",
+      "pinned": [
+        "garden/index.html",
+        "docs/rfc-004-garden-os-engine-specification.md"
+      ],
+      "statusSources": [
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "Play Garden OS",
+          "url": "/garden/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Upstream story mode",
+          "url": "https://davehomeassist.github.io/garden-os/story-mode/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "garden-os repository",
+          "url": "https://github.com/DaveHomeAssist/garden-os",
+          "kind": "repository"
+        },
+        {
+          "private": false,
+          "note": "GD-101 to GD-105 were re-filed there as #38 to #42.",
+          "label": "garden-os issues",
+          "url": "https://github.com/DaveHomeAssist/garden-os/issues",
+          "kind": "tracker"
+        }
+      ],
+      "commands": []
+    },
+    {
+      "id": "zelda2mario",
+      "name": "Zelda2MarioCoop",
+      "kind": "NES co-op ROM hack",
+      "lifecycle": "Status only",
+      "route": "/zelda2mario/",
+      "summary": "A public, evidence-bound status ledger for the private Zelda2MarioCoop source project. The page is an exact copy of the source repository's generated dashboard. No ROM data or playable build is published.",
+      "pinned": [
+        "zelda2mario/index.html",
+        "test/zelda2mario-smoke.mjs"
+      ],
+      "statusSources": [
+        "zelda2mario/index.html"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "Status ledger",
+          "url": "/zelda2mario/",
+          "kind": "live route"
+        },
+        {
+          "private": true,
+          "note": "Private; deliberately not linked from public pages.",
+          "label": "Zelda2MarioCoop source repository",
+          "url": null,
+          "kind": "repository"
+        }
+      ],
+      "commands": [
+        {
+          "name": "npm run smoke:zelda2mario",
+          "description": "Status ledger scope, privacy, mobile and ultrawide layout, themes, keyboard tabs, filters and printing."
+        }
+      ]
+    },
+    {
+      "id": "playcards",
+      "name": "PlayCards",
+      "kind": "Java card games",
+      "lifecycle": "Desktop only",
+      "route": null,
+      "summary": "Dependency-free Java card games: a Swing Blackjack table, a console Blackjack mode and a Texas Hold'em simulation over one shared state engine. Built with Ant from the NetBeans project; it is not served as a web game.",
+      "pinned": [
+        "playcards/README.md",
+        "playcards/Changelog-Project-PlayCards.md",
+        "playcards/Sprint-Board-Graphics-UI.md"
+      ],
+      "statusSources": [
+        "playcards/Changelog-Project-PlayCards.md",
+        "playcards/Sprint-Board-Graphics-UI.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "PlayCards folder on GitHub",
+          "url": "https://github.com/DaveHomeAssist/mixmash/tree/gh-pages/playcards",
+          "kind": "repository"
+        }
+      ],
+      "commands": [
+        {
+          "name": "ant clean test jar",
+          "description": "Run the JUnit tests and build dist/PlayCards.jar."
+        },
+        {
+          "name": "java -jar dist/PlayCards.jar",
+          "description": "Launch the Swing Blackjack table."
+        },
+        {
+          "name": "java -jar dist/PlayCards.jar --console",
+          "description": "Play Blackjack in the terminal."
+        },
+        {
+          "name": "java -jar dist/PlayCards.jar --holdem 42",
+          "description": "Run a reproducible Texas Hold'em simulation (omit the seed for a random game)."
+        }
+      ]
+    },
+    {
+      "id": "studio",
+      "name": "Studio & hub",
+      "kind": "Hub, platform and admin",
+      "lifecycle": "Hub",
+      "route": "/",
+      "summary": "The studio hub at mixmash.games: landing pages, the shared MixKit nav, save and PWA modules, the service worker, SEO files, CI, hosting configuration and this admin index. gh-pages is the live default branch, served by the legacy Pages build.",
+      "pinned": [
+        "README.md",
+        "CHANGELOG.md",
+        "AGENTS.md",
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "statusSources": [
+        "CHANGELOG.md",
+        "progress.md",
+        "docs/SPRINT_BOARDS.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": null,
+          "label": "mixmash.games",
+          "url": "/",
+          "kind": "live route"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "GitHub repository",
+          "url": "https://github.com/DaveHomeAssist/mixmash",
+          "kind": "repository"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "CI runs",
+          "url": "https://github.com/DaveHomeAssist/mixmash/actions/workflows/ci.yml",
+          "kind": "ci"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Pages deployments",
+          "url": "https://github.com/DaveHomeAssist/mixmash/deployments",
+          "kind": "deploy"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Open pull requests",
+          "url": "https://github.com/DaveHomeAssist/mixmash/pulls",
+          "kind": "tracker"
+        },
+        {
+          "private": false,
+          "note": null,
+          "label": "Status naming standard",
+          "url": "https://github.com/DaveHomeAssist/skills/blob/master/status-naming.md",
+          "kind": "standard"
+        }
+      ],
+      "commands": [
+        {
+          "name": "npm test",
+          "description": "Every unit test in the repo with Node's built-in runner, including this index's coverage check."
+        },
+        {
+          "name": "npm run smoke:catalog",
+          "description": "Playwright rail for /pitch/, /mars/, the /empires/ shell, the hub and the shared nav."
+        },
+        {
+          "name": "npm run smoke:landing",
+          "description": "Landing page at five widths: keyboard order, reduced motion, hit targets, contrast and screenshots."
+        },
+        {
+          "name": "npm run smoke:admin",
+          "description": "This admin index: no page scroll at six widths, themes, keyboard tabs, search, filters and privacy."
+        },
+        {
+          "name": "npm run vercel-build",
+          "description": "Syntax-check the API, MarsScape server, Front of House client and admin scripts (what Vercel's build runs)."
+        },
+        {
+          "name": "npm run admin:index",
+          "description": "Regenerate admin/catalog.json. Run it after adding, removing or renaming any tracked file."
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "play/index.html",
+      "project": "mixmash",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MIXMASH — Browser Platform Fighter",
+      "description": "MIXMASH: the browser platform fighter. 14 fighters, 11 arenas, local versus, solo Platform Rush, CPU battles, keyboard, and gamepad support.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/index.html",
+      "open": "/play/"
+    },
+    {
+      "path": "docs/PLAYER_GUIDE.md",
+      "project": "mixmash",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MIXMASH — Player Guide",
+      "description": "A DJ-powered platform fighter. Pick a headliner, pick a stage, knock your opponent off the platform.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/PLAYER_GUIDE.md",
+      "open": null
+    },
+    {
+      "path": "play/progress.md",
+      "project": "mixmash",
+      "category": "planning",
+      "kind": "MD",
+      "title": "MIXMASH progress log",
+      "description": "Roadmap slices P0 to P8: controls, Training Lab, Platform Rush, the Encore pack, local progression, share links, async ghosts and modularisation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/progress.md",
+      "open": null
+    },
+    {
+      "path": "ROADMAP.md",
+      "project": "mixmash",
+      "category": "planning",
+      "kind": "MD",
+      "title": "MIXMASH Product Upgrade Roadmap",
+      "description": "Production roadmap for the /play/ fighter: decision gates D1 to D4 and upgrade slices P0 to P8, each with scope, status and verification.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/ROADMAP.md",
+      "open": null
+    },
+    {
+      "path": "assets/previews/mixmash.jpg",
+      "project": "mixmash",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mixmash.jpg",
+      "description": "MIXMASH gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mixmash.jpg",
+      "open": "/assets/previews/mixmash.jpg"
+    },
+    {
+      "path": "test/combat-inline-parity.test.mjs",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "combat-inline-parity.test.mjs",
+      "description": "The shipped fighter keeps an inline copy of the canonical combat math.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/combat-inline-parity.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/combat.test.js",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "JS",
+      "title": "combat.test.js",
+      "description": "Unit tests for the canonical knockback math in src/combat.js, including degenerate and NaN inputs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/combat.test.js",
+      "open": null
+    },
+    {
+      "path": "test/play-catalog.test.mjs",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "play-catalog.test.mjs",
+      "description": "Unit tests for the fighter and stage catalog modules.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/play-catalog.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/play-core.test.mjs",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "play-core.test.mjs",
+      "description": "Unit tests for MixmashCore, loaded the way the browser loads it.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/play-core.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/play-resume-smoke.mjs",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "play-resume-smoke.mjs",
+      "description": "Playwright rail for /play/: resume, snapshots, Platform Rush, profile and share links (smoke:play).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/play-resume-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/play-system-modules.test.mjs",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "play-system-modules.test.mjs",
+      "description": "Unit tests for the extracted input, mode-rules and snapshot modules.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/play-system-modules.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/public-counts.test.mjs",
+      "project": "mixmash",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "public-counts.test.mjs",
+      "description": "Public roster and arena counts must be derived from the shipped catalog.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/public-counts.test.mjs",
+      "open": null
+    },
+    {
+      "path": "play/core.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "core.js",
+      "description": "Shared browser and Node core (MixmashCore): seeds, share-link validation, CPU levels and active-match snapshot validation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/core.js",
+      "open": null
+    },
+    {
+      "path": "play/fighter-data.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "fighter-data.js",
+      "description": "Canonical fighter catalog (MixmashFighterData). Public roster counts are tested against it.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/fighter-data.js",
+      "open": null
+    },
+    {
+      "path": "play/input-data.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "input-data.js",
+      "description": "Default keyboard binding tables for both players.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/input-data.js",
+      "open": null
+    },
+    {
+      "path": "play/mode-rules.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "mode-rules.js",
+      "description": "Mode rules module: Platform Rush and Quick Fight defaults.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/mode-rules.js",
+      "open": null
+    },
+    {
+      "path": "play/snapshot-data.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "snapshot-data.js",
+      "description": "Storage keys and the active-match snapshot schema.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/snapshot-data.js",
+      "open": null
+    },
+    {
+      "path": "play/stage-data.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "stage-data.js",
+      "description": "Canonical stage catalog (MixmashStageData). Public arena counts are tested against it.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/play/stage-data.js",
+      "open": null
+    },
+    {
+      "path": "src/combat.js",
+      "project": "mixmash",
+      "category": "source",
+      "kind": "JS",
+      "title": "combat.js",
+      "description": "MIXMASH combat math — pure, testable core. This module is the CANONICAL reference for knockback math and the finite-number invariant. The live game (play/index.html) currently keeps an inline copy of calcKnockback with…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/combat.js",
+      "open": null
+    },
+    {
+      "path": "mars/art-spec.html",
+      "project": "mars",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MarsScape Render Contract",
+      "description": "MarsScape render contract: projection, tile geometry, sprite anchors, palette, light direction, footprints, and asset naming.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art-spec.html",
+      "open": "/mars/art-spec.html"
+    },
+    {
+      "path": "mars/golden-scene.html",
+      "project": "mars",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MarsScape Golden Scene Review",
+      "description": "Review the MarsScape DEC-79 golden scene, commissioned assets, renderer fallbacks, animation, and performance at normal gameplay zoom.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/golden-scene.html",
+      "open": "/mars/golden-scene.html"
+    },
+    {
+      "path": "mars/index.html",
+      "project": "mars",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MarsScape",
+      "description": "MarsScape is an authoritative browser colony skiller about gathering, crafting, building, and surviving on Mars.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/index.html",
+      "open": "/mars/"
+    },
+    {
+      "path": "mars/docs/ART_AUDIT.md",
+      "project": "mars",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MarsScape Renderer and Asset Audit",
+      "description": "Audit of every runtime sprite map and renderer surface, classifying each as fallback, reference or production art against the DEC-79 gates.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/ART_AUDIT.md",
+      "open": null
+    },
+    {
+      "path": "mars/docs/ART_DIRECTION.md",
+      "project": "mars",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MarsScape Art Bible",
+      "description": "The MarsScape art bible: renderer-native isometric pixel art, palette, lighting, states, animation and export rules, bound to the render contract.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/ART_DIRECTION.md",
+      "open": null
+    },
+    {
+      "path": "mars/docs/MANUAL.md",
+      "project": "mars",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MarsScape — Colonist's Manual",
+      "description": "One astronaut, one basin, ten skills, levels 1–99 on the real RuneScape XP curve. Gather, smelt, craft, build, survive the Great Storm.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/MANUAL.md",
+      "open": null
+    },
+    {
+      "path": "mars/parity/README.md",
+      "project": "mars",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MarsScape → mixmash/mars parity",
+      "description": "This directory is the control system for porting MarsScape's gameplay into the server-authoritative mixmash/mars engine without losing work.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/README.md",
+      "open": null
+    },
+    {
+      "path": "mars/README.md",
+      "project": "mars",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MarsScape",
+      "description": "MarsScape is a browser colony skiller with a shared JavaScript engine, a Node authority API, signed local fallback saves, and a canvas-backed isometric client.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/README.md",
+      "open": null
+    },
+    {
+      "path": "mars/docs/DECISIONS.md",
+      "project": "mars",
+      "category": "decisions",
+      "kind": "MD",
+      "title": "MarsScape Decision Log",
+      "description": "This file is the repository record for MarsScape product and production decisions that affect more than one implementation surface. Renderer measurements remain code-owned by mars/render-contract.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/DECISIONS.md",
+      "open": null
+    },
+    {
+      "path": "mars/docs/ART_ROADMAP.md",
+      "project": "mars",
+      "category": "planning",
+      "kind": "MD",
+      "title": "MarsScape Art Roadmap",
+      "description": "The machine-readable checklist is mars/art/golden-slice.json. It contains exact class canvases, state exports, animation metadata, editable-source expectations, and fallback IDs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/ART_ROADMAP.md",
+      "open": null
+    },
+    {
+      "path": "mars/progress.md",
+      "project": "mars",
+      "category": "planning",
+      "kind": "MD",
+      "title": "MarsScape progress log",
+      "description": "Session log for the authority rebuild, audits, the render contract and the DEC-79 art pipeline.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/progress.md",
+      "open": null
+    },
+    {
+      "path": "mars/art/reports/art-validation.json",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "art-validation.json",
+      "description": "Strict machine report for the current commissioned-art state. CI fails if it drifts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/reports/art-validation.json",
+      "open": null
+    },
+    {
+      "path": "mars/art/reports/artist-test-approval.json",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "artist-test-approval.json",
+      "description": "Fail-closed paid-test approval report (four assets, eight exports). CI fails if it drifts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/reports/artist-test-approval.json",
+      "open": null
+    },
+    {
+      "path": "mars/art/reports/golden-approval.json",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "golden-approval.json",
+      "description": "Fail-closed full-golden approval report (26 assets, 108 exports). CI fails if it drifts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/reports/golden-approval.json",
+      "open": null
+    },
+    {
+      "path": "mars/art/reports/golden-contact-sheet.html",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "HTML",
+      "title": "MarsScape DEC-79 Golden Contact Sheet",
+      "description": "Generated contact sheet of every golden-slice asset slot. CI fails if it drifts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/reports/golden-contact-sheet.html",
+      "open": "/mars/art/reports/golden-contact-sheet.html"
+    },
+    {
+      "path": "mars/docs/BALANCE_BASELINE.md",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "MD",
+      "title": "MarsScape Balance Baseline",
+      "description": "Generated by npm run sim. Do not edit by hand. Regenerate after any data or formula change; a regression is any method losing >10% xp/hr, any new NO SOURCE / NO SINK flag, or any verdict flipping to FAIL.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/BALANCE_BASELINE.md",
+      "open": null
+    },
+    {
+      "path": "mars/docs/balance-baseline.json",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "balance-baseline.json",
+      "description": "Machine-readable resource-rate baseline the simulator compares against.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/docs/balance-baseline.json",
+      "open": null
+    },
+    {
+      "path": "mars/parity/baseline/data.js",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JS",
+      "title": "data.js",
+      "description": "MarsScape — static game data + XP curve. Pure: no imports, no DOM, no state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/baseline/data.js",
+      "open": null
+    },
+    {
+      "path": "mars/parity/baseline/PROVENANCE.json",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "PROVENANCE.json",
+      "description": "Provenance and checksums for the frozen MarsScape gameplay baseline, a preservation artifact.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/baseline/PROVENANCE.json",
+      "open": null
+    },
+    {
+      "path": "mars/parity/LEDGER.md",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "MD",
+      "title": "MarsScape → mixmash/mars parity ledger",
+      "description": "marsscape remains authoritative for gameplay until every row below reads Ported or carries an approved retirement. It must not be archived, redirected, or relabelled legacy before then.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/LEDGER.md",
+      "open": null
+    },
+    {
+      "path": "mars/parity/mapping.json",
+      "project": "mars",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "mapping.json",
+      "description": "Curated mapping of baseline behaviours and save fields to their port status; input to the parity ledger.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/mapping.json",
+      "open": null
+    },
+    {
+      "path": "assets/previews/mars.jpg",
+      "project": "mars",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mars.jpg",
+      "description": "MarsScape gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mars.jpg",
+      "open": "/assets/previews/mars.jpg"
+    },
+    {
+      "path": "mars/art/golden-scene.json",
+      "project": "mars",
+      "category": "art",
+      "kind": "JSON",
+      "title": "golden-scene.json",
+      "description": "The eight-beat golden-scene review script: terrain, beats and review checks.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/golden-scene.json",
+      "open": null
+    },
+    {
+      "path": "mars/art/golden-slice.json",
+      "project": "mars",
+      "category": "art",
+      "kind": "JSON",
+      "title": "golden-slice.json",
+      "description": "DEC-79 golden-slice asset list, lighting profiles and export and source roots.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/golden-slice.json",
+      "open": null
+    },
+    {
+      "path": "mars/assets/commissioned/index.json",
+      "project": "mars",
+      "category": "art",
+      "kind": "JSON",
+      "title": "index.json",
+      "description": "Generated runtime index of valid commissioned PNGs (art:index). The client loads commissioned art only through this file.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/index.json",
+      "open": null
+    },
+    {
+      "path": "mars/assets/manifest.json",
+      "project": "mars",
+      "category": "art",
+      "kind": "JSON",
+      "title": "manifest.json",
+      "description": "Asset preload manifest and sprite contract for terrain and settlement art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/manifest.json",
+      "open": null
+    },
+    {
+      "path": "mars/assets/mars-terrain.svg",
+      "project": "mars",
+      "category": "art",
+      "kind": "SVG",
+      "title": "mars-terrain.svg",
+      "description": "Terrain artwork used by the MarsScape client.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/mars-terrain.svg",
+      "open": "/mars/assets/mars-terrain.svg"
+    },
+    {
+      "path": "mars/render-contract.mjs",
+      "project": "mars",
+      "category": "art",
+      "kind": "MJS",
+      "title": "render-contract.mjs",
+      "description": "MarsScape render contract. Art and renderer code import this module instead of repeating projection math. Contract changes require an explicit version bump and regenerated assets.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/render-contract.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/sprites.mjs",
+      "project": "mars",
+      "category": "art",
+      "kind": "MJS",
+      "title": "sprites.mjs",
+      "description": "MarsScape sprite registry — ported from marsscape@ab073bc src/sprites.js.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/sprites.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/parity/parity.test.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "parity.test.mjs",
+      "description": "Guards the MarsScape -> mixmash/mars port. These tests do not check that the port is finished; they check that the ledger tells the truth about how finished it is, so gameplay work cannot be quietly lost the way it was…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/parity.test.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-api.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-api.mjs",
+      "description": "Authority API tests: sessions, commands, the trust model and request limits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-api.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-art-assets.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-art-assets.mjs",
+      "description": "Asset validator tests: PNG integrity, layered sources, symlink containment, reports and index parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-art-assets.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-client-contract.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-client-contract.mjs",
+      "description": "Static contract checks on the browser client. game.js cannot be imported under node (it touches document at module scope), so these read the source. They exist because both defects below passed every runtime test while…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-client-contract.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-commissioned-art.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-commissioned-art.mjs",
+      "description": "Commissioned-art runtime tests: hash verification, decoding, fallback and failure suppression.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-commissioned-art.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-engine.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-engine.mjs",
+      "description": "Engine rule tests: gathering, building, smelting, crafting, research, storms and gear stats.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-engine.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-golden-scene.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-golden-scene.mjs",
+      "description": "Golden-scene ledger, receipt and review-surface tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-golden-scene.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-legacy-import.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-legacy-import.mjs",
+      "description": "Tests for importing legacy marsscape_v1 saves.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-legacy-import.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-render-contract.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-render-contract.mjs",
+      "description": "Render contract geometry, footprint and asset-id tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-render-contract.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-sim.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-sim.mjs",
+      "description": "Balance baseline comparison tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-sim.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-sprites.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-sprites.mjs",
+      "description": "Sprite registry tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-sprites.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/test-vercel-handler.mjs",
+      "project": "mars",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-vercel-handler.mjs",
+      "description": "Vercel function handler tests against Blob-style storage.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/test-vercel-handler.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/art/validate-assets.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "validate-assets.mjs",
+      "description": "DEC-79 asset validator: PNG and layered-source integrity, runtime index generation, strict approval reports and the contact sheet (the art:* scripts).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/validate-assets.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/art/visual-regression.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "visual-regression.mjs",
+      "description": "Playwright visual evidence for the game, fallback, contract, contact sheet and golden scene (art:visual).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/visual-regression.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/parity/build-ledger.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "build-ledger.mjs",
+      "description": "Generates mars/parity/LEDGER.md from the frozen MarsScape baseline, the live engine, and mapping.json.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/build-ledger.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/sim/baseline.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "baseline.mjs",
+      "description": "Compares simulated resource rates with the committed balance baseline.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/sim/baseline.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/sim/simulate.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "simulate.mjs",
+      "description": "Headless balance simulator. Runs the real engine formulas (no DOM, no server) and writes mars/docs/BALANCE_BASELINE.md with explicit PASS/FAIL verdicts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/sim/simulate.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/art-spec.css",
+      "project": "mars",
+      "category": "source",
+      "kind": "CSS",
+      "title": "art-spec.css",
+      "description": "Styles for the render-contract proof page.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art-spec.css",
+      "open": null
+    },
+    {
+      "path": "mars/art-spec.js",
+      "project": "mars",
+      "category": "source",
+      "kind": "JS",
+      "title": "art-spec.js",
+      "description": "Script for the render-contract proof page: projection, footprints and every cached sprite map.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art-spec.js",
+      "open": null
+    },
+    {
+      "path": "mars/commissioned-art.mjs",
+      "project": "mars",
+      "category": "source",
+      "kind": "MJS",
+      "title": "commissioned-art.mjs",
+      "description": "Commissioned-art runtime: fetches, SHA-256 verifies and caches indexed PNGs, falling back to code-owned and procedural art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/commissioned-art.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/engine.mjs",
+      "project": "mars",
+      "category": "source",
+      "kind": "MJS",
+      "title": "engine.mjs",
+      "description": "MarsScape colony engine — server-authoritative. Ported from MarsScape v0.4.0 (see mars/parity/ for the feature ledger). Game logic lives here and runs on the authority; the browser sends commands and never sends trusted…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/engine.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/game.js",
+      "project": "mars",
+      "category": "source",
+      "kind": "JS",
+      "title": "game.js",
+      "description": "Canvas isometric client: board rendering, panels, the authority API client and the signed offline mode.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/game.js",
+      "open": null
+    },
+    {
+      "path": "mars/golden-scene.css",
+      "project": "mars",
+      "category": "source",
+      "kind": "CSS",
+      "title": "golden-scene.css",
+      "description": "Styles for the golden-scene review surface.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/golden-scene.css",
+      "open": null
+    },
+    {
+      "path": "mars/golden-scene.js",
+      "project": "mars",
+      "category": "source",
+      "kind": "JS",
+      "title": "golden-scene.js",
+      "description": "Golden-scene review surface: beat playback, condition ledger and the human approval receipt.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/golden-scene.js",
+      "open": null
+    },
+    {
+      "path": "mars/legacy-import.mjs",
+      "project": "mars",
+      "category": "source",
+      "kind": "MJS",
+      "title": "legacy-import.mjs",
+      "description": "Legacy MarsScape save importer (parity wave 8). Accepts a marsscape_v1 export from the standalone game and converts it into canonical engine state. Two rules govern this file:",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/legacy-import.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/sprite-canvas.mjs",
+      "project": "mars",
+      "category": "source",
+      "kind": "MJS",
+      "title": "sprite-canvas.mjs",
+      "description": "Rasterises sprite maps into cached bitmaps for the canvas renderer.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/sprite-canvas.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/styles.css",
+      "project": "mars",
+      "category": "source",
+      "kind": "CSS",
+      "title": "styles.css",
+      "description": "Styles for the MarsScape client.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/styles.css",
+      "open": null
+    },
+    {
+      "path": "api/[...path].mjs",
+      "project": "mars",
+      "category": "backend",
+      "kind": "MJS",
+      "title": "[...path].mjs",
+      "description": "Vercel function for every other /api/ route: the catch-all. It delegates to the shared handler in mars/server.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/api/%5B...path%5D.mjs",
+      "open": null
+    },
+    {
+      "path": "api/health.mjs",
+      "project": "mars",
+      "category": "backend",
+      "kind": "MJS",
+      "title": "health.mjs",
+      "description": "Vercel function for GET /api/health: the authority API's liveness probe. It delegates to the shared handler in mars/server.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/api/health.mjs",
+      "open": null
+    },
+    {
+      "path": "api/sessions.mjs",
+      "project": "mars",
+      "category": "backend",
+      "kind": "MJS",
+      "title": "sessions.mjs",
+      "description": "Vercel function for /api/sessions: creates server-authoritative sessions. It delegates to the shared handler in mars/server.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/api/sessions.mjs",
+      "open": null
+    },
+    {
+      "path": "api/sessions/[sessionId].mjs",
+      "project": "mars",
+      "category": "backend",
+      "kind": "MJS",
+      "title": "[sessionId].mjs",
+      "description": "Vercel function for /api/sessions/:id: reads one session's state. It delegates to the shared handler in mars/server.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/api/sessions/%5BsessionId%5D.mjs",
+      "open": null
+    },
+    {
+      "path": "api/sessions/[sessionId]/commands.mjs",
+      "project": "mars",
+      "category": "backend",
+      "kind": "MJS",
+      "title": "commands.mjs",
+      "description": "Vercel function for /api/sessions/:id/commands: applies gameplay commands such as gather, build, smelt, craft, research and startStorm. It delegates to the shared handler in mars/server.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/api/sessions/%5BsessionId%5D/commands.mjs",
+      "open": null
+    },
+    {
+      "path": "mars/package.json",
+      "project": "mars",
+      "category": "backend",
+      "kind": "JSON",
+      "title": "package.json",
+      "description": "Package manifest for running the MarsScape authority server on its own.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/package.json",
+      "open": null
+    },
+    {
+      "path": "mars/server.mjs",
+      "project": "mars",
+      "category": "backend",
+      "kind": "MJS",
+      "title": "server.mjs",
+      "description": "Node authority server (SQLite locally) and the shared request handler the Vercel functions call: sessions, commands, request limits and write locks.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/server.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/index.html",
+      "project": "front-of-house",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Front of House: Lot Night · MixMash Studio",
+      "description": "Front of House is a concert-promotion management game. Book a band, build a venue on a parking lot, sell the show, get through show night and settle the money. Early playable.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/index.html",
+      "open": "/front-of-house/"
+    },
+    {
+      "path": "front-of-house/docs/ART_DIRECTION.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House Art Direction",
+      "description": "Art direction: the look, palette roles, type, the four career tiers and the conflicts to settle before any sprite work.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/ART_DIRECTION.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/GDD.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House: Game Design Document",
+      "description": "The canonical game design: career ladder, core loop, systems and the first playable, merged from both early drafts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/GDD.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/RULES.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House Rules Specification",
+      "description": "Each rule has an ID (R-NN), its inputs and output, a formula, and the names of the adjustable values it uses. Tests in front-of-house/test-engine.mjs and comments in front-of-house/engine.mjs cite the rule ID.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/RULES.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/SAVE_FORMAT.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House Save Format",
+      "description": "Save schema (the player's choices and the seed, not computed results), save codes and the version 1 to version 2 migration.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/SAVE_FORMAT.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/WORLD.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House World",
+      "description": "The fictional acts, venues and places in the game, and a record of every name check (CT-DEC-03: the game's artists and venues are fictional).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/WORLD.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/README.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House",
+      "description": "Project overview: what the game is, where each document lives, how to run the engine tests and simulator, and how the name was chosen.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/README.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/DECISIONS.md",
+      "project": "front-of-house",
+      "category": "decisions",
+      "kind": "MD",
+      "title": "Front of House Decision Log",
+      "description": "This file records Front of House decisions that affect more than one part of the game.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/DECISIONS.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/progress.md",
+      "project": "front-of-house",
+      "category": "planning",
+      "kind": "MD",
+      "title": "Front of House progress log",
+      "description": "Phase-by-phase session log from pre-production to the Lot career, with review fixes and the open sign-off TODO.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/progress.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/ROADMAP.md",
+      "project": "front-of-house",
+      "category": "planning",
+      "kind": "MD",
+      "title": "Front of House Roadmap",
+      "description": "The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its Done when line. The career tiers come from CT-DEC-09; what each tier…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/ROADMAP.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/BALANCE_BASELINE.md",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "MD",
+      "title": "Front of House Balance Baseline",
+      "description": "Generated by npm run sim:front-of-house. Do not edit by hand. CI regenerates this file and fails if the committed copy differs, or if any verdict below is FAIL. Every number comes from front-of-house/data.mjs through…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BALANCE_BASELINE.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-engine.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-engine.mjs",
+      "description": "Engine tests for the rules, actions, settlement, saves and migrations, including the worked example.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-engine.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test/fixtures/save-v1.json",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "JSON",
+      "title": "save-v1.json",
+      "description": "Frozen schema version 1 save, kept to prove migration to the current format.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test/fixtures/save-v1.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test/fixtures/save-v2.json",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "JSON",
+      "title": "save-v2.json",
+      "description": "Frozen schema version 2 save at the Lot scale, used by the engine tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test/fixtures/save-v2.json",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-smoke.mjs",
+      "description": "Playwright rail for Lot Night end to end: reload, save codes, keyboard building, reduced motion, phone width and contrast (smoke:front-of-house).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/paired.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "paired.mjs",
+      "description": "Paired balance comparisons for the Lot career. Not part of CI and writes no files: it prints a Markdown report to stdout.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/paired.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/reference.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "reference.mjs",
+      "description": "Reference layouts and strategies shared by the engine tests and the balance simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/reference.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/simulate.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "simulate.mjs",
+      "description": "Front of House balance simulator. Runs the real engine (no DOM) and writes front-of-house/docs/BALANCE_BASELINE.md with PASS/FAIL verdicts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/simulate.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/board.js",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JS",
+      "title": "board.js",
+      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas, with shapes drawn in code (Phase 1 of docs/ART_DIRECTION.md).…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/data.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "data.mjs",
+      "description": "Front of House adjustable values and content tables. This file is canonical for every number the rules use (CT-DEC-07). The rules themselves are specified by name in front-of-house/docs/RULES.md; change a value here,…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/data.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/engine.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "engine.mjs",
+      "description": "Front of House rules engine. Pure and deterministic: no DOM access, no Math.random, no clock. Every function takes state (or plain inputs) and returns new state or derived numbers, so the browser client, the tests and…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/engine.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/game.js",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JS",
+      "title": "game.js",
+      "description": "Front of House browser client: the five phase panels, the board, playback and saves.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/game.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/styles.css",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "CSS",
+      "title": "styles.css",
+      "description": "Styles for the Lot Night client.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/styles.css",
+      "open": null
+    },
+    {
+      "path": "pitch/index.html",
+      "project": "pitch",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "PITCH RIOT — MixMash Studio",
+      "description": "PITCH RIOT is a fast, arcade street-soccer game you play in your browser.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/pitch/index.html",
+      "open": "/pitch/"
+    },
+    {
+      "path": "assets/previews/pitch.jpg",
+      "project": "pitch",
+      "category": "art",
+      "kind": "JPG",
+      "title": "pitch.jpg",
+      "description": "PITCH RIOT gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/pitch.jpg",
+      "open": "/assets/previews/pitch.jpg"
+    },
+    {
+      "path": "empires/index.html",
+      "project": "empires",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "EMPIRES — MixMash Studio",
+      "description": "EMPIRES is a browser build of a deterministic C++ real-time strategy sim: 7 civilizations, combat, and an AI opponent. Local skirmish only in the browser.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/index.html",
+      "open": "/empires/"
+    },
+    {
+      "path": "empires/progress.md",
+      "project": "empires",
+      "category": "planning",
+      "kind": "MD",
+      "title": "EMPIRES progress log",
+      "description": "Session log for restoring /empires/ as Age of Dave and replacing the prototype with the real aoe2-clone WASM build.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/progress.md",
+      "open": null
+    },
+    {
+      "path": "assets/previews/empires.jpg",
+      "project": "empires",
+      "category": "art",
+      "kind": "JPG",
+      "title": "empires.jpg",
+      "description": "EMPIRES gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/empires.jpg",
+      "open": "/assets/previews/empires.jpg"
+    },
+    {
+      "path": "empires/assets/shell.js",
+      "project": "empires",
+      "category": "source",
+      "kind": "JS",
+      "title": "shell.js",
+      "description": "Page shell for the WASM build: byte-level download progress, Module setup and the start button that sends a synthetic Space key.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/assets/shell.js",
+      "open": null
+    },
+    {
+      "path": "empires/assets/aoe2-clone.js",
+      "project": "empires",
+      "category": "build",
+      "kind": "JS",
+      "title": "aoe2-clone.js",
+      "description": "Emscripten loader generated by aoe2-clone's tools/build_web.sh. Replace it with a fresh build; never edit it by hand.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/assets/aoe2-clone.js",
+      "open": null
+    },
+    {
+      "path": "empires/assets/aoe2-clone.wasm",
+      "project": "empires",
+      "category": "build",
+      "kind": "WASM",
+      "title": "aoe2-clone.wasm",
+      "description": "Compiled WebAssembly game binary from the aoe2-clone C++/SDL source. Replace it only with a fresh build.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/assets/aoe2-clone.wasm",
+      "open": null
+    },
+    {
+      "path": "garden/index.html",
+      "project": "garden",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Garden OS: Story Mode — MixMash Studio",
+      "description": "A 3D open-world garden adventure by MixMash Studio. Plays free in your browser.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/garden/index.html",
+      "open": "/garden/"
+    },
+    {
+      "path": "docs/rfc-004-garden-os-engine-specification.md",
+      "project": "garden",
+      "category": "docs",
+      "kind": "MD",
+      "title": "RFC-004: Garden OS Engine Specification and Architectural Audit",
+      "description": "RFC for a shared Garden OS engine: the specification, an architectural audit and the verified migration baseline.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/rfc-004-garden-os-engine-specification.md",
+      "open": null
+    },
+    {
+      "path": "assets/previews/garden.jpg",
+      "project": "garden",
+      "category": "art",
+      "kind": "JPG",
+      "title": "garden.jpg",
+      "description": "Garden OS gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/garden.jpg",
+      "open": "/assets/previews/garden.jpg"
+    },
+    {
+      "path": "zelda2mario/index.html",
+      "project": "zelda2mario",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Zelda2MarioCoop — Project Ledger",
+      "description": "Mario and Luigi co-op, reconstructed on the Mario/MMC5 foundation. A source-only project; no commercial ROM data or playable release is published here.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/zelda2mario/index.html",
+      "open": "/zelda2mario/"
+    },
+    {
+      "path": "test/zelda2mario-smoke.mjs",
+      "project": "zelda2mario",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "zelda2mario-smoke.mjs",
+      "description": "Playwright rail for the status ledger: scope, privacy, mobile and ultrawide layout, themes, keyboard tabs, filters and printing (smoke:zelda2mario).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/zelda2mario-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "playcards/README.md",
+      "project": "playcards",
+      "category": "docs",
+      "kind": "MD",
+      "title": "PlayCards",
+      "description": "It also ships a console Texas Hold'em simulation (playcards.holdem), launched with --holdem [seed] — see below.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/README.md",
+      "open": null
+    },
+    {
+      "path": "playcards/Changelog-Project-PlayCards.md",
+      "project": "playcards",
+      "category": "planning",
+      "kind": "MD",
+      "title": "PlayCards Project Changelog",
+      "description": "This changelog records functional changes to the PlayCards project.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/Changelog-Project-PlayCards.md",
+      "open": null
+    },
+    {
+      "path": "playcards/Sprint-Board-Graphics-UI.md",
+      "project": "playcards",
+      "category": "planning",
+      "kind": "MD",
+      "title": "PlayCards Graphics and UI Sprint Board",
+      "description": "Sprint board for turning the functional Swing table into a clearer, more polished Blackjack experience.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/Sprint-Board-Graphics-UI.md",
+      "open": null
+    },
+    {
+      "path": "playcards/test/playcards/BlackjackGameTest.java",
+      "project": "playcards",
+      "category": "tests",
+      "kind": "JAVA",
+      "title": "BlackjackGameTest.java",
+      "description": "Dependency-free tests for the BlackjackGame state engine: dealing, busts, wins, pushes and chip transfers.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/test/playcards/BlackjackGameTest.java",
+      "open": null
+    },
+    {
+      "path": "playcards/test/playcards/BlackjackRulesTest.java",
+      "project": "playcards",
+      "category": "tests",
+      "kind": "JAVA",
+      "title": "BlackjackRulesTest.java",
+      "description": "Dependency-free Blackjack rules tests: ace scoring, natural blackjacks, pushes and input validation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/test/playcards/BlackjackRulesTest.java",
+      "open": null
+    },
+    {
+      "path": "playcards/test/playcards/GameSnapshotTest.java",
+      "project": "playcards",
+      "category": "tests",
+      "kind": "JAVA",
+      "title": "GameSnapshotTest.java",
+      "description": "Dependency-free tests for the immutable game snapshot through each player action and game over.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/test/playcards/GameSnapshotTest.java",
+      "open": null
+    },
+    {
+      "path": "playcards/test/playcards/holdem/TexasHoldemTest.java",
+      "project": "playcards",
+      "category": "tests",
+      "kind": "JAVA",
+      "title": "TexasHoldemTest.java",
+      "description": "Dependency-free test executable for the Hold'em simulation, run by ant test alongside the Blackjack suites. Exits non-zero on the first failure.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/test/playcards/holdem/TexasHoldemTest.java",
+      "open": null
+    },
+    {
+      "path": "playcards/test/playcards/SwingAccessibilityLayoutTest.java",
+      "project": "playcards",
+      "category": "tests",
+      "kind": "JAVA",
+      "title": "SwingAccessibilityLayoutTest.java",
+      "description": "Dependency-free headless regression checks for responsive and accessible Swing presentation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/test/playcards/SwingAccessibilityLayoutTest.java",
+      "open": null
+    },
+    {
+      "path": "playcards/test/playcards/SwingPresentationTest.java",
+      "project": "playcards",
+      "category": "tests",
+      "kind": "JAVA",
+      "title": "SwingPresentationTest.java",
+      "description": "Dependency-free headless Swing checks: table rendering, legal actions, card faces and player names.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/test/playcards/SwingPresentationTest.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/Blackjack.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "Blackjack.java",
+      "description": "Console input/output adapter for the shared BlackjackGame state engine.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/Blackjack.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/BlackjackController.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "BlackjackController.java",
+      "description": "Coordinates UI actions with the shared BlackjackGame state engine.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/BlackjackController.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/BlackjackGame.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "BlackjackGame.java",
+      "description": "The single state engine for every PlayCards blackjack hand.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/BlackjackGame.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/Card.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "Card.java",
+      "description": "An immutable playing card.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/Card.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/CardView.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "CardView.java",
+      "description": "Visual representation of one card, independent of game state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/CardView.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/ChipCountView.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "ChipCountView.java",
+      "description": "Compact physical chip stack and numeric total for one participant.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/ChipCountView.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/ChipRail.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "ChipRail.java",
+      "description": "Shared chip-economy rail showing how the ten chips are split.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/ChipRail.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/Deck.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "Deck.java",
+      "description": "A standard deck of cards with an explicit draw pile.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/Deck.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/GameControls.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "GameControls.java",
+      "description": "Status and action controls for a game snapshot.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/GameControls.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/GamePhase.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "GamePhase.java",
+      "description": "The only legal stages of a PlayCards blackjack hand.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/GamePhase.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/GamePresentation.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "GamePresentation.java",
+      "description": "Text shared by the Swing status and outcome surfaces.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/GamePresentation.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/GameSnapshot.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "GameSnapshot.java",
+      "description": "Immutable view of BlackjackGame state for console and Swing adapters.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/GameSnapshot.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/GameTablePanel.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "GameTablePanel.java",
+      "description": "Renders both hands and the shared chip economy from one snapshot.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/GameTablePanel.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/Hand.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "Hand.java",
+      "description": "The cards and blackjack score for one player. PlayCards retains its existing five-card hand rule, so a sixth card is rejected explicitly.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/Hand.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/HandPanel.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "HandPanel.java",
+      "description": "Renders one participant's cards and hand value from a game snapshot.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/HandPanel.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/holdem/HandEvaluator.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "HandEvaluator.java",
+      "description": "Scores hands as a comparable long: category in the high bits, then the five tiebreak ranks (4 bits each) in significance order.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/holdem/HandEvaluator.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/holdem/HoldemDeck.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "HoldemDeck.java",
+      "description": "A single-hand draw pile for Texas Hold'em. Unlike the Blackjack Deck, a fresh instance is built for every hand and is shuffled with the game's seeded generator so whole games are reproducible.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/holdem/HoldemDeck.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/holdem/HoldemPlayer.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "HoldemPlayer.java",
+      "description": "One seat at the Hold'em table: a chip stack, two hole cards, and the per-street and per-hand amounts committed to the pot. Distinct from the Blackjack Player, which owns Blackjack hand state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/holdem/HoldemPlayer.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/holdem/TexasHoldemGame.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "TexasHoldemGame.java",
+      "description": "A console Texas Hold'em simulation: 2-10 heuristic AI seats play fixed $5/$10 blinds until one player holds every chip.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/holdem/TexasHoldemGame.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/OutcomePanel.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "OutcomePanel.java",
+      "description": "High-visibility, text-first presentation of a completed hand.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/OutcomePanel.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/PlayCards.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "PlayCards.java",
+      "description": "Entry point: opens the Swing table, or runs console Blackjack with --console and the Hold'em simulation with --holdem [seed].",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/PlayCards.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/PlayCardsFrame.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "PlayCardsFrame.java",
+      "description": "Swing view for PlayCards. All gameplay state is owned by BlackjackGame.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/PlayCardsFrame.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/Player.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "Player.java",
+      "description": "A blackjack participant and their chip balance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/Player.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/PlayerNameDialog.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "PlayerNameDialog.java",
+      "description": "Modal wrapper around the testable, themed player-name panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/PlayerNameDialog.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/PlayerNamePanel.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "PlayerNamePanel.java",
+      "description": "Theme-aligned, keyboard-ordered content for the player-name dialog.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/PlayerNamePanel.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/ScorePanel.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "ScorePanel.java",
+      "description": "Header showing participant identity, hand value, turn state, and physical chips.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/ScorePanel.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/TableButton.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "TableButton.java",
+      "description": "Table-themed action with explicit primary, hover, disabled, and focus states.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/TableButton.java",
+      "open": null
+    },
+    {
+      "path": "playcards/src/playcards/TableTheme.java",
+      "project": "playcards",
+      "category": "source",
+      "kind": "JAVA",
+      "title": "TableTheme.java",
+      "description": "Shared visual tokens for the Swing table.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/src/playcards/TableTheme.java",
+      "open": null
+    },
+    {
+      "path": "playcards/.gitignore",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "CFG",
+      "title": ".gitignore",
+      "description": "Ignores PlayCards build output.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/.gitignore",
+      "open": null
+    },
+    {
+      "path": "playcards/build.xml",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "XML",
+      "title": "build.xml",
+      "description": "Ant build file from the NetBeans project: clean, test and jar targets.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/build.xml",
+      "open": null
+    },
+    {
+      "path": "playcards/manifest.mf",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "MF",
+      "title": "manifest.mf",
+      "description": "JAR manifest naming the main class.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/manifest.mf",
+      "open": null
+    },
+    {
+      "path": "playcards/nbproject/build-impl.xml",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "XML",
+      "title": "build-impl.xml",
+      "description": "NetBeans-generated Ant build implementation. Edit build.xml instead.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/nbproject/build-impl.xml",
+      "open": null
+    },
+    {
+      "path": "playcards/nbproject/genfiles.properties",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "PROPS",
+      "title": "genfiles.properties",
+      "description": "NetBeans-generated checksums for the build files.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/nbproject/genfiles.properties",
+      "open": null
+    },
+    {
+      "path": "playcards/nbproject/project.properties",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "PROPS",
+      "title": "project.properties",
+      "description": "NetBeans project properties: source and test roots, main class and JDK level.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/nbproject/project.properties",
+      "open": null
+    },
+    {
+      "path": "playcards/nbproject/project.xml",
+      "project": "playcards",
+      "category": "ops",
+      "kind": "XML",
+      "title": "project.xml",
+      "description": "NetBeans project descriptor.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/playcards/nbproject/project.xml",
+      "open": null
+    },
+    {
+      "path": "404.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "404 — MixMash Studio",
+      "description": "Not-found page for every unknown path on mixmash.games.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/404.html",
+      "open": "/404.html"
+    },
+    {
+      "path": "admin/index.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MixMash Admin",
+      "description": "Internal index of every support file, document and reference behind the MixMash Studio games, organised by game and purpose.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/index.html",
+      "open": "/admin/"
+    },
+    {
+      "path": "home.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MIXMASH — Drop the Beat. Throw the Punch.",
+      "description": "MIXMASH is the DJ-powered platform fighter from MixMash Studio. Pick your producer, choose your venue, and throw down — 14 fighters, 11 arenas, free in your browser.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/home.html",
+      "open": "/home.html"
+    },
+    {
+      "path": "index.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "MixMash Studio — Games That Play in Your Browser",
+      "description": "MixMash Studio makes small, loud, instantly playable browser games: MIXMASH the DJ platform fighter, MarsScape the Mars colony skiller, Garden OS Story Mode, and more. No installs, no accounts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/index.html",
+      "open": "/"
+    },
+    {
+      "path": "offline.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Offline — MixMash Studio",
+      "description": "Offline fallback page the service worker serves when a navigation fails.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/offline.html",
+      "open": "/offline.html"
+    },
+    {
+      "path": "assets/previews/README.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Landing gameplay previews",
+      "description": "Captured from the public games on September 4, 2026, at 1000 × 650 CSS pixels, device scale 1.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/README.md",
+      "open": null
+    },
+    {
+      "path": "brand.html",
+      "project": "studio",
+      "category": "docs",
+      "kind": "HTML",
+      "title": "MIXMASH — Brand Guide",
+      "description": "MIXMASH brand guide: Mainstage Neons colour tokens, type, components and voice.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/brand.html",
+      "open": "/brand.html"
+    },
+    {
+      "path": "README.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MixMash Studio",
+      "description": "The studio hub at mixmash.games, served from this repo's gh-pages branch (the live default branch — GitHub Pages \"legacy\" build, not an Actions deploy).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/README.md",
+      "open": null
+    },
+    {
+      "path": "SEO_SETUP.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "SEO / Indexing Setup — mixmash.games",
+      "description": "The site's technical SEO is complete: robots.txt allows all crawlers, sitemap.xml is valid, and every route ships unique <title>/description/canonical/OpenGraph tags.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/SEO_SETUP.md",
+      "open": null
+    },
+    {
+      "path": "AGENTS.md",
+      "project": "studio",
+      "category": "decisions",
+      "kind": "MD",
+      "title": "Agent rules",
+      "description": "Rules for agents working in this repo: the one-string status naming format and keeping this admin index current.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/AGENTS.md",
+      "open": null
+    },
+    {
+      "path": "LICENSE",
+      "project": "studio",
+      "category": "decisions",
+      "kind": "TXT",
+      "title": "LICENSE",
+      "description": "Repository license.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/LICENSE",
+      "open": null
+    },
+    {
+      "path": "CHANGELOG.md",
+      "project": "studio",
+      "category": "planning",
+      "kind": "MD",
+      "title": "Changelog",
+      "description": "All notable changes to the MixMash Studio site (gh-pages branch, served at mixmash.games).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/CHANGELOG.md",
+      "open": null
+    },
+    {
+      "path": "docs/SPRINT_BOARDS.md",
+      "project": "studio",
+      "category": "planning",
+      "kind": "MD",
+      "title": "MixMash Sprint Boards",
+      "description": "Backlog tickets for the UX, mobile, performance, and gameplay polish pass across the MixMash catalog.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/SPRINT_BOARDS.md",
+      "open": null
+    },
+    {
+      "path": "progress.md",
+      "project": "studio",
+      "category": "planning",
+      "kind": "MD",
+      "title": "Studio progress log",
+      "description": "Session log for hub-level work: the public roster and arena count correction, the landing polish and this admin index.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/progress.md",
+      "open": null
+    },
+    {
+      "path": "assets/og-card.png",
+      "project": "studio",
+      "category": "art",
+      "kind": "PNG",
+      "title": "og-card.png",
+      "description": "1200 × 630 social sharing card for the studio pages.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og-card.png",
+      "open": "/assets/og-card.png"
+    },
+    {
+      "path": "favicon.svg",
+      "project": "studio",
+      "category": "art",
+      "kind": "SVG",
+      "title": "favicon.svg",
+      "description": "Studio favicon used by every route.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/favicon.svg",
+      "open": "/favicon.svg"
+    },
+    {
+      "path": "test/admin-catalog.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "admin-catalog.test.mjs",
+      "description": "The admin index (mixmash.games/admin/) must list every tracked file exactly once, in the project and category the generator's rules assign today.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/admin-catalog.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/admin-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "admin-smoke.mjs",
+      "description": "Browser smoke rail for the admin index (mixmash.games/admin/).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/admin-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/catalog-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "catalog-smoke.mjs",
+      "description": "Browser smoke rail for the rest of the catalog: /pitch/, /mars/, the /empires/ shell, and the hub. smoke:play already covers /play/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/catalog-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/kit-save.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "kit-save.test.mjs",
+      "description": "Unit tests for MixKit save-code encoding, decoding and corrupt-input handling.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/kit-save.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/landing-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "landing-smoke.mjs",
+      "description": "Playwright rail for the landing page at 320 to 1440 px: keyboard order, focus, reduced motion, hit targets, image budgets and contrast (smoke:landing).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/landing-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/static-server.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "static-server.mjs",
+      "description": "Shared static host, Chromium launch options and page-failure tracking used by every Playwright rail.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/static-server.mjs",
+      "open": null
+    },
+    {
+      "path": "admin/build-catalog.mjs",
+      "project": "studio",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "build-catalog.mjs",
+      "description": "Builds admin/catalog.json, the data behind mixmash.games/admin/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/build-catalog.mjs",
+      "open": null
+    },
+    {
+      "path": "admin/catalog-sources.mjs",
+      "project": "studio",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "catalog-sources.mjs",
+      "description": "Hand-authored inputs for the admin index (mixmash.games/admin/).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/catalog-sources.mjs",
+      "open": null
+    },
+    {
+      "path": "admin/catalog.json",
+      "project": "studio",
+      "category": "tooling",
+      "kind": "JSON",
+      "title": "catalog.json",
+      "description": "Generated by npm run admin:index; this page renders it. Do not edit it by hand.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/catalog.json",
+      "open": null
+    },
+    {
+      "path": "admin/app.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "app.js",
+      "description": "MixMash admin index: renders admin/catalog.json (written by admin/build-catalog.mjs) into a viewport-locked shell with one tab per game. Every node is built with h(); catalog text never passes through innerHTML.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/app.js",
+      "open": null
+    },
+    {
+      "path": "admin/styles.css",
+      "project": "studio",
+      "category": "source",
+      "kind": "CSS",
+      "title": "styles.css",
+      "description": "Styles for this admin index: light and dark themes, the project rail and the viewport-locked shell.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/styles.css",
+      "open": null
+    },
+    {
+      "path": "admin/theme.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "theme.js",
+      "description": "Applies the saved admin theme before first paint. Light is the default; dark applies only after the visitor chooses it with the toggle.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/theme.js",
+      "open": null
+    },
+    {
+      "path": "src/kit/nav.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "nav.js",
+      "description": "MixKit global nav (HUB-102). A single lightweight top bar shared by every game at mixmash.games: back to the hub, a real \"mute all\", fullscreen, and the repo link. Drop it into a page with:",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/nav.js",
+      "open": null
+    },
+    {
+      "path": "src/kit/pwa.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "pwa.js",
+      "description": "MixKit service worker registration (HUB-104). Kept separate from nav.js so the hub — which has its own header and does not load the floating game nav — can still register the worker.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/pwa.js",
+      "open": null
+    },
+    {
+      "path": "src/kit/save.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "save.js",
+      "description": "MixKit save codes: encodes and decodes portable save strings that games can share.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/save.js",
+      "open": null
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "project": "studio",
+      "category": "ops",
+      "kind": "YAML",
+      "title": "CI workflow",
+      "description": "Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/ci.yml",
+      "open": null
+    },
+    {
+      "path": ".gitignore",
+      "project": "studio",
+      "category": "ops",
+      "kind": "CFG",
+      "title": ".gitignore",
+      "description": "Ignored paths: node_modules, MarsScape local data and output, Vercel state, local env files and art-validation scratch.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.gitignore",
+      "open": null
+    },
+    {
+      "path": ".nojekyll",
+      "project": "studio",
+      "category": "ops",
+      "kind": "CFG",
+      "title": ".nojekyll",
+      "description": "Tells GitHub Pages to serve files as-is, without Jekyll processing.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.nojekyll",
+      "open": null
+    },
+    {
+      "path": "CNAME",
+      "project": "studio",
+      "category": "ops",
+      "kind": "TXT",
+      "title": "CNAME",
+      "description": "GitHub Pages custom-domain binding for mixmash.games.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/CNAME",
+      "open": null
+    },
+    {
+      "path": "manifest.webmanifest",
+      "project": "studio",
+      "category": "ops",
+      "kind": "JSON",
+      "title": "manifest.webmanifest",
+      "description": "PWA manifest: name, icons, theme colours and start URL.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/manifest.webmanifest",
+      "open": null
+    },
+    {
+      "path": "package-lock.json",
+      "project": "studio",
+      "category": "ops",
+      "kind": "JSON",
+      "title": "package-lock.json",
+      "description": "Locked dependency tree for npm ci.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/package-lock.json",
+      "open": null
+    },
+    {
+      "path": "package.json",
+      "project": "studio",
+      "category": "ops",
+      "kind": "JSON",
+      "title": "package.json",
+      "description": "npm scripts for every unit test, smoke rail, art gate, simulator and this index; Playwright is the only dependency.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/package.json",
+      "open": null
+    },
+    {
+      "path": "robots.txt",
+      "project": "studio",
+      "category": "ops",
+      "kind": "TXT",
+      "title": "robots.txt",
+      "description": "Crawler rules and the sitemap pointer.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/robots.txt",
+      "open": null
+    },
+    {
+      "path": "sitemap.xml",
+      "project": "studio",
+      "category": "ops",
+      "kind": "XML",
+      "title": "sitemap.xml",
+      "description": "Public URL list for search engines. The admin index and unlisted routes are deliberately absent.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/sitemap.xml",
+      "open": null
+    },
+    {
+      "path": "sw.js",
+      "project": "studio",
+      "category": "ops",
+      "kind": "JS",
+      "title": "sw.js",
+      "description": "MixMash service worker (HUB-104). Strategy: network-first for every same-origin GET, with the cache as an offline fallback. Fresh content therefore always wins while the player is online — a cache-first worker on a…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/sw.js",
+      "open": null
+    },
+    {
+      "path": "vercel.json",
+      "project": "studio",
+      "category": "ops",
+      "kind": "JSON",
+      "title": "vercel.json",
+      "description": "Vercel configuration for the MarsScape authority project: the www redirect and per-function time limits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/vercel.json",
+      "open": null
+    }
+  ]
+}
