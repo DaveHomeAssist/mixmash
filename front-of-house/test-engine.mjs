@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
-  applyAction, buzz, createGame, evaluateShow, evaluateVenue, forecast, normalizeState,
+  applyAction, buzz, createGame, evaluateShow, evaluateVenue, forecast, migrateSave, nextSeed, normalizeState,
   presaleSplit, priceFactor, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
@@ -35,21 +35,21 @@ test('R-WORKED-01: the RULES.md worked example matches to the dollar', () => {
   const guarantee = evaluateShow({ ...WORKED_EXAMPLE, deal: 'guarantee' });
   const door = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door' });
   assert.equal(guarantee.buzz.toFixed(4), '1.2482');
-  assert.equal(guarantee.demand.toFixed(2), '249.63');
-  assert.equal(guarantee.presale, 131);
-  assert.equal(guarantee.walkup, 119);
-  assert.equal(guarantee.attendance, 250);
+  assert.equal(guarantee.demand.toFixed(2), '124.82');
+  assert.equal(guarantee.presale, 65);
+  assert.equal(guarantee.walkup, 60);
+  assert.equal(guarantee.attendance, 125);
   assert.equal(guarantee.satisfaction, 85);
-  assert.equal(guarantee.ticketGross, 5000);
-  assert.equal(guarantee.bar, 1275);
-  assert.equal(guarantee.costs.staff, 900);
-  assert.equal(guarantee.costs.total, 4780);
-  assert.equal(guarantee.upfront, 5780);
-  assert.equal(door.upfront, 4780);
-  assert.equal(guarantee.artistPay, 1000);
-  assert.equal(door.artistPay, 154);
-  assert.equal(guarantee.net, 495);
-  assert.equal(door.net, 1341);
+  assert.equal(guarantee.ticketGross, 2500);
+  assert.equal(guarantee.bar, 638);
+  assert.equal(guarantee.costs.staff, 450);
+  assert.equal(guarantee.costs.total, 2390);
+  assert.equal(guarantee.upfront, 2890);
+  assert.equal(door.upfront, 2390);
+  assert.equal(guarantee.artistPay, 500);
+  assert.equal(door.artistPay, 77);
+  assert.equal(guarantee.net, 248);
+  assert.equal(door.net, 671);
   assert.equal(guarantee.result, 'pass');
   assert.equal(door.result, 'pass');
   assert.equal(guarantee.repDelta, 13);
@@ -121,12 +121,12 @@ test('R-09 and R-10: a missing light rig and too few bars cost satisfaction and 
   assert.equal(noLights.parts.sound, D.NO_LIGHTS_MULT);
   assert.equal(noLights.costs.lights, 0);
   assert.ok(noLights.satisfaction < base.satisfaction);
-  const busy = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: 260, venue: { ...WORKED_EXAMPLE.venue, clearTiles: 120 } });
+  const busy = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: D.ARTISTS[D.DEFAULT_ARTIST].drawMax, venue: { ...WORKED_EXAMPLE.venue, clearTiles: 120 } });
   assert.ok(busy.attendance > D.BAR_RATIO);
   const overflow = busy.attendance - D.BAR_RATIO;
   assert.equal(busy.bar, Math.round(D.BAR_NET_PER_HEAD * (busy.satisfaction / 100) * (D.BAR_RATIO + overflow * D.BAR_SHORTFALL)));
-  const justUnder = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: 199 });
-  const justOver = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: 202 });
+  const justUnder = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: 100 });
+  const justOver = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: 101 });
   assert.ok(justOver.attendance > D.BAR_RATIO && justUnder.attendance <= D.BAR_RATIO);
   assert.ok(justOver.bar >= justUnder.bar, 'one bar too few reduces only the overflow, with no cliff');
 });
@@ -134,7 +134,7 @@ test('R-09 and R-10: a missing light rig and too few bars cost satisfaction and 
 test('R-11: incident responses change walk-up, entry flow and the incident score', () => {
   const rain = (responseId) => evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', incidentId: 'rain', responseId });
   assert.ok(rain('ride-out').attendance < rain('canopy').attendance);
-  assert.equal(rain('canopy').costs.incident, 500);
+  assert.equal(rain('canopy').costs.incident, D.INCIDENTS.rain.responses.find((r) => r.id === 'canopy').cost);
   const jam = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', incidentId: 'gate-jam', responseId: 'ride-out' });
   assert.equal(jam.parts.flow, 0.6);
   const calm = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', incidentId: null, responseId: null });
@@ -153,7 +153,7 @@ test('R-12: an incident response the player cannot afford is refused', () => {
   while (rollShow(seed).incidentId !== 'rain') seed += 1;
   let s = run(builtGame(seed, 'guarantee'), [{ type: 'confirmPromotion' }]);
   s = { ...s, cash: 100 };
-  assert.match(applyAction(s, { type: 'respond', responseId: 'canopy' }).error, /costs \$500/);
+  assert.match(applyAction(s, { type: 'respond', responseId: 'canopy' }).error, /costs \$250/);
   assert.equal(applyAction(s, { type: 'respond', responseId: 'ride-out' }).error, null);
 });
 
@@ -197,7 +197,7 @@ test('forecast brackets the real attendance without revealing the draw', () => {
   const s = builtGame(9);
   const { low, high } = forecast(s);
   const roll = rollShow(9);
-  const actual = evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: roll.draw, artistId: 'velvet-static' }).attendance;
+  const actual = evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: roll.draw, artistId: D.DEFAULT_ARTIST }).attendance;
   assert.ok(low <= actual && actual <= high);
 });
 
@@ -205,7 +205,7 @@ test('rollShow stays in range and uses every incident', () => {
   const seen = new Set();
   for (let seed = 1; seed <= 1000; seed += 1) {
     const r = rollShow(seed);
-    assert.ok(r.draw >= 150 && r.draw <= 260);
+    assert.ok(r.draw >= D.ARTISTS[D.DEFAULT_ARTIST].drawMin && r.draw <= D.ARTISTS[D.DEFAULT_ARTIST].drawMax);
     assert.ok(r.incidentAt >= 0.2 && r.incidentAt <= 0.8);
     seen.add(r.incidentId);
   }
@@ -267,9 +267,42 @@ test('normalizeState rejects junk and repairs tampered saves', () => {
   assert.equal(rolledBack.promotion.confirmed, false);
 });
 
-test('the frozen version 1 save fixture loads unchanged', async () => {
-  const fixture = JSON.parse(await readFile(new URL('./test/fixtures/save-v1.json', import.meta.url), 'utf8'));
-  assert.deepEqual(normalizeState(fixture, 1), fixture);
+const fixture = async (name) => JSON.parse(await readFile(new URL(`./test/fixtures/${name}`, import.meta.url), 'utf8'));
+
+test('the frozen version 2 save fixture loads unchanged', async () => {
+  const v2 = await fixture('save-v2.json');
+  assert.equal(v2.schema, D.SCHEMA_VERSION);
+  assert.deepEqual(normalizeState(v2, 1), v2);
+  assert.equal(migrateSave(v2), v2, 'a current save is left alone');
+});
+
+test('a version 1 save migrates to the Lot scale', async () => {
+  const v1 = await fixture('save-v1.json');
+  const v2 = migrateSave(v1);
+  assert.equal(v2.schema, 2);
+  assert.equal(v2.cash, 3473, 'cash halves: 6945 / 2, rounded');
+  assert.deepEqual(v2.history, [{ ...v1.history[0], attendance: 135, net: 473, artistPay: 500 }]);
+  assert.equal(v2.phase, 'book', 'a finished show that passed moves on to the next show');
+  assert.equal(v2.seed, nextSeed(v1.seed));
+  assert.deepEqual(v2.reputation, { venue: v1.reputation.venue, artists: { 'sodium-arcade': v1.reputation.artists['velvet-static'] } },
+    'the renamed artist keeps its relationship');
+  assert.deepEqual(v2.venue.objects, v1.venue.objects);
+  assert.deepEqual(normalizeState(v2, 1), v2);
+
+  const retried = migrateSave({ ...v1, history: [{ ...v1.history[0], result: 'retry' }] });
+  assert.equal(retried.phase, 'book');
+  assert.equal(retried.cash, D.START_CASH, 'a finished show that failed starts again, as Retry does');
+
+  // A show in progress converts exactly: the money already spent halves with everything else.
+  const mid = run(builtGame(42, 'guarantee'), [{ type: 'confirmPromotion' }]);
+  const doubled = Object.fromEntries(Object.entries(mid.promotion.ads).map(([c, v]) => [c, v * 2]));
+  const asV1 = {
+    ...mid, schema: 1, cash: mid.cash * 2, promotion: { ...mid.promotion, ads: doubled },
+    booking: { ...mid.booking, artistId: 'velvet-static' },
+    reputation: { ...mid.reputation, artists: { 'velvet-static': mid.reputation.artists[D.DEFAULT_ARTIST] } },
+  };
+  assert.deepEqual(normalizeState(migrateSave(asV1), 1), mid);
+  assert.equal(migrateSave('junk'), 'junk');
 });
 
 test('saves round-trip through the MixKit save store and a save code', async () => {
@@ -281,13 +314,17 @@ test('saves round-trip through the MixKit save store and a save code', async () 
     const m = new Map();
     return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k) };
   };
-  const a = sandbox.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: 1, storage: memory() });
-  const b = sandbox.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: 1, storage: memory() });
+  const opts = () => ({ version: D.SCHEMA_VERSION, storage: memory(), migrate: (st) => migrateSave(st) });
+  const a = sandbox.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, opts());
+  const b = sandbox.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, opts());
   const state = run(builtGame(21, 'guarantee'), [{ type: 'confirmPromotion' }]);
   a.save(state);
   const imported = b.importCode(a.exportCode());
   assert.deepEqual(normalizeState(imported, 1), state);
   assert.deepEqual(normalizeState(b.importCode(Buffer.from('{"evil":true}').toString('base64')), 5), createGame(5));
+  const v1 = await fixture('save-v1.json');
+  const v1Code = Buffer.from(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: 1, savedAt: '2026-10-01T00:00:00.000Z', state: v1 })).toString('base64');
+  assert.deepEqual(normalizeState(b.importCode(v1Code), 1), migrateSave(v1), 'a version 1 code migrates through the store');
 });
 
 test('validateLayout keeps the reference layout intact', () => {
@@ -311,5 +348,5 @@ test('showPreview gives the crowd before the incident without changing state', (
   const s = run(builtGame(13, 'door'), [{ type: 'confirmPromotion' }]);
   const preview = showPreview(s);
   assert.equal(preview.parts.incident, 1);
-  assert.equal(preview.attendance, evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: rollShow(13).draw, artistId: 'velvet-static' }).attendance);
+  assert.equal(preview.attendance, evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: rollShow(13).draw, artistId: D.DEFAULT_ARTIST }).attendance);
 });

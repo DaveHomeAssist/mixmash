@@ -178,7 +178,7 @@ out();
 // Verdicts
 const worked = ['guarantee', 'door'].map((deal) => evaluateShow({ ...WORKED_EXAMPLE, deal }));
 verdict('Worked example matches RULES.md',
-  worked[0].net === 495 && worked[1].net === 1341 && worked[0].satisfaction === 85 && worked[0].attendance === 250,
+  worked[0].net === 248 && worked[1].net === 671 && worked[0].satisfaction === 85 && worked[0].attendance === 125,
   `guarantee ${money(worked[0].net)}, door ${money(worked[1].net)}, satisfaction ${worked[0].satisfaction}, attendance ${worked[0].attendance}`);
 
 const cliffs = [];

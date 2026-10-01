@@ -6,15 +6,16 @@
 
 export const GAME_TITLE = 'Front of House';
 export const SAVE_NAMESPACE = 'front_of_house_v1'; // localStorage key (CT-DEC-06, SAVE_FORMAT.md)
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2; // 2: the Lot tier retune (SAVE_FORMAT.md, migrateSave in engine.mjs)
 export const VENUE_NAME = 'Oak St. Lot'; // the first playable's parking lot (fictional, CT-DEC-03)
 
-// Lot and money
-export const START_CASH = 6000;
+// Lot and money. Tier 1 of the career is the Lot, for 50 to 150 people (CT-DEC-09); every
+// per-person and money value below was halved from the first playable's 300-person lot.
+export const START_CASH = 3000;
 export const GRID = { w: 24, h: 16 };
-export const PERMIT_CAP = 300;
-export const FLOOR_DENSITY = 3; // people per open tile (a tile is 2 m by 2 m)
-export const EXIT_CAPACITY = 100;
+export const PERMIT_CAP = 150;
+export const FLOOR_DENSITY = 1.5; // people per open tile (a tile is 2 m by 2 m); capacity rounds down
+export const EXIT_CAPACITY = 50;
 export const GENERATOR_WATTS = 20000; // off-grid generator included in the lot rental
 export const SIGHT_RANGE = 12; // tiles from the middle of the stage front
 export const SIGHT_CONE_DEGREES = 90;
@@ -28,8 +29,10 @@ export const PRICE_MIN = 10;
 export const PRICE_MAX = 40;
 export const AD_CHANNELS = ['flyers', 'social', 'radio'];
 export const AD_REACH = { flyers: 0.15, social: 0.3, radio: 0.25 };
-export const AD_SATURATION = 500;
-export const AD_MAX_PER_CHANNEL = 5000;
+export const AD_SATURATION = 250;
+export const AD_MAX_PER_CHANNEL = 2500;
+export const AD_SLIDER_MAX = 1000; // the Promote screen's slider range and step
+export const AD_STEP = 25;
 export const REP_DIVISOR = 200;
 export const PRESALE_BASE = 0.4;
 export const PRESALE_PER_BUZZ = 0.5;
@@ -41,25 +44,25 @@ export const W_SIGHT = 20;
 export const W_AMENITY = 20;
 export const W_FLOW = 15;
 export const W_INCIDENT = 10;
-export const PA_COVERAGE = { S: 200, M: 500 };
+export const PA_COVERAGE = { S: 100, M: 250 };
 export const NO_LIGHTS_MULT = 0.8; // the production score without a light rig
-export const BAR_RATIO = 250;
-export const RESTROOM_RATIO = 75;
+export const BAR_RATIO = 125;
+export const RESTROOM_RATIO = 40;
 export const GATE_RATE = 5; // people per minute per gate
 export const DOORS_MINUTES = 60;
 
 // Money (R-10 to R-15)
 export const BAR_NET_PER_HEAD = 6;
 export const BAR_SHORTFALL = 0.6;
-export const LOT_RENTAL = 800;
-export const PERMIT = 250;
-export const FENCE_KIT = 300;
-export const PA_RENTAL = { S: 400, M: 900 };
-export const LIGHTS_RENTAL = 350;
-export const BAR_SETUP = 200;
-export const RESTROOM_UNIT = 120;
-export const STAFF_RATE = 150;
-export const SECURITY_PER = 100;
+export const LOT_RENTAL = 400;
+export const PERMIT = 125;
+export const FENCE_KIT = 150;
+export const PA_RENTAL = { S: 200, M: 450 };
+export const LIGHTS_RENTAL = 175;
+export const BAR_SETUP = 100;
+export const RESTROOM_UNIT = 60;
+export const STAFF_RATE = 75;
+export const SECURITY_PER = 50;
 export const DOOR_STAFF_PER_GATE = 1;
 export const BAR_STAFF_PER_BAR = 2;
 export const DOOR_SPLIT = 0.7;
@@ -107,16 +110,18 @@ export const STARTER_LAYOUT = [
 
 // Artists. `ask` is the guarantee the artist expects (ARTIST_ASK in RULES.md).
 export const ARTISTS = {
-  'velvet-static': {
-    name: 'Velvet Static',
+  // Renamed from Velvet Static in save version 2: that name belongs to a real UK indie band
+  // (CT-DEC-03 name checks).
+  'sodium-arcade': {
+    name: 'Sodium Arcade',
     genre: 'Indie rock',
-    drawMin: 150,
-    drawMax: 260,
+    drawMin: 75,
+    drawMax: 130,
     fairPrice: 20,
-    ask: 1000,
+    ask: 500,
   },
 };
-export const DEFAULT_ARTIST = 'velvet-static';
+export const DEFAULT_ARTIST = 'sodium-arcade';
 
 // Incidents (R-11). Exactly one per show, chosen by the seeded generator.
 export const INCIDENTS = {
@@ -124,22 +129,22 @@ export const INCIDENTS = {
     label: 'Rain at doors',
     responses: [
       { id: 'ride-out', label: 'Ride it out', cost: 0, score: 0.3, walkupMult: 0.6 },
-      { id: 'ponchos', label: 'Hand out ponchos', cost: 250, score: 0.7, walkupMult: 0.8 },
-      { id: 'canopy', label: 'Rent a canopy', cost: 500, score: 0.9, walkupMult: 0.9 },
+      { id: 'ponchos', label: 'Hand out ponchos', cost: 125, score: 0.7, walkupMult: 0.8 },
+      { id: 'canopy', label: 'Rent a canopy', cost: 250, score: 0.9, walkupMult: 0.9 },
     ],
   },
   'pa-dropout': {
     label: 'PA dropout mid-set',
     responses: [
       { id: 'wait', label: 'Wait it out', cost: 0, score: 0.3 },
-      { id: 'backup-amp', label: 'Swap in the backup amp', cost: 200, score: 0.8 },
+      { id: 'backup-amp', label: 'Swap in the backup amp', cost: 100, score: 0.8 },
     ],
   },
   'gate-jam': {
     label: 'Gate jam at doors',
     responses: [
       { id: 'ride-out', label: 'Ride it out', cost: 0, score: 0.3, flowMult: 0.6 },
-      { id: 'second-lane', label: 'Open a second lane', cost: 150, score: 0.9 },
+      { id: 'second-lane', label: 'Open a second lane', cost: 75, score: 0.9 },
     ],
   },
 };

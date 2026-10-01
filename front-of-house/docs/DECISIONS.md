@@ -80,6 +80,18 @@ Use fictional artists, venues and markets built on recognizable genre types. Rec
 - No licensing cost and no risk of portraying real people badly.
 - **Settled by CT-DEC-08:** the game is standalone, so fictional artists stand and MIXMASH's real-name parody roster (MIXMASH D1) stays out of it.
 
+### Name checks (2026-10-01)
+
+Recorded here until `docs/WORLD.md` exists. A web search for each name in quotes, with "band".
+
+| Name | Result | Outcome |
+| --- | --- | --- |
+| Velvet Static | A real four-piece indie band from Nottinghamshire, UK, with releases on [Apple Music](https://music.apple.com/us/artist/velvet-static/1773921533) and [Bandcamp](https://velvetstatic2.bandcamp.com/) | Not usable; the first playable's act is renamed |
+| Sodium Arcade | No act by that name (bands named Sodium and Arcade exist separately) | Used for the first playable's indie rock act (`sodium-arcade`) |
+| Copper Wren | A real acoustic band from Tucson, Arizona ([site](https://copperwrenband.wixsite.com/copperwren)) | Not usable |
+| Brasswick | A real annual brass band festival in Brooklyn run by the L Train Brass Band ([site](https://ltrainbrassband.com/brasswick)) | Not usable |
+| Cobalt Porchlight, Tin Lantern Choir | No act by either name (Porch Light and Tin Bird Choir exist) | Held for the Phase 4 roster after a closer check |
+
 ## CT-DEC-04: Platform
 
 - Date: 2026-10-01
@@ -219,4 +231,4 @@ The career uses the four tiers from the art:
 
 - The arena or stadium tier is cut; the festival grounds are the end state. GDD sections 1, 3, 5, 6 and 9 follow this.
 - `ROADMAP.md`, when it starts, has four career phases, and the art needs four venue looks.
-- The first playable's Oak St. Lot is permitted for 300 (`PERMIT_CAP`) and its artist draws 150 to 260, above the Lot's ceiling of 150. The playable keeps that tuning for now, because the balance baseline and the worked example in `RULES.md` depend on it. Before career work starts, retune tier 1 to fit 50 to 150 (the permit cap, the first artist's draw and the reference layout) and re-run the balance simulator.
+- The first playable's Oak St. Lot was permitted for 300 and its artist drew 150 to 260, above the Lot's ceiling of 150. Phase 3 retuned tier 1 (2026-10-01): the permit is 150, the draw 75 to 130, and every per-person and money value was halved, so every balance verdict still passes and the worked example halved with it. Version 1 saves convert to the new scale (`SAVE_FORMAT.md`).

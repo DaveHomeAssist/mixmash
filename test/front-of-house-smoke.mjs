@@ -17,7 +17,8 @@ import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
 import { applyAction, createGame, settlementFor, showPreview } from '../front-of-house/engine.mjs';
-import { INCIDENTS, SAVE_NAMESPACE, SCHEMA_VERSION, STARTER_LAYOUT } from '../front-of-house/data.mjs';
+import { AD_STEP, INCIDENTS, PERMIT_CAP, SAVE_NAMESPACE, SCHEMA_VERSION, START_CASH, STARTER_LAYOUT } from '../front-of-house/data.mjs';
+import { readFile } from 'node:fs/promises';
 
 const server = await startStaticServer();
 const url = `${server.origin}/front-of-house/`;
@@ -47,7 +48,7 @@ try {
   await page.click('[data-act="starter"]');
   const built = await game(page);
   assert.equal(built.venue.ready, true);
-  assert.equal(built.venue.capacity, 300);
+  assert.equal(built.venue.capacity, PERMIT_CAP, 'the suggested layout fills the Lot permit');
   await page.screenshot({ path: join(output, 'build.png') });
   await page.click('[data-act="confirm-build"]');
   assert.equal((await game(page)).phase, 'promote');
@@ -56,7 +57,7 @@ try {
   assert.equal((await game(page)).promotion.price, 21, 'the price slider drives the engine');
   await page.focus('#ad-social');
   await page.keyboard.press('ArrowRight');
-  assert.equal((await game(page)).promotion.ads.social, 50);
+  assert.equal((await game(page)).promotion.ads.social, AD_STEP);
   await page.click('[data-act="confirm-promo"]');
   assert.equal((await game(page)).phase, 'show');
   await page.click('[data-act="skip"]');
@@ -73,7 +74,7 @@ try {
   const done = await game(page);
   assert.equal(done.phase, 'done');
   assert.equal(done.history, 1);
-  assert.equal(done.cash, 6000 + done.settlement.net, 'cash after settlement is the starting cash plus the net');
+  assert.equal(done.cash, START_CASH + done.settlement.net, 'cash after settlement is the starting cash plus the net');
   ok('plays Book through Settle and the cash adds up');
 
   await page.reload();
@@ -100,7 +101,13 @@ try {
   const imported = await game(page2);
   assert.equal(imported.phase, 'done');
   assert.equal(imported.cash, done.cash);
-  ok('save codes move a game and bad codes are refused');
+  const v1 = JSON.parse(await readFile(new URL('../front-of-house/test/fixtures/save-v1.json', import.meta.url), 'utf8'));
+  await page2.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: 1, savedAt: '2026-10-01T00:00:00.000Z', state: v1 })).toString('base64'));
+  await page2.click('[data-save="import"]');
+  const migrated = await game(page2);
+  assert.equal(migrated.phase, 'book', 'a finished version 1 show moves on to the next show');
+  assert.equal(migrated.cash, Math.round(v1.cash / 2), 'version 1 cash converts to the Lot scale');
+  ok('save codes move a game, version 1 codes convert, and bad codes are refused');
 
   // 3. Keyboard placement on the board.
   await page2.click('[data-save="new"]');

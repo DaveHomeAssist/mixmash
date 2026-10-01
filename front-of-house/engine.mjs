@@ -230,7 +230,7 @@ export function evaluateVenue(venue) {
   stats.clearTiles = sight.clear.size;
   stats.blockedTiles = sight.blocked.size;
   // R-01
-  stats.capacity = Math.min(D.PERMIT_CAP, D.FLOOR_DENSITY * stats.openFloorTiles, D.EXIT_CAPACITY * stats.exits);
+  stats.capacity = Math.min(D.PERMIT_CAP, Math.floor(D.FLOOR_DENSITY * stats.openFloorTiles), D.EXIT_CAPACITY * stats.exits);
   stats.capacityLimit = stats.capacity === D.PERMIT_CAP ? 'permit'
     : stats.capacity === D.EXIT_CAPACITY * stats.exits ? 'exits' : 'floor';
   stats.staff = staffFor(stats);
@@ -550,6 +550,49 @@ function supportsPhase(s, phase) {
 }
 
 const intOr = (v, fallback) => (typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : fallback);
+
+// ---------------------------------------------------------------------------
+// Save migration (SAVE_FORMAT.md). Pure: returns a stored state of any known version in
+// the current version, or the input unchanged when it is not a recognisable save (so
+// normalizeState can reject it). Applied one version at a time.
+
+export function migrateSave(raw) {
+  if (!isObj(raw) || !isInt(raw.schema)) return raw;
+  let s = raw;
+  if (s.schema === 1) s = migrateV1toV2(s);
+  return s;
+}
+
+// Version 2 retuned tier 1 to the Lot (CT-DEC-09) by halving every per-person and money
+// value, so a version 1 save converts the same way: cash, ad spend and the history's
+// attendance and money halve. Version 2 also renamed Velvet Static (a real band's name) to
+// Sodium Arcade, so the artist's id moves with its relationship. A finished show is closed with the step the player would
+// take next (Next show after a pass, Retry otherwise), so a sheet signed at the old scale
+// is never replayed at the new one.
+function migrateV1toV2(raw) {
+  const half = (n) => (isInt(n) ? Math.round(n / 2) : n);
+  const s = clone(raw);
+  s.schema = 2;
+  s.cash = half(s.cash);
+  const renamed = { 'velvet-static': 'sodium-arcade' };
+  if (isObj(s.booking) && renamed[s.booking.artistId]) s.booking.artistId = renamed[s.booking.artistId];
+  if (isObj(s.reputation) && isObj(s.reputation.artists)) {
+    s.reputation.artists = Object.fromEntries(Object.entries(s.reputation.artists).map(([id, v]) => [renamed[id] || id, v]));
+  }
+  if (isObj(s.promotion) && isObj(s.promotion.ads)) {
+    for (const c of Object.keys(s.promotion.ads)) s.promotion.ads[c] = half(s.promotion.ads[c]);
+  }
+  if (Array.isArray(s.history)) {
+    s.history = s.history.map((h) => (isObj(h)
+      ? { ...h, attendance: half(h.attendance), net: half(h.net), artistPay: half(h.artistPay) } : h));
+  }
+  if (s.phase !== 'done') return s;
+  const state = normalizeState(s, isInt(s.seed) ? s.seed : 1);
+  if (state.phase !== 'done') return state;
+  const last = state.history[state.history.length - 1];
+  const step = applyAction(state, { type: last && last.result === 'pass' ? 'nextShow' : 'retry' });
+  return step.error ? state : step.state;
+}
 
 export function normalizeState(raw, fallbackSeed = 1) {
   if (!isObj(raw) || raw.schema !== D.SCHEMA_VERSION) return createGame(fallbackSeed);

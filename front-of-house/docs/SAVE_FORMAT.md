@@ -1,6 +1,6 @@
 # Front of House Save Format
 
-**Status:** Draft · **Schema version:** 1 · **Namespace:** `front_of_house_v1` (fixed by [CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route); `SAVE_NAMESPACE` in `data.mjs`)
+**Status:** Draft · **Schema version:** 2 (since 2026-10-01; version 1 saves convert, see [Migrations](#migrations)) · **Namespace:** `front_of_house_v1` (fixed by [CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route); `SAVE_NAMESPACE` in `data.mjs`)
 
 > The namespace is the `localStorage` key. Renaming it means migrating every existing save, so it stays fixed.
 
@@ -9,29 +9,29 @@
 Saves use the shared studio store in `src/kit/save.js`:
 
 ```js
-const store = MixKitSave.createSaveStore('front_of_house_v1', { version: 1, migrate });
+const store = MixKitSave.createSaveStore('front_of_house_v1', { version: 2, migrate: (state) => migrateSave(state) });
 ```
 
 The store wraps game state in an envelope:
 
 ```json
-{ "ns": "front_of_house_v1", "v": 1, "savedAt": "2026-10-01T00:00:00.000Z", "state": { } }
+{ "ns": "front_of_house_v1", "v": 2, "savedAt": "2026-10-01T00:00:00.000Z", "state": { } }
 ```
 
-- `exportCode()` and `importCode(code)` give portable base64 save codes, the same format MarsScape used when it moved sites. The game does not call `importCode` directly: it decodes the code first and only writes it if `ns` is `front_of_house_v1` and `state.schema` is 1, because `importCode` saves whatever it parses.
+- `exportCode()` and `importCode(code)` give portable base64 save codes, the same format MarsScape used when it moved sites. The game does not call `importCode` directly: it decodes the code first and only writes it if `ns` is `front_of_house_v1` and `state.schema` is a known version (1 or 2), because `importCode` saves whatever it parses. An older version is converted with `migrateSave` before `normalizeState` checks it.
 - `clear()` resets the save.
 - The namespace follows the studio pattern (`marsscape_v1`, `empires_v1`).
 
-## State, version 1
+## State, version 2
 
 The save stores the **player's choices and the seed**, not computed results. Capacity, demand, satisfaction and money are recomputed by the engine from the choices every time a save loads. The only exception is the settlement history, which keeps final numbers as a permanent record.
 
 ```js
 {
-  schema: 1,
+  schema: 2,
   seed: 0,                    // uint32; feeds the RNG (RULES.md, General conventions)
   phase: 'book',              // 'book' | 'build' | 'promote' | 'show' | 'settle' | 'done'
-  cash: 6000,                 // whole dollars
+  cash: 3000,                 // whole dollars
   venue: {
     id: 'lot',
     grid: { w: 24, h: 16 },
@@ -39,16 +39,16 @@ The save stores the **player's choices and the seed**, not computed results. Cap
       { type: 'stage', x: 10, y: 0, rot: 0 }
     ]
   },
-  booking: { artistId: 'velvet-static', deal: null },      // deal: 'guarantee' | 'door' | null
+  booking: { artistId: 'sodium-arcade', deal: null },      // deal: 'guarantee' | 'door' | null
   promotion: { price: 20, ads: { flyers: 0, social: 0, radio: 0 }, confirmed: false },
   show: null,                 // { incidentId, responseId, venueRep } once the doors open; venueRep is the
                               // reputation the show was sold with (settlement changes the live one)
-  reputation: { venue: 0, artists: { 'velvet-static': 0 } },
+  reputation: { venue: 0, artists: { 'sodium-arcade': 0 } },
   history: []                 // settlement records: { showId, seed, deal, attendance, satisfaction, net, artistPay, result, weakest, settledAt }
 }
 ```
 
-Object `type` values allowed in version 1: `stage`, `pa-s`, `pa-m`, `lights`, `bar`, `restroom`, `gate`, `exit`, `fence`.
+Version 2 has the same shape as version 1; the numbers are on the Lot scale. Object `type` values allowed: `stage`, `pa-s`, `pa-m`, `lights`, `bar`, `restroom`, `gate`, `exit`, `fence`.
 
 ## Validation (required on every load and import)
 
@@ -64,8 +64,18 @@ Object `type` values allowed in version 1: `stage`, `pa-s`, `pa-m`, `lights`, `b
 
 - Bump `version` (and `schema`) only for changes that would break older saves. Adding an optional field is handled by `normalizeState` defaults.
 - Each version step gets a pure migration function, called through the store's `migrate(state, fromVersion)` hook, applied one version at a time.
-- Each version keeps a frozen example save in `front-of-house/test/fixtures/save-vN.json` (version 1 exists). Tests load every fixture, migrate it to the current version and check the result with `normalizeState`.
+- Each version keeps a frozen example save in `front-of-house/test/fixtures/save-vN.json` (versions 1 and 2 exist). Tests load every fixture, migrate it to the current version and check the result with `normalizeState`.
 - A new namespace (for example `front_of_house_v2`) is only used for an intentional fresh start. In that case, an import screen accepts save codes from the old namespace.
+
+## Migrations
+
+`migrateSave(state)` in `front-of-house/engine.mjs` is pure and applies one version step at a time. The store calls it through its `migrate` hook, and the game also calls it on every load and import before `normalizeState`.
+
+| From | To | Why | What changes |
+| --- | --- | --- | --- |
+| 1 | 2 | Phase 3 retuned tier 1 to the Lot (CT-DEC-09): the permit went from 300 to 150, and every per-person and money value in `data.mjs` was halved. The artist Velvet Static was renamed Sodium Arcade (CT-DEC-03 name checks) | The artist id `velvet-static` becomes `sodium-arcade` in the booking and the relationships. Cash, ad spend, and each history record's attendance, net and artist pay are halved (rounded to the nearest whole number). A show in progress continues on the new scale; because every cost halved and the ad slider moved from steps of 50 to steps of 25, the money it already spent converts exactly. A finished show (`done`) is closed the way the player would close it, with Next show after a pass or Retry otherwise, so a sheet signed at the old scale is never replayed at the new one. |
+
+Tests: the frozen version 1 fixture migrates to the expected state; a version 1 save in the middle of a show converts back to exactly the same version 2 state; a version 1 save code imports through the store and through the game's Save and load panel.
 
 ## Save points
 
