@@ -1,10 +1,11 @@
 // The admin index (mixmash.games/admin/) must list every tracked file exactly
 // once, in the project and category the generator's rules assign today.
 //
-// When this fails after you add, remove or rename a file, run
-//   npm run admin:index
-// and commit admin/catalog.json. Titles and summaries are snapshots taken at
-// generation time and are not compared here; paths and classification are.
+// CI regenerates the catalog before this runs, and the admin-index workflow
+// commits it after each push to gh-pages, so here this guards the generator:
+// coverage, classification, references and privacy. Locally, a failure after
+// adding, removing or renaming a file means: run `npm run admin:index`.
+// Titles and summaries are snapshots and are not compared.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import test from 'node:test';

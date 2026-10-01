@@ -34,7 +34,7 @@ npm run smoke:landing   # five-width landing, keyboard, motion, hit targets, scr
 npm run smoke:zelda2mario # status scope, mobile/ultrawide, themes, keyboard tabs, filters and complete printing
 npm run smoke:front-of-house # Lot Night end to end, reload, save codes (including version 1 conversion), keyboard building, reduced motion, phone width, contrast
 npm run sim:front-of-house   # regenerate front-of-house/docs/BALANCE_BASELINE.md (CI fails on drift or a FAIL verdict)
-npm run admin:index     # regenerate admin/catalog.json after adding, removing or renaming any tracked file
+npm run admin:index     # regenerate admin/catalog.json (the admin-index workflow also does this after every push)
 npm run smoke:admin     # admin index: no page scroll at six widths, themes, keyboard tabs, filters, search, privacy
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
@@ -83,10 +83,13 @@ alter other game routes, the authority API, hosting configuration or ROM data.
 each path by rules (project, then category), takes its title and summary from
 the file's own heading, `<title>`/meta description or leading comment, and
 merges the hand-authored projects, references and notes in
-`admin/catalog-sources.mjs`. After adding, removing or renaming a file, run
-`npm run admin:index` and commit `admin/catalog.json`; `npm test`
-(`test/admin-catalog.test.mjs`) fails while the catalog and the tree disagree.
-Summaries are snapshots from generation time and are not compared. The page
+`admin/catalog-sources.mjs`. The `Admin index sync` workflow
+(`.github/workflows/admin-index.yml`) regenerates the catalog after every push
+to `gh-pages`, commits it when files were added, removed or renamed, and
+requests a Pages build; CI also regenerates it before `npm test`, so a direct
+push without `npm run admin:index` neither fails CI nor leaves the index stale.
+`test/admin-catalog.test.mjs` guards coverage, classification, references and
+privacy. Summaries are snapshots from generation time. The page
 records where each game's status lives, never the status itself. It is public
 like every Pages route, so keep it public-safe: no local paths, no Notion links,
 and the private Zelda2MarioCoop source named but not linked. For live readback,

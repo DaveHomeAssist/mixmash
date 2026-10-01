@@ -14,6 +14,7 @@ on:
       - 'zelda2mario/**'
       - 'front-of-house/**'
       - 'admin/**'
+      - '.github/workflows/admin-index.yml'
       - 'api/**'
       - 'index.html'
       - 'assets/previews/**'
@@ -37,6 +38,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # The admin-index workflow commits the regenerated catalog after each push
+      # to gh-pages, so a file added without `npm run admin:index` never fails CI.
+      - run: npm run admin:index
       - run: npm test
       - run: npm run vercel-build
       - run: npm run art:validate

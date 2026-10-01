@@ -8,8 +8,9 @@
 //
 //   npm run admin:index
 //
-// Run it after adding, removing or renaming any tracked file:
-// test/admin-catalog.test.mjs fails when the catalog and the tree disagree.
+// The admin-index workflow runs this after every push to gh-pages and commits
+// the result when it changed, and CI runs it before the tests. Running it in a
+// branch keeps a pull request's catalog diff complete.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -170,6 +171,9 @@ function describe(root, file) {
     const text = readFileSync(path.join(root, file), 'utf8');
     found = ext === '.md' ? fromMarkdown(text) : ext === '.html' ? fromHtml(text) : fromComment(text);
   }
+  // Images cannot describe themselves; say where they live so an art drop
+  // needs no hand-written note.
+  if (/\.(png|jpe?g|gif|webp|svg)$/.test(ext)) found.description = `${path.basename(file, ext)} image in ${path.dirname(file)}/.`;
   const note = FILE_NOTES[file] || {};
   return {
     title: note.title || found.title || path.basename(file),
@@ -202,7 +206,17 @@ function commandsFor(root) {
 export function buildCatalog({ root = ROOT, files = listFiles(root) } = {}) {
   const projectOrder = new Map(PROJECTS.map((p, i) => [p.id, i]));
   const categoryOrder = new Map(CATEGORIES.map((c, i) => [c.id, i]));
-  const entries = files.map((file) => ({ path: file, ...classify(file), kind: kindOf(file), ...describe(root, file), ...links(file) }));
+  const categoryLabel = new Map(CATEGORIES.map((c) => [c.id, c.label]));
+  const entries = files.map((file) => {
+    const entry = { path: file, ...classify(file), kind: kindOf(file), ...describe(root, file), ...links(file) };
+    // Anything still undescribed is named by its category and folder, so a new
+    // file never needs a note before it can be indexed.
+    if (!entry.description) {
+      const dir = path.dirname(file);
+      entry.description = `${categoryLabel.get(entry.category)} file ${dir === '.' ? 'at the repository root' : `in ${dir}/`}.`;
+    }
+    return entry;
+  });
   entries.sort((a, b) => projectOrder.get(a.project) - projectOrder.get(b.project)
     || categoryOrder.get(a.category) - categoryOrder.get(b.category)
     || a.path.localeCompare(b.path));
