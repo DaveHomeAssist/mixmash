@@ -12,7 +12,9 @@ import { writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as D from '../data.mjs';
-import { ENGINE_VERSION, evaluateShow, evaluateVenue, rollShow } from '../engine.mjs';
+import {
+  applyAction, cheapestShowCost, createGame, ENGINE_VERSION, evaluateShow, evaluateVenue, offersFor, rollShow, settlementFor, termsFor,
+} from '../engine.mjs';
 import { BUDGET_LAYOUT, REFERENCE_ADS, REFERENCE_LAYOUT, REFERENCE_PRICE, WORKED_EXAMPLE } from './reference.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -175,6 +177,101 @@ table(['Deal', 'Pass rate, free response', 'Pass rate, best response'],
 out(`Search grid per seed: 2 deals × ${PRICES.length} prices × ${Object.keys(AD_PRESETS).length} ad presets × ${Object.keys(layouts).length} layouts × every response. The highest-net strategy uses the door deal on ${dealWins.door} seeds and the guarantee on ${dealWins.guarantee}. Seeds with no passing strategy: ${impossible.length ? impossible.join(', ') : 'none'}.`);
 out();
 
+// ---------------------------------------------------------------------------
+// The Lot career (R-19 to R-21). Each strategy plays up to careerShows shows per seed through the
+// real action pipeline and stops when the Club unlocks or no show is affordable.
+const T = D.BALANCE_TARGETS;
+const layoutObjects = { reference: REFERENCE_LAYOUT, budget: BUDGET_LAYOUT };
+const step = (s, action) => {
+  const r = applyAction(s, action);
+  if (r.error) throw new Error(`${action.type}: ${r.error}`);
+  return r.state;
+};
+const expectNet = (s, artistId, deal, layout) => {
+  const a = D.ARTISTS[artistId];
+  const t = termsFor(artistId, s.reputation.artists[artistId]);
+  return evaluateShow({ venue: layouts[layout], deal, price: a.fairPrice, ads: REFERENCE_ADS, venueRep: s.reputation.venue,
+    draw: (a.drawMin + a.drawMax) / 2, ask: t.ask, drawMult: t.drawMult, artistId, incidentId: null, responseId: null });
+};
+const scored = (r) => r.net + (r.satisfaction >= D.PASS_SATISFACTION ? 0 : -1e6);
+const PLANS = {
+  // Weighs every offer, deal and layout by the expected net at the act's middle draw.
+  careful(s) {
+    const opts = [];
+    for (const id of offersFor(s)) {
+      const t = termsFor(id, s.reputation.artists[id]);
+      for (const deal of t.doorOk ? DEAL_LIST : ['guarantee']) {
+        for (const layout of Object.keys(layouts)) {
+          const r = expectNet(s, id, deal, layout);
+          if (r.upfront <= s.cash) opts.push({ id, deal, layout, score: scored(r) });
+        }
+      }
+    }
+    return opts.sort((a, b) => b.score - a.score)[0] || null;
+  },
+  // Takes the first offer on the door deal when it can, the suggested layout and the free response.
+  careless(s) {
+    for (const id of offersFor(s)) {
+      const t = termsFor(id, s.reputation.artists[id]);
+      for (const deal of t.doorOk ? ['door', 'guarantee'] : ['guarantee']) {
+        if (expectNet(s, id, deal, 'reference').upfront <= s.cash) return { id, deal, layout: 'reference', careless: true };
+      }
+    }
+    return null;
+  },
+};
+const DEAL_LIST = ['guarantee', 'door'];
+function career(seed, planName) {
+  let s = createGame(seed);
+  const booked = [];
+  for (let n = 1; n <= T.careerShows; n += 1) {
+    const p = PLANS[planName](s);
+    if (!p) return { shows: n - 1, reached: false, broke: true, booked };
+    booked.push(p.id);
+    s = step(s, { type: 'chooseDeal', deal: p.deal, artistId: p.id });
+    s = step(s, { type: 'setLayout', objects: layoutObjects[p.layout] });
+    s = step(s, { type: 'confirmBuild' });
+    s = step(s, { type: 'setPromotion', price: D.ARTISTS[p.id].fairPrice, ads: REFERENCE_ADS });
+    s = step(s, { type: 'confirmPromotion' });
+    const responses = D.INCIDENTS[s.show.incidentId].responses.filter((r) => r.cost <= s.cash);
+    const pick = p.careless ? responses[0]
+      : responses.map((r) => ({ r, v: scored(settlementFor(step(s, { type: 'respond', responseId: r.id }))) })).sort((a, b) => b.v - a.v)[0].r;
+    s = step(s, { type: 'respond', responseId: pick.id });
+    s = step(s, { type: 'acceptSettlement' });
+    if (s.unlocks.club) return { shows: n, reached: true, broke: false, booked };
+    if (s.cash < cheapestShowCost()) return { shows: n, reached: false, broke: true, booked };
+    s = step(s, { type: 'nextShow' });
+  }
+  return { shows: T.careerShows, reached: false, broke: false, booked };
+}
+const careers = {};
+for (const planName of Object.keys(PLANS)) {
+  careers[planName] = [];
+  for (let seed = 1; seed <= T.careerSeeds; seed += 1) careers[planName].push(career(seed, planName));
+}
+const careerStats = (list) => {
+  const reached = list.filter((c) => c.reached).map((c) => c.shows).sort((a, b) => a - b);
+  return {
+    rate: reached.length / list.length,
+    median: reached.length ? reached[Math.floor(reached.length / 2)] : null,
+    min: reached.length ? reached[0] : null,
+    broke: list.filter((c) => c.broke).length,
+  };
+};
+const careful = careerStats(careers.careful);
+const careless = careerStats(careers.careless);
+
+out('## The Lot career');
+out();
+out(`Goal that unlocks the Club: ${D.LOT_GOAL.sellouts} sellout of the Lot (${D.PERMIT_CAP} people), venue reputation ${D.LOT_GOAL.venueRep}, ${money(D.LOT_GOAL.cash)} cash, and one act at a relationship of +${D.LOT_GOAL.loyalAct}. Each strategy plays up to ${T.careerShows} shows on ${T.careerSeeds} seeds. "Careful" weighs every offer, deal and layout at the act's middle draw and picks the best incident response; "careless" takes the first affordable offer on the door deal when it can, the suggested layout and the free response. The cheapest show costs ${money(cheapestShowCost())} before doors.`);
+out();
+table(['Strategy', 'Reached the Club', 'Median shows', 'Fewest shows', 'Ran out of money'],
+  [['careful', careful], ['careless', careless]].map(([name, c]) => [name, pct(c.rate), c.median ?? '–', c.min ?? '–', `${c.broke} of ${T.careerSeeds}`]));
+const bookings = {};
+careers.careful.forEach((c) => c.booked.forEach((id) => { bookings[id] = (bookings[id] || 0) + 1; }));
+careers.careless.forEach((c) => c.booked.forEach((id) => { bookings[id] = (bookings[id] || 0) + 1; }));
+table(['Act', 'Bookings across both strategies'], D.ROSTER.map((id) => [D.ARTISTS[id].name, bookings[id] || 0]));
+
 // Verdicts
 const worked = ['guarantee', 'door'].map((deal) => evaluateShow({ ...WORKED_EXAMPLE, deal }));
 verdict('Worked example matches RULES.md',
@@ -214,6 +311,18 @@ const refRate = refPass.guarantee.free / D.SIM_SEEDS;
 const { referencePassRateMin: lo, referencePassRateMax: hi } = D.BALANCE_TARGETS;
 verdict('The guarantee with free responses is neither trivial nor hopeless', refRate >= lo && refRate <= hi,
   `${pct(refRate)} against a target of ${pct(lo)} to ${pct(hi)}`);
+
+verdict('Careful careers reach the Club', careful.rate >= T.carefulReachMin,
+  `${pct(careful.rate)} within ${T.careerShows} shows against a minimum of ${pct(T.carefulReachMin)}`);
+const fewest = Math.min(careful.min ?? Infinity, careless.min ?? Infinity);
+verdict('The Club takes a run of shows', fewest >= T.careerMinShows,
+  `fewest shows to the Club: ${fewest === Infinity ? 'never reached' : fewest}, against a minimum of ${T.careerMinShows}`);
+verdict('Care matters on the Lot', careful.rate - careless.rate >= T.careGapMin,
+  `careful ${pct(careful.rate)}, careless ${pct(careless.rate)}; gap of at least ${pct(T.careGapMin)} required`);
+const unbooked = D.ROSTER.filter((id) => !bookings[id]);
+verdict('Every act gets booked', unbooked.length === 0,
+  unbooked.length ? `never booked: ${unbooked.join(', ')}` : `${D.ROSTER.length} of ${D.ROSTER.length} acts booked`);
+verdict('Careful careers never run out of money', careful.broke === 0, `${careful.broke} of ${T.careerSeeds} careful careers ran out`);
 
 out('## Verdicts');
 out();

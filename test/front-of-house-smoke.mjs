@@ -109,6 +109,17 @@ try {
   assert.equal(migrated.cash, Math.round(v1.cash / 2), 'version 1 cash converts to the Lot scale');
   ok('save codes move a game, version 1 codes convert, and bad codes are refused');
 
+  // The career carries on: the done screen shows the Lot goal, and the next show offers two acts.
+  assert.ok(await page.isVisible('.career'), 'the done screen shows the goal that unlocks the Club');
+  await page.click('[data-act="next"]');
+  const nextShow = await game(page);
+  assert.equal(nextShow.phase, 'book');
+  assert.equal(nextShow.offers.length, 2);
+  assert.equal(await page.locator('.offer').count(), 2, 'one card per offer');
+  assert.equal(nextShow.cash, done.cash, 'cash carries into the next show');
+  assert.equal(nextShow.career.shows, 1);
+  ok('the next show offers two acts and carries the cash');
+
   // 3. Keyboard placement on the board.
   await page2.click('[data-save="new"]');
   await page2.click('[data-save="new"]');

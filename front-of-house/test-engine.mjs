@@ -4,7 +4,8 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
-  applyAction, buzz, createGame, evaluateShow, evaluateVenue, forecast, migrateSave, nextSeed, normalizeState,
+  applyAction, buzz, careerProgress, cheapestShowCost, createGame, evaluateShow, evaluateVenue, forecast, migrateSave,
+  nextSeed, normalizeState, offersFor, termsFor,
   presaleSplit, priceFactor, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
@@ -269,10 +270,16 @@ test('normalizeState rejects junk and repairs tampered saves', () => {
 
 const fixture = async (name) => JSON.parse(await readFile(new URL(`./test/fixtures/${name}`, import.meta.url), 'utf8'));
 
-test('the frozen version 2 save fixture loads unchanged', async () => {
+test('the frozen version 2 save fixture loads, gaining only the career defaults', async () => {
   const v2 = await fixture('save-v2.json');
   assert.equal(v2.schema, D.SCHEMA_VERSION);
-  assert.deepEqual(normalizeState(v2, 1), v2);
+  const newActs = Object.fromEntries(Object.keys(D.ARTISTS).map((id) => [id, 0]));
+  assert.deepEqual(normalizeState(v2, 1), {
+    ...v2,
+    booking: { ...v2.booking, terms: null },
+    reputation: { ...v2.reputation, artists: { ...newActs, ...v2.reputation.artists } },
+    unlocks: { club: false },
+  }, 'a save from before the Lot career keeps everything and gets the new optional fields');
   assert.equal(migrateSave(v2), v2, 'a current save is left alone');
 });
 
@@ -284,8 +291,9 @@ test('a version 1 save migrates to the Lot scale', async () => {
   assert.deepEqual(v2.history, [{ ...v1.history[0], attendance: 135, net: 473, artistPay: 500 }]);
   assert.equal(v2.phase, 'book', 'a finished show that passed moves on to the next show');
   assert.equal(v2.seed, nextSeed(v1.seed));
-  assert.deepEqual(v2.reputation, { venue: v1.reputation.venue, artists: { 'sodium-arcade': v1.reputation.artists['velvet-static'] } },
-    'the renamed artist keeps its relationship');
+  assert.equal(v2.reputation.venue, v1.reputation.venue);
+  assert.equal(v2.reputation.artists['sodium-arcade'], v1.reputation.artists['velvet-static'], 'the renamed artist keeps its relationship');
+  assert.equal(v2.reputation.artists['velvet-static'], undefined);
   assert.deepEqual(v2.venue.objects, v1.venue.objects);
   assert.deepEqual(normalizeState(v2, 1), v2);
 
@@ -349,4 +357,111 @@ test('showPreview gives the crowd before the incident without changing state', (
   const preview = showPreview(s);
   assert.equal(preview.parts.incident, 1);
   assert.equal(preview.attendance, evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: rollShow(13).draw, artistId: D.DEFAULT_ARTIST }).attendance);
+});
+
+// ---------------------------------------------------------------------------
+// The Lot career (R-19 to R-21)
+
+// Plays one show to settlement with the given act and deal, the reference layout and ads, and
+// the first incident response.
+function playShow(state, artistId, deal) {
+  let s = run(state, [
+    { type: 'chooseDeal', deal, artistId },
+    { type: 'setLayout', objects: REFERENCE_LAYOUT },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: D.ARTISTS[artistId].fairPrice, ads: REFERENCE_ADS },
+    { type: 'confirmPromotion' },
+  ]);
+  s = run(s, [{ type: 'respond', responseId: D.INCIDENTS[s.show.incidentId].responses[0].id }, { type: 'acceptSettlement' }]);
+  return s;
+}
+
+test('R-19: the first show offers the default act; later shows draw from the roster', () => {
+  for (let seed = 1; seed <= 50; seed += 1) {
+    const first = offersFor(createGame(seed));
+    assert.equal(first.length, D.OFFERS_PER_SHOW);
+    assert.equal(first[0], D.DEFAULT_ARTIST);
+    const later = offersFor({ ...createGame(seed), history: [{}] });
+    assert.equal(new Set(later).size, D.OFFERS_PER_SHOW);
+    later.forEach((id) => assert.ok(D.ROSTER.includes(id)));
+    assert.deepEqual(offersFor({ ...createGame(seed), history: [{}] }), later, 'offers come from the seed');
+  }
+  const seen = new Set();
+  for (let seed = 1; seed <= 50; seed += 1) offersFor({ ...createGame(seed), history: [{}] }).forEach((id) => seen.add(id));
+  assert.deepEqual([...seen].sort(), [...D.ROSTER].sort(), 'every act is offered on some seed');
+});
+
+test('R-19: relationship sets the ask, the draw and whether a door deal is on the table', () => {
+  const base = D.ARTISTS[D.DEFAULT_ARTIST];
+  assert.deepEqual(termsFor(D.DEFAULT_ARTIST, 0), { ask: base.ask, drawMult: 1, doorOk: true });
+  const fond = termsFor(D.DEFAULT_ARTIST, 20);
+  assert.equal(fond.ask, Math.round(base.ask * (1 - 20 * D.REL_ASK_SLOPE) / D.ASK_ROUNDING) * D.ASK_ROUNDING);
+  assert.ok(fond.ask < base.ask && fond.drawMult > 1);
+  const sour = termsFor(D.DEFAULT_ARTIST, D.REL_DOOR_FLOOR);
+  assert.ok(sour.ask > base.ask && sour.drawMult < 1);
+  assert.equal(sour.doorOk, false, 'an act at the floor only plays for a guarantee');
+  assert.equal(termsFor('juniper-switchboard', 100).doorOk, false, 'a guarantee-only act never takes the door');
+});
+
+test('R-19: booking checks the offer and stores the terms the show is settled with', () => {
+  let seed = 1;
+  while (!offersFor({ ...createGame(seed), history: [{}] }).includes('juniper-switchboard')) seed += 1;
+  const s = { ...createGame(seed), history: [{ showId: 1 }] };
+  const offered = offersFor(s);
+  const absent = D.ROSTER.find((id) => !offered.includes(id));
+  assert.match(applyAction(s, { type: 'chooseDeal', deal: 'guarantee', artistId: absent }).error, /not on offer/);
+  assert.match(applyAction(s, { type: 'chooseDeal', deal: 'door', artistId: 'juniper-switchboard' }).error, /only plays for a guarantee/);
+  const fond = { ...s, reputation: { ...s.reputation, artists: { ...s.reputation.artists, 'juniper-switchboard': 20 } } };
+  const booked = run(fond, [{ type: 'chooseDeal', deal: 'guarantee', artistId: 'juniper-switchboard' }]);
+  const terms = termsFor('juniper-switchboard', 20);
+  assert.deepEqual(booked.booking.terms, { ask: terms.ask, drawMult: terms.drawMult });
+  assert.equal(booked.promotion.price, D.ARTISTS['juniper-switchboard'].fairPrice);
+  const show = evaluateShow({ ...WORKED_EXAMPLE, artistId: 'juniper-switchboard', deal: 'guarantee', ask: terms.ask, drawMult: terms.drawMult });
+  assert.equal(show.artistPay, terms.ask, 'the guarantee pays the quoted ask');
+  assert.equal(show.relDelta, D.REL_BASE, 'paying the quoted ask in full counts as fair');
+});
+
+test('R-21: a career carries on after a bad night and stops only when no show is affordable', () => {
+  let seed = 1;
+  let done;
+  for (; seed < 200; seed += 1) {
+    done = playShow(createGame(seed), D.DEFAULT_ARTIST, 'guarantee');
+    if (done.history[0].result === 'retry' && done.cash >= cheapestShowCost()) break;
+  }
+  assert.equal(done.history[0].result, 'retry', 'found a losing first night');
+  const next = run(done, [{ type: 'nextShow' }]);
+  assert.equal(next.phase, 'book');
+  assert.equal(next.cash, done.cash, 'a bad night costs money but the career goes on');
+  assert.ok(offersFor(next).includes(next.booking.artistId));
+  const broke = { ...done, cash: cheapestShowCost() - 1 };
+  assert.match(applyAction(broke, { type: 'nextShow' }).error, /cheapest show costs \$\d+/);
+  assert.equal(applyAction(broke, { type: 'retry' }).error, null, 'starting over is always possible');
+  assert.equal(cheapestShowCost(), evaluateShow({
+    venue: evaluateVenue({ objects: D.CHEAPEST_LAYOUT }), deal: 'door', price: D.PRICE_MIN, ads: {}, venueRep: 0,
+    draw: 0, artistId: D.DEFAULT_ARTIST, incidentId: null, responseId: null,
+  }).upfront);
+  assert.equal(evaluateVenue({ objects: D.CHEAPEST_LAYOUT }).ready, true);
+});
+
+test('R-20: meeting the Lot goal at settlement unlocks the Club, and the unlock stays', () => {
+  const s = createGame(5);
+  const sellout = { showId: 1, seed: 1, deal: 'guarantee', attendance: D.PERMIT_CAP, satisfaction: 90, net: 500, artistPay: 500, result: 'pass', weakest: null, settledAt: null };
+  const near = {
+    ...s,
+    cash: D.LOT_GOAL.cash + 5000,
+    reputation: { venue: D.LOT_GOAL.venueRep + 20, artists: { ...s.reputation.artists, [D.DEFAULT_ARTIST]: D.LOT_GOAL.loyalAct + 10 } },
+    history: [sellout],
+  };
+  const before = careerProgress(near);
+  assert.deepEqual(before.met, { sellouts: true, venueRep: true, cash: true, loyalAct: true });
+  assert.equal(before.clubUnlocked, false, 'the unlock is recorded at settlement, not by looking');
+  const after = playShow(near, offersFor(near)[0], 'guarantee');
+  assert.equal(careerProgress(after).goalMet, true);
+  assert.equal(after.unlocks.club, true);
+  const later = run(after, [{ type: 'nextShow' }]);
+  assert.equal(later.unlocks.club, true, 'the next show keeps the unlock');
+  assert.equal(careerProgress({ ...later, cash: 0 }).clubUnlocked, true, 'losing cash later does not take the Club away');
+  assert.equal(playShow(createGame(5), D.DEFAULT_ARTIST, 'guarantee').unlocks.club, false, 'one ordinary night unlocks nothing');
+  assert.equal(normalizeState(after, 1).unlocks.club, true);
+  assert.equal(normalizeState({ ...after, unlocks: { club: 'yes' } }, 1).unlocks.club, false);
 });

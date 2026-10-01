@@ -108,8 +108,27 @@ export const STARTER_LAYOUT = [
   { type: 'exit', x: 0, y: 14, rot: 0 },
 ];
 
-// Artists. `ask` is the guarantee the artist expects (ARTIST_ASK in RULES.md).
+// The cheapest venue that passes R-18 (one exit, so 50 people). Its cost on a door deal with no
+// ads is the least a show can cost; below that, the career is out of money (R-21).
+export const CHEAPEST_LAYOUT = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 9, y: 0, rot: 0 },
+  { type: 'pa-s', x: 8, y: 0, rot: 0 },
+  { type: 'gate', x: 12, y: 15, rot: 0 },
+  { type: 'exit', x: 0, y: 5, rot: 0 },
+];
+
+// Artists. `ask` is the guarantee the artist expects (ARTIST_ASK in RULES.md). Every act is
+// fictional (CT-DEC-03); the name checks are recorded in docs/WORLD.md.
 export const ARTISTS = {
+  'gravel-hymnal': {
+    name: 'Gravel Hymnal',
+    genre: 'Folk',
+    drawMin: 55,
+    drawMax: 100,
+    fairPrice: 15,
+    ask: 300,
+  },
   // Renamed from Velvet Static in save version 2: that name belongs to a real UK indie band
   // (CT-DEC-03 name checks).
   'sodium-arcade': {
@@ -120,8 +139,28 @@ export const ARTISTS = {
     fairPrice: 20,
     ask: 500,
   },
+  'juniper-switchboard': {
+    name: 'Juniper Switchboard',
+    genre: 'Funk and soul',
+    drawMin: 95,
+    drawMax: 150,
+    fairPrice: 25,
+    ask: 800,
+    guaranteeOnly: true, // an established act: it never plays for the door
+  },
 };
 export const DEFAULT_ARTIST = 'sodium-arcade';
+
+// The Lot career (R-19 to R-21, CT-DEC-10). The first show always offers the default act;
+// later shows offer OFFERS_PER_SHOW acts from the roster, chosen by the seed.
+export const ROSTER = ['gravel-hymnal', 'sodium-arcade', 'juniper-switchboard'];
+export const OFFERS_PER_SHOW = 2;
+export const REL_ASK_SLOPE = 0.005; // each relationship point takes 0.5% off the ask (or adds it)
+export const REL_DRAW_SLOPE = 0.005; // and adds 0.5% to the draw: an act that likes you promotes the show
+export const REL_DOOR_FLOOR = -20; // at or below this, an act only plays for a guarantee
+export const ASK_ROUNDING = 10;
+// Meeting all three unlocks the Club, tier 2 (CT-DEC-09). The unlock stays once earned.
+export const LOT_GOAL = { sellouts: 1, venueRep: 60, cash: 6000, loyalAct: 20 }; // loyalAct: one act's relationship
 
 // Incidents (R-11). Exactly one per show, chosen by the seeded generator.
 export const INCIDENTS = {
@@ -155,4 +194,11 @@ export const SIM_SEEDS = 500;
 export const BALANCE_TARGETS = {
   referencePassRateMin: 0.25,
   referencePassRateMax: 0.9,
+  // The Lot career (Phase 4): careful play reaches the Club on nearly every seed, it takes a run
+  // of shows, and careless play reaches it far less often.
+  careerSeeds: 300,
+  careerShows: 12,
+  carefulReachMin: 0.9,
+  careerMinShows: 4,
+  careGapMin: 0.25,
 };

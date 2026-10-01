@@ -13,6 +13,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-07](#ct-dec-07-documentation-source-of-truth) | This folder is canonical; Notion links to it | Accepted |
 | [CT-DEC-08](#ct-dec-08-standalone-game) | A standalone game, outside the MIXMASH universe | Accepted |
 | [CT-DEC-09](#ct-dec-09-career-tier-ladder) | Four career tiers from the art: Lot, Club, Amphitheater, Festival Grounds | Accepted |
+| [CT-DEC-10](#ct-dec-10-the-lot-career) | The Lot career: a roster, terms that follow the relationship, a four-part goal, and carrying on after a bad night | Proposed |
 
 ## CT-DEC-01: Core scope
 
@@ -82,7 +83,7 @@ Use fictional artists, venues and markets built on recognizable genre types. Rec
 
 ### Name checks (2026-10-01)
 
-Recorded here until `docs/WORLD.md` exists. A web search for each name in quotes, with "band".
+Moved to [`WORLD.md`](WORLD.md#name-checks), which now holds every name check. The first round, for reference: a web search for each name in quotes, with "band".
 
 | Name | Result | Outcome |
 | --- | --- | --- |
@@ -232,3 +233,29 @@ The career uses the four tiers from the art:
 - The arena or stadium tier is cut; the festival grounds are the end state. GDD sections 1, 3, 5, 6 and 9 follow this.
 - `ROADMAP.md`, when it starts, has four career phases, and the art needs four venue looks.
 - The first playable's Oak St. Lot was permitted for 300 and its artist drew 150 to 260, above the Lot's ceiling of 150. Phase 3 retuned tier 1 (2026-10-01): the permit is 150, the draw 75 to 130, and every per-person and money value was halved, so every balance verdict still passes and the worked example halved with it. Version 1 saves convert to the new scale (`SAVE_FORMAT.md`).
+
+## CT-DEC-10: The Lot career
+
+- Date: 2026-10-01
+- Status: Proposed (built in Phase 4 so it can be played; every value is in `data.mjs`, and Dave may change any of them)
+- Owner: Dave Robertson
+- Affects: booking, relationships, progression, the balance simulator ([RULES.md](RULES.md#the-lot-career) R-19 to R-21)
+
+### Context
+
+Tier 1 was one night. The GDD's career needs a run of shows on the Lot with a reason to care about each act, and an open balance question needed an answer: the door deal pays more than the guarantee on almost any single night at the fair price. Prototyping in the simulator showed that with only a sellout, reputation and cash goal, the door-only habit reached the Club fastest (median 3 shows against 6), so relationships did nothing.
+
+### Decision
+
+1. **A roster of three fictional acts** (`ROSTER`): Gravel Hymnal (folk, small and cheap), Sodium Arcade (indie rock, the first playable's act) and Juniper Switchboard (funk and soul, the biggest draw). The first show always offers Sodium Arcade and one more; later shows offer two of the three, chosen by the seed.
+2. **Terms follow the relationship.** Each point takes 0.5% off the ask and adds 0.5% to the draw. At a relationship of −20 or below an act only plays for a guarantee. Juniper Switchboard is guarantee-only: an established act that never plays for the door, which also means a promoter needs cash before booking the act most likely to sell out the Lot.
+3. **The Lot goal unlocks the Club:** one sellout of the Lot, venue reputation 60, $6,000 in the bank, and one act at a relationship of +20, which only fair guarantees build. The unlock stays once earned.
+4. **A bad night does not end the career.** Next show is open after any settlement unless cash is below the cheapest possible show ($1,025); Start over is always open.
+
+### Consequences
+
+- In the simulator (300 seeds, up to 12 shows), careful play reaches the Club on 100% of seeds in a median of 7 shows (never fewer than 5), and careless play (first offer, door when allowed, suggested layout, free responses) on about 42%. Every act gets booked, and no careful career runs out of money. These are verdicts in the balance baseline, so a tuning change that breaks them fails CI.
+- The relationship now matters across a run, which answers the single-night door-deal question without changing the single-show rules or the worked example.
+- No save version bump: `booking.terms` and `unlocks` are optional fields with defaults, so a version 2 save from Phase 3 keeps playing exactly as it was booked.
+- The careful strategy always prefers the budget layout at the Lot's scale, which suggests the light tower and the medium PA are rarely worth their cost on the Lot. Left as is for now; it is a balance question for Dave.
+

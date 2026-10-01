@@ -39,16 +39,18 @@ The save stores the **player's choices and the seed**, not computed results. Cap
       { type: 'stage', x: 10, y: 0, rot: 0 }
     ]
   },
-  booking: { artistId: 'sodium-arcade', deal: null },      // deal: 'guarantee' | 'door' | null
+  booking: { artistId: 'sodium-arcade', deal: null, terms: null },  // deal: 'guarantee' | 'door' | null;
+                              // terms: { ask, drawMult } quoted at booking (R-19), or null
   promotion: { price: 20, ads: { flyers: 0, social: 0, radio: 0 }, confirmed: false },
   show: null,                 // { incidentId, responseId, venueRep } once the doors open; venueRep is the
                               // reputation the show was sold with (settlement changes the live one)
   reputation: { venue: 0, artists: { 'sodium-arcade': 0 } },
-  history: []                 // settlement records: { showId, seed, deal, attendance, satisfaction, net, artistPay, result, weakest, settledAt }
+  history: [],                // settlement records: { showId, seed, deal, attendance, satisfaction, net, artistPay, result, weakest, settledAt }
+  unlocks: { club: false }    // set at the settlement that meets the Lot goal (R-20); never cleared except by Start over
 }
 ```
 
-Version 2 has the same shape as version 1; the numbers are on the Lot scale. Object `type` values allowed: `stage`, `pa-s`, `pa-m`, `lights`, `bar`, `restroom`, `gate`, `exit`, `fence`.
+Version 2 has the same shape as version 1; the numbers are on the Lot scale. The Lot career (Phase 4) added two optional fields without a version bump, as the migration policy allows: `booking.terms` (null for a booking made before it, which then settles on the act's base ask and draw, exactly as it was sold) and `unlocks` (defaults to `{ club: false }`). Object `type` values allowed: `stage`, `pa-s`, `pa-m`, `lights`, `bar`, `restroom`, `gate`, `exit`, `fence`.
 
 ## Validation (required on every load and import)
 

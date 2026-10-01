@@ -1,6 +1,6 @@
 # Front of House Rules Specification
 
-**Status:** Implemented in `front-of-house/engine.mjs` (engine version 1) · **Scope:** the first playable loop, "Lot Night" ([GDD section 4](GDD.md#4-the-first-playable-loop-lot-night))
+**Status:** Implemented in `front-of-house/engine.mjs` (engine version 1) · **Scope:** the first playable loop, "Lot Night" ([GDD section 4](GDD.md#4-the-first-playable-loop-lot-night)), and the Lot career (R-19 to R-21, [CT-DEC-10](DECISIONS.md#ct-dec-10-the-lot-career))
 **Decisions:** [CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art) (deterministic engine), [CT-DEC-07](DECISIONS.md#ct-dec-07-documentation-source-of-truth) (numbers live in code)
 
 Each rule has an ID (`R-NN`), its inputs and output, a formula, and the names of the adjustable values it uses. Tests in `front-of-house/test-engine.mjs` and comments in `front-of-house/engine.mjs` cite the rule ID.
@@ -10,7 +10,7 @@ Each rule has an ID (`R-NN`), its inputs and output, a formula, and the names of
 ## General conventions
 
 - **Money** is whole dollars (integers). Rounding uses `Math.round` (halves round up) wherever a rule says `round`.
-- **Determinism:** every random value comes from one seeded generator (mulberry32 seeded with `state.seed`). Values are drawn in a fixed order: artist draw, incident type, incident timing (`rollShow`). The same seed and the same player choices produce the same settlement, down to the dollar.
+- **Determinism:** every random value comes from one seeded generator (mulberry32 seeded with `state.seed`). Values are drawn in a fixed order: artist draw, incident type, incident timing (`rollShow`). The offers (R-19) come from a second generator seeded with `seed XOR 0x5bd1e995`, so they never shift the show's own rolls. The same seed and the same player choices produce the same settlement, down to the dollar.
 - **The engine never touches the DOM.** `applyAction(state, action)` returns `{ state, error }`; the input state is never changed.
 - `clamp(v, lo, hi)` limits `v` to the range `[lo, hi]`.
 - **Per-person parts:** where a rule divides a supply by `attendance`, the part is 1 when attendance is 0.
@@ -121,7 +121,7 @@ Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + 
 
 ### R-14: Artist payment
 
-- Guarantee: `artistPay = GUARANTEE`, the artist's `ask` in `ARTISTS`.
+- Guarantee: `artistPay = GUARANTEE`, the ask quoted when the act was booked (R-19; the base `ask` in `ARTISTS` for a booking made before the Lot career).
 - Door deal: `artistPay = round(DOOR_SPLIT × max(0, ticketGross − showCosts))`, where `ticketGross = attendance × price`.
 - This is a simplified net door deal. Deals where the artist gets the larger of a guarantee or a share come later.
 
@@ -129,7 +129,7 @@ Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + 
 
 `net = ticketGross + bar − showCosts − artistPay`
 
-**Pass:** `net ≥ 0` and `satisfaction ≥ PASS_SATISFACTION`. **Retry:** otherwise ([GDD section 4](GDD.md#4-the-first-playable-loop-lot-night)).
+**Pass:** `net ≥ 0` and `satisfaction ≥ PASS_SATISFACTION`. **Retry:** otherwise ([GDD section 4](GDD.md#4-the-first-playable-loop-lot-night)). In the Lot career the result labels the night; a retry no longer ends the run (R-21).
 
 ## Reputation
 
@@ -139,7 +139,33 @@ Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + 
 
 ### R-17: Artist relationship
 
-`relationship[artist] = clamp(relationship[artist] + clamp(REL_BASE + round(REL_SLOPE × (artistPay / ARTIST_ASK − 1)), REL_MIN_STEP, REL_MAX_STEP), −100, 100)`, where `ARTIST_ASK` is the artist's `ask`.
+`relationship[artist] = clamp(relationship[artist] + clamp(REL_BASE + round(REL_SLOPE × (artistPay / ARTIST_ASK − 1)), REL_MIN_STEP, REL_MAX_STEP), −100, 100)`, where `ARTIST_ASK` is the ask quoted at booking (R-19). Paying the quoted guarantee in full counts as fair (`REL_BASE`).
+
+## The Lot career
+
+### R-19: Offers and terms
+
+- **Offers:** the first show of a career offers `DEFAULT_ARTIST` and one more act. Every later show offers `OFFERS_PER_SHOW` different acts from `ROSTER`, shuffled by the offer generator (`offersFor(state)`).
+- **Terms** depend on the act's relationship `rel` with the promoter (`termsFor(artistId, rel)`):
+  - `ask = round(ARTISTS[id].ask × (1 − rel × REL_ASK_SLOPE) / ASK_ROUNDING) × ASK_ROUNDING`
+  - `drawMult = 1 + rel × REL_DRAW_SLOPE`; the show's draw (R-06) is multiplied by it, because an act that likes the promoter promotes the show.
+  - A door deal is refused when `rel ≤ REL_DOOR_FLOOR`, or always for an act marked `guaranteeOnly`.
+- The booking stores `{ ask, drawMult }` (`booking.terms`), so a replayed settlement uses the terms the show was sold on.
+
+### R-20: The Lot goal
+
+The Club (tier 2, [CT-DEC-09](DECISIONS.md#ct-dec-09-career-tier-ladder)) unlocks at a settlement after which all of these hold:
+
+- at least `LOT_GOAL.sellouts` shows sold out the Lot (`attendance ≥ PERMIT_CAP`),
+- venue reputation ≥ `LOT_GOAL.venueRep`,
+- cash ≥ `LOT_GOAL.cash`,
+- one act's relationship ≥ `LOT_GOAL.loyalAct`.
+
+The unlock is stored (`unlocks.club`) and stays, even if cash or reputation falls later. `careerProgress(state)` reports each part.
+
+### R-21: Carrying on
+
+After any settlement the player may book the next show, keeping cash, venue reputation, relationships, the layout and the history. The next show is refused only when cash is below the cheapest possible show: the upfront cost of `CHEAPEST_LAYOUT` on a door deal with no ads (`cheapestShowCost()`). Start over (`retry`) is always available and resets cash, reputation, relationships and the unlock.
 
 ## Worked example
 
