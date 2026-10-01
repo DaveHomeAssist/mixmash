@@ -216,7 +216,7 @@ function renderOverview() {
     h('h2', { class: 'section-title' }, 'How this index works'),
     h('div', { class: 'notes' },
       h('div', { class: 'note' }, h('h3', { text: 'Generated from the tree' }),
-        h('p', {}, 'Every tracked file appears exactly once, titled and summarised from its own heading or comment when the catalog is generated. Run ', h('code', { text: 'npm run admin:index' }), ' after adding, removing or renaming a file; ', h('code', { text: 'npm test' }), ' fails when the catalog and the tree disagree.')),
+        h('p', {}, 'Every tracked file appears exactly once, titled and summarised from its own heading or comment. A workflow regenerates the catalog after every push to gh-pages, so new, removed and renamed files appear within minutes; ', h('code', { text: 'npm run admin:index' }), ' does the same locally.')),
       h('div', { class: 'note' }, h('h3', { text: 'Status stays at its source' }),
         h('p', { text: 'Each game lists where its status is recorded (roadmaps, progress logs, decision logs, reports) instead of copying it here, so this page cannot go stale.' })),
       h('div', { class: 'note' }, h('h3', { text: 'Public, but not indexed' }),

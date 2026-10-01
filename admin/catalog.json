@@ -597,7 +597,7 @@
         },
         {
           "name": "npm run admin:index",
-          "description": "Regenerate admin/catalog.json. Run it after adding, removing or renaming any tracked file."
+          "description": "Regenerate admin/catalog.json locally. The admin-index workflow does the same after every push to gh-pages."
         }
       ]
     }
@@ -1441,6 +1441,16 @@
       "title": "Front of House Art Direction",
       "description": "Art direction: the look, palette roles, type, the four career tiers and the conflicts to settle before any sprite work.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/ART_DIRECTION.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/FUTURE.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House: the feature plan",
+      "description": "This document owns the order of features after the Lot career. The design of each system stays in GDD.md. The accepted choices stay in DECISIONS.md. What already shipped is in progress.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FUTURE.md",
       "open": null
     },
     {
@@ -2399,7 +2409,7 @@
       "category": "decisions",
       "kind": "MD",
       "title": "Agent rules",
-      "description": "Rules for agents working in this repo: the one-string status naming format and keeping this admin index current.",
+      "description": "Rules for agents working in this repo: the one-string status naming format and how the admin index stays current and public-safe.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/AGENTS.md",
       "open": null
     },
@@ -2614,12 +2624,22 @@
       "open": null
     },
     {
+      "path": ".github/workflows/admin-index.yml",
+      "project": "studio",
+      "category": "ops",
+      "kind": "YAML",
+      "title": "Admin index sync workflow",
+      "description": "After every push to gh-pages, regenerates admin/catalog.json, commits it when files were added, removed or renamed, and requests a Pages build.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/admin-index.yml",
+      "open": null
+    },
+    {
       "path": ".github/workflows/ci.yml",
       "project": "studio",
       "category": "ops",
       "kind": "YAML",
       "title": "CI workflow",
-      "description": "Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.",
+      "description": "Regenerates the admin catalog, then unit tests, syntax checks, art and balance drift gates and every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/ci.yml",
       "open": null
     },

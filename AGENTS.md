@@ -15,8 +15,9 @@ Status Check Runs "Human Name"):
 
 ## Admin index
 
-- Adding, removing or renaming a tracked file? Run `npm run admin:index` and commit
-  `admin/catalog.json`. `npm test` fails until the index matches the tree.
+- The admin-index workflow regenerates `admin/catalog.json` after every push to
+  gh-pages and commits it when it changed, so a direct push needs no extra step.
+  In a pull request, run `npm run admin:index` to keep the catalog diff complete.
 - A file that does not describe itself (no heading, title or leading comment) needs a
   note in `admin/catalog-sources.mjs`.
 - `/admin/` is public (noindex). Never add local paths, Notion links or links to

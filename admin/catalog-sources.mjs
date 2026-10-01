@@ -200,7 +200,7 @@ export const COMMAND_NOTES = {
   'smoke:catalog': { project: 'studio', description: 'Playwright rail for /pitch/, /mars/, the /empires/ shell, the hub and the shared nav.' },
   'smoke:landing': { project: 'studio', description: 'Landing page at five widths: keyboard order, reduced motion, hit targets, contrast and screenshots.' },
   'smoke:admin': { project: 'studio', description: 'This admin index: no page scroll at six widths, themes, keyboard tabs, search, filters and privacy.' },
-  'admin:index': { project: 'studio', description: 'Regenerate admin/catalog.json. Run it after adding, removing or renaming any tracked file.' },
+  'admin:index': { project: 'studio', description: 'Regenerate admin/catalog.json locally. The admin-index workflow does the same after every push to gh-pages.' },
   'smoke:play': { project: 'mixmash', description: 'Fighter resume, snapshot, Platform Rush, profile and share-link smoke rail.' },
   'smoke:zelda2mario': { project: 'zelda2mario', description: 'Status ledger scope, privacy, mobile and ultrawide layout, themes, keyboard tabs, filters and printing.' },
   'smoke:front-of-house': { project: 'front-of-house', description: 'Lot Night end to end: reload, save codes and version 1 conversion, keyboard building, reduced motion, phone width, contrast.' },
@@ -225,11 +225,12 @@ const vercelFn = (route, what) => ({ description: `Vercel function for ${route}:
 
 export const FILE_NOTES = {
   // Studio root and hosting
-  '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.' },
+  '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Regenerates the admin catalog, then unit tests, syntax checks, art and balance drift gates and every Playwright rail. Runs on pull requests and on relevant pushes to gh-pages.' },
+  '.github/workflows/admin-index.yml': { title: 'Admin index sync workflow', description: 'After every push to gh-pages, regenerates admin/catalog.json, commits it when files were added, removed or renamed, and requests a Pages build.' },
   '.gitignore': { description: 'Ignored paths: node_modules, MarsScape local data and output, Vercel state, local env files and art-validation scratch.' },
   '.nojekyll': { description: 'Tells GitHub Pages to serve files as-is, without Jekyll processing.' },
   '404.html': { description: 'Not-found page for every unknown path on mixmash.games.' },
-  'AGENTS.md': { title: 'Agent rules', description: 'Rules for agents working in this repo: the one-string status naming format and keeping this admin index current.' },
+  'AGENTS.md': { title: 'Agent rules', description: 'Rules for agents working in this repo: the one-string status naming format and how the admin index stays current and public-safe.' },
   'CNAME': { description: 'GitHub Pages custom-domain binding for mixmash.games.' },
   'LICENSE': { description: 'Repository license.' },
   'brand.html': { description: 'MIXMASH brand guide: Mainstage Neons colour tokens, type, components and voice.' },
