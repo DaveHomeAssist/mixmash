@@ -96,6 +96,16 @@ export function createBoard(canvas) {
   let lastScene = null;
   let drawn = []; // the props drawn as sprites in the last frame, back to front
   const stats = { spriteRedraws: 0, markers: [], washSource: null };
+  let facing = 0;
+
+  function worldToView(x, y) {
+    const W = D.GRID.w;
+    const H = D.GRID.h;
+    if (facing === 1) return [y, W - x];
+    if (facing === 2) return [W - x, H - y];
+    if (facing === 3) return [H - y, x];
+    return [x, y];
+  }
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -108,22 +118,52 @@ export function createBoard(canvas) {
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
     const diamondW = ((D.GRID.w + D.GRID.h) * tw) / 2;
-    view = { tw, th, ox: (cssW - diamondW) / 2 + (D.GRID.h * tw) / 2, oy: th * 4, cssW, cssH, dpr };
+    const gh = facing % 2 ? D.GRID.w : D.GRID.h;
+    view = {
+      tw, th,
+      ox: (cssW - diamondW) / 2 + (gh * tw) / 2,
+      oy: th * 4, cssW, cssH, dpr,
+    };
   }
 
   // Tile coordinates (x, y, height z in tiles) to screen coordinates.
   function iso(x, y, z = 0) {
-    return [view.ox + ((x - y) * view.tw) / 2, view.oy + ((x + y) * view.th) / 2 - z * view.th];
+    const [u, v] = worldToView(x, y);
+    return [view.ox + ((u - v) * view.tw) / 2, view.oy + ((u + v) * view.th) / 2 - z * view.th];
   }
 
   function tileAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
     const a = (clientX - rect.left - view.ox) / (view.tw / 2);
     const b = (clientY - rect.top - view.oy) / (view.th / 2);
-    const x = Math.floor((a + b) / 2);
-    const y = Math.floor((b - a) / 2);
-    if (x < 0 || y < 0 || x >= D.GRID.w || y >= D.GRID.h) return null;
+    const u = (a + b) / 2;
+    const v = (b - a) / 2;
+    const W = D.GRID.w;
+    const H = D.GRID.h;
+    let x = u;
+    let y = v;
+    if (facing === 1) { x = W - v; y = u; }
+    else if (facing === 2) { x = W - u; y = H - v; }
+    else if (facing === 3) { x = v; y = H - u; }
+    x = Math.floor(x);
+    y = Math.floor(y);
+    if (x < 0 || y < 0 || x >= W || y >= H) return null;
     return { x, y };
+  }
+
+  function screenDepth(x, y, w, h) {
+    const corners = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+    return Math.max(...corners.map(([cx, cy]) => {
+      const [u, v] = worldToView(cx, cy);
+      return u + v;
+    }));
+  }
+
+  function turnView() {
+    facing = (facing + 1) % 4;
+    resize();
+    if (lastScene) draw(lastScene);
+    return facing;
   }
 
   function diamond(x, y, w, h, z = 0) {
@@ -173,12 +213,14 @@ export function createBoard(canvas) {
     return { facing, front, w: stage.rot % 2 ? h : w };
   }
 
-  // The stand-ins are drawn for one orientation. A footprint turned a quarter the other
-  // way is the same art mirrored; a stage turned away from the viewer (rot 1 or 2) has
-  // no art, so it keeps the code-drawn box with its facing arrow.
+  // The stand-ins are painted for one orientation on screen. What counts is how a prop
+  // sits on screen: its own rotation less the view's quarter turns. A footprint a quarter
+  // turn the other way is the same art mirrored; a stage that faces away from the viewer
+  // has no art, so it keeps the code-drawn box with its facing arrow.
   function spriteMode(o) {
-    if (o.type === 'stage') return o.rot === 0 ? 'sprite' : o.rot === 3 ? 'mirrored' : null;
-    return o.rot % 2 ? 'mirrored' : 'sprite';
+    const onScreen = (o.rot - facing + 4) % 4;
+    if (o.type === 'stage') return onScreen === 0 ? 'sprite' : onScreen === 3 ? 'mirrored' : null;
+    return onScreen % 2 ? 'mirrored' : 'sprite';
   }
 
   // Where a prop's sprite goes on screen, or null when it draws as a box.
@@ -187,16 +229,18 @@ export function createBoard(canvas) {
     const mode = spriteMode(o);
     if (!spritesReady || !mode || !img || img.naturalWidth === 0) return null;
     const { w, h } = dims(o);
-    const west = iso(o.x, o.y + h);
-    const east = iso(o.x + w, o.y);
-    const south = iso(o.x + w, o.y + h);
-    const footW = Math.hypot(east[0] - west[0], east[1] - west[1]);
+    // The footprint's corners on screen, whichever way the view is turned.
+    const corners = [iso(o.x, o.y), iso(o.x + w, o.y), iso(o.x + w, o.y + h), iso(o.x, o.y + h)];
+    const left = Math.min(...corners.map((c) => c[0]));
+    const right = Math.max(...corners.map((c) => c[0]));
+    const bottom = Math.max(...corners.map((c) => c[1]));
+    const footW = right - left;
     const fit = PROPS[o.type].sprite;
     const aspect = img.naturalHeight / img.naturalWidth;
     const destW = fit.h ? (footW * fit.h) / aspect : footW * fit.w;
     const destH = destW * aspect;
-    const cx = (west[0] + east[0]) / 2;
-    return { x: cx - destW / 2, y: south[1] - destH * fit.foot, w: destW, h: destH, mirrored: mode === 'mirrored' };
+    const cx = (left + right) / 2;
+    return { x: cx - destW / 2, y: bottom - destH * fit.foot, w: destW, h: destH, mirrored: mode === 'mirrored' };
   }
 
   function drawSprite(o, alpha) {
@@ -228,10 +272,16 @@ export function createBoard(canvas) {
     return hit ? zAbove(o, hit.r.y) : PROPS[o.type].box.height;
   }
 
-  // A point is behind a prop when it lies toward the far corner of the lot from the
-  // prop's front edges; props are drawn over such points and in front of the rest.
+  // A point is behind a prop when, in view coordinates, it lies toward the far corner
+  // from the prop's front edges; props are drawn over such points and before the rest.
   function behindProp(px, py, props) {
-    return props.some(({ o, d }) => px < o.x + d.w && py < o.y + d.h && !(px >= o.x && py >= o.y));
+    const [pu, pv] = worldToView(px, py);
+    return props.some(({ o, d }) => {
+      const c = [worldToView(o.x, o.y), worldToView(o.x + d.w, o.y + d.h)];
+      const u0 = Math.min(c[0][0], c[1][0]); const u1 = Math.max(c[0][0], c[1][0]);
+      const v0 = Math.min(c[0][1], c[1][1]); const v1 = Math.max(c[0][1], c[1][1]);
+      return pu < u1 && pv < v1 && !(pu >= u0 && pv >= v0);
+    });
   }
 
   // The prop under a screen point, by the drawn sprites' opaque pixels, front first.
@@ -404,7 +454,7 @@ export function createBoard(canvas) {
     const sorted = scene.objects
       .filter((o) => !D.OBJECT_TYPES[o.type].kit)
       .map((o) => ({ o, d: dims(o) }))
-      .sort((p, q) => (p.o.x + p.d.w + p.o.y + p.d.h) - (q.o.x + q.d.w + q.o.y + q.d.h));
+      .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
     const overlay = (x, y) => {
       if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
       if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
@@ -543,6 +593,7 @@ export function createBoard(canvas) {
   function info() {
     return {
       spritesReady,
+      facing,
       spriteRedraws: stats.spriteRedraws,
       drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
       markers: stats.markers,
@@ -550,5 +601,5 @@ export function createBoard(canvas) {
     };
   }
 
-  return { resize, draw, tileAt, objectAt, info, destroy: () => spriteListeners.delete(onSprites) };
+  return { resize, draw, tileAt, turnView, objectAt, info, destroy: () => spriteListeners.delete(onSprites) };
 }

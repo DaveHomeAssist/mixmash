@@ -15,7 +15,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { CATEGORIES, COMMAND_NOTES, FILE_NOTES, PROJECTS, REPO } from './catalog-sources.mjs';
+import { CATEGORIES, COMMAND_NOTES, FILE_NOTES, PATTERN_NOTES, PROJECTS, REPO } from './catalog-sources.mjs';
 
 export const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const CATALOG_PATH = path.join(ROOT, 'admin', 'catalog.json');
@@ -171,7 +171,8 @@ function describe(root, file) {
     const text = readFileSync(path.join(root, file), 'utf8');
     found = ext === '.md' ? fromMarkdown(text) : ext === '.html' ? fromHtml(text) : fromComment(text);
   }
-  const note = FILE_NOTES[file] || {};
+  const pattern = PATTERN_NOTES.find((p) => p.match.test(file));
+  const note = FILE_NOTES[file] || (pattern ? pattern.note(file.match(pattern.match)) : {});
   return {
     title: note.title || found.title || path.basename(file),
     description: note.description || found.description || null,

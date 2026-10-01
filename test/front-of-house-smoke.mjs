@@ -251,6 +251,16 @@ try {
     await setLayout([{ type: 'stage', x: 9, y: 5, rot }]);
     assert.equal(drawnOf(await boardInfo(), 'stage'), undefined, `stage rot ${rot} faces away, so it keeps the code-drawn box`);
   }
+  // The view turn: a stage at rot 0 sits a quarter turn the other way on screen after one
+  // turn (mirrored), faces away after two (box), and is back as painted after four.
+  await setLayout([{ type: 'stage', x: 9, y: 5, rot: 0 }]);
+  const turns = [];
+  for (let i = 0; i < 4; i += 1) {
+    await page5.click('#turn-view');
+    const info = await boardInfo();
+    turns.push([info.facing, drawnOf(info, 'stage')?.rect.mirrored ?? 'box']);
+  }
+  assert.deepEqual(turns, [[1, true], [2, 'box'], [3, 'box'], [0, false]], 'the stage follows the view turn');
   await setLayout(STARTER_LAYOUT);
   const stageRect = drawnOf(await boardInfo(), 'stage').rect;
   const canvasBox = await page5.locator('#board').boundingBox();

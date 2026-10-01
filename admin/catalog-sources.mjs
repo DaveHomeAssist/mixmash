@@ -223,6 +223,15 @@ export const COMMAND_NOTES = {
 const preview = (game) => ({ description: `${game} gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.` });
 const vercelFn = (route, what) => ({ description: `Vercel function for ${route}: ${what} It delegates to the shared handler in mars/server.mjs.` });
 
+// Notes for families of files that describe themselves only by name, such as a sprite
+// library. A file's own entry in FILE_NOTES wins over a pattern.
+export const PATTERN_NOTES = [
+  {
+    match: /^front-of-house\/sprites\/library\/([a-z0-9-]+)\.png$/,
+    note: ([, name]) => ({ description: `High-detail prop sprite from the Front of House sprite library: ${name.replace(/-/g, ' ')}. Not drawn by the board yet.` }),
+  },
+];
+
 export const FILE_NOTES = {
   // Studio root and hosting
   '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on every push to gh-pages.' },

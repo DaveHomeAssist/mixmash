@@ -762,6 +762,12 @@ el.canvas.addEventListener('contextmenu', (e) => {
 el.canvas.addEventListener('focus', () => { ui.focused = true; draw(); });
 el.canvas.addEventListener('blur', () => { ui.focused = false; draw(); });
 el.canvas.addEventListener('keydown', (e) => {
+  if (e.key === 'q' || e.key === 'Q') {
+    e.preventDefault();
+    const step = board.turnView();
+    el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
+    return;
+  }
   if (state.phase !== 'build') return;
   const moves = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
   if (moves[e.key]) {
@@ -793,6 +799,11 @@ function rotate() {
   el.boardStatus.textContent = `Rotation: facing ${FACING[ui.rot]}.`;
   draw();
 }
+
+$('#turn-view').addEventListener('click', () => {
+  const step = board.turnView();
+  el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
+});
 
 // ---------------------------------------------------------------------------
 // Panel events
