@@ -40,7 +40,7 @@ This follows the MarsScape split in `mars/`:
 - `front-of-house/engine.mjs` (exists): the game rules, with no DOM access, no `Math.random` and no clock. `applyAction(state, action)` returns `{ state, error }`; `evaluateVenue`, `evaluateShow`, `forecast`, `upfrontFor` and `settlementFor` give the screens their numbers; `migrateSave` converts older save versions and `normalizeState` validates every load and import. All randomness comes from a seeded generator, so the same seed and the same choices always produce the same result.
 - `front-of-house/data.mjs` (exists): adjustable values and content tables (objects, artists, incidents, balance targets).
 - `front-of-house/test-engine.mjs` (exists): rule-by-rule tests, the worked example, determinism, save validation and a save-code round trip through `src/kit/save.js`. Frozen saves live in `front-of-house/test/fixtures/`.
-- `front-of-house/sim/` (exists): `simulate.mjs` writes `docs/BALANCE_BASELINE.md`; `reference.mjs` holds the layouts and strategies the tests and simulator share.
+- `front-of-house/sim/` (exists): `simulate.mjs` writes `docs/BALANCE_BASELINE.md`; `reference.mjs` holds the layouts and strategies the tests and simulator share; `paired.mjs` prints paired comparisons of layouts, deals and incident responses on the same seeds (scripted policies, not in CI).
 - `front-of-house/index.html`, `styles.css`, `game.js` (exist): the page, the production-desk theme, and the client. HTML panels for Book, Build, Promote, Show night and Settle; keyboard building on the board; show-night playback (12 seconds to curfew, skipped under reduced motion); the settlement sheet; save codes. The client turns input into engine actions and shows engine numbers; it computes no rules itself.
 - `front-of-house/board.js` (exists): the isometric canvas, drawn in code (art Phase 1): lot, objects, the teal/red sightline overlay, the build cursor and ghost, and at night the overlay, additive stage beams, crowd dots and incident markers.
 - Saves go through the shared `src/kit/save.js` store under `front_of_house_v1` (see `docs/SAVE_FORMAT.md`). Save codes are checked for the namespace and schema before anything is written, so a bad code can't replace a good save.
@@ -52,7 +52,7 @@ This follows the MarsScape split in `mars/`:
 | --- | --- |
 | `npm test` (includes `front-of-house/test-engine.mjs`) | Every rule in `docs/RULES.md`, the worked example to the dollar, determinism, save validation |
 | `npm run sim:front-of-house` | Regenerates `docs/BALANCE_BASELINE.md` (single shows and Lot careers on 300 seeds) and exits non-zero on a FAIL verdict; CI then fails if the committed copy differs |
-| `npm run smoke:front-of-house` | Plays Book through Settle in Chromium through the real interface, then checks reload, save codes (a bad code changes nothing, and a version 1 code converts), keyboard building, reduced motion, a 390px phone and small-text contrast, with no console errors |
+| `npm run smoke:front-of-house` | Plays Book through Settle in Chromium through the real interface, then checks reload, save codes (a bad code changes nothing, and a version 1 code converts), the next show, the out-of-money stop and Start over, keyboard building, reduced motion, a 390px phone and small-text contrast, with no console errors |
 
 ## Publication note
 

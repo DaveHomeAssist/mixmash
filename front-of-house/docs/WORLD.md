@@ -6,7 +6,7 @@ The fictional acts, venues and places in the game, and a record of every name ch
 
 | Act | Id | Genre | What they are like to book |
 | --- | --- | --- | --- |
-| Gravel Hymnal | `gravel-hymnal` | Folk | A small, cheap act with a loyal local crowd. Rarely the money-maker, but a fair guarantee to them is the cheapest way to earn an act's trust. |
+| Gravel Hymnal | `gravel-hymnal` | Folk | A small, cheap act with a loyal local crowd. Rarely the money-maker, but at $300 theirs is the roster's cheapest guarantee, and a guarantee always earns an act's trust. |
 | Sodium Arcade | `sodium-arcade` | Indie rock | The first playable's act, named for the sodium streetlights over a parking lot. Plays for a guarantee or the door. |
 | Juniper Switchboard | `juniper-switchboard` | Funk and soul | The Lot's biggest draw and the likeliest to sell it out. An established act that only plays for a guarantee. |
 
