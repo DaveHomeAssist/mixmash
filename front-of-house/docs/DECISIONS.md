@@ -219,4 +219,4 @@ The career uses the four tiers from the art:
 
 - The arena or stadium tier is cut; the festival grounds are the end state. GDD sections 1, 3, 5, 6 and 9 follow this.
 - `ROADMAP.md`, when it starts, has four career phases, and the art needs four venue looks.
-- The first playable's Oak St. Lot is permitted for 300 (`PERMIT_CAP`) and its artist draws 150 to 260, above the Lot's ceiling of 150. The playable keeps that tuning for now, because the balance baseline and the worked example in `RULES.md` depend on it. Before career work starts, retune tier 1 to fit 50 to 150 (the permit cap, the first artist's draw and the reference layout) and re-run the balance simulator.
+- The first playable's Oak St. Lot was permitted for 300 and its artist drew 150 to 260, above the Lot's ceiling of 150. Phase 3 retuned tier 1 (2026-10-01): the permit is 150, the draw 75 to 130, and every per-person and money value was halved, so every balance verdict still passes and the worked example halved with it. Version 1 saves convert to the new scale (`SAVE_FORMAT.md`).

@@ -38,12 +38,12 @@ Scope: a structured tycoon with Sandbox as a mode, not an open-world sim ([CT-DE
 
 One venue, one artist, one show, from booking to settlement. The target session is 10 to 15 minutes.
 
-**Starting state:** $6,000 cash, a rented parking lot (24 by 16 tiles), venue reputation 0, and one artist offer.
-**Artist:** *Velvet Static*, a fictional indie rock act ([CT-DEC-03](DECISIONS.md#ct-dec-03-artists-and-venues)). Draw is seeded between 150 and 260; fair ticket price is $20; the artist's ask is a $1,000 guarantee.
+**Starting state:** $3,000 cash, a rented parking lot (24 by 16 tiles) permitted for 150 people (tier 1, the Lot), venue reputation 0, and one artist offer.
+**Artist:** *Velvet Static*, a fictional indie rock act ([CT-DEC-03](DECISIONS.md#ct-dec-03-artists-and-venues)). Draw is seeded between 75 and 130; fair ticket price is $20; the artist's ask is a $500 guarantee.
 
 | Phase | Player does | Systems | Result |
 | --- | --- | --- | --- |
-| 1. Book | Chooses a **$1,000 guarantee** or a **door deal** (artist takes 70% of ticket revenue left after show costs) | Booking, Finance | The deal is locked, which sets how much risk the player carries |
+| 1. Book | Chooses a **$500 guarantee** or a **door deal** (artist takes 70% of ticket revenue left after show costs) | Booking, Finance | The deal is locked, which sets how much risk the player carries |
 | 2. Build | Places a stage, rents a PA (S or M), and adds lights, bars, restrooms, fence and gate, and exits; a generator sets the power budget | Venue, Production | Capacity, sightlines, sound coverage and amenity ratios |
 | 3. Promote | Sets the ticket price ($10 to $40) and splits ad spend across flyers, social and radio; 14 in-game days play out in about 60 seconds against a presale chart | Promotion, Finance | Presales and a walk-up forecast |
 | 4. Show night | Doors, the set and curfew play out in about 2 minutes (12 seconds in the first playable); one seeded incident (rain, PA dropout or gate jam) offers 2 or 3 responses | Production, Reputation | Attendance, satisfaction and the incident outcome |
@@ -66,7 +66,7 @@ Four tiers, from the tier ladder in the art direction ([CT-DEC-09](DECISIONS.md#
 | 3. The Amphitheater | 600 to 2,500 | National acts, runs of several nights |
 | 4. The Festival Grounds | 2,500 to 25,000+ | Headliner bookings, sponsorship deals, multi-stage festival operations, broadcast rights |
 
-The first playable's lot is permitted for 300, above the Lot's 150; it keeps that tuning until tier 1 is retuned before career work (CT-DEC-09).
+Phase 3 retuned the first playable to tier 1: the Oak St. Lot is permitted for 150, and every per-person and money value was halved from the 300-person version, so the balance checks carried over ([ROADMAP.md](../ROADMAP.md)).
 
 **Career milestones (examples):** sell out a 500-capacity show; book an artist on a $10,000 guarantee; run a three-day festival without a major incident; reach a net worth that unlocks the Festival Grounds.
 **Scenario fail states:** the venue loses its operating license; cash reaches zero with debts still owed; reputation falls below a minimum.

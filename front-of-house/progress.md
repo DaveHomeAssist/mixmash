@@ -44,8 +44,17 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Review fix (Codex): signing the sheet during the three-second wind-down after the incident froze the board's crowd partway between the preview and the signed attendance. Leaving show night now finishes the transition, and a smoke check pins a rain seed (where the two numbers differ) to cover it.
 - Dave chose the art's four-tier career ladder: the Lot, the Club, the Amphitheater and the Festival Grounds (CT-DEC-09). The GDD's arena or stadium tier is cut.
 
+## 2026-10-01: Phase 3, tier 1 (the Lot)
+
+- Retuned the first playable to the Lot's 50 to 150 people (CT-DEC-09). `PERMIT_CAP` is 150 and Velvet Static draws 75 to 130. Every per-person value (`FLOOR_DENSITY`, `EXIT_CAPACITY`, `PA_COVERAGE`, `BAR_RATIO`, `RESTROOM_RATIO`, `SECURITY_PER`) and every money value (`START_CASH`, rentals, `STAFF_RATE`, the artist's ask, incident responses, `AD_SATURATION` and the ad limits) was halved, so demand, attendance and money scale together.
+- Why halve everything rather than retune piece by piece: the six balance verdicts were verified at the old scale, and a uniform halving keeps that shape. All six still pass; the guarantee's pass rate with free responses moved from 58.2% to 58.6%. The worked example halved with it: 125 attend, satisfaction 85, guarantee +$248, door +$671.
+- `FLOOR_DENSITY` is now 1.5 people per tile, so capacity rounds down (R-01). The ad slider's step and range come from `AD_STEP` and `AD_SLIDER_MAX`, and the tips quote `BAR_RATIO`, `RESTROOM_RATIO` and `PA_COVERAGE` instead of fixed numbers.
+- Saves move to schema version 2. `migrateSave` converts version 1: cash, ad spend and history money and attendance halve; a show in progress converts exactly; a finished show is closed with Next show or Retry so an old sheet is never replayed. The client migrates on load and accepts version 1 save codes. New frozen fixture `test/fixtures/save-v2.json`; version 1 stays frozen.
+- Started `ROADMAP.md`. Service worker v5.
+- Checked: the same seed 42 show on both scales gives 270 and 135 attending, +$945 and +$472 net, so the conversion is exact apart from rounding.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
-- Before career work: retune tier 1 to the Lot's 50 to 150 (permit cap, the first artist's draw, the reference layout) and re-run the balance simulator (CT-DEC-09).
+- Phase 4 (a Lot career, `ROADMAP.md`): decide the tier goal that unlocks the Club and how relationships change an artist's next offer, then build the run of shows.
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.

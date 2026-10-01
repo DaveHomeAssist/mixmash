@@ -19,7 +19,7 @@ Each rule has an ID (`R-NN`), its inputs and output, a formula, and the names of
 
 ### R-01: Capacity
 
-`capacity = min(PERMIT_CAP, FLOOR_DENSITY × openFloorTiles, EXIT_CAPACITY × exits)`
+`capacity = min(PERMIT_CAP, floor(FLOOR_DENSITY × openFloorTiles), EXIT_CAPACITY × exits)`
 
 - `openFloorTiles`: grid tiles not covered by any placed object.
 - Output: the most people allowed in. `evaluateVenue` also reports which limit applies (`permit`, `floor` or `exits`).
@@ -145,24 +145,24 @@ Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + 
 
 This is a balance reference, engine test `R-WORKED-01`, and a verdict in the balance baseline. Its fixture is `WORKED_EXAMPLE` in `front-of-house/sim/reference.mjs`.
 
-**Inputs:** draw 200 · price $20 · ads: social $300, radio $300 · venue reputation 0 · capacity 300 · PA M, lights, 1 bar, 4 restrooms, 1 gate · 50 clear-view tiles · incident: PA dropout, answered with "Wait it out".
+**Inputs:** draw 100 · price $20 · ads: social $150, radio $150 · venue reputation 0 · capacity 150 · PA M, lights, 1 bar, 4 restrooms, 1 gate · 50 clear-view tiles · incident: PA dropout, answered with "Wait it out".
 
 | Step | Rule | Value |
 | --- | --- | --- |
 | Price factor | R-04 | 1.0 |
 | Buzz | R-05 | 1 + 0.30 × 0.4512 + 0.25 × 0.4512 = **1.2482** |
-| Demand | R-06 | 200 × 1.0 × 1.2482 × 1.0 = **249.63** |
-| Presale / walk-up | R-07 | share 0.5241 → presale **131** · walk-up **119** |
-| Attendance | R-08 | **250** |
-| Sightlines | R-03 | min(1, 50 × 3 / 250) = 0.6 |
+| Demand | R-06 | 100 × 1.0 × 1.2482 × 1.0 = **124.82** |
+| Presale / walk-up | R-07 | share 0.5241 → presale **65** · walk-up **60** |
+| Attendance | R-08 | **125** |
+| Sightlines | R-03 | min(1, 50 × 1.5 / 125) = 0.6 |
 | Satisfaction | R-09 | 35 × 1 + 20 × 0.6 + 20 × 1 + 15 × 1 + 10 × 0.3 = **85** |
-| Ticket revenue | R-14 | 250 × $20 = **$5,000** |
-| Bar | R-10 | $6 × 0.85 × 250 (one bar serves 250) = **$1,275** |
-| Staff | R-13 | 3 security + 1 door + 2 bar = 6 × $150 = $900 |
-| Show costs | R-13 | 800 + 250 + 900 + 350 + 200 + 480 + 300 + 900 + 600 + 0 = **$4,780** |
-| Due before the show | R-12 | guarantee: $5,780 (cash on hand $6,000, so allowed) · door deal: $4,780 |
+| Ticket revenue | R-14 | 125 × $20 = **$2,500** |
+| Bar | R-10 | $6 × 0.85 × 125 (one bar serves 125) = **$638** |
+| Staff | R-13 | 3 security + 1 door + 2 bar = 6 × $75 = $450 |
+| Show costs | R-13 | 400 + 125 + 450 + 175 + 100 + 240 + 150 + 450 + 300 + 0 = **$2,390** |
+| Due before the show | R-12 | guarantee: $2,890 (cash on hand $3,000, so allowed) · door deal: $2,390 |
 
 | Deal | Artist pay (R-14) | Net (R-15) | Result | Venue reputation (R-16) | Artist relationship (R-17) |
 | --- | --- | --- | --- | --- | --- |
-| Guarantee | $1,000 | **+$495** | Pass | +13 | **+5** |
-| Door | $154 | **+$1,341** | Pass | +13 | **−12** |
+| Guarantee | $500 | **+$248** | Pass | +13 | **+5** |
+| Door | $77 | **+$671** | Pass | +13 | **−12** |

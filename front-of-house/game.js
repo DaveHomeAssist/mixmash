@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, evaluateVenue, findResponse, forecast,
-  normalizeState, presaleSplit, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor,
+  migrateSave, normalizeState, presaleSplit, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor,
   validateLayout,
 } from './engine.mjs';
 import { createBoard, LOOK } from './board.js';
@@ -27,9 +27,9 @@ const INCIDENT_TEXT = {
   'gate-jam': 'The entry gate jams and the line backs up down the block.',
 };
 const TIPS = {
-  sound: 'Sound and light scored lowest. Rent the medium PA for crowds over 200, and add the light tower.',
+  sound: `Sound and light scored lowest. Rent the medium PA for crowds over ${D.PA_COVERAGE.S}, and add the light tower.`,
   sightlines: 'Sightlines scored lowest. Keep bars, restrooms and the light tower out of the cone in front of the stage.',
-  amenities: 'Bars and restrooms scored lowest. Plan one bar for every 250 people and one restroom for every 75.',
+  amenities: `Bars and restrooms scored lowest. Plan one bar for every ${D.BAR_RATIO} people and one restroom for every ${D.RESTROOM_RATIO}.`,
   flow: 'Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane.',
   incident: 'The incident cost the most. A stronger response costs money up front but saves the night.',
 };
@@ -53,7 +53,9 @@ const el = {
   saveStatus: $('#save-status'),
 };
 
-const store = window.MixKitSave ? window.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: D.SCHEMA_VERSION }) : null;
+const store = window.MixKitSave
+  ? window.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: D.SCHEMA_VERSION, migrate: (saved) => migrateSave(saved) })
+  : null;
 
 function freshSeed() {
   const a = new Uint32Array(1);
@@ -65,7 +67,7 @@ function freshSeed() {
 function loadState() {
   let raw = null;
   try { raw = store ? store.load() : null; } catch { raw = null; }
-  return raw ? normalizeState(raw, freshSeed()) : createGame(freshSeed());
+  return raw ? normalizeState(migrateSave(raw), freshSeed()) : createGame(freshSeed());
 }
 
 let state = loadState();
@@ -309,7 +311,7 @@ function promotePanel() {
   const sliders = D.AD_CHANNELS.map((c) => `
     <div class="slider">
       <label for="ad-${c}">${AD_LABELS[c]} <output id="ad-${c}-out" for="ad-${c}"></output></label>
-      <input type="range" id="ad-${c}" min="0" max="2000" step="50" data-input="ad" data-channel="${c}" />
+      <input type="range" id="ad-${c}" min="0" max="${D.AD_SLIDER_MAX}" step="${D.AD_STEP}" data-input="ad" data-channel="${c}" />
     </div>`).join('');
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)}</p>
@@ -826,14 +828,16 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
 });
 
 // Checks the code before anything is written, so a bad code can't replace a good save.
+// Codes from an older save version are converted with migrateSave (SAVE_FORMAT.md).
 function importCode(code) {
   let parsed = null;
   try { parsed = JSON.parse(window.MixKitSave.decodeCode(String(code || '').trim())); } catch { parsed = null; }
-  if (!parsed || parsed.ns !== D.SAVE_NAMESPACE || !parsed.state || parsed.state.schema !== D.SCHEMA_VERSION) {
+  const schema = parsed && parsed.state ? parsed.state.schema : null;
+  if (!parsed || parsed.ns !== D.SAVE_NAMESPACE || !Number.isInteger(schema) || schema < 1 || schema > D.SCHEMA_VERSION) {
     setSaveStatus("That code isn't a Front of House save. Nothing was changed.");
     return false;
   }
-  state = normalizeState(parsed.state, freshSeed());
+  state = normalizeState(migrateSave(parsed.state), freshSeed());
   persist();
   stopPlayback();
   ui.play = null;

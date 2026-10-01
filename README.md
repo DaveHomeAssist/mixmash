@@ -31,7 +31,7 @@ npm run smoke:play      # fighter resume/snapshot smoke test
 npm run smoke:catalog   # catalog runtime smoke tests
 npm run smoke:landing   # five-width landing, keyboard, motion, hit targets, screenshots
 npm run smoke:zelda2mario # status scope, mobile/ultrawide, themes, keyboard tabs, filters and complete printing
-npm run smoke:front-of-house # Lot Night end to end, reload, save codes, keyboard building, reduced motion, phone width, contrast
+npm run smoke:front-of-house # Lot Night end to end, reload, save codes (including version 1 conversion), keyboard building, reduced motion, phone width, contrast
 npm run sim:front-of-house   # regenerate front-of-house/docs/BALANCE_BASELINE.md (CI fails on drift or a FAIL verdict)
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
