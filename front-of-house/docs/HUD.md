@@ -101,8 +101,8 @@ Today `resize()` fits the lot to the canvas width and grows the canvas downward.
 
 - **Safe rectangle.** The window minus the top strip, minus an open sheet. Fit and centring use this rectangle, so opening a sheet slides the lot left instead of hiding it.
 - **Fit.** The tile width is the largest that fits the lot's diamond, plus headroom for the tallest prop, inside the safe rectangle, by width and by height. That is about 61 px at 1280 × 800 and 69 px at 1440 × 900, against 39 and 47 today. Wide 16:9 windows are limited by height: about 84 px and 34% of a 1920 × 1080 window.
-- **Zoom.** Fit, then ×1.5, ×2 and ×3. Buttons in the camera group; `=` and `-` and `0` (fit) on the keyboard; the mouse wheel zooms about the pointer, since the page no longer scrolls.
-- **Pan.** Drag with the middle button, or hold Space and drag. Shift with the arrow keys pans. In Build, the arrow keys still move the build cursor, and the camera follows when the cursor nears an edge. The lot can't be panned out of the window.
+- **Zoom.** Fit, then ×1.5, ×2 and ×3. Buttons in the camera group; `=` and `-` and `0` (fit) on the keyboard; the mouse wheel zooms about the pointer. Until step 2 the page still scrolls, so step 1 zooms on Ctrl or Cmd with the wheel (a trackpad pinch sends the same); the plain wheel zooms from step 2.
+- **Pan.** Drag with the middle button anywhere, or a plain drag outside Build. Space can't be the pan key, because Space places an object in Build. Shift with the arrow keys pans. In Build, the arrow keys still move the build cursor, and the camera follows when the cursor nears an edge. The lot can't be panned out of the window.
 - **Turning the view** keeps the zoom and re-centres on what was at the centre.
 - **Contained change.** Every screen position goes through `iso()` and `tileAt()`, so the camera is three fields on `view` (zoom, pan x, pan y). Hit-testing, placement order, markers, beams and the ghost all use `iso()` and follow it.
 - **Rooms.** Split Acre (40 × 24) fits at 44 px a tile on 1440 × 900. Zoom matters most there.
@@ -153,7 +153,7 @@ Dave accepted every recommendation on 2026-10-01, and asked for the minimap to s
 
 Each step is its own pull request with its smoke updates and a service worker bump. The same steps are in [`ROADMAP.md`](../ROADMAP.md#hud-layout-ct-dec-12).
 
-1. **Camera.** Safe rectangle, fit, zoom and pan in `board.js`, behind today's layout. Tests: `tileAt(iso(x, y))` round-trips at every zoom and view turn; clicks still hit the right prop.
+1. **Camera.** Safe rectangle, fit, zoom and pan in `board.js`, behind today's layout. Tests: `tileAt(iso(x, y))` round-trips at every zoom and view turn; clicks still hit the right prop. **Done 2026-10-01.** The safe rectangle is the whole canvas until step 2 gives the board the window.
 2. **Full-window board and top strip.** The canvas fills the window; the header becomes the strip; the save bar, help and credit move into the menu.
 3. **Build and Show HUD.** Corner panels, the tool keys, the camera group, the incident card.
 4. **Sheets.** Book, Promote, Settle and Done.

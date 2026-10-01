@@ -841,6 +841,7 @@ function draw() {
   }
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
   board.draw(scene);
+  updateZoomButtons();
 }
 
 function resizeBoard() {
@@ -848,15 +849,51 @@ function resizeBoard() {
   draw();
 }
 
+// The camera (docs/HUD.md section 5). Zoom keeps the point under the pointer still;
+// the status line says how to move a zoomed view.
+function zoomStep(steps, px, py) {
+  const before = board.camera().zoom;
+  const zoom = board.zoomBy(steps, px, py);
+  if (zoom !== before) showZoom(zoom);
+}
+
+function showZoom(zoom) {
+  el.boardStatus.textContent = zoom === 1
+    ? 'Zoom: the whole lot.'
+    : `Zoom ${zoom}x. Shift and the arrow keys, or a middle-button drag, move the view. 0 shows the whole lot.`;
+  updateZoomButtons();
+}
+
+function updateZoomButtons() {
+  const { zoom, zooms } = board.camera();
+  $('#zoom-out').disabled = zoom === zooms[0];
+  $('#zoom-fit').disabled = zoom === zooms[0];
+  $('#zoom-in').disabled = zoom === zooms[zooms.length - 1];
+}
+
 el.canvas.addEventListener('pointerdown', (e) => {
+  const pan = e.button === 1 || (e.button === 0 && state.phase !== 'build');
+  if (pan && board.camera().zoom !== 1) {
+    e.preventDefault();
+    ui.pan = { x: e.clientX, y: e.clientY };
+    try { el.canvas.setPointerCapture(e.pointerId); } catch { /* the drag still works inside the canvas */ }
+    return;
+  }
   if (state.phase !== 'build' || ui.tool !== 'bulldoze' || e.button !== 0) return;
   ui.dozing = true;
   try { el.canvas.setPointerCapture(e.pointerId); } catch { /* the drag still works inside the canvas */ }
   doze(targetAt(e));
 });
-el.canvas.addEventListener('pointerup', () => { ui.dozing = false; });
-el.canvas.addEventListener('pointercancel', () => { ui.dozing = false; });
+el.canvas.addEventListener('pointerup', () => { ui.dozing = false; ui.pan = null; });
+el.canvas.addEventListener('pointercancel', () => { ui.dozing = false; ui.pan = null; });
+// A middle-button press would start the browser's autoscroll instead of a pan.
+el.canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
 el.canvas.addEventListener('pointermove', (e) => {
+  if (ui.pan) {
+    board.panBy(e.clientX - ui.pan.x, e.clientY - ui.pan.y);
+    ui.pan = { x: e.clientX, y: e.clientY };
+    return;
+  }
   if (state.phase !== 'build') return;
   const tile = board.tileAt(e.clientX, e.clientY);
   if (ui.dozing) doze(targetAt(e));
@@ -880,6 +917,15 @@ el.canvas.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   removeUnder(e);
 });
+el.canvas.addEventListener('wheel', (e) => {
+  if (!e.ctrlKey && !e.metaKey) return;
+  e.preventDefault();
+  ui.wheel = (ui.wheel || 0) + e.deltaY;
+  if (Math.abs(ui.wheel) < 40) return;
+  const rect = el.canvas.getBoundingClientRect();
+  zoomStep(ui.wheel < 0 ? 1 : -1, e.clientX - rect.left, e.clientY - rect.top);
+  ui.wheel = 0;
+}, { passive: false });
 el.canvas.addEventListener('focus', () => { ui.focused = true; draw(); });
 el.canvas.addEventListener('blur', () => { ui.focused = false; draw(); });
 el.canvas.addEventListener('keydown', (e) => {
@@ -887,6 +933,15 @@ el.canvas.addEventListener('keydown', (e) => {
     e.preventDefault();
     const step = board.turnView();
     el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
+    return;
+  }
+  if (e.key === '=' || e.key === '+') { e.preventDefault(); zoomStep(1); return; }
+  if (e.key === '-' || e.key === '_') { e.preventDefault(); zoomStep(-1); return; }
+  if (e.key === '0') { e.preventDefault(); zoomStep(-board.camera().zooms.length); return; }
+  const pans = { ArrowUp: [0, 1], ArrowDown: [0, -1], ArrowLeft: [1, 0], ArrowRight: [-1, 0] };
+  if (e.shiftKey && pans[e.key] && board.camera().zoom !== 1) {
+    e.preventDefault();
+    if (board.panBy(pans[e.key][0] * 80, pans[e.key][1] * 80)) el.boardStatus.textContent = 'Moved the view.';
     return;
   }
   if (state.phase !== 'build') return;
@@ -899,6 +954,7 @@ el.canvas.addEventListener('keydown', (e) => {
       y: Math.min(g.h - 1, Math.max(0, ui.cursor.y + moves[e.key][1])),
     };
     ui.hover = null;
+    board.follow(ui.cursor.x, ui.cursor.y);
     el.boardStatus.textContent = describeTile(ui.cursor);
     draw();
   } else if (e.key === 'Enter' || e.key === ' ') {
@@ -925,6 +981,9 @@ function rotate() {
   draw();
 }
 
+$('#zoom-in').addEventListener('click', () => zoomStep(1));
+$('#zoom-out').addEventListener('click', () => zoomStep(-1));
+$('#zoom-fit').addEventListener('click', () => zoomStep(-board.camera().zooms.length));
 $('#turn-view').addEventListener('click', () => {
   const step = board.turnView();
   el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
@@ -1087,6 +1146,9 @@ window.__frontOfHouse = {
   importCode,
   board: () => board.info(),
   boardPlace: (x, y) => board.placeOf(x, y),
+  boardZoom: (zoom, px, py) => board.zoomTo(zoom, px, py),
+  boardClientOf: (x, y, z) => board.clientOf(x, y, z),
+  boardTileAt: (clientX, clientY) => board.tileAt(clientX, clientY),
 };
 
 // ---------------------------------------------------------------------------
