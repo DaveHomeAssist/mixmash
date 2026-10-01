@@ -23,3 +23,10 @@ Original prompt: Implement the verified MixMash count correction on gh-pages. Up
 - Added `smoke:landing` to CI and documented local/live execution. The rail passed at 320, 390, 768, 1024, and 1440px with pointer/touch hit testing, keyboard order and activation, focus visibility, reduced motion, image budgets, and contrast checks.
 - Inspected local fold/full-page screenshots. `npm test` passed 160/160; `npm run vercel-build`, `npm run smoke:play`, and all 35 `npm run smoke:catalog` checks passed.
 - No gameplay runtime files, home/brand roster copy, dependencies, or Notion records changed.
+
+## Admin index — October 1, 2026
+
+- Added `/admin/`, a `noindex` index of every tracked file and reference for all nine projects (eight games plus the studio hub), destination mixmash.games/admin.
+- `admin/build-catalog.mjs` generates `admin/catalog.json` from `git ls-files` plus `admin/catalog-sources.mjs`; titles and summaries come from each file's heading, title or leading comment, with notes for files that do not describe themselves.
+- Status is not copied into the page; each game lists the files where its status is recorded.
+- Added `test/admin-catalog.test.mjs` to `npm test` (coverage, classification, references, privacy) and `smoke:admin` to CI (six widths, no page scroll, themes, keyboard tabs, filters, deep links, search, copy, contrast).

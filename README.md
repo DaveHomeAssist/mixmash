@@ -14,25 +14,28 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `/pitch/` | **PITCH RIOT** — a self-contained arcade soccer game (single `index.html`, canvas + vanilla JS). One outfielder vs a CPU (auto keepers) across two halves; at halftime you play a built-in cover-ops minigame (a mini homage to [FIFA Pitch Crew](https://systembydave.com/fifa-pitch-crew/) from the system-by-dave repo) — show quality earns a timed "HYPED" boost for the second half. Difficulty select, keyboard + touch. No build step, no backend. |
 | `/front-of-house/` | **Front of House** — an early playable concert-promotion management game (Lot Night: book a band, build a parking-lot venue, promote, survive show night, settle the money). Rules engine, balance simulator and design docs live in the folder; see `front-of-house/README.md`. `noindex` and no hub card until the first playable is signed off. |
 | `/zelda2mario/` | Evidence-bound public status dashboard for the source-only Zelda2MarioCoop project. The game itself is not yet published as a playable route. |
+| `/admin/` | **Admin index** — every tracked file and reference in this repo, organised by game (one tab each) and purpose (docs, decisions, roadmaps and logs, evidence, art, tests, tooling, source, API, builds, config), with search, category filters and copyable paths. Rendered from the generated `admin/catalog.json`; `noindex`, not in the sitemap, and never links local paths, Notion or private source. |
 | `ROADMAP.md` | Production roadmap **for the MIXMASH fighter specifically** — phased DoD/checkpoints/verification standards |
 | `src/combat.js` | Canonical, tested knockback math for the fighter (`finite()` guard + `calcKnockback`) |
 | `mars/engine.mjs`, `mars/server.mjs` | Shared MarsScape game engine + the Node authority server (SQLite locally) |
 | `mars/commissioned-art.mjs`, `mars/golden-scene.html` | DEC-79 validated commissioned-art cache and in-renderer golden-scene review surface |
 | `api/` | Vercel serverless functions — the production authority API (Blob-backed sessions) |
 | `test/*.test.{js,mjs}`, `mars/test-*.mjs`, `mars/parity/parity.test.mjs` | Node's built-in test runner (`node --test`) — fighter combat math, the inline combat parity guard, public roster/arena count guard, extracted play modules, MixKit save, MarsScape engine/API/handler/art/parity tests |
-| `.github/workflows/ci.yml` | CI — on pull requests, manual dispatch, and pushes to `gh-pages` touching any game route, `api/`, `src/`, `test/`, the hub pages, the PWA shell, or package files: runs `npm test`, `vercel-build`, the DEC-79 art validation/report/contact-sheet drift gates, `sim`, then the Playwright rails (`art:visual`, `smoke:play`, `smoke:catalog`, `smoke:landing`, `smoke:zelda2mario`, `smoke:front-of-house`), plus the Front of House balance baseline drift gate (`sim:front-of-house`) |
+| `.github/workflows/ci.yml` | CI — on pull requests, manual dispatch, and pushes to `gh-pages` touching any game route, `api/`, `src/`, `test/`, the hub pages, the PWA shell, or package files: runs `npm test`, `vercel-build`, the DEC-79 art validation/report/contact-sheet drift gates, `sim`, then the Playwright rails (`art:visual`, `smoke:play`, `smoke:catalog`, `smoke:landing`, `smoke:zelda2mario`, `smoke:front-of-house`, `smoke:admin`), plus the Front of House balance baseline drift gate (`sim:front-of-house`) |
 
 ## Commands
 
 ```
 npm install       # once
-npm test          # node --test — fighter combat/parity/count guards, play modules, MarsScape engine/API/handler/art/parity tests
+npm test          # node --test — fighter combat/parity/count guards, play modules, MarsScape engine/API/handler/art/parity tests, Front of House engine, admin index coverage
 npm run smoke:play      # fighter resume/snapshot smoke test
 npm run smoke:catalog   # catalog runtime smoke tests
 npm run smoke:landing   # five-width landing, keyboard, motion, hit targets, screenshots
 npm run smoke:zelda2mario # status scope, mobile/ultrawide, themes, keyboard tabs, filters and complete printing
 npm run smoke:front-of-house # Lot Night end to end, reload, save codes (including version 1 conversion), keyboard building, reduced motion, phone width, contrast
 npm run sim:front-of-house   # regenerate front-of-house/docs/BALANCE_BASELINE.md (CI fails on drift or a FAIL verdict)
+npm run admin:index     # regenerate admin/catalog.json after adding, removing or renaming any tracked file
+npm run smoke:admin     # admin index: no page scroll at six widths, themes, keyboard tabs, filters, search, privacy
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
 npm run art:validate    # validate DEC-79 and verify the runtime index plus strict-report parity
@@ -73,6 +76,21 @@ Use `ZELDA2MARIO_SCREENSHOT_DIR` to retain a chosen evidence location; use
 `ZELDA2MARIO_BASE_URL=https://mixmash.games/zelda2mario/ npm run smoke:zelda2mario`
 for live verification. Roll back a faulty route with a scoped revert PR; do not
 alter other game routes, the authority API, hosting configuration or ROM data.
+
+### Admin index
+
+`/admin/` lists every tracked file once. `admin/build-catalog.mjs` classifies
+each path by rules (project, then category), takes its title and summary from
+the file's own heading, `<title>`/meta description or leading comment, and
+merges the hand-authored projects, references and notes in
+`admin/catalog-sources.mjs`. After adding, removing or renaming a file, run
+`npm run admin:index` and commit `admin/catalog.json`; `npm test`
+(`test/admin-catalog.test.mjs`) fails while the catalog and the tree disagree.
+Summaries are snapshots from generation time and are not compared. The page
+records where each game's status lives, never the status itself. It is public
+like every Pages route, so keep it public-safe: no local paths, no Notion links,
+and the private Zelda2MarioCoop source named but not linked. For live readback,
+run `ADMIN_BASE_URL=https://mixmash.games/admin/ npm run smoke:admin`.
 
 ## MarsScape's architecture (as of 2026-08-27)
 
