@@ -888,8 +888,16 @@ el.panel.addEventListener('click', (e) => {
   if (!target || target.disabled) return;
   const a = target.dataset.act;
   if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1 });
-  else if (a === 'venue') act({ type: 'chooseVenue', venueId: target.dataset.venue });
-  else if (a === 'nights') { state.booking.nights = Number(target.dataset.nights); render(); }
+  else if (a === 'venue' || a === 'nights') {
+    // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
+    // returns to the button that was pressed.
+    const again = `[data-act="${a}"][data-${a}="${target.dataset[a]}"]`;
+    ui.mounted = null;
+    if (a === 'venue') act({ type: 'chooseVenue', venueId: target.dataset.venue });
+    else { state.booking.nights = Number(target.dataset.nights); render(); }
+    const button = el.panel.querySelector(again);
+    if (button) button.focus();
+  }
   else if (a === 'mode') {
     const mode = target.dataset.mode;
     state = mode === 'career' ? createGame(state.seed) : createGame(state.seed, { mode, scenario: 'wet-lot' });

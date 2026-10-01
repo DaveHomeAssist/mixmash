@@ -88,6 +88,10 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 - The Career, Sandbox and Wet lot buttons called an undefined `save()` (from the rooms push, `40da936`), which threw before the redraw, so the page kept showing the old game until the next action. They now call `persist()` and redraw at once. A smoke check clicks each button and checks the cash meter right away and after a reload. Service worker v12.
 
+## 2026-10-01: Room choice fix
+
+- Choosing a room or the nights on the Book screen changed the state but not the panel, which is rebuilt only on a phase change. The panel kept the previous room's acts, and booking one failed with "That act is not on offer for this show". The fix in #31 exposed it in Sandbox; before that, the mode buttons' crash happened to force a rebuild. The panel is now rebuilt on those choices, with focus back on the button pressed. A smoke check switches rooms and nights in Sandbox and books a deal. Service worker v13.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
