@@ -72,7 +72,7 @@ function loadState() {
 
 let state = loadState();
 const ui = {
-  tool: 'stage', rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
+  tool: 'stage', placeTool: 'stage', dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
   mounted: null, play: null, raf: 0, sightKey: '', sight: { clear: new Set(), blocked: new Set() }, confirmNew: false,
 };
 
@@ -254,10 +254,11 @@ function buildPanel() {
   return `
     <p class="eyebrow">${esc(spec.name)} · ${spec.grid.w} × ${spec.grid.h} tiles</p>
     <h2>Build the room</h2>
-    <p class="lede">Pick an object, then click the tile for its top corner. ${paLine}</p>
+    <p class="lede">Pick an object, then click the tile for its top corner. Or bulldoze, and drag across anything you want gone. ${paLine}</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <fieldset><legend>Object to place</legend><div class="palette">${options}</div></fieldset>
     <div class="row">
+      <button type="button" data-act="bulldoze" id="doze-btn" aria-pressed="false">Bulldoze (B)</button>
       <button type="button" data-act="rotate">Rotate (R) · <span id="rot-label"></span></button>
       <button type="button" data-act="fence" id="fence-btn"></button>
     </div>
@@ -315,6 +316,13 @@ function updateBuild() {
   const fence = state.venue.objects.some((o) => o.type === 'fence');
   $('#fence-btn').textContent = fence ? 'Remove the fence kit' : `Add the fence kit (${money(D.FENCE_KIT)})`;
   $('#confirm-build').disabled = !v.ready;
+  const doze = $('#doze-btn');
+  if (doze) {
+    const on = ui.tool === 'bulldoze';
+    doze.classList.toggle('on', on);
+    doze.setAttribute('aria-pressed', on ? 'true' : 'false');
+    doze.textContent = on ? 'Bulldozing. Click or drag.' : 'Bulldoze (B)';
+  }
 }
 
 function objectIndexAt(x, y) {
@@ -336,16 +344,44 @@ function ghostAt(tile) {
 
 function placeAt(tile) {
   if (state.phase !== 'build' || !tile) return;
+  if (ui.tool === 'bulldoze') { doze(tile); return; }
   if (act({ type: 'place', object: { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot } }, { quiet: true })) {
     say(`Placed the ${label(ui.tool).toLowerCase()} at ${tile.x}, ${tile.y}.`);
   }
 }
 
+function doze(tile) {
+  if (!tile) return;
+  ui.cursor = tile;
+  const i = objectIndexAt(tile.x, tile.y);
+  if (i < 0) return;
+  const type = state.venue.objects[i].type;
+  if (act({ type: 'remove', index: i }, { quiet: true })) say(`Bulldozed the ${label(type).toLowerCase()}.`);
+}
+
+function toggleBulldoze() {
+  if (ui.tool === 'bulldoze') ui.tool = ui.placeTool || 'stage';
+  else {
+    if (ui.tool !== 'bulldoze') ui.placeTool = ui.tool;
+    ui.tool = 'bulldoze';
+  }
+  document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === ui.tool; });
+  el.boardStatus.textContent = ui.tool === 'bulldoze'
+    ? 'Bulldozer. Click or drag across an object to remove it. B places again. The fence kit stays on its button.'
+    : `Placing: ${label(ui.tool)}.`;
+  if (state.phase === 'build') updateBuild();
+  draw();
+}
+
 // Removal by pointer goes to the prop drawn under the pointer (a tall sprite rises well
 // above its footprint), and to the ground tile when no prop is there.
-function removeUnder(e) {
+function targetAt(e) {
   const hit = board.objectAt(e.clientX, e.clientY);
-  const tile = hit ? { x: hit.x, y: hit.y } : board.tileAt(e.clientX, e.clientY);
+  return hit ? { x: hit.x, y: hit.y } : board.tileAt(e.clientX, e.clientY);
+}
+
+function removeUnder(e) {
+  const tile = targetAt(e);
   if (tile) removeAt(tile);
 }
 
@@ -799,9 +835,11 @@ function draw() {
     const at = ui.hover || (ui.focused ? ui.cursor : null);
     if (at) {
       scene.cursor = at;
-      scene.ghost = ghostAt(at);
+      scene.cursorColor = ui.tool === 'bulldoze' ? '#ef4444' : null;
+      if (ui.tool !== 'bulldoze') scene.ghost = ghostAt(at);
     }
   }
+  el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
   board.draw(scene);
 }
 
@@ -810,9 +848,18 @@ function resizeBoard() {
   draw();
 }
 
+el.canvas.addEventListener('pointerdown', (e) => {
+  if (state.phase !== 'build' || ui.tool !== 'bulldoze' || e.button !== 0) return;
+  ui.dozing = true;
+  try { el.canvas.setPointerCapture(e.pointerId); } catch { /* the drag still works inside the canvas */ }
+  doze(targetAt(e));
+});
+el.canvas.addEventListener('pointerup', () => { ui.dozing = false; });
+el.canvas.addEventListener('pointercancel', () => { ui.dozing = false; });
 el.canvas.addEventListener('pointermove', (e) => {
   if (state.phase !== 'build') return;
   const tile = board.tileAt(e.clientX, e.clientY);
+  if (ui.dozing) doze(targetAt(e));
   const key = tile ? `${tile.x},${tile.y}` : '';
   const old = ui.hover ? `${ui.hover.x},${ui.hover.y}` : '';
   if (key === old) return;
@@ -865,6 +912,9 @@ el.canvas.addEventListener('keydown', (e) => {
   } else if (e.key === 'r' || e.key === 'R') {
     e.preventDefault();
     rotate();
+  } else if (e.key === 'b' || e.key === 'B') {
+    e.preventDefault();
+    toggleBulldoze();
   }
 });
 
@@ -906,6 +956,7 @@ el.panel.addEventListener('click', (e) => {
     render();
   }
   else if (a === 'rotate') rotate();
+  else if (a === 'bulldoze') toggleBulldoze();
   else if (a === 'fence') {
     const i = state.venue.objects.findIndex((o) => o.type === 'fence');
     if (i >= 0) act({ type: 'remove', index: i });
@@ -940,7 +991,9 @@ el.panel.addEventListener('change', (e) => {
   const t = e.target;
   if (t.dataset.input === 'tool') {
     ui.tool = t.value;
+    ui.placeTool = t.value;
     el.boardStatus.textContent = `Placing: ${label(ui.tool)}.`;
+    updateBuild();
     draw();
   } else if (t.dataset.input === 'clear') {
     ui.showClear = t.checked;

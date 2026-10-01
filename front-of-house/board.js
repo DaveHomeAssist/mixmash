@@ -680,7 +680,7 @@ export function createBoard(canvas) {
     }
     if (scene.cursor) {
       diamond(scene.cursor.x, scene.cursor.y, 1, 1);
-      ctx.strokeStyle = COLORS.cursor;
+      ctx.strokeStyle = scene.cursorColor || COLORS.cursor;
       ctx.lineWidth = 2;
       ctx.stroke();
     }

@@ -122,6 +122,7 @@ button:hover:not(:disabled) { background: var(--border); }
 button:disabled { opacity: 0.45; cursor: not-allowed; }
 button.primary { background: var(--cyan); color: #050b14; border-color: var(--cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.25); }
 button.primary:hover:not(:disabled) { background: #67f6ff; }
+#doze-btn.on { background: #ef4444; color: #1a0a0a; border-color: #ef4444; }
 button.danger { border-color: var(--red); color: #fecaca; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
