@@ -98,6 +98,7 @@ The deal choice is the central tension. A door deal pays the promoter more when 
 - Artists and fans with personalities, not just numbers on a ledger.
 - A seasonal calendar: festival season, holiday runs, slow winter months.
 - Unplanned events: surprise openers, viral moments, union disputes, noise complaints.
+- **Against Festival Tycoon,** the closest existing game, the edge is the promoter's money decisions (deal types, a real settlement sheet) and production realism.
 - **Pro-mode realism (open question):** production depth could follow real AV paperwork (input lists, stage plots, power plans), drawing on the System by Dave AV tools.
 
 ## 8. Platform and technology
@@ -118,7 +119,7 @@ The Notion page originally listed Unity, Godot and Unreal Engine 5, with FMOD or
 
 ## 10. Open questions
 
-1. **Name and route:** "Concert Tycoon" is a working title and has not been checked against existing titles ([CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route)).
+1. **Name and route:** "Concert Tycoon" is a working title. A 2026-10-01 search found Idle Concert Tycoon on Google Play and Festival Tycoon on Steam, a close concept; the recommendation is a distinct name ([CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route)).
 2. **Universe:** a standalone game, or part of the MIXMASH DJ and festival world? This affects CT-DEC-03.
 3. **Pro-mode realism:** should production depth follow real AV paperwork (section 7)?
 4. **Multiplayer:** co-promotion with other players suits the theme but adds a lot of complexity, so it is deferred by CT-DEC-05.
