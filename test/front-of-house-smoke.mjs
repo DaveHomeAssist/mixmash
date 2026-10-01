@@ -4,7 +4,7 @@
  * Plays the first playable through its real interface (book, build with the
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
- * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -374,6 +374,22 @@ try {
     assert.equal((await game(page4)).cash, cash, `${mode} is saved across a reload`);
   }
   ok('the Career, Sandbox and Wet lot buttons redraw the page and save the new game');
+
+  // Choosing a room redraws the Book panel with that room's acts and nights, so a deal books.
+  await page4.click('[data-act="mode"][data-mode="sandbox"]');
+  const dealArtists = () => page4.locator('[data-act="deal"]').evaluateAll((els) => [...new Set(els.map((e) => e.dataset.artist))]);
+  for (const venue of ['club', 'amphitheater', 'lot']) {
+    await page4.click(`[data-act="venue"][data-venue="${venue}"]`);
+    assert.deepEqual(await dealArtists(), (await game(page4)).offers, `${venue} lists its own acts`);
+    assert.equal(await page4.getAttribute(`[data-act="venue"][data-venue="${venue}"]`, 'class'), 'primary', `${venue} shows as chosen`);
+  }
+  await page4.click('[data-act="venue"][data-venue="amphitheater"]');
+  await page4.click('[data-act="nights"][data-nights="2"]');
+  assert.equal(await page4.getAttribute('[data-act="nights"][data-nights="2"]', 'class'), 'primary', 'two nights shows as chosen');
+  assert.equal(await page4.evaluate(() => document.activeElement && document.activeElement.dataset.nights), '2', 'focus stays on the nights button');
+  await page4.click('[data-act="deal"]:not([disabled])');
+  assert.equal((await game(page4)).phase, 'build', 'a deal in the chosen room books');
+  ok('choosing a room or the nights redraws the Book panel, and a deal there books');
 
   const lowContrast = await page.evaluate(() => {
     const rgb = (v) => (v.match(/[\d.]+/g) || []).map(Number);
