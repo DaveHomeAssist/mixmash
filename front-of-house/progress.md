@@ -41,9 +41,11 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Engine additions: `STARTER_LAYOUT` in `data.mjs` (the suggested layout, also the simulator's reference layout, so the baseline is unchanged), a `setLayout` action, `showPreview`, `sightlineTiles` (clear and blocked tiles) and `blockedTiles` in `evaluateVenue` for the sightline occlusion overlay.
 - **Bug found by the smoke test:** after signing, the finished-show sheet was recomputed with the reputation the show had just earned, so it showed a different crowd and net than the night actually had (the cash was right). The show now records the venue reputation it was sold with (`show.venueRep`), and an engine test checks that the signed sheet replays exactly. The version 1 save fixture was regenerated to include it; no version 1 saves existed outside tests.
 - Deliberate differences from the GDD for the first playable: show night plays for 12 seconds to curfew instead of about two minutes, and the presale chart is drawn at once instead of playing 14 days over a minute.
+- Review fix (Codex): signing the sheet during the three-second wind-down after the incident froze the board's crowd partway between the preview and the signed attendance. Leaving show night now finishes the transition, and a smoke check pins a rain seed (where the two numbers differ) to cover it.
+- Dave chose the art's four-tier career ladder: the Lot, the Club, the Amphitheater and the Festival Grounds (CT-DEC-09). The GDD's arena or stadium tier is cut.
 
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
-- Dave: settle the tier ladder conflict in `docs/ART_DIRECTION.md` section 8 (four tiers from the concept image, or the GDD's five).
+- Before career work: retune tier 1 to the Lot's 50 to 150 (permit cap, the first artist's draw, the reference layout) and re-run the balance simulator (CT-DEC-09).
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.

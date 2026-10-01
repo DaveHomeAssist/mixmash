@@ -143,7 +143,7 @@ function mount() {
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
   if (state.phase === 'show') startPlayback();
-  else if (state.phase !== 'settle') stopPlayback();
+  else if (state.phase !== 'settle') endPlayback();
 }
 
 // After a step the player chose, move focus to the new panel's heading so screen
@@ -420,6 +420,16 @@ function startPlayback() {
 function stopPlayback() {
   if (ui.raf) cancelAnimationFrame(ui.raf);
   ui.raf = 0;
+}
+
+// Leaving show night (signing the sheet mid wind-down, for one) finishes the
+// crowd transition, so the board rests on the signed attendance.
+function endPlayback() {
+  stopPlayback();
+  if (ui.play && ui.play.after) {
+    ui.play.after.done = true;
+    ui.play.p = 1;
+  }
 }
 
 function loop() {
@@ -848,6 +858,7 @@ window.render_game_to_text = () => {
     promotion: state.promotion,
     show: state.show,
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
+    crowd: crowdNow(),
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result } : null,
     history: state.history.length,
   });

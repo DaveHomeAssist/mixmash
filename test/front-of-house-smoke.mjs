@@ -3,8 +3,8 @@
  *
  * Plays the first playable through its real interface (book, build with the
  * suggested layout, promote, show night, settle), then checks reload, keyboard
- * placement, save codes, reduced motion, a phone-width layout and small-text
- * contrast. Game state is read through `window.render_game_to_text()` and the
+ * placement, save codes, signing during the post-incident wind-down, reduced
+ * motion, a phone-width layout and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -16,6 +16,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { launchOptions, startStaticServer, trackPageFailures } from './static-server.mjs';
+import { applyAction, createGame, settlementFor, showPreview } from '../front-of-house/engine.mjs';
+import { INCIDENTS, SAVE_NAMESPACE, SCHEMA_VERSION, STARTER_LAYOUT } from '../front-of-house/data.mjs';
 
 const server = await startStaticServer();
 const url = `${server.origin}/front-of-house/`;
@@ -116,6 +118,32 @@ try {
   await page2.keyboard.press('Delete');
   assert.equal((await page2.evaluate(() => window.__frontOfHouse.state().venue.objects)).length, 0);
   ok('the board places and removes objects from the keyboard');
+
+  // Signing inside the three-second wind-down after the incident still leaves
+  // the board on the signed crowd. Seed 1 rains, so the crowd the board shows
+  // before the incident differs from the one that is signed.
+  const RAIN_SEED = 1;
+  let rehearsal = createGame(RAIN_SEED);
+  for (const action of [{ type: 'chooseDeal', deal: 'door' }, { type: 'setLayout', objects: STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'confirmPromotion' }]) {
+    rehearsal = applyAction(rehearsal, action).state;
+  }
+  const previewCrowd = showPreview(rehearsal).attendance;
+  rehearsal = applyAction(rehearsal, { type: 'respond', responseId: INCIDENTS[rehearsal.show.incidentId].responses.find((r) => r.cost <= rehearsal.cash).id }).state;
+  assert.notEqual(settlementFor(rehearsal).attendance, previewCrowd, 'the pinned seed changes the crowd, so this check can catch a stale board');
+  await page2.fill('#save-code', Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(RAIN_SEED) })).toString('base64'));
+  await page2.click('[data-save="import"]');
+  await page2.click('[data-deal="door"]');
+  await page2.click('[data-act="starter"]');
+  await page2.click('[data-act="confirm-build"]');
+  await page2.click('[data-act="confirm-promo"]');
+  await page2.click('[data-act="skip"]');
+  await page2.click('[data-act="respond"]:not([disabled])');
+  await page2.click('[data-act="accept"]');
+  await page2.waitForTimeout(150);
+  const signedEarly = await game(page2);
+  assert.equal(signedEarly.phase, 'done');
+  assert.equal(signedEarly.crowd, signedEarly.settlement.attendance, 'the board crowd matches the signed attendance');
+  ok('signing during the wind-down settles the board on the signed crowd');
 
   // 4. Reduced motion goes straight to the incident.
   const calm = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
