@@ -1,5 +1,7 @@
 # Front of House Roadmap
 
+**Status:** Phases 0 to 4 are shipped (see [`progress.md`](progress.md)). The plan after the Lot is [`docs/FUTURE.md`](docs/FUTURE.md).
+
 The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its **Done when** line. The career tiers come from [CT-DEC-09](docs/DECISIONS.md#ct-dec-09-career-tier-ladder); what each tier contains is in [GDD section 5](docs/GDD.md#5-progression).
 
 ## Shipped
@@ -10,8 +12,10 @@ The phases from the first document to the last career tier. Each phase ships as 
 | 1. Rules engine | `engine.mjs`, `data.mjs`, engine tests, the balance simulator and its CI gate | [#20](https://github.com/DaveHomeAssist/mixmash/pull/20) |
 | Rename | Concert Tycoon became Front of House at `front-of-house/` (CT-DEC-06) | [#21](https://github.com/DaveHomeAssist/mixmash/pull/21) |
 | 2. First playable | Lot Night: the page, the client, the isometric board, the settlement sheet, save codes and the smoke rail | [#22](https://github.com/DaveHomeAssist/mixmash/pull/22) |
+| 3. The Lot | Retuned to 50 to 150 people, schema version 2, Sodium Arcade | [#24](https://github.com/DaveHomeAssist/mixmash/pull/24) |
+| 4. A Lot career | Three acts, relationships, the Club unlock | [#25](https://github.com/DaveHomeAssist/mixmash/pull/25) |
 
-## Phase 3: tier 1, the Lot
+## Phase 3: tier 1, the Lot (shipped)
 
 Retune the first playable to the Lot's 50 to 150 people, and start this roadmap.
 
@@ -22,7 +26,7 @@ Retune the first playable to the Lot's 50 to 150 people, and start this roadmap.
 
 **Done when:** the engine tests, the six balance verdicts and the smoke rail pass at the Lot scale, and a version 1 save converts through both the store and the Save and load panel.
 
-## Phase 4: a Lot career
+## Phase 4: a Lot career (shipped)
 
 A run of shows on the Lot, so the first tier is a career rather than one night ([CT-DEC-10](docs/DECISIONS.md#ct-dec-10-the-lot-career), Proposed; rules R-19 to R-21).
 
@@ -36,7 +40,9 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 
 ## Next: Phase 5, the Club
 
-Tier 2, unlocked by the Lot goal: an indoor venue for 150 to 600 people with a house PA and lighting rig, regional touring acts, and ticketing platforms. Decide first how the Club's room is built (a fixed floor plan or a grid like the Lot) and whether the Lot stays playable after the unlock.
+Tier 2, unlocked by the Lot goal. The feature list, the two decisions to make first, and the build order are in [`docs/FUTURE.md`](docs/FUTURE.md). Do not start it until the gates in that file are done.
+
+An indoor venue for 150 to 600 people with a house PA and lighting rig, regional touring acts, and ticketing platforms. Decide first how the Club's room is built (a fixed floor plan or a grid like the Lot) and whether the Lot stays playable after the unlock.
 
 ## Later phases
 
@@ -51,5 +57,5 @@ Sandbox and Scenario modes (CT-DEC-01) reuse the career systems and follow once 
 ## Separate tracks
 
 - **Public release of the first playable** waits on Dave's playtest sign-off. On sign-off: a hub card on the landing page with a gameplay preview and its provenance, a sitemap entry, and `noindex` removed.
-- **Art** follows `docs/ART_DIRECTION.md`: settle the open conflicts in its section 8 and write the render contract before any sprite work (art Phases 2 and 3).
+- **Art.** Provisional prop sprites are on the board as of 2026-10-01. They are a stand-in. The style anchor still waits on the render contract and the open conflicts in `docs/ART_DIRECTION.md` section 8. The order is in `docs/FUTURE.md`.
 - **Documents that start later:** `docs/MANUAL.md` once the loop is stable. `docs/WORLD.md` started in Phase 4.
