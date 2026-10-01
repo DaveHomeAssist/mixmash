@@ -1,7 +1,7 @@
-# Front of House HUD layout (spec, draft)
+# Front of House HUD layout (spec)
 
 - Date: 2026-10-01
-- Status: **Draft for Dave's review.** It proposes [CT-DEC-12](DECISIONS.md#ct-dec-12-hud-layout). Nothing here is built yet.
+- Status: **Accepted by Dave on 2026-10-01** ([CT-DEC-12](DECISIONS.md#ct-dec-12-hud-layout)), with every recommendation in section 9. The minimap is deferred to step 7 of the build order and is on the [roadmap](../ROADMAP.md#hud-layout-ct-dec-12). Nothing here is built yet.
 - Owner: Dave Robertson
 - Asked for: "a redesign of the UI before we get too far... more HUD like, with the map expanded to take up a much larger percentage of the screen real estate."
 
@@ -41,7 +41,7 @@ What causes it:
 - No rule, number or save change. Selectors the smoke rail uses (`data-act`, `data-deal`, the element ids) and the `window.__frontOfHouse` hooks stay.
 - No new art. The stand-in sprites stay until the render contract (`FUTURE.md`).
 - No touch gestures in v1. Pinch and drag wait for touch support ([CT-DEC-04](DECISIONS.md#ct-dec-04-platform)). Buttons for zoom and turn work on every device.
-- No minimap yet (see section 9).
+- No minimap in the first pass. It is step 7 of the build order (section 10), and it is on the roadmap so it isn't lost.
 
 ## 3. The idea: the HUD lives in the lot's empty corners
 
@@ -135,23 +135,23 @@ A full-window canvas draws more pixels: 1440 × 900 at a device pixel ratio of 2
 - Phase controls sit in a bottom sheet at two heights: a peek height (the mockup) and full height for Book, Promote and Settle.
 - No horizontal scrolling, as the smoke rail checks now.
 
-## 9. Decisions for Dave
+## 9. Decisions (settled 2026-10-01)
 
-Each has a recommendation. Nothing is built until these are settled.
+Dave accepted every recommendation on 2026-10-01, and asked for the minimap to stay on the canonical roadmap.
 
-| # | Question | Recommendation | Why |
+| # | Question | Decision | Why |
 | --- | --- | --- | --- |
 | 1 | Corner HUD, or one docked drawer down the right side? | Corner HUD | The drawer is simpler, but it always covers the lot's right corner; the corners cover 0.2% of it |
 | 2 | Which side do sheets open on? | Right | The stepper and meters read left to right; the lot slides left and stays visible |
 | 3 | Mouse wheel zooms? | Yes | The page no longer scrolls, so the wheel is free |
 | 4 | The MixMash nav pills in the top strip | Keep hub and mute; move fullscreen and the GitHub link into the menu | They are the site's shared nav (`src/kit/nav.js`); this changes how Front of House styles them, not the kit |
 | 5 | Phones: bottom sheet, or ask for landscape? | Bottom sheet | It keeps everything reachable in portrait, as CT-DEC-04 asks |
-| 6 | A minimap? | Not yet | The Lot and Fathom Hall fit at a good tile size; revisit for Split Acre once zoom exists |
+| 6 | A minimap? | Deferred to step 7, and on the roadmap | The Lot and Fathom Hall fit at a good tile size; Split Acre needs it once players zoom in |
 | 7 | Translucent backplates over the board | Accept, as an addition to the production-desk look | Dark panels, 1 px borders and mono numbers stay; only the panels float |
 
 ## 10. Build order
 
-Each step is its own pull request with its smoke updates and a service worker bump.
+Each step is its own pull request with its smoke updates and a service worker bump. The same steps are in [`ROADMAP.md`](../ROADMAP.md#hud-layout-ct-dec-12).
 
 1. **Camera.** Safe rectangle, fit, zoom and pan in `board.js`, behind today's layout. Tests: `tileAt(iso(x, y))` round-trips at every zoom and view turn; clicks still hit the right prop.
 2. **Full-window board and top strip.** The canvas fills the window; the header becomes the strip; the save bar, help and credit move into the menu.
@@ -159,6 +159,14 @@ Each step is its own pull request with its smoke updates and a service worker bu
 4. **Sheets.** Book, Promote, Settle and Done.
 5. **Phone.** The bottom sheet and the compact strip.
 6. **Performance.** The floor cache, the pixel-ratio rule, and the frame-time check.
+7. **Minimap (deferred).** Starts once step 1 has shipped and Split Acre is being played zoomed in. See below.
+
+### Step 7: the minimap
+
+- **What it shows:** the whole room at a small scale (floor, props as blocks, the crowd as a heat tint on show night) and a rectangle for what the camera shows now.
+- **What it does:** a click or drag moves the camera there. It turns with the view. Fit, the zoom buttons and the pan keys stay the keyboard path, so the minimap is a shortcut, not the only way.
+- **Where:** a small corner panel, about 180 × 110 px, shown only when the camera is zoomed in past fit; at fit, the whole room is already on screen. Hidden on phones, where Fit does the same job.
+- **Done when:** it shows the whole room and the view rectangle at every zoom and view turn in every room; a click centres the camera on that spot; it is hidden at fit; show night still meets the frame budget in section 6.
 
 ## 11. Done when
 
@@ -171,3 +179,5 @@ The smoke rail measures each of these and fails when one slips.
 - At 390 × 844 there is no horizontal scroll, every phase control is reachable, and the board takes at least 45% of the window's height.
 - Every existing smoke check passes, and the contrast check covers the HUD.
 - Show night meets the frame budget in section 6.
+
+The minimap (step 7) has its own done line, above.
