@@ -1,8 +1,8 @@
 // Front of House isometric board.
 //
 // Draws the lot, the placed objects, the sightline cone, the build cursor and the
-// show-night crowd and lighting on one canvas, with shapes drawn in code (Phase 1 of
-// docs/ART_DIRECTION.md). It renders on demand; only show-night playback animates.
+// show-night crowd and lighting on one canvas. Props use the sprites in ./sprites
+// when they have loaded, and fall back to the code-drawn boxes until then.
 
 import * as D from './data.mjs';
 import { footprint } from './engine.mjs';
@@ -36,6 +36,34 @@ export const LOOK = {
   exit: { top: '#ef4444', side: '#b91c1c', front: '#7f1d1d', height: 0.25 },
 };
 
+// Sprite width as a fraction of the footprint's on-screen width, and where the base sits.
+const FIT = {
+  stage: { w: 1.08, foot: 0.93 },
+  'pa-s': { w: 0.78, foot: 0.97 },
+  'pa-m': { w: 0.82, foot: 0.97 },
+  lights: { w: 0.62, foot: 0.98 },
+  bar: { w: 1.35, foot: 0.94 },
+  restroom: { w: 0.72, foot: 0.97 },
+  gate: { w: 1.15, foot: 0.96 },
+  exit: { w: 1.05, foot: 0.96 },
+};
+
+const spriteImages = {};
+const spriteListeners = new Set();
+
+function pingSprites() {
+  spriteListeners.forEach((fn) => fn());
+}
+
+if (typeof Image !== 'undefined') {
+  for (const id of Object.keys(FIT)) {
+    const img = new Image();
+    img.onload = pingSprites;
+    img.src = new URL(`./sprites/${id}.png`, import.meta.url).href;
+    spriteImages[id] = img;
+  }
+}
+
 const FIXTURES = {
   par: { r: 254, g: 240, b: 138, spread: 1.6, intensity: 0.55 },
   cyan: { r: 0, g: 240, b: 255, spread: 1.0, intensity: 0.6 },
@@ -47,6 +75,7 @@ export function createBoard(canvas) {
   const ctx = canvas.getContext('2d');
   let view = { tw: 32, th: 16, ox: 0, oy: 0, cssW: 0, cssH: 0, dpr: 1 };
   let crowdCache = { key: '', tiles: [] };
+  let lastScene = null;
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -122,6 +151,26 @@ export function createBoard(canvas) {
       [stage.x + w / 2, stage.y], [stage.x + w, stage.y + h / 2],
     ][stage.rot];
     return { facing, front, w: stage.rot % 2 ? h : w };
+  }
+
+  function drawSprite(o, alpha) {
+    const img = spriteImages[o.type];
+    if (!img || !img.complete || img.naturalWidth === 0) return false;
+    const { w, h } = dims(o);
+    const west = iso(o.x, o.y + h);
+    const east = iso(o.x + w, o.y);
+    const south = iso(o.x + w, o.y + h);
+    const footW = Math.hypot(east[0] - west[0], east[1] - west[1]);
+    const fit = FIT[o.type] || { w: 1, foot: 0.96 };
+    const destW = footW * fit.w;
+    const destH = destW * (img.naturalHeight / img.naturalWidth);
+    const cx = (west[0] + east[0]) / 2;
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(img, cx - destW / 2, south[1] - destH * fit.foot, destW, destH);
+    ctx.restore();
+    return true;
   }
 
   function drawStageFacing(o) {
@@ -264,6 +313,7 @@ export function createBoard(canvas) {
 
   // scene: { objects, clearSet, blockedSet, showClear, cursor, ghost, crowd, incident, night, lightTower, t }
   function draw(scene) {
+    lastScene = scene;
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
     ctx.clearRect(0, 0, view.cssW, view.cssH);
 
@@ -305,7 +355,7 @@ export function createBoard(canvas) {
       const look = LOOK[o.type];
       const flicker = scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
         ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1;
-      box(o.x, o.y, d.w, d.h, look.height, look, flicker);
+      if (!drawSprite(o, flicker)) box(o.x, o.y, d.w, d.h, look.height, look, flicker);
       if (o.type === 'stage') drawStageFacing(o);
     }
 
@@ -339,8 +389,10 @@ export function createBoard(canvas) {
       const t = D.OBJECT_TYPES[g.type];
       if (t && !t.kit) {
         const d = dims(g);
-        const look = g.valid ? LOOK[g.type] : { top: COLORS.invalid, side: COLORS.invalid, front: COLORS.invalid };
-        box(g.x, g.y, d.w, d.h, LOOK[g.type].height, look, 0.45);
+        if (!(g.valid && drawSprite(g, 0.45))) {
+          const look = g.valid ? LOOK[g.type] : { top: COLORS.invalid, side: COLORS.invalid, front: COLORS.invalid };
+          box(g.x, g.y, d.w, d.h, LOOK[g.type].height, look, 0.45);
+        }
       }
     }
     if (scene.cursor) {
@@ -361,6 +413,8 @@ export function createBoard(canvas) {
       }
     }
   }
+
+  spriteListeners.add(() => { if (lastScene) draw(lastScene); });
 
   return { resize, draw, tileAt };
 }

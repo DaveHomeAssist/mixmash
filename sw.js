@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v7';
+const VERSION = 'v8';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -64,6 +64,14 @@ const PRECACHE = [
   './front-of-house/board.js',
   './front-of-house/engine.mjs',
   './front-of-house/data.mjs',
+  './front-of-house/sprites/stage.png',
+  './front-of-house/sprites/pa-s.png',
+  './front-of-house/sprites/pa-m.png',
+  './front-of-house/sprites/lights.png',
+  './front-of-house/sprites/bar.png',
+  './front-of-house/sprites/restroom.png',
+  './front-of-house/sprites/gate.png',
+  './front-of-house/sprites/exit.png',
 ];
 
 self.addEventListener('install', (event) => {
