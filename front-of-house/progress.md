@@ -54,8 +54,22 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Started `ROADMAP.md`. Service worker v5.
 - Checked: the same seed 42 show on both scales gives 270 and 135 attending, +$945 and +$472 net, so the conversion is exact apart from rounding.
 
+## 2026-10-01: Phase 4, a Lot career
+
+- The Lot is now a run of shows (CT-DEC-10, Proposed; R-19 to R-21). Two new fictional acts join Sodium Arcade: Gravel Hymnal (folk, draws 55 to 100, $15, asks $300) and Juniper Switchboard (funk and soul, draws 95 to 150, $25, asks $800, guarantee only). Name checks are in the new `docs/WORLD.md`.
+- Engine: `offersFor`, `termsFor`, `cheapestShowCost`, `careerProgress`; `chooseDeal` takes an `artistId`, checks the offer and the door rule, and stores the quoted terms; `evaluateShow` takes `ask` and `drawMult`; `nextShow` is open after any settlement unless cash is below the cheapest show; the Club unlock is recorded at settlement and stays.
+- Tuning, from a career prototype run before the simulator verdicts were written: with a goal of a sellout, reputation 50 and $5,000, every strategy reached the Club on every seed and the door-only habit was fastest (median 3 shows against 6). Making Juniper Switchboard guarantee-only, raising the goal to reputation 60 and $6,000, and adding an act at +20 gives careful play 100% in a median of 7 shows (never fewer than 5) and careless play about 42%.
+- Client: the Book screen shows two offer cards with each act's relationship, terms and door rule; the Done screen shows the goal's progress and keeps Book the next show open after a rough night. `render_game_to_text()` reports the booked act, the offers and career progress. Service worker v6.
+- Tests: 27 engine tests (5 new for R-19 to R-21), 11 balance verdicts (5 new), and a smoke check that the next show offers two acts and carries the cash.
+- Review fixes (Codex, three findings, each reproduced on the old engine first):
+  - **A pasted save with a quoted ask of $0** reached settlement and set the act's relationship to `NaN` (R-17 divides the pay by the ask). `normalizeState` now drops terms whose ask is below $1, and `evaluateShow` ignores such an ask.
+  - **Start over kept the old career's history,** so an earlier sellout counted toward the new goal and the first show's offer was skipped. Start over now keeps only the layout. Because of that, a finished version 1 save is now closed with Next show after any night (as R-21 allows) and with Start over only when the next show is unaffordable, so the migration keeps its history.
+  - **The next-show check assumed a door deal.** When both acts on the next show's offer want a guarantee (Juniper Switchboard and an act soured past the door rule), a player with between $1,025 and the cheapest guarantee could book nothing. `nextShowCost(state)` prices the next show's actual offers; the Done screen and the simulator use it. The balance baseline is unchanged.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
-- Phase 4 (a Lot career, `ROADMAP.md`): decide the tier goal that unlocks the Club and how relationships change an artist's next offer, then build the run of shows.
+- Dave: accept or change CT-DEC-10 (the Lot career's roster, terms, goal and carrying-on rule).
+- Phase 5 (the Club, `ROADMAP.md`): decide how the Club's room is built and whether the Lot stays playable after the unlock.
+- Balance: careful play always picks the budget layout on the Lot, so the light tower and the medium PA rarely pay for themselves at this scale.
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.

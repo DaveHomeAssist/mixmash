@@ -57,7 +57,7 @@ The deal choice is the central tension. A door deal pays the promoter more when 
 
 ## 5. Progression
 
-Four tiers, from the tier ladder in the art direction ([CT-DEC-09](DECISIONS.md#ct-dec-09-career-tier-ladder)):
+Four tiers, from the tier ladder in the art direction ([CT-DEC-09](DECISIONS.md#ct-dec-09-career-tier-ladder)). Tier 1 is a career of its own since Phase 4: a run of shows on the Lot with a roster of three acts, terms that follow each act's relationship, and a four-part goal that unlocks the Club ([CT-DEC-10](DECISIONS.md#ct-dec-10-the-lot-career), [RULES.md](RULES.md#the-lot-career) R-19 to R-21).
 
 | Tier | Capacity | Content |
 | --- | --- | --- |

@@ -11,7 +11,7 @@ The phases from the first document to the last career tier. Each phase ships as 
 | Rename | Concert Tycoon became Front of House at `front-of-house/` (CT-DEC-06) | [#21](https://github.com/DaveHomeAssist/mixmash/pull/21) |
 | 2. First playable | Lot Night: the page, the client, the isometric board, the settlement sheet, save codes and the smoke rail | [#22](https://github.com/DaveHomeAssist/mixmash/pull/22) |
 
-## Phase 3: tier 1, the Lot (this phase)
+## Phase 3: tier 1, the Lot
 
 Retune the first playable to the Lot's 50 to 150 people, and start this roadmap.
 
@@ -22,23 +22,27 @@ Retune the first playable to the Lot's 50 to 150 people, and start this roadmap.
 
 **Done when:** the engine tests, the six balance verdicts and the smoke rail pass at the Lot scale, and a version 1 save converts through both the store and the Save and load panel.
 
-## Next: Phase 4, a Lot career
+## Phase 4: a Lot career
 
-A run of shows on the Lot, so the first tier is a career rather than one night.
+A run of shows on the Lot, so the first tier is a career rather than one night ([CT-DEC-10](docs/DECISIONS.md#ct-dec-10-the-lot-career), Proposed; rules R-19 to R-21).
 
-- **Next show continues.** After a pass, the player books another show on the same lot, with cash, venue reputation, relationships and the layout carried over (the engine's `nextShow` already does this).
-- **A small roster.** Two or three more fictional acts (CT-DEC-03) inside the Lot's draw range, each with its own genre, fair price and ask.
-- **Relationships change terms.** An artist the player treated well returns with a lower ask or a bigger draw; one who was underpaid asks for more or turns the offer down. This is what makes the guarantee worth choosing over a run of shows, which answers the open balance question that the door deal pays more on any single night.
-- **A tier goal.** A clear target that unlocks the Club, for example selling out the Lot and reaching a venue reputation threshold. The exact goal is a decision to record before building.
-- **Simulator coverage for a run.** The simulator plays several shows in a row and adds verdicts for the career: the goal is reachable, not trivial, and both deals have a place in a winning run.
+- **Next show continues** after any settlement, with cash, venue reputation, relationships, the layout and the history carried over. Only running out of money (below the cheapest show the next acts on offer will take: $1,025 on a door deal, more when both want a guarantee) ends a run. Start over is always open and begins a new career with only the layout kept.
+- **A roster of three fictional acts** ([`docs/WORLD.md`](docs/WORLD.md)): Gravel Hymnal, Sodium Arcade and Juniper Switchboard. Each show offers two.
+- **Relationships change terms:** the ask and the draw follow the relationship, a soured act refuses door deals, and Juniper Switchboard only plays for a guarantee.
+- **The Lot goal unlocks the Club:** a sellout, venue reputation 60, $6,000, and one act at +20. The Book screen shows each offer's terms; the Done screen shows the goal's progress.
+- **Simulator coverage:** careful and careless careers on 300 seeds, with five new verdicts (careful play reaches the Club, it takes a run of shows, care matters, every act gets booked, careful careers never run out of money).
 
-**Done when:** a player can play at least five shows in a row on the Lot with cash, reputation and relationships carried between them; relationship changes the next offer; the tier goal is reachable in the simulator but not on every seed; and any save schema change has a migration and a frozen fixture.
+**Done when:** a player can play at least five shows in a row on the Lot with cash, reputation and relationships carried between them; relationship changes the next offer; the tier goal is reachable in the simulator but not on every seed (careless play reaches it on about 42%); and any save change keeps old saves playing (two optional fields, no version bump).
+
+## Next: Phase 5, the Club
+
+Tier 2, unlocked by the Lot goal: an indoor venue for 150 to 600 people with a house PA and lighting rig, regional touring acts, and ticketing platforms. Decide first how the Club's room is built (a fixed floor plan or a grid like the Lot) and whether the Lot stays playable after the unlock.
 
 ## Later phases
 
 | Phase | Tier | Scope (from GDD section 5) | Done when |
 | --- | --- | --- | --- |
-| 5 | The Club (150 to 600) | An indoor venue with a house PA and lighting rig, regional touring acts, ticketing platforms | The Club unlocks from the Lot goal, plays a full show and a run of shows, and the simulator verdicts pass at its scale |
+| 5 | The Club (150 to 600) | An indoor venue with a house PA and lighting rig, regional touring acts, ticketing platforms | The Club plays a full show and a run of shows from the Lot goal's unlock, and the simulator verdicts pass at its scale |
 | 6 | The Amphitheater (600 to 2,500) | National acts, runs of several nights, seated and general-admission zones | The same, plus multi-night runs settle correctly night by night |
 | 7 | The Festival Grounds (2,500 to 25,000+) | Headliners, sponsorship deals, multi-stage festival operations, broadcast rights | The same, plus a multi-stage day settles stage by stage |
 
@@ -48,4 +52,4 @@ Sandbox and Scenario modes (CT-DEC-01) reuse the career systems and follow once 
 
 - **Public release of the first playable** waits on Dave's playtest sign-off. On sign-off: a hub card on the landing page with a gameplay preview and its provenance, a sitemap entry, and `noindex` removed.
 - **Art** follows `docs/ART_DIRECTION.md`: settle the open conflicts in its section 8 and write the render contract before any sprite work (art Phases 2 and 3).
-- **Documents that start later:** `docs/MANUAL.md` once the loop is stable, and `docs/WORLD.md` once there is more than one artist (Phase 4).
+- **Documents that start later:** `docs/MANUAL.md` once the loop is stable. `docs/WORLD.md` started in Phase 4.

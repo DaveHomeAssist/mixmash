@@ -60,11 +60,84 @@ export function createGame(seed = 1) {
     phase: 'book',
     cash: D.START_CASH,
     venue: { id: 'lot', grid: { w: D.GRID.w, h: D.GRID.h }, objects: [] },
-    booking: { artistId: D.DEFAULT_ARTIST, deal: null },
+    booking: { artistId: D.DEFAULT_ARTIST, deal: null, terms: null },
     promotion: { price: artist.fairPrice, ads: zeroAds(), confirmed: false },
     show: null,
     reputation: { venue: 0, artists: Object.fromEntries(Object.keys(D.ARTISTS).map((id) => [id, 0])) },
     history: [],
+    unlocks: { club: false },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// The Lot career (R-19 to R-21)
+
+// R-19: the acts on offer for this show. The first show always offers the default act, so the
+// first night is the one the balance baseline describes; later shows draw from the roster.
+export function offersFor(state) {
+  return offersForSeed(state.seed, !state.history.length);
+}
+
+function offersForSeed(seed, firstShow) {
+  const rng = mulberry32((seed ^ 0x5bd1e995) >>> 0);
+  const pool = D.ROSTER.slice();
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(rng() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  if (firstShow) return [D.DEFAULT_ARTIST, ...pool.filter((id) => id !== D.DEFAULT_ARTIST)].slice(0, D.OFFERS_PER_SHOW);
+  return pool.slice(0, D.OFFERS_PER_SHOW);
+}
+
+// R-19: what an act asks for, given how it feels about the promoter.
+export function termsFor(artistId, relationship) {
+  const artist = artistFor(artistId);
+  const rel = clamp(isInt(relationship) ? relationship : 0, -100, 100);
+  const ask = Math.round(artist.ask * (1 - rel * D.REL_ASK_SLOPE) / D.ASK_ROUNDING) * D.ASK_ROUNDING;
+  return { ask, drawMult: 1 + rel * D.REL_DRAW_SLOPE, doorOk: !artist.guaranteeOnly && rel > D.REL_DOOR_FLOOR };
+}
+
+// R-21: the least a show can cost before doors: the cheapest valid venue with no ads, on a
+// door deal, or on a guarantee of `ask`.
+export function cheapestShowCost(deal = 'door', ask = undefined) {
+  return evaluateShow({
+    venue: evaluateVenue({ objects: D.CHEAPEST_LAYOUT }), deal, ask, price: D.PRICE_MIN,
+    ads: zeroAds(), venueRep: 0, draw: 0, artistId: D.DEFAULT_ARTIST, incidentId: null, responseId: null,
+  }).upfront;
+}
+
+// R-21: the least the next show can cost: the cheapest deal each act on the next show's offer
+// will take, at the terms its relationship sets. Two acts that both want a guarantee cost more
+// than the door-deal floor.
+export function nextShowCost(state) {
+  return Math.min(...offersForSeed(nextSeed(state.seed), false).map((id) => {
+    const terms = termsFor(id, state.reputation.artists[id]);
+    return terms.doorOk ? cheapestShowCost('door') : cheapestShowCost('guarantee', terms.ask);
+  }));
+}
+
+// R-20: progress toward the Lot goal that unlocks the Club.
+export function careerProgress(state) {
+  const sellouts = state.history.filter((h) => h.attendance >= D.PERMIT_CAP).length;
+  const loyalAct = Math.max(...D.ROSTER.map((id) => state.reputation.artists[id] || 0));
+  const met = {
+    sellouts: sellouts >= D.LOT_GOAL.sellouts,
+    venueRep: state.reputation.venue >= D.LOT_GOAL.venueRep,
+    cash: state.cash >= D.LOT_GOAL.cash,
+    loyalAct: loyalAct >= D.LOT_GOAL.loyalAct,
+  };
+  return {
+    shows: state.history.length,
+    sellouts,
+    venueRep: state.reputation.venue,
+    cash: state.cash,
+    loyalAct,
+    goal: D.LOT_GOAL,
+    met,
+    goalMet: met.sellouts && met.venueRep && met.cash && met.loyalAct,
+    clubUnlocked: !!(state.unlocks && state.unlocks.club),
+    nextShowCost: nextShowCost(state),
+    canAffordAShow: state.cash >= nextShowCost(state),
   };
 }
 
@@ -292,7 +365,9 @@ export function evaluateShow(inputs) {
   const response = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
   const pf = priceFactor(inputs.price, artist.fairPrice);
   const bz = buzz(inputs.ads);
-  const dem = demand({ draw: inputs.draw, price: inputs.price, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
+  const ask = isInt(inputs.ask) && inputs.ask > 0 ? inputs.ask : artist.ask;
+  const drawMult = typeof inputs.drawMult === 'number' && Number.isFinite(inputs.drawMult) ? inputs.drawMult : 1;
+  const dem = demand({ draw: inputs.draw * drawMult, price: inputs.price, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
   const { share, presale, walkup } = presaleSplit(dem, bz, v.capacity);
   const walkupAfterIncident = Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
   const attendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
@@ -330,7 +405,7 @@ export function evaluateShow(inputs) {
     incident: response ? response.cost : 0,
   };
   costs.total = Object.values(costs).reduce((a, b) => a + b, 0);
-  const guarantee = artist.ask;
+  const guarantee = ask;
   const artistPay = inputs.deal === 'guarantee' ? guarantee : Math.round(D.DOOR_SPLIT * Math.max(0, ticketGross - costs.total));
   const net = ticketGross + bar - costs.total - artistPay;
   const result = net >= 0 && satisfaction >= D.PASS_SATISFACTION ? 'pass' : 'retry';
@@ -340,7 +415,7 @@ export function evaluateShow(inputs) {
 
   // R-16, R-17
   const repDelta = Math.round(D.REP_SAT_SLOPE * (satisfaction - D.PASS_SATISFACTION));
-  const relDelta = clamp(D.REL_BASE + Math.round(D.REL_SLOPE * (artistPay / artist.ask - 1)), D.REL_MIN_STEP, D.REL_MAX_STEP);
+  const relDelta = clamp(D.REL_BASE + Math.round(D.REL_SLOPE * (artistPay / ask - 1)), D.REL_MIN_STEP, D.REL_MAX_STEP);
 
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
@@ -359,6 +434,8 @@ function showInputs(state, venueStats, withIncident) {
     // settlement changes the reputation, so a replayed sheet must not use the new one.
     venueRep: state.show && isInt(state.show.venueRep) ? state.show.venueRep : state.reputation.venue,
     draw: roll.draw,
+    ask: state.booking.terms ? state.booking.terms.ask : undefined,
+    drawMult: state.booking.terms ? state.booking.terms.drawMult : undefined,
     artistId: state.booking.artistId,
     incidentId: withIncident && state.show ? state.show.incidentId : null,
     responseId: withIncident && state.show ? state.show.responseId : null,
@@ -375,7 +452,8 @@ export function forecast(state) {
   const artist = artistFor(state.booking.artistId);
   const v = evaluateVenue(state.venue);
   const at = (draw) => {
-    const dem = demand({ draw, price: state.promotion.price, fairPrice: artist.fairPrice, ads: state.promotion.ads, venueRep: state.reputation.venue });
+    const mult = state.booking.terms ? state.booking.terms.drawMult : 1;
+    const dem = demand({ draw: draw * mult, price: state.promotion.price, fairPrice: artist.fairPrice, ads: state.promotion.ads, venueRep: state.reputation.venue });
     const { presale, walkup } = presaleSplit(dem, buzz(state.promotion.ads), v.capacity);
     return Math.min(v.capacity, presale + walkup);
   };
@@ -409,7 +487,17 @@ export function applyAction(state, action) {
     case 'chooseDeal': {
       if ((err = need('book'))) return fail(state, err);
       if (!DEALS.includes(action.deal)) return fail(state, 'Choose a guarantee or a door deal');
-      s.booking.deal = action.deal;
+      const offers = offersFor(s);
+      const artistId = action.artistId === undefined ? offers[0] : action.artistId;
+      if (!offers.includes(artistId)) return fail(state, 'That act is not on offer for this show');
+      const terms = termsFor(artistId, s.reputation.artists[artistId]);
+      if (action.deal === 'door' && !terms.doorOk) {
+        const a = artistFor(artistId);
+        return fail(state, a.guaranteeOnly ? `${a.name} only plays for a guarantee`
+          : `${a.name} will only play for a guarantee after the last door deal`);
+      }
+      if (artistId !== s.booking.artistId) s.promotion.price = artistFor(artistId).fairPrice;
+      s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult } };
       s.phase = 'build';
       return { state: s, error: null };
     }
@@ -505,6 +593,7 @@ export function applyAction(state, action) {
         weakest: r.weakest,
         settledAt: typeof action.at === 'string' ? action.at : null,
       });
+      if (careerProgress(s).goalMet) s.unlocks.club = true;
       s.phase = 'done';
       return { state: s, error: null };
     }
@@ -517,15 +606,23 @@ export function applyAction(state, action) {
     case 'nextShow':
     case 'retry': {
       if ((err = need('done'))) return fail(state, err);
-      const last = s.history[s.history.length - 1];
-      if (action.type === 'nextShow' && (!last || last.result !== 'pass')) return fail(state, 'Pass this show before booking the next one');
+      // R-21: a career carries on after a bad night; it ends only when the next show is unaffordable.
+      if (action.type === 'nextShow' && s.cash < nextShowCost(s)) {
+        return fail(state, `The next show needs at least $${nextShowCost(s)} before doors and you have $${s.cash}. Start over to try again.`);
+      }
       const fresh = createGame(nextSeed(s.seed));
       fresh.venue = s.venue;
-      fresh.history = s.history;
+      // Start over begins a new career that keeps only the layout, so earlier shows count
+      // toward neither the new goal nor the first show's offer.
       if (action.type === 'nextShow') {
         fresh.cash = s.cash;
         fresh.reputation = s.reputation;
+        fresh.unlocks = s.unlocks;
+        fresh.history = s.history;
       }
+      const first = offersFor(fresh)[0];
+      fresh.booking.artistId = first;
+      fresh.promotion.price = artistFor(first).fairPrice;
       return { state: fresh, error: null };
     }
     default:
@@ -566,9 +663,9 @@ export function migrateSave(raw) {
 // Version 2 retuned tier 1 to the Lot (CT-DEC-09) by halving every per-person and money
 // value, so a version 1 save converts the same way: cash, ad spend and the history's
 // attendance and money halve. Version 2 also renamed Velvet Static (a real band's name) to
-// Sodium Arcade, so the artist's id moves with its relationship. A finished show is closed with the step the player would
-// take next (Next show after a pass, Retry otherwise), so a sheet signed at the old scale
-// is never replayed at the new one.
+// Sodium Arcade, so the artist's id moves with its relationship. A finished show is closed with
+// Next show, which R-21 opens after any night, or Start over when the next show is
+// unaffordable, so a sheet signed at the old scale is never replayed at the new one.
 function migrateV1toV2(raw) {
   const half = (n) => (isInt(n) ? Math.round(n / 2) : n);
   const s = clone(raw);
@@ -589,9 +686,10 @@ function migrateV1toV2(raw) {
   if (s.phase !== 'done') return s;
   const state = normalizeState(s, isInt(s.seed) ? s.seed : 1);
   if (state.phase !== 'done') return state;
-  const last = state.history[state.history.length - 1];
-  const step = applyAction(state, { type: last && last.result === 'pass' ? 'nextShow' : 'retry' });
-  return step.error ? state : step.state;
+  const next = applyAction(state, { type: 'nextShow' });
+  if (!next.error) return next.state;
+  const over = applyAction(state, { type: 'retry' });
+  return over.error ? state : over.state;
 }
 
 export function normalizeState(raw, fallbackSeed = 1) {
@@ -607,6 +705,14 @@ export function normalizeState(raw, fallbackSeed = 1) {
   const booking = isObj(raw.booking) ? raw.booking : {};
   if (typeof booking.artistId === 'string' && D.ARTISTS[booking.artistId]) s.booking.artistId = booking.artistId;
   s.booking.deal = DEALS.includes(booking.deal) ? booking.deal : null;
+  // Terms arrived with the Lot career; a booking made before them has none and uses the act's
+  // base ask and draw, as it did when it was made. An ask below $1 is dropped the same way:
+  // settlement divides by it (R-17).
+  const terms = isObj(booking.terms) ? booking.terms : null;
+  if (s.booking.deal && terms && isInt(terms.ask) && terms.ask > 0 && typeof terms.drawMult === 'number' && Number.isFinite(terms.drawMult)) {
+    s.booking.terms = { ask: clamp(terms.ask, 1, 1e6), drawMult: clamp(terms.drawMult, 0.5, 1.5) };
+  }
+  s.unlocks.club = isObj(raw.unlocks) && raw.unlocks.club === true;
 
   const promo = isObj(raw.promotion) ? raw.promotion : {};
   s.promotion.price = clamp(intOr(promo.price, artistFor(s.booking.artistId).fairPrice), D.PRICE_MIN, D.PRICE_MAX);

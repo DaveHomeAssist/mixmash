@@ -83,6 +83,21 @@ Reference strategy: reference layout, $20 tickets, reference ads. "Free response
 
 Search grid per seed: 2 deals × 7 prices × 3 ad presets × 2 layouts × every response. The highest-net strategy uses the door deal on 229 seeds and the guarantee on 271. Seeds with no passing strategy: none.
 
+## The Lot career
+
+Goal that unlocks the Club: 1 sellout of the Lot (150 people), venue reputation 60, $6,000 cash, and one act at a relationship of +20. Each strategy plays up to 12 shows on 300 seeds. "Careful" weighs every offer, deal and layout at the act's middle draw and picks the best incident response; "careless" takes the first affordable offer on the door deal when it can, the suggested layout and the free response. The cheapest show costs $1,025 before doors.
+
+| Strategy | Reached the Club | Median shows | Fewest shows | Ran out of money |
+| --- | --- | --- | --- | --- |
+| careful | 100.0% | 7 | 6 | 0 of 300 |
+| careless | 42.3% | 10 | 5 | 76 of 300 |
+
+| Act | Bookings across both strategies |
+| --- | --- |
+| Gravel Hymnal | 881 |
+| Sodium Arcade | 1856 |
+| Juniper Switchboard | 2112 |
+
 ## Verdicts
 
 | Check | Verdict | Detail |
@@ -93,3 +108,8 @@ Search grid per seed: 2 deals × 7 prices × 3 ad presets × 2 layouts × every 
 | Each deal is the better choice somewhere in the draw × price grid | PASS | better deals seen: door, guarantee |
 | Every seed has at least one passing strategy | PASS | 500 of 500 seeds winnable |
 | The guarantee with free responses is neither trivial nor hopeless | PASS | 58.6% against a target of 25.0% to 90.0% |
+| Careful careers reach the Club | PASS | 100.0% within 12 shows against a minimum of 90.0% |
+| The Club takes a run of shows | PASS | fewest shows to the Club: 5, against a minimum of 4 |
+| Care matters on the Lot | PASS | careful 100.0%, careless 42.3%; gap of at least 25.0% required |
+| Every act gets booked | PASS | 3 of 3 acts booked |
+| Careful careers never run out of money | PASS | 0 of 300 careful careers ran out |

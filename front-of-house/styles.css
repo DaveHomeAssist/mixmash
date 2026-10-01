@@ -135,6 +135,15 @@ button.danger { border-color: var(--red); color: #fecaca; }
 
 .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
 .artist-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; margin: 2px 0 4px; }
+.offer { display: grid; gap: 8px; }
+.offer + .offer { margin-top: 12px; }
+.choice[disabled] { opacity: 0.55; cursor: not-allowed; }
+.career h3 { margin: 2px 0 6px; font-size: 1rem; }
+.goal { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; font-family: var(--font-mono); font-size: 0.82rem; }
+.goal li { color: var(--text); }
+.goal li span { display: inline-block; width: 1.2em; color: var(--text-muted); }
+.goal li.met span { color: var(--green); }
+.career .hint { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
 
 fieldset { border: 1px solid var(--border); border-radius: var(--radius); margin: 0; padding: 10px 12px 12px; }
 legend { padding: 0 6px; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
