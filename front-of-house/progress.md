@@ -84,3 +84,9 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - The Done screen's out-of-money figure assumes the cheapest layout with no ads. Consider saying so there, or pointing to Cut ads or rentals (Dave, with the playtest).
 - The simulator's careful strategy picks each incident response by computing its settlement, which uses the seed's hidden draw, so its verdicts are an upper bound on informed play; `paired.mjs` uses only what the screen shows.
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.
+
+## 2026-10-01: Feature plan
+
+- Added `docs/FUTURE.md`. It orders the work after the Lot: four gates, then the Club (two decisions first), then the Amphitheater, then the Festival Grounds, with each later system assigned to the first tier that needs it. Sandbox and one scenario wait until the Club plays. The painted prop sprites stay a stand-in until a render contract and the style anchor replace them.
+- `ROADMAP.md` now marks Phases 0 to 4 shipped and points the next phase at that plan. `ART_DIRECTION.md` records the stand-in sprites so they are not mistaken for art Phase 2.
+- No rules, numbers, or saves changed.

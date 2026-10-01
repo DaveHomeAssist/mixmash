@@ -1,6 +1,6 @@
 # Front of House Art Direction
 
-**Status:** Direction accepted from Dave (2026-10-01, drafted with Gemini). Phase 1 is implemented in code-drawn form: `board.js` for the canvas and `styles.css` for the panels. Phases 2 and 3 are not started.
+**Status:** Direction accepted from Dave (2026-10-01, drafted with Gemini). Phase 1 is in `board.js`. As of 2026-10-01 the board also draws provisional prop sprites from `sprites/`; those files are a stand-in, not the pixel sheets in section 6. Phases 2 and 3 are not started. The feature order is in [`FUTURE.md`](FUTURE.md).
 **Decisions:** [CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art) (placeholder tiles drawn in code first; pixel art only after the loop is fun)
 
 > **Before any sprite is commissioned**, write a render contract module (tile size, anchors, footprints, frame counts, timing, palette) and reconcile the open conflicts listed at the end of this document. MarsScape's DEC-79 is the reason: its art was planned against a renderer that had since changed.
@@ -120,8 +120,8 @@ The sheet and the key art label the generator with a real manufacturer's product
 
 | Phase | Scope | Method | Status |
 | --- | --- | --- | --- |
-| 1. First playable | Placeholder isometric blocks drawn in code, a night overlay, additive beams, density-field crowd dots, and the sightline overlay (teal clear, red blocked) | Canvas 2D drawing; no image files | Done in `board.js` |
-| 2. Style anchor | Asphalt tiles (3 variations), mobile stage, PA stacks (S and M), barricade, pop-up FOH tent, generator, restroom bank, crowd cluster stamps, the audio engineer | Pixel-art sprite sheets (PNG) to the sizes in section 6 | Not started; needs the render contract first |
+| 1. First playable | Placeholder isometric blocks drawn in code, a night overlay, additive beams, density-field crowd dots, and the sightline overlay (teal clear, red blocked). Provisional prop sprites draw in front of the boxes when the files load | Canvas 2D, plus eight PNG stand-ins in `sprites/` | Blocks done. Sprites are a stand-in (2026-10-01), not this phase's pixel art |
+| 2. Style anchor | Asphalt tiles (3 variations), mobile stage, PA stacks (S and M), barricade, pop-up FOH tent, generator, restroom bank, crowd cluster stamps, the audio engineer | Pixel-art sprite sheets (PNG) to the sizes in section 6 | Not started. Needs the render contract, then it replaces the stand-ins |
 | 3. Showtime FX | Moving-head sweeps with alpha falloff, strobes, haze particles | Canvas blend modes and particle pools | Not started |
 
 ### Build-screen ideas from the build-phase mockup
