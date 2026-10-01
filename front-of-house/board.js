@@ -76,6 +76,16 @@ export function createBoard(canvas) {
   let view = { tw: 32, th: 16, ox: 0, oy: 0, cssW: 0, cssH: 0, dpr: 1 };
   let crowdCache = { key: '', tiles: [] };
   let lastScene = null;
+  let facing = 0;
+
+  function worldToView(x, y) {
+    const W = D.GRID.w;
+    const H = D.GRID.h;
+    if (facing === 1) return [y, W - x];
+    if (facing === 2) return [W - x, H - y];
+    if (facing === 3) return [H - y, x];
+    return [x, y];
+  }
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -88,22 +98,52 @@ export function createBoard(canvas) {
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
     const diamondW = ((D.GRID.w + D.GRID.h) * tw) / 2;
-    view = { tw, th, ox: (cssW - diamondW) / 2 + (D.GRID.h * tw) / 2, oy: th * 4, cssW, cssH, dpr };
+    const gh = facing % 2 ? D.GRID.w : D.GRID.h;
+    view = {
+      tw, th,
+      ox: (cssW - diamondW) / 2 + (gh * tw) / 2,
+      oy: th * 4, cssW, cssH, dpr,
+    };
   }
 
   // Tile coordinates (x, y, height z in tiles) to screen coordinates.
   function iso(x, y, z = 0) {
-    return [view.ox + ((x - y) * view.tw) / 2, view.oy + ((x + y) * view.th) / 2 - z * view.th];
+    const [u, v] = worldToView(x, y);
+    return [view.ox + ((u - v) * view.tw) / 2, view.oy + ((u + v) * view.th) / 2 - z * view.th];
   }
 
   function tileAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
     const a = (clientX - rect.left - view.ox) / (view.tw / 2);
     const b = (clientY - rect.top - view.oy) / (view.th / 2);
-    const x = Math.floor((a + b) / 2);
-    const y = Math.floor((b - a) / 2);
-    if (x < 0 || y < 0 || x >= D.GRID.w || y >= D.GRID.h) return null;
+    const u = (a + b) / 2;
+    const v = (b - a) / 2;
+    const W = D.GRID.w;
+    const H = D.GRID.h;
+    let x = u;
+    let y = v;
+    if (facing === 1) { x = W - v; y = u; }
+    else if (facing === 2) { x = W - u; y = H - v; }
+    else if (facing === 3) { x = v; y = H - u; }
+    x = Math.floor(x);
+    y = Math.floor(y);
+    if (x < 0 || y < 0 || x >= W || y >= H) return null;
     return { x, y };
+  }
+
+  function screenDepth(x, y, w, h) {
+    const corners = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+    return Math.max(...corners.map(([cx, cy]) => {
+      const [u, v] = worldToView(cx, cy);
+      return u + v;
+    }));
+  }
+
+  function turnView() {
+    facing = (facing + 1) % 4;
+    resize();
+    if (lastScene) draw(lastScene);
+    return facing;
   }
 
   function diamond(x, y, w, h, z = 0) {
@@ -350,7 +390,7 @@ export function createBoard(canvas) {
     const sorted = scene.objects
       .filter((o) => !D.OBJECT_TYPES[o.type].kit)
       .map((o) => ({ o, d: dims(o) }))
-      .sort((p, q) => (p.o.x + p.d.w + p.o.y + p.d.h) - (q.o.x + q.d.w + q.o.y + q.d.h));
+      .sort((p, q) => screenDepth(p.o.x, p.o.y, p.d.w, p.d.h) - screenDepth(q.o.x, q.o.y, q.d.w, q.d.h));
     for (const { o, d } of sorted) {
       const look = LOOK[o.type];
       const flicker = scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
@@ -416,5 +456,5 @@ export function createBoard(canvas) {
 
   spriteListeners.add(() => { if (lastScene) draw(lastScene); });
 
-  return { resize, draw, tileAt };
+  return { resize, draw, tileAt, turnView };
 }
