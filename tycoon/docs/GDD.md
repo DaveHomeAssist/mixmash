@@ -1,6 +1,6 @@
 # Concert Tycoon: Game Design Document
 
-**Status:** Draft · **Last updated:** 2026-10-01 · **Owner:** Dave Robertson
+**Status:** Draft; decisions CT-DEC-01 to CT-DEC-05 accepted · **Last updated:** 2026-10-01 · **Owner:** Dave Robertson
 **Decisions:** [DECISIONS.md](DECISIONS.md) · **Formulas:** [RULES.md](RULES.md) · **Saves:** [SAVE_FORMAT.md](SAVE_FORMAT.md)
 
 This document is the canonical design. It combines both drafts from the Notion capture page "Concert Tycoon Ideas" (2026-10-01) with the one-page design for the first playable loop. Where they differed, the choice made is noted in the "Reconciled from the Notion drafts" section.
@@ -24,7 +24,7 @@ This document is the canonical design. It combines both drafts from the Notion c
 
 ## 3. Scope and modes
 
-Proposed scope: a structured tycoon with Sandbox as a mode, not an open-world sim ([CT-DEC-01](DECISIONS.md#ct-dec-01-core-scope)).
+Scope: a structured tycoon with Sandbox as a mode, not an open-world sim ([CT-DEC-01](DECISIONS.md#ct-dec-01-core-scope)).
 
 | Mode | Description | When |
 | --- | --- | --- |
@@ -102,7 +102,7 @@ The deal choice is the central tension. A door deal pays the promoter more when 
 
 ## 8. Platform and technology
 
-Proposed: built for the browser inside MixMash Studio, using MarsScape's split between a separate rules engine and a canvas client; desktop browser first ([CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art), [CT-DEC-04](DECISIONS.md#ct-dec-04-platform)). The planned file layout is in [`../README.md`](../README.md#planned-architecture-pending-ct-dec-02).
+Decided: built for the browser inside MixMash Studio, using MarsScape's split between a separate rules engine and a canvas client; desktop browser first ([CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art), [CT-DEC-04](DECISIONS.md#ct-dec-04-platform)). The planned file layout is in [`../README.md`](../README.md#architecture-ct-dec-02).
 
 The Notion page originally listed Unity, Godot and Unreal Engine 5, with FMOD or Wwise for audio. CT-DEC-02 records why those were not chosen and when Godot would come back into consideration.
 

@@ -4,18 +4,18 @@ This file records Concert Tycoon decisions that affect more than one part of the
 
 | ID | Decision | Status |
 | --- | --- | --- |
-| [CT-DEC-01](#ct-dec-01-core-scope) | Structured tycoon with Sandbox and Scenario modes | Proposed |
-| [CT-DEC-02](#ct-dec-02-engine-and-art) | Browser engine using the MarsScape split; isometric pixel art later | Proposed |
-| [CT-DEC-03](#ct-dec-03-artists-and-venues) | Fictional artists and venues | Proposed |
-| [CT-DEC-04](#ct-dec-04-platform) | Desktop browser first | Proposed |
-| [CT-DEC-05](#ct-dec-05-multiplayer) | No multiplayer in v1 | Proposed |
+| [CT-DEC-01](#ct-dec-01-core-scope) | Structured tycoon with Sandbox and Scenario modes | Accepted |
+| [CT-DEC-02](#ct-dec-02-engine-and-art) | Browser engine using the MarsScape split; isometric pixel art later | Accepted |
+| [CT-DEC-03](#ct-dec-03-artists-and-venues) | Fictional artists and venues | Accepted |
+| [CT-DEC-04](#ct-dec-04-platform) | Desktop browser first | Accepted |
+| [CT-DEC-05](#ct-dec-05-multiplayer) | No multiplayer in v1 | Accepted |
 | [CT-DEC-06](#ct-dec-06-name-and-route) | Final name and route | Open |
 | [CT-DEC-07](#ct-dec-07-documentation-source-of-truth) | This folder is canonical; Notion links to it | Accepted |
 
 ## CT-DEC-01: Core scope
 
 - Date: 2026-10-01
-- Status: Proposed
+- Status: Accepted (Dave, 2026-10-01)
 - Owner: Dave Robertson
 - Affects: game modes, the first playable, the systems list in the design doc
 
@@ -37,7 +37,7 @@ Build a structured tycoon: a Career with objectives, plus Sandbox and Scenario a
 ## CT-DEC-02: Engine and art
 
 - Date: 2026-10-01
-- Status: Proposed
+- Status: Accepted (Dave, 2026-10-01)
 - Owner: Dave Robertson
 - Affects: tooling, repository location, saves, testing, art pipeline
 
@@ -61,7 +61,7 @@ The Notion page listed Unity, Godot and Unreal Engine 5 to evaluate. Every MixMa
 ## CT-DEC-03: Artists and venues
 
 - Date: 2026-10-01
-- Status: Proposed
+- Status: Accepted (Dave, 2026-10-01)
 - Owner: Dave Robertson
 - Affects: content, marketing, legal exposure
 
@@ -76,12 +76,12 @@ Use fictional artists, venues and markets built on recognizable genre types. Rec
 ### Consequences
 
 - No licensing cost and no risk of portraying real people badly.
-- **Conflict to settle:** if Concert Tycoon shares the MIXMASH universe, this decision conflicts with MIXMASH D1. That question is open (design doc section 10, question 2).
+- **Still open:** whether Concert Tycoon shares the MIXMASH universe (design doc section 10, question 2). Fictional artists stand either way; if the game joins that universe, MIXMASH's real-name parody roster (MIXMASH D1) must stay out of Concert Tycoon, or this decision must be reopened.
 
 ## CT-DEC-04: Platform
 
 - Date: 2026-10-01
-- Status: Proposed
+- Status: Accepted (Dave, 2026-10-01)
 - Owner: Dave Robertson
 
 ### Decision
@@ -95,7 +95,7 @@ Desktop browser first, with mouse and keyboard. Touch layouts come after v1. Con
 ## CT-DEC-05: Multiplayer
 
 - Date: 2026-10-01
-- Status: Proposed
+- Status: Accepted (Dave, 2026-10-01)
 - Owner: Dave Robertson
 
 ### Decision

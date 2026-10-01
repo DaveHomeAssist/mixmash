@@ -10,7 +10,7 @@ Concert Tycoon is a management game in the tradition of RollerCoaster Tycoon and
 | File | Owns | Status |
 | --- | --- | --- |
 | [`docs/GDD.md`](docs/GDD.md) | The design: pillars, modes, the first playable loop, progression, and what each system includes now versus later | Draft |
-| [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log, CT-DEC-01 to CT-DEC-07 | 5 proposed, 1 open, 1 accepted |
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log, CT-DEC-01 to CT-DEC-07 | 6 accepted, 1 open (the name) |
 | [`docs/RULES.md`](docs/RULES.md) | Rules specification: every formula with its inputs, outputs, units and adjustable value names, plus a worked example | Draft |
 | [`docs/SAVE_FORMAT.md`](docs/SAVE_FORMAT.md) | Save schema version 1, the save namespace, validation and migration policy | Draft; the namespace is provisional |
 | [`progress.md`](progress.md) | Log of each work session | Active |
@@ -32,7 +32,7 @@ Concert Tycoon is a management game in the tradition of RollerCoaster Tycoon and
 3. **This folder is canonical.** The Notion page "Concert Tycoon Ideas" (DB | Capture) is where ideas come in, and it links here. If the two disagree, this folder wins.
 4. **The design points to decisions.** Design text cites decision IDs (`CT-DEC-NN`), so changing a decision shows which parts of the design need another look.
 
-## Planned architecture (pending CT-DEC-02)
+## Architecture (CT-DEC-02)
 
 This follows the MarsScape split in `mars/`:
 

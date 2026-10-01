@@ -11,8 +11,12 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
   - The worked example is now computed from every rule instead of an assumed satisfaction of 75. Satisfaction comes out at 85, so the guarantee nets +$495 and the door deal +$1,341, against +$345 and +$1,191 in the earlier draft.
 - Checked: the worked example in `RULES.md` was recomputed by a Node script from the starting values table.
 
+## 2026-10-01: Decisions accepted
+
+- Dave accepted CT-DEC-01 to CT-DEC-05. CT-DEC-06 (name, route and save namespace) stays open. The MIXMASH-universe question stays open; CT-DEC-03 now records what joining that universe would mean.
+
 ## TODO
 
-- Dave: accept or change CT-DEC-01 to CT-DEC-05, and decide CT-DEC-06 (name, route, save namespace).
+- Dave: decide CT-DEC-06 (name, route, save namespace) and whether the game shares the MIXMASH universe.
 - When the engine starts: `tycoon/data.mjs` takes over the starting values table, `tycoon/test-engine.mjs` adds the worked example as test `R-WORKED-01`, and a simulation script begins generating `docs/BALANCE_BASELINE.md`.
 - When the first route ships: add a row to the root `README.md`, a `CHANGELOG.md` entry, a hub card and a sitemap entry.
