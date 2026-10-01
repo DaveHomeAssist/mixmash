@@ -1,21 +1,11 @@
 // Reference layouts and strategies shared by the engine tests and the balance simulator.
-// They are fixtures, not rules: changing one changes the baseline, not the game.
+// They are fixtures, not rules: changing one changes the baseline, not the game. The
+// reference layout is the game's own suggested layout, so the baseline describes what
+// players are offered.
 
-export const REFERENCE_LAYOUT = [
-  { type: 'fence', x: 0, y: 0, rot: 0 },
-  { type: 'stage', x: 9, y: 0, rot: 0 },
-  { type: 'pa-m', x: 8, y: 0, rot: 0 },
-  { type: 'lights', x: 15, y: 0, rot: 0 },
-  { type: 'bar', x: 1, y: 8, rot: 0 },
-  { type: 'restroom', x: 20, y: 12, rot: 0 },
-  { type: 'restroom', x: 21, y: 12, rot: 0 },
-  { type: 'restroom', x: 22, y: 12, rot: 0 },
-  { type: 'restroom', x: 20, y: 13, rot: 0 },
-  { type: 'gate', x: 12, y: 15, rot: 0 },
-  { type: 'exit', x: 0, y: 5, rot: 0 },
-  { type: 'exit', x: 23, y: 5, rot: 0 },
-  { type: 'exit', x: 0, y: 14, rot: 0 },
-];
+import { STARTER_LAYOUT } from '../data.mjs';
+
+export const REFERENCE_LAYOUT = STARTER_LAYOUT;
 
 // Cheaper rig: small PA, no light tower, three restrooms.
 export const BUDGET_LAYOUT = REFERENCE_LAYOUT

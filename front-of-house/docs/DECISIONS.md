@@ -12,6 +12,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-06](#ct-dec-06-name-and-route) | Named Front of House; route `front-of-house/`, save key `front_of_house_v1` | Accepted |
 | [CT-DEC-07](#ct-dec-07-documentation-source-of-truth) | This folder is canonical; Notion links to it | Accepted |
 | [CT-DEC-08](#ct-dec-08-standalone-game) | A standalone game, outside the MIXMASH universe | Accepted |
+| [CT-DEC-09](#ct-dec-09-career-tier-ladder) | Four career tiers from the art: Lot, Club, Amphitheater, Festival Grounds | Accepted |
 
 ## CT-DEC-01: Core scope
 
@@ -191,3 +192,31 @@ Front of House is a standalone game. It does not share the MIXMASH DJ and festiv
 
 - CT-DEC-03 (fictional artists and venues) stands without conflict.
 - The game can still sit in the MixMash Studio catalog and reuse its save store and conventions.
+
+## CT-DEC-09: Career tier ladder
+
+- Date: 2026-10-01
+- Status: Accepted (Dave, 2026-10-01)
+- Owner: Dave Robertson
+- Affects: progression ([GDD section 5](GDD.md#5-progression)), the future `ROADMAP.md`, art scope
+
+### Context
+
+The GDD had five tiers, from a 100 to 300 club up to an arena or stadium. The tier ladder image in the art direction ([`ART_DIRECTION.md`](ART_DIRECTION.md)) has four, under the line "One venue. Endless nights."
+
+### Decision
+
+The career uses the four tiers from the art:
+
+| Tier | Capacity |
+| --- | --- |
+| 1. The Lot | 50 to 150 |
+| 2. The Club | 150 to 600 |
+| 3. The Amphitheater | 600 to 2,500 |
+| 4. The Festival Grounds | 2,500 to 25,000+ |
+
+### Consequences
+
+- The arena or stadium tier is cut; the festival grounds are the end state. GDD sections 1, 3, 5, 6 and 9 follow this.
+- `ROADMAP.md`, when it starts, has four career phases, and the art needs four venue looks.
+- The first playable's Oak St. Lot is permitted for 300 (`PERMIT_CAP`) and its artist draws 150 to 260, above the Lot's ceiling of 150. The playable keeps that tuning for now, because the balance baseline and the worked example in `RULES.md` depend on it. Before career work starts, retune tier 1 to fit 50 to 150 (the permit cap, the first artist's draw and the reference layout) and re-run the balance simulator.

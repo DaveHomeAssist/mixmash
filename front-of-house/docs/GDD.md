@@ -12,7 +12,7 @@ This document is the canonical design. It combines both drafts from the Notion c
 | **Genre** | Tycoon / management simulation |
 | **Setting** | Concert promotion, live production and venue operations |
 | **Tone** | Accessible and nostalgic, in the spirit of RollerCoaster Tycoon and Zoo Tycoon, with modern depth |
-| **Core fantasy** | Start with a rented parking lot and a PA. End with your name on an arena. |
+| **Core fantasy** | Start with a rented parking lot and a PA. End running your own festival grounds. |
 | **Player role** | Promoter, production manager, talent buyer and venue operator at once. Every decision, from stage size to sound system to artist, affects ticket sales, crowd satisfaction and cash flow. |
 
 ## 2. Pillars (proposed)
@@ -28,7 +28,7 @@ Scope: a structured tycoon with Sandbox as a mode, not an open-world sim ([CT-DE
 
 | Mode | Description | When |
 | --- | --- | --- |
-| **Career** | Guided progression from club promoter to stadium operator, with objectives and milestones | First playable, then v1 |
+| **Career** | Guided progression from a rented lot to the festival grounds, with objectives and milestones | First playable, then v1 |
 | **Sandbox** | Unlimited budget and open building, with no win or lose conditions | v1 (the same systems with limits removed) |
 | **Scenario** | Preset challenges: save a failing venue, survive a rainy outdoor festival, rebuild after a cancellation, work a muddy field or a city noise curfew | v1 |
 | **Challenge** | Time-limited or budget-capped runs with best scores stored on the device ([CT-DEC-05](DECISIONS.md#ct-dec-05-multiplayer)) | After v1 |
@@ -46,7 +46,7 @@ One venue, one artist, one show, from booking to settlement. The target session 
 | 1. Book | Chooses a **$1,000 guarantee** or a **door deal** (artist takes 70% of ticket revenue left after show costs) | Booking, Finance | The deal is locked, which sets how much risk the player carries |
 | 2. Build | Places a stage, rents a PA (S or M), and adds lights, bars, restrooms, fence and gate, and exits; a generator sets the power budget | Venue, Production | Capacity, sightlines, sound coverage and amenity ratios |
 | 3. Promote | Sets the ticket price ($10 to $40) and splits ad spend across flyers, social and radio; 14 in-game days play out in about 60 seconds against a presale chart | Promotion, Finance | Presales and a walk-up forecast |
-| 4. Show night | Doors, the set and curfew play out in about 2 minutes; one seeded incident (rain, PA dropout or gate jam) offers 2 or 3 responses | Production, Reputation | Attendance, satisfaction and the incident outcome |
+| 4. Show night | Doors, the set and curfew play out in about 2 minutes (12 seconds in the first playable); one seeded incident (rain, PA dropout or gate jam) offers 2 or 3 responses | Production, Reputation | Attendance, satisfaction and the incident outcome |
 | 5. Settle | Reads the settlement sheet and accepts it | Finance, Reputation | Net result, change in reputation, change in the artist relationship |
 
 **Pass:** net at least $0 **and** satisfaction at least 60. This unlocks "Book your next show", which ends the first playable.
@@ -57,22 +57,25 @@ The deal choice is the central tension. A door deal pays the promoter more when 
 
 ## 5. Progression
 
+Four tiers, from the tier ladder in the art direction ([CT-DEC-09](DECISIONS.md#ct-dec-09-career-tier-ladder)):
+
 | Tier | Capacity | Content |
 | --- | --- | --- |
-| 1. Club | 100 to 300 | Local acts, mostly walk-up sales, rented PA. A backyard show can serve as tutorial flavor. |
-| 2. Mid-size venue | 500 to 1,500 | Regional touring acts, ticketing platforms |
-| 3. Theater or ballroom | 1,500 to 3,000 | National acts, runs of several nights |
-| 4. Amphitheater or festival | 5,000 to 20,000 | Headliner bookings, sponsorship deals, multi-stage festival operations |
-| 5. Arena or stadium | 20,000 and up | Legacy events, broadcast rights, international tour routing |
+| 1. The Lot | 50 to 150 | Local acts, mostly walk-up sales, rented PA. A backyard show can serve as tutorial flavor. |
+| 2. The Club | 150 to 600 | Regional touring acts, ticketing platforms |
+| 3. The Amphitheater | 600 to 2,500 | National acts, runs of several nights |
+| 4. The Festival Grounds | 2,500 to 25,000+ | Headliner bookings, sponsorship deals, multi-stage festival operations, broadcast rights |
 
-**Career milestones (examples):** sell out a 500-capacity show; book an artist on a $10,000 guarantee; run a three-day festival without a major incident; reach a net worth that unlocks the arena tier.
+The first playable's lot is permitted for 300, above the Lot's 150; it keeps that tuning until tier 1 is retuned before career work (CT-DEC-09).
+
+**Career milestones (examples):** sell out a 500-capacity show; book an artist on a $10,000 guarantee; run a three-day festival without a major incident; reach a net worth that unlocks the Festival Grounds.
 **Scenario fail states:** the venue loses its operating license; cash reaches zero with debts still owed; reputation falls below a minimum.
 
 ## 6. Systems: first playable versus later
 
 | System | In the first playable | Later |
 | --- | --- | --- |
-| **Venue building** | Grid placement, about 8 object types, power budget, capacity from floor area and exits, sightline check | Indoor venues (club, theater, arena); outdoor types (festival field, amphitheater, rooftop); stage upgrades (black-box room, club, amphitheater, festival grounds); FOH and monitor positions; capacity zones (GA floor, seated, VIP, backstage); terrain editing (slopes, power runs, tents); load-in access; green room quality; acoustic ratings |
+| **Venue building** | Grid placement, about 8 object types, power budget, capacity from floor area and exits, sightline check | Indoor venues (club, theater); outdoor types (festival field, amphitheater, rooftop); stage upgrades (black-box room, club, amphitheater, festival grounds); FOH and monitor positions; capacity zones (GA floor, seated, VIP, backstage); terrain editing (slopes, power runs, tents); load-in access; green room quality; acoustic ratings |
 | **Booking and talent** | One artist; guarantee or door deal | Artist roster with genre tags, draw radius, riders and fee tiers; availability windows; tour routing conflicts; exclusivity zones; relationships that improve terms over time |
 | **Production and logistics** | PA rental (S or M), optional lights, staff numbers by role | Hiring crew and building their skills (stage manager, sound engineer, lighting tech, security, bar staff); renting or owning gear with depreciation; audio depth (subwoofer arrays, wedges or in-ear monitors, patch and input list); load-in scheduling, curfews, union rules; video walls |
 | **Promotion and marketing** | Ticket price, 3 ad channels, presale chart | Comp lists, ticketing platforms, on-sale timing, press, social buzz and word of mouth |
@@ -113,7 +116,7 @@ The Notion page originally listed Unity, Godot and Unreal Engine 5, with FMOD or
 | --- | --- | --- | --- |
 | Opening fantasy | Rented parking lot and a PA | Single-stage backyard show | Parking lot for the first playable; backyard as tutorial flavor |
 | Fourth mode | Challenge (leaderboard) | Endless (random calendar) | Both kept and both deferred; Challenge uses scores stored on the device |
-| End state | Arena or stadium | Multi-stage festival operation | Both kept, as tiers 4 and 5 |
+| End state | Arena or stadium | Multi-stage festival operation | Festival grounds, as tier 4; the arena or stadium tier is cut (CT-DEC-09) |
 | Venue builder | Objects, capacity, sightlines, acoustics | Adds terrain, FOH and monitor positions, capacity zones | All merged into "Venue building, later" |
 | Production | Crew, gear, logistics | Audio depth (cut off mid-list) | Merged into "Production, later" |
 

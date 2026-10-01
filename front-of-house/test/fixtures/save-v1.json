@@ -105,7 +105,8 @@
   },
   "show": {
     "incidentId": "pa-dropout",
-    "responseId": "backup-amp"
+    "responseId": "backup-amp",
+    "venueRep": 0
   },
   "reputation": {
     "venue": 19,

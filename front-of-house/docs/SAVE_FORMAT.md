@@ -18,7 +18,7 @@ The store wraps game state in an envelope:
 { "ns": "front_of_house_v1", "v": 1, "savedAt": "2026-10-01T00:00:00.000Z", "state": { } }
 ```
 
-- `exportCode()` and `importCode(code)` give portable base64 save codes, the same format MarsScape used when it moved sites.
+- `exportCode()` and `importCode(code)` give portable base64 save codes, the same format MarsScape used when it moved sites. The game does not call `importCode` directly: it decodes the code first and only writes it if `ns` is `front_of_house_v1` and `state.schema` is 1, because `importCode` saves whatever it parses.
 - `clear()` resets the save.
 - The namespace follows the studio pattern (`marsscape_v1`, `empires_v1`).
 
@@ -41,7 +41,8 @@ The save stores the **player's choices and the seed**, not computed results. Cap
   },
   booking: { artistId: 'velvet-static', deal: null },      // deal: 'guarantee' | 'door' | null
   promotion: { price: 20, ads: { flyers: 0, social: 0, radio: 0 }, confirmed: false },
-  show: null,                 // { incidentId, responseId } once show night starts
+  show: null,                 // { incidentId, responseId, venueRep } once the doors open; venueRep is the
+                              // reputation the show was sold with (settlement changes the live one)
   reputation: { venue: 0, artists: { 'velvet-static': 0 } },
   history: []                 // settlement records: { showId, seed, deal, attendance, satisfaction, net, artistPay, result, weakest, settledAt }
 }

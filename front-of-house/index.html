@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Front of House: Lot Night · MixMash Studio</title>
+  <meta name="description" content="Front of House is a concert-promotion management game. Book a band, build a venue on a parking lot, sell the show, get through show night and settle the money. Early playable." />
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="https://mixmash.games/front-of-house/" />
+  <meta name="theme-color" content="#0e1117" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MixMash Studio" />
+  <meta property="og:title" content="Front of House: Lot Night" />
+  <meta property="og:description" content="Book the band, build the lot, sell the show, survive show night, settle the money." />
+  <meta property="og:url" content="https://mixmash.games/front-of-house/" />
+  <meta property="og:image" content="https://mixmash.games/assets/og-card.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="modulepreload" href="./data.mjs" />
+  <link rel="modulepreload" href="./engine.mjs" />
+  <link rel="modulepreload" href="./board.js" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="/src/kit/pwa.js" defer></script>
+</head>
+<body data-phase="loading">
+  <a class="skip-link" href="#panel">Skip to the controls</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>Front of House</h1>
+      <p class="tagline">Lot Night <span class="early">early playable</span></p>
+    </div>
+    <ol class="stepper" aria-label="Show phases">
+      <li data-step="book"><span class="num">1</span> Book</li>
+      <li data-step="build"><span class="num">2</span> Build</li>
+      <li data-step="promote"><span class="num">3</span> Promote</li>
+      <li data-step="show"><span class="num">4</span> Show</li>
+      <li data-step="settle"><span class="num">5</span> Settle</li>
+    </ol>
+    <dl class="meters">
+      <div><dt>Cash</dt><dd id="meter-cash">—</dd></div>
+      <div><dt>Venue rep</dt><dd id="meter-rep">—</dd></div>
+      <div><dt>Band</dt><dd id="meter-rel">—</dd></div>
+    </dl>
+  </header>
+
+  <main class="layout">
+    <section class="board-wrap" aria-labelledby="board-title">
+      <h2 id="board-title" class="sr-only">The lot</h2>
+      <canvas id="board" tabindex="0" aria-label="Venue board" aria-describedby="board-help board-status"></canvas>
+      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. In Build, click a tile or focus the board and use the arrow keys, Enter to place, R to rotate and Delete to remove.</p>
+      <p id="board-status" class="board-status" aria-live="polite"></p>
+    </section>
+
+    <section id="panel" class="panel" tabindex="-1" aria-label="Controls">
+      <noscript><p class="notice">Front of House needs JavaScript to run. Everything else on mixmash.games works without it.</p></noscript>
+      <p class="notice" id="boot-note">Loading the lot…</p>
+    </section>
+  </main>
+
+  <footer class="savebar">
+    <details id="save-menu">
+      <summary>Save and load</summary>
+      <div class="save-body">
+        <p>The game saves itself in this browser after every step. A save code moves it to another browser.</p>
+        <div class="row">
+          <button type="button" data-save="export">Show my save code</button>
+          <button type="button" data-save="new" class="danger">Start a new game</button>
+        </div>
+        <label for="save-code">Save code</label>
+        <textarea id="save-code" rows="3" spellcheck="false" autocomplete="off"></textarea>
+        <div class="row">
+          <button type="button" data-save="import">Load this code</button>
+        </div>
+        <p id="save-status" class="save-status" aria-live="polite"></p>
+      </div>
+    </details>
+    <p class="credit">MixMash Studio · <a href="../">All games</a></p>
+  </footer>
+
+  <script src="../src/kit/nav.js"></script>
+  <script src="../src/kit/save.js"></script>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
