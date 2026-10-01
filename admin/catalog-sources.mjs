@@ -227,6 +227,10 @@ const vercelFn = (route, what) => ({ description: `Vercel function for ${route}:
 // library. A file's own entry in FILE_NOTES wins over a pattern.
 export const PATTERN_NOTES = [
   {
+    match: /^front-of-house\/docs\/hud\/hud-([a-z]+)\.jpg$/,
+    note: ([, screen]) => ({ description: `Front of House HUD layout mockup (${screen}) for docs/HUD.md: proposed panels laid over a real board capture. Layout direction, not final styling.` }),
+  },
+  {
     match: /^front-of-house\/sprites\/library\/([a-z0-9-]+)\.png$/,
     note: ([, name]) => ({ description: `High-detail prop sprite from the Front of House sprite library: ${name.replace(/-/g, ' ')}. Not drawn by the board yet.` }),
   },

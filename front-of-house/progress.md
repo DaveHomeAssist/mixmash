@@ -92,6 +92,12 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 - Choosing a room or the nights on the Book screen changed the state but not the panel, which is rebuilt only on a phase change. The panel kept the previous room's acts, and booking one failed with "That act is not on offer for this show". The fix in #31 exposed it in Sandbox; before that, the mode buttons' crash happened to force a rebuild. The panel is now rebuilt on those choices, with focus back on the button pressed. A smoke check switches rooms and nights in Sandbox and books a deal. Service worker v13.
 
+## 2026-10-01: HUD layout spec
+
+- Dave asked to spec a HUD-like interface with a much larger map before more features land. Measured the live layout first: the lot covers 8.6% to 24.3% of the window at desktop sizes and 7.8% on a phone, the header takes 156 px, and every phase but Show scrolls.
+- Drafted [`docs/HUD.md`](docs/HUD.md) and proposed CT-DEC-12. The board fills the window, a camera fits the lot (fit, zoom, pan), and the HUD sits in the four corner triangles the lot's diamond leaves empty. Book, Promote and Settle use a sheet on the right. Phones get a bottom sheet.
+- Four mockups in `docs/hud/`, laid over real full-window board captures from seed 170. In Build the lot covers about 36% of a 1440 × 900 window (17% today), and the HUD covers 0.2% of it. Seven open questions for Dave, each with a recommendation. Nothing is built.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

@@ -14,6 +14,8 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-08](#ct-dec-08-standalone-game) | A standalone game, outside the MIXMASH universe | Accepted |
 | [CT-DEC-09](#ct-dec-09-career-tier-ladder) | Four career tiers from the art: Lot, Club, Amphitheater, Festival Grounds | Accepted |
 | [CT-DEC-10](#ct-dec-10-the-lot-career) | The Lot career: a roster, terms that follow the relationship, a four-part goal, and carrying on after a bad night | Proposed |
+| [CT-DEC-11](#ct-dec-11-rooms-after-the-lot) | Rooms after the Lot: Fathom Hall, Loam Shell, Split Acre, Sandbox and a wet-lot scenario | Proposed |
+| [CT-DEC-12](#ct-dec-12-hud-layout) | HUD layout: the board fills the window and the controls float in the lot's empty corners | Proposed |
 
 ## CT-DEC-01: Core scope
 
@@ -295,3 +297,29 @@ A ticketing platform, a real slope (the shell is a grid with seats, not a hillsi
 - Name checks for the new acts and rooms are in [WORLD.md](WORLD.md). Cinder Meridian is a real act and is not used. Relay Hall was too close to Relay Town Hall. Marrow Shell was too close to the band Marrow.
 - The cheapest Lot show is still $1,025. Careful Lot careers in the baseline are unchanged.
 
+## CT-DEC-12: HUD layout
+
+- Date: 2026-10-01
+- Status: Proposed (Dave asked to spec a HUD-like redesign with a much larger map; the spec has seven open questions for him)
+- Owner: Dave Robertson
+- Affects: the client layout (`index.html`, `styles.css`, `game.js`) and the board camera (`board.js`); not the rules, the engine or saves
+
+### Context
+
+The board is a column beside a long panel. The lot covers 8.6% to 24.3% of the window at desktop sizes and 7.8% on a phone, and most phases scroll the page ([HUD.md](HUD.md) section 1).
+
+### Decision (proposed)
+
+1. **The board fills the window** in every phase, and a camera fits the lot to the space the HUD leaves, with zoom and pan.
+2. **A corner HUD.** Panels anchor in the four corner triangles the lot's diamond leaves empty, under a slim top strip. In Build and Show they cover no more than 2% of the lot at the default zoom.
+3. **Sheets for forms and documents.** Book, Promote, Settle and Done open a sheet on the right over the dimmed map, and the lot re-fits beside it.
+4. **Phones** get a compact strip, the board on top and a bottom sheet, within [CT-DEC-04](#ct-dec-04-platform).
+5. **Kept:** every rule, the engine, saves, the smoke rail's selectors and hooks, the production-desk look, and the interaction rules in `ART_DIRECTION.md` section 5.
+
+### Open
+
+The seven questions in [HUD.md](HUD.md) section 9. The build order and the done criteria are in sections 10 and 11.
+
+### Evidence and links
+
+- [HUD.md](HUD.md), with four mockups in `docs/hud/` laid over real board captures
