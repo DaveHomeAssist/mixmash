@@ -1468,7 +1468,7 @@
       "project": "front-of-house",
       "category": "docs",
       "kind": "MD",
-      "title": "Front of House HUD layout (spec, draft)",
+      "title": "Front of House HUD layout (spec)",
       "description": "The map is the game. Today it is a column beside a long panel. This spec makes the board fill the window in every phase and floats the controls over it as a heads-up display (HUD). The rules, the engine, saves and the…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/HUD.md",
       "open": null

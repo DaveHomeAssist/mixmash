@@ -98,6 +98,12 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Drafted [`docs/HUD.md`](docs/HUD.md) and proposed CT-DEC-12. The board fills the window, a camera fits the lot (fit, zoom, pan), and the HUD sits in the four corner triangles the lot's diamond leaves empty. Book, Promote and Settle use a sheet on the right. Phones get a bottom sheet.
 - Four mockups in `docs/hud/`, laid over real full-window board captures from seed 170. In Build the lot covers about 36% of a 1440 × 900 window (17% today), and the HUD covers 0.2% of it. Seven open questions for Dave, each with a recommendation. Nothing is built.
 
+## 2026-10-01: HUD layout accepted
+
+- Dave accepted every recommendation in `docs/HUD.md` section 9: a corner HUD, sheets on the right, wheel zoom, hub and mute kept in the top strip, a phone bottom sheet, and near-opaque backplates. CT-DEC-12 is Accepted.
+- The minimap is deferred, and at Dave's request it is on the canonical roadmap: step 7 of the HUD build order in `ROADMAP.md`, with what it shows, where it sits, when it starts (after the camera ships and Split Acre is played zoomed in) and its done line.
+- Next: step 1, the board camera.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

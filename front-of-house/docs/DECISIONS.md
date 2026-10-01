@@ -15,7 +15,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-09](#ct-dec-09-career-tier-ladder) | Four career tiers from the art: Lot, Club, Amphitheater, Festival Grounds | Accepted |
 | [CT-DEC-10](#ct-dec-10-the-lot-career) | The Lot career: a roster, terms that follow the relationship, a four-part goal, and carrying on after a bad night | Proposed |
 | [CT-DEC-11](#ct-dec-11-rooms-after-the-lot) | Rooms after the Lot: Fathom Hall, Loam Shell, Split Acre, Sandbox and a wet-lot scenario | Proposed |
-| [CT-DEC-12](#ct-dec-12-hud-layout) | HUD layout: the board fills the window and the controls float in the lot's empty corners | Proposed |
+| [CT-DEC-12](#ct-dec-12-hud-layout) | HUD layout: the board fills the window and the controls float in the lot's empty corners | Accepted |
 
 ## CT-DEC-01: Core scope
 
@@ -300,7 +300,7 @@ A ticketing platform, a real slope (the shell is a grid with seats, not a hillsi
 ## CT-DEC-12: HUD layout
 
 - Date: 2026-10-01
-- Status: Proposed (Dave asked to spec a HUD-like redesign with a much larger map; the spec has seven open questions for him)
+- Status: Accepted (Dave, 2026-10-01: every recommendation in [HUD.md](HUD.md) section 9, with the minimap deferred and kept on the roadmap)
 - Owner: Dave Robertson
 - Affects: the client layout (`index.html`, `styles.css`, `game.js`) and the board camera (`board.js`); not the rules, the engine or saves
 
@@ -308,7 +308,7 @@ A ticketing platform, a real slope (the shell is a grid with seats, not a hillsi
 
 The board is a column beside a long panel. The lot covers 8.6% to 24.3% of the window at desktop sizes and 7.8% on a phone, and most phases scroll the page ([HUD.md](HUD.md) section 1).
 
-### Decision (proposed)
+### Decision
 
 1. **The board fills the window** in every phase, and a camera fits the lot to the space the HUD leaves, with zoom and pan.
 2. **A corner HUD.** Panels anchor in the four corner triangles the lot's diamond leaves empty, under a slim top strip. In Build and Show they cover no more than 2% of the lot at the default zoom.
@@ -316,9 +316,22 @@ The board is a column beside a long panel. The lot covers 8.6% to 24.3% of the w
 4. **Phones** get a compact strip, the board on top and a bottom sheet, within [CT-DEC-04](#ct-dec-04-platform).
 5. **Kept:** every rule, the engine, saves, the smoke rail's selectors and hooks, the production-desk look, and the interaction rules in `ART_DIRECTION.md` section 5.
 
-### Open
+### Settled on 2026-10-01
 
-The seven questions in [HUD.md](HUD.md) section 9. The build order and the done criteria are in sections 10 and 11.
+Dave accepted all seven recommendations in [HUD.md](HUD.md) section 9:
+
+1. A corner HUD, not a docked drawer.
+2. Sheets open on the right.
+3. The mouse wheel zooms.
+4. The MixMash nav keeps hub and mute in the top strip; fullscreen and the GitHub link move into the menu.
+5. Phones get a bottom sheet.
+6. **The minimap is deferred**, and it stays on the canonical roadmap as step 7 of the HUD build order ([ROADMAP.md](../ROADMAP.md#hud-layout-ct-dec-12)).
+7. Near-opaque floating backplates join the production-desk look.
+
+### Consequences
+
+- The build order is in [HUD.md](HUD.md) section 10 and [ROADMAP.md](../ROADMAP.md#hud-layout-ct-dec-12). Step 1, the board camera, is next.
+- The done criteria in [HUD.md](HUD.md) section 11 are checked by the smoke rail as each step lands.
 
 ### Evidence and links
 
