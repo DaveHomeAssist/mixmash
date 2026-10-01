@@ -110,6 +110,11 @@ export function createBoard(canvas) {
   const stats = { spriteRedraws: 0, markers: [], washSource: null, crowd: [] };
   let facing = 0;
   let room = { w: D.GRID.w, h: D.GRID.h };
+  // The camera (docs/HUD.md section 5): a zoom over the fit, and the world point held at
+  // the canvas centre. At zoom 1 the lot is fit as it always was. The centre is kept in
+  // world tiles, so a view turn or a resize keeps what the player was looking at.
+  const ZOOMS = [1, 1.5, 2, 3];
+  let cam = { zoom: 1, x: null, y: null };
 
   function useRoom(next) {
     const w = next && next.w ? next.w : D.GRID.w;
@@ -117,7 +122,105 @@ export function createBoard(canvas) {
     if (w === room.w && h === room.h) return;
     room = { w, h };
     crowdCache = { key: '', tiles: [] };
+    cam = { zoom: 1, x: null, y: null };
     resize();
+  }
+
+  function viewToWorld(u, v) {
+    const W = room.w;
+    const H = room.h;
+    if (facing === 1) return [W - v, u];
+    if (facing === 2) return [W - u, H - v];
+    if (facing === 3) return [v, H - u];
+    return [u, v];
+  }
+
+  // A canvas point to world tiles (floats), under the current view.
+  function screenToWorld(px, py) {
+    const a = (px - view.ox) / (view.tw / 2);
+    const b = (py - view.oy) / (view.th / 2);
+    return viewToWorld((a + b) / 2, (b - a) / 2);
+  }
+
+  // Sets the tile size and origin from the fit and the camera.
+  function applyCamera() {
+    const { cssW, cssH, fitTw } = view;
+    const wide = facing % 2 ? room.h : room.w;
+    const deep = facing % 2 ? room.w : room.h;
+    const fitTh = fitTw / 2;
+    const fit = { tw: fitTw, th: fitTh, ox: (cssW - ((wide + deep) * fitTw) / 2) / 2 + (deep * fitTw) / 2, oy: fitTh * 4 };
+    if (cam.zoom === 1) { Object.assign(view, fit); return; }
+    const tw = fitTw * cam.zoom;
+    const th = tw / 2;
+    const [u, v] = worldToView(cam.x, cam.y);
+    Object.assign(view, { tw, th, ox: cssW / 2 - ((u - v) * tw) / 2, oy: cssH / 2 - ((u + v) * th) / 2 });
+  }
+
+  // Keeps the centre on the lot, so the lot can't be panned out of the window.
+  function clampCamera() {
+    cam.x = Math.min(room.w, Math.max(0, cam.x));
+    cam.y = Math.min(room.h, Math.max(0, cam.y));
+  }
+
+  function redraw() { if (lastScene) draw(lastScene); }
+
+  // Zooms to one of ZOOMS, keeping the world point under (px, py) still. Without a point,
+  // the canvas centre stays still. Returns the new zoom.
+  function zoomTo(zoom, px = view.cssW / 2, py = view.cssH / 2) {
+    const next = ZOOMS.includes(zoom) ? zoom : 1;
+    if (next === cam.zoom) return cam.zoom;
+    const [wx, wy] = screenToWorld(px, py);
+    cam.zoom = next;
+    if (next === 1) {
+      cam.x = null; cam.y = null;
+    } else {
+      const tw = view.fitTw * next;
+      const [u, v] = worldToView(wx, wy);
+      // The origin that puts (wx, wy) under the point, then the centre that origin gives.
+      Object.assign(view, { tw, th: tw / 2, ox: px - ((u - v) * tw) / 2, oy: py - ((u + v) * tw) / 4 });
+      [cam.x, cam.y] = screenToWorld(view.cssW / 2, view.cssH / 2);
+      clampCamera();
+    }
+    applyCamera();
+    redraw();
+    return cam.zoom;
+  }
+
+  function zoomBy(steps, px, py) {
+    const i = ZOOMS.indexOf(cam.zoom);
+    return zoomTo(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + steps))], px, py);
+  }
+
+  // Moves the picture by (dx, dy) canvas pixels. At the fit there is nothing to pan.
+  function panBy(dx, dy) {
+    if (cam.zoom === 1) return false;
+    [cam.x, cam.y] = screenToWorld(view.cssW / 2 - dx, view.cssH / 2 - dy);
+    clampCamera();
+    applyCamera();
+    redraw();
+    return true;
+  }
+
+  // Pans just enough to keep a tile clear of the canvas edges (the build cursor).
+  function follow(x, y) {
+    if (cam.zoom === 1) return;
+    const [sx, sy] = iso(x + 0.5, y + 0.5);
+    const mx = Math.min(view.tw * 1.5, view.cssW / 4);
+    const my = Math.min(view.th * 3, view.cssH / 4);
+    const dx = sx < mx ? mx - sx : sx > view.cssW - mx ? view.cssW - mx - sx : 0;
+    const dy = sy < my ? my - sy : sy > view.cssH - my ? view.cssH - my - sy : 0;
+    if (dx || dy) panBy(dx, dy);
+  }
+
+  function camera() {
+    return { zoom: cam.zoom, x: cam.x, y: cam.y, zooms: ZOOMS.slice() };
+  }
+
+  // A world point to client coordinates, and back to a tile: for the smoke rail.
+  function clientOf(x, y, z = 0) {
+    const rect = canvas.getBoundingClientRect();
+    const [sx, sy] = iso(x, y, z);
+    return { x: rect.left + sx, y: rect.top + sy, inside: sx >= 0 && sy >= 0 && sx < view.cssW && sy < view.cssH };
   }
 
   function worldToView(x, y) {
@@ -139,13 +242,8 @@ export function createBoard(canvas) {
     canvas.style.height = `${cssH}px`;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
-    const diamondW = ((room.w + room.h) * tw) / 2;
-    const gh = facing % 2 ? room.w : room.h;
-    view = {
-      tw, th,
-      ox: (cssW - diamondW) / 2 + (gh * tw) / 2,
-      oy: th * 4, cssW, cssH, dpr,
-    };
+    view = { fitTw: tw, tw, th, ox: 0, oy: 0, cssW, cssH, dpr };
+    applyCamera();
   }
 
   // Tile coordinates (x, y, height z in tiles) to screen coordinates.
@@ -156,20 +254,13 @@ export function createBoard(canvas) {
 
   function tileAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
-    const a = (clientX - rect.left - view.ox) / (view.tw / 2);
-    const b = (clientY - rect.top - view.oy) / (view.th / 2);
-    const u = (a + b) / 2;
-    const v = (b - a) / 2;
-    const W = room.w;
-    const H = room.h;
-    let x = u;
-    let y = v;
-    if (facing === 1) { x = W - v; y = u; }
-    else if (facing === 2) { x = W - u; y = H - v; }
-    else if (facing === 3) { x = v; y = H - u; }
-    x = Math.floor(x);
-    y = Math.floor(y);
-    if (x < 0 || y < 0 || x >= W || y >= H) return null;
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    if (px < 0 || py < 0 || px >= view.cssW || py >= view.cssH) return null;
+    const [wx, wy] = screenToWorld(px, py);
+    const x = Math.floor(wx);
+    const y = Math.floor(wy);
+    if (x < 0 || y < 0 || x >= room.w || y >= room.h) return null;
     return { x, y };
   }
 
@@ -706,6 +797,7 @@ export function createBoard(canvas) {
     return {
       spritesReady,
       facing,
+      camera: camera(),
       spriteRedraws: stats.spriteRedraws,
       drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
       markers: stats.markers,
@@ -726,5 +818,8 @@ export function createBoard(canvas) {
     return { after: types(covering.filter((c) => c.i <= slot)), before: types(covering.filter((c) => c.i > slot)) };
   }
 
-  return { resize, draw, tileAt, turnView, objectAt, info, placeOf, destroy: () => spriteListeners.delete(onSprites) };
+  return {
+    resize, draw, tileAt, turnView, objectAt, info, placeOf, zoomTo, zoomBy, panBy, follow, camera, clientOf,
+    destroy: () => spriteListeners.delete(onSprites),
+  };
 }

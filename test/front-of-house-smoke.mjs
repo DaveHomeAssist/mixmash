@@ -4,7 +4,7 @@
  * Plays the first playable through its real interface (book, build with the
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
- * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, the board camera, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -325,6 +325,87 @@ try {
   await setLayout([{ type: 'stage', x: 0, y: 1, rot: 0 }, { type: 'pa-m', x: 0, y: 0, rot: 0 }]);
   const between = await page5.evaluate(() => window.__frontOfHouse.boardPlace(1.2, 0.5));
   assert.ok(between.after.includes('pa-m') && between.before.includes('stage'), `a dot in front of the PA and behind the stage is drawn between them (${JSON.stringify(between)})`);
+
+  // The camera (HUD step 1): zoom by keys and buttons, every on-screen tile maps back to
+  // itself at every zoom and view turn, panning is clamped to the lot, a turn keeps the
+  // zoom, and a zoomed click still finds the prop under it.
+  await setLayout(STARTER_LAYOUT);
+  const cam = async () => (await boardInfo()).camera;
+  await page5.focus('#board');
+  await page5.keyboard.press('=');
+  assert.equal((await cam()).zoom, 1.5, '= zooms in');
+  await page5.keyboard.press('0');
+  assert.equal((await cam()).zoom, 1, '0 shows the whole lot');
+  assert.ok(await page5.isDisabled('#zoom-out') && await page5.isDisabled('#zoom-fit'), 'zoom out and fit are off at the whole lot');
+  await page5.click('#zoom-in');
+  await page5.click('#zoom-in');
+  assert.equal((await cam()).zoom, 2, 'the zoom-in button steps 1.5 then 2');
+  await page5.click('#zoom-out');
+  assert.equal((await cam()).zoom, 1.5, 'the zoom-out button steps back');
+  await page5.click('#zoom-fit');
+  assert.equal((await cam()).zoom, 1, 'the fit button shows the whole lot');
+  for (let turn = 0; turn < 4; turn += 1) {
+    for (const zoom of [1, 1.5, 2, 3]) {
+      await page5.evaluate((z) => window.__frontOfHouse.boardZoom(z), zoom);
+      const trip = await page5.evaluate(() => {
+        const h = window.__frontOfHouse;
+        let ok = 0; let wrong = 0;
+        for (let y = 0; y < 16; y += 1) {
+          for (let x = 0; x < 24; x += 1) {
+            const c = h.boardClientOf(x + 0.5, y + 0.5);
+            if (!c.inside) continue;
+            const t = h.boardTileAt(c.x, c.y);
+            if (t && t.x === x && t.y === y) ok += 1; else wrong += 1;
+          }
+        }
+        return { ok, wrong };
+      });
+      assert.ok(trip.ok > 0 && trip.wrong === 0, `view ${turn}, zoom ${zoom}: every on-screen tile maps back to itself (${JSON.stringify(trip)})`);
+    }
+    await page5.click('#turn-view');
+  }
+  await page5.evaluate(() => window.__frontOfHouse.boardZoom(2));
+  const centred = await cam();
+  await page5.focus('#board');
+  await page5.keyboard.press('Shift+ArrowRight');
+  const nudged = await cam();
+  assert.ok(nudged.x !== centred.x || nudged.y !== centred.y, 'Shift and an arrow key move a zoomed view');
+  const boardBox = await page5.locator('#board').boundingBox();
+  await page5.mouse.move(boardBox.x + boardBox.width / 2, boardBox.y + boardBox.height / 2);
+  await page5.mouse.down({ button: 'middle' });
+  await page5.mouse.move(boardBox.x + boardBox.width / 2 - 90, boardBox.y + boardBox.height / 2 - 40, { steps: 5 });
+  await page5.mouse.up({ button: 'middle' });
+  const dragged = await cam();
+  assert.ok(dragged.x !== nudged.x || dragged.y !== nudged.y, 'a middle-button drag moves a zoomed view');
+  for (let i = 0; i < 40; i += 1) await page5.keyboard.press('Shift+ArrowLeft');
+  const pinned = await cam();
+  assert.ok(pinned.x >= 0 && pinned.x <= 24 && pinned.y >= 0 && pinned.y <= 16, `the view stops at the lot (${JSON.stringify(pinned)})`);
+  await page5.click('#turn-view');
+  const turned = await cam();
+  assert.deepEqual([turned.zoom, turned.x, turned.y], [pinned.zoom, pinned.x, pinned.y], 'a view turn keeps the zoom and the centre');
+  for (let i = 0; i < 3; i += 1) await page5.click('#turn-view');
+  await page5.evaluate(() => { window.__frontOfHouse.boardZoom(1); window.__frontOfHouse.boardZoom(3); });
+  const beforeFollow = await cam();
+  await page5.focus('#board');
+  for (let i = 0; i < 14; i += 1) await page5.keyboard.press('ArrowRight');
+  const afterFollow = await cam();
+  assert.ok(afterFollow.x !== beforeFollow.x || afterFollow.y !== beforeFollow.y, 'the camera follows the build cursor');
+  await page5.evaluate(() => window.__frontOfHouse.boardZoom(1));
+  const under = { x: boardBox.x + boardBox.width * 0.35, y: boardBox.y + boardBox.height * 0.55 };
+  const tileBefore = await page5.evaluate(([x, y]) => window.__frontOfHouse.boardTileAt(x, y), [under.x, under.y]);
+  await page5.mouse.move(under.x, under.y);
+  await page5.keyboard.down('Control');
+  await page5.mouse.wheel(0, -120);
+  await page5.keyboard.up('Control');
+  assert.equal((await cam()).zoom, 1.5, 'Ctrl and the wheel zoom in');
+  assert.deepEqual(await page5.evaluate(([x, y]) => window.__frontOfHouse.boardTileAt(x, y), [under.x, under.y]), tileBefore, 'the tile under the pointer stays put');
+  await page5.evaluate(() => window.__frontOfHouse.boardZoom(2));
+  const zoomedStage = drawnOf(await boardInfo(), 'stage').rect;
+  await page5.mouse.click(boardBox.x + zoomedStage.x + zoomedStage.w / 2, boardBox.y + Math.max(4, zoomedStage.y + zoomedStage.h * 0.3), { button: 'right' });
+  const leftAfterZoomedClick = await objectsNow();
+  assert.ok(!leftAfterZoomedClick.some((o) => o.type === 'stage') && leftAfterZoomedClick.length === STARTER_LAYOUT.length - 1, 'a right-click on the zoomed stage removes only the stage');
+  await page5.evaluate(() => window.__frontOfHouse.boardZoom(1));
+  ok('the camera zooms, pans, follows the cursor, turns, and keeps tiles and clicks exact at every zoom');
 
   let paSeed = 1;
   while (rollShow(paSeed, DEFAULT_ARTIST).incidentId !== 'pa-dropout') paSeed += 1;

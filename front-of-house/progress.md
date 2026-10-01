@@ -104,6 +104,12 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - The minimap is deferred, and at Dave's request it is on the canonical roadmap: step 7 of the HUD build order in `ROADMAP.md`, with what it shows, where it sits, when it starts (after the camera ships and Split Acre is played zoomed in) and its done line.
 - Next: step 1, the board camera.
 
+## 2026-10-01: HUD step 1, the board camera
+
+- `board.js` has a camera: zoom steps of fit, 1.5, 2 and 3, a centre kept in world tiles (so a view turn or a resize keeps what the player looked at), zoom about the pointer, panning clamped to the lot, and a follow that keeps the build cursor on screen. Every screen position still goes through `iso()` and `tileAt()`, so hit-testing, placement order, markers, beams and the ghost follow it unchanged.
+- Controls, behind today's layout: minus, Fit and plus buttons beside Turn the view; `=`, `-` and `0` on the focused board; Shift with the arrow keys and a middle-button drag pan (a plain drag pans outside Build); Ctrl or Cmd with the wheel zooms, because the page still scrolls until step 2. Space can't pan, since it places in Build; `HUD.md` says so now.
+- New smoke check: buttons and keys, every on-screen tile maps back to itself at every zoom and view turn (4,192 tiles in the probe), Shift-arrow and middle-drag panning, the clamp, a turn that keeps the zoom, the cursor follow, Ctrl and the wheel keeping the tile under the pointer, and a right-click on the zoomed stage. Service worker v14.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

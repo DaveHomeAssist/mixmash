@@ -1,6 +1,6 @@
 # Front of House Roadmap
 
-**Status:** Phases 0 to 7 are in the tree (see [`progress.md`](progress.md)). Phases 5 to 7 shipped in one pass ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed), not as separate pull requests. The public release still waits on Dave's sign-off. Next is the [HUD layout](#hud-layout-ct-dec-12), starting with the board camera.
+**Status:** Phases 0 to 7 are in the tree (see [`progress.md`](progress.md)). Phases 5 to 7 shipped in one pass ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed), not as separate pull requests. The public release still waits on Dave's sign-off. The [HUD layout](#hud-layout-ct-dec-12) is under way: step 1, the board camera, is done, and step 2, the full-window board, is next.
 
 The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its **Done when** line. The career tiers come from [CT-DEC-09](docs/DECISIONS.md#ct-dec-09-career-tier-ladder); what each tier contains is in [GDD section 5](docs/GDD.md#5-progression).
 
@@ -40,8 +40,8 @@ Accepted by Dave on 2026-10-01. The board fills the window and the controls floa
 
 | Step | Scope | Done when | Status |
 | --- | --- | --- | --- |
-| 1. Camera | Fit, zoom and pan in `board.js`, behind today's layout | `tileAt` and `iso` round-trip at every zoom and view turn, and clicks still hit the right prop | Next |
-| 2. Full-window board | The canvas fills the window; the header becomes a top strip; save, help and the credit move into a menu | The canvas covers the window and the page never scrolls at 1024 × 700 and up | Not started |
+| 1. Camera | Fit, zoom and pan in `board.js`, behind today's layout | `tileAt` and `iso` round-trip at every zoom and view turn, and clicks still hit the right prop | Done 2026-10-01 |
+| 2. Full-window board | The canvas fills the window; the header becomes a top strip; save, help and the credit move into a menu | The canvas covers the window and the page never scrolls at 1024 × 700 and up | Next |
 | 3. Build and Show HUD | Corner panels, tool keys 1 to 8, the camera buttons, the incident card | The HUD covers no more than 2% of the lot at fit, and the lot covers at least 30% of the window (35% at 1280 × 800 and 1440 × 900) | Not started |
 | 4. Sheets | Book, Promote, Settle and Done in a sheet on the right | The lot re-fits beside an open sheet | Not started |
 | 5. Phone | The compact strip and the bottom sheet | At 390 × 844: no horizontal scroll, every control reachable, and the board takes at least 45% of the height | Not started |
