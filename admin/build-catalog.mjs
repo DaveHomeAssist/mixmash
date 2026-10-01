@@ -170,6 +170,9 @@ function describe(root, file) {
     const text = readFileSync(path.join(root, file), 'utf8');
     found = ext === '.md' ? fromMarkdown(text) : ext === '.html' ? fromHtml(text) : fromComment(text);
   }
+  // Images cannot describe themselves; say where they live so an art drop
+  // needs no hand-written note.
+  if (/\.(png|jpe?g|gif|webp|svg)$/.test(ext)) found.description = `${path.basename(file, ext)} image in ${path.dirname(file)}/.`;
   const note = FILE_NOTES[file] || {};
   return {
     title: note.title || found.title || path.basename(file),

@@ -1534,6 +1534,86 @@
       "open": null
     },
     {
+      "path": "front-of-house/sprites/bar.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "bar.png",
+      "description": "bar image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/bar.png",
+      "open": "/front-of-house/sprites/bar.png"
+    },
+    {
+      "path": "front-of-house/sprites/exit.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "exit.png",
+      "description": "exit image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/exit.png",
+      "open": "/front-of-house/sprites/exit.png"
+    },
+    {
+      "path": "front-of-house/sprites/gate.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "gate.png",
+      "description": "gate image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/gate.png",
+      "open": "/front-of-house/sprites/gate.png"
+    },
+    {
+      "path": "front-of-house/sprites/lights.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "lights.png",
+      "description": "lights image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/lights.png",
+      "open": "/front-of-house/sprites/lights.png"
+    },
+    {
+      "path": "front-of-house/sprites/pa-m.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "pa-m.png",
+      "description": "pa-m image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/pa-m.png",
+      "open": "/front-of-house/sprites/pa-m.png"
+    },
+    {
+      "path": "front-of-house/sprites/pa-s.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "pa-s.png",
+      "description": "pa-s image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/pa-s.png",
+      "open": "/front-of-house/sprites/pa-s.png"
+    },
+    {
+      "path": "front-of-house/sprites/restroom.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "restroom.png",
+      "description": "restroom image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/restroom.png",
+      "open": "/front-of-house/sprites/restroom.png"
+    },
+    {
+      "path": "front-of-house/sprites/stage.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "stage.png",
+      "description": "stage image in front-of-house/sprites/.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/stage.png",
+      "open": "/front-of-house/sprites/stage.png"
+    },
+    {
       "path": "front-of-house/test-engine.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -1609,7 +1689,7 @@
       "category": "source",
       "kind": "JS",
       "title": "board.js",
-      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas, with shapes drawn in code (Phase 1 of docs/ART_DIRECTION.md).…",
+      "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the sprites in ./sprites when they have loaded, and…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
       "open": null
     },
