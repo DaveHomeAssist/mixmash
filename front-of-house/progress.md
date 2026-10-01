@@ -46,10 +46,11 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-01: Phase 3, tier 1 (the Lot)
 
-- Retuned the first playable to the Lot's 50 to 150 people (CT-DEC-09). `PERMIT_CAP` is 150 and Velvet Static draws 75 to 130. Every per-person value (`FLOOR_DENSITY`, `EXIT_CAPACITY`, `PA_COVERAGE`, `BAR_RATIO`, `RESTROOM_RATIO`, `SECURITY_PER`) and every money value (`START_CASH`, rentals, `STAFF_RATE`, the artist's ask, incident responses, `AD_SATURATION` and the ad limits) was halved, so demand, attendance and money scale together.
+- Retuned the first playable to the Lot's 50 to 150 people (CT-DEC-09). `PERMIT_CAP` is 150 and the act draws 75 to 130. Every per-person value (`FLOOR_DENSITY`, `EXIT_CAPACITY`, `PA_COVERAGE`, `BAR_RATIO`, `RESTROOM_RATIO`, `SECURITY_PER`) and every money value (`START_CASH`, rentals, `STAFF_RATE`, the artist's ask, incident responses, `AD_SATURATION` and the ad limits) was halved, so demand, attendance and money scale together.
 - Why halve everything rather than retune piece by piece: the six balance verdicts were verified at the old scale, and a uniform halving keeps that shape. All six still pass; the guarantee's pass rate with free responses moved from 58.2% to 58.6%. The worked example halved with it: 125 attend, satisfaction 85, guarantee +$248, door +$671.
 - `FLOOR_DENSITY` is now 1.5 people per tile, so capacity rounds down (R-01). The ad slider's step and range come from `AD_STEP` and `AD_SLIDER_MAX`, and the tips quote `BAR_RATIO`, `RESTROOM_RATIO` and `PA_COVERAGE` instead of fixed numbers.
 - Saves move to schema version 2. `migrateSave` converts version 1: cash, ad spend and history money and attendance halve; a show in progress converts exactly; a finished show is closed with Next show or Retry so an old sheet is never replayed. The client migrates on load and accepts version 1 save codes. New frozen fixture `test/fixtures/save-v2.json`; version 1 stays frozen.
+- **Renamed the artist.** A name check while planning Phase 4 found that Velvet Static is a real four-piece indie band from Nottinghamshire, UK, with releases on Apple Music and Bandcamp. CT-DEC-03 requires fictional artists, so the act is now Sodium Arcade (id `sodium-arcade`); a search found no act by that name. The version 1 migration moves the id and its relationship. The checks are recorded under CT-DEC-03.
 - Started `ROADMAP.md`. Service worker v5.
 - Checked: the same seed 42 show on both scales gives 270 and 135 attending, +$945 and +$472 net, so the conversion is exact apart from rounding.
 

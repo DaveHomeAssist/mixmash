@@ -39,7 +39,7 @@ Scope: a structured tycoon with Sandbox as a mode, not an open-world sim ([CT-DE
 One venue, one artist, one show, from booking to settlement. The target session is 10 to 15 minutes.
 
 **Starting state:** $3,000 cash, a rented parking lot (24 by 16 tiles) permitted for 150 people (tier 1, the Lot), venue reputation 0, and one artist offer.
-**Artist:** *Velvet Static*, a fictional indie rock act ([CT-DEC-03](DECISIONS.md#ct-dec-03-artists-and-venues)). Draw is seeded between 75 and 130; fair ticket price is $20; the artist's ask is a $500 guarantee.
+**Artist:** *Sodium Arcade*, a fictional indie rock act (renamed from Velvet Static, a real band's name) ([CT-DEC-03](DECISIONS.md#ct-dec-03-artists-and-venues)). Draw is seeded between 75 and 130; fair ticket price is $20; the artist's ask is a $500 guarantee.
 
 | Phase | Player does | Systems | Result |
 | --- | --- | --- | --- |

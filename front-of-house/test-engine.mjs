@@ -121,7 +121,7 @@ test('R-09 and R-10: a missing light rig and too few bars cost satisfaction and 
   assert.equal(noLights.parts.sound, D.NO_LIGHTS_MULT);
   assert.equal(noLights.costs.lights, 0);
   assert.ok(noLights.satisfaction < base.satisfaction);
-  const busy = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: D.ARTISTS['velvet-static'].drawMax, venue: { ...WORKED_EXAMPLE.venue, clearTiles: 120 } });
+  const busy = evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', draw: D.ARTISTS[D.DEFAULT_ARTIST].drawMax, venue: { ...WORKED_EXAMPLE.venue, clearTiles: 120 } });
   assert.ok(busy.attendance > D.BAR_RATIO);
   const overflow = busy.attendance - D.BAR_RATIO;
   assert.equal(busy.bar, Math.round(D.BAR_NET_PER_HEAD * (busy.satisfaction / 100) * (D.BAR_RATIO + overflow * D.BAR_SHORTFALL)));
@@ -197,7 +197,7 @@ test('forecast brackets the real attendance without revealing the draw', () => {
   const s = builtGame(9);
   const { low, high } = forecast(s);
   const roll = rollShow(9);
-  const actual = evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: roll.draw, artistId: 'velvet-static' }).attendance;
+  const actual = evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: roll.draw, artistId: D.DEFAULT_ARTIST }).attendance;
   assert.ok(low <= actual && actual <= high);
 });
 
@@ -205,7 +205,7 @@ test('rollShow stays in range and uses every incident', () => {
   const seen = new Set();
   for (let seed = 1; seed <= 1000; seed += 1) {
     const r = rollShow(seed);
-    assert.ok(r.draw >= D.ARTISTS['velvet-static'].drawMin && r.draw <= D.ARTISTS['velvet-static'].drawMax);
+    assert.ok(r.draw >= D.ARTISTS[D.DEFAULT_ARTIST].drawMin && r.draw <= D.ARTISTS[D.DEFAULT_ARTIST].drawMax);
     assert.ok(r.incidentAt >= 0.2 && r.incidentAt <= 0.8);
     seen.add(r.incidentId);
   }
@@ -284,7 +284,8 @@ test('a version 1 save migrates to the Lot scale', async () => {
   assert.deepEqual(v2.history, [{ ...v1.history[0], attendance: 135, net: 473, artistPay: 500 }]);
   assert.equal(v2.phase, 'book', 'a finished show that passed moves on to the next show');
   assert.equal(v2.seed, nextSeed(v1.seed));
-  assert.deepEqual(v2.reputation, v1.reputation);
+  assert.deepEqual(v2.reputation, { venue: v1.reputation.venue, artists: { 'sodium-arcade': v1.reputation.artists['velvet-static'] } },
+    'the renamed artist keeps its relationship');
   assert.deepEqual(v2.venue.objects, v1.venue.objects);
   assert.deepEqual(normalizeState(v2, 1), v2);
 
@@ -295,7 +296,11 @@ test('a version 1 save migrates to the Lot scale', async () => {
   // A show in progress converts exactly: the money already spent halves with everything else.
   const mid = run(builtGame(42, 'guarantee'), [{ type: 'confirmPromotion' }]);
   const doubled = Object.fromEntries(Object.entries(mid.promotion.ads).map(([c, v]) => [c, v * 2]));
-  const asV1 = { ...mid, schema: 1, cash: mid.cash * 2, promotion: { ...mid.promotion, ads: doubled } };
+  const asV1 = {
+    ...mid, schema: 1, cash: mid.cash * 2, promotion: { ...mid.promotion, ads: doubled },
+    booking: { ...mid.booking, artistId: 'velvet-static' },
+    reputation: { ...mid.reputation, artists: { 'velvet-static': mid.reputation.artists[D.DEFAULT_ARTIST] } },
+  };
   assert.deepEqual(normalizeState(migrateSave(asV1), 1), mid);
   assert.equal(migrateSave('junk'), 'junk');
 });
@@ -343,5 +348,5 @@ test('showPreview gives the crowd before the incident without changing state', (
   const s = run(builtGame(13, 'door'), [{ type: 'confirmPromotion' }]);
   const preview = showPreview(s);
   assert.equal(preview.parts.incident, 1);
-  assert.equal(preview.attendance, evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: rollShow(13).draw, artistId: 'velvet-static' }).attendance);
+  assert.equal(preview.attendance, evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: rollShow(13).draw, artistId: D.DEFAULT_ARTIST }).attendance);
 });

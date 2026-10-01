@@ -4,7 +4,7 @@
 committed copy differs, or if any verdict below is FAIL. Every number comes from `front-of-house/data.mjs`
 through `front-of-house/engine.mjs`; the layouts and strategies are fixtures in `front-of-house/sim/reference.mjs`.*
 
-Engine version 1 · schema 2 · artist Velvet Static (draw 75 to 130, ask $500, fair price $20) · 500 seeds
+Engine version 1 · schema 2 · artist Sodium Arcade (draw 75 to 130, ask $500, fair price $20) · 500 seeds
 
 ## 1. Reference layouts
 

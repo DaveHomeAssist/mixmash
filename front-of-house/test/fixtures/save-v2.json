@@ -91,7 +91,7 @@
     ]
   },
   "booking": {
-    "artistId": "velvet-static",
+    "artistId": "sodium-arcade",
     "deal": "guarantee"
   },
   "promotion": {
@@ -111,7 +111,7 @@
   "reputation": {
     "venue": 19,
     "artists": {
-      "velvet-static": 5
+      "sodium-arcade": 5
     }
   },
   "history": [

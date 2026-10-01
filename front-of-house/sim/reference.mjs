@@ -3,7 +3,7 @@
 // reference layout is the game's own suggested layout, so the baseline describes what
 // players are offered.
 
-import { STARTER_LAYOUT } from '../data.mjs';
+import { DEFAULT_ARTIST, STARTER_LAYOUT } from '../data.mjs';
 
 export const REFERENCE_LAYOUT = STARTER_LAYOUT;
 
@@ -22,7 +22,7 @@ export const WORKED_EXAMPLE = {
   ads: { flyers: 0, social: 150, radio: 150 },
   venueRep: 0,
   draw: 100,
-  artistId: 'velvet-static',
+  artistId: DEFAULT_ARTIST,
   incidentId: 'pa-dropout',
   responseId: 'wait',
 };

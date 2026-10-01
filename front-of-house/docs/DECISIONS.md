@@ -80,6 +80,18 @@ Use fictional artists, venues and markets built on recognizable genre types. Rec
 - No licensing cost and no risk of portraying real people badly.
 - **Settled by CT-DEC-08:** the game is standalone, so fictional artists stand and MIXMASH's real-name parody roster (MIXMASH D1) stays out of it.
 
+### Name checks (2026-10-01)
+
+Recorded here until `docs/WORLD.md` exists. A web search for each name in quotes, with "band".
+
+| Name | Result | Outcome |
+| --- | --- | --- |
+| Velvet Static | A real four-piece indie band from Nottinghamshire, UK, with releases on [Apple Music](https://music.apple.com/us/artist/velvet-static/1773921533) and [Bandcamp](https://velvetstatic2.bandcamp.com/) | Not usable; the first playable's act is renamed |
+| Sodium Arcade | No act by that name (bands named Sodium and Arcade exist separately) | Used for the first playable's indie rock act (`sodium-arcade`) |
+| Copper Wren | A real acoustic band from Tucson, Arizona ([site](https://copperwrenband.wixsite.com/copperwren)) | Not usable |
+| Brasswick | A real annual brass band festival in Brooklyn run by the L Train Brass Band ([site](https://ltrainbrassband.com/brasswick)) | Not usable |
+| Cobalt Porchlight, Tin Lantern Choir | No act by either name (Porch Light and Tin Bird Choir exist) | Held for the Phase 4 roster after a closer check |
+
 ## CT-DEC-04: Platform
 
 - Date: 2026-10-01

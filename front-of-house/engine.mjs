@@ -565,7 +565,8 @@ export function migrateSave(raw) {
 
 // Version 2 retuned tier 1 to the Lot (CT-DEC-09) by halving every per-person and money
 // value, so a version 1 save converts the same way: cash, ad spend and the history's
-// attendance and money halve. A finished show is closed with the step the player would
+// attendance and money halve. Version 2 also renamed Velvet Static (a real band's name) to
+// Sodium Arcade, so the artist's id moves with its relationship. A finished show is closed with the step the player would
 // take next (Next show after a pass, Retry otherwise), so a sheet signed at the old scale
 // is never replayed at the new one.
 function migrateV1toV2(raw) {
@@ -573,6 +574,11 @@ function migrateV1toV2(raw) {
   const s = clone(raw);
   s.schema = 2;
   s.cash = half(s.cash);
+  const renamed = { 'velvet-static': 'sodium-arcade' };
+  if (isObj(s.booking) && renamed[s.booking.artistId]) s.booking.artistId = renamed[s.booking.artistId];
+  if (isObj(s.reputation) && isObj(s.reputation.artists)) {
+    s.reputation.artists = Object.fromEntries(Object.entries(s.reputation.artists).map(([id, v]) => [renamed[id] || id, v]));
+  }
   if (isObj(s.promotion) && isObj(s.promotion.ads)) {
     for (const c of Object.keys(s.promotion.ads)) s.promotion.ads[c] = half(s.promotion.ads[c]);
   }

@@ -110,8 +110,10 @@ export const STARTER_LAYOUT = [
 
 // Artists. `ask` is the guarantee the artist expects (ARTIST_ASK in RULES.md).
 export const ARTISTS = {
-  'velvet-static': {
-    name: 'Velvet Static',
+  // Renamed from Velvet Static in save version 2: that name belongs to a real UK indie band
+  // (CT-DEC-03 name checks).
+  'sodium-arcade': {
+    name: 'Sodium Arcade',
     genre: 'Indie rock',
     drawMin: 75,
     drawMax: 130,
@@ -119,7 +121,7 @@ export const ARTISTS = {
     ask: 500,
   },
 };
-export const DEFAULT_ARTIST = 'velvet-static';
+export const DEFAULT_ARTIST = 'sodium-arcade';
 
 // Incidents (R-11). Exactly one per show, chosen by the seeded generator.
 export const INCIDENTS = {

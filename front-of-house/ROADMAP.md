@@ -15,7 +15,7 @@ The phases from the first document to the last career tier. Each phase ships as 
 
 Retune the first playable to the Lot's 50 to 150 people, and start this roadmap.
 
-- The Oak St. Lot is permitted for 150 (`PERMIT_CAP`), and Velvet Static draws 75 to 130.
+- The Oak St. Lot is permitted for 150 (`PERMIT_CAP`), and the act, renamed Sodium Arcade, draws 75 to 130. Velvet Static, the old name, belongs to a real UK indie band, which CT-DEC-03 rules out.
 - Every per-person value (floor density, exit capacity, PA coverage, bar and restroom ratios, security ratio) and every money value (starting cash, rentals, staff rate, the artist's ask, incident responses, ad saturation and limits) was halved from the 300-person version. Demand, attendance and money all scale together, so the balance shape the simulator verified carries over: all six verdicts pass, and the guarantee's pass rate with free responses moved from 58.2% to 58.6%.
 - The worked example halved with it: 125 attend with satisfaction 85; the guarantee nets +$248 and the door deal +$671.
 - Saves move to schema version 2. Version 1 saves and save codes convert to the new scale (`docs/SAVE_FORMAT.md`).

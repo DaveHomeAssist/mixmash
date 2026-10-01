@@ -39,11 +39,11 @@ The save stores the **player's choices and the seed**, not computed results. Cap
       { type: 'stage', x: 10, y: 0, rot: 0 }
     ]
   },
-  booking: { artistId: 'velvet-static', deal: null },      // deal: 'guarantee' | 'door' | null
+  booking: { artistId: 'sodium-arcade', deal: null },      // deal: 'guarantee' | 'door' | null
   promotion: { price: 20, ads: { flyers: 0, social: 0, radio: 0 }, confirmed: false },
   show: null,                 // { incidentId, responseId, venueRep } once the doors open; venueRep is the
                               // reputation the show was sold with (settlement changes the live one)
-  reputation: { venue: 0, artists: { 'velvet-static': 0 } },
+  reputation: { venue: 0, artists: { 'sodium-arcade': 0 } },
   history: []                 // settlement records: { showId, seed, deal, attendance, satisfaction, net, artistPay, result, weakest, settledAt }
 }
 ```
@@ -73,7 +73,7 @@ Version 2 has the same shape as version 1; the numbers are on the Lot scale. Obj
 
 | From | To | Why | What changes |
 | --- | --- | --- | --- |
-| 1 | 2 | Phase 3 retuned tier 1 to the Lot (CT-DEC-09): the permit went from 300 to 150, and every per-person and money value in `data.mjs` was halved | Cash, ad spend, and each history record's attendance, net and artist pay are halved (rounded to the nearest whole number). A show in progress continues on the new scale; because every cost halved and the ad slider moved from steps of 50 to steps of 25, the money it already spent converts exactly. A finished show (`done`) is closed the way the player would close it, with Next show after a pass or Retry otherwise, so a sheet signed at the old scale is never replayed at the new one. |
+| 1 | 2 | Phase 3 retuned tier 1 to the Lot (CT-DEC-09): the permit went from 300 to 150, and every per-person and money value in `data.mjs` was halved. The artist Velvet Static was renamed Sodium Arcade (CT-DEC-03 name checks) | The artist id `velvet-static` becomes `sodium-arcade` in the booking and the relationships. Cash, ad spend, and each history record's attendance, net and artist pay are halved (rounded to the nearest whole number). A show in progress continues on the new scale; because every cost halved and the ad slider moved from steps of 50 to steps of 25, the money it already spent converts exactly. A finished show (`done`) is closed the way the player would close it, with Next show after a pass or Retry otherwise, so a sheet signed at the old scale is never replayed at the new one. |
 
 Tests: the frozen version 1 fixture migrates to the expected state; a version 1 save in the middle of a show converts back to exactly the same version 2 state; a version 1 save code imports through the store and through the game's Save and load panel.
 
