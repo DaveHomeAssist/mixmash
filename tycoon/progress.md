@@ -30,7 +30,7 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## TODO
 
-- Dave: decide CT-DEC-06 (name, route, save namespace) and whether the game shares the MIXMASH universe. This blocks the next phase.
+- Dave: decide CT-DEC-06 (name, route, save namespace) and whether the game shares the MIXMASH universe. This blocks the next phase. The title check in `DECISIONS.md` recommends a distinct name, since Idle Concert Tycoon already exists.
 - Next phase, the first playable client: `tycoon/index.html` and `tycoon/game.js` (canvas board for Build and Show night, HTML panels for Book, Promote and Settle), saves through `src/kit/save.js` under the final namespace, `window.render_game_to_text()`, and `npm run smoke:tycoon` in CI.
 - When the first route ships: add a row to the root `README.md`, a `CHANGELOG.md` entry, a hub card and a sitemap entry.
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.

@@ -118,9 +118,22 @@ No real-time or online multiplayer in v1. Challenge mode, when it arrives, store
 
 "Concert Tycoon" is a working title and has not been checked against existing titles or trademarks. `tycoon/` is a placeholder folder. Renaming after launch would change URLs and save keys and break existing saves, so this has to be settled before the first public playable.
 
-### Options
+### Title check (2026-10-01)
 
-Keep "Concert Tycoon" after a title check, or pick a distinct name. Choose the route and save namespace at the same time.
+A web search found these existing titles:
+
+| Title | Platform | How close |
+| --- | --- | --- |
+| [Idle Concert Tycoon](https://play.google.com/store/apps/details?id=com.idle.concert.tycoon.inc&hl=en_US) | Google Play | Almost the same name; a casual idle game about running concerts |
+| [Concert Kings: Idle Music Tycoon](https://www.bigbluebubble.com/home/games/concert-kings/) | Android, iOS | Similar name; idle band and tour management |
+| [Festival Tycoon](https://store.steampowered.com/app/1326270/Festival_Tycoon/) | Steam | Different name, closest concept: design festival grounds, then run the event live, with career and sandbox modes |
+| [Rock God Tycoon](https://store.steampowered.com/app/410840/Rock_God_Tycoon/), [Music Band Manager](https://store.steampowered.com/app/730410/Music_Band_Manager/), [Band Tycoon](https://www.bandtycoon.io/), [OFFBEAT](https://store.steampowered.com/app/4468030/OFFBEAT/) | Steam, web | Band or studio management rather than promotion |
+
+No trademark search was done.
+
+### Recommendation
+
+Choose a name without "Concert Tycoon" in it, since it is too close to Idle Concert Tycoon. The name should point at what sets this game apart from Festival Tycoon: promoter money decisions (deal types, settlement) and production realism. Pick a short slug that works as the route (`mixmash.games/<slug>/`) and the save namespace (`<slug>_v1`). Check the chosen name with the same search, plus a trademark search, before the first public build.
 
 ## CT-DEC-07: Documentation source of truth
 
