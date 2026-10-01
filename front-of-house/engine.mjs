@@ -163,17 +163,19 @@ function stageGeometry(stage) {
   return { facing, front };
 }
 
-// R-03: open tiles inside the sight cone with a clear line to the middle of the stage front.
-function countClearTiles(objects, occupied) {
+// R-03: open tiles inside the sight cone with a clear line to the middle of the stage front
+// (clear), and the cone tiles whose line is cut by a blocking object (blocked).
+function sightTileSets(objects, occupied) {
+  const clear = new Set();
+  const blocked = new Set();
   const stage = objects.find((o) => o.type === 'stage');
-  if (!stage) return 0;
+  if (!stage) return { clear, blocked };
   const blocking = new Set();
   for (const o of objects) {
     if (D.OBJECT_TYPES[o.type].blocksSight) footprint(o).forEach(([x, y]) => blocking.add(key(x, y)));
   }
   const { facing, front } = stageGeometry(stage);
   const cosHalf = Math.cos(((D.SIGHT_CONE_DEGREES / 2) * Math.PI) / 180);
-  let clear = 0;
   for (let y = 0; y < D.GRID.h; y += 1) {
     for (let x = 0; x < D.GRID.w; x += 1) {
       if (occupied.has(key(x, y))) continue;
@@ -183,16 +185,25 @@ function countClearTiles(objects, occupied) {
       if (dist === 0 || dist > D.SIGHT_RANGE) continue;
       if (dx * facing[0] + dy * facing[1] < dist * cosHalf - 1e-9) continue;
       const steps = Math.ceil(dist / 0.25);
-      let blocked = false;
-      for (let i = 1; i < steps && !blocked; i += 1) {
+      let cut = false;
+      for (let i = 1; i < steps && !cut; i += 1) {
         const px = front[0] + (dx * i) / steps;
         const py = front[1] + (dy * i) / steps;
-        if (blocking.has(key(Math.floor(px), Math.floor(py)))) blocked = true;
+        if (blocking.has(key(Math.floor(px), Math.floor(py)))) cut = true;
       }
-      if (!blocked) clear += 1;
+      (cut ? blocked : clear).add(key(x, y));
     }
   }
-  return clear;
+  return { clear, blocked };
+}
+
+// The sight cone's tiles as "x,y" keys, for drawing: { clear, blocked }.
+export function sightlineTiles(venue) {
+  const objects = isObj(venue) && Array.isArray(venue.objects) ? venue.objects : [];
+  const { accepted } = validateLayout(objects);
+  const occupied = new Set();
+  accepted.forEach((o) => footprint(o).forEach(([x, y]) => occupied.add(key(x, y))));
+  return sightTileSets(accepted, occupied);
 }
 
 // Everything the rules need to know about a layout.
@@ -215,7 +226,9 @@ export function evaluateVenue(venue) {
     watts: accepted.reduce((sum, o) => sum + D.OBJECT_TYPES[o.type].watts, 0),
     openFloorTiles: D.GRID.w * D.GRID.h - occupied.size,
   };
-  stats.clearTiles = countClearTiles(accepted, occupied);
+  const sight = sightTileSets(accepted, occupied);
+  stats.clearTiles = sight.clear.size;
+  stats.blockedTiles = sight.blocked.size;
   // R-01
   stats.capacity = Math.min(D.PERMIT_CAP, D.FLOOR_DENSITY * stats.openFloorTiles, D.EXIT_CAPACITY * stats.exits);
   stats.capacityLimit = stats.capacity === D.PERMIT_CAP ? 'permit'
@@ -342,7 +355,9 @@ function showInputs(state, venueStats, withIncident) {
     deal: state.booking.deal,
     price: state.promotion.price,
     ads: state.promotion.ads,
-    venueRep: state.reputation.venue,
+    // The show was sold with the reputation the venue had when the doors opened;
+    // settlement changes the reputation, so a replayed sheet must not use the new one.
+    venueRep: state.show && isInt(state.show.venueRep) ? state.show.venueRep : state.reputation.venue,
     draw: roll.draw,
     artistId: state.booking.artistId,
     incidentId: withIncident && state.show ? state.show.incidentId : null,
@@ -365,6 +380,12 @@ export function forecast(state) {
     return Math.min(v.capacity, presale + walkup);
   };
   return { low: at(artist.drawMin), high: at(artist.drawMax), capacity: v.capacity };
+}
+
+// Show night before the incident is answered: the crowd as it would be with nothing
+// going wrong. Only for show-night playback; the Promote screen uses forecast().
+export function showPreview(state) {
+  return evaluateShow(showInputs(state, evaluateVenue(state.venue), false));
 }
 
 // The settlement sheet for a show whose incident has been answered.
@@ -402,6 +423,15 @@ export function applyAction(state, action) {
       if (mine) return fail(state, mine.message);
       const t = D.OBJECT_TYPES[obj.type];
       s.venue.objects.push(t.kit ? { type: obj.type, x: 0, y: 0, rot: 0 } : obj);
+      return { state: s, error: null };
+    }
+    case 'setLayout': {
+      if ((err = need('build'))) return fail(state, err);
+      if (!Array.isArray(action.objects)) return fail(state, 'A layout is a list of objects');
+      const objects = action.objects.map((o) => (isObj(o) ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o));
+      const { accepted, problems } = validateLayout(objects);
+      if (problems.length) return fail(state, problems[0].message);
+      s.venue.objects = accepted;
       return { state: s, error: null };
     }
     case 'remove': {
@@ -442,7 +472,7 @@ export function applyAction(state, action) {
       if (upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
       s.cash -= upfront;
       s.promotion.confirmed = true;
-      s.show = { incidentId: rollShow(s.seed, s.booking.artistId).incidentId, responseId: null };
+      s.show = { incidentId: rollShow(s.seed, s.booking.artistId).incidentId, responseId: null, venueRep: s.reputation.venue };
       s.phase = 'show';
       return { state: s, error: null };
     }
@@ -564,7 +594,11 @@ export function normalizeState(raw, fallbackSeed = 1) {
   // The incident is re-derived from the seed, never read from the save.
   if (isObj(raw.show)) {
     const incidentId = rollShow(s.seed, s.booking.artistId).incidentId;
-    s.show = { incidentId, responseId: findResponse(incidentId, raw.show.responseId) ? raw.show.responseId : null };
+    s.show = {
+      incidentId,
+      responseId: findResponse(incidentId, raw.show.responseId) ? raw.show.responseId : null,
+      venueRep: clamp(intOr(raw.show.venueRep, s.reputation.venue), 0, 100),
+    };
   }
 
   let i = PHASES.indexOf(PHASES.includes(raw.phase) ? raw.phase : 'book');

@@ -12,6 +12,7 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `/empires/` | EMPIRES (aka "Age of Dave") — WebAssembly build of the real [aoe2-clone](https://github.com/DaveHomeAssist/aoe2-clone) RTS (7 civs, combat, AI opponent; local skirmish only — no multiplayer in-browser) |
 | `/garden/` | Full-viewport iframe embed of the live Garden OS story mode (`davehomeassist.github.io/garden-os/story-mode/`) — never drifts |
 | `/pitch/` | **PITCH RIOT** — a self-contained arcade soccer game (single `index.html`, canvas + vanilla JS). One outfielder vs a CPU (auto keepers) across two halves; at halftime you play a built-in cover-ops minigame (a mini homage to [FIFA Pitch Crew](https://systembydave.com/fifa-pitch-crew/) from the system-by-dave repo) — show quality earns a timed "HYPED" boost for the second half. Difficulty select, keyboard + touch. No build step, no backend. |
+| `/front-of-house/` | **Front of House** — an early playable concert-promotion management game (Lot Night: book a band, build a parking-lot venue, promote, survive show night, settle the money). Rules engine, balance simulator and design docs live in the folder; see `front-of-house/README.md`. `noindex` and no hub card until the first playable is signed off. |
 | `/zelda2mario/` | Evidence-bound public status dashboard for the source-only Zelda2MarioCoop project. The game itself is not yet published as a playable route. |
 | `ROADMAP.md` | Production roadmap **for the MIXMASH fighter specifically** — phased DoD/checkpoints/verification standards |
 | `src/combat.js` | Canonical, tested knockback math for the fighter (`finite()` guard + `calcKnockback`) |
@@ -19,7 +20,7 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `mars/commissioned-art.mjs`, `mars/golden-scene.html` | DEC-79 validated commissioned-art cache and in-renderer golden-scene review surface |
 | `api/` | Vercel serverless functions — the production authority API (Blob-backed sessions) |
 | `test/*.test.{js,mjs}`, `mars/test-*.mjs`, `mars/parity/parity.test.mjs` | Node's built-in test runner (`node --test`) — fighter combat math, the inline combat parity guard, public roster/arena count guard, extracted play modules, MixKit save, MarsScape engine/API/handler/art/parity tests |
-| `.github/workflows/ci.yml` | CI — on pull requests, manual dispatch, and pushes to `gh-pages` touching any game route, `api/`, `src/`, `test/`, the hub pages, the PWA shell, or package files: runs `npm test`, `vercel-build`, the DEC-79 art validation/report/contact-sheet drift gates, `sim`, then the Playwright rails (`art:visual`, `smoke:play`, `smoke:catalog`, `smoke:landing`, `smoke:zelda2mario`) |
+| `.github/workflows/ci.yml` | CI — on pull requests, manual dispatch, and pushes to `gh-pages` touching any game route, `api/`, `src/`, `test/`, the hub pages, the PWA shell, or package files: runs `npm test`, `vercel-build`, the DEC-79 art validation/report/contact-sheet drift gates, `sim`, then the Playwright rails (`art:visual`, `smoke:play`, `smoke:catalog`, `smoke:landing`, `smoke:zelda2mario`, `smoke:front-of-house`), plus the Front of House balance baseline drift gate (`sim:front-of-house`) |
 
 ## Commands
 
@@ -30,6 +31,8 @@ npm run smoke:play      # fighter resume/snapshot smoke test
 npm run smoke:catalog   # catalog runtime smoke tests
 npm run smoke:landing   # five-width landing, keyboard, motion, hit targets, screenshots
 npm run smoke:zelda2mario # status scope, mobile/ultrawide, themes, keyboard tabs, filters and complete printing
+npm run smoke:front-of-house # Lot Night end to end, reload, save codes, keyboard building, reduced motion, phone width, contrast
+npm run sim:front-of-house   # regenerate front-of-house/docs/BALANCE_BASELINE.md (CI fails on drift or a FAIL verdict)
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
 npm run art:validate    # validate DEC-79 and verify the runtime index plus strict-report parity

@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v3';
+const VERSION = 'v4';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -57,6 +57,13 @@ const PRECACHE = [
   './empires/',
   './empires/index.html',
   './empires/assets/shell.js',
+  './front-of-house/',
+  './front-of-house/index.html',
+  './front-of-house/styles.css',
+  './front-of-house/game.js',
+  './front-of-house/board.js',
+  './front-of-house/engine.mjs',
+  './front-of-house/data.mjs',
 ];
 
 self.addEventListener('install', (event) => {

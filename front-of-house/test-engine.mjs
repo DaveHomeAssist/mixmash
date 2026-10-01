@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
   applyAction, buzz, createGame, evaluateShow, evaluateVenue, forecast, normalizeState,
-  presaleSplit, priceFactor, rollShow, settlementFor, upfrontFor, validateLayout,
+  presaleSplit, priceFactor, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
 
@@ -87,6 +87,10 @@ test('R-03: blocking objects in front of the stage cost sightline tiles', () => 
   const blocked = venueWith([...REFERENCE_LAYOUT, { type: 'restroom', x: 12, y: 4, rot: 0 }]);
   assert.ok(open.clearTiles > 0);
   assert.ok(blocked.clearTiles < open.clearTiles - 1, 'a restroom in front shadows the tiles behind it');
+  assert.equal(sightlineTiles({ objects: REFERENCE_LAYOUT }).clear.size, open.clearTiles);
+  assert.equal(open.blockedTiles, 0, 'nothing blocks the suggested layout');
+  assert.ok(blocked.blockedTiles > 0, 'the restroom casts a sightline shadow');
+  assert.equal(sightlineTiles({ objects: [...REFERENCE_LAYOUT, { type: 'restroom', x: 12, y: 4, rot: 0 }] }).blocked.size, blocked.blockedTiles);
   const noStage = venueWith(REFERENCE_LAYOUT.filter((o) => o.type !== 'stage'));
   assert.equal(noStage.clearTiles, 0);
   const show = (clearTiles) => evaluateShow({ ...WORKED_EXAMPLE, deal: 'door', venue: { ...WORKED_EXAMPLE.venue, clearTiles } });
@@ -184,6 +188,7 @@ test('a full show runs from Book to Settle and the cash adds up', () => {
   assert.equal(done.history[0].net, sheet.net);
   assert.equal(done.history[0].result, sheet.result);
   assert.equal(done.reputation.venue, Math.max(0, sheet.repDelta));
+  assert.deepEqual(settlementFor(done), sheet, 'the signed sheet replays exactly, even though reputation changed');
   const again = run(builtGame(seed, 'guarantee'), [{ type: 'confirmPromotion' }, { type: 'respond', responseId }, { type: 'acceptSettlement', at: '2026-10-01T00:00:00.000Z' }]);
   assert.deepEqual(again, done, 'the same seed and choices give the same game');
 });
@@ -289,4 +294,22 @@ test('validateLayout keeps the reference layout intact', () => {
   const { accepted, problems } = validateLayout(REFERENCE_LAYOUT);
   assert.equal(problems.length, 0);
   assert.equal(accepted.length, REFERENCE_LAYOUT.length);
+});
+
+test('setLayout applies a whole layout or nothing', () => {
+  const s = run(createGame(1), [{ type: 'chooseDeal', deal: 'door' }]);
+  const laid = run(s, [{ type: 'setLayout', objects: D.STARTER_LAYOUT }]);
+  assert.equal(laid.venue.objects.length, D.STARTER_LAYOUT.length);
+  assert.equal(evaluateVenue(laid.venue).ready, true);
+  const bad = applyAction(laid, { type: 'setLayout', objects: [...D.STARTER_LAYOUT, { type: 'gate', x: 5, y: 5 }] });
+  assert.match(bad.error, /lot boundary/);
+  assert.equal(bad.state, laid, 'a rejected layout leaves the state untouched');
+  assert.equal(run(laid, [{ type: 'setLayout', objects: [] }]).venue.objects.length, 0);
+});
+
+test('showPreview gives the crowd before the incident without changing state', () => {
+  const s = run(builtGame(13, 'door'), [{ type: 'confirmPromotion' }]);
+  const preview = showPreview(s);
+  assert.equal(preview.parts.incident, 1);
+  assert.equal(preview.attendance, evaluateShow({ venue: evaluateVenue(s.venue), deal: 'door', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: rollShow(13).draw, artistId: 'velvet-static' }).attendance);
 });

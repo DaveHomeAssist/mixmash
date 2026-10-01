@@ -46,7 +46,7 @@ One venue, one artist, one show, from booking to settlement. The target session 
 | 1. Book | Chooses a **$1,000 guarantee** or a **door deal** (artist takes 70% of ticket revenue left after show costs) | Booking, Finance | The deal is locked, which sets how much risk the player carries |
 | 2. Build | Places a stage, rents a PA (S or M), and adds lights, bars, restrooms, fence and gate, and exits; a generator sets the power budget | Venue, Production | Capacity, sightlines, sound coverage and amenity ratios |
 | 3. Promote | Sets the ticket price ($10 to $40) and splits ad spend across flyers, social and radio; 14 in-game days play out in about 60 seconds against a presale chart | Promotion, Finance | Presales and a walk-up forecast |
-| 4. Show night | Doors, the set and curfew play out in about 2 minutes; one seeded incident (rain, PA dropout or gate jam) offers 2 or 3 responses | Production, Reputation | Attendance, satisfaction and the incident outcome |
+| 4. Show night | Doors, the set and curfew play out in about 2 minutes (12 seconds in the first playable); one seeded incident (rain, PA dropout or gate jam) offers 2 or 3 responses | Production, Reputation | Attendance, satisfaction and the incident outcome |
 | 5. Settle | Reads the settlement sheet and accepts it | Finance, Reputation | Net result, change in reputation, change in the artist relationship |
 
 **Pass:** net at least $0 **and** satisfaction at least 60. This unlocks "Book your next show", which ends the first playable.

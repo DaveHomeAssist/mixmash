@@ -33,8 +33,17 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Dave named the game **Front of House** and made it a standalone game (CT-DEC-06 and the new CT-DEC-08, both accepted). A title check found no major game with the name; the nearest are a small itch.io bakery game called "Front of the House" and a utility app called "FRONT of HOUSE (FOH)".
 - Renamed the folder `tycoon/` to `front-of-house/`, the script `sim:tycoon` to `sim:front-of-house`, and the save namespace to `front_of_house_v1` (`SAVE_NAMESPACE` in `data.mjs`). CI paths follow. Decision IDs keep the `CT-` prefix.
 
+## 2026-10-01: Phase 2, the first playable
+
+- Added the page (`index.html`, `styles.css`), the client (`game.js`) and the canvas board (`board.js`); the route is `mixmash.games/front-of-house/`, `noindex`, with no hub card yet. The studio README, CHANGELOG and service worker (v4 precache) list it.
+- Added `docs/ART_DIRECTION.md` from Dave's art direction and concept sheets (drafted with Gemini), with corrections: figures from the superseded draft replaced by engine values, real company names removed, CSP-safe fonts and handlers, and a lighter small-text colour for contrast. Conflicts between the sheets are listed there for settling before Phase 2 art.
+- Added `test/front-of-house-smoke.mjs` (`npm run smoke:front-of-house`, now in CI) and `node --check` for `game.js` and `board.js` in `vercel-build`.
+- Engine additions: `STARTER_LAYOUT` in `data.mjs` (the suggested layout, also the simulator's reference layout, so the baseline is unchanged), a `setLayout` action, `showPreview`, `sightlineTiles` (clear and blocked tiles) and `blockedTiles` in `evaluateVenue` for the sightline occlusion overlay.
+- **Bug found by the smoke test:** after signing, the finished-show sheet was recomputed with the reputation the show had just earned, so it showed a different crowd and net than the night actually had (the cash was right). The show now records the venue reputation it was sold with (`show.venueRep`), and an engine test checks that the signed sheet replays exactly. The version 1 save fixture was regenerated to include it; no version 1 saves existed outside tests.
+- Deliberate differences from the GDD for the first playable: show night plays for 12 seconds to curfew instead of about two minutes, and the presale chart is drawn at once instead of playing 14 days over a minute.
+
 ## TODO
 
-- Next phase, the first playable client: `front-of-house/index.html` and `front-of-house/game.js` (canvas board for Build and Show night, HTML panels for Book, Promote and Settle), saves through `src/kit/save.js` under the final namespace, `window.render_game_to_text()`, and `npm run smoke:front-of-house` in CI.
-- When the first route ships: add a row to the root `README.md`, a `CHANGELOG.md` entry, a hub card and a sitemap entry.
+- Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
+- Dave: settle the tier ladder conflict in `docs/ART_DIRECTION.md` section 8 (four tiers from the concept image, or the GDD's five).
 - Balance questions for the playable build: the door deal is the better money choice at the fair price for every draw, so the guarantee's only pull is the artist relationship until later shows reward it; and the reference layout scores satisfaction near 100 when nothing goes wrong.

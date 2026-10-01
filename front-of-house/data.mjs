@@ -7,6 +7,7 @@
 export const GAME_TITLE = 'Front of House';
 export const SAVE_NAMESPACE = 'front_of_house_v1'; // localStorage key (CT-DEC-06, SAVE_FORMAT.md)
 export const SCHEMA_VERSION = 1;
+export const VENUE_NAME = 'Oak St. Lot'; // the first playable's parking lot (fictional, CT-DEC-03)
 
 // Lot and money
 export const START_CASH = 6000;
@@ -85,6 +86,24 @@ export const OBJECT_TYPES = {
   exit: { label: 'Exit', w: 1, h: 1, watts: 0, edge: true },
   fence: { label: 'Fence kit', kit: true, watts: 0, group: 'fence', max: 1 },
 };
+
+// The layout the Build screen offers as "Use the suggested layout". The tests and the
+// balance simulator use it as their reference layout too (sim/reference.mjs).
+export const STARTER_LAYOUT = [
+  { type: 'fence', x: 0, y: 0, rot: 0 },
+  { type: 'stage', x: 9, y: 0, rot: 0 },
+  { type: 'pa-m', x: 8, y: 0, rot: 0 },
+  { type: 'lights', x: 15, y: 0, rot: 0 },
+  { type: 'bar', x: 1, y: 8, rot: 0 },
+  { type: 'restroom', x: 20, y: 12, rot: 0 },
+  { type: 'restroom', x: 21, y: 12, rot: 0 },
+  { type: 'restroom', x: 22, y: 12, rot: 0 },
+  { type: 'restroom', x: 20, y: 13, rot: 0 },
+  { type: 'gate', x: 12, y: 15, rot: 0 },
+  { type: 'exit', x: 0, y: 5, rot: 0 },
+  { type: 'exit', x: 23, y: 5, rot: 0 },
+  { type: 'exit', x: 0, y: 14, rot: 0 },
+];
 
 // Artists. `ask` is the guarantee the artist expects (ARTIST_ASK in RULES.md).
 export const ARTISTS = {
