@@ -285,13 +285,48 @@ export function createBoard(canvas) {
     });
   }
 
-  // The prop under a screen point, by the drawn sprites' opaque pixels, front first.
+  // A code-drawn box's outline on screen: the convex hull of its ground and top corners.
+  function boxOutline(o, d) {
+    const look = LOOK[o.type];
+    const inset = look.thin ? 0.3 : 0.06;
+    const x0 = o.x + inset; const y0 = o.y + inset; const x1 = o.x + d.w - inset; const y1 = o.y + d.h - inset;
+    const pts = [];
+    for (const z of [0, look.height]) pts.push(iso(x0, y0, z), iso(x1, y0, z), iso(x1, y1, z), iso(x0, y1, z));
+    pts.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const cross = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+    const half = (list) => {
+      const out = [];
+      for (const q of list) {
+        while (out.length >= 2 && cross(out[out.length - 2], out[out.length - 1], q) <= 0) out.pop();
+        out.push(q);
+      }
+      out.pop();
+      return out;
+    };
+    return [...half(pts), ...half([...pts].reverse())];
+  }
+
+  function insidePolygon(px, py, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i, i += 1) {
+      const [xi, yi] = poly[i]; const [xj, yj] = poly[j];
+      if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+
+  // The prop under a screen point, front first in the final paint order: a sprite by its
+  // opaque pixels, a code-drawn box by its outline.
   function objectAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
     const px = clientX - rect.left;
     const py = clientY - rect.top;
     for (let i = hits.length - 1; i >= 0; i -= 1) {
-      const { o, r } = hits[i];
+      const { o, r, poly } = hits[i];
+      if (poly) {
+        if (insidePolygon(px, py, poly)) return o;
+        continue;
+      }
       if (px < r.x || py < r.y || px >= r.x + r.w || py >= r.y + r.h) continue;
       const m = spriteMask(o.type);
       let u = (px - r.x) / r.w;
@@ -502,11 +537,17 @@ export function createBoard(canvas) {
 
     const flickerOf = (o) => (scene.incident === 'pa-dropout' && D.OBJECT_TYPES[o.type].paTier && scene.t
       ? 0.35 + 0.65 * Math.abs(Math.sin(scene.t * 9)) : 1);
+    const painted = [];
     for (const { o, d } of sorted) {
       const look = LOOK[o.type];
       const r = drawSprite(o, flickerOf(o));
-      if (r) drawn.push({ o, r });
-      else box(o.x, o.y, d.w, d.h, look.height, look, flickerOf(o));
+      if (r) {
+        drawn.push({ o, r });
+        painted.push({ o, r });
+      } else {
+        box(o.x, o.y, d.w, d.h, look.height, look, flickerOf(o));
+        painted.push({ o, poly: boxOutline(o, d) });
+      }
       if (o.type === 'stage') drawStageFacing(o);
     }
     // A prop mostly hidden behind a taller sprite drawn after it (a PA behind the stage)
@@ -523,7 +564,7 @@ export function createBoard(canvas) {
       if (covered > area * 0.4) { drawSprite(a.o, 0.6 * flickerOf(a.o)); reshown.push(a); }
     });
     // Clicks follow the final paint order: a prop that shows through is on top.
-    hits = [...drawn, ...reshown];
+    hits = [...painted, ...reshown];
     frontTiles.forEach(([x, y]) => overlay(x, y));
     drawCrowd(front, scene.t);
 
@@ -603,6 +644,7 @@ export function createBoard(canvas) {
       drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
       markers: stats.markers,
       washSource: stats.washSource,
+      hitStack: hits.map(({ o, r, poly }) => ({ type: o.type, rect: r || null, poly: poly || null })),
     };
   }
 

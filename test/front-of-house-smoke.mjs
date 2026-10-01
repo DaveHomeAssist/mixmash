@@ -275,6 +275,35 @@ try {
   await page5.mouse.click(canvasBox.x + towerRect.x + towerRect.w / 2, canvasBox.y + towerRect.y + towerRect.h * 0.06);
   await page5.keyboard.up('Shift');
   assert.equal((await objectsNow()).some((o) => o.type === 'lights'), false, 'Shift+clicking the lamp head removes the light tower');
+  // After three view turns the stage faces away and is drawn as a box, painted over the
+  // PA's sprite; a right-click where they overlap removes the stage, not the PA behind it.
+  await setLayout(STARTER_LAYOUT);
+  for (let i = 0; i < 3; i += 1) await page5.click('#turn-view');
+  const stack = (await boardInfo()).hitStack;
+  const stageAt = stack.findIndex((h) => h.type === 'stage');
+  const paAt = stack.findIndex((h) => h.type === 'pa-m');
+  assert.ok(stack[stageAt].poly && stageAt > paAt, 'the stage is a box painted after the PA in this view');
+  const inPoly = (x, y, poly) => poly.reduce((inside, [xi, yi], i) => {
+    const [xj, yj] = poly[(i + poly.length - 1) % poly.length];
+    return (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi ? !inside : inside;
+  }, false);
+  const pr = stack[paAt].rect;
+  // The overlap point nearest the PA sprite's centre, where the sprite is opaque.
+  let overlap = null;
+  let best = Infinity;
+  for (let fy = 0.02; fy < 1; fy += 0.02) {
+    for (let fx = 0.02; fx < 1; fx += 0.02) {
+      const pt = [pr.x + pr.w * fx, pr.y + pr.h * fy];
+      const dist = Math.hypot(fx - 0.5, fy - 0.5);
+      if (dist < best && inPoly(pt[0], pt[1], stack[stageAt].poly)) { overlap = pt; best = dist; }
+    }
+  }
+  assert.ok(overlap, 'the stage box overlaps the middle of the PA sprite');
+  await page5.mouse.click(canvasBox.x + overlap[0], canvasBox.y + overlap[1], { button: 'right' });
+  const types = (await objectsNow()).map((o) => o.type);
+  assert.ok(!types.includes('stage') && types.includes('pa-m'), 'right-clicking the stage box over the PA removes the stage');
+  await page5.click('#turn-view');
+  assert.equal((await boardInfo()).facing, 0);
   await setLayout(STARTER_LAYOUT);
   const stageRect = drawnOf(await boardInfo(), 'stage').rect;
   const roof = { x: canvasBox.x + stageRect.x + stageRect.w / 2, y: canvasBox.y + stageRect.y + stageRect.h * 0.22 };
