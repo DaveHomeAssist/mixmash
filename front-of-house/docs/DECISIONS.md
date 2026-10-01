@@ -250,7 +250,7 @@ Tier 1 was one night. The GDD's career needs a run of shows on the Lot with a re
 1. **A roster of three fictional acts** (`ROSTER`): Gravel Hymnal (folk, small and cheap), Sodium Arcade (indie rock, the first playable's act) and Juniper Switchboard (funk and soul, the biggest draw). The first show always offers Sodium Arcade and one more; later shows offer two of the three, chosen by the seed.
 2. **Terms follow the relationship.** Each point takes 0.5% off the ask and adds 0.5% to the draw. At a relationship of −20 or below an act only plays for a guarantee. Juniper Switchboard is guarantee-only: an established act that never plays for the door, which also means a promoter needs cash before booking the act most likely to sell out the Lot.
 3. **The Lot goal unlocks the Club:** one sellout of the Lot, venue reputation 60, $6,000 in the bank, and one act at a relationship of +20, which only fair guarantees build. The unlock stays once earned.
-4. **A bad night does not end the career.** Next show is open after any settlement unless cash is below the cheapest possible show ($1,025); Start over is always open.
+4. **A bad night does not end the career.** Next show is open after any settlement unless cash is below the cheapest show the next acts on offer will take ($1,025 on a door deal; more when both want a guarantee). Start over is always open and begins a new career with only the layout kept.
 
 ### Consequences
 

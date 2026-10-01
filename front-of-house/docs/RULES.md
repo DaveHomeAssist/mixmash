@@ -165,7 +165,7 @@ The unlock is stored (`unlocks.club`) and stays, even if cash or reputation fall
 
 ### R-21: Carrying on
 
-After any settlement the player may book the next show, keeping cash, venue reputation, relationships, the layout and the history. The next show is refused only when cash is below the cheapest possible show: the upfront cost of `CHEAPEST_LAYOUT` on a door deal with no ads (`cheapestShowCost()`). Start over (`retry`) is always available and resets cash, reputation, relationships and the unlock.
+After any settlement the player may book the next show, keeping cash, venue reputation, relationships, the layout and the history. The next show is refused only when cash is below the cheapest show its offer allows (`nextShowCost(state)`): for each act on the next show's offer, the upfront cost of `CHEAPEST_LAYOUT` with no ads (`cheapestShowCost()`) on a door deal if the act's terms allow one, otherwise on a guarantee of its quoted ask; the cheapest act sets the figure. When both acts on offer want a guarantee (Juniper Switchboard, or an act soured past `REL_DOOR_FLOOR`), it is higher than the door-deal floor. Start over (`retry`) is always available and begins a new career: it resets cash, reputation, relationships, the unlock and the history, and keeps only the layout, so earlier shows count toward neither the new goal nor the first show's offer.
 
 ## Worked example
 

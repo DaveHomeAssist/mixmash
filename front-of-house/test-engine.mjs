@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
   applyAction, buzz, careerProgress, cheapestShowCost, createGame, evaluateShow, evaluateVenue, forecast, migrateSave,
-  nextSeed, normalizeState, offersFor, termsFor,
+  nextSeed, nextShowCost, normalizeState, offersFor, termsFor,
   presaleSplit, priceFactor, rollShow, settlementFor, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
@@ -233,9 +233,11 @@ test('back, retry and next show move between phases', () => {
   assert.equal(next.cash, done.cash);
   assert.notEqual(next.seed, done.seed);
   assert.equal(next.venue.objects.length, REFERENCE_LAYOUT.length);
+  assert.equal(next.history.length, 1);
   const retry = run(done, [{ type: 'retry' }]);
   assert.equal(retry.cash, D.START_CASH);
-  assert.equal(retry.history.length, 1);
+  assert.equal(retry.history.length, 0, 'Start over begins a new career');
+  assert.equal(retry.venue.objects.length, REFERENCE_LAYOUT.length, 'the layout is kept');
 });
 
 test('normalizeState rejects junk and repairs tampered saves', () => {
@@ -297,9 +299,13 @@ test('a version 1 save migrates to the Lot scale', async () => {
   assert.deepEqual(v2.venue.objects, v1.venue.objects);
   assert.deepEqual(normalizeState(v2, 1), v2);
 
-  const retried = migrateSave({ ...v1, history: [{ ...v1.history[0], result: 'retry' }] });
-  assert.equal(retried.phase, 'book');
-  assert.equal(retried.cash, D.START_CASH, 'a finished show that failed starts again, as Retry does');
+  const failed = migrateSave({ ...v1, history: [{ ...v1.history[0], result: 'retry' }] });
+  assert.equal(failed.phase, 'book');
+  assert.equal(failed.cash, 3473, 'a finished show that failed also moves on, as the career does after any night');
+  assert.equal(failed.history.length, 1);
+  const broke = migrateSave({ ...v1, cash: 0 });
+  assert.equal(broke.phase, 'book');
+  assert.equal(broke.cash, D.START_CASH, 'a finished show with no money for the next one starts over');
 
   // A show in progress converts exactly: the money already spent halves with everything else.
   const mid = run(builtGame(42, 'guarantee'), [{ type: 'confirmPromotion' }]);
@@ -434,13 +440,74 @@ test('R-21: a career carries on after a bad night and stops only when no show is
   assert.equal(next.cash, done.cash, 'a bad night costs money but the career goes on');
   assert.ok(offersFor(next).includes(next.booking.artistId));
   const broke = { ...done, cash: cheapestShowCost() - 1 };
-  assert.match(applyAction(broke, { type: 'nextShow' }).error, /cheapest show costs \$\d+/);
+  assert.match(applyAction(broke, { type: 'nextShow' }).error, /needs at least \$\d+ before doors/);
   assert.equal(applyAction(broke, { type: 'retry' }).error, null, 'starting over is always possible');
   assert.equal(cheapestShowCost(), evaluateShow({
     venue: evaluateVenue({ objects: D.CHEAPEST_LAYOUT }), deal: 'door', price: D.PRICE_MIN, ads: {}, venueRep: 0,
     draw: 0, artistId: D.DEFAULT_ARTIST, incidentId: null, responseId: null,
   }).upfront);
   assert.equal(evaluateVenue({ objects: D.CHEAPEST_LAYOUT }).ready, true);
+});
+
+test('R-21: the next show must be affordable on a deal an act on its offer will take', () => {
+  const done = playShow(createGame(2), D.DEFAULT_ARTIST, 'door');
+  assert.equal(nextShowCost(done), cheapestShowCost(), 'an act that takes the door deal sets the floor');
+  // A later show whose offer is Juniper Switchboard (guarantee only) and an act soured past the door rule.
+  let seed = done.seed;
+  while (!offersFor({ seed: nextSeed(seed), history: done.history }).includes('juniper-switchboard')) seed = nextSeed(seed);
+  const other = offersFor({ seed: nextSeed(seed), history: done.history }).find((id) => id !== 'juniper-switchboard');
+  const stuck = {
+    ...done,
+    seed,
+    reputation: { ...done.reputation, artists: { ...done.reputation.artists, [other]: D.REL_DOOR_FLOOR } },
+  };
+  const cheapestGuarantee = Math.min(...[other, 'juniper-switchboard'].map((id) =>
+    cheapestShowCost('guarantee', termsFor(id, stuck.reputation.artists[id]).ask)));
+  assert.equal(nextShowCost(stuck), cheapestGuarantee);
+  assert.ok(cheapestGuarantee > cheapestShowCost());
+  const short = { ...stuck, cash: cheapestGuarantee - 1 };
+  assert.ok(short.cash >= cheapestShowCost(), 'enough for a door deal nobody on offer will take');
+  assert.equal(careerProgress(short).canAffordAShow, false);
+  assert.match(applyAction(short, { type: 'nextShow' }).error, new RegExp(`needs at least \\$${cheapestGuarantee}`));
+  const enough = run({ ...stuck, cash: cheapestGuarantee }, [{ type: 'nextShow' }]);
+  const pick = offersFor(enough).find((id) => cheapestShowCost('guarantee', termsFor(id, enough.reputation.artists[id]).ask) === cheapestGuarantee);
+  const booked = run(enough, [
+    { type: 'chooseDeal', deal: 'guarantee', artistId: pick },
+    { type: 'setLayout', objects: D.CHEAPEST_LAYOUT },
+    { type: 'confirmBuild' },
+    { type: 'setPromotion', price: D.PRICE_MIN, ads: {} },
+    { type: 'confirmPromotion' },
+  ]);
+  assert.equal(booked.cash, 0, 'the show the check allowed can be booked');
+});
+
+test('R-21: Start over begins a new career, so earlier shows count toward nothing', () => {
+  const s = createGame(5);
+  const sellout = { showId: 1, seed: 1, deal: 'guarantee', attendance: D.PERMIT_CAP, satisfaction: 90, net: 500, artistPay: 500, result: 'pass', weakest: null, settledAt: null };
+  const later = { ...s, cash: 10000, history: [sellout] };
+  const done = playShow(later, offersFor(later)[0], 'guarantee');
+  assert.equal(careerProgress(done).sellouts >= 1, true);
+  const over = run(done, [{ type: 'retry' }]);
+  assert.deepEqual(over.history, []);
+  assert.equal(careerProgress(over).sellouts, 0, 'an old sellout does not count toward the new goal');
+  assert.equal(careerProgress(over).shows, 0);
+  assert.equal(offersFor(over)[0], D.DEFAULT_ARTIST, 'the new career opens with the first show offer');
+  assert.equal(over.unlocks.club, false);
+});
+
+test('normalizeState drops a quoted ask below $1, so settlement never divides by zero', () => {
+  const settle = run(builtGame(42, 'guarantee'), [{ type: 'confirmPromotion' }]);
+  const answered = run(settle, [{ type: 'respond', responseId: D.INCIDENTS[settle.show.incidentId].responses[0].id }]);
+  for (const ask of [0, -50]) {
+    const tampered = JSON.parse(JSON.stringify(answered));
+    tampered.booking.terms = { ask, drawMult: 1 };
+    const loaded = normalizeState(tampered, 1);
+    assert.equal(loaded.booking.terms, null, `an ask of ${ask} is dropped`);
+    assert.equal(loaded.phase, 'settle');
+    const signed = run(loaded, [{ type: 'acceptSettlement' }]);
+    assert.ok(Number.isFinite(signed.reputation.artists[D.DEFAULT_ARTIST]), 'the relationship stays a number');
+  }
+  assert.ok(Number.isFinite(evaluateShow({ ...WORKED_EXAMPLE, deal: 'guarantee', ask: 0 }).relDelta), 'the engine also ignores a zero ask');
 });
 
 test('R-20: meeting the Lot goal at settlement unlocks the Club, and the unlock stays', () => {

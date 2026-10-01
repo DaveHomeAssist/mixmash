@@ -26,7 +26,7 @@ Retune the first playable to the Lot's 50 to 150 people, and start this roadmap.
 
 A run of shows on the Lot, so the first tier is a career rather than one night ([CT-DEC-10](docs/DECISIONS.md#ct-dec-10-the-lot-career), Proposed; rules R-19 to R-21).
 
-- **Next show continues** after any settlement, with cash, venue reputation, relationships, the layout and the history carried over. Only running out of money (below the cheapest show, $1,025) ends a run; Start over is always open.
+- **Next show continues** after any settlement, with cash, venue reputation, relationships, the layout and the history carried over. Only running out of money (below the cheapest show the next acts on offer will take: $1,025 on a door deal, more when both want a guarantee) ends a run. Start over is always open and begins a new career with only the layout kept.
 - **A roster of three fictional acts** ([`docs/WORLD.md`](docs/WORLD.md)): Gravel Hymnal, Sodium Arcade and Juniper Switchboard. Each show offers two.
 - **Relationships change terms:** the ask and the draw follow the relationship, a soured act refuses door deals, and Juniper Switchboard only plays for a guarantee.
 - **The Lot goal unlocks the Club:** a sellout, venue reputation 60, $6,000, and one act at +20. The Book screen shows each offer's terms; the Done screen shows the goal's progress.

@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, evaluateVenue, findResponse, forecast,
-  careerProgress, cheapestShowCost, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor,
+  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor,
   showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { createBoard, LOOK } from './board.js';
@@ -661,7 +661,7 @@ function donePanel() {
       ? 'The show made money and kept the crowd happy. Cash, reputation and every relationship carry into the next show.'
       : p.canAffordAShow
         ? 'The night lost money or left the crowd unhappy. The career goes on: cash, reputation and relationships carry over.'
-        : `You can't cover the cheapest show (${money(cheapestShowCost())} before doors). Start over to try again.`}</p>
+        : `The acts on offer next need at least ${money(p.nextShowCost)} before doors, and you have ${money(state.cash)}. Start over to try again.`}</p>
     <div class="actions">
       <button type="button" data-act="retry">Start over</button>${next}
     </div>
@@ -904,8 +904,8 @@ window.render_game_to_text = () => {
     deal: state.booking.deal,
     artist: state.booking.artistId,
     offers: state.phase === 'book' ? offersFor(state) : null,
-    career: (({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, canAffordAShow }) =>
-      ({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, canAffordAShow }))(careerProgress(state)),
+    career: (({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }) =>
+      ({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }))(careerProgress(state)),
     venue: { objects: state.venue.objects.length, capacity: v.capacity, ready: v.ready, missing: v.missing },
     promotion: state.promotion,
     show: state.show,

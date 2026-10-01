@@ -61,6 +61,10 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Tuning, from a career prototype run before the simulator verdicts were written: with a goal of a sellout, reputation 50 and $5,000, every strategy reached the Club on every seed and the door-only habit was fastest (median 3 shows against 6). Making Juniper Switchboard guarantee-only, raising the goal to reputation 60 and $6,000, and adding an act at +20 gives careful play 100% in a median of 7 shows (never fewer than 5) and careless play about 42%.
 - Client: the Book screen shows two offer cards with each act's relationship, terms and door rule; the Done screen shows the goal's progress and keeps Book the next show open after a rough night. `render_game_to_text()` reports the booked act, the offers and career progress. Service worker v6.
 - Tests: 27 engine tests (5 new for R-19 to R-21), 11 balance verdicts (5 new), and a smoke check that the next show offers two acts and carries the cash.
+- Review fixes (Codex, three findings, each reproduced on the old engine first):
+  - **A pasted save with a quoted ask of $0** reached settlement and set the act's relationship to `NaN` (R-17 divides the pay by the ask). `normalizeState` now drops terms whose ask is below $1, and `evaluateShow` ignores such an ask.
+  - **Start over kept the old career's history,** so an earlier sellout counted toward the new goal and the first show's offer was skipped. Start over now keeps only the layout. Because of that, a finished version 1 save is now closed with Next show after any night (as R-21 allows) and with Start over only when the next show is unaffordable, so the migration keeps its history.
+  - **The next-show check assumed a door deal.** When both acts on the next show's offer want a guarantee (Juniper Switchboard and an act soured past the door rule), a player with between $1,025 and the cheapest guarantee could book nothing. `nextShowCost(state)` prices the next show's actual offers; the Done screen and the simulator use it. The balance baseline is unchanged.
 
 ## TODO
 

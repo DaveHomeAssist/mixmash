@@ -13,7 +13,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as D from '../data.mjs';
 import {
-  applyAction, cheapestShowCost, createGame, ENGINE_VERSION, evaluateShow, evaluateVenue, offersFor, rollShow, settlementFor, termsFor,
+  applyAction, cheapestShowCost, createGame, ENGINE_VERSION, evaluateShow, evaluateVenue, nextShowCost, offersFor, rollShow, settlementFor, termsFor,
 } from '../engine.mjs';
 import { BUDGET_LAYOUT, REFERENCE_ADS, REFERENCE_LAYOUT, REFERENCE_PRICE, WORKED_EXAMPLE } from './reference.mjs';
 
@@ -239,7 +239,7 @@ function career(seed, planName) {
     s = step(s, { type: 'respond', responseId: pick.id });
     s = step(s, { type: 'acceptSettlement' });
     if (s.unlocks.club) return { shows: n, reached: true, broke: false, booked };
-    if (s.cash < cheapestShowCost()) return { shows: n, reached: false, broke: true, booked };
+    if (s.cash < nextShowCost(s)) return { shows: n, reached: false, broke: true, booked };
     s = step(s, { type: 'nextShow' });
   }
   return { shows: T.careerShows, reached: false, broke: false, booked };
