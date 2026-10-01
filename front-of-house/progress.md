@@ -110,6 +110,15 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Controls, behind today's layout: minus, Fit and plus buttons beside Turn the view; `=`, `-` and `0` on the focused board; Shift with the arrow keys and a middle-button drag pan (a plain drag pans outside Build); Ctrl or Cmd with the wheel zooms, because the page still scrolls until step 2. Space can't pan, since it places in Build; `HUD.md` says so now.
 - New smoke check: buttons and keys, every on-screen tile maps back to itself at every zoom and view turn (4,192 tiles in the probe), Shift-arrow and middle-drag panning, the clamp, a turn that keeps the zoom, the cursor follow, Ctrl and the wheel keeping the tile under the pointer, and a right-click on the zoomed stage. Service worker v14.
 
+## 2026-10-01: HUD step 2, the page never scrolls
+
+- Dave, on the live camera build: "absolutely no full frame scroll". The page no longer scrolls at any size. The board's canvas covers the window; the header is a fixed top strip (the MixMash hub and mute pills, the name, the phase stepper, the meters and a Menu button); the phase panel docks on the right and scrolls inside itself; on phones it is a bottom sheet under the board.
+- The lot is fit, by width and by height, into the part of the window the strip and the panel leave clear (`setClear()` in `board.js`), and the zoom, pan and cursor follow centre on that part. A canvas over 6 megapixels at 2x drops to 1.5x.
+- The menu (`?` or the Menu button) holds full screen and the source link (moved from the MixMash nav), the keys, save and load, and the credit. Escape or a click outside closes it, and loading a save or starting a new game closes it.
+- The plain mouse wheel zooms now that the page doesn't scroll. The camera buttons float in the lot's empty bottom-left corner with the board's status line.
+- Interim size: the lot covers 15% to 26% of the window in Build (it was 9% to 24%, and needed a scroll). The 30% and 35% targets need step 3, when the panel splits into the corners.
+- New smoke checks: in every phase at 1024 × 700, 1024 × 768, 1280 × 800, 1440 × 900 and 1920 × 1080 the document has nothing to scroll, the canvas fills the window, the panel fits on screen and the whole lot is clear of the strip and the panel; the phone has no scroll either way, a bottom sheet that scrolls inside itself, and a board at least 45% of the height; the menu opens and closes; the plain wheel zooms without scrolling. Service worker v15.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

@@ -297,7 +297,7 @@
       "commands": [
         {
           "name": "npm run smoke:front-of-house",
-          "description": "Lot Night end to end: reload, save codes and version 1 conversion, the next show, the out-of-money stop, keyboard building, the board sprites, reduced motion, phone width, contrast."
+          "description": "Lot Night end to end: reload, save codes and version 1 conversion, the next show, the out-of-money stop, keyboard building, the board sprites, the board camera, no page scroll in any phase, the menu, reduced motion, phone width, contrast."
         },
         {
           "name": "npm run sim:front-of-house",
@@ -2029,7 +2029,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "front-of-house-smoke.mjs",
-      "description": "Playwright rail for Lot Night end to end: reload, save codes, the next show, the out-of-money stop, keyboard building, the board sprites, the board camera, reduced motion, phone width and contrast (smoke:front-of-house).",
+      "description": "Playwright rail for Lot Night end to end: reload, save codes, the next show, the out-of-money stop, keyboard building, the board sprites, the board camera, no page scroll in any phase, the menu, reduced motion, phone width and contrast (smoke:front-of-house).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-smoke.mjs",
       "open": null
     },
