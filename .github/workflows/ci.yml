@@ -12,7 +12,7 @@ on:
       - 'empires/**'
       - 'garden/**'
       - 'zelda2mario/**'
-      - 'tycoon/**'
+      - 'front-of-house/**'
       - 'api/**'
       - 'index.html'
       - 'assets/previews/**'
@@ -44,8 +44,8 @@ jobs:
       - run: npm run art:contact-sheet
       - run: git diff --exit-code -- mars/art/reports/golden-contact-sheet.html
       - run: npm run sim
-      - run: npm run sim:tycoon
-      - run: git diff --exit-code -- tycoon/docs/BALANCE_BASELINE.md
+      - run: npm run sim:front-of-house
+      - run: git diff --exit-code -- front-of-house/docs/BALANCE_BASELINE.md
       - run: npx playwright install --with-deps chromium
       - run: npm run art:visual
       - run: npm run smoke:play

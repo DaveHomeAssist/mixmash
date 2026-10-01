@@ -1,6 +1,6 @@
-# Concert Tycoon Decision Log
+# Front of House Decision Log
 
-This file records Concert Tycoon decisions that affect more than one part of the game. IDs use the `CT-DEC-NN` prefix so they don't collide with MarsScape's `DEC-NN` series. A decision's status is one of **Open**, **Proposed**, **Accepted**, **Superseded** or **Rejected**. Only Dave moves a decision to Accepted.
+This file records Front of House decisions that affect more than one part of the game. IDs use the `CT-DEC-NN` prefix, from the working title Concert Tycoon, so they don't collide with MarsScape's `DEC-NN` series. A decision's status is one of **Open**, **Proposed**, **Accepted**, **Superseded** or **Rejected**. Only Dave moves a decision to Accepted.
 
 | ID | Decision | Status |
 | --- | --- | --- |
@@ -9,8 +9,9 @@ This file records Concert Tycoon decisions that affect more than one part of the
 | [CT-DEC-03](#ct-dec-03-artists-and-venues) | Fictional artists and venues | Accepted |
 | [CT-DEC-04](#ct-dec-04-platform) | Desktop browser first | Accepted |
 | [CT-DEC-05](#ct-dec-05-multiplayer) | No multiplayer in v1 | Accepted |
-| [CT-DEC-06](#ct-dec-06-name-and-route) | Final name and route | Open |
+| [CT-DEC-06](#ct-dec-06-name-and-route) | Named Front of House; route `front-of-house/`, save key `front_of_house_v1` | Accepted |
 | [CT-DEC-07](#ct-dec-07-documentation-source-of-truth) | This folder is canonical; Notion links to it | Accepted |
+| [CT-DEC-08](#ct-dec-08-standalone-game) | A standalone game, outside the MIXMASH universe | Accepted |
 
 ## CT-DEC-01: Core scope
 
@@ -47,7 +48,7 @@ The Notion page listed Unity, Godot and Unreal Engine 5 to evaluate. Every MixMa
 
 ### Decision
 
-1. Plain JavaScript modules in the browser, with no build step: a rules engine with no DOM access (`tycoon/engine.mjs`), content and adjustable values (`tycoon/data.mjs`), and a canvas client (`tycoon/game.js`).
+1. Plain JavaScript modules in the browser, with no build step: a rules engine with no DOM access (`front-of-house/engine.mjs`), content and adjustable values (`front-of-house/data.mjs`), and a canvas client (`front-of-house/game.js`).
 2. Isometric presentation. The first playable uses placeholder tiles drawn in code.
 3. Commission isometric pixel art only after the loop is fun, and only once a render contract and art direction document exist (see MarsScape DEC-79).
 4. Treat the crowd as density values per tile, not individual simulated people.
@@ -76,7 +77,7 @@ Use fictional artists, venues and markets built on recognizable genre types. Rec
 ### Consequences
 
 - No licensing cost and no risk of portraying real people badly.
-- **Still open:** whether Concert Tycoon shares the MIXMASH universe (design doc section 10, question 2). Fictional artists stand either way; if the game joins that universe, MIXMASH's real-name parody roster (MIXMASH D1) must stay out of Concert Tycoon, or this decision must be reopened.
+- **Settled by CT-DEC-08:** the game is standalone, so fictional artists stand and MIXMASH's real-name parody roster (MIXMASH D1) stays out of it.
 
 ## CT-DEC-04: Platform
 
@@ -110,15 +111,34 @@ No real-time or online multiplayer in v1. Challenge mode, when it arrives, store
 ## CT-DEC-06: Name and route
 
 - Date: 2026-10-01
-- Status: Open
+- Status: Accepted (Dave, 2026-10-01)
 - Owner: Dave Robertson
-- Blocks: the final save namespace in `SAVE_FORMAT.md`, any public route or hub card, and marketing
+- Affects: the game's name, its route, its folder, the save namespace in `SAVE_FORMAT.md`, the hub card and marketing
 
 ### Context
 
-"Concert Tycoon" is a working title and has not been checked against existing titles or trademarks. `tycoon/` is a placeholder folder. Renaming after launch would change URLs and save keys and break existing saves, so this has to be settled before the first public playable.
+"Concert Tycoon" was the working title, and the folder was `tycoon/` until this decision. Renaming after launch would change URLs and save keys and break existing saves, so the name had to be settled before the first public playable.
 
-### Title check (2026-10-01)
+### Decision
+
+| | |
+| --- | --- |
+| Name | **Front of House** (FOH is also the front-of-house mix position, which fits the production-realism pitch) |
+| Route | `mixmash.games/front-of-house/` |
+| Folder | `front-of-house/` |
+| Save namespace | `front_of_house_v1` (`SAVE_NAMESPACE` in `data.mjs`) |
+
+### Title check: Front of House (2026-10-01)
+
+| Title | Platform | How close |
+| --- | --- | --- |
+| [Front of the House](https://cryocannon9.itch.io/front-of-the-house) | itch.io | Nearly the same name; a small bakery-serving game |
+| [FRONT of HOUSE (FOH)](https://play.google.com/store/apps/datasafety?id=com.timeless.foh&hl=en_GB) | Google Play | Same words; a utility app, not a game |
+| [PlateUp!](https://store.steampowered.com/app/1599600/PlateUp/) | Steam | Uses "front of house" as a restaurant term, not as a title |
+
+No major game uses the name. No trademark search was done; do one before any paid promotion.
+
+### Title check: Concert Tycoon (2026-10-01)
 
 A web search found these existing titles:
 
@@ -131,9 +151,7 @@ A web search found these existing titles:
 
 No trademark search was done.
 
-### Recommendation
-
-Choose a name without "Concert Tycoon" in it, since it is too close to Idle Concert Tycoon. The name should point at what sets this game apart from Festival Tycoon: promoter money decisions (deal types, settlement) and production realism. Pick a short slug that works as the route (`mixmash.games/<slug>/`) and the save namespace (`<slug>_v1`). Check the chosen name with the same search, plus a trademark search, before the first public build.
+The recommendation was a distinct name that points at what sets the game apart from Festival Tycoon: promoter money decisions (deal types, settlement) and production realism.
 
 ## CT-DEC-07: Documentation source of truth
 
@@ -143,9 +161,9 @@ Choose a name without "Concert Tycoon" in it, since it is too close to Idle Conc
 
 ### Decision
 
-1. `tycoon/` in this repository is the canonical home for Concert Tycoon design, rules, decisions and save format.
+1. `front-of-house/` in this repository is the canonical home for Front of House design, rules, decisions and save format.
 2. The Notion page "Concert Tycoon Ideas" (DB | Capture) remains the place ideas come in and links to these files.
-3. Adjustable values move into code (`tycoon/data.mjs`) as soon as that file exists. After that, documents use the value names, not the numbers.
+3. Adjustable values move into code (`front-of-house/data.mjs`) as soon as that file exists. After that, documents use the value names, not the numbers.
 4. Generated documents carry a "do not edit by hand" header and a CI check that they match the code.
 
 ### Consequences
@@ -155,5 +173,21 @@ Choose a name without "Concert Tycoon" in it, since it is too close to Idle Conc
 
 ### Evidence and links
 
-- `tycoon/README.md`
+- `front-of-house/README.md`
 - Notion: https://app.notion.com/p/3ec255fc8f4480a6873adfdfa2b2c53b
+
+## CT-DEC-08: Standalone game
+
+- Date: 2026-10-01
+- Status: Accepted (Dave, 2026-10-01)
+- Owner: Dave Robertson
+- Affects: content, artists, cross-promotion with MIXMASH
+
+### Decision
+
+Front of House is a standalone game. It does not share the MIXMASH DJ and festival universe, its roster or its parody names.
+
+### Consequences
+
+- CT-DEC-03 (fictional artists and venues) stands without conflict.
+- The game can still sit in the MixMash Studio catalog and reuse its save store and conventions.

@@ -1,21 +1,21 @@
-# Concert Tycoon Save Format
+# Front of House Save Format
 
-**Status:** Draft · **Schema version:** 1 · **Namespace:** `tycoon_v1` (**provisional**, blocked by [CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route))
+**Status:** Draft · **Schema version:** 1 · **Namespace:** `front_of_house_v1` (fixed by [CT-DEC-06](DECISIONS.md#ct-dec-06-name-and-route); `SAVE_NAMESPACE` in `data.mjs`)
 
-> Do not ship a public build that writes saves until CT-DEC-06 fixes the name. The namespace is the `localStorage` key, so renaming it later means migrating every existing save.
+> The namespace is the `localStorage` key. Renaming it means migrating every existing save, so it stays fixed.
 
 ## Storage
 
 Saves use the shared studio store in `src/kit/save.js`:
 
 ```js
-const store = MixKitSave.createSaveStore('tycoon_v1', { version: 1, migrate });
+const store = MixKitSave.createSaveStore('front_of_house_v1', { version: 1, migrate });
 ```
 
 The store wraps game state in an envelope:
 
 ```json
-{ "ns": "tycoon_v1", "v": 1, "savedAt": "2026-10-01T00:00:00.000Z", "state": { } }
+{ "ns": "front_of_house_v1", "v": 1, "savedAt": "2026-10-01T00:00:00.000Z", "state": { } }
 ```
 
 - `exportCode()` and `importCode(code)` give portable base64 save codes, the same format MarsScape used when it moved sites.
@@ -51,7 +51,7 @@ Object `type` values allowed in version 1: `stage`, `pa-s`, `pa-m`, `lights`, `b
 
 ## Validation (required on every load and import)
 
-`src/kit/save.js` treats any object without `ns` and `state` fields as an old raw save and passes it straight through. That means a pasted save code can hand the game any JSON at all. Every value returned by `load()` or `importCode()` must therefore go through `normalizeState(state, fallbackSeed)` from `tycoon/engine.mjs` before use. It does the following, and `tycoon/test-engine.mjs` tests each step:
+`src/kit/save.js` treats any object without `ns` and `state` fields as an old raw save and passes it straight through. That means a pasted save code can hand the game any JSON at all. Every value returned by `load()` or `importCode()` must therefore go through `normalizeState(state, fallbackSeed)` from `front-of-house/engine.mjs` before use. It does the following, and `front-of-house/test-engine.mjs` tests each step:
 
 1. Reject anything that is not an object, or whose `schema` is unknown, and start a new game instead.
 2. Clamp numbers to their valid ranges: cash as a whole number, `price` from 10 to 40, ad spend at 0 or more, reputation from 0 to 100, relationships from −100 to 100.
@@ -63,8 +63,8 @@ Object `type` values allowed in version 1: `stage`, `pa-s`, `pa-m`, `lights`, `b
 
 - Bump `version` (and `schema`) only for changes that would break older saves. Adding an optional field is handled by `normalizeState` defaults.
 - Each version step gets a pure migration function, called through the store's `migrate(state, fromVersion)` hook, applied one version at a time.
-- Each version keeps a frozen example save in `tycoon/test/fixtures/save-vN.json` (version 1 exists). Tests load every fixture, migrate it to the current version and check the result with `normalizeState`.
-- A new namespace (for example `tycoon_v2`) is only used for an intentional fresh start. In that case, an import screen accepts save codes from the old namespace.
+- Each version keeps a frozen example save in `front-of-house/test/fixtures/save-vN.json` (version 1 exists). Tests load every fixture, migrate it to the current version and check the result with `normalizeState`.
+- A new namespace (for example `front_of_house_v2`) is only used for an intentional fresh start. In that case, an import screen accepts save codes from the old namespace.
 
 ## Save points
 

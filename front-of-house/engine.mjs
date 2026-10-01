@@ -1,9 +1,9 @@
-// Concert Tycoon rules engine.
+// Front of House rules engine.
 //
 // Pure and deterministic: no DOM access, no Math.random, no clock. Every function
 // takes state (or plain inputs) and returns new state or derived numbers, so the
 // browser client, the tests and the balance simulator all run the same rules.
-// Rule IDs (R-NN) refer to tycoon/docs/RULES.md; every number comes from data.mjs.
+// Rule IDs (R-NN) refer to front-of-house/docs/RULES.md; every number comes from data.mjs.
 
 import * as D from './data.mjs';
 

@@ -276,8 +276,8 @@ test('saves round-trip through the MixKit save store and a save code', async () 
     const m = new Map();
     return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k) };
   };
-  const a = sandbox.MixKitSave.createSaveStore('tycoon_v1', { version: 1, storage: memory() });
-  const b = sandbox.MixKitSave.createSaveStore('tycoon_v1', { version: 1, storage: memory() });
+  const a = sandbox.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: 1, storage: memory() });
+  const b = sandbox.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: 1, storage: memory() });
   const state = run(builtGame(21, 'guarantee'), [{ type: 'confirmPromotion' }]);
   a.save(state);
   const imported = b.importCode(a.exportCode());
