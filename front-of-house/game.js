@@ -749,10 +749,10 @@ el.canvas.addEventListener('pointerleave', () => { ui.hover = null; draw(); });
 el.canvas.addEventListener('click', (e) => {
   if (state.phase !== 'build') return;
   const tile = board.tileAt(e.clientX, e.clientY);
-  if (!tile) return;
-  ui.cursor = tile;
+  if (tile) ui.cursor = tile;
+  // Removal hit-tests the sprites first: a tall prop's top can sit above the ground grid.
   if (e.shiftKey) removeUnder(e);
-  else placeAt(tile);
+  else if (tile) placeAt(tile);
 });
 el.canvas.addEventListener('contextmenu', (e) => {
   if (state.phase !== 'build') return;

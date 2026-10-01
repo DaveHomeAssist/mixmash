@@ -95,6 +95,7 @@ export function createBoard(canvas) {
   let crowdCache = { key: '', tiles: [] };
   let lastScene = null;
   let drawn = []; // the props drawn as sprites in the last frame, back to front
+  let hits = []; // the same in final paint order, show-through repaints included, for clicks
   const stats = { spriteRedraws: 0, markers: [], washSource: null };
   let facing = 0;
 
@@ -289,8 +290,8 @@ export function createBoard(canvas) {
     const rect = canvas.getBoundingClientRect();
     const px = clientX - rect.left;
     const py = clientY - rect.top;
-    for (let i = drawn.length - 1; i >= 0; i -= 1) {
-      const { o, r } = drawn[i];
+    for (let i = hits.length - 1; i >= 0; i -= 1) {
+      const { o, r } = hits[i];
       if (px < r.x || py < r.y || px >= r.x + r.w || py >= r.y + r.h) continue;
       const m = spriteMask(o.type);
       let u = (px - r.x) / r.w;
@@ -447,6 +448,7 @@ export function createBoard(canvas) {
   function draw(scene) {
     lastScene = scene;
     drawn = [];
+    hits = [];
     stats.markers = [];
     ctx.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
     ctx.clearRect(0, 0, view.cssW, view.cssH);
@@ -509,6 +511,7 @@ export function createBoard(canvas) {
     }
     // A prop mostly hidden behind a taller sprite drawn after it (a PA behind the stage)
     // shows through at reduced strength, so the player can see what they rented.
+    const reshown = [];
     drawn.forEach((a, i) => {
       const area = a.r.w * a.r.h;
       // Only a much taller sprite counts, so neighbours of one size (a restroom bank) never ghost.
@@ -517,8 +520,10 @@ export function createBoard(canvas) {
         const h = Math.min(a.r.y + a.r.h, b.r.y + b.r.h) - Math.max(a.r.y, b.r.y);
         return sum + (w > 0 && h > 0 ? w * h : 0);
       }, 0);
-      if (covered > area * 0.4) drawSprite(a.o, 0.6 * flickerOf(a.o));
+      if (covered > area * 0.4) { drawSprite(a.o, 0.6 * flickerOf(a.o)); reshown.push(a); }
     });
+    // Clicks follow the final paint order: a prop that shows through is on top.
+    hits = [...drawn, ...reshown];
     frontTiles.forEach(([x, y]) => overlay(x, y));
     drawCrowd(front, scene.t);
 

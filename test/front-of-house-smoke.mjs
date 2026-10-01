@@ -262,8 +262,21 @@ try {
   }
   assert.deepEqual(turns, [[1, true], [2, 'box'], [3, 'box'], [0, false]], 'the stage follows the view turn');
   await setLayout(STARTER_LAYOUT);
-  const stageRect = drawnOf(await boardInfo(), 'stage').rect;
   const canvasBox = await page5.locator('#board').boundingBox();
+  const objectsNow = () => page5.evaluate(() => window.__frontOfHouse.state().venue.objects);
+  // The PA shows through the stage, so a click on the visible PA removes the PA.
+  const paRect = drawnOf(await boardInfo(), 'pa-m').rect;
+  await page5.mouse.click(canvasBox.x + paRect.x + paRect.w / 2, canvasBox.y + paRect.y + paRect.h / 2, { button: 'right' });
+  assert.deepEqual((await objectsNow()).map((o) => o.type).sort(), STARTER_LAYOUT.map((o) => o.type).filter((t) => t !== 'pa-m').sort(), 'right-clicking the PA that shows through the stage removes the PA');
+  // Shift+click on the light tower's lamp, above the ground grid, removes the tower.
+  await setLayout(STARTER_LAYOUT);
+  const towerRect = drawnOf(await boardInfo(), 'lights').rect;
+  await page5.keyboard.down('Shift');
+  await page5.mouse.click(canvasBox.x + towerRect.x + towerRect.w / 2, canvasBox.y + towerRect.y + towerRect.h * 0.06);
+  await page5.keyboard.up('Shift');
+  assert.equal((await objectsNow()).some((o) => o.type === 'lights'), false, 'Shift+clicking the lamp head removes the light tower');
+  await setLayout(STARTER_LAYOUT);
+  const stageRect = drawnOf(await boardInfo(), 'stage').rect;
   const roof = { x: canvasBox.x + stageRect.x + stageRect.w / 2, y: canvasBox.y + stageRect.y + stageRect.h * 0.22 };
   await page5.mouse.click(roof.x, roof.y, { button: 'right' });
   const afterRemove = await page5.evaluate(() => window.__frontOfHouse.state().venue.objects);
