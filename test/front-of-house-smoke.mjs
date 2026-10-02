@@ -805,6 +805,7 @@ try {
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'expanded');
   await hud.click('#sheet-expand');
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   const touch = await review.newCDPSession(hud);
   const handle = await hud.locator('#sheet-expand').boundingBox();
   const x = handle.x + handle.width / 2;
@@ -813,7 +814,9 @@ try {
   await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - 70 }] });
   await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await hud.waitForFunction(() => document.body.dataset.sheetSize === 'expanded');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   await hud.locator('#sheet-expand').tap();
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek', 'a swipe does not block the next tap');
   await touch.detach();
   await hud.screenshot({ path: join(output, 'review-phone-build.png') });
