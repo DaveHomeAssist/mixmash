@@ -764,11 +764,13 @@ try {
   await pilotMobile.click('[data-act="confirm-promo"]');
   await pilotMobile.waitForSelector('[data-act="choose-crew"]');
   assert.equal(await pilotMobile.getAttribute('#panel .tabbar [aria-selected="true"]', 'data-tab-name'), 'Problem');
+  // The phase mounts synchronously, but its board safe rectangle updates on the next frame.
+  await pilotMobile.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   const pilotTabFit = await pilotMobile.evaluate(() => {
     const p = document.querySelector('#panel');
     return { scroll: p.scrollHeight - p.clientHeight, board: window.__frontOfHouse.board().view.safe.h / innerHeight };
   });
-  assert.ok(pilotTabFit.scroll <= 1 && pilotTabFit.board >= 0.45, 'phone doors choice fits without scrolling or shrinking the board');
+  assert.ok(pilotTabFit.scroll <= 1 && pilotTabFit.board >= 0.45, `phone doors choice fits without scrolling or shrinking the board: ${JSON.stringify(pilotTabFit)}`);
   await pilotMobile.click('[data-act="choose-crew"][data-choice="gate"]');
   await pilotMobile.waitForSelector('[data-act="respond"]');
   assert.equal((await game(pilotMobile)).show.pilotCrew, 'gate');
@@ -854,6 +856,7 @@ try {
   await hud.click('[data-act="confirm-promo"]');
   await hud.waitForSelector('[data-act="respond"]');
   assert.equal(await hud.locator('[data-act="respond"][disabled]').count(), 2, 'the wet lot leaves both paid rain choices unaffordable');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   const rainFit = await hud.evaluate(() => {
     const p = document.querySelector('#panel');
     return { overflow: p.scrollHeight - p.clientHeight, board: window.__frontOfHouse.board().view.safe.h / innerHeight };
