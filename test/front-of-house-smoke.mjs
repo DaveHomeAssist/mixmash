@@ -5,7 +5,7 @@
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
  * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, the board camera, the
- * no-scroll layout and the menu, the Build and Show corner HUD, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * no-scroll layout and the menu, the Build and Show corner HUD, the sheets and windows, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -76,6 +76,15 @@ const measureLayout = (page) => page.evaluate(([W, H]) => {
     clear: view.safe,
     lotClear: corners.every((c) => c.clear),
     panelOnScreen: panel.top >= 0 && panel.bottom <= innerHeight + 0.5 && panel.right <= innerWidth + 0.5,
+    scrolling: [
+      ...[...document.querySelectorAll('#panel .plate')].filter((p) => !p.hidden && p.getClientRects().length && p.scrollHeight > p.clientHeight + 1)
+        .map((p) => `${p.className}: ${p.scrollHeight} in ${p.clientHeight}`),
+      ...(() => {
+        const win = document.querySelector('#win');
+        const body = document.querySelector('#win-body');
+        return !win.hidden && !win.classList.contains('scrolls') && body.scrollHeight > body.clientHeight + 1 ? [`window ${win.dataset.kind}: ${body.scrollHeight} in ${body.clientHeight}`] : [];
+      })(),
+    ],
   };
 }, [GRID.w, GRID.h]);
 // The corner HUD in Build and Show (docs/HUD.md steps 3 and 11): at the fit the lot covers at
@@ -115,6 +124,7 @@ async function checkNoScroll(page, phase) {
     assert.deepEqual(m.canvas, [width, height], `${at}: the board fills the window`);
     assert.ok(m.lotClear, `${at}: the lot is fit clear of the strip and the panel (${JSON.stringify(m.clear)})`);
     assert.ok(m.panelOnScreen, `${at}: the panel fits on screen`);
+    assert.deepEqual(m.scrolling, [], `${at}: no panel or window scrolls`);
     if (phase === 'build' || phase === 'show') {
       const hud = await measureHud(page);
       const target = (width === 1280 && height === 800) || (width === 1440 && height === 900) ? 35 : 30;
@@ -161,7 +171,8 @@ try {
   const settling = await game(page);
   assert.equal(settling.phase, 'settle');
   assert.ok(settling.settlement && Number.isInteger(settling.settlement.net));
-  const sheet = await page.textContent('#panel');
+  assert.equal(await page.isVisible('#win'), true, 'the settlement opens in its own window');
+  const sheet = await page.textContent('#win');
   assert.ok(sheet.includes('SECTION A') && sheet.includes('SECTION B') && sheet.includes('SECTION C'), 'the settlement sheet has its three sections');
   await checkNoScroll(page, 'settle');
   await page.screenshot({ path: join(output, 'settle.png') });
@@ -172,7 +183,7 @@ try {
   assert.equal(done.cash, START_CASH + done.settlement.net, 'cash after settlement is the starting cash plus the net');
   await checkNoScroll(page, 'done');
   ok('plays Book through Settle and the cash adds up');
-  ok('the page never scrolls: in every phase at 1024x700 to 1920x1080 the board fills the window and the lot is fit clear of the strip and the panel');
+  ok('the page never scrolls: in every phase at 1024x700 to 1920x1080 the board fills the window, the lot is fit clear of the strip and the panel, and no panel or window scrolls');
   ok('in Build and Show the lot covers at least 30% of the window (35% at 1280x800 and 1440x900), the corner HUD covers at most 2% of it, and no plate scrolls');
 
   await page.reload();
@@ -217,6 +228,14 @@ try {
 
   // The career carries on: the done screen shows the Lot goal, and the next show offers two acts.
   assert.ok(await page.isVisible('.career'), 'the done screen shows the goal that unlocks the Club');
+  await page.click('[data-act="last-sheet"]');
+  assert.ok((await page.textContent('#win')).includes('SECTION B'), 'Last settlement reopens the signed sheet');
+  assert.equal(await page.locator('#win [data-act="accept"]').count(), 0, 'a signed sheet has nothing to sign');
+  await page.keyboard.press('Escape');
+  await page.click('[data-act="history"]');
+  assert.equal(await page.locator('#win .history li').count(), 1, 'the history window lists the show');
+  await page.keyboard.press('Escape');
+  ok('the Done sheet opens the last settlement and the show history in their own windows');
   await page.click('[data-act="next"]');
   const nextShow = await game(page);
   assert.equal(nextShow.phase, 'book');
@@ -224,7 +243,11 @@ try {
   assert.equal(await page.locator('.offer').count(), 2, 'one card per offer');
   assert.equal(nextShow.cash, done.cash, 'cash carries into the next show');
   assert.equal(nextShow.career.shows, 1);
-  ok('the next show offers two acts and carries the cash');
+  assert.equal(await page.locator('#panel .choice-text').count() <= 2, true, 'after the first show the deal explanations are gone, apart from a refusal note');
+  await page.click('[data-act="deal-help"]');
+  assert.ok((await page.textContent('#win')).includes('Offer a door deal'), 'the Deals window explains the deals');
+  await page.keyboard.press('Escape');
+  ok('the next show offers two acts and carries the cash, and the deals are explained one click away');
 
   // 3. Keyboard placement on the board.
   await openSaves(page2);
@@ -584,17 +607,27 @@ try {
 
   // The mode buttons start a new game, redraw the page at once and save it.
   const shownCash = async () => Number((await page4.textContent('#meter-cash')).replace(/[^\d]/g, ''));
-  for (const [mode, cash] of [['sandbox', SANDBOX_CASH], ['scenario', SCENARIO_CASH], ['career', START_CASH]]) {
+  const newGame = async (mode) => {
+    if (await page4.isHidden('#menu')) await page4.click('#menu-btn');
     await page4.click(`[data-act="mode"][data-mode="${mode}"]`);
+  };
+  for (const [mode, cash] of [['sandbox', SANDBOX_CASH], ['scenario', SCENARIO_CASH], ['career', START_CASH]]) {
+    await newGame(mode);
     assert.equal(await shownCash(), cash, `${mode} redraws the cash meter at once`);
     await page4.reload();
     await page4.waitForFunction(() => typeof window.render_game_to_text === 'function');
     assert.equal((await game(page4)).cash, cash, `${mode} is saved across a reload`);
   }
-  ok('the Career, Sandbox and Wet lot buttons redraw the page and save the new game');
+  // A game with progress asks before a mode button erases it.
+  await page4.click('[data-deal="guarantee"]');
+  await newGame('sandbox');
+  assert.equal((await game(page4)).phase, 'build', 'the first press on a game in progress changes nothing');
+  assert.match(await page4.textContent('[data-act="mode"][data-mode="sandbox"]'), /Press again/);
+  await page4.click('[data-act="mode"][data-mode="sandbox"]');
+  assert.equal((await game(page4)).cash, SANDBOX_CASH, 'the second press starts the new game');
+  ok('the Career, Sandbox and Wet lot buttons in the menu redraw the page and save the new game, and ask first when a game is under way');
 
   // Choosing a room redraws the Book panel with that room's acts and nights, so a deal books.
-  await page4.click('[data-act="mode"][data-mode="sandbox"]');
   const dealArtists = () => page4.locator('[data-act="deal"]').evaluateAll((els) => [...new Set(els.map((e) => e.dataset.artist))]);
   for (const venue of ['club', 'amphitheater', 'lot']) {
     await page4.click(`[data-act="venue"][data-venue="${venue}"]`);
@@ -609,12 +642,31 @@ try {
   assert.equal((await game(page4)).phase, 'build', 'a deal in the chosen room books');
   ok('choosing a room or the nights redraws the Book panel, and a deal there books');
 
+  const small = await browser.newContext({ viewport: { width: 1024, height: 700 }, reducedMotion: 'reduce' });
+  const { page: page6, failures: failures6 } = await open(small);
+  await page6.click('#menu-btn');
+  await page6.click('[data-act="mode"][data-mode="sandbox"]');
+  const sheetFits = async (what) => assert.deepEqual((await measureLayout(page6)).scrolling, [], `${what} fits at 1024x700 without scrolling`);
+  for (const venue of ['lot', 'club', 'amphitheater', 'festival']) {
+    await page6.click(`[data-act="venue"][data-venue="${venue}"]`);
+    await sheetFits(`Book at ${venue}`);
+    if (venue === 'amphitheater' || venue === 'festival') {
+      await page6.click('[data-act="deal"][data-deal="guarantee"]');
+      await page6.click('[data-act="starter"]');
+      await page6.click('[data-act="confirm-build"]');
+      await sheetFits(`Promote at ${venue}`);
+      await page6.click('[data-act="back"]');
+      await page6.click('[data-act="back"]');
+    }
+  }
+  ok('every room\'s Book sheet, and Promote with seats or a sponsor, fit at 1024x700 without scrolling');
+
   const lowContrast = await page.evaluate(() => {
     const rgb = (v) => (v.match(/[\d.]+/g) || []).map(Number);
     const lum = (c) => c.slice(0, 3).map((v) => v / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
       .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0);
     const bad = [];
-    for (const node of document.querySelectorAll('.lede, .eyebrow, .meta-label, .board-help, .tagline, .stats dt, .meters dt, .credit, figcaption, .readouts dt, .readouts small, .hint, .tile-key, .choice-effect')) {
+    for (const node of document.querySelectorAll('.lede, .eyebrow, .meta-label, .board-help, .tagline, .stats dt, .meters dt, .credit, figcaption, .readouts dt, .readouts small, .hint, .tile-key, .choice-effect, .choice-text, .result-line')) {
       if (!node.getClientRects().length) continue;
       let p = node; let bg;
       while (p) { const c = rgb(getComputedStyle(p).backgroundColor); if (c.length === 3 || c[3] === 1) { bg = c; break; } p = p.parentElement; }
@@ -627,10 +679,10 @@ try {
   assert.deepEqual(lowContrast, [], 'small text meets 4.5:1');
   ok('small text meets the 4.5:1 contrast ratio');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5], [], 'no page errors, console errors or failed requests');
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
-  await Promise.all([context, other, calm, phone, spritesCtx].map((c) => c.close()));
+  await Promise.all([context, other, calm, phone, spritesCtx, small].map((c) => c.close()));
 } finally {
   await browser.close();
   await server.close();

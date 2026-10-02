@@ -58,6 +58,7 @@ const el = {
   win: $('#win'),
   winTitle: $('#win-title'),
   winBody: $('#win-body'),
+  winFoot: $('#win-foot'),
 };
 
 const store = window.MixKitSave
@@ -159,6 +160,7 @@ function mount() {
   closeWindow({ focus: false });
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
+  if (state.phase === 'settle') openSettlement($('#open-settlement'));
   if (state.phase === 'show') startPlayback();
   else if (state.phase !== 'settle') endPlayback();
   queueLayout();
@@ -167,6 +169,7 @@ function mount() {
 // After a step the player chose, move focus to the new panel's heading so screen
 // readers announce where they are. Never steals focus on load.
 function focusHeading() {
+  if (!el.win.hidden) { el.winTitle.focus(); return; }
   const heading = el.panel.querySelector('h2');
   if (heading) heading.focus();
 }
@@ -179,16 +182,34 @@ function update() {
 // ---------------------------------------------------------------------------
 // Book
 
+// What each deal means. The Book sheet shows these under the deal buttons on the first show
+// only; after that they are one click away in the deals window (docs/HUD.md decision 10).
+const DEAL_HELP = {
+  guarantee: 'You pay the agreed amount before doors and keep every dollar after costs. The act is happy however the night goes.',
+  door: `The act takes ${Math.round(D.DOOR_SPLIT * 100)}% of ticket money after show costs, paid at settlement. Cheaper on a slow night, but an act that expected its ask remembers a small payout.`,
+  sponsor: `A sponsor pays ${money(D.SPONSOR_PAY)} up front and wants the ticket at the usual price. You still pay the act's ask, and broadcast pays on top if the grounds are big enough.`,
+};
+
+function dealHelpHtml() {
+  const spec = venueSpec(state.venue);
+  return `
+    <section><h3>Pay the guarantee</h3><p>${DEAL_HELP.guarantee}</p></section>
+    <section><h3>Offer a door deal</h3><p>${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.</p></section>
+    ${spec.sponsor ? `<section><h3>Take a sponsor</h3><p>${DEAL_HELP.sponsor}</p></section>` : ''}`;
+}
+
 function bookPanel() {
   const spec = venueSpec(state.venue);
   const offers = offersFor(state);
+  // The first show of a career (or the wet lot) teaches; Sandbox and later shows don't.
+  const teach = state.history.length === 0 && state.mode !== 'sandbox';
   const rooms = D.VENUE_ORDER.map((id) => {
     const v = D.VENUES[id];
     const open = id === 'lot' || state.mode === 'sandbox' || state.unlocks[id];
     const on = state.venue.id === id;
-    return `<button type="button" data-act="venue" data-venue="${id}" ${on ? 'class="primary"' : ''} ${open ? '' : 'disabled'}>${esc(v.name)}${open ? '' : ' (locked)'}</button>`;
+    return `<button type="button" data-act="venue" data-venue="${id}" ${on ? 'class="primary"' : ''} ${open ? '' : 'disabled'}>${esc(v.name)}${open ? '' : ' <small>(locked)</small>'}</button>`;
   }).join('');
-  const nights = spec.nights.length > 1 ? `<div class="row">${spec.nights.map((n) =>
+  const nights = spec.nights.length > 1 ? `<div class="row tight nights">${spec.nights.map((n) =>
     `<button type="button" data-act="nights" data-nights="${n}" ${(state.booking.nights || 1) === n ? 'class="primary"' : ''}>${n} night${n > 1 ? 's' : ''}</button>`).join('')}</div>` : '';
   const cards = offers.map((id) => {
     const a = artistFor(id);
@@ -197,50 +218,41 @@ function bookPanel() {
     const lo = Math.round(a.drawMin * t.drawMult);
     const hi = Math.round(a.drawMax * t.drawMult);
     const mood = rel >= D.LOT_GOAL.loyalAct ? 'trusts you' : rel > 0 ? 'likes working with you'
-      : rel === 0 ? 'has not worked with you yet' : rel > D.REL_DOOR_FLOOR ? 'remembers a small payout' : 'wants money up front';
+      : rel === 0 ? 'new to you' : rel > D.REL_DOOR_FLOOR ? 'remembers a short payout' : 'wants money up front';
     const doorNote = a.guaranteeOnly ? `${esc(a.name)} only plays for a guarantee.`
       : `${esc(a.name)} will only play for a guarantee after another short payout.`;
     const opener = spec.secondStage ? offers.find((oid) => oid !== id) : null;
     const extra = opener ? ` data-second="${opener}"` : '';
-    const sponsor = spec.sponsor ? `<button type="button" class="choice" data-act="deal" data-deal="sponsor" data-artist="${id}"${extra}>
-        <strong>Take a sponsor</strong>
-        <span class="cost">${money(D.SPONSOR_PAY)} up front, and you still pay the ${money(t.ask)} ask</span>
-        <span>The sponsor wants the ticket at the usual price. Broadcast pays on top if the grounds are big enough.</span>
-      </button>` : '';
+    const deal = (kind, title, cost, note, disabled = false) => `
+      <button type="button" class="choice" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled ? 'disabled' : ''}${extra}>
+        <span class="choice-head"><strong>${title}</strong> <span class="cost">${cost}</span></span>
+        ${note ? `<span class="choice-text">${note}</span>` : ''}
+      </button>`;
     return `
     <section class="card offer" aria-label="${esc(a.name)}">
-      <p class="eyebrow">Offer · relationship ${signed(rel)}, ${mood}</p>
+      <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
-      <p>${esc(a.genre)} · draws ${lo} to ${hi} people · usually plays at ${money(a.fairPrice)}</p>
-      <p class="lede">Their ask: a ${money(t.ask)} guarantee${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.</p>
+      <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
+      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.</p>
       ${opener ? `<p class="lede">The other stage opens with ${esc(artistFor(opener).name)}.</p>` : ''}
-      <button type="button" class="choice" data-act="deal" data-deal="guarantee" data-artist="${id}"${extra}>
-        <strong>Pay the guarantee</strong>
-        <span class="cost">${money(t.ask)}, paid before doors</span>
-        <span>You keep every dollar after costs, and the act is happy however the night goes.</span>
-      </button>
-      <button type="button" class="choice" data-act="deal" data-deal="door" data-artist="${id}" ${t.doorOk ? '' : 'disabled'}${extra}>
-        <strong>Offer a door deal</strong>
-        <span class="cost">${Math.round(D.DOOR_SPLIT * 100)}% of ticket money after show costs, paid at settlement</span>
-        <span>${t.doorOk ? `Cheaper on a slow night, but the act expected ${money(t.ask)} and will remember a small payout.` : doorNote}</span>
-      </button>
-      ${sponsor}
+      ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
+      ${deal('door', 'Door deal', `${Math.round(D.DOOR_SPLIT * 100)}% of the net`, !t.doorOk ? doorNote : teach ? `Cheaper on a slow night, but they expect ${money(t.ask)}.` : '', !t.doorOk)}
+      ${spec.sponsor ? deal('sponsor', 'Sponsor', `+${money(D.SPONSOR_PAY)}`, teach ? 'Paid up front; the ticket stays at the usual price.' : '') : ''}
     </section>`;
   }).join('');
-  const modes = state.history.length ? '' : `<div class="row">
-      <button type="button" data-act="mode" data-mode="career">Career</button>
-      <button type="button" data-act="mode" data-mode="sandbox">Sandbox</button>
-      <button type="button" data-act="mode" data-mode="scenario">Wet lot</button>
-    </div>`;
   return `
-    <p class="eyebrow">Show ${state.history.length + 1} · ${esc(spec.name)}</p>
-    <h2>Book the act</h2>
+    <div class="sheet-top">
+      <div>
+        <p class="eyebrow">Show ${state.history.length + 1} · ${esc(spec.name)}</p>
+        <h2>Book the act</h2>
+      </div>
+      <button type="button" class="info-btn" data-act="deal-help" aria-label="How the deals work">ⓘ Deals</button>
+    </div>
     <p id="msg" class="message" aria-live="polite"></p>
-    ${modes}
-    <div class="row">${rooms}</div>
+    <div class="rooms">${rooms}</div>
     ${nights}
-    <p class="lede">${state.history.length ? 'Two acts want this date. Pick one and a deal.' : 'Your first night. Two acts want the date; Sodium Arcade is the safe first booking.'}</p>
-    ${cards}`;
+    <p class="lede">${teach && spec.id === 'lot' ? 'Your first night. Two acts want the date; Sodium Arcade is the safe first booking.' : 'Two acts want this date. Pick one and a deal.'}</p>
+    <div class="offers">${cards}</div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -494,19 +506,25 @@ function promotePanel() {
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <h2>Promote the show</h2>
-    <p class="lede">Set the ticket price and the ads. The band's real draw stays hidden; the forecast shows the range.</p>
+    <p class="lede">Set the price and the ads. The forecast shows the likely range.</p>
     <p id="msg" class="message" aria-live="polite"></p>
-    <div class="slider">
-      <label for="price">${spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
-      <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" />
+    <div class="cols">
+      <div class="col">
+        <div class="slider">
+          <label for="price">${spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
+          <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" />
+        </div>
+        ${seats}
+        <fieldset><legend>Ad spend</legend>${sliders}</fieldset>
+      </div>
+      <div class="col">
+        <dl class="stats" id="promo-stats"></dl>
+        <figure>
+          <svg id="presale" class="chart" viewBox="0 0 280 96" role="img" aria-labelledby="presale-cap"></svg>
+          <figcaption id="presale-cap"></figcaption>
+        </figure>
+      </div>
     </div>
-    ${seats}
-    <fieldset><legend>Ad spend</legend>${sliders}</fieldset>
-    <dl class="stats" id="promo-stats"></dl>
-    <figure>
-      <svg id="presale" class="chart" viewBox="0 0 280 96" role="img" aria-labelledby="presale-cap"></svg>
-      <figcaption id="presale-cap"></figcaption>
-    </figure>
     <div class="actions">
       <button type="button" data-act="back">Back to the build</button>
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open the doors</button>
@@ -537,8 +555,7 @@ function updatePromote() {
     <div><dt>Buzz</dt><dd>×${buzz(p.ads).toFixed(2)}</dd></div>
     <div><dt>Ticket money</dt><dd>${money(f.low * p.price)} to ${money(f.high * p.price)}</dd></div>
     <div><dt>Ad spend</dt><dd>${money(adTotal(p.ads))}</dd></div>
-    <div><dt>Due before doors</dt><dd class="${short ? 'bad' : ''}">${money(upfront)}</dd></div>
-    <div><dt>Cash</dt><dd>${money(state.cash)}</dd></div>`;
+    <div><dt>Due before doors</dt><dd class="${short ? 'bad' : ''}">${money(upfront)}</dd></div>`;
   $('#confirm-promo').disabled = short;
   const doorOk = termsFor(state.booking.artistId, state.reputation.artists[state.booking.artistId]).doorOk;
   if (short) say(`This show needs ${money(upfront)} before doors and you have ${money(state.cash)}. Cut ads or rentals${state.booking.deal === 'guarantee' && doorOk ? ', or go back and offer a door deal' : ''}.`, 'error');
@@ -707,7 +724,9 @@ function respond(responseId) {
 // ---------------------------------------------------------------------------
 // Settle and done
 
-function sheetHtml(r, { signed: done }) {
+// The settlement sheet in three columns (revenue and the deal; costs; the crowd and what
+// carries over), with the stamp and the tip kept apart for the window's footer.
+function sheetParts(r, { signed: done }) {
   const a = artistFor(state.booking.artistId);
   const v = evaluateVenue(state.venue);
   const deal = state.booking.deal;
@@ -740,7 +759,7 @@ function sheetHtml(r, { signed: done }) {
   const tip = r.net < 0
     ? 'The night lost money. Try a door deal, a different ticket price, or fewer rentals.'
     : TIPS[r.weakest];
-  return `
+  const head = `
     <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${clock(1)} CURFEW</span></div>
     <div class="meta-strip">
       <div><span class="meta-label">Headliner</span><span class="meta-val">${esc(a.name)}</span></div>
@@ -748,7 +767,8 @@ function sheetHtml(r, { signed: done }) {
       <div><span class="meta-label">Deal</span><span class="meta-val hl">${deal === 'door' ? `Door (${Math.round(D.DOOR_SPLIT * 100)}%)` : deal === 'sponsor' ? 'Sponsor' : 'Guarantee'}</span></div>
       <div><span class="meta-label">Attendance</span><span class="meta-val">${r.attendance} / ${v.capacity}</span></div>
       <div><span class="meta-label">Satisfaction</span><span class="meta-val score">${r.satisfaction}/100</span></div>
-    </div>
+    </div>`;
+  const revenue = `
     <div class="ledger">
       <div class="ledger-title">SECTION A · GROSS REVENUE</div>
       <table>
@@ -763,7 +783,8 @@ function sheetHtml(r, { signed: done }) {
         </tbody>
         <tfoot><tr><td colspan="2">Total revenue</td><td class="num pos">${money(r.ticketGross + r.bar + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0))}</td></tr></tfoot>
       </table>
-    </div>
+    </div>`;
+  const costs = `
     <div class="ledger">
       <div class="ledger-title">SECTION B · PRODUCTION AND SITE COSTS</div>
       <table>
@@ -771,17 +792,20 @@ function sheetHtml(r, { signed: done }) {
         <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr><td>${esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
         <tfoot><tr><td colspan="2">Total show costs</td>${cost(r.costs.total)}</tr></tfoot>
       </table>
-    </div>
+    </div>`;
+  const dealPart = `
     <div class="calc">
       <div class="ledger-title" style="padding:0;background:none;border:0">SECTION C · DEAL</div>
       ${split}
-    </div>
+    </div>`;
+  const payouts = `
     <div class="payouts">
       <div class="payout artist"><span class="meta-label">Artist payout</span><span class="amount">${money(r.artistPay)}</span>
         <p>${r.artistPay >= quotedAsk() ? 'Paid in full. The act leaves happy.' : `They expected ${money(quotedAsk())}.`}</p></div>
       <div class="payout promoter ${r.net < 0 ? 'loss' : ''}"><span class="meta-label">Promoter net</span><span class="amount">${money(r.net)}</span>
         <p>Revenue after every cost and the artist.</p></div>
-    </div>
+    </div>`;
+  const crowd = `
     <div>
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
       <div class="meters-sat">${parts}</div>
@@ -790,20 +814,41 @@ function sheetHtml(r, { signed: done }) {
       <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
       <div class="outcome"><span class="meta-label">Band relationship</span><span class="stat ${r.relDelta >= 0 ? 'pos' : 'neg'}">${signed(r.relDelta)}</span></div>
       <div class="outcome"><span class="meta-label">Cash on hand</span><span class="stat">${money(cashAfter)}</span><p class="lede">Started at ${money(cashBefore)}</p></div>
-    </div>
-    <div class="stamp-wrap">
+    </div>`;
+  return {
+    body: `${head}
+      <div class="sheet-cols">
+        <div class="sheet-col">${revenue}${dealPart}</div>
+        <div class="sheet-col">${costs}</div>
+        <div class="sheet-col">${payouts}${crowd}</div>
+      </div>`,
+    foot: `
       <span class="stamp ${pass ? 'pass' : 'retry'}">${pass ? 'Show settled' : 'Retry'}<small>${pass ? 'In the black, crowd happy' : r.net < 0 ? 'Net negative' : 'Crowd below 60'}</small></span>
-    </div>
-    <p class="tip"><strong>${pass ? 'For next time:' : 'Why it missed:'}</strong> ${esc(tip)}</p>`;
+      <p class="tip"><strong>${pass ? 'For next time:' : 'Why it missed:'}</strong> ${esc(tip)}</p>`,
+  };
 }
 
+// The settlement window: the sheet, with the stamp, the tip and the signature in its footer
+// (docs/HUD.md decision 9). Signed, it is the read-only copy the Done screen reopens.
+function openSettlement(opener, { signed: done = false } = {}) {
+  const r = settlementFor(state);
+  if (!r) return;
+  const { body, foot } = sheetParts(r, { signed: done });
+  openWindow('settlement', done ? 'Last settlement' : 'Settlement', body, opener, {
+    wide: true,
+    foot: `${foot}${done ? '' : '<button type="button" class="primary" data-act="accept">Sign the settlement</button>'}`,
+  });
+}
+
+// The Settle sheet is a short summary; the sheet itself opens in its own window.
 function settlePanel() {
   const r = settlementFor(state);
   return `
+    <p class="eyebrow">Curfew · ${esc(venueSpec(state.venue).name)}</p>
     <h2>Settlement</h2>
     <p id="msg" class="message" aria-live="polite"></p>
-    ${sheetHtml(r, { signed: false })}
-    <div class="actions"><button type="button" class="primary" data-act="accept">Sign the settlement</button></div>`;
+    <p class="lede">${r.attendance} people came. The promoter's net is <strong class="${r.net < 0 ? 'neg' : 'pos'}">${money(r.net)}</strong>.</p>
+    <div class="actions"><button type="button" class="primary" data-act="open-settlement" id="open-settlement">Open the settlement</button></div>`;
 }
 
 function careerHtml() {
@@ -849,11 +894,10 @@ function donePanel() {
   const r = settlementFor(state);
   const pass = last && last.result === 'pass';
   const p = careerProgress(state);
-  const history = state.history.slice().reverse().map((h) =>
-    `<li>Show ${h.showId}${h.night > 1 ? ` night ${h.night}` : ''}: ${h.deal === 'door' ? 'door deal' : h.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${D.VENUES[h.venueId] ? D.VENUES[h.venueId].name : 'Oak St. Lot'} · ${h.attendance} people · ${money(h.net)} · ${h.result === 'pass' ? 'pass' : 'retry'}</li>`).join('');
   const next = p.canAffordAShow
     ? '<button type="button" class="primary" data-act="next">Book the next show</button>'
     : `<button type="button" class="primary" disabled>Book the next show</button>`;
+  const result = last ? `Show ${last.showId}${last.night > 1 ? ` night ${last.night}` : ''}: ${last.deal === 'door' ? 'door deal' : last.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${last.attendance} people · net ${money(last.net)} · ${last.result === 'pass' ? 'pass' : 'retry'}` : '';
   return `
     <h2>${pass ? `A good night at ${esc(venueSpec(state.venue).name)}` : 'A rough night'}</h2>
     <p id="msg" class="message" aria-live="polite"></p>
@@ -866,8 +910,16 @@ function donePanel() {
       <button type="button" data-act="retry">Start over</button>${next}
     </div>
     ${careerHtml()}
-    ${r ? sheetHtml(r, { signed: true }) : ''}
-    <details><summary>Show history (${state.history.length})</summary><ul class="history">${history}</ul></details>`;
+    ${result ? `<p class="result-line">${esc(result)}</p>` : ''}
+    <div class="row tight">
+      <button type="button" data-act="last-sheet" ${r ? '' : 'disabled'}>Last settlement</button>
+      <button type="button" data-act="history">Show history (${state.history.length})</button>
+    </div>`;
+}
+
+function historyHtml() {
+  return `<ul class="history">${state.history.slice().reverse().map((h) =>
+    `<li>Show ${h.showId}${h.night > 1 ? ` night ${h.night}` : ''}: ${h.deal === 'door' ? 'door deal' : h.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${D.VENUES[h.venueId] ? D.VENUES[h.venueId].name : 'Oak St. Lot'} · ${h.attendance} people · ${money(h.net)} · ${h.result === 'pass' ? 'pass' : 'retry'}</li>`).join('')}</ul>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -1141,14 +1193,27 @@ function onAct(e) {
     if (button) button.focus();
   }
   else if (a === 'mode') {
+    // A new game erases this one, so a game with any progress asks for a second press.
     const mode = target.dataset.mode;
+    if ((state.history.length || state.phase !== 'book') && ui.confirmMode !== mode) {
+      resetModeButtons();
+      ui.confirmMode = mode;
+      target.textContent = 'Press again to erase this game';
+      return;
+    }
+    resetModeButtons();
     state = mode === 'career' ? createGame(state.seed) : createGame(state.seed, { mode, scenario: 'wet-lot' });
     ui.mounted = null;
     persist();
     render();
+    setMenu(false);
   }
   else if (a === 'rotate') rotate();
   else if (a === 'lot-details') openWindow('lot', 'Lot details', lotDetailsHtml(), target);
+  else if (a === 'deal-help') openWindow('deals', 'How the deals work', dealHelpHtml(), target);
+  else if (a === 'open-settlement') openSettlement(target);
+  else if (a === 'last-sheet') openSettlement(target, { signed: true });
+  else if (a === 'history') openWindow('history', `Show history (${state.history.length})`, historyHtml(), target, { scrolls: true });
   else if (a === 'bulldoze') toggleBulldoze();
   else if (a === 'fence') {
     const i = state.venue.objects.findIndex((o) => o.type === 'fence');
@@ -1209,15 +1274,20 @@ function pickTool(type) {
 
 const win = { kind: null, opener: null };
 
-function openWindow(kind, title, html, opener) {
+// wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
+function openWindow(kind, title, html, opener, { foot = '', wide = false, scrolls = false } = {}) {
   setMenu(false, { focus: false });
   win.kind = kind;
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
+  el.winFoot.innerHTML = foot;
+  el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
+  el.win.classList.toggle('wide', wide);
+  el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
-  el.win.querySelector('[data-win="close"]').focus();
+  (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
 // Redraws an open window after a change, keeping focus on the same control when it remains.
@@ -1236,6 +1306,7 @@ function closeWindow({ focus = true } = {}) {
   el.win.hidden = true;
   win.kind = null;
   el.winBody.innerHTML = '';
+  el.winFoot.innerHTML = '';
   if (focus && win.opener && document.contains(win.opener)) win.opener.focus();
   win.opener = null;
 }
@@ -1243,8 +1314,14 @@ function closeWindow({ focus = true } = {}) {
 // ---------------------------------------------------------------------------
 // The menu: full screen, the source link, the keys, save and load, the credit.
 
+function resetModeButtons() {
+  ui.confirmMode = null;
+  el.menu.querySelectorAll('[data-act="mode"]').forEach((b) => { b.textContent = b.dataset.label; });
+}
+
 function setMenu(open, { focus = true } = {}) {
   if (open === !el.menu.hidden) return;
+  if (!open) resetModeButtons();
   el.menu.hidden = !open;
   el.menuBtn.setAttribute('aria-expanded', String(open));
   if (!focus) return;
@@ -1253,6 +1330,8 @@ function setMenu(open, { focus = true } = {}) {
 }
 
 el.menuBtn.addEventListener('click', () => setMenu(el.menu.hidden));
+el.menu.addEventListener('click', onAct);
+$('#mode-note').textContent = `Career climbs from the ${D.VENUES.lot.name}. Sandbox opens every room with ${money(D.SANDBOX_CASH)}. Wet lot: rain is coming, the suggested layout is set, and you have ${money(D.SCENARIO_CASH)}.`;
 $('#menu-close').addEventListener('click', () => setMenu(false));
 const typing = (target) => !!target.closest('textarea, select, input:not([type="radio"]):not([type="checkbox"]):not([type="button"])');
 document.addEventListener('keydown', (e) => {
