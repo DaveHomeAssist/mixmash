@@ -783,7 +783,7 @@ try {
   ok('the phone doors choice and settlement fit in the existing tabs without scrolling');
 
   // Review refinements: stable sheet controls, incident priority and equipment location.
-  const review = await browser.newContext({ viewport: { width: 375, height: 812 }, reducedMotion: 'reduce', hasTouch: true });
+  const review = await browser.newContext({ viewport: { width: 375, height: 812 }, reducedMotion: 'reduce', hasTouch: true, isMobile: true });
   const { page: hud, failures: reviewFailures } = await open(review);
   assert.equal(await hud.getAttribute('html', 'data-theme'), 'light', 'controls default to light');
   await hud.click('#menu-btn');
