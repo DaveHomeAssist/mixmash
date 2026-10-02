@@ -50,6 +50,11 @@ export const BAR_RATIO = 125;
 export const RESTROOM_RATIO = 40;
 export const GATE_RATE = 5; // people per minute per gate
 export const DOORS_MINUTES = 60;
+// Opt-in Lot doors experiment only. These are trial values, not new balance defaults.
+export const LOT_PILOT_RUSH_MINUTES = 18;
+export const LOT_PILOT_WALKUP_LOSS = 0.2; // share of a rush queue that turns away without a ticket
+export const LOT_PILOT_GATE_MULT = 1.5; // existing gate works faster with the reassigned worker
+export const LOT_PILOT_BAR_CAPACITY_LOSS = 0.5; // half of one bar's service capacity
 
 // Money (R-10 to R-15)
 export const BAR_NET_PER_HEAD = 6;
