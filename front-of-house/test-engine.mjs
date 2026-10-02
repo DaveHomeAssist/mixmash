@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
-  applyAction, buzz, careerProgress, cheapestShowCost, createGame, evaluateShow, evaluateVenue, forecast, migrateSave,
+  applyAction, buzz, careerProgress, cheapestShowCost, createGame, doorRushPilot, evaluateShow, evaluateVenue, forecast, migrateSave,
   nextSeed, nextShowCost, normalizeState, offersFor, termsFor,
   presaleSplit, priceFactor, rollShow, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
@@ -192,6 +192,62 @@ test('a full show runs from Book to Settle and the cash adds up', () => {
   assert.deepEqual(settlementFor(done), sheet, 'the signed sheet replays exactly, even though reputation changed');
   const again = run(builtGame(seed, 'guarantee'), [{ type: 'confirmPromotion' }, { type: 'respond', responseId }, { type: 'acceptSettlement', at: '2026-10-01T00:00:00.000Z' }]);
   assert.deepEqual(again, done, 'the same seed and choices give the same game');
+});
+
+test('Lot doors experiment: the choice survives reload and settles exactly once', () => {
+  const seed = 4;
+  const start = builtGame(seed, 'guarantee');
+  const ordinary = run(start, [{ type: 'confirmPromotion' }]);
+  const pending = run(start, [{ type: 'confirmPromotion', pilot: true }]);
+  assert.equal(Object.hasOwn(ordinary.show, 'pilotCrew'), false, 'ordinary shows do not gain a new prompt');
+  assert.equal(pending.show.pilotCrew, null);
+  const responseId = D.INCIDENTS[pending.show.incidentId].responses[0].id;
+  assert.match(applyAction(pending, { type: 'respond', responseId }).error, /doors crew works first/);
+  const restoredPending = normalizeState(JSON.parse(JSON.stringify(pending)), seed);
+  assert.equal(restoredPending.show.pilotCrew, null, 'loading during the question does not answer it');
+  const chosen = run(restoredPending, [{ type: 'chooseDoorCrew', choice: 'gate' }]);
+  assert.equal(normalizeState(chosen, seed).show.pilotCrew, 'gate', 'the answer survives reload');
+  assert.match(applyAction(chosen, { type: 'chooseDoorCrew', choice: 'bar' }).error, /no doors choice/);
+  const settled = run(normalizeState(chosen, seed), [{ type: 'respond', responseId }]);
+  const result = settlementFor(settled);
+  const finished = run(settled, [{ type: 'acceptSettlement' }]);
+  assert.equal(finished.cash, D.START_CASH + result.net);
+  assert.equal(finished.history.length, 1);
+  assert.equal(normalizeState(finished, seed).show.pilotCrew, 'gate', 'the signed sheet keeps the chosen conditions');
+  assert.deepEqual(settlementFor(normalizeState(finished, seed)), result);
+  assert.match(applyAction(finished, { type: 'acceptSettlement' }).error, /settle/);
+  assert.equal(result.costs.staff, settlementFor(run(ordinary, [{ type: 'respond', responseId }])).costs.staff);
+});
+
+test('Lot doors experiment: queue totals reconcile and neither staffing choice dominates net', () => {
+  const venue = evaluateVenue({ id: 'lot', grid: D.GRID, objects: D.STARTER_LAYOUT });
+  const low = doorRushPilot(venue, 50, 25, 'bar');
+  assert.equal(low.waiting, 0);
+  assert.equal(low.admitted + low.lostWalkups, low.rushArrivals);
+  let keepWins = 0;
+  let gateWins = 0;
+  for (let seed = 1; seed <= 150; seed += 1) {
+    const roll = rollShow(seed);
+    const inputs = {
+      venue, deal: 'guarantee', price: 20, ads: REFERENCE_ADS, venueRep: 0, draw: roll.draw,
+      artistId: D.DEFAULT_ARTIST, incidentId: roll.incidentId,
+      responseId: D.INCIDENTS[roll.incidentId].responses[0].id,
+    };
+    const keep = evaluateShow({ ...inputs, pilotCrew: 'bar' });
+    const gate = evaluateShow({ ...inputs, pilotCrew: 'gate' });
+    for (const r of [keep, gate]) {
+      assert.equal(r.doorRush.admitted + r.doorRush.lostWalkups, r.doorRush.rushArrivals);
+      assert.ok(r.attendance >= r.presale, 'only walk-ups may leave, never ticket holders');
+      assert.equal(r.attendance, r.doorRush.admitted);
+      assert.equal(r.costs.staff, evaluateShow(inputs).costs.staff, 'reassignment does not hire a worker');
+    }
+    assert.ok(gate.doorRush.waiting <= keep.doorRush.waiting);
+    assert.ok(gate.doorRush.barCapacity < keep.doorRush.barCapacity);
+    if (gate.net > keep.net) gateWins += 1;
+    if (keep.net > gate.net) keepWins += 1;
+  }
+  assert.ok(keepWins >= 30 && gateWins >= 30,
+    `both strategies need plausible winning nights; keep=${keepWins}, gate=${gateWins}`);
 });
 
 test('forecast brackets the real attendance without revealing the draw', () => {
