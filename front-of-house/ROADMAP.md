@@ -16,7 +16,22 @@ The phases from the first document to the last career tier. Each phase ships as 
 | 4. A Lot career | Three acts, relationships, the Club unlock | [#25](https://github.com/DaveHomeAssist/mixmash/pull/25) |
 | 5 to 7, plus modes | Fathom Hall, Loam Shell, Split Acre, Sandbox, wet lot. One pass, schema stays 2 | Pushed to `gh-pages` directly (`40da936`) |
 
-## Next: Phase 5, the Club
+## Software spec v0.1 reconciliation (proposal)
+
+`Front-of-House-Software-Spec-v0.1.md` is an imported design proposal, not a new release plan or an accepted decision. This repository and [DECISIONS.md](docs/DECISIONS.md) remain authoritative. Its phrase "first playable = M1 + M2" means a proposed *expanded live-show slice*: the existing Lot Night first playable shipped in [#22](https://github.com/DaveHomeAssist/mixmash/pull/22). Public release still waits on Dave's playtest sign-off.
+
+| Draft milestone | Repository reconciliation | Status |
+| --- | --- | --- |
+| M0 baseline | The rules, current save version, renderer, venues and HUD are documented here and in `SAVE_FORMAT.md`. | Existing; review again before any new engine work |
+| M1 owned assets, ledger, calendar | Layouts carry across shows but gear is rented each night; cash is whole dollars and no transaction ledger or calendar exists. [Proposed transition rules](docs/SAVE_FORMAT.md#proposed-next-save-and-economy-transition) do not authorize a change. | Proposal, pending economy and ownership decisions |
+| M2 complete playable night | The current show has one seeded incident. Try the opt-in Lot doors staffing slice described in [FUTURE.md](docs/FUTURE.md#lot-live-show-experiment-proposal), then collect player feedback. | Experiment; not a new first playable release |
+| M3 venue workspace and growth | HUD steps 1 to 5 and four venue rooms are built. HUD performance is step 6 and the minimap is deferred step 7; land purchases, 64 × 64 maps and power zones are unapproved. | Partly shipped, partly proposed |
+| M4 careers and competition | Artist tiers, travel, charts, rentals, rivals and holidays need separate scope and rules after the small show and economy tests. | Proposal |
+| M5 broader campaign | The room ladder, Sandbox and the wet-lot scenario are playable; multi-city and larger maps are not. CT-DEC-10 and CT-DEC-11 remain Proposed despite their code. | Partly shipped, partly proposed |
+
+The accepted HUD is [CT-DEC-12](docs/DECISIONS.md#ct-dec-12-hud-layout): Build tools in the bottom-left corner, forms in right-side sheets, settlement in its own window, no page or panel scrolling at 1024 × 700 and up except the history window, and phone tabs in a bottom sheet. The draft's bottom build tray does not supersede this layout. New show controls must fit the existing corner card and phone tab without scrolling. First test whether another meaningful choice improves a Lot night. Only then decide on a full clock, venue purchases, or a larger crowd simulation.
+
+## Phase 5: the Club (original scope, partly outstanding)
 
 Shipped in the same pass as Phases 6 and 7. See CT-DEC-11. The Club is a grid with a house PA. The Lot stays bookable. What that pass does not include (a ticketing platform, a real slope, new simulator verdicts, four venue art looks) is listed in the decision.
 

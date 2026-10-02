@@ -463,6 +463,20 @@ export function findResponse(incidentId, responseId) {
   return incident ? incident.responses.find((r) => r.id === responseId) || null : null;
 }
 
+// Opt-in Lot experiment: one existing bar worker covers an extra gate during the rush.
+// The aggregate queue is a short rush snapshot, not individual crowd pathfinding.
+export function doorRushPilot(venue, attendance, presale, choice) {
+  if (choice !== 'bar' && choice !== 'gate') return null;
+  const rushCapacity = venue.gates * (choice === 'gate' ? D.LOT_PILOT_GATE_MULT : 1) * D.GATE_RATE * D.LOT_PILOT_RUSH_MINUTES;
+  const waiting = Math.max(0, attendance - rushCapacity);
+  const lostWalkups = Math.min(Math.max(0, attendance - presale), Math.floor(waiting * D.LOT_PILOT_WALKUP_LOSS));
+  return {
+    choice, rushArrivals: attendance, rushAdmitted: Math.min(attendance, rushCapacity), waiting,
+    lostWalkups, admitted: attendance - lostWalkups,
+    barCapacity: Math.max(0, venue.bars * D.BAR_RATIO - (choice === 'gate' ? Math.ceil(D.BAR_RATIO * D.LOT_PILOT_BAR_CAPACITY_LOSS) : 0)),
+  };
+}
+
 // inputs: { venue (evaluateVenue stats), deal, price, ads, venueRep, draw, artistId,
 //           incidentId, responseId }. A missing incidentId means nothing went wrong.
 export function evaluateShow(inputs) {
@@ -476,7 +490,9 @@ export function evaluateShow(inputs) {
   const dem = demand({ draw: inputs.draw * drawMult, price: inputs.price, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
   const { share, presale, walkup } = presaleSplit(dem, bz, v.capacity);
   const walkupAfterIncident = Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
-  const attendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
+  const plannedAttendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
+  const doorRush = doorRushPilot(v, plannedAttendance, presale, inputs.pilotCrew);
+  const attendance = doorRush ? doorRush.admitted : plannedAttendance;
   const seatPrice = isInt(inputs.seatPrice) ? inputs.seatPrice : inputs.price;
   const seated = v.seats ? Math.min(v.seats, attendance) : 0;
   const ticketGross = seated * seatPrice + (attendance - seated) * inputs.price;
@@ -484,8 +500,9 @@ export function evaluateShow(inputs) {
   const parts = {
     sound: v.paTier ? per(D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
     sightlines: per(v.clearTiles * (v.density || D.FLOOR_DENSITY)),
-    amenities: (per(v.bars * D.BAR_RATIO) + per(v.restrooms * D.RESTROOM_RATIO)) / 2,
-    flow: per(v.gates * D.GATE_RATE * D.DOORS_MINUTES) * (response && response.flowMult !== undefined ? response.flowMult : 1),
+    amenities: (per(doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + per(v.restrooms * D.RESTROOM_RATIO)) / 2,
+    flow: (doorRush ? (doorRush.rushArrivals ? doorRush.rushAdmitted / doorRush.rushArrivals : 1)
+      : per(v.gates * D.GATE_RATE * D.DOORS_MINUTES)) * (response && response.flowMult !== undefined ? response.flowMult : 1),
     incident: inputs.incidentId ? (response ? response.score : 0) : 1,
   };
   const weights = { sound: D.W_SOUND, sightlines: D.W_SIGHT, amenities: D.W_AMENITY, flow: D.W_FLOW, incident: D.W_INCIDENT };
@@ -494,7 +511,7 @@ export function evaluateShow(inputs) {
     (weights[k] * (1 - parts[k]) > weights[worst] * (1 - parts[worst]) ? k : worst), 'sound');
 
   // R-10, R-13, R-14, R-15
-  const served = Math.min(attendance, v.bars * D.BAR_RATIO);
+  const served = Math.min(attendance, doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO);
   const bar = Math.round(D.BAR_NET_PER_HEAD * (satisfaction / 100)
     * (served + (attendance - served) * D.BAR_SHORTFALL));
   const adSpend = D.AD_CHANNELS.reduce((s, c) => s + ((inputs.ads && inputs.ads[c]) || 0), 0);
@@ -528,7 +545,7 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
-    sponsor, broadcast, seated, seatPrice,
+    sponsor, broadcast, seated, seatPrice, doorRush,
   };
 }
 
@@ -550,6 +567,7 @@ function showInputs(state, venueStats, withIncident) {
     broadcast: !!(venueStats && venueStats.broadcast),
     incidentId: withIncident && state.show ? state.show.incidentId : null,
     responseId: withIncident && state.show ? state.show.responseId : null,
+    pilotCrew: state.show && state.venue.id === 'lot' ? state.show.pilotCrew : undefined,
   };
 }
 
@@ -782,11 +800,21 @@ export function applyAction(state, action) {
       s.promotion.confirmed = true;
       const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, 1);
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
+      const v = evaluateVenue(s.venue);
+      if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
       s.phase = 'show';
+      return { state: s, error: null };
+    }
+    case 'chooseDoorCrew': {
+      if ((err = need('show'))) return fail(state, err);
+      if (!s.show || s.show.pilotCrew !== null) return fail(state, 'There is no doors choice to make');
+      if (action.choice !== 'bar' && action.choice !== 'gate') return fail(state, 'Choose bar service or admission');
+      s.show.pilotCrew = action.choice;
       return { state: s, error: null };
     }
     case 'respond': {
       if ((err = need('show'))) return fail(state, err);
+      if (s.show && s.show.pilotCrew === null) return fail(state, 'Choose where the doors crew works first');
       const response = findResponse(s.show.incidentId, action.responseId);
       if (!response) return fail(state, 'That response does not fit this incident');
       if (response.cost > s.cash) return fail(state, `${response.label} costs $${response.cost}; you have $${s.cash}`);
@@ -1035,6 +1063,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
       repHold: intOr(raw.show.repHold, 0),
       relHold: intOr(raw.show.relHold, 0),
     };
+    if (s.venue.id === 'lot' && s.venue.objects.some((o) => o.type === 'bar')
+      && Object.prototype.hasOwnProperty.call(raw.show, 'pilotCrew')) {
+      s.show.pilotCrew = raw.show.pilotCrew === 'bar' || raw.show.pilotCrew === 'gate' ? raw.show.pilotCrew : null;
+    }
   }
 
   let i = PHASES.indexOf(PHASES.includes(raw.phase) ? raw.phase : 'book');

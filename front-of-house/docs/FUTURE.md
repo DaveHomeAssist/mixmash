@@ -1,6 +1,6 @@
 # Front of House: the feature plan
 
-**Status:** The rooms in Phases 5 to 7, plus Sandbox and the wet-lot scenario, are in the tree as of 2026-10-01 ([CT-DEC-11](DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). The public-release gates below still stand: `noindex` stays, and there is no hub card, until Dave signs off the first playable. CT-DEC-10 is still Proposed. The Lot's numbers were not retuned.
+**Status:** The rooms in Phases 5 to 7, plus Sandbox and the wet-lot scenario, are in the tree as of 2026-10-01 ([CT-DEC-11](DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). The public-release gates below still stand: `noindex` stays, and there is no hub card, until Dave signs off the first playable. CT-DEC-10 is still Proposed. The Lot was retuned for 50 to 150 people in Phase 3. The phase text below predates the playable rooms and remains historical scope, not fresh implementation authority.
 
 This document owns the order of features after the Lot career. The design of each system stays in [`GDD.md`](GDD.md). The accepted choices stay in [`DECISIONS.md`](DECISIONS.md). What already shipped is in [`progress.md`](../progress.md).
 
@@ -24,9 +24,24 @@ The page is live at `mixmash.games/front-of-house/` and still `noindex`, with no
 - The crowd stays a density field, not individual people ([CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art)).
 - Old saves keep playing. A phase that cannot be expressed as optional fields bumps the schema and writes the migration in [`SAVE_FORMAT.md`](SAVE_FORMAT.md) first.
 
-## Gates before the Club
+## Lot live-show experiment (proposal)
 
-Do these before Phase 5 starts. They are smaller than a new venue, and the Club's tuning depends on them.
+The imported software spec v0.1 remains a proposal. Its M2 target is a *next gameplay test*, not the Lot Night first playable that already shipped. The initial experiment uses the existing 24 × 16 Lot, existing show length, seeded incident and accepted corner HUD. It is opt-in with `?night-slice=1`; normal careers and saved shows keep the present behavior. It asks one additional, reversible staffing question at doors: keep a bar worker serving or move that worker to admission for the rush. The gate choice should shorten the modeled initial queue and reduce bar throughput. Both outcomes must be shown on the settlement and use the same seed, other costs, and contract terms. A saved choice resumes with the same outcome. This experiment does not introduce purchased gear, deposits, calendar time, new venues or a long show.
+
+**Checks before asking for a larger simulation:**
+
+1. Compare at least three repeated Lot nights in normal and opt-in play, including the same seed and layout with each staff choice. Count interruptions and when the player acts. Check whether players can describe the queue-versus-bar trade-off before seeing the sheet.
+2. Ask players whether each night had idle stretches, whether either prompt interrupted something enjoyable, and whether they would choose differently next time. Record reasons and confusing text, not only an average rating. The present 12-second playback cannot validate the draft's proposed 6 to 10 minutes.
+3. Run deterministic engine cases that show the two choices change queue pressure and bar capacity without changing total hired staff or charging twice. Browser smoke must cover reload during the new question, the two answers, keyboard focus, and no scrolling on desktop and phone. Preserve the existing first playable and balance baselines when the experiment is off.
+4. If the second prompt adds only busywork or produces an obvious best answer, revise it or remove it. Choose any third interaction only after this result. A staged queue and representative crowd are enough for this question; pathfinding, 64 × 64 maps and a new clock do not follow from it.
+
+## Economy and world proposals from spec v0.1
+
+Purchasing equipment, a ledger, a booking calendar, power zones, travel, charts, rivals and holidays remain separately proposed. [SAVE_FORMAT.md](SAVE_FORMAT.md#proposed-next-save-and-economy-transition) records the compatibility contract for evaluating ownership and accounting. The original milestone order does not replace the shipped roadmap. Resolve the deal basis, asset tenure, calendar pacing and each release gate before their affected system is implemented; keep CT-DEC-10 and CT-DEC-11 Proposed until Dave changes them.
+
+## Gates for public sign-off and further Club work
+
+These gates were written before Phase 5 shipped. They still matter for public sign-off and the missing Club mechanics, but they do not mean the playable Club has yet to be built.
 
 | Gate | Why it blocks |
 | --- | --- |
@@ -37,9 +52,9 @@ Do these before Phase 5 starts. They are smaller than a new venue, and the Club'
 
 ## Phase 5: the Club
 
-Tier 2. Indoor, 150 to 600 people. Unlocked by the Lot goal. This is the next build.
+Tier 2. Indoor, 150 to 600 people. Unlocked by the Lot goal. This section records the original scope; the playable room exists, while its ticketing and tier-specific balance verification are still missing.
 
-**Decide before any Club code:**
+**Resolve before adding the missing Club mechanics:**
 
 1. **The room.** A fixed floor plan the player dresses, or a grid like the Lot. A fixed room makes the house rig readable and cuts placement bugs. A grid keeps the builder the player already learned. Pick one. Do not ship both.
 2. **The Lot after the unlock.** The career moves to the Club and the Lot becomes a memory, or the player can still book a Lot show. If the Lot stays, the offers, the permit and the goal must not reset.

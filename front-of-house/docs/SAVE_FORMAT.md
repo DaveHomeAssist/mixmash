@@ -84,6 +84,33 @@ Tests: the frozen version 1 fixture migrates to the expected state; a version 1 
 - Autosave when each phase ends, and after each settlement.
 - No autosave during the 2-minute show night playback. Reloading during a show resumes at the start of show night, with the same seed and the same incident.
 
+## Proposed next save and economy transition
+
+**Status: proposal only.** These rules describe how to evaluate owned equipment, an append-only ledger and a dated show model from software spec v0.1. None of them is implemented or an accepted change to schema 2. Do not increase `SCHEMA_VERSION`, create a ledger from historical totals, or charge for existing layouts in order to satisfy this draft. [ROADMAP.md](../ROADMAP.md#software-spec-v01-reconciliation-proposal) tracks the design status.
+
+### Ownership and existing layouts
+
+- Keep venue tenure, placed layout and equipment ownership separate. The current `venue.objects` and `layouts` are positions, not a purchase record. A placed PA, lights, bar, restroom or fence remains rented for each new show under the existing rules until the player explicitly buys it under a new rule. A house rig remains included with its venue, never player inventory.
+- Proposed purchased inventory uses a stable asset ID and definition ID, paid-once purchase amount, current venue and condition only if condition has gameplay. A placed instance refers to that asset ID; a hired instance refers to a show hire. Moving a purchased asset changes location without a second purchase or a second copy. Selling removes its ownership once and records a single cash movement. The player can still hire gear.
+- Migrate every old layout, including saved alternate rooms, without granting or billing ownership. Preserve placement and current show rentals at their agreed amounts. No asset purchase is inferred from earlier rental payments. Any per-show rental exclusion for owned gear starts after an explicit purchase and must be visible before the next show.
+
+### Ledger and contract arithmetic
+
+- For a proposed schema 3, represent new cash entries as integer cents with unique event IDs, show and venue references, and separate commitment records for unpaid obligations. A committed amount is never counted as paid cash. An action with an already recorded event ID has no second cash effect. Define one explicit cash-opening entry equal to the migrated schema 2 `cash * 100`; keep old `history` as archived settled results, not fabricated itemized transactions.
+- For each new action, `cash in cents = the opening-balance entry + sum of later posted cash entries`. The opening entry is counted once, never included again in the later-entry sum. Show operating result excludes asset purchases and recoverable deposits; show expenses are attributed to that show even when paid earlier. Settlement discloses the bridge from operating result to cash movement. Preserve frozen historical sheets and signed contract snapshots.
+- The current door contract pays `round(DOOR_SPLIT * max(0, ticketGross - current eligible show costs))` in whole dollars. Proposed cents, deposits, refunds, resale and a different percentage base require an explicit decision about included costs and rounding before any new contract is signed. Do not reinterpret an existing guarantee or door deal. A new model must test both offered deal types and multi-night settlement against the existing baseline.
+
+### Transition and replay
+
+- Only a breaking model change gets a new schema version. Keep the `front_of_house_v1` namespace, a pure one-step migration from version 2, frozen fixtures for versions 1, 2 and the new version, and the original save available until the converted one validates and writes successfully. Export/import and corrupt data follow the same validation path.
+- Map the old `book`, `build` and `promote` phases into planning without inventing an earlier game date, expiring an unrecorded hold, or charging for an unsigned commitment. Map an active `show` or `settle` into an in-progress signed show using the saved seed, booking terms, cash already deducted and night number. Map `done` to closed history. Preserve old response and settlement once; no automatic retry of a paid command.
+- Any new date advance, hold expiry, payment, show incident and settlement needs a stable event ID and an idempotent transition. Persist enough random state or independent stream positions to replay the exact next event. Do not enable mid-show checkpoints until a reload after each possible prompt, cancellation and multi-night boundary yields the same show and balance without repeating an event.
+- Before implementation, exercise saves in all six old phases, both deal types, a multi-night show, purchased and hired layouts after the new purchase action exists, old version 1 imports, duplicate button actions and failed/quota-limited writes. Assert unchanged old history, no loss of cash or placement, and no double charge. This is a proposed compatibility checklist, not a claim that schema 3 exists.
+
+### Opt-in Lot show experiment on schema 2
+
+The small doors staffing experiment in [FUTURE.md](FUTURE.md#lot-live-show-experiment-proposal) uses an optional `show.pilotCrew` value: absent for ordinary shows, `null` while the extra choice is pending, `'bar'` or `'gate'` once chosen. It is only created when starting a Lot show with `?night-slice=1`; normalizing an old save leaves it absent. Validate and preserve a pilot choice on import and reload. It does not change the save namespace, currency or existing incident draw order. When the choice is pending, the engine rejects incident response; the show can resume from that decision without guessing a default.
+
 ## Test checklist (before saves ship)
 
 - [ ] Save, reload and resume in every phase
