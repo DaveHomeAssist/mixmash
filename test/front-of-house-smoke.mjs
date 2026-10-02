@@ -731,6 +731,7 @@ try {
   const pilotFailures = trackPageFailures(pilotPage, appOrigin);
   await pilotPage.goto(`${url}?night-slice=1`);
   await pilotPage.waitForFunction(() => typeof window.render_game_to_text === 'function');
+  await loadCode(pilotPage, Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
   await pilotPage.click('[data-deal="guarantee"]');
   await pilotPage.click('[data-act="starter"]');
   await pilotPage.click('[data-act="confirm-build"]');

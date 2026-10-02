@@ -608,8 +608,10 @@ function showPanel() {
     <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
     <div class="plate at-bl feed-plate" data-tab="Night"><ol class="feed" id="feed" aria-live="polite"></ol></div>
     <div class="plate at-br actions-plate" data-tab="Night">
-      <button type="button" data-act="locate-incident" id="locate-incident" hidden>Locate equipment</button>
-      <p class="crowd-now"><span class="meta-label">In the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'}</span> <span id="crowd-now">0</span></p>
+      <div class="row">
+        <p class="crowd-now"><span class="meta-label">In the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'}</span> <span id="crowd-now">0</span></p>
+        <button type="button" data-act="locate-incident" id="locate-incident" hidden>Locate equipment</button>
+      </div>
       <p class="hint" id="rush-now" hidden></p>
       <button type="button" data-act="skip" id="skip-btn">Skip to the problem</button>
     </div>`;
