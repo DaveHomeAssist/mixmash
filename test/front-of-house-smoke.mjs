@@ -746,7 +746,7 @@ try {
   await checkNoScroll(pilotPage, 'show');
   await pilotPage.click('[data-act="respond"]:not([disabled])');
   assert.ok((await game(pilotPage)).settlement.doorRush, 'the settlement includes the rush outcome');
-  assert.match(await pilotPage.textContent('#win'), /walk-ups left/);
+  assert.match(await pilotPage.textContent('#win'), /queued · \d+ left · bar cap/);
   await checkNoScroll(pilotPage, 'settle');
   ok('the opt-in Lot doors choice survives reload, changes the settlement, and fits the desktop HUD');
 
