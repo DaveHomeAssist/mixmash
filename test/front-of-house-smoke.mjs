@@ -817,6 +817,7 @@ try {
   const touch = await review.newCDPSession(hud);
   let contact = 1;
   const nativeTap = async (selector) => {
+    await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
     const r = await hud.locator(selector).boundingBox();
     await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: r.x + r.width / 2, y: r.y + r.height / 2, id: ++contact }] });
     await new Promise((done) => setTimeout(done, 80));
