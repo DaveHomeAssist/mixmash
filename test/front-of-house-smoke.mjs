@@ -806,6 +806,12 @@ try {
   await hud.click('#sheet-expand');
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek');
   await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await hud.evaluate(() => {
+    window.__sheetInputTrace = [];
+    for (const type of ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend']) document.addEventListener(type, (event) => {
+      window.__sheetInputTrace.push({ type, target: event.target.id, pointer: event.pointerType, x: event.clientX, y: event.clientY, state: document.body.dataset.sheetSize });
+    }, true);
+  });
   const touch = await review.newCDPSession(hud);
   const handle = await hud.locator('#sheet-grip').boundingBox();
   const x = handle.x + handle.width / 2;
@@ -816,7 +822,12 @@ try {
   await hud.waitForFunction(() => document.body.dataset.sheetSize === 'expanded');
   await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   await hud.locator('#sheet-expand').tap();
-  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
+  try {
+    await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
+  } catch (error) {
+    console.error('Sheet input trace:', await hud.evaluate(() => ({ events: window.__sheetInputTrace, state: document.body.dataset.sheetSize, controls: document.querySelector('#sheet-controls').getBoundingClientRect().toJSON(), panel: document.querySelector('#panel').getBoundingClientRect().toJSON() })));
+    throw error;
+  }
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek', 'a swipe does not block the next tap');
   await hud.locator('#sheet-collapse').tap();
   await hud.waitForFunction(() => document.body.dataset.sheetSize === 'collapsed');
