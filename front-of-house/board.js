@@ -698,10 +698,14 @@ export function createBoard(canvas) {
     const sprites = sorted.filter((p) => p.g.r);
     const repaintAfter = new Map();
     sprites.forEach((a, k) => {
+      // Only rig PAs need show-through. Applying it to amenities makes a restroom
+      // behind the bar look as though it is sitting on the counter.
+      if (a.o.type !== 'pa-s' && a.o.type !== 'pa-m') return;
       const ra = a.g.r;
       let covered = 0;
       let last = null;
       for (const b of sprites.slice(k + 1)) {
+        if (b.o.type !== 'stage') continue;
         // Only a much taller sprite counts, so neighbours of one size (a restroom bank) never ghost.
         if (b.g.r.h <= ra.h * 1.5) continue;
         const w = Math.min(ra.x + ra.w, b.g.r.x + b.g.r.w) - Math.max(ra.x, b.g.r.x);

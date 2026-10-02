@@ -107,6 +107,17 @@ Today `resize()` fits the lot to the canvas width and grows the canvas downward.
 - **Contained change.** Every screen position goes through `iso()` and `tileAt()`, so the camera is three fields on `view` (zoom, pan x, pan y). Hit-testing, placement order, markers, beams and the ghost all use `iso()` and follow it.
 - **Rooms.** Split Acre (40 × 24) fits at 44 px a tile on 1440 × 900. Zoom matters most there.
 
+### Continuous orbit direction (2026-10-02)
+
+Dave prefers a full 360° view and finds the current fixed angle awkward. The current implementation still has four quarter turns. The direction below is a proposal for the renderer change; the prop treatment has not yet been selected.
+
+- Use dimensional props for an orbit that can stop at any yaw. The existing sprites are paintings of one side; four additional views would still impose discrete angles. Keep their silhouettes, colours and production detail as visual references, and compare a modelled stage, bar and restroom bank before replacing the full set.
+- Keep the simulation's tile grid and object rotation independent of the camera. Camera movement must not alter placements, sightlines, money, show timing or saved gameplay state.
+- Start with an orthographic camera, continuous yaw and a bounded tilt control. Choose the default tilt through side-by-side review; Fit must account for the current angle, tall props and the HUD's clear area.
+- Give orbit an explicit drag tool and accessible angle controls. It must not accidentally place or bulldoze objects. Preserve pan, zoom, Fit and object rotation as separate operations, with touch and keyboard equivalents.
+- Use actual surface depth for props, crowd and picking. Hidden equipment should have a deliberate selection/locate treatment, not a general transparent repaint through unrelated objects.
+- Acceptance: place, select and remove the same object at arbitrary angles; retain tile positions through a full revolution, zoom, pan, resize and phase change; keep incident markers and lights attached; verify desktop, split view and phone layouts; measure frame time against section 6. Reduced motion disables camera easing, not camera access.
+
 ## 6. Performance
 
 A full-window canvas draws more pixels: 1440 × 900 at a device pixel ratio of 2 is 5.2 megapixels, against 2.3 today, and 1920 × 1080 is 8.3. Show night redraws every frame.
