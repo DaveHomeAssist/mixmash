@@ -519,7 +519,34 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
   .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .win-layer { padding: calc(var(--strip-h) + 4px) 4px 4px; }
-  .win-foot { flex-wrap: wrap; }
+  .win-foot { flex-wrap: wrap; gap: 8px 12px; }
+  .win-foot .tip { flex-basis: 100%; order: 3; }
+  .win .meta-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Tabs (docs/HUD.md decision 12): one group at a time, so nothing scrolls. */
+  .tabbar { display: flex; gap: 4px; flex: none; order: 1; }
+  .tabbar [role='tab'] {
+    flex: 1 1 0; min-width: 0; min-height: 40px; padding: 6px 8px; font-size: 0.74rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .tabbar [aria-selected='true'] { border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.08); }
+  .tab-off { display: none !important; }
+
+  /* Build and Show: a peek sheet under the board, with the phase card as its header. */
+  body[data-layout='hud'] .panel { gap: 6px; padding: 8px 12px; }
+  .win-body { gap: 8px; padding: 8px 12px 10px; }
+  body[data-layout='hud'] .panel > .card-plate { order: 0; }
+  body[data-layout='hud'] .panel > [data-tab] { order: 2; }
+  body[data-layout='hud'] .card-plate .eyebrow,
+  body[data-layout='hud'] .card-plate .hint { display: none; }
+  body[data-layout='hud'] .card-plate { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  body[data-layout='hud'] .card-plate .message { flex-basis: 100%; padding: 6px 10px; font-size: 0.82rem; }
+  body[data-layout='hud'] .card-plate .timecode { font-size: 1.2rem; }
+
+  /* Book, Promote, Settle and Done: the sheet takes the height under the strip. */
+  body[data-layout='sheet'] .panel { top: calc(var(--strip-h) + 8px); height: auto; padding: 12px; }
+  body[data-layout='sheet'] .camera-row { display: none; }
+  .at-sheet .rooms button { min-height: 40px; }
   .palette, .stats { grid-template-columns: minmax(0, 1fr); }
   .sat-row { grid-template-columns: 80px 1fr 40px; }
 }

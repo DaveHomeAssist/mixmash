@@ -161,6 +161,7 @@ function mount() {
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
   if (state.phase === 'settle') openSettlement($('#open-settlement'));
+  syncTabs(el.panel, state.phase);
   if (state.phase === 'show') startPlayback();
   else if (state.phase !== 'settle') endPlayback();
   queueLayout();
@@ -229,7 +230,7 @@ function bookPanel() {
         ${note ? `<span class="choice-text">${note}</span>` : ''}
       </button>`;
     return `
-    <section class="card offer" aria-label="${esc(a.name)}">
+    <section class="card offer" aria-label="${esc(a.name)}" data-tab="${esc(a.name)}">
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
@@ -301,7 +302,7 @@ function buildPanel() {
       <p class="hint" id="tool-info"></p>
       <p id="msg" class="message" aria-live="polite"></p>
     </div>
-    <div class="plate at-tr status-plate" role="group" aria-label="The ${where}">
+    <div class="plate at-tr status-plate" role="group" aria-label="The ${where}" data-tab="${where === 'lot' ? 'Lot' : 'Room'}">
       <dl class="readouts" id="venue-stats"></dl>
       <div id="venue-check"></div>
       <div class="row tight">
@@ -310,7 +311,7 @@ function buildPanel() {
         <button type="button" data-act="lot-details" id="details-btn">Details <span class="count" id="obj-count">0</span></button>
       </div>
     </div>
-    <div class="plate at-bl tools-plate" role="group" aria-label="Object to place">
+    <div class="plate at-bl tools-plate" role="group" aria-label="Object to place" data-tab="Tools">
       <div class="tiles">${tiles}
         <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key B">
           <span class="tile-key" aria-hidden="true">B</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Bulldoze</span>
@@ -321,7 +322,7 @@ function buildPanel() {
         </button>
       </div>
     </div>
-    <div class="plate at-br actions-plate">
+    <div class="plate at-br actions-plate" data-tab="Actions">
       <div class="row tight">
         <button type="button" data-act="starter">Suggested layout</button>
         <button type="button" data-act="clear-lot" aria-label="Clear the ${where}">Clear</button>
@@ -509,7 +510,7 @@ function promotePanel() {
     <p class="lede">Set the price and the ads. The forecast shows the likely range.</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="cols">
-      <div class="col">
+      <div class="col" data-tab="Price and ads">
         <div class="slider">
           <label for="price">${spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
           <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" />
@@ -518,8 +519,8 @@ function promotePanel() {
         <fieldset><legend>Ad spend</legend>${sliders}</fieldset>
       </div>
       <div class="col">
-        <dl class="stats" id="promo-stats"></dl>
-        <figure>
+        <dl class="stats" id="promo-stats" data-tab="Forecast"></dl>
+        <figure data-tab="Presales">
           <svg id="presale" class="chart" viewBox="0 0 280 96" role="img" aria-labelledby="presale-cap"></svg>
           <figcaption id="presale-cap"></figcaption>
         </figure>
@@ -593,9 +594,9 @@ function showPanel() {
       <p class="timecode" id="clock" aria-hidden="true">19:00</p>
       <p id="msg" class="message" aria-live="polite"></p>
     </div>
-    <div class="plate at-tr incident-plate" id="incident-box" hidden></div>
-    <div class="plate at-bl feed-plate"><ol class="feed" id="feed" aria-live="polite"></ol></div>
-    <div class="plate at-br actions-plate">
+    <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
+    <div class="plate at-bl feed-plate" data-tab="Night"><ol class="feed" id="feed" aria-live="polite"></ol></div>
+    <div class="plate at-br actions-plate" data-tab="Night">
       <p class="crowd-now"><span class="meta-label">In the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'}</span> <span id="crowd-now">0</span></p>
       <button type="button" data-act="skip" id="skip-btn">Skip to the problem</button>
     </div>`;
@@ -696,6 +697,7 @@ function reachIncident() {
         </button>`).join('')}
     </div>`;
   box.hidden = false;
+  syncTabs(el.panel, 'show', 'Problem');
   const skip = $('#skip-btn'); if (skip) skip.hidden = true;
   const first = el.panel.querySelector('[data-act="respond"]:not([disabled])');
   if (first) first.focus();
@@ -799,18 +801,18 @@ function sheetParts(r, { signed: done }) {
       ${split}
     </div>`;
   const payouts = `
-    <div class="payouts">
+    <div class="payouts" data-tab="Payout">
       <div class="payout artist"><span class="meta-label">Artist payout</span><span class="amount">${money(r.artistPay)}</span>
         <p>${r.artistPay >= quotedAsk() ? 'Paid in full. The act leaves happy.' : `They expected ${money(quotedAsk())}.`}</p></div>
       <div class="payout promoter ${r.net < 0 ? 'loss' : ''}"><span class="meta-label">Promoter net</span><span class="amount">${money(r.net)}</span>
         <p>Revenue after every cost and the artist.</p></div>
     </div>`;
   const crowd = `
-    <div>
+    <div data-tab="Crowd">
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
       <div class="meters-sat">${parts}</div>
     </div>
-    <div class="outcomes">
+    <div class="outcomes" data-tab="Payout">
       <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
       <div class="outcome"><span class="meta-label">Band relationship</span><span class="stat ${r.relDelta >= 0 ? 'pos' : 'neg'}">${signed(r.relDelta)}</span></div>
       <div class="outcome"><span class="meta-label">Cash on hand</span><span class="stat">${money(cashAfter)}</span><p class="lede">Started at ${money(cashBefore)}</p></div>
@@ -818,8 +820,8 @@ function sheetParts(r, { signed: done }) {
   return {
     body: `${head}
       <div class="sheet-cols">
-        <div class="sheet-col">${revenue}${dealPart}</div>
-        <div class="sheet-col">${costs}</div>
+        <div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>
+        <div class="sheet-col" data-tab="Costs">${costs}</div>
         <div class="sheet-col">${payouts}${crowd}</div>
       </div>`,
     foot: `
@@ -1269,6 +1271,69 @@ function pickTool(type) {
 }
 
 // ---------------------------------------------------------------------------
+// Phone tabs (docs/HUD.md decision 12): on a narrow screen the groups marked data-tab share
+// one space, one tab at a time, so the bottom sheet and the windows never scroll. On wider
+// screens every group shows and the tab bar is removed.
+
+const phoneQuery = window.matchMedia('(max-width: 680px)');
+ui.tabs = {};
+
+function syncTabs(root, key, pick) {
+  const old = root.querySelector(':scope > .tabbar, .tabbar');
+  if (old) old.remove();
+  const all = [...root.querySelectorAll('[data-tab]')];
+  all.forEach((g) => { g.classList.remove('tab-off'); g.removeAttribute('role'); g.removeAttribute('aria-labelledby'); });
+  const groups = all.filter((g) => !g.hidden);
+  const names = [...new Set(groups.map((g) => g.dataset.tab))];
+  if (!phoneQuery.matches || names.length < 2) return;
+  if (pick) ui.tabs[key] = pick;
+  const current = names.includes(ui.tabs[key]) ? ui.tabs[key] : names[0];
+  const bar = document.createElement('div');
+  bar.className = 'tabbar';
+  bar.setAttribute('role', 'tablist');
+  bar.setAttribute('aria-label', 'Sections');
+  names.forEach((name, i) => {
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.id = `tab-${key.replace(/\W/g, '-')}-${i}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', String(name === current));
+    tab.tabIndex = name === current ? 0 : -1;
+    tab.dataset.tabName = name;
+    tab.textContent = name;
+    bar.append(tab);
+    groups.filter((g) => g.dataset.tab === name).forEach((g) => {
+      g.setAttribute('role', 'tabpanel');
+      g.setAttribute('aria-labelledby', tab.id);
+      g.classList.toggle('tab-off', name !== current);
+    });
+  });
+  bar.addEventListener('click', (e) => {
+    const tab = e.target.closest('[role="tab"]');
+    if (!tab) return;
+    syncTabs(root, key, tab.dataset.tabName);
+    const again = root.querySelector(`.tabbar [data-tab-name="${CSS.escape(tab.dataset.tabName)}"]`);
+    if (again) again.focus();
+  });
+  bar.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    const i = names.indexOf(current);
+    const next = names[(i + (e.key === 'ArrowRight' ? 1 : names.length - 1)) % names.length];
+    syncTabs(root, key, next);
+    const again = root.querySelector(`.tabbar [data-tab-name="${CSS.escape(next)}"]`);
+    if (again) again.focus();
+  });
+  const first = groups[0];
+  (first.parentElement === root ? first : first.parentElement).before(bar);
+}
+
+phoneQuery.addEventListener('change', () => {
+  syncTabs(el.panel, state.phase);
+  if (!el.win.hidden) syncTabs(el.winBody, `win:${win.kind}`);
+});
+
+// ---------------------------------------------------------------------------
 // Windows: a document the player opens on purpose, over the dimmed board. Escape, the
 // Close button or a click outside closes it, and focus goes back to what opened it.
 
@@ -1287,6 +1352,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.classList.toggle('wide', wide);
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
+  syncTabs(el.winBody, `win:${kind}`);
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
