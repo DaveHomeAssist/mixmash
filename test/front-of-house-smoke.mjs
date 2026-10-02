@@ -5,7 +5,7 @@
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
  * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, the board camera, the
- * no-scroll layout and the menu, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * no-scroll layout and the menu, the Build and Show corner HUD, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -78,6 +78,33 @@ const measureLayout = (page) => page.evaluate(([W, H]) => {
     panelOnScreen: panel.top >= 0 && panel.bottom <= innerHeight + 0.5 && panel.right <= innerWidth + 0.5,
   };
 }, [GRID.w, GRID.h]);
+// The corner HUD in Build and Show (docs/HUD.md steps 3 and 11): at the fit the lot covers at
+// least 30% of the window (35% at 1280x800 and 1440x900), the plates cover no more than 2% of
+// the lot, no plate scrolls or leaves the window, and the top strip fits.
+const measureHud = (page) => page.evaluate(([W, H]) => {
+  const poly = [[0, 0], [W, 0], [W, H], [0, H]].map(([x, y]) => window.__frontOfHouse.boardClientOf(x, y)).map((p) => [p.x, p.y]);
+  const inPoly = (x, y) => poly.reduce((inside, [xi, yi], i) => {
+    const [xj, yj] = poly[(i + poly.length - 1) % poly.length];
+    return (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi ? !inside : inside;
+  }, false);
+  const xs = poly.map((p) => p[0]);
+  const ys = poly.map((p) => p[1]);
+  const lot = ((Math.max(...xs) - Math.min(...xs)) * (Math.max(...ys) - Math.min(...ys))) / 2;
+  let covered = 0;
+  const plates = [...document.querySelectorAll('#panel .plate')].filter((p) => !p.hidden && p.getClientRects().length);
+  const bad = [];
+  for (const p of plates) {
+    const r = p.getBoundingClientRect();
+    for (let y = r.top + 1; y < r.bottom; y += 2) for (let x = r.left + 1; x < r.right; x += 2) if (inPoly(x, y)) covered += 4;
+    if (p.scrollHeight > p.clientHeight + 1) bad.push(`${p.className} scrolls`);
+    if (r.left < 0 || r.right > innerWidth || r.bottom > innerHeight) bad.push(`${p.className} leaves the window`);
+  }
+  const strip = document.querySelector('.topbar');
+  const stripRight = Math.max(...[...strip.children].map((c) => c.getBoundingClientRect().right));
+  if (stripRight > innerWidth) bad.push(`the strip overflows by ${Math.round(stripRight - innerWidth)}px`);
+  return { share: (lot / (innerWidth * innerHeight)) * 100, cover: (covered / lot) * 100, plates: plates.length, bad };
+}, [GRID.w, GRID.h]);
+
 async function checkNoScroll(page, phase) {
   const back = page.viewportSize();
   for (const [width, height] of DESKTOP) {
@@ -88,6 +115,14 @@ async function checkNoScroll(page, phase) {
     assert.deepEqual(m.canvas, [width, height], `${at}: the board fills the window`);
     assert.ok(m.lotClear, `${at}: the lot is fit clear of the strip and the panel (${JSON.stringify(m.clear)})`);
     assert.ok(m.panelOnScreen, `${at}: the panel fits on screen`);
+    if (phase === 'build' || phase === 'show') {
+      const hud = await measureHud(page);
+      const target = (width === 1280 && height === 800) || (width === 1440 && height === 900) ? 35 : 30;
+      assert.ok(hud.plates >= 3, `${at}: the HUD has its corner plates`);
+      assert.ok(hud.share >= target, `${at}: the lot covers ${hud.share.toFixed(1)}% of the window (at least ${target}%)`);
+      assert.ok(hud.cover <= 2, `${at}: the HUD covers ${hud.cover.toFixed(2)}% of the lot (at most 2%)`);
+      assert.deepEqual(hud.bad, [], `${at}: no plate scrolls or leaves the window, and the strip fits`);
+    }
   }
   await resizeTo(page, back.width, back.height);
 }
@@ -138,6 +173,7 @@ try {
   await checkNoScroll(page, 'done');
   ok('plays Book through Settle and the cash adds up');
   ok('the page never scrolls: in every phase at 1024x700 to 1920x1080 the board fills the window and the lot is fit clear of the strip and the panel');
+  ok('in Build and Show the lot covers at least 30% of the window (35% at 1280x800 and 1440x900), the corner HUD covers at most 2% of it, and no plate scrolls');
 
   await page.reload();
   await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
@@ -207,6 +243,28 @@ try {
   await page2.keyboard.press('Delete');
   assert.equal((await page2.evaluate(() => window.__frontOfHouse.state().venue.objects)).length, 0);
   ok('the board places and removes objects from the keyboard');
+
+  // Keys 1 to 8 pick a tool; the Details window lists every placed object and removes one by name.
+  const checkedTool = () => page2.evaluate(() => document.querySelector('input[name="tool"]:checked').value);
+  await page2.keyboard.press('3');
+  assert.equal(await checkedTool(), 'pa-m', '3 picks the medium PA');
+  await page2.keyboard.press('8');
+  assert.equal(await checkedTool(), 'exit', '8 picks the exit');
+  await page2.keyboard.press('1');
+  assert.equal(await checkedTool(), 'stage');
+  await page2.click('[data-act="starter"]');
+  await page2.click('[data-act="lot-details"]');
+  assert.equal(await page2.isVisible('#win'), true, 'Details opens a window');
+  const chips = await page2.locator('#win [data-act="remove"]').count();
+  assert.equal(chips, STARTER_LAYOUT.length, 'one remove button per placed object');
+  await page2.locator('#win [data-act="remove"]').first().click();
+  assert.equal((await page2.evaluate(() => window.__frontOfHouse.state().venue.objects)).length, STARTER_LAYOUT.length - 1, 'a remove button in the window removes that object');
+  assert.equal(await page2.locator('#win [data-act="remove"]').count(), STARTER_LAYOUT.length - 1, 'the window updates');
+  assert.ok(await page2.evaluate(() => document.querySelector('#win').contains(document.activeElement)), 'focus stays in the window');
+  await page2.keyboard.press('Escape');
+  assert.equal(await page2.isHidden('#win'), true, 'Escape closes the window');
+  assert.equal(await page2.evaluate(() => document.activeElement.id), 'details-btn', 'focus returns to Details');
+  ok('keys 1 to 8 pick a tool, and the Details window removes a placed object by name');
 
   // Signing inside the three-second wind-down after the incident still leaves
   // the board on the signed crowd. Seed 1 rains, so the crowd the board shows
@@ -467,9 +525,13 @@ try {
   assert.equal((await cam()).zoom, 2, 'the plain wheel zooms too, since the page never scrolls');
   assert.deepEqual(await page5.evaluate(([x, y]) => window.__frontOfHouse.boardTileAt(x, y), [under.x, under.y]), tileBefore, 'the tile under the pointer still stays put');
   assert.equal(await page5.evaluate(() => scrollY), 0, 'the wheel never scrolls the page');
-  await page5.evaluate(() => window.__frontOfHouse.boardZoom(2));
+  // Zoom about the stage, as a player would, so it stays clear of the corner plates.
+  const fitStage = drawnOf(await boardInfo(), 'stage').rect;
+  await page5.evaluate(([x, y]) => window.__frontOfHouse.boardZoom(2, x, y), [fitStage.x + fitStage.w / 2, fitStage.y + fitStage.h * 0.6]);
   const zoomedStage = drawnOf(await boardInfo(), 'stage').rect;
-  await page5.mouse.click(boardBox.x + zoomedStage.x + zoomedStage.w / 2, boardBox.y + Math.max(4, zoomedStage.y + zoomedStage.h * 0.3), { button: 'right' });
+  const stagePoint = [boardBox.x + zoomedStage.x + zoomedStage.w / 2, boardBox.y + zoomedStage.y + zoomedStage.h * 0.6];
+  assert.equal(await page5.evaluate(([x, y]) => document.elementFromPoint(x, y).id, stagePoint), 'board', 'the zoomed stage is on the open board');
+  await page5.mouse.click(stagePoint[0], stagePoint[1], { button: 'right' });
   const leftAfterZoomedClick = await objectsNow();
   assert.ok(!leftAfterZoomedClick.some((o) => o.type === 'stage') && leftAfterZoomedClick.length === STARTER_LAYOUT.length - 1, 'a right-click on the zoomed stage removes only the stage');
   await page5.evaluate(() => window.__frontOfHouse.boardZoom(1));
@@ -552,7 +614,7 @@ try {
     const lum = (c) => c.slice(0, 3).map((v) => v / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
       .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0);
     const bad = [];
-    for (const node of document.querySelectorAll('.lede, .eyebrow, .meta-label, .board-help, .tagline, .stats dt, .meters dt, .credit, figcaption')) {
+    for (const node of document.querySelectorAll('.lede, .eyebrow, .meta-label, .board-help, .tagline, .stats dt, .meters dt, .credit, figcaption, .readouts dt, .readouts small, .hint, .tile-key, .choice-effect')) {
       if (!node.getClientRects().length) continue;
       let p = node; let bg;
       while (p) { const c = rgb(getComputedStyle(p).backgroundColor); if (c.length === 3 || c[3] === 1) { bg = c; break; } p = p.parentElement; }

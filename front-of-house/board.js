@@ -143,6 +143,11 @@ export function createBoard(canvas) {
     return viewToWorld((a + b) / 2, (b - a) / 2);
   }
 
+  // Headroom at the fit, in tile heights: above the back corner for tall props (the stage
+  // and the light tower rise about 4 to 6), and below the front corner.
+  const ABOVE = 3;
+  const BELOW = 0.5;
+
   // The middle of the clear area: the camera holds its world point there.
   const middle = () => [view.safe.x + view.safe.w / 2, view.safe.y + view.safe.h / 2];
 
@@ -153,12 +158,12 @@ export function createBoard(canvas) {
     const wide = facing % 2 ? room.h : room.w;
     const deep = facing % 2 ? room.w : room.h;
     const fitTh = fitTw / 2;
-    const tall = ((wide + deep) * fitTh) / 2 + fitTh * 5;
+    const tall = ((wide + deep) * fitTh) / 2 + fitTh * (ABOVE + BELOW);
     const fit = {
       tw: fitTw,
       th: fitTh,
       ox: safe.x + (safe.w - ((wide + deep) * fitTw) / 2) / 2 + (deep * fitTw) / 2,
-      oy: safe.y + (safe.h - tall) / 2 + fitTh * 4,
+      oy: safe.y + (safe.h - tall) / 2 + fitTh * ABOVE,
     };
     if (cam.zoom === 1) { Object.assign(view, fit); return; }
     const tw = fitTw * cam.zoom;
@@ -275,7 +280,7 @@ export function createBoard(canvas) {
     const y = Math.min(cssH - 1, Math.max(0, want.y));
     const safe = { x, y, w: Math.max(1, Math.min(cssW, want.x + want.w) - x), h: Math.max(1, Math.min(cssH, want.y + want.h) - y) };
     const span = (room.w + room.h) / 2;
-    const tw = Math.max(12, Math.floor(Math.min((safe.w - 24) / span, (safe.h - 16) / (span / 2 + 2.5))));
+    const tw = Math.max(12, Math.floor(Math.min((safe.w - 24) / span, (safe.h - 16) / (span / 2 + (ABOVE + BELOW) / 2))));
     view = { fitTw: tw, tw, th: tw / 2, ox: 0, oy: 0, cssW, cssH, dpr, safe };
     applyCamera();
   }

@@ -119,6 +119,16 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Interim size: the lot covers 15% to 26% of the window in Build (it was 9% to 24%, and needed a scroll). The 30% and 35% targets need step 3, when the panel splits into the corners.
 - New smoke checks: in every phase at 1024 × 700, 1024 × 768, 1280 × 800, 1440 × 900 and 1920 × 1080 the document has nothing to scroll, the canvas fills the window, the panel fits on screen and the whole lot is clear of the strip and the panel; the phone has no scroll either way, a bottom sheet that scrolls inside itself, and a board at least 45% of the height; the menu opens and closes; the plain wheel zooms without scrolling. Service worker v15.
 
+## 2026-10-02: HUD step 3, the Build and Show corner HUD
+
+- Dave agreed that no panel scrolls at 1024 × 700 and up (five decisions, recorded in `docs/HUD.md` section 9 and CT-DEC-12).
+- Build: the phase card top left, the readouts top right, ten tool tiles bottom left (eight objects with their sprites and keys 1 to 8, Bulldoze and Rotate), the actions bottom right. Details opens a window with the full readiness list and every placed object, each removable by name.
+- Show: the clock top left, the incident card top right, the last four feed lines bottom left, the crowd count and Skip bottom right.
+- The lot is fit to the whole window below the strip, with 3 tile heights above it and half of one below. The camera buttons moved into the strip; the game's name hides below 1440 px wide so the strip fits.
+- Measured: the lot covers 31.8% to 37.8% of the window at the fit (36.3% at 1280 × 800, 37.8% at 1440 × 900), and the plates cover at most 1.31% of it. No plate scrolls.
+- New smoke checks: lot share, HUD coverage, no plate scrolls or leaves the window, and the strip fits, in Build and Show at five desktop sizes; keys 1 to 8; the Details window removes an object and keeps focus. The zoomed-stage check now zooms about the stage, as a player would, so the corner plates don't catch the click. Service worker v16.
+- Next: step 4, the sheets and windows for Book, Promote, Settle and Done.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

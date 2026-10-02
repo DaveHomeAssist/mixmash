@@ -1,7 +1,7 @@
 # Front of House HUD layout (spec)
 
 - Date: 2026-10-01
-- Status: **Accepted by Dave on 2026-10-01** ([CT-DEC-12](DECISIONS.md#ct-dec-12-hud-layout)), with every recommendation in section 9. The minimap is deferred to step 7 of the build order and is on the [roadmap](../ROADMAP.md#hud-layout-ct-dec-12). Steps 1 and 2 are built (the camera, and the full-window board that never scrolls); steps 3 to 7 are not.
+- Status: **Accepted by Dave on 2026-10-01** ([CT-DEC-12](DECISIONS.md#ct-dec-12-hud-layout)), with every recommendation in section 9. The minimap is deferred to step 7 of the build order and is on the [roadmap](../ROADMAP.md#hud-layout-ct-dec-12). On 2026-10-02 Dave added that no panel scrolls either (section 9). Steps 1 to 3 are built (the camera, the full-window board that never scrolls, and the Build and Show corner HUD); steps 4 to 7 are not.
 - Owner: Dave Robertson
 - Asked for: "a redesign of the UI before we get too far... more HUD like, with the map expanded to take up a much larger percentage of the screen real estate."
 
@@ -54,7 +54,7 @@ An isometric lot is a diamond. A diamond fills exactly half of the rectangle aro
 | Top-right corner | Status: the lot's readouts in Build, the incident card in Show |
 | Bottom-left corner | Tools in Build, the event feed in Show |
 | Bottom-right corner | The phase's actions (Lock the layout, Open the doors, Sign the settlement) or the live crowd count |
-| Bottom centre, under the lot's front tip | Camera: zoom out, fit, zoom in, turn the view |
+| Top strip (since step 3) | Camera: zoom out, fit, zoom in, turn the view. Planned for the space under the lot's front tip; that space would cost the fit about 4 points of lot share at 1280 × 800 (an estimate), so the buttons moved to the strip |
 
 Phases where the map is the work (Build, Show) keep the whole lot clear. Phases where the work is a form or a document (Book, Promote, Settle) open a **sheet** on the right, dim the map, and re-fit the lot into the space that is left.
 
@@ -92,7 +92,7 @@ Composites made for this spec: the board underneath is a real capture of the ful
 Notes:
 
 - **Tools get number keys 1 to 8**, in palette order. They are new; every other key stays (arrows, Enter, R, B, Q, Delete).
-- **Placed objects** (today a list under the stats) moves into the Build readouts as a disclosure, so keyboard users can still remove an object by name.
+- **Placed objects** moved into a Details window opened from the Build readouts (step 3), so keyboard users can still remove an object by name without a scrolling panel.
 - **The view turn** moves into the camera group. Its status line ("View quarter 1 of 4") becomes a short toast under the top strip, still `aria-live`.
 
 ## 5. The camera (`board.js`)
@@ -149,13 +149,26 @@ Dave accepted every recommendation on 2026-10-01, and asked for the minimap to s
 | 6 | A minimap? | Deferred to step 7, and on the roadmap | The Lot and Fathom Hall fit at a good tile size; Split Acre needs it once players zoom in |
 | 7 | Translucent backplates over the board | Accept, as an addition to the production-desk look | Dark panels, 1 px borders and mono numbers stay; only the panels float |
 
+### Panels never scroll (settled 2026-10-02)
+
+After step 2, Dave asked that the panels not scroll either, "especially not when its things that could easily be collapsed or moved to its own window". He agreed to all five recommendations on 2026-10-02 ("I agree with your assessment"):
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 8 | Does any panel scroll? | No panel scrolls at 1024 × 700 and up. The smoke rail fails when one does |
+| 9 | The settlement | It opens in its own wide window: the payoff gets the screen |
+| 10 | Deal explanations and introductions | Shown on the first show only, then behind an info button |
+| 11 | Show history, which grows every show | Its own window, and the only one allowed to scroll |
+| 12 | Phones | Tabs in the bottom sheet, so the rule holds there too |
+| 13 | When | Built inside steps 3 and 4, not as a separate pass |
+
 ## 10. Build order
 
 Each step is its own pull request with its smoke updates and a service worker bump. The same steps are in [`ROADMAP.md`](../ROADMAP.md#hud-layout-ct-dec-12).
 
 1. **Camera.** Safe rectangle, fit, zoom and pan in `board.js`, behind today's layout. Tests: `tileAt(iso(x, y))` round-trips at every zoom and view turn; clicks still hit the right prop. **Done 2026-10-01.** The safe rectangle is the whole canvas until step 2 gives the board the window.
 2. **Full-window board and top strip.** The canvas fills the window; the header becomes the strip; the save bar, help and credit move into the menu. **Done 2026-10-01.** The page never scrolls at any size, phones included: the canvas covers the window, and the panel and the menu scroll inside themselves. Until steps 3 and 4 split it up, the phase panel stays whole: docked on the right, with the lot fit into the space left of it and below the strip, and a bottom sheet on phones. The camera group sits in the lot's empty bottom-left corner. Full screen and the source link moved from the MixMash nav into the menu (`?`), with the keys and save and load. The lot's share of the window in Build is 15% at 1024 × 700, 18% at 1280 × 800, 19% at 1440 × 900 and 26% at 1920 × 1080; the 30% and 35% targets need step 3, when the panel leaves the right side.
-3. **Build and Show HUD.** Corner panels, the tool keys, the camera group, the incident card.
+3. **Build and Show HUD.** Corner panels, the tool keys, the camera group, the incident card. **Done 2026-10-02.** Build: the phase card top left (what the chosen tool is, its size, cost and power, and the message line), the readouts top right (capacity, power with a bar, clear view, blocked view, staff, costs, the readiness line, the fence kit, sightlines and a Details button), ten tool tiles bottom left (the eight objects with their sprites and keys 1 to 8, then Bulldoze and Rotate), and the actions bottom right. Details opens a window with the full readiness list and every placed object by type, each with a remove button. Show: the clock top left, the incident card top right with compact responses, the last four feed lines bottom left, and the crowd count with Skip bottom right. The camera buttons moved into the top strip (section 3), the board's status line is a toast under the strip that fades after five seconds, and the fit keeps 3 tile heights above the lot and half of one below. Measured at the fit: the lot covers 34.9% of the window at 1024 × 700, 31.8% at 1024 × 768, 36.3% at 1280 × 800, 37.8% at 1440 × 900 and 34.8% at 1920 × 1080; the plates cover at most 1.31% of the lot (Build at 1024 × 700 with a two-line message), and no plate scrolls. Phones still stack the plates in a bottom sheet that scrolls until step 5. Book, Promote, Settle and Done keep the scrolling sheet until step 4.
 4. **Sheets.** Book, Promote, Settle and Done.
 5. **Phone.** The bottom sheet and the compact strip.
 6. **Performance.** The floor cache, the pixel-ratio rule, and the frame-time check.
@@ -175,7 +188,8 @@ The smoke rail measures each of these and fails when one slips.
 - The canvas covers the window in every phase at 1024 × 768, 1280 × 800, 1440 × 900 and 1920 × 1080.
 - At the default zoom the lot covers at least 30% of the window at every desktop size, and at least 35% at 1280 × 800 and 1440 × 900 (today 8.6% to 24.3%).
 - In Build and Show the HUD covers no more than 2% of the lot at the default zoom.
-- The document never scrolls at 1024 × 700 and up.
+- The document never scrolls at 1024 × 700 and up, and no panel scrolls there either, apart from the show history window (decision 8).
+- The settlement opens in its own window (decision 9).
 - At 390 × 844 there is no horizontal scroll, every phase control is reachable, and the board takes at least 45% of the window's height.
 - Every existing smoke check passes, and the contrast check covers the HUD.
 - Show night meets the frame budget in section 6.
