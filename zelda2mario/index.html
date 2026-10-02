@@ -209,7 +209,7 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       <div class="overview-grid">
         <article class="card overview-main"><div><div class="kicker">Status snapshot / <span class="snapshot-date"></span></div><h2 id="summary"></h2><p class="intro" id="description"></p><div class="metrics" id="metrics"></div></div><aside class="signal"><span id="signal-chip"></span><p><strong>Playable prototype, not a release. Two controllers play in Mesen, and the dual-player lane and single-player parity pass on the current build.</strong></p><p>A successful input check, static analysis, baseline boot, or dashboard deployment does not close the game’s runtime gates.</p><p>Shared health and progression. P1 camera leadership. No commercial ROM distribution.</p></aside></article>
         <article class="card"><div class="kicker">Verification, separated</div><h3>What passes. What doesn’t.</h3><div class="gate-list" id="gates"></div><p class="derived-note" id="derived-note"></p></article>
-        <article class="card"><div class="kicker">Next execution boundary</div><h3>Harden the prototype</h3><ol class="next-list"><li><strong>Close the last verification gap.</strong><span>Check controller two on an independent emulator or on hardware (hardening item 13). Then Dave plays it.</span></li><li><strong>Resume the six M2 gates in plan order.</strong><span>Full-game input ownership, actor/shared separation, timing, NMI/mapper proof, ABI, then fresh movement proof and soak.</span></li></ol><div class="notice">No committed completion date. Remaining work is ordered by dependencies, not invented calendar deadlines.</div></article>
+        <article class="card"><div class="kicker">Next execution boundary</div><h3>Harden the prototype</h3><ol class="next-list"><li><strong>Play it.</strong><span>Every prototype-hardening item is done. Dave plays the two-controller build; real hardware remains untested.</span></li><li><strong>Resume the six M2 gates in plan order.</strong><span>Full-game input ownership, actor/shared separation, timing, NMI/mapper proof, ABI, then fresh movement proof and soak.</span></li></ol><div class="notice">No committed completion date. Remaining work is ordered by dependencies, not invented calendar deadlines.</div></article>
         <article class="card wide-card"><div class="section-head"><div><div class="kicker">Full scope, no skipped phases</div><h3>Roadmap at a glance</h3></div><span class="intro">Implementation status; verification is tracked separately.</span></div><div id="phase-board" class="phase-board"></div></article>
       </div>
     </section>
@@ -219,7 +219,7 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       <div class="table-section" id="lane-table"><h3>Lane reports</h3><p class="table-note">Every lane report in the repository, with both freshness signals. A lane is current only when it passed <em>and</em> no commit touching the runtime paths has landed since it was regenerated. Code drift is an over-approximation: a stale lane may still be valid, but a current lane is not stale.</p></div>
       <div class="table-section"><h3>Build identity pins</h3><p class="table-note">The hashes the build currently declares. A lane asserting anything else describes an artifact no commit now produces.</p><dl class="pin-list" id="pin-list"></dl></div>
       <div class="table-section"><h3>Owner-supplied inputs</h3><p class="table-note">Required by name only. Commercial ROM data is never committed, published, or embedded, and no filesystem path is recorded here.</p><dl class="pin-list" id="input-list"></dl></div>
-      <div class="notice"><strong>Still unverified:</strong> Independent-emulator or hardware controller-two behavior, worst-room timing, instruction-boundary NMI/mapper recovery, full co-op playthrough, movement soak and human release acceptance.</div>
+      <div class="notice"><strong>Still unverified:</strong> Real-hardware controller-two behavior, worst-room timing, instruction-boundary NMI/mapper recovery, full co-op playthrough, movement soak and human release acceptance.</div>
       <p><a href="https://mixmash.games/">Return to MixMash Studio</a></p>
     </section>
   </main>
@@ -234,7 +234,7 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
     "sourceCommit": "2350eff496df9f6d3274caaa17b3da9934697840",
     "sourceCommitShort": "2350eff",
     "sourceCommittedAt": "2026-10-01T22:56:02-04:00",
-    "generatedAt": "2026-10-02T02:56:04Z",
+    "generatedAt": "2026-10-02T03:05:49Z",
     "status": "Current",
     "summary": "Every gate passes against the current build.",
     "derivedNote": "meta, gates and lanes are derived from repository artifacts by scripts/status/build_dashboard.py. Only phases, M2 actions and milestones are hand-authored, in docs/status/status-narrative.json."
@@ -1304,6 +1304,17 @@ footer { display:flex; justify-content:space-between; gap:1rem; color:var(--mute
       "status": "Complete",
       "verification": "make cold-boot-scenarios plays four routes from power-on with both brothers, by controller presses alone, and checks each: palace exit, an overworld encounter and Rauru; a Rauru house door; three deaths, Game Over and Continue; and the first Parapa Palace elevator. All four pass on the current build",
       "notes": "Hardening items 12 and 14. These are the places played by hand on 2026-09-25, now reached from boot without save states, so any later change that breaks them shows up. The routes are deterministic rather than robust: a changed input or lag frame reshuffles random encounters, so a route may need re-recording after a ROM change.",
+      "completedAt": "2026-10-01",
+      "observedAt": "2026-10-01"
+    },
+    {
+      "dependency": "Scoped milestone; does not close the full game",
+      "plannedAt": null,
+      "id": "controller-two-fceux",
+      "name": "Controller two on a second emulator",
+      "status": "Complete",
+      "verification": "make fceux-controller-two drives FCEUX 2.6.6's real second controller: Luigi joins only from it, each controller moves and jumps only its own brother, both play at once, and Luigi sleeps after a minute without controller two and wakes on a press; 9 of 9 checks pass on the current build",
+      "notes": "Hardening item 13. The Mesen lanes cannot drive a real second controller port, so they feed Player 2 through the game's input bytes. FCEUX is an independent emulator whose own second controller the game reads like a real one. Real hardware is still untested.",
       "completedAt": "2026-10-01",
       "observedAt": "2026-10-01"
     }
