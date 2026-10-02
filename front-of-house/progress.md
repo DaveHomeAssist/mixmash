@@ -139,6 +139,15 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - New smoke checks: no panel or window scrolls in every phase at five sizes; every room's Book and Promote at 1024 × 700 in Sandbox; the settlement opens in a window; Last settlement and Show history open as windows; the Deals window; the mode buttons in the menu and their second press. Service worker v17.
 - Next: step 5, tabs in the phone's bottom sheet.
 
+## 2026-10-02: HUD step 5, phone tabs
+
+- On a phone the sheet and the settlement window never scroll (decision 12). Groups marked `data-tab` share one space a tab at a time: Lot, Tools and Actions in Build; Problem and Night in Show (the incident brings its tab forward); a tab per act on Book; Price and ads, Forecast and Presales on Promote; Revenue, Costs, Payout and Crowd in the settlement. Arrow keys move between tabs, and a wider window drops them.
+- Build and Show keep a peek sheet with the phase card as its header; Book, Promote and Done take the height under the strip.
+- Measured at 390 × 844: every tab fits (the rain incident fills the Problem tab exactly), and the board takes 46% of the height in Build and Show.
+- The strip keeps two rows (nav, phase and menu; then the meters) instead of moving the meters into the menu; HUD.md section 8 says so.
+- New smoke check: a whole show on a phone, every tab of every phase and of the settlement window, the incident's tab, the 45% board, and the tabs dropping at a wider window. Service worker v18.
+- Next: step 6, performance.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

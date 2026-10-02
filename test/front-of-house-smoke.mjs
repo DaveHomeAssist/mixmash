@@ -5,7 +5,7 @@
  * suggested layout, promote, show night, settle), then checks reload, keyboard
  * placement, save codes, the next show, the out-of-money stop and Start over, signing during the post-incident wind-down, reduced
  * motion, a phone-width layout, the Career, Sandbox and Wet lot buttons, the room and nights choice, the board camera, the
- * no-scroll layout and the menu, the Build and Show corner HUD, the sheets and windows, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
+ * no-scroll layout and the menu, the Build and Show corner HUD, the sheets and windows, the phone tabs, and small-text contrast. Game state is read through `window.render_game_to_text()` and the
  * `window.__frontOfHouse` hook, so the assertions don't depend on markup details.
  *
  *   npm run smoke:front-of-house
@@ -595,15 +595,60 @@ try {
   assert.ok(overflow <= 0, `no horizontal scroll at 390px (overflow ${overflow}px)`);
   const onPhone = await measureLayout(page4);
   assert.deepEqual(onPhone.scroll, [0, 0, 0, 0], 'the page does not scroll on a phone either');
-  assert.ok(onPhone.lotClear && onPhone.clear.h >= 844 * 0.45, `the board takes at least 45% of the phone's height, clear of the sheet (${JSON.stringify(onPhone.clear)})`);
+  // Book is a document, so on a phone its sheet takes the height under the strip (HUD.md
+  // section 8); the board keeps 45% of the height in Build and Show, checked below.
   const sheetBox = await page4.evaluate(() => {
     const p = document.querySelector('#panel');
     const r = p.getBoundingClientRect();
     return { left: r.left, bottom: r.bottom, scrolls: p.scrollHeight > p.clientHeight };
   });
-  assert.ok(sheetBox.left === 0 && Math.abs(sheetBox.bottom - 844) < 1 && sheetBox.scrolls, `the phase panel is a bottom sheet that scrolls inside itself (${JSON.stringify(sheetBox)})`);
+  assert.ok(sheetBox.left === 0 && Math.abs(sheetBox.bottom - 844) < 1 && !sheetBox.scrolls, `the phase panel is a bottom sheet that doesn't scroll (${JSON.stringify(sheetBox)})`);
   await page4.screenshot({ path: join(output, 'phone.png') });
   ok('fits a 390px phone with no page scroll, the board on top and the panel in a bottom sheet');
+
+  // Phone tabs (docs/HUD.md decision 12): a whole show at 390x844, where every tab of the
+  // sheet and of the settlement window fits without scrolling, and Build and Show keep the
+  // board at 45% of the height or more.
+  const phoneFlow = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const { page: page7, failures: failures7 } = await open(phoneFlow);
+  const tabsFit = async (phase, { board = false } = {}) => {
+    for (const root of ['#panel', '#win-body']) {
+      if (root === '#win-body' && await page7.isHidden('#win')) continue;
+      const names = await page7.locator(`${root} .tabbar [role="tab"]`).allTextContents();
+      for (const name of names.length ? names : [null]) {
+        if (name) await page7.locator(`${root} .tabbar [role="tab"]`, { hasText: name }).first().click();
+        const fit = await page7.evaluate((r) => { const e = document.querySelector(r); return [e.scrollHeight, e.clientHeight]; }, root);
+        assert.ok(fit[0] <= fit[1] + 1, `${phase}${name ? `, tab ${name}` : ''}: ${root} fits on the phone (${fit[0]} in ${fit[1]})`);
+      }
+      if (names.length) await page7.locator(`${root} .tabbar [role="tab"]`).first().click();
+    }
+    if (board) {
+      const share = await page7.evaluate(() => window.__frontOfHouse.board().view.safe.h / innerHeight);
+      assert.ok(share >= 0.45, `${phase}: the board takes ${(share * 100).toFixed(0)}% of the phone's height`);
+    }
+  };
+  await tabsFit('Book');
+  assert.equal(await page7.locator('#panel .tabbar [role="tab"]').count(), 2, 'one tab per act on the phone');
+  await page7.locator('[data-deal="guarantee"]:visible').first().click();
+  await page7.locator('#panel .tabbar [role="tab"]', { hasText: 'Actions' }).click();
+  await page7.click('[data-act="starter"]');
+  await tabsFit('Build', { board: true });
+  await page7.locator('#panel .tabbar [role="tab"]', { hasText: 'Actions' }).click();
+  await page7.click('[data-act="confirm-build"]');
+  await tabsFit('Promote');
+  await page7.click('[data-act="confirm-promo"]');
+  await page7.waitForSelector('[data-act="respond"]');
+  assert.equal(await page7.getAttribute('#panel .tabbar [aria-selected="true"]', 'data-tab-name'), 'Problem', 'the incident brings its tab forward');
+  await tabsFit('Show', { board: true });
+  await page7.locator('#panel .tabbar [role="tab"]', { hasText: 'Problem' }).click();
+  await page7.locator('[data-act="respond"]:visible:not([disabled])').first().click();
+  await tabsFit('Settle');
+  await page7.click('[data-act="accept"]');
+  await tabsFit('Done');
+  await page7.setViewportSize({ width: 1280, height: 900 });
+  await page7.waitForFunction(() => !document.querySelector('.tabbar'));
+  assert.equal(await page7.isVisible('.career'), true, 'a wider window drops the tabs and shows every group');
+  ok('on a phone every tab of the sheet and the settlement fits without scrolling, the incident brings its tab forward, and Build and Show keep the board at 45% or more');
 
   // The mode buttons start a new game, redraw the page at once and save it.
   const shownCash = async () => Number((await page4.textContent('#meter-cash')).replace(/[^\d]/g, ''));
@@ -679,10 +724,10 @@ try {
   assert.deepEqual(lowContrast, [], 'small text meets 4.5:1');
   ok('small text meets the 4.5:1 contrast ratio');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6], [], 'no page errors, console errors or failed requests');
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
-  await Promise.all([context, other, calm, phone, spritesCtx, small].map((c) => c.close()));
+  await Promise.all([context, other, calm, phone, spritesCtx, small, phoneFlow].map((c) => c.close()));
 } finally {
   await browser.close();
   await server.close();
