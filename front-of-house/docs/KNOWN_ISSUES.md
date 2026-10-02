@@ -10,7 +10,7 @@ One list of what is wrong, weak or unrecorded, so it isn't scattered through ses
 
 | ID | Severity | Area | Issue | Evidence | Next step |
 | --- | --- | --- | --- | --- | --- |
-| KI-01 | Medium | Balance | **Incident choice barely matters.** `W_INCIDENT` is 10 of 100 satisfaction points and the pass mark is 60, so ignoring an incident costs at most 7 points. PA dropout's paid response changes only the score, so free is always right; rain and curfew at least move walk-up money | Audit run: PA dropout answered "Wait it out", satisfaction 93/100. [BALANCE_BASELINE.md](BALANCE_BASELINE.md) section 5; `paired.mjs` shows paid responses add 0.3 to 4.4 points | Dave: decide whether incidents should cost money or time as well as score. Pairs with the queue and staffing slice in [FUTURE.md](FUTURE.md#lot-live-show-experiment-proposal) |
+| KI-01 | Medium | Balance | **Incident stakes need playtesting.** The incident component has only 10 of 100 satisfaction points, so a strong layout can still pass with a weak response. Responses already affect expenses, satisfaction-linked bar revenue and reputation; eligible response costs also change the door-deal payout. Neither free nor paid is universally best | Audit run: "Wait it out" finished at 93/100. The paired engine example below gives the paid PA response a $7 net advantage and two more reputation points. [BALANCE_BASELINE.md](BALANCE_BASELINE.md) section 5 compares response policies | Compare paired net and career outcomes, then have Dave playtest whether the trade is readable and meaningful before retuning. Pairs with the queue and staffing slice in [FUTURE.md](FUTURE.md#lot-live-show-experiment-proposal) |
 | KI-02 | Medium | Balance | **The door deal is the answer on the Lot.** At the fair $20 price it nets the promoter more than the guarantee at every draw; the guarantee wins only at $25+ with a strong draw | [BALANCE_BASELINE.md](BALANCE_BASELINE.md) sections 2, 3 and 6 (door 88% of seeds, guarantee 59%) | Dave, after the playtest (already a gate in FUTURE.md) |
 | KI-03 | Medium | Balance | **Building is solved in one click.** The suggested layout scores 98 to 100 at every draw, while careful play picks the budget layout, so the light tower and medium PA rarely pay for themselves | BALANCE_BASELINE.md section 2; `progress.md` TODO; FUTURE.md gates | Dave: should satisfaction cost more on the Lot? |
 | KI-04 | Low | Copy | The settlement's incident tip says a stronger response "saves the night" even when the night scored 93 | [STRINGS.md](STRINGS.md) `TIPS.incident`; audit screenshot | Name what the incident actually cost, or skip the tip when the loss is small |
@@ -23,6 +23,17 @@ One list of what is wrong, weak or unrecorded, so it isn't scattered through ses
 | KI-11 | Low | Scope | Not built with the rooms: a ticketing platform, a hillside model, cancelling a held night, simulator verdicts for the Club and later, and four venue art looks | `progress.md` TODO; [FUTURE.md](FUTURE.md) | On the roadmap per tier |
 | KI-12 | Low | Release | Public release gates are open: Dave's playtest sign-off, CT-DEC-10 and CT-DEC-11 still Proposed, `noindex`, no hub card, no sitemap entry | [RELEASE.md](RELEASE.md); [DECISIONS.md](DECISIONS.md) | Dave |
 | KI-13 | Low | Copy | The Show card's heading stays "Doors are open" all night, so a PA dropout at 21:05 sits under it | `game.js` `showPanel`; screenshot after the R-11a fix | Let the heading follow the clock (doors, set, curfew) |
+
+### KI-01: paired engine example
+
+Reproduced with `evaluateShow` using the Lot's `STARTER_LAYOUT`, Sodium Arcade, a door deal, $20 tickets, no ads, venue reputation 0, draw 125 and a PA dropout. These are controlled engine inputs, including a known draw; they are not a player policy or a claim about every show.
+
+| Response | Satisfaction | Bar revenue | Response cost | Artist payout | Show net | Reputation change | Act relationship change |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Wait it out (`wait`) | 93 | $698 | $0 | $287 | $821 | +17 | −4 |
+| Swap in the backup amp (`backup-amp`) | 98 | $735 | $100 | $217 | $828 | +19 | −6 |
+
+The backup costs $100, earns $37 more at the bar and reduces the artist's door-deal share by $70, leaving $7 more show net. The smaller payout also worsens the act relationship by two more points. This demonstrates an existing financial and career trade-off; it does not establish the best response across draws, deals or career goals. Balance and incident weights remain unchanged.
 
 ## Fixed
 

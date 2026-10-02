@@ -16,7 +16,7 @@ The site is the `gh-pages` branch served as-is by GitHub Pages; a merge into `gh
 - [ ] `npm run smoke:front-of-house` passes locally (25+ checks, no console errors).
 - [ ] A file was added, removed or renamed → `npm run admin:index` and `admin/catalog.json` committed.
 - [ ] An image was added or replaced → it is in `sprites/manifest.mjs` with its source.
-- [ ] A save field changed → schema version, `migrateSave`, a frozen fixture in `test/fixtures/` and [SAVE_FORMAT.md](SAVE_FORMAT.md) all move together.
+- [ ] A save field changed → follow the [migration policy](SAVE_FORMAT.md#migration-policy). Compatible optional fields use `normalizeState` defaults, with tests for older saves and the new field, and updated schema documentation. Only a change that breaks older saves bumps `version` and `schema`; it also needs `migrateSave`, a frozen fixture in `test/fixtures/`, and migration tests. Preserve the existing namespace unless an intentional fresh start is approved.
 - [ ] `game.js`, `board.js`, `engine.mjs`, `data.mjs`, `styles.css` or `index.html` changed → the service worker `VERSION` in `/sw.js` is bumped.
 - [ ] A new screen, window, control or edge path → [SCREENS.md](SCREENS.md) updated.
 - [ ] A design choice was made → a `CT-DEC-NN` entry in [DECISIONS.md](DECISIONS.md), Proposed until Dave accepts it.
@@ -39,11 +39,11 @@ The site is the `gh-pages` branch served as-is by GitHub Pages; a merge into `gh
 
 ## 2. Rollback
 
-1. Open a revert PR of the merge commit into `gh-pages`. Revert only Front of House files; don't touch other routes, `api/` or hosting config.
-2. Wait for CI, merge, and run the live smoke against the reverted build.
-3. **Saves:** a revert past a schema change loses saves written by the newer version. `normalizeState` treats a schema it doesn't know as no save and starts a new game, which overwrites the old save on the player's next step. If the reverted change raised the schema, ship a forward fix instead of a revert.
-4. Bump the service worker `VERSION` in the revert too, so cached clients pick it up.
-5. Add a KNOWN_ISSUES.md row and a `progress.md` entry for what went wrong.
+1. **Check save compatibility before preparing a revert.** Identify the deployed commit, the target revision and the save formats written by each. `normalizeState` treats an unknown schema as no save and starts a new game, which overwrites the old save on the player's next step. If the change raised the schema, ship a forward fix instead. Even when the schema is unchanged, verify that the target can load saves from the deployed version without losing progress; if it cannot, use a forward fix.
+2. Prepare the correction on a branch and open a PR into `gh-pages`. Scope the revert to Front of House and its required supporting changes; preserve unrelated routes, `api/` and hosting configuration. Do not blindly revert a merge that also contains unrelated work.
+3. **Before CI and merge**, bump `/sw.js` `VERSION` beyond the deployed value so cached clients pick up the corrected runtime. Add a [KNOWN_ISSUES.md](KNOWN_ISSUES.md) row, a `progress.md` entry and a CHANGELOG entry explaining the rollback. Regenerate the references and balance baseline, and regenerate the admin index if tracked files changed. Complete the local checks in section 1, including save compatibility checks against the prepared correction.
+4. Wait for green CI on the PR's final commit, then merge into `gh-pages`. Do not amend the release after its checks without rerunning the affected checks.
+5. Verify the remote merge commit and its successful Pages deployment, then run the live smoke and remaining after-deploy checks in section 1. Record the deployed revision and any checks that still require human or device acceptance.
 
 ## 3. Public launch (one time)
 

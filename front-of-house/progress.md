@@ -188,3 +188,9 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - **Added the reference documents** that back the design: generated [`ASSETS.md`](docs/ASSETS.md) (asset manifest, from the new register `sprites/manifest.mjs`), [`CATALOG.md`](docs/CATALOG.md) (phases, actions, refusals, a transition grid played through the engine, rooms, incidents, objects, acts, saved state) and [`STRINGS.md`](docs/STRINGS.md) (copy tables and labels), written by `npm run docs:front-of-house` and checked in CI like the balance baseline; hand-written [`SCREENS.md`](docs/SCREENS.md), [`KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md), [`RELEASE.md`](docs/RELEASE.md) and [`GLOSSARY.md`](docs/GLOSSARY.md). `board.js` exports `SPRITE_FIT` for the manifest. Service worker v21.
 - Not changed: balance, incident weights, copy, the Band label. Those are KI-01 to KI-06, waiting on Dave's playtest.
 
+## 2026-10-02: Reference pack review corrections
+
+- Corrected the rollback runbook: check save compatibility before preparing a revert; update the service worker and records before final CI and merge; verify the actual Pages revision afterward.
+- Aligned the release checklist with SAVE_FORMAT.md: optional fields use normalization defaults and compatibility tests; only breaking changes require a schema bump and migration.
+- Replaced KI-01's claim that a free PA response always wins with a scoped balance question and a paired engine example. At draw 125 with the suggested layout and a $20 door deal, the backup amp produces $828 net versus $821 for waiting, and +19 reputation versus +17. These are controlled inputs, not a universal strategy.
+- No additional gameplay, balance or save changes. Verification and deployment evidence will be recorded on the PR; human playtest and device acceptance remain outstanding.
