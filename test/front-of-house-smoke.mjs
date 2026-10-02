@@ -724,10 +724,64 @@ try {
   assert.deepEqual(lowContrast, [], 'small text meets 4.5:1');
   ok('small text meets the 4.5:1 contrast ratio');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7], [], 'no page errors, console errors or failed requests');
+  // Opt-in Lot doors pilot: one extra decision, saved before and after selection, and no HUD scroll.
+  const pilotDesktop = await browser.newContext({ viewport: { width: 1024, height: 700 }, reducedMotion: 'reduce' });
+  const pilotPage = await pilotDesktop.newPage();
+  const pilotFailures = trackPageFailures(pilotPage, server.origin);
+  await pilotPage.goto(`${url}?night-slice=1`);
+  await pilotPage.waitForFunction(() => typeof window.render_game_to_text === 'function');
+  await pilotPage.click('[data-deal="guarantee"]');
+  await pilotPage.click('[data-act="starter"]');
+  await pilotPage.click('[data-act="confirm-build"]');
+  await pilotPage.click('[data-act="confirm-promo"]');
+  await pilotPage.waitForSelector('[data-act="choose-crew"]');
+  assert.equal((await game(pilotPage)).show.pilotCrew, null);
+  await checkNoScroll(pilotPage, 'show');
+  await pilotPage.reload();
+  await pilotPage.waitForSelector('[data-act="choose-crew"]');
+  assert.equal((await game(pilotPage)).show.pilotCrew, null, 'reload preserves the unanswered doors choice');
+  await pilotPage.click('[data-act="choose-crew"][data-choice="bar"]');
+  assert.equal((await game(pilotPage)).show.pilotCrew, 'bar');
+  await pilotPage.waitForSelector('[data-act="respond"]');
+  await checkNoScroll(pilotPage, 'show');
+  await pilotPage.click('[data-act="respond"]:not([disabled])');
+  assert.ok((await game(pilotPage)).settlement.doorRush, 'the settlement includes the rush outcome');
+  assert.match(await pilotPage.textContent('#win'), /walk-ups left/);
+  await checkNoScroll(pilotPage, 'settle');
+  ok('the opt-in Lot doors choice survives reload, changes the settlement, and fits the desktop HUD');
+
+  const pilotPhone = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const pilotMobile = await pilotPhone.newPage();
+  const pilotPhoneFailures = trackPageFailures(pilotMobile, server.origin);
+  await pilotMobile.goto(`${url}?night-slice=1`);
+  await pilotMobile.waitForFunction(() => typeof window.render_game_to_text === 'function');
+  await pilotMobile.locator('[data-deal="guarantee"]:visible').first().click();
+  await pilotMobile.locator('#panel .tabbar [role="tab"]', { hasText: 'Actions' }).click();
+  await pilotMobile.click('[data-act="starter"]');
+  await pilotMobile.click('[data-act="confirm-build"]');
+  await pilotMobile.click('[data-act="confirm-promo"]');
+  await pilotMobile.waitForSelector('[data-act="choose-crew"]');
+  assert.equal(await pilotMobile.getAttribute('#panel .tabbar [aria-selected="true"]', 'data-tab-name'), 'Problem');
+  const pilotTabFit = await pilotMobile.evaluate(() => {
+    const p = document.querySelector('#panel');
+    return { scroll: p.scrollHeight - p.clientHeight, board: window.__frontOfHouse.board().view.safe.h / innerHeight };
+  });
+  assert.ok(pilotTabFit.scroll <= 1 && pilotTabFit.board >= 0.45, 'phone doors choice fits without scrolling or shrinking the board');
+  await pilotMobile.click('[data-act="choose-crew"][data-choice="gate"]');
+  await pilotMobile.waitForSelector('[data-act="respond"]');
+  assert.equal((await game(pilotMobile)).show.pilotCrew, 'gate');
+  await pilotMobile.click('[data-act="respond"]:visible:not([disabled])');
+  await pilotMobile.locator('#win-body .tabbar [role="tab"]', { hasText: 'Crowd' }).click();
+  const crowdFit = await pilotMobile.evaluate(() => {
+    const body = document.querySelector('#win-body'); return body.scrollHeight - body.clientHeight;
+  });
+  assert.ok(crowdFit <= 1, 'the extra settlement explanation fits the phone Crowd tab');
+  ok('the phone doors choice and settlement fit in the existing tabs without scrolling');
+
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7, ...pilotFailures, ...pilotPhoneFailures], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
-  await Promise.all([context, other, calm, phone, spritesCtx, small, phoneFlow].map((c) => c.close()));
+  await Promise.all([context, other, calm, phone, spritesCtx, small, phoneFlow, pilotDesktop, pilotPhone].map((c) => c.close()));
 } finally {
   await browser.close();
   await server.close();
