@@ -1391,6 +1391,7 @@ $('#sheet-expand').addEventListener('click', () => setSheetSize(document.body.da
 $('#sheet-collapse').addEventListener('click', () => setSheetSize(document.body.dataset.sheetSize === 'collapsed' ? 'peek' : 'collapsed'));
 // Only the handle owns the gesture, so a slider, tab or board drag cannot resize the sheet.
 let sheetStart = null;
+$('#sheet-grip').addEventListener('touchstart', (event) => event.preventDefault(), { passive: false });
 $('#sheet-grip').addEventListener('pointerdown', (event) => {
   if (event.pointerType !== 'touch' || !event.isPrimary) return;
   sheetStart = event.clientY;
@@ -1400,6 +1401,7 @@ $('#sheet-grip').addEventListener('pointerup', (event) => {
   if (sheetStart === null || !event.isPrimary) return;
   const delta = event.clientY - sheetStart;
   sheetStart = null;
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   if (Math.abs(delta) < 35) return;
   setSheetSize(delta < 0 ? 'expanded' : 'collapsed');
 });
