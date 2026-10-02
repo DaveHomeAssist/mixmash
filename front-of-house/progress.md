@@ -148,6 +148,14 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - New smoke check: a whole show on a phone, every tab of every phase and of the settlement window, the incident's tab, the 45% board, and the tabs dropping at a wider window. Service worker v18.
 - Next: step 6, performance.
 
+## 2026-10-02: Mockup review refinement
+
+- Applied Dave's accepted review to the already built HUD steps 1 to 5. Show distinguishes its pre-incident crowd outlook from paused decisions; response copy explains consequences rather than the handling score. Locate centres the affected PA, gate or stage without answering the incident.
+- Phone Build and Show sheets can expand, reduce, hide and restore through 44 px buttons or an optional swipe on the controls. Collapsed content is inert; new decisions restore the sheet. Phone tabs use 44 px targets and tool shortcut badges hide.
+- Added light controls by default and a persistent dark toggle, preserving the map palette. Idle navigation remains visible. Service worker v20.
+- Extended the real-browser smoke rail for sheet controls, touch gestures, theme persistence, 375 px and ultrawide layouts, and equipment location. The optional doors crew flow remains covered. Verification results belong to the PR and deployment receipt; human/device acceptance is still outstanding.
+- Next: HUD step 6, performance. The minimap is deferred, and public promotion still waits on Dave's playtest sign-off.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.

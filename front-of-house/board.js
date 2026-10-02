@@ -236,6 +236,16 @@ export function createBoard(canvas) {
     return { zoom: cam.zoom, x: cam.x, y: cam.y, zooms: ZOOMS.slice() };
   }
 
+  // Put affected equipment in the clear centre, away from the docked HUD cards.
+  function centerOn(x, y) {
+    cam.zoom = 2;
+    cam.x = x;
+    cam.y = y;
+    clampCamera();
+    applyCamera();
+    redraw();
+  }
+
   // A world point to client coordinates, and back to a tile: for the smoke rail.
   function clientOf(x, y, z = 0) {
     const rect = canvas.getBoundingClientRect();
@@ -859,7 +869,7 @@ export function createBoard(canvas) {
   }
 
   return {
-    resize, setClear, draw, tileAt, turnView, objectAt, info, placeOf, zoomTo, zoomBy, panBy, follow, camera, clientOf,
+    resize, setClear, draw, tileAt, turnView, objectAt, info, placeOf, zoomTo, zoomBy, panBy, follow, centerOn, camera, clientOf,
     destroy: () => spriteListeners.delete(onSprites),
   };
 }

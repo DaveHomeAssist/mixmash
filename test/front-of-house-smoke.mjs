@@ -27,7 +27,8 @@ import {
 import { readFile } from 'node:fs/promises';
 
 const server = await startStaticServer();
-const url = `${server.origin}/front-of-house/`;
+const url = process.env.FRONT_OF_HOUSE_BASE_URL || `${server.origin}/front-of-house/`;
+const appOrigin = new URL(url).origin;
 const output = process.env.FRONT_OF_HOUSE_SCREENSHOT_DIR || await mkdtemp(join(tmpdir(), 'front-of-house-smoke-'));
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch(launchOptions());
@@ -36,7 +37,7 @@ const ok = (name) => { checks.push(name); console.log(`  ok  ${name}`); };
 
 async function open(context) {
   const page = await context.newPage();
-  const failures = trackPageFailures(page, server.origin);
+  const failures = trackPageFailures(page, appOrigin);
   await page.goto(url);
   await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
   return { page, failures };
@@ -727,7 +728,7 @@ try {
   // Opt-in Lot doors pilot: one extra decision, saved before and after selection, and no HUD scroll.
   const pilotDesktop = await browser.newContext({ viewport: { width: 1024, height: 700 }, reducedMotion: 'reduce' });
   const pilotPage = await pilotDesktop.newPage();
-  const pilotFailures = trackPageFailures(pilotPage, server.origin);
+  const pilotFailures = trackPageFailures(pilotPage, appOrigin);
   await pilotPage.goto(`${url}?night-slice=1`);
   await pilotPage.waitForFunction(() => typeof window.render_game_to_text === 'function');
   await pilotPage.click('[data-deal="guarantee"]');
@@ -752,7 +753,7 @@ try {
 
   const pilotPhone = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const pilotMobile = await pilotPhone.newPage();
-  const pilotPhoneFailures = trackPageFailures(pilotMobile, server.origin);
+  const pilotPhoneFailures = trackPageFailures(pilotMobile, appOrigin);
   await pilotMobile.goto(`${url}?night-slice=1`);
   await pilotMobile.waitForFunction(() => typeof window.render_game_to_text === 'function');
   await pilotMobile.locator('[data-deal="guarantee"]:visible').first().click();
@@ -778,7 +779,74 @@ try {
   assert.ok(crowdFit <= 1, 'the extra settlement explanation fits the phone Crowd tab');
   ok('the phone doors choice and settlement fit in the existing tabs without scrolling');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7, ...pilotFailures, ...pilotPhoneFailures], [], 'no page errors, console errors or failed requests');
+  // Review refinements: stable sheet controls, incident priority and equipment location.
+  const review = await browser.newContext({ viewport: { width: 375, height: 812 }, reducedMotion: 'reduce', hasTouch: true });
+  const { page: hud, failures: reviewFailures } = await open(review);
+  assert.equal(await hud.getAttribute('html', 'data-theme'), 'light', 'controls default to light');
+  await hud.click('#menu-btn');
+  await hud.click('#theme-toggle');
+  await hud.reload();
+  await hud.waitForFunction(() => !!window.__frontOfHouse);
+  assert.equal(await hud.getAttribute('html', 'data-theme'), 'dark', 'dark controls persist through reload');
+  const save = (s) => Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: s })).toString('base64');
+  await loadCode(hud, save(createGame(paSeed)));
+  await hud.locator('[data-deal="guarantee"]:visible').first().click();
+  await hud.locator('#panel [role="tab"]', { hasText: 'Actions' }).click();
+  await hud.click('[data-act="starter"]');
+  await hud.click('#sheet-collapse');
+  assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), true, 'hidden controls leave keyboard navigation');
+  await hud.waitForFunction(() => window.__frontOfHouse.board().view.safe.h / innerHeight > 0.8);
+  await hud.click('#sheet-collapse');
+  assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), false, 'show controls restores keyboard access');
+  await hud.click('#sheet-expand');
+  assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'expanded');
+  await hud.click('#sheet-expand');
+  assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek');
+  const touch = await review.newCDPSession(hud);
+  const handle = await hud.locator('#sheet-expand').boundingBox();
+  const x = handle.x + handle.width / 2;
+  const y = handle.y + handle.height / 2;
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - 70 }] });
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'expanded');
+  await hud.locator('#sheet-expand').tap();
+  assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek', 'a swipe does not block the next tap');
+  await touch.detach();
+  await hud.screenshot({ path: join(output, 'review-phone-build.png') });
+  await hud.click('[data-act="confirm-build"]');
+  await hud.click('[data-act="confirm-promo"]');
+  await hud.waitForSelector('[data-act="respond"]');
+  assert.equal(await hud.isVisible('#skip-btn'), false, 'incident responses take priority over skipping');
+  assert.match(await hud.textContent('#show-status'), /Paused.*response needed/);
+  assert.doesNotMatch(await hud.textContent('#incident-box'), /handling|score/i, 'choices explain consequences without a raw handling score');
+  await hud.click('#sheet-collapse');
+  await resizeTo(hud, 1440, 900);
+  assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), false, 'desktop restores controls after phone collapse');
+  await hud.click('#locate-incident');
+  assert.equal((await game(hud)).playback.paused, true, 'locating equipment does not resolve the incident');
+  const located = await hud.evaluate(() => {
+    const s = window.__frontOfHouse.state();
+    const o = s.venue.objects.find((p) => p.type === 'pa-s' || p.type === 'pa-m');
+    const point = window.__frontOfHouse.boardClientOf(o.x + 0.5, o.y + 0.5);
+    return { clear: point.clear, target: document.elementFromPoint(point.x, point.y)?.id, zoom: window.__frontOfHouse.board().camera.zoom };
+  });
+  assert.deepEqual(located, { clear: true, target: 'board', zoom: 2 }, 'Locate PA centres equipment on the unobstructed board');
+  await hud.screenshot({ path: join(output, 'review-show-locate.png') });
+  await hud.click('#zoom-fit');
+  await checkNoScroll(hud, 'show');
+  await resizeTo(hud, 2560, 720);
+  assert.deepEqual((await measureLayout(hud)).scroll, [0, 0, 0, 0], 'ultrawide keeps a viewport shell');
+  await resizeTo(hud, 375, 812);
+  await hud.locator('#panel [role="tab"]', { hasText: 'Problem' }).click();
+  assert.deepEqual((await measureLayout(hud)).scrolling, [], 'the paused Show controls fit at 375px');
+  await hud.screenshot({ path: join(output, 'review-phone-show.png') });
+  await hud.locator('[data-act="respond"]:visible:not([disabled])').first().click();
+  assert.equal((await game(hud)).phase, 'settle', 'the located incident still completes through the real response control');
+  await review.close();
+  ok('phone sheet controls, theme persistence, honest incident status, equipment location and ultrawide layout');
+
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7, ...pilotFailures, ...pilotPhoneFailures, ...reviewFailures], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
   await Promise.all([context, other, calm, phone, spritesCtx, small, phoneFlow, pilotDesktop, pilotPhone].map((c) => c.close()));

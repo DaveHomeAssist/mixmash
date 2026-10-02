@@ -26,6 +26,14 @@ const INCIDENT_TEXT = {
   rain: 'Rain rolls in as the doors open. Walk-up sales will suffer unless people have cover.',
   'pa-dropout': 'The PA cuts out in the middle of the set. The crowd is waiting.',
   'gate-jam': 'The entry gate jams and the line backs up down the block.',
+  curfew: 'The venue has reached curfew. Decide how to end the set.',
+};
+// Consequences describe the existing responses; they do not invent repair times or new rules.
+const RESPONSE_TEXT = {
+  rain: { 'ride-out': 'No cover', ponchos: 'Personal cover', canopy: 'Shared shelter' },
+  'pa-dropout': { wait: 'The crowd waits through the dropout', 'backup-amp': 'Restore sound with the backup' },
+  'gate-jam': { 'ride-out': 'Queue backs up', 'second-lane': 'Restore entry flow' },
+  curfew: { obey: 'Set ends early', appeal: 'Finish the song' },
 };
 const TIPS = {
   sound: `Sound and light scored lowest. Rent the medium PA for crowds over ${D.PA_COVERAGE.S}, and add the light tower.`,
@@ -158,6 +166,7 @@ function mount() {
   const hud = HUD_PHASES.includes(state.phase);
   document.body.dataset.layout = hud ? 'hud' : 'sheet';
   el.panel.innerHTML = hud ? html : `<div class="plate at-sheet">${html}</div>`;
+  setSheetSize('peek');
   closeWindow({ focus: false });
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
@@ -592,12 +601,14 @@ function showPanel() {
     <div class="plate at-tl card-plate">
       <p class="eyebrow">Show night · ${esc(venueSpec(state.venue).name)}</p>
       <h2>Doors are open</h2>
-      <p class="timecode" id="clock" aria-hidden="true">19:00</p>
+      <p class="timecode" id="clock" aria-label="Show clock">19:00</p>
+      <p class="show-status" id="show-status"></p>
       <p id="msg" class="message" aria-live="polite"></p>
     </div>
     <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
     <div class="plate at-bl feed-plate" data-tab="Night"><ol class="feed" id="feed" aria-live="polite"></ol></div>
     <div class="plate at-br actions-plate" data-tab="Night">
+      <button type="button" data-act="locate-incident" id="locate-incident" hidden>Locate equipment</button>
       <p class="crowd-now"><span class="meta-label">In the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'}</span> <span id="crowd-now">0</span></p>
       <p class="hint" id="rush-now" hidden></p>
       <button type="button" data-act="skip" id="skip-btn">Skip to the problem</button>
@@ -626,6 +637,7 @@ function startPlayback() {
   const roll = rollShow(state.seed, state.booking.artistId);
   const preview = showPreview(state);
   ui.play = { start: performance.now(), at: roll.incidentAt, p: 0, beats: 0, preview: preview.attendance, after: null };
+  $('#show-status').textContent = `Crowd outlook ${preview.satisfaction}/100 · before incidents`;
   feedLine(`Doors open. ${preview.presale} people already hold tickets.`);
   if (state.show && state.show.pilotCrew === null) { reachDoorsChoice(); return; }
   if (state.show && (state.show.pilotCrew === 'bar' || state.show.pilotCrew === 'gate')) {
@@ -681,6 +693,8 @@ function loop() {
 function reachDoorsChoice() {
   const play = ui.play;
   play.paused = true;
+  $('#show-status').textContent = 'Paused · choose the doors crew';
+  setSheetSize('peek');
   const v = evaluateVenue(state.venue);
   const preview = showPreview(state);
   const keep = doorRushPilot(v, preview.attendance, preview.presale, 'bar');
@@ -711,6 +725,7 @@ function chooseDoorCrew(choice) {
   if (!play || !act({ type: 'chooseDoorCrew', choice })) return;
   const r = showPreview(state).doorRush;
   play.preview = showPreview(state).attendance;
+  $('#show-status').textContent = `Crowd outlook ${showPreview(state).satisfaction}/100 · before incidents`;
   feedLine(`Projected doors rush: ${r.waiting} in line after ${D.LOT_PILOT_RUSH_MINUTES} minutes; ${r.lostWalkups} walk-ups may leave. Bar can serve ${r.barCapacity}.`);
   const box = $('#incident-box'); if (box) box.hidden = true;
   const rush = $('#rush-now');
@@ -726,28 +741,35 @@ function reachIncident() {
   const play = ui.play;
   if (play.paused) return;
   play.paused = true;
+  $('#show-status').textContent = 'Paused · incident response needed';
+  setSheetSize('peek');
   const c = $('#clock'); if (c) c.textContent = clock(play.p);
   const id = state.show.incidentId;
   const incident = D.INCIDENTS[id];
   feedLine(`${clock(play.p)}: ${incident.label}.`);
   const effect = (r) => {
     const bits = [];
-    if (r.walkupMult !== undefined) bits.push(`walk-up sales ${Math.round(r.walkupMult * 100)}%`);
+    if (r.walkupMult !== undefined) bits.push(`walk-ups ${Math.round(r.walkupMult * 100)}%`);
     if (r.flowMult !== undefined) bits.push(`entry flow ${Math.round(r.flowMult * 100)}%`);
-    bits.push(`handling ${Math.round(r.score * 100)}`);
+    bits.unshift(RESPONSE_TEXT[id]?.[r.id] || 'Respond to the incident.');
     return bits.join(' · ');
   };
   const box = $('#incident-box');
   box.innerHTML = `
     <div class="incident" role="group" aria-labelledby="incident-title">
       <h3 id="incident-title">${esc(incident.label)}</h3>
-      <p>${esc(INCIDENT_TEXT[id])}</p>
+      <p>${esc(INCIDENT_TEXT[id] || incident.label)}</p>
       ${incident.responses.map((r) => `
         <button type="button" class="choice" data-act="respond" data-response="${r.id}" ${r.cost > state.cash ? 'disabled' : ''}>
           <span class="choice-head"><strong>${esc(r.label)}</strong> <span class="cost">${r.cost ? money(r.cost) : 'free'}${r.cost > state.cash ? ' · not enough cash' : ''}</span></span>
           <span class="choice-effect">${effect(r)}</span>
         </button>`).join('')}
     </div>`;
+  // Rain affects the whole venue; the other incidents have a specific piece of equipment.
+  const affected = incidentObject();
+  const locate = $('#locate-incident');
+  locate.hidden = !affected;
+  locate.textContent = id === 'pa-dropout' ? 'Locate PA' : id === 'gate-jam' ? 'Locate gate' : 'Locate stage';
   box.hidden = false;
   syncTabs(el.panel, 'show', 'Problem');
   const skip = $('#skip-btn'); if (skip) skip.hidden = true;
@@ -760,6 +782,22 @@ function skipToIncident() {
   if (!ui.play || ui.play.paused) return;
   ui.play.p = ui.play.at;
   reachIncident();
+}
+
+function incidentObject() {
+  const id = state.show?.incidentId;
+  const types = id === 'pa-dropout' ? ['pa-s', 'pa-m'] : id === 'gate-jam' ? ['gate'] : id === 'curfew' ? ['stage'] : [];
+  return state.venue.objects.find((o) => types.includes(o.type))
+    || (id === 'pa-dropout' && venueSpec(state.venue).housePa ? state.venue.objects.find((o) => o.type === 'stage') : null);
+}
+
+function locateIncident() {
+  const object = incidentObject();
+  if (!object || state.phase !== 'show' || !ui.play?.paused) return;
+  const t = D.OBJECT_TYPES[object.type];
+  board.centerOn(object.x + t.w / 2, object.y + t.h / 2);
+  updateZoomButtons();
+  el.boardStatus.textContent = `${label(object.type)} at ${object.x}, ${object.y}. Incident response still required.`;
 }
 
 function respond(responseId) {
@@ -1263,6 +1301,7 @@ function onAct(e) {
     setMenu(false);
   }
   else if (a === 'rotate') rotate();
+  else if (a === 'locate-incident') locateIncident();
   else if (a === 'lot-details') openWindow('lot', 'Lot details', lotDetailsHtml(), target);
   else if (a === 'deal-help') openWindow('deals', 'How the deals work', dealHelpHtml(), target);
   else if (a === 'open-settlement') openSettlement(target);
@@ -1331,6 +1370,45 @@ function pickTool(type) {
 const phoneQuery = window.matchMedia('(max-width: 680px)');
 ui.tabs = {};
 
+function setSheetSize(size) {
+  document.body.dataset.sheetSize = size;
+  const hud = HUD_PHASES.includes(state.phase);
+  const collapsed = phoneQuery.matches && hud && size === 'collapsed';
+  el.panel.inert = collapsed;
+  $('#sheet-controls').hidden = !hud;
+  $('#sheet-expand').setAttribute('aria-expanded', String(size === 'expanded'));
+  $('#sheet-expand').setAttribute('aria-label', size === 'expanded' ? 'Reduce controls' : 'Expand controls');
+  $('#sheet-collapse').setAttribute('aria-expanded', String(!collapsed));
+  $('#sheet-collapse').setAttribute('aria-label', collapsed ? 'Show controls' : 'Hide controls');
+  $('#sheet-expand').textContent = size === 'expanded' ? '↙' : '↗';
+  $('#sheet-collapse').textContent = collapsed ? '↑' : '↓';
+  queueLayout();
+}
+
+$('#sheet-expand').addEventListener('click', () => setSheetSize(document.body.dataset.sheetSize === 'expanded' ? 'peek' : 'expanded'));
+$('#sheet-collapse').addEventListener('click', () => setSheetSize(document.body.dataset.sheetSize === 'collapsed' ? 'peek' : 'collapsed'));
+// Only the handle owns the gesture, so a slider, tab or board drag cannot resize the sheet.
+let sheetStart = null;
+let sheetGesture = false;
+$('#sheet-controls').addEventListener('pointerdown', (event) => {
+  sheetGesture = false;
+  if (event.pointerType !== 'touch') return;
+  sheetStart = event.clientY;
+  event.target.setPointerCapture(event.pointerId);
+});
+$('#sheet-controls').addEventListener('pointerup', (event) => {
+  if (sheetStart === null) return;
+  const delta = event.clientY - sheetStart;
+  sheetStart = null;
+  if (Math.abs(delta) < 35) return;
+  sheetGesture = true;
+  setSheetSize(delta < 0 ? 'expanded' : 'collapsed');
+});
+$('#sheet-controls').addEventListener('click', (event) => {
+  if (sheetGesture) { event.preventDefault(); event.stopImmediatePropagation(); }
+}, true);
+$('#sheet-controls').addEventListener('pointercancel', () => { sheetStart = null; });
+
 function syncTabs(root, key, pick) {
   const old = root.querySelector(':scope > .tabbar, .tabbar');
   if (old) old.remove();
@@ -1382,6 +1460,7 @@ function syncTabs(root, key, pick) {
 }
 
 phoneQuery.addEventListener('change', () => {
+  setSheetSize('peek');
   syncTabs(el.panel, state.phase);
   if (!el.win.hidden) syncTabs(el.winBody, `win:${win.kind}`);
 });
@@ -1583,6 +1662,16 @@ window.__frontOfHouse = {
 
 // ---------------------------------------------------------------------------
 // Boot
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  $('#theme-toggle').setAttribute('aria-pressed', String(theme === 'dark'));
+  try { localStorage.setItem('front_of_house_theme', theme); } catch { /* Play remains available without storage. */ }
+}
+let savedTheme = 'light';
+try { if (localStorage.getItem('front_of_house_theme') === 'dark') savedTheme = 'dark'; } catch { /* Use the default. */ }
+setTheme(savedTheme);
+$('#theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
 
 persist();
 window.addEventListener('resize', queueLayout);
