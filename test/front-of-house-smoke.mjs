@@ -796,10 +796,12 @@ try {
   await hud.locator('[data-deal="guarantee"]:visible').first().click();
   await hud.locator('#panel [role="tab"]', { hasText: 'Actions' }).click();
   await hud.click('[data-act="starter"]');
-  await hud.click('#sheet-collapse');
+  await hud.locator('#sheet-collapse').tap();
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'collapsed');
   assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), true, 'hidden controls leave keyboard navigation');
   await hud.waitForFunction(() => window.__frontOfHouse.board().view.safe.h / innerHeight > 0.8);
-  await hud.click('#sheet-collapse');
+  await hud.locator('#sheet-collapse').tap();
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
   assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), false, 'show controls restores keyboard access');
   await hud.click('#sheet-expand');
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'expanded');
@@ -813,15 +815,26 @@ try {
     }, true);
   });
   const touch = await review.newCDPSession(hud);
+  let contact = 1;
+  const nativeTap = async (selector) => {
+    const r = await hud.locator(selector).boundingBox();
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: r.x + r.width / 2, y: r.y + r.height / 2, id: ++contact }] });
+    await new Promise((done) => setTimeout(done, 80));
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  };
   const handle = await hud.locator('#sheet-grip').boundingBox();
   const x = handle.x + handle.width / 2;
   const y = handle.y + handle.height / 2;
-  await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
-  await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - 70 }] });
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: contact }] });
+  // Keep the swipe and later taps in one native input stream, with a short real motion.
+  for (let step = 1; step <= 5; step += 1) {
+    await new Promise((done) => setTimeout(done, 20));
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - step * 14, id: contact }] });
+  }
   await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await hud.waitForFunction(() => document.body.dataset.sheetSize === 'expanded');
   await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
-  await hud.locator('#sheet-expand').tap();
+  await nativeTap('#sheet-expand');
   try {
     await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
   } catch (error) {
@@ -829,9 +842,10 @@ try {
     throw error;
   }
   assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek', 'a swipe does not block the next tap');
-  await hud.locator('#sheet-collapse').tap();
+  await nativeTap('#sheet-collapse');
   await hud.waitForFunction(() => document.body.dataset.sheetSize === 'collapsed');
-  await hud.locator('#sheet-collapse').tap();
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await nativeTap('#sheet-collapse');
   await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
   await touch.detach();
   await hud.screenshot({ path: join(output, 'review-phone-build.png') });
