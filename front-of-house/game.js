@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, evaluateVenue, findResponse, forecast,
+  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor,
   settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
@@ -15,6 +15,7 @@ import { createBoard, LOOK } from './board.js';
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
 const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
@@ -598,6 +599,7 @@ function showPanel() {
     <div class="plate at-bl feed-plate" data-tab="Night"><ol class="feed" id="feed" aria-live="polite"></ol></div>
     <div class="plate at-br actions-plate" data-tab="Night">
       <p class="crowd-now"><span class="meta-label">In the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'}</span> <span id="crowd-now">0</span></p>
+      <p class="hint" id="rush-now" hidden></p>
       <button type="button" data-act="skip" id="skip-btn">Skip to the problem</button>
     </div>`;
 }
@@ -625,6 +627,12 @@ function startPlayback() {
   const preview = showPreview(state);
   ui.play = { start: performance.now(), at: roll.incidentAt, p: 0, beats: 0, preview: preview.attendance, after: null };
   feedLine(`Doors open. ${preview.presale} people already hold tickets.`);
+  if (state.show && state.show.pilotCrew === null) { reachDoorsChoice(); return; }
+  if (state.show && (state.show.pilotCrew === 'bar' || state.show.pilotCrew === 'gate')) {
+    const r = preview.doorRush;
+    const rush = $('#rush-now');
+    if (rush && r) { rush.hidden = false; rush.textContent = `Projected rush: ${r.waiting} queued · ${r.lostWalkups} leave · Bar cap: ${r.barCapacity}`; }
+  }
   if (reduceMotion) {
     ui.play.p = roll.incidentAt;
     reachIncident();
@@ -668,6 +676,50 @@ function loop() {
     if (state.phase === 'show' || (play.after && !play.after.done)) loop();
     else ui.raf = 0;
   });
+}
+
+function reachDoorsChoice() {
+  const play = ui.play;
+  play.paused = true;
+  const v = evaluateVenue(state.venue);
+  const preview = showPreview(state);
+  const keep = doorRushPilot(v, preview.attendance, preview.presale, 'bar');
+  const move = doorRushPilot(v, preview.attendance, preview.presale, 'gate');
+  const box = $('#incident-box');
+  box.innerHTML = `
+    <div class="incident" role="group" aria-labelledby="incident-title">
+      <h3 id="incident-title">Doors rush: where should one bar worker go?</h3>
+      <p>Projected rush, before an incident: ticket holders wait, while some walk-ups leave a long line.</p>
+      <button type="button" class="choice" data-act="choose-crew" data-choice="bar">
+        <span class="choice-head"><strong>Keep bar service</strong><span class="cost">free</span></span>
+        <span class="choice-effect">${keep.waiting} waiting; ${keep.lostWalkups} walk-ups leave · bar serves up to ${keep.barCapacity}</span>
+      </button>
+      <button type="button" class="choice" data-act="choose-crew" data-choice="gate">
+        <span class="choice-head"><strong>Help at admission</strong><span class="cost">free</span></span>
+        <span class="choice-effect">${move.waiting} waiting; ${move.lostWalkups} walk-ups leave · bar serves up to ${move.barCapacity}</span>
+      </button>
+    </div>`;
+  box.hidden = false;
+  syncTabs(el.panel, 'show', 'Problem');
+  const skip = $('#skip-btn'); if (skip) skip.hidden = true;
+  box.querySelector('[data-act="choose-crew"]').focus();
+  draw();
+}
+
+function chooseDoorCrew(choice) {
+  const play = ui.play;
+  if (!play || !act({ type: 'chooseDoorCrew', choice })) return;
+  const r = showPreview(state).doorRush;
+  play.preview = showPreview(state).attendance;
+  feedLine(`Projected doors rush: ${r.waiting} in line after ${D.LOT_PILOT_RUSH_MINUTES} minutes; ${r.lostWalkups} walk-ups may leave. Bar can serve ${r.barCapacity}.`);
+  const box = $('#incident-box'); if (box) box.hidden = true;
+  const rush = $('#rush-now');
+  if (rush) { rush.hidden = false; rush.textContent = `Projected rush: ${r.waiting} queued · ${r.lostWalkups} leave · Bar cap: ${r.barCapacity}`; }
+  syncTabs(el.panel, 'show', 'Night');
+  play.paused = false;
+  const skip = $('#skip-btn'); if (skip) { skip.hidden = false; skip.focus(); }
+  if (reduceMotion) { play.p = play.at; reachIncident(); }
+  else { play.start = performance.now(); loop(); }
 }
 
 function reachIncident() {
@@ -810,6 +862,7 @@ function sheetParts(r, { signed: done }) {
   const crowd = `
     <div data-tab="Crowd">
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
+      ${r.doorRush ? `<p class="hint">Doors: ${r.doorRush.waiting} queued; ${r.doorRush.lostWalkups} walk-ups left; bar capacity ${r.doorRush.barCapacity}.</p>` : ''}
       <div class="meters-sat">${parts}</div>
     </div>
     <div class="outcomes" data-tab="Payout">
@@ -1231,8 +1284,9 @@ function onAct(e) {
     if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${label(type).toLowerCase()}.`);
   } else if (a === 'back') act({ type: 'back' });
   else if (a === 'confirm-build') act({ type: 'confirmBuild' });
-  else if (a === 'confirm-promo') act({ type: 'confirmPromotion' });
+  else if (a === 'confirm-promo') act({ type: 'confirmPromotion', pilot: lotNightSlice });
   else if (a === 'skip') skipToIncident();
+  else if (a === 'choose-crew') chooseDoorCrew(target.dataset.choice);
   else if (a === 'respond') respond(target.dataset.response);
   else if (a === 'accept') act({ type: 'acceptSettlement', at: new Date().toISOString() });
   else if (a === 'next') act({ type: 'nextShow' });
@@ -1512,7 +1566,7 @@ window.render_game_to_text = () => {
     show: state.show,
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
     crowd: crowdNow(),
-    settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result } : null,
+    settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
   });
 };
