@@ -147,17 +147,42 @@ body[data-layout='hud'] .board-status { max-width: min(520px, calc(var(--clear-w
 .at-br { bottom: 12px; right: 12px; }
 .plate[hidden] { display: none; }
 
-/* The sheet on the right, for Book, Promote, Settle and Done until step 4. */
+/* The sheet on the right, for Book, Promote, Settle and Done (docs/HUD.md step 4). It never
+   scrolls at 1024 x 700 and up: forms take two columns, and documents open in a window. */
 .at-sheet {
-  top: 12px; right: 12px; width: clamp(320px, 30vw, 400px);
+  top: 12px; right: 12px; width: clamp(340px, 32vw, 420px);
   max-height: calc(100vh - var(--strip-h) - 24px);
   max-height: calc(100dvh - var(--strip-h) - 24px);
+  /* Only below 1024 x 700, where the no-scroll rule stops, can a sheet need its scrollbar. */
   overflow-y: auto; overscroll-behavior: contain;
-  padding: 16px; gap: 14px; background: var(--sheet); border-color: var(--border-strong);
+  padding: 14px 16px; gap: 10px; background: var(--sheet); border-color: var(--border-strong);
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-body[data-phase='settle'] .at-sheet,
-body[data-phase='done'] .at-sheet { width: clamp(360px, 40vw, 560px); }
+body[data-phase='book'] .at-sheet,
+body[data-phase='promote'] .at-sheet { width: clamp(580px, 54vw, 760px); }
+/* The map dims behind the documents; Promote keeps it bright (docs/HUD.md section 4). */
+body[data-phase='book'] #board,
+body[data-phase='settle'] #board,
+body[data-phase='done'] #board { filter: brightness(0.55) saturate(0.8); }
+
+.sheet-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.info-btn { flex: none; min-height: 40px; padding: 8px 12px; }
+.rooms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.rooms button { padding: 6px 8px; font-size: 0.74rem; line-height: 1.2; }
+.rooms small { display: block; font-weight: 400; color: inherit; opacity: 0.8; }
+.offers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: start; }
+.offers .offer + .offer { margin-top: 0; }
+.offer { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; }
+.offer .artist-name { font-size: 1.15rem; margin: 0; }
+.offer .facts { font-size: 0.85rem; }
+.offer .lede { font-size: 0.82rem; }
+.offer .choice { padding: 8px 10px; gap: 2px; }
+.choice-text { font-size: 0.8rem; color: var(--text-muted); }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.col .slider input[type='range'] { min-height: 32px; }
+.col fieldset .slider + .slider { margin-top: 2px; }
+.result-line { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
 
 .hint { color: var(--text-muted); font-size: 0.85rem; }
 .row.tight { gap: 6px; flex-wrap: nowrap; }
@@ -216,7 +241,7 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 /* A document the player opens on purpose, over the dimmed board. */
 .win-layer {
   position: fixed; inset: 0; z-index: 25; display: flex; align-items: center; justify-content: center;
-  padding: calc(var(--strip-h) + 12px) 16px 16px; background: rgba(6, 8, 12, 0.6);
+  padding: calc(var(--strip-h) + 8px) 16px 8px; background: rgba(6, 8, 12, 0.6);
 }
 .win-layer[hidden] { display: none; }
 .win {
@@ -224,7 +249,41 @@ button.tile:hover:not(:disabled) { background: var(--border); }
   background: var(--sheet); border: 1px solid var(--border-strong); border-radius: 10px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
 }
-.win-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.win-layer.wide .win { width: min(1180px, 100%); }
+.win-head h2:focus { outline: none; }
+.win-foot { display: flex; align-items: center; gap: 16px; padding: 6px 12px 6px 16px; border-top: 1px solid var(--border); background: #0d1118; border-radius: 0 0 10px 10px; }
+.win-foot[hidden] { display: none; }
+.win-foot .stamp { flex: none; margin: 0; padding: 2px 10px; font-size: 0.8rem; border-width: 2px; transform: rotate(-4deg); }
+.win-foot .tip { flex: 1; font-size: 0.8rem; margin: 0; }
+.win-foot .primary { flex: none; }
+
+/* The settlement in three columns. */
+.sheet-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.sheet-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.win .meta-strip { grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 8px 10px; }
+.win .ledger th, .win .ledger td { padding: 4px 10px; }
+.win .ledger table { font-size: 0.76rem; }
+.win .payouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.win .payout { padding: 8px 10px; }
+.win .payout .amount { font-size: 1.15rem; }
+.win .outcomes { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); }
+.win .outcome { display: flex; align-items: baseline; gap: 8px; padding: 0; border: 0; background: none; }
+.win .outcome .meta-label { flex: 1; }
+.win .outcome .stat { display: inline; margin: 0; font-size: 0.9rem; }
+.win .outcome .lede { font-size: 0.7rem; }
+.win .payout { padding: 6px 10px; }
+.win .payout p { font-size: 0.72rem; }
+.win .sat-row { grid-template-columns: 124px 1fr 40px; font-size: 0.76rem; }
+.win .meters-sat { gap: 4px; }
+.win .sheet-head { font-size: 0.68rem; }
+.win .meta-strip { gap: 6px; }
+.win .meta-val { font-size: 0.8rem; }
+.win .ledger-title { padding: 6px 10px; }
+.win .payout p { margin-top: 2px; }
+.win-body { padding: 10px 16px 12px; gap: 10px; }
+.win .calc { padding: 8px 10px; }
+.win h3 { font-size: 0.9rem; }
+.win-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--border); }
 .win-head h2 { margin: 0; font-size: 1.1rem; }
 .win-body { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; overflow-y: auto; overscroll-behavior: contain; }
 .win-body h3 { margin: 0 0 6px; font-size: 0.95rem; }
@@ -457,6 +516,10 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
+  .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .win-layer { padding: calc(var(--strip-h) + 4px) 4px 4px; }
+  .win-foot { flex-wrap: wrap; }
   .palette, .stats { grid-template-columns: minmax(0, 1fr); }
   .sat-row { grid-template-columns: 80px 1fr 40px; }
 }

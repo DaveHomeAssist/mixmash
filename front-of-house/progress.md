@@ -129,6 +129,16 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - New smoke checks: lot share, HUD coverage, no plate scrolls or leaves the window, and the strip fits, in Build and Show at five desktop sizes; keys 1 to 8; the Details window removes an object and keeps focus. The zoomed-stage check now zooms about the stage, as a player would, so the corner plates don't catch the click. Service worker v16.
 - Next: step 4, the sheets and windows for Book, Promote, Settle and Done.
 
+## 2026-10-02: HUD step 4, the sheets and windows
+
+- Book: the two offer cards side by side, the rooms in one row, the nights below. Deal explanations show under the buttons on a career's first show (and the wet lot) only; the Deals window (ⓘ) has them after that. Career, Sandbox and Wet lot moved into the menu's New game section, and on a game under way the first press asks before erasing it.
+- Promote: two columns, price and ads beside the forecast and the presale chart. Cash left the forecast; it is in the strip.
+- Settle: a short summary, and the settlement in its own window in three columns with the stamp, the tip and the signature in the footer. Done: the career card, one line on the last show, and windows for the last settlement and the show history (the only window allowed to scroll).
+- The map dims behind Book, Settle and Done.
+- Measured: nothing scrolls in any phase at five desktop sizes, nor in any room's Book sheet or Promote with seats or a sponsor at 1024 × 700. The worst settlement there needs 490 of 510 px.
+- New smoke checks: no panel or window scrolls in every phase at five sizes; every room's Book and Promote at 1024 × 700 in Sandbox; the settlement opens in a window; Last settlement and Show history open as windows; the Deals window; the mode buttons in the menu and their second press. Service worker v17.
+- Next: step 5, tabs in the phone's bottom sheet.
+
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
