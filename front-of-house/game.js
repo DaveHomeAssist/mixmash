@@ -55,6 +55,9 @@ const el = {
   menu: $('#menu'),
   menuBtn: $('#menu-btn'),
   fullscreen: $('#fullscreen'),
+  win: $('#win'),
+  winTitle: $('#win-title'),
+  winBody: $('#win-body'),
 };
 
 const store = window.MixKitSave
@@ -143,14 +146,22 @@ function renderTop() {
   });
 }
 
+// Build and Show float their controls in the lot's empty corners; the other phases use a
+// sheet on the right (docs/HUD.md sections 3 and 4).
+const HUD_PHASES = ['build', 'show'];
+
 function mount() {
   const builders = { book: bookPanel, build: buildPanel, promote: promotePanel, show: showPanel, settle: settlePanel, done: donePanel };
-  el.panel.innerHTML = builders[state.phase]();
-  el.panel.scrollTop = 0;
+  const html = builders[state.phase]();
+  const hud = HUD_PHASES.includes(state.phase);
+  document.body.dataset.layout = hud ? 'hud' : 'sheet';
+  el.panel.innerHTML = hud ? html : `<div class="plate at-sheet">${html}</div>`;
+  closeWindow({ focus: false });
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
   if (state.phase === 'show') startPlayback();
   else if (state.phase !== 'settle') endPlayback();
+  queueLayout();
 }
 
 // After a step the player chose, move focus to the new panel's heading so screen
@@ -246,38 +257,67 @@ const COSTS = {
   exit: 'free',
 };
 
+// Short names for the tool tiles; the full label, size and cost are read out with each.
+const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Restroom', gate: 'Gate', exit: 'Exit' };
+// The rotation as an arrow on screen, in FACING order.
+const ARROWS = ['↙', '↖', '↗', '↘'];
+
+function toolFacts(type) {
+  const t = D.OBJECT_TYPES[type];
+  return `${t.w}×${t.h} · ${COSTS[type]}${t.watts ? ` · ${t.watts / 1000} kW` : ''}`;
+}
+
+// The Build HUD: the phase card top left, the lot's readouts top right, the tools bottom
+// left and the actions bottom right, all clear of the lot at the fit.
 function buildPanel() {
   const spec = venueSpec(state.venue);
-  const options = PLACEABLE.map((type) => {
+  const where = spec.id === 'lot' ? 'lot' : 'room';
+  const tiles = PLACEABLE.map((type, i) => {
     const t = D.OBJECT_TYPES[type];
-    const watts = t.watts ? ` · ${t.watts / 1000} kW` : '';
-    return `<label><input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
-      <span class="swatch" style="background:${LOOK[type].top}"></span>
-      <span>${esc(t.label)}<span class="meta">${t.w}×${t.h} · ${COSTS[type]}${watts}</span></span></label>`;
+    return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${i + 1}">
+        <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
+        <span class="tile-key" aria-hidden="true">${i + 1}</span>
+        <img src="./sprites/${type}.png" alt="" decoding="async" />
+        <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
+        <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${i + 1}</span>
+      </label>`;
   }).join('');
-  const paLine = spec.housePa ? 'The house rig covers sound, so a rented PA is optional.' : 'You need a stage, a PA touching it, the fence, a gate and an exit.';
   return `
-    <p class="eyebrow">${esc(spec.name)} · ${spec.grid.w} × ${spec.grid.h} tiles</p>
-    <h2>Build the room</h2>
-    <p class="lede">Pick an object, then click the tile for its top corner. Or bulldoze, and drag across anything you want gone. ${paLine}</p>
-    <p id="msg" class="message" aria-live="polite"></p>
-    <fieldset><legend>Object to place</legend><div class="palette">${options}</div></fieldset>
-    <div class="row">
-      <button type="button" data-act="bulldoze" id="doze-btn" aria-pressed="false">Bulldoze (B)</button>
-      <button type="button" data-act="rotate">Rotate (R) · <span id="rot-label"></span></button>
-      <button type="button" data-act="fence" id="fence-btn"></button>
+    <div class="plate at-tl card-plate">
+      <p class="eyebrow">${esc(spec.name)} · ${spec.grid.w} × ${spec.grid.h} tiles</p>
+      <h2>Build the ${where}</h2>
+      <p class="hint" id="tool-info"></p>
+      <p id="msg" class="message" aria-live="polite"></p>
     </div>
-    <label class="toggle"><input type="checkbox" data-input="clear" ${ui.showClear ? 'checked' : ''} /> Show sightlines (teal clear, red blocked)</label>
-    <div class="row">
-      <button type="button" data-act="starter">Use the suggested layout</button>
-      <button type="button" data-act="clear-lot">Clear the lot</button>
+    <div class="plate at-tr status-plate" role="group" aria-label="The ${where}">
+      <dl class="readouts" id="venue-stats"></dl>
+      <div id="venue-check"></div>
+      <div class="row tight">
+        <button type="button" data-act="fence" id="fence-btn"></button>
+        <label class="toggle"><input type="checkbox" data-input="clear" ${ui.showClear ? 'checked' : ''} /> Sightlines</label>
+        <button type="button" data-act="lot-details" id="details-btn">Details <span class="count" id="obj-count">0</span></button>
+      </div>
     </div>
-    <dl class="stats" id="venue-stats"></dl>
-    <div id="venue-check"></div>
-    <details><summary>Placed objects (<span id="obj-count">0</span>)</summary><ul class="objects" id="obj-list"></ul></details>
-    <div class="actions">
-      <button type="button" data-act="back">Back to booking</button>
-      <button type="button" class="primary" data-act="confirm-build" id="confirm-build">Lock the layout</button>
+    <div class="plate at-bl tools-plate" role="group" aria-label="Object to place">
+      <div class="tiles">${tiles}
+        <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key B">
+          <span class="tile-key" aria-hidden="true">B</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Bulldoze</span>
+        </button>
+        <button type="button" class="tile" data-act="rotate" title="Rotate · key R">
+          <span class="tile-key" aria-hidden="true">R</span><span class="tile-glyph" id="rot-glyph" aria-hidden="true">${ARROWS[ui.rot]}</span><span class="tile-name" aria-hidden="true">Rotate</span>
+          <span class="sr-only">Rotate, <span id="rot-label"></span></span>
+        </button>
+      </div>
+    </div>
+    <div class="plate at-br actions-plate">
+      <div class="row tight">
+        <button type="button" data-act="starter">Suggested layout</button>
+        <button type="button" data-act="clear-lot" aria-label="Clear the ${where}">Clear</button>
+      </div>
+      <div class="row tight">
+        <button type="button" data-act="back" aria-label="Back to booking">Back</button>
+        <button type="button" class="primary" data-act="confirm-build" id="confirm-build">Lock the layout</button>
+      </div>
     </div>`;
 }
 
@@ -299,35 +339,63 @@ function updateBuild() {
   const spec = venueSpec(state.venue);
   const wattsCap = spec.watts;
   const density = spec.density || D.FLOOR_DENSITY;
-  const limits = { permit: 'the permit', floor: 'floor space', exits: 'exits' };
+  const limits = { permit: 'permit', floor: 'floor space', exits: 'exits' };
+  const load = Math.min(100, Math.round((v.watts / wattsCap) * 100));
   $('#venue-stats').innerHTML = `
-    <div><dt>Capacity</dt><dd>${v.capacity} <span class="lede">(${limits[v.capacityLimit]})</span></dd></div>
-    <div><dt>Power</dt><dd class="${v.watts > wattsCap * 0.9 ? 'warn' : ''}">${(v.watts / 1000).toFixed(1)} / ${wattsCap / 1000} kW</dd></div>
-    <div><dt>Clear view</dt><dd>${v.clearTiles} tiles · fits ${Math.floor(v.clearTiles * density)}</dd></div>
+    <div><dt>Capacity</dt><dd>${v.capacity} <small>${limits[v.capacityLimit]}</small></dd></div>
+    <div><dt>Power</dt><dd class="${v.watts > wattsCap * 0.9 ? 'warn' : ''}">${(v.watts / 1000).toFixed(1)} / ${wattsCap / 1000} kW</dd>
+      <span class="bar" aria-hidden="true"><span style="width:${load}%"></span></span></div>
+    <div><dt>Clear view</dt><dd>${v.clearTiles} <small>fits ${Math.floor(v.clearTiles * density)}</small></dd></div>
     <div><dt>View blocked</dt><dd class="${v.blockedTiles ? 'bad' : ''}">${v.blockedTiles} tiles</dd></div>
     <div><dt>Staff</dt><dd>${v.staff}</dd></div>
-    <div><dt>Costs so far</dt><dd>${money(costsSoFar())}</dd></div>
-    <div><dt>Cash</dt><dd>${money(state.cash)}</dd></div>`;
+    <div><dt>Costs so far</dt><dd>${money(costsSoFar())}</dd></div>`;
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
-    ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>`
+    ? `<p class="checklist"><span>${esc(notes[0])}.</span>${notes.length > 1 ? ` <span class="more">${notes.length - 1} more in Details.</span>` : ''}</p>`
     : `<p class="checklist ok">✓ The ${spec.id === 'lot' ? 'lot' : 'room'} is ready for a show.</p>`;
   $('#obj-count').textContent = String(state.venue.objects.length);
-  $('#obj-list').innerHTML = state.venue.objects.map((o, i) => {
-    const where = D.OBJECT_TYPES[o.type].kit ? 'around the lot' : `at ${o.x}, ${o.y}${o.type === 'stage' ? `, facing ${FACING[o.rot]}` : ''}`;
-    return `<li><span>${esc(label(o.type))} ${where}</span><button type="button" data-act="remove" data-index="${i}" aria-label="Remove ${esc(label(o.type))} ${where}">Remove</button></li>`;
-  }).join('');
+  $('#details-btn').setAttribute('aria-label', `Details: readiness and the ${state.venue.objects.length} placed objects`);
   $('#rot-label').textContent = `faces ${FACING[ui.rot]}`;
+  $('#rot-glyph').textContent = ARROWS[ui.rot];
   const fence = state.venue.objects.some((o) => o.type === 'fence');
-  $('#fence-btn').textContent = fence ? 'Remove the fence kit' : `Add the fence kit (${money(D.FENCE_KIT)})`;
+  const fenceBtn = $('#fence-btn');
+  fenceBtn.textContent = fence ? 'Fence ✓' : `Fence +${money(D.FENCE_KIT)}`;
+  fenceBtn.setAttribute('aria-label', fence ? 'Remove the fence kit' : `Add the fence kit, ${money(D.FENCE_KIT)}`);
+  fenceBtn.setAttribute('aria-pressed', fence ? 'true' : 'false');
   $('#confirm-build').disabled = !v.ready;
+  const dozing = ui.tool === 'bulldoze';
   const doze = $('#doze-btn');
-  if (doze) {
-    const on = ui.tool === 'bulldoze';
-    doze.classList.toggle('on', on);
-    doze.setAttribute('aria-pressed', on ? 'true' : 'false');
-    doze.textContent = on ? 'Bulldozing. Click or drag.' : 'Bulldoze (B)';
-  }
+  doze.classList.toggle('on', dozing);
+  doze.setAttribute('aria-pressed', dozing ? 'true' : 'false');
+  $('#tool-info').textContent = dozing
+    ? 'Bulldozing: click or drag across anything you want gone. B places again.'
+    : `Placing the ${label(ui.tool).toLowerCase()}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. Click a tile for its top corner.`;
+  if (win.kind === 'lot') refreshWindow(lotDetailsHtml());
+}
+
+// The Details window: everything the lot still needs, and every placed object by type, with
+// a remove button each (the keyboard path to remove an object by name).
+function lotDetailsHtml() {
+  const v = evaluateVenue(state.venue);
+  const notes = [...v.missing, ...v.problems.map((p) => p.message)];
+  const groups = new Map();
+  state.venue.objects.forEach((o, i) => {
+    if (!groups.has(o.type)) groups.set(o.type, []);
+    groups.get(o.type).push({ o, i });
+  });
+  const place = (o) => (D.OBJECT_TYPES[o.type].kit ? 'around the lot' : `${o.x}, ${o.y}${o.type === 'stage' ? `, facing ${FACING[o.rot]}` : ''}`);
+  const rows = [...groups].map(([type, list]) => `
+      <li><span class="obj-name">${esc(label(type))} <span class="count">×${list.length}</span></span>
+        <span class="obj-places">${list.map(({ o, i }) => `<button type="button" class="chip" data-act="remove" data-index="${i}" aria-label="Remove the ${esc(label(type).toLowerCase())} at ${place(o)}">${place(o)} ✕</button>`).join('')}</span></li>`).join('');
+  return `
+    <section aria-labelledby="ready-title">
+      <h3 id="ready-title">Readiness</h3>
+      ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<p class="checklist ok">✓ Ready for a show.</p>'}
+    </section>
+    <section aria-labelledby="placed-title">
+      <h3 id="placed-title">Placed objects (${state.venue.objects.length})</h3>
+      ${rows ? `<ul class="obj-groups">${rows}</ul>` : '<p class="lede">Nothing is placed yet.</p>'}
+    </section>`;
 }
 
 function objectIndexAt(x, y) {
@@ -498,16 +566,26 @@ function updatePromote() {
 // ---------------------------------------------------------------------------
 // Show night
 
+// The Show HUD: the clock top left, the incident top right when it comes, the event feed
+// bottom left and the crowd bottom right.
 function showPanel() {
   return `
-    <p class="eyebrow">Show night · ${esc(D.VENUE_NAME)}</p>
-    <h2>Doors are open</h2>
-    <p class="timecode" id="clock" aria-hidden="true">19:00</p>
-    <p id="msg" class="message" aria-live="polite"></p>
-    <ol class="feed" id="feed" aria-live="polite"></ol>
-    <div id="incident-box"></div>
-    <div class="actions"><button type="button" data-act="skip" id="skip-btn">Skip to the problem</button></div>`;
+    <div class="plate at-tl card-plate">
+      <p class="eyebrow">Show night · ${esc(venueSpec(state.venue).name)}</p>
+      <h2>Doors are open</h2>
+      <p class="timecode" id="clock" aria-hidden="true">19:00</p>
+      <p id="msg" class="message" aria-live="polite"></p>
+    </div>
+    <div class="plate at-tr incident-plate" id="incident-box" hidden></div>
+    <div class="plate at-bl feed-plate"><ol class="feed" id="feed" aria-live="polite"></ol></div>
+    <div class="plate at-br actions-plate">
+      <p class="crowd-now"><span class="meta-label">In the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'}</span> <span id="crowd-now">0</span></p>
+      <button type="button" data-act="skip" id="skip-btn">Skip to the problem</button>
+    </div>`;
 }
+
+// The feed keeps its last four lines on screen.
+const FEED_LINES = 4;
 
 function feedLine(text) {
   const feed = $('#feed');
@@ -515,6 +593,7 @@ function feedLine(text) {
   const li = document.createElement('li');
   li.textContent = text;
   feed.appendChild(li);
+  while (feed.children.length > FEED_LINES) feed.firstElementChild.remove();
 }
 
 function clock(p) {
@@ -583,22 +662,23 @@ function reachIncident() {
   feedLine(`${clock(play.p)}: ${incident.label}.`);
   const effect = (r) => {
     const bits = [];
-    if (r.walkupMult !== undefined) bits.push(`keeps ${Math.round(r.walkupMult * 100)}% of walk-up sales`);
-    if (r.flowMult !== undefined) bits.push(`entry flow drops to ${Math.round(r.flowMult * 100)}%`);
-    bits.push(`handling score ${Math.round(r.score * 100)}`);
+    if (r.walkupMult !== undefined) bits.push(`walk-up sales ${Math.round(r.walkupMult * 100)}%`);
+    if (r.flowMult !== undefined) bits.push(`entry flow ${Math.round(r.flowMult * 100)}%`);
+    bits.push(`handling ${Math.round(r.score * 100)}`);
     return bits.join(' · ');
   };
-  $('#incident-box').innerHTML = `
+  const box = $('#incident-box');
+  box.innerHTML = `
     <div class="incident" role="group" aria-labelledby="incident-title">
       <h3 id="incident-title">${esc(incident.label)}</h3>
       <p>${esc(INCIDENT_TEXT[id])}</p>
       ${incident.responses.map((r) => `
         <button type="button" class="choice" data-act="respond" data-response="${r.id}" ${r.cost > state.cash ? 'disabled' : ''}>
-          <strong>${esc(r.label)}</strong>
-          <span class="cost">${r.cost ? money(r.cost) : 'free'}${r.cost > state.cash ? ' · not enough cash' : ''}</span>
-          <span>${effect(r)}</span>
+          <span class="choice-head"><strong>${esc(r.label)}</strong> <span class="cost">${r.cost ? money(r.cost) : 'free'}${r.cost > state.cash ? ' · not enough cash' : ''}</span></span>
+          <span class="choice-effect">${effect(r)}</span>
         </button>`).join('')}
     </div>`;
+  box.hidden = false;
   const skip = $('#skip-btn'); if (skip) skip.hidden = true;
   const first = el.panel.querySelector('[data-act="respond"]:not([disabled])');
   if (first) first.focus();
@@ -847,6 +927,8 @@ function draw() {
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
   board.draw(scene);
   updateZoomButtons();
+  const crowd = $('#crowd-now');
+  if (crowd) crowd.textContent = String(crowdNow());
 }
 
 // The page never scrolls (docs/HUD.md): the canvas fills the window, and the lot is fit
@@ -861,12 +943,20 @@ function layoutBoard() {
   root.setProperty('--strip-h', `${strip}px`);
   const width = window.innerWidth;
   const height = window.innerHeight;
-  const p = el.panel.getBoundingClientRect();
-  const sheet = p.left < width / 2;
-  root.setProperty('--board-bottom', `${sheet ? Math.max(0, Math.round(height - p.top)) : 0}px`);
-  const clear = sheet
-    ? { x: 0, y: strip, w: width, h: Math.max(120, p.top - strip) }
-    : { x: 0, y: strip, w: Math.max(240, p.left), h: height - strip };
+  const phone = window.matchMedia('(max-width: 680px)').matches;
+  const side = el.panel.querySelector('.at-sheet');
+  let clear = { x: 0, y: strip, w: width, h: height - strip };
+  let bottom = 0;
+  if (phone) {
+    const top = el.panel.getBoundingClientRect().top;
+    bottom = Math.max(0, Math.round(height - top));
+    clear = { x: 0, y: strip, w: width, h: Math.max(120, top - strip) };
+  } else if (side) {
+    clear = { x: 0, y: strip, w: Math.max(240, side.getBoundingClientRect().left), h: height - strip };
+  }
+  root.setProperty('--board-bottom', `${bottom}px`);
+  root.setProperty('--clear-cx', `${Math.round(clear.x + clear.w / 2)}px`);
+  root.setProperty('--clear-w', `${Math.round(clear.w)}px`);
   const key = [width, height, clear.x, clear.y, clear.w, clear.h].join();
   if (key === laidOut) return;
   laidOut = key;
@@ -874,6 +964,13 @@ function layoutBoard() {
   board.resize();
   draw();
 }
+
+let statusTimer = 0;
+new MutationObserver(() => {
+  el.boardStatus.classList.remove('quiet');
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => el.boardStatus.classList.add('quiet'), 5000);
+}).observe(el.boardStatus, { childList: true, characterData: true, subtree: true });
 
 // Resize callbacks wait a frame, so laying out never loops inside one.
 let layoutQueued = false;
@@ -1012,6 +1109,7 @@ el.canvas.addEventListener('keydown', (e) => {
 function rotate() {
   ui.rot = (ui.rot + 1) % 4;
   const r = $('#rot-label'); if (r) r.textContent = `faces ${FACING[ui.rot]}`;
+  const g = $('#rot-glyph'); if (g) g.textContent = ARROWS[ui.rot];
   el.boardStatus.textContent = `Rotation: facing ${FACING[ui.rot]}.`;
   draw();
 }
@@ -1027,7 +1125,7 @@ $('#turn-view').addEventListener('click', () => {
 // ---------------------------------------------------------------------------
 // Panel events
 
-el.panel.addEventListener('click', (e) => {
+function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
@@ -1050,6 +1148,7 @@ el.panel.addEventListener('click', (e) => {
     render();
   }
   else if (a === 'rotate') rotate();
+  else if (a === 'lot-details') openWindow('lot', 'Lot details', lotDetailsHtml(), target);
   else if (a === 'bulldoze') toggleBulldoze();
   else if (a === 'fence') {
     const i = state.venue.objects.findIndex((o) => o.type === 'fence');
@@ -1072,6 +1171,11 @@ el.panel.addEventListener('click', (e) => {
   else if (a === 'next') act({ type: 'nextShow' });
   else if (a === 'retry') act({ type: 'retry' });
   if (['deal', 'back', 'confirm-build', 'confirm-promo', 'accept', 'next', 'retry'].includes(a)) focusHeading();
+}
+el.panel.addEventListener('click', onAct);
+el.win.addEventListener('click', (e) => {
+  if (e.target === el.win || e.target.closest('[data-win="close"]')) { closeWindow(); return; }
+  onAct(e);
 });
 
 el.panel.addEventListener('input', (e) => {
@@ -1083,17 +1187,58 @@ el.panel.addEventListener('input', (e) => {
 
 el.panel.addEventListener('change', (e) => {
   const t = e.target;
-  if (t.dataset.input === 'tool') {
-    ui.tool = t.value;
-    ui.placeTool = t.value;
-    el.boardStatus.textContent = `Placing: ${label(ui.tool)}.`;
-    updateBuild();
-    draw();
-  } else if (t.dataset.input === 'clear') {
+  if (t.dataset.input === 'tool') pickTool(t.value);
+  else if (t.dataset.input === 'clear') {
     ui.showClear = t.checked;
     draw();
   }
 });
+
+function pickTool(type) {
+  ui.tool = type;
+  ui.placeTool = type;
+  document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === type; });
+  el.boardStatus.textContent = `Placing: ${label(type)}.`;
+  updateBuild();
+  draw();
+}
+
+// ---------------------------------------------------------------------------
+// Windows: a document the player opens on purpose, over the dimmed board. Escape, the
+// Close button or a click outside closes it, and focus goes back to what opened it.
+
+const win = { kind: null, opener: null };
+
+function openWindow(kind, title, html, opener) {
+  setMenu(false, { focus: false });
+  win.kind = kind;
+  win.opener = opener || document.activeElement;
+  el.winTitle.textContent = title;
+  el.winBody.innerHTML = html;
+  el.win.dataset.kind = kind;
+  el.win.hidden = false;
+  el.win.querySelector('[data-win="close"]').focus();
+}
+
+// Redraws an open window after a change, keeping focus on the same control when it remains.
+function refreshWindow(html) {
+  const active = document.activeElement;
+  const key = active && el.win.contains(active) && active.dataset.index !== undefined ? Number(active.dataset.index) : null;
+  el.winBody.innerHTML = html;
+  if (key === null) return;
+  const chips = [...el.winBody.querySelectorAll('[data-act="remove"]')];
+  const next = chips.find((c) => Number(c.dataset.index) >= key) || chips[chips.length - 1];
+  (next || el.win.querySelector('[data-win="close"]')).focus();
+}
+
+function closeWindow({ focus = true } = {}) {
+  if (el.win.hidden) return;
+  el.win.hidden = true;
+  win.kind = null;
+  el.winBody.innerHTML = '';
+  if (focus && win.opener && document.contains(win.opener)) win.opener.focus();
+  win.opener = null;
+}
 
 // ---------------------------------------------------------------------------
 // The menu: full screen, the source link, the keys, save and load, the credit.
@@ -1109,9 +1254,25 @@ function setMenu(open, { focus = true } = {}) {
 
 el.menuBtn.addEventListener('click', () => setMenu(el.menu.hidden));
 $('#menu-close').addEventListener('click', () => setMenu(false));
+const typing = (target) => !!target.closest('textarea, select, input:not([type="radio"]):not([type="checkbox"]):not([type="button"])');
 document.addEventListener('keydown', (e) => {
+  if (!el.win.hidden) {
+    if (e.key === 'Escape') { e.preventDefault(); closeWindow(); return; }
+    if (e.key === 'Tab') {
+      const stops = [...el.win.querySelectorAll('button:not([disabled]), [href], input:not([disabled])')];
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    return;
+  }
   if (e.key === 'Escape' && !el.menu.hidden) { e.preventDefault(); setMenu(false); return; }
-  if (e.key === '?' && !e.target.closest('input, textarea, select')) { e.preventDefault(); setMenu(el.menu.hidden); }
+  if (e.key === '?' && !e.target.closest('input, textarea, select')) { e.preventDefault(); setMenu(el.menu.hidden); return; }
+  if (state.phase === 'build' && el.menu.hidden && /^[1-8]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey && !typing(e.target)) {
+    e.preventDefault();
+    pickTool(PLACEABLE[Number(e.key) - 1]);
+  }
 });
 document.addEventListener('pointerdown', (e) => {
   if (!el.menu.hidden && !el.menu.contains(e.target) && !el.menuBtn.contains(e.target)) setMenu(false, { focus: false });

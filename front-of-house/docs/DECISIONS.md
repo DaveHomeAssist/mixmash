@@ -328,6 +328,17 @@ Dave accepted all seven recommendations in [HUD.md](HUD.md) section 9:
 6. **The minimap is deferred**, and it stays on the canonical roadmap as step 7 of the HUD build order ([ROADMAP.md](../ROADMAP.md#hud-layout-ct-dec-12)).
 7. Near-opaque floating backplates join the production-desk look.
 
+### Settled on 2026-10-02: panels never scroll
+
+After step 2 shipped, Dave asked that the panels not scroll either. He agreed to all five recommendations ("I agree with your assessment"), recorded in [HUD.md](HUD.md) section 9:
+
+8. No panel scrolls at 1024 × 700 and up; the smoke rail enforces it.
+9. The settlement opens in its own wide window.
+10. Deal explanations and introductions show on the first show only, then behind an info button.
+11. Show history gets its own window, the only one allowed to scroll.
+12. Phones get tabs in the bottom sheet.
+13. This is built inside steps 3 and 4.
+
 ### Consequences
 
 - The build order is in [HUD.md](HUD.md) section 10 and [ROADMAP.md](../ROADMAP.md#hud-layout-ct-dec-12). Step 1, the board camera, is next.

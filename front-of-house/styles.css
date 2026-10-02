@@ -26,6 +26,11 @@
   --nav-room: 236px;
   --strip-h: 60px;
   --board-bottom: 0px;
+  --clear-cx: 50vw;
+  --clear-w: 100vw;
+  /* Corner plate widths in the Build and Show HUD (docs/HUD.md section 3). */
+  --corner-w: clamp(268px, 24vw, 330px);
+  --status-w: clamp(300px, 25vw, 340px);
 }
 
 * { box-sizing: border-box; }
@@ -100,39 +105,135 @@ a { color: var(--cyan); }
 #board { position: fixed; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; cursor: crosshair; }
 body:not([data-phase='build']) #board { cursor: default; }
 
-/* The camera group floats in the lot's empty bottom-left corner. */
-.camera {
-  position: fixed; left: 12px; bottom: calc(var(--board-bottom) + 12px); z-index: 10;
-  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-  max-width: min(560px, calc(100vw - 24px)); pointer-events: none;
-}
-.camera > * { pointer-events: auto; }
-.camera-row {
-  display: flex; flex-wrap: wrap; gap: 6px; padding: 6px;
-  background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
-}
-.camera-row #zoom-out, .camera-row #zoom-in { min-width: 44px; font-size: 1.1rem; }
-.board-status {
-  margin: 0; padding: 6px 10px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text);
-  background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
-}
-.board-status:empty { display: none; }
+/* The camera buttons sit in the top strip; on phones they float over the board. */
+.camera-row { display: flex; gap: 4px; flex: none; }
+.camera-row button { min-width: 44px; padding: 0 10px; font-size: 1rem; }
 
-/* The phase panel docks on the right and scrolls inside itself; the lot is fit to the
-   space left of it. */
+/* The board's status line: a short toast under the strip, centred on the clear part of
+   the board. It fades a few seconds after each change. */
+.board-status {
+  position: fixed; z-index: 11; top: calc(var(--strip-h) + 8px); left: var(--clear-cx); transform: translateX(-50%);
+  width: max-content; max-width: min(520px, calc(var(--clear-w) - 24px));
+  margin: 0; padding: 6px 12px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text); text-align: center;
+  background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+  transition: opacity 0.4s;
+}
+body[data-layout='hud'] .board-status { max-width: min(520px, calc(var(--clear-w) - 2 * var(--status-w) - 72px)); }
+.board-status:empty { display: none; }
+.board-status.quiet { opacity: 0; pointer-events: none; }
+
+/* ---------- The controls layer ---------- */
+/* #panel stays the one "Controls" landmark, in reading order; its plates are placed with
+   CSS (docs/HUD.md section 7). Clicks reach the board between plates. */
 .panel {
-  position: fixed; z-index: 12; right: 12px; top: calc(var(--strip-h) + 12px);
-  width: clamp(320px, 30vw, 400px);
+  position: fixed; z-index: 12; left: 0; right: 0; top: var(--strip-h); bottom: 0;
+  pointer-events: none;
+}
+.panel:focus { outline: none; }
+.panel h2 { margin: 0; font-size: 1.15rem; }
+.panel h3 { margin: 0 0 6px; font-size: 0.95rem; }
+.panel p { margin: 0; }
+.plate {
+  position: absolute; pointer-events: auto;
+  display: flex; flex-direction: column; gap: 8px; padding: 10px 12px;
+  background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.plate > * { flex: none; }
+.at-tl { top: 12px; left: 12px; width: var(--corner-w); }
+.at-tr { top: 12px; right: 12px; width: var(--status-w); }
+.at-bl { bottom: 12px; left: 12px; }
+.at-br { bottom: 12px; right: 12px; }
+.plate[hidden] { display: none; }
+
+/* The sheet on the right, for Book, Promote, Settle and Done until step 4. */
+.at-sheet {
+  top: 12px; right: 12px; width: clamp(320px, 30vw, 400px);
   max-height: calc(100vh - var(--strip-h) - 24px);
   max-height: calc(100dvh - var(--strip-h) - 24px);
   overflow-y: auto; overscroll-behavior: contain;
-  background: var(--sheet); border: 1px solid var(--border-strong); border-radius: 8px;
-  padding: 16px; display: flex; flex-direction: column; gap: 14px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  padding: 16px; gap: 14px; background: var(--sheet); border-color: var(--border-strong);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-.panel > * { flex: none; }
-body[data-phase='settle'] .panel,
-body[data-phase='done'] .panel { width: clamp(360px, 40vw, 560px); }
+body[data-phase='settle'] .at-sheet,
+body[data-phase='done'] .at-sheet { width: clamp(360px, 40vw, 560px); }
+
+.hint { color: var(--text-muted); font-size: 0.85rem; }
+.row.tight { gap: 6px; flex-wrap: nowrap; }
+.row.tight > * { flex: 1 1 auto; }
+.count { font-family: var(--font-mono); color: var(--cyan); }
+
+/* Build: the tools, two rows of five tiles with their keys. */
+.tiles { display: grid; grid-template-columns: repeat(5, 58px); gap: 4px; }
+.tile {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 2px;
+  height: 56px; min-height: 0; padding: 4px 2px 3px; margin: 0; cursor: pointer;
+  background: var(--panel-alt); border: 1px solid var(--border); border-radius: 6px;
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text);
+}
+.tile input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.tile img { width: 40px; height: 28px; object-fit: contain; pointer-events: none; }
+.tile-key { position: absolute; top: 2px; left: 4px; font-size: 0.6rem; color: var(--text-muted); }
+.tile-glyph { font-size: 1.15rem; line-height: 28px; height: 28px; }
+.tile-name { white-space: nowrap; }
+.tile:has(input:checked) { border-color: var(--cyan); background: rgba(0, 240, 255, 0.1); box-shadow: inset 0 0 0 1px var(--cyan); }
+.tile:has(input:focus-visible) { outline: 3px solid var(--yellow); outline-offset: 2px; }
+button.tile:hover:not(:disabled) { background: var(--border); }
+#doze-btn.on { background: #ef4444; color: #1a0a0a; border-color: #ef4444; }
+#doze-btn.on .tile-key { color: #1a0a0a; }
+
+/* Build: the readouts, two columns of three. */
+.readouts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; margin: 0; }
+.readouts div { min-width: 0; }
+.readouts dt { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.readouts dd { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; white-space: nowrap; }
+.readouts small { font-weight: 400; font-size: 0.7rem; color: var(--text-muted); }
+.readouts .warn { color: var(--amber); }
+.readouts .bad { color: #fca5a5; }
+.readouts .bar { display: block; height: 4px; margin-top: 3px; }
+.status-plate .checklist { padding: 0; list-style: none; font-size: 0.8rem; line-height: 1.35; }
+.status-plate .checklist .more { color: var(--text-muted); }
+.status-plate .toggle { min-height: 44px; justify-content: center; font-size: 0.78rem; font-family: var(--font-mono); font-weight: 700; border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0 8px; flex: 0 0 auto; }
+.status-plate .toggle input { width: 16px; height: 16px; }
+.status-plate button, .actions-plate button { padding: 10px; white-space: nowrap; }
+#fence-btn[aria-pressed='true'] { border-color: var(--green); color: #86efac; }
+
+/* Show: the clock, the incident card and the feed. */
+.card-plate .timecode { font-size: 1.8rem; line-height: 1; }
+.incident-plate { width: var(--status-w); border-color: rgba(239, 68, 68, 0.75); box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3), 0 10px 28px rgba(0, 0, 0, 0.5); }
+.incident-plate .incident { border: 0; background: none; padding: 0; gap: 6px; }
+.incident-plate .incident p { font-size: 0.82rem; color: var(--text-muted); }
+.incident-plate .choice { padding: 6px 10px; gap: 1px; min-height: 44px; }
+.choice-head { display: flex; justify-content: space-between; gap: 8px; width: 100%; }
+.choice-effect { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+.feed-plate { width: var(--corner-w); }
+.feed-plate .feed { font-size: 0.75rem; }
+.crowd-now { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+#crowd-now { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: var(--cyan); }
+
+/* ---------- Windows ---------- */
+/* A document the player opens on purpose, over the dimmed board. */
+.win-layer {
+  position: fixed; inset: 0; z-index: 25; display: flex; align-items: center; justify-content: center;
+  padding: calc(var(--strip-h) + 12px) 16px 16px; background: rgba(6, 8, 12, 0.6);
+}
+.win-layer[hidden] { display: none; }
+.win {
+  display: flex; flex-direction: column; width: min(720px, 100%); max-height: 100%;
+  background: var(--sheet); border: 1px solid var(--border-strong); border-radius: 10px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+}
+.win-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.win-head h2 { margin: 0; font-size: 1.1rem; }
+.win-body { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; overflow-y: auto; overscroll-behavior: contain; }
+.win-body h3 { margin: 0 0 6px; font-size: 0.95rem; }
+.win-body .checklist { margin: 0; }
+.obj-groups { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.obj-groups li { display: grid; grid-template-columns: 160px 1fr; gap: 8px; align-items: start; }
+.obj-name { font-size: 0.85rem; padding-top: 8px; }
+.obj-places { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { min-height: 36px; padding: 4px 10px; font-size: 0.75rem; }
 
 /* ---------- Menu ---------- */
 .menu {
@@ -150,10 +251,6 @@ body[data-phase='done'] .panel { width: clamp(360px, 40vw, 560px); }
 .menu-close { margin-left: auto; }
 .board-help { margin: 0; color: var(--text-muted); font-size: 0.85rem; }
 a.button { display: inline-flex; align-items: center; text-decoration: none; }
-.panel:focus { outline: none; }
-.panel h2 { margin: 0; font-size: 1.15rem; }
-.panel h3 { margin: 0 0 6px; font-size: 0.95rem; }
-.panel p { margin: 0; }
 .lede { color: var(--text-muted); }
 .notice { color: var(--text-muted); }
 
@@ -309,6 +406,12 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 .credit { color: var(--text-muted); font-size: 0.8rem; margin: 0; }
 
 /* ---------- Narrower windows ---------- */
+/* The strip makes room for the camera buttons: the game's name is read out but not shown,
+   and the turn button shows only its arrow. */
+@media (max-width: 1439px) {
+  .brand { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .wide-only { display: none; }
+}
 /* Only the current phase keeps its name; the others keep their numbers. */
 @media (max-width: 1279px) {
   .stepper li:not([aria-current]) .step-name {
@@ -334,16 +437,26 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .meters { order: 4; flex-basis: 100%; justify-content: space-between; gap: 8px; }
   .meters div { flex-direction: row; align-items: baseline; gap: 6px; }
   .meters dd { font-size: 0.9rem; }
-  .panel,
-  body[data-phase='settle'] .panel,
-  body[data-phase='done'] .panel {
-    top: auto; left: 0; right: 0; bottom: 0; width: auto;
-    height: 44vh; height: 44dvh; max-height: none;
-    border-radius: 14px 14px 0 0; border-bottom: 0; padding: 12px;
+  .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .panel {
+    top: auto; height: 44vh; height: 44dvh; pointer-events: auto;
+    display: flex; flex-direction: column; gap: 12px; padding: 12px;
+    overflow-y: auto; overscroll-behavior: contain;
+    background: var(--sheet); border-top: 1px solid var(--border-strong); border-radius: 14px 14px 0 0;
   }
-  .camera { left: 8px; bottom: calc(var(--board-bottom) + 8px); }
-  .camera-row { flex-wrap: nowrap; }
+  .plate, .at-sheet,
+  body[data-phase='settle'] .at-sheet,
+  body[data-phase='done'] .at-sheet {
+    position: static; width: auto; max-height: none; overflow: visible;
+    padding: 0; border: 0; background: none; box-shadow: none;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  .camera-row {
+    position: fixed; z-index: 10; left: 8px; bottom: calc(var(--board-bottom) + 8px);
+    padding: 6px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+  }
   .wide-only { display: none; }
+  .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .palette, .stats { grid-template-columns: minmax(0, 1fr); }
   .sat-row { grid-template-columns: 80px 1fr 40px; }
 }

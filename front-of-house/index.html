@@ -39,6 +39,12 @@
       <li data-step="show"><span class="num">4</span> <span class="step-name">Show</span></li>
       <li data-step="settle"><span class="num">5</span> <span class="step-name">Settle</span></li>
     </ol>
+    <div class="camera-row" role="group" aria-label="Camera">
+      <button type="button" id="zoom-out" aria-label="Zoom out (minus)">&minus;</button>
+      <button type="button" id="zoom-fit" aria-label="Fit the whole lot (0)">Fit</button>
+      <button type="button" id="zoom-in" aria-label="Zoom in (plus)">+</button>
+      <button type="button" id="turn-view" aria-label="Turn the view (Q)">&#8635;<span class="wide-only"> Turn</span></button>
+    </div>
     <dl class="meters">
       <div><dt>Cash</dt><dd id="meter-cash">—</dd></div>
       <div><dt>Venue rep</dt><dd id="meter-rep">—</dd></div>
@@ -51,15 +57,7 @@
     <section class="board-wrap" aria-labelledby="board-title">
       <h2 id="board-title" class="sr-only">The lot</h2>
       <canvas id="board" tabindex="0" aria-label="Venue board" aria-describedby="board-help board-status"></canvas>
-      <div class="camera" role="group" aria-label="Camera">
-        <p id="board-status" class="board-status" aria-live="polite"></p>
-        <div class="camera-row">
-          <button type="button" id="zoom-out" aria-label="Zoom out (minus)">&minus;</button>
-          <button type="button" id="zoom-fit">Fit (0)</button>
-          <button type="button" id="zoom-in" aria-label="Zoom in (plus)">+</button>
-          <button type="button" id="turn-view" aria-label="Turn the view (Q)">Turn<span class="wide-only"> the view (Q)</span></button>
-        </div>
-      </div>
+      <p id="board-status" class="board-status" aria-live="polite"></p>
     </section>
 
     <section id="panel" class="panel" tabindex="-1" aria-label="Controls">
@@ -67,6 +65,16 @@
       <p class="notice" id="boot-note">Loading the lot…</p>
     </section>
   </main>
+
+  <div id="win" class="win-layer" hidden>
+    <section class="win" role="dialog" aria-modal="true" aria-labelledby="win-title">
+      <header class="win-head">
+        <h2 id="win-title"></h2>
+        <button type="button" class="win-close" data-win="close">Close (Esc)</button>
+      </header>
+      <div class="win-body" id="win-body"></div>
+    </section>
+  </div>
 
   <div id="menu" class="menu" role="region" aria-label="Menu" hidden>
     <div class="row">
@@ -76,7 +84,7 @@
     </div>
     <section class="menu-keys" aria-labelledby="keys-title">
       <h2 id="keys-title">Keys and mouse</h2>
-      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. Q turns the view in quarter steps. The mouse wheel or plus and minus zoom, 0 shows the whole lot, and Shift with the arrow keys or a middle-button drag moves a zoomed view (outside Build a plain drag does too). The props stay painted for the original camera. In Build, click a tile or focus the board and use the arrow keys, Enter to place, R to rotate, B to bulldoze and Delete to remove. ? opens this menu.</p>
+      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. Q turns the view in quarter steps. The mouse wheel or plus and minus zoom, 0 shows the whole lot, and Shift with the arrow keys or a middle-button drag moves a zoomed view (outside Build a plain drag does too). The props stay painted for the original camera. In Build, 1 to 8 pick an object; click a tile, or focus the board and use the arrow keys, Enter to place, R to rotate, B to bulldoze and Delete to remove. ? opens this menu.</p>
     </section>
     <details id="save-menu" class="savebar">
       <summary>Save and load</summary>
