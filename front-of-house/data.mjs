@@ -290,10 +290,15 @@ export const VENUES = {
 };
 export const VENUE_ORDER = ['lot', 'club', 'amphitheater', 'festival'];
 
-// Incidents (R-11). Exactly one per show, chosen by the seeded generator.
+// Show night runs from doors (19:00) to curfew (23:00); times below are shares of that night.
+export const ACT_ON_STAGE_AT = 0.3; // 20:12, when the feed says the act takes the stage
+
+// Incidents (R-11). Exactly one per show, chosen by the seeded generator. `window` is the share of
+// show night the incident can happen in (R-11a), so rain arrives at doors and a PA drops out mid-set.
 export const INCIDENTS = {
   rain: {
     label: 'Rain at doors',
+    window: [0.05, 0.15], // 19:12 to 19:36, as the doors open
     responses: [
       { id: 'ride-out', label: 'Ride it out', cost: 0, score: 0.3, walkupMult: 0.6 },
       { id: 'ponchos', label: 'Hand out ponchos', cost: 125, score: 0.7, walkupMult: 0.8 },
@@ -302,6 +307,7 @@ export const INCIDENTS = {
   },
   'pa-dropout': {
     label: 'PA dropout mid-set',
+    window: [0.4, 0.8], // 20:36 to 22:12, after the act is on stage
     responses: [
       { id: 'wait', label: 'Wait it out', cost: 0, score: 0.3 },
       { id: 'backup-amp', label: 'Swap in the backup amp', cost: 100, score: 0.8 },
@@ -309,6 +315,7 @@ export const INCIDENTS = {
   },
   'gate-jam': {
     label: 'Gate jam at doors',
+    window: [0.05, 0.2], // 19:12 to 19:48, while the line is still coming in
     responses: [
       { id: 'ride-out', label: 'Ride it out', cost: 0, score: 0.3, flowMult: 0.6 },
       { id: 'second-lane', label: 'Open a second lane', cost: 75, score: 0.9 },
@@ -316,6 +323,7 @@ export const INCIDENTS = {
   },
   curfew: {
     label: 'Noise curfew cuts the set',
+    window: [0.88, 0.95], // 22:31 to 22:48, the end of the set
     responses: [
       { id: 'obey', label: 'End the set', cost: 0, score: 0.4, walkupMult: 0.7 },
       { id: 'appeal', label: 'Appeal and finish the song', cost: 400, score: 0.75, walkupMult: 0.9 },

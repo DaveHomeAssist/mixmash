@@ -6,7 +6,7 @@ import * as D from './data.mjs';
 import {
   applyAction, buzz, careerProgress, cheapestShowCost, createGame, doorRushPilot, evaluateShow, evaluateVenue, forecast, migrateSave,
   nextSeed, nextShowCost, normalizeState, offersFor, termsFor,
-  presaleSplit, priceFactor, rollShow, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
+  presaleSplit, priceFactor, rollShow, incidentAtFor, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
 
@@ -263,11 +263,36 @@ test('rollShow stays in range and uses every incident', () => {
   for (let seed = 1; seed <= 1000; seed += 1) {
     const r = rollShow(seed);
     assert.ok(r.draw >= D.ARTISTS[D.DEFAULT_ARTIST].drawMin && r.draw <= D.ARTISTS[D.DEFAULT_ARTIST].drawMax);
-    assert.ok(r.incidentAt >= 0.2 && r.incidentAt <= 0.8);
+    const [from, to] = D.INCIDENTS[r.incidentId].window;
+    assert.ok(r.incidentAt >= from && r.incidentAt <= to, `seed ${seed}: ${r.incidentId} at ${r.incidentAt}`);
     seen.add(r.incidentId);
   }
   assert.deepEqual([...seen].sort(), [...D.INCIDENT_ORDER].sort());
   assert.deepEqual(rollShow(5), rollShow(5));
+});
+
+test('R-11a: each incident happens inside its own window, and the story order holds', () => {
+  for (const [id, spec] of Object.entries(D.INCIDENTS)) {
+    const [from, to] = spec.window;
+    assert.ok(from >= 0 && from < to && to <= 1, `${id} window is inside show night`);
+    assert.equal(incidentAtFor(id, 0), from);
+    assert.equal(incidentAtFor(id, 1), to);
+    for (const t of [0.25, 0.5, 0.999]) {
+      const at = incidentAtFor(id, t);
+      assert.ok(at >= from && at <= to, `${id} at ${at}`);
+    }
+  }
+  // Doors incidents come before the act takes the stage; the set incidents come after.
+  for (const id of ['rain', 'gate-jam']) assert.ok(D.INCIDENTS[id].window[1] < D.ACT_ON_STAGE_AT, id);
+  for (const id of ['pa-dropout', 'curfew']) assert.ok(D.INCIDENTS[id].window[0] > D.ACT_ON_STAGE_AT, id);
+  // The timing roll is a separate draw: the show's draw and incident type are unchanged.
+  for (let seed = 1; seed <= 200; seed += 1) {
+    const r = rollShow(seed);
+    assert.equal(r.incidentAt, incidentAtFor(r.incidentId, r.timing));
+  }
+  // A bad or missing roll still lands inside the window.
+  assert.equal(incidentAtFor('rain', Number.NaN), incidentAtFor('rain', 0.5));
+  assert.equal(incidentAtFor('rain', 7), D.INCIDENTS.rain.window[1]);
 });
 
 test('back, retry and next show move between phases', () => {

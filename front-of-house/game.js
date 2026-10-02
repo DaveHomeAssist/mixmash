@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast,
+  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor,
   settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
@@ -636,9 +636,13 @@ function clock(p) {
 
 function startPlayback() {
   stopPlayback();
-  const roll = rollShow(state.seed, state.booking.artistId);
+  // Each night of a run rolls from its own seed, as incidentFor does (R-11a).
+  const night = state.show && state.show.night > 1 ? state.show.night : 1;
+  const roll = rollShow(night > 1 ? ((state.seed ^ night) >>> 0) : state.seed, state.booking.artistId);
   const preview = showPreview(state);
-  ui.play = { start: performance.now(), at: roll.incidentAt, p: 0, beats: 0, preview: preview.attendance, after: null };
+  // The incident shown is the room's (incidentFor), so time it by that incident's window.
+  const at = state.show ? incidentAtFor(state.show.incidentId, roll.timing) : roll.incidentAt;
+  ui.play = { start: performance.now(), at, p: 0, beats: 0, preview: preview.attendance, after: null };
   $('#show-status').textContent = `Crowd outlook ${preview.satisfaction}/100 · before incidents`;
   feedLine(`Doors open. ${preview.presale} people already hold tickets.`);
   if (state.show && state.show.pilotCrew === null) { reachDoorsChoice(); return; }
@@ -648,7 +652,7 @@ function startPlayback() {
     if (rush && r) { rush.hidden = false; rush.textContent = `Projected rush: ${r.waiting} queued · ${r.lostWalkups} leave · Bar cap: ${r.barCapacity}`; }
   }
   if (reduceMotion) {
-    ui.play.p = roll.incidentAt;
+    ui.play.p = at;
     reachIncident();
     return;
   }
@@ -676,7 +680,7 @@ function loop() {
     if (!play) return;
     if (state.phase === 'show' && !play.paused) {
       play.p = Math.min(play.at, (performance.now() - play.start) / 1000 / PLAY_SECONDS);
-      const beats = [[0.15, 'Walk-up is buying at the gate.'], [0.3, `${artistFor(state.booking.artistId).name} take the stage.`]];
+      const beats = [[0.15, 'Walk-up is buying at the gate.'], [D.ACT_ON_STAGE_AT, `${artistFor(state.booking.artistId).name} take the stage.`]];
       while (play.beats < beats.length && play.p >= beats[play.beats][0]) { feedLine(beats[play.beats][1]); play.beats += 1; }
       const c = $('#clock'); if (c) c.textContent = clock(play.p);
       if (play.p >= play.at) reachIncident();

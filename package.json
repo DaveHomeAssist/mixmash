@@ -24,6 +24,7 @@
     "parity": "node mars/parity/build-ledger.mjs",
     "sim": "node mars/sim/simulate.mjs",
     "sim:front-of-house": "node front-of-house/sim/simulate.mjs",
+    "docs:front-of-house": "node front-of-house/tools/docs.mjs",
     "admin:index": "node admin/build-catalog.mjs"
   },
   "devDependencies": {

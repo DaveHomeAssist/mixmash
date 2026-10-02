@@ -40,13 +40,24 @@ export function artistFor(artistId) {
 }
 
 // Draw order is fixed: artist draw, incident type, incident timing.
+// `timing` is the raw 0 to 1 roll; `incidentAt` places it inside the incident's window (R-11a).
 export function rollShow(seed, artistId = D.DEFAULT_ARTIST) {
   const artist = artistFor(artistId);
   const rng = mulberry32(seed);
   const draw = artist.drawMin + Math.floor(rng() * (artist.drawMax - artist.drawMin + 1));
   const incidentId = D.INCIDENT_ORDER[Math.floor(rng() * D.INCIDENT_ORDER.length)];
-  const incidentAt = Math.round((0.2 + rng() * 0.6) * 1000) / 1000;
-  return { draw, incidentId, incidentAt };
+  const timing = rng();
+  return { draw, incidentId, incidentAt: incidentAtFor(incidentId, timing), timing };
+}
+
+// When an incident happens, as a share of show night (doors to curfew). The same timing roll
+// lands inside each incident's own window, so a room that picks a different incident than
+// rollShow (incidentFor) still gets a time that fits the incident it shows.
+export function incidentAtFor(incidentId, timing) {
+  const spec = D.INCIDENTS[incidentId];
+  const [from, to] = spec && Array.isArray(spec.window) ? spec.window : [0.2, 0.8];
+  const t = Number.isFinite(timing) ? clamp(timing, 0, 1) : 0.5;
+  return Math.round((from + t * (to - from)) * 1000) / 1000;
 }
 
 // The incident is a pure function of the seed, the room and the night, so a save
