@@ -53,6 +53,8 @@ const PROPS = {
 
 // Box colours and heights, exported so the panel's palette swatches match the board.
 export const LOOK = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, p.box]));
+// Sprite fit per prop, exported for the asset manifest (docs/ASSETS.md, tools/docs.mjs).
+export const SPRITE_FIT = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, { ...p.sprite }]));
 // A room's pillars are part of the building: always a code-drawn box, never placed or removed.
 const PILLAR = { top: '#5c534c', side: '#3f3833', front: '#2c2724', height: 2.4 };
 const lookOf = (o) => (o.type === 'pillar' ? PILLAR : LOOK[o.type]);

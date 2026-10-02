@@ -10,7 +10,7 @@ Each rule has an ID (`R-NN`), its inputs and output, a formula, and the names of
 ## General conventions
 
 - **Money** is whole dollars (integers). Rounding uses `Math.round` (halves round up) wherever a rule says `round`.
-- **Determinism:** every random value comes from one seeded generator (mulberry32 seeded with `state.seed`). Values are drawn in a fixed order: artist draw, incident type, incident timing (`rollShow`). The offers (R-19) come from a second generator seeded with `seed XOR 0x5bd1e995`, so they never shift the show's own rolls. The same seed and the same player choices produce the same settlement, down to the dollar.
+- **Determinism:** every random value comes from one seeded generator (mulberry32 seeded with `state.seed`). Values are drawn in a fixed order: artist draw, incident type, incident timing (`rollShow`; the timing roll is placed in the incident's window by [R-11a](#r-11a-incident-timing)). The offers (R-19) come from a second generator seeded with `seed XOR 0x5bd1e995`, so they never shift the show's own rolls. The same seed and the same player choices produce the same settlement, down to the dollar.
 - **The engine never touches the DOM.** `applyAction(state, action)` returns `{ state, error }`; the input state is never changed.
 - `clamp(v, lo, hi)` limits `v` to the range `[lo, hi]`.
 - **Per-person parts:** where a rule divides a supply by `attendance`, the part is 1 when attendance is 0.
@@ -104,6 +104,10 @@ People beyond the bars' capacity still buy, at the reduced `BAR_SHORTFALL` rate,
 ### R-11: Incidents
 
 Each show has exactly one incident from `INCIDENTS`, chosen by the seeded generator. A response costs money (added to show costs, [R-13](#r-13-show-costs)), sets the incident score, and may change walk-up (`walkupMult`) or entry flow (`flowMult`). A response the player cannot afford with current cash is refused ([R-12](#r-12-cash-timing)).
+
+#### R-11a: Incident timing
+
+Show night runs from doors (19:00) to curfew (23:00). Each incident has a `window` in `INCIDENTS`, a share of that night, and happens at `incidentAt = from + timing × (to − from)`, rounded to three decimals, where `timing` is `rollShow`'s third draw (`incidentAtFor`). Doors incidents (rain, gate jam) end before `ACT_ON_STAGE_AT`; set incidents (PA dropout, curfew) start after it. Timing changes when the night pauses, not any number on the sheet, so the balance baseline does not depend on it. Rooms that pick their incident with `incidentFor` place the same `timing` roll in that incident's window, and each night of a run rolls from the same seed as its incident (`seed XOR night` after the first night).
 
 ## Opt-in Lot doors experiment (trial only)
 

@@ -28,6 +28,8 @@ jobs:
       - run: npm run sim
       - run: npm run sim:front-of-house
       - run: git diff --exit-code -- front-of-house/docs/BALANCE_BASELINE.md
+      - run: npm run docs:front-of-house
+      - run: git diff --exit-code -- front-of-house/docs/ASSETS.md front-of-house/docs/CATALOG.md front-of-house/docs/STRINGS.md
       - run: npx playwright install --with-deps chromium
       - run: npm run smoke:front-of-house
       - run: npm run art:visual
