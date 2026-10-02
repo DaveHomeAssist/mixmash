@@ -105,6 +105,15 @@ People beyond the bars' capacity still buy, at the reduced `BAR_SHORTFALL` rate,
 
 Each show has exactly one incident from `INCIDENTS`, chosen by the seeded generator. A response costs money (added to show costs, [R-13](#r-13-show-costs)), sets the incident score, and may change walk-up (`walkupMult`) or entry flow (`flowMult`). A response the player cannot afford with current cash is refused ([R-12](#r-12-cash-timing)).
 
+## Opt-in Lot doors experiment (trial only)
+
+The additional prompt under `?night-slice=1` uses the current Lot, show seed, venue layout and contract. It is a test of whether a second decision is interesting, not an accepted new show rule. Ordinary shows continue to use R-09 to R-11 and the unchanged balance baseline. See [FUTURE.md](FUTURE.md#lot-live-show-experiment-proposal) for the playtest questions.
+
+- The player chooses `bar` or `gate` once before the usual seeded incident. `gate` temporarily assigns one bar worker to the existing admission gate. No extra employee is hired, no new gate appears, and staffing cost remains unchanged. A pending choice blocks the incident response. The optional choice is saved as described in [SAVE_FORMAT.md](SAVE_FORMAT.md#opt-in-lot-show-experiment-on-schema-2).
+- For this trial only, `rushCapacity = gates * GATE_RATE * LOT_PILOT_RUSH_MINUTES * (gate choice ? LOT_PILOT_GATE_MULT : 1)`; `waiting = max(0, plannedAttendance - rushCapacity)`. Only walk-ups can leave: `lostWalkups = min(max(0, plannedAttendance - presale), floor(waiting * LOT_PILOT_WALKUP_LOSS))`. Actual attendance is `plannedAttendance - lostWalkups`. Ticket holders wait but retain their tickets.
+- The `gate` choice lowers one bar's service capacity by `ceil(BAR_RATIO * LOT_PILOT_BAR_CAPACITY_LOSS)`. Otherwise capacity remains `bars * BAR_RATIO`. R-09's amenities part and R-10's bar sales use this adjusted capacity; its entry flow part uses `rushAdmitted / rushArrivals`, multiplied by any existing incident flow effect. At zero arrivals, flow is 1. Everything else uses the existing show math, including pay, rent, artist compensation and settlement.
+- The card displays a forecast before the incident. The signed sheet shows the actual queue and sales after the incident. The aggregate rush is a snapshot, not a pathfinding or per-person simulation. Balance tuning and the 12-second playback are unchanged for normal shows.
+
 ## Money
 
 ### R-12: Cash timing
