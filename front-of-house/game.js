@@ -857,12 +857,11 @@ function sheetParts(r, { signed: done }) {
       <div class="payout artist"><span class="meta-label">Artist payout</span><span class="amount">${money(r.artistPay)}</span>
         <p>${r.artistPay >= quotedAsk() ? 'Paid in full. The act leaves happy.' : `They expected ${money(quotedAsk())}.`}</p></div>
       <div class="payout promoter ${r.net < 0 ? 'loss' : ''}"><span class="meta-label">Promoter net</span><span class="amount">${money(r.net)}</span>
-        <p>Revenue after every cost and the artist.</p></div>
+        <p>${r.doorRush ? `${r.doorRush.waiting} queued · ${r.doorRush.lostWalkups} left · bar cap ${r.doorRush.barCapacity}.` : 'Revenue after every cost and the artist.'}</p></div>
     </div>`;
   const crowd = `
     <div data-tab="Crowd">
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
-      ${r.doorRush ? `<p class="hint">Doors: ${r.doorRush.waiting} queued; ${r.doorRush.lostWalkups} walk-ups left; bar capacity ${r.doorRush.barCapacity}.</p>` : ''}
       <div class="meters-sat">${parts}</div>
     </div>
     <div class="outcomes" data-tab="Payout">
