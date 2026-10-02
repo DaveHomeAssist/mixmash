@@ -843,6 +843,22 @@ try {
   await hud.screenshot({ path: join(output, 'review-phone-show.png') });
   await hud.locator('[data-act="respond"]:visible:not([disabled])').first().click();
   assert.equal((await game(hud)).phase, 'settle', 'the located incident still completes through the real response control');
+  await hud.click('[data-act="accept"]');
+  await hud.click('#menu-btn');
+  await hud.click('[data-act="mode"][data-mode="scenario"]');
+  await hud.click('[data-act="mode"][data-mode="scenario"]');
+  await hud.locator('[data-deal="guarantee"]:visible').first().click();
+  await hud.locator('#panel [role="tab"]', { hasText: 'Actions' }).click();
+  await hud.click('[data-act="confirm-build"]');
+  await hud.click('[data-act="confirm-promo"]');
+  await hud.waitForSelector('[data-act="respond"]');
+  assert.equal(await hud.locator('[data-act="respond"][disabled]').count(), 2, 'the wet lot leaves both paid rain choices unaffordable');
+  const rainFit = await hud.evaluate(() => {
+    const p = document.querySelector('#panel');
+    return { overflow: p.scrollHeight - p.clientHeight, board: window.__frontOfHouse.board().view.safe.h / innerHeight };
+  });
+  assert.ok(rainFit.overflow <= 1 && rainFit.board >= 0.45, `unaffordable rain choices fit at 375px: ${JSON.stringify(rainFit)}`);
+  await hud.screenshot({ path: join(output, 'review-phone-rain.png') });
   await review.close();
   ok('phone sheet controls, theme persistence, honest incident status, equipment location and ultrawide layout');
 
