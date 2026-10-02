@@ -551,8 +551,9 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   }
   .camera-row {
     position: fixed; z-index: 10; left: 8px; bottom: calc(var(--board-bottom) + 8px);
-    padding: 6px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+    padding: 4px; gap: 2px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
   }
+  .camera-row button { width: 44px; padding: 0; }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
@@ -595,10 +596,12 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   body[data-phase='show'] .panel { gap: 4px; padding: 6px 12px; }
   body[data-layout='hud'] .card-plate .show-status { font-size: 0.75rem; }
   body[data-layout='hud'] .sheet-controls:not([hidden]) {
-    display: flex; gap: 4px; position: fixed; z-index: 15; right: 8px;
-    bottom: calc(var(--board-bottom) + 8px); touch-action: none;
-    padding: 6px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+    display: flex; gap: 2px; position: fixed; z-index: 15; right: 8px;
+    bottom: calc(var(--board-bottom) + 8px);
+    padding: 4px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
   }
+  .sheet-grip { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; touch-action: none; cursor: grab; }
+  .sheet-grip::before { content: ''; width: 18px; height: 6px; border-block: 2px solid var(--text-muted); }
   .sheet-controls button { width: 44px; height: 44px; padding: 0; font-size: 1.25rem; }
   body[data-layout='hud'][data-sheet-size='expanded'] .panel {
     height: calc(100dvh - var(--strip-h) - 76px);
@@ -609,6 +612,10 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   body[data-layout='hud'][data-sheet-size='collapsed'] #locate-incident { visibility: hidden; }
   /* The gesture is optional; these controls also work by touch, mouse and keyboard. */
   body[data-layout='hud'] .board-status { max-width: calc(100vw - 24px); top: calc(var(--strip-h) + 62px); }
+}
+
+@media (max-width: 359px) {
+  .sheet-grip { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

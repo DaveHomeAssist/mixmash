@@ -1391,25 +1391,19 @@ $('#sheet-expand').addEventListener('click', () => setSheetSize(document.body.da
 $('#sheet-collapse').addEventListener('click', () => setSheetSize(document.body.dataset.sheetSize === 'collapsed' ? 'peek' : 'collapsed'));
 // Only the handle owns the gesture, so a slider, tab or board drag cannot resize the sheet.
 let sheetStart = null;
-let sheetGesture = false;
-$('#sheet-controls').addEventListener('pointerdown', (event) => {
-  sheetGesture = false;
-  if (event.pointerType !== 'touch') return;
+$('#sheet-grip').addEventListener('pointerdown', (event) => {
+  if (event.pointerType !== 'touch' || !event.isPrimary) return;
   sheetStart = event.clientY;
-  event.target.setPointerCapture(event.pointerId);
+  event.currentTarget.setPointerCapture(event.pointerId);
 });
-$('#sheet-controls').addEventListener('pointerup', (event) => {
-  if (sheetStart === null) return;
+$('#sheet-grip').addEventListener('pointerup', (event) => {
+  if (sheetStart === null || !event.isPrimary) return;
   const delta = event.clientY - sheetStart;
   sheetStart = null;
   if (Math.abs(delta) < 35) return;
-  sheetGesture = true;
   setSheetSize(delta < 0 ? 'expanded' : 'collapsed');
 });
-$('#sheet-controls').addEventListener('click', (event) => {
-  if (sheetGesture) { event.preventDefault(); event.stopImmediatePropagation(); }
-}, true);
-$('#sheet-controls').addEventListener('pointercancel', () => { sheetStart = null; });
+$('#sheet-grip').addEventListener('pointercancel', () => { sheetStart = null; });
 
 function syncTabs(root, key, pick) {
   const old = root.querySelector(':scope > .tabbar, .tabbar');
