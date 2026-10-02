@@ -86,6 +86,12 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 
 **Done when:** a player can play at least five shows in a row on the Lot with cash, reputation and relationships carried between them; relationship changes the next offer; the tier goal is reachable in the simulator but not on every seed (careless play reaches it on about 42%); and any save change keeps old saves playing (two optional fields, no version bump).
 
+## Review refinement (2026-10-02)
+
+The accepted mockup review is applied to the existing steps 1 to 5: honest Show status, consequence-based incident copy, equipment location, phone sheet controls and light/dark controls. See [HUD.md](docs/HUD.md#review-refinement-2026-10-02). Engine rules, saves and the optional Lot doors experiment are unchanged.
+
+Next: HUD step 6, performance. Record frame times at 1920 × 1080, cache the static floor with layout/view/camera invalidation, and require the same functional and visual checks plus p95 below 16 ms. Then collect human desktop and phone feedback before public promotion. The minimap stays deferred; remaining venue/economy proposals need their own decisions.
+
 ## Separate tracks
 
 - **Public release of the first playable** waits on Dave's playtest sign-off. On sign-off: a hub card on the landing page with a gameplay preview and its provenance, a sitemap entry, and `noindex` removed.

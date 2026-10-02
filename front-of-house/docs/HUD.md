@@ -116,6 +116,18 @@ A full-window canvas draws more pixels: 1440 × 900 at a device pixel ratio of 2
 - Keep the pixel-ratio cap at 2. Drop to 1.5 when the canvas would pass 6 megapixels.
 - Budget: show night at 1920 × 1080 holds 60 frames a second on a mid-range laptop. The smoke rail records frame times in headless Chromium as a proxy and fails over 16 ms at the 95th percentile.
 
+### Review refinement (2026-10-02)
+
+Dave accepted the combined review of the 25-page HUD mockups and asked to execute the next pass. Steps 1 to 5 already exist; this pass refines the current Build and Show controls rather than replacing their layout.
+
+- Show distinguishes its pre-incident crowd outlook from a live mood reading, and explicitly says when a doors choice or incident has paused play. Incident responses explain cover, sound, entry flow or ending the set instead of exposing a raw handling score. Costs and engine-derived sales/flow percentages remain visible.
+- Locate PA, gate or stage centres the affected object at 2× zoom; it never resolves the incident. For a house PA, the stage is the location proxy. Rain has no equipment location. On phones Locate is in the Night tab.
+- Build and Show phone sheets have 44 px expand/reduce and hide/show buttons. A swipe on those controls is optional. Hidden controls are inert; a new incident restores the peek sheet and selects Problem. Desktop resizing restores all controls. Phone tool tiles omit keyboard shortcut badges.
+- Controls default to a light palette, with a persistent Dark controls toggle in the menu. The map retains its night palette. Shared navigation stays visible while idle.
+- The revenue forecast already uses one engine-derived range, and Skip already hides at an incident; those review recommendations needed no new rule or flow.
+
+Step 6 remains the next implementation phase: establish the 1920 × 1080 frame-time baseline, cache the static floor with explicit invalidation, and compare the same seeds and camera states before and after. Headless measurements are a proxy; laptop and phone playtests still determine real usability. The minimap remains deferred, and public promotion still requires Dave's playtest sign-off.
+
 ## 7. Accessibility and HUD rules
 
 - **The HUD is HTML over the canvas,** never drawn on it. Text stays selectable, translatable and readable by screen readers.

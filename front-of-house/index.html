@@ -66,6 +66,12 @@
     </section>
   </main>
 
+  <div id="sheet-controls" class="sheet-controls" role="group" aria-label="Controls sheet" hidden>
+    <span id="sheet-grip" class="sheet-grip" aria-hidden="true" title="Swipe up to expand, down to hide"></span>
+    <button type="button" id="sheet-expand" aria-controls="panel" aria-expanded="false" aria-label="Expand controls">↗</button>
+    <button type="button" id="sheet-collapse" aria-controls="panel" aria-expanded="true" aria-label="Hide controls">↓</button>
+  </div>
+
   <div id="win" class="win-layer" hidden>
     <section class="win" role="dialog" aria-modal="true" aria-labelledby="win-title">
       <header class="win-head">
@@ -78,6 +84,7 @@
   </div>
 
   <div id="menu" class="menu" role="region" aria-label="Menu" hidden>
+    <button type="button" id="theme-toggle" aria-pressed="false">Dark controls</button>
     <div class="row">
       <button type="button" id="fullscreen" aria-pressed="false">Full screen</button>
       <a class="button" href="https://github.com/DaveHomeAssist/mixmash" target="_blank" rel="noopener noreferrer">Source on GitHub</a>

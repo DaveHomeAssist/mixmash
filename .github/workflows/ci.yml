@@ -29,10 +29,10 @@ jobs:
       - run: npm run sim:front-of-house
       - run: git diff --exit-code -- front-of-house/docs/BALANCE_BASELINE.md
       - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:front-of-house
       - run: npm run art:visual
       - run: npm run smoke:play
       - run: npm run smoke:catalog
       - run: npm run smoke:landing
       - run: npm run smoke:zelda2mario
-      - run: npm run smoke:front-of-house
       - run: npm run smoke:admin

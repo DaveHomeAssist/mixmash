@@ -27,7 +27,8 @@ import {
 import { readFile } from 'node:fs/promises';
 
 const server = await startStaticServer();
-const url = `${server.origin}/front-of-house/`;
+const url = process.env.FRONT_OF_HOUSE_BASE_URL || `${server.origin}/front-of-house/`;
+const appOrigin = new URL(url).origin;
 const output = process.env.FRONT_OF_HOUSE_SCREENSHOT_DIR || await mkdtemp(join(tmpdir(), 'front-of-house-smoke-'));
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch(launchOptions());
@@ -36,7 +37,7 @@ const ok = (name) => { checks.push(name); console.log(`  ok  ${name}`); };
 
 async function open(context) {
   const page = await context.newPage();
-  const failures = trackPageFailures(page, server.origin);
+  const failures = trackPageFailures(page, appOrigin);
   await page.goto(url);
   await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
   return { page, failures };
@@ -727,9 +728,10 @@ try {
   // Opt-in Lot doors pilot: one extra decision, saved before and after selection, and no HUD scroll.
   const pilotDesktop = await browser.newContext({ viewport: { width: 1024, height: 700 }, reducedMotion: 'reduce' });
   const pilotPage = await pilotDesktop.newPage();
-  const pilotFailures = trackPageFailures(pilotPage, server.origin);
+  const pilotFailures = trackPageFailures(pilotPage, appOrigin);
   await pilotPage.goto(`${url}?night-slice=1`);
   await pilotPage.waitForFunction(() => typeof window.render_game_to_text === 'function');
+  await loadCode(pilotPage, Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
   await pilotPage.click('[data-deal="guarantee"]');
   await pilotPage.click('[data-act="starter"]');
   await pilotPage.click('[data-act="confirm-build"]');
@@ -752,7 +754,7 @@ try {
 
   const pilotPhone = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const pilotMobile = await pilotPhone.newPage();
-  const pilotPhoneFailures = trackPageFailures(pilotMobile, server.origin);
+  const pilotPhoneFailures = trackPageFailures(pilotMobile, appOrigin);
   await pilotMobile.goto(`${url}?night-slice=1`);
   await pilotMobile.waitForFunction(() => typeof window.render_game_to_text === 'function');
   await pilotMobile.locator('[data-deal="guarantee"]:visible').first().click();
@@ -762,11 +764,13 @@ try {
   await pilotMobile.click('[data-act="confirm-promo"]');
   await pilotMobile.waitForSelector('[data-act="choose-crew"]');
   assert.equal(await pilotMobile.getAttribute('#panel .tabbar [aria-selected="true"]', 'data-tab-name'), 'Problem');
+  // The phase mounts synchronously, but its board safe rectangle updates on the next frame.
+  await pilotMobile.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
   const pilotTabFit = await pilotMobile.evaluate(() => {
     const p = document.querySelector('#panel');
     return { scroll: p.scrollHeight - p.clientHeight, board: window.__frontOfHouse.board().view.safe.h / innerHeight };
   });
-  assert.ok(pilotTabFit.scroll <= 1 && pilotTabFit.board >= 0.45, 'phone doors choice fits without scrolling or shrinking the board');
+  assert.ok(pilotTabFit.scroll <= 1 && pilotTabFit.board >= 0.45, `phone doors choice fits without scrolling or shrinking the board: ${JSON.stringify(pilotTabFit)}`);
   await pilotMobile.click('[data-act="choose-crew"][data-choice="gate"]');
   await pilotMobile.waitForSelector('[data-act="respond"]');
   assert.equal((await game(pilotMobile)).show.pilotCrew, 'gate');
@@ -778,7 +782,124 @@ try {
   assert.ok(crowdFit <= 1, 'the extra settlement explanation fits the phone Crowd tab');
   ok('the phone doors choice and settlement fit in the existing tabs without scrolling');
 
-  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7, ...pilotFailures, ...pilotPhoneFailures], [], 'no page errors, console errors or failed requests');
+  // Review refinements: stable sheet controls, incident priority and equipment location.
+  const review = await browser.newContext({ viewport: { width: 375, height: 812 }, reducedMotion: 'reduce', hasTouch: true, isMobile: true });
+  const { page: hud, failures: reviewFailures } = await open(review);
+  assert.equal(await hud.getAttribute('html', 'data-theme'), 'light', 'controls default to light');
+  await hud.click('#menu-btn');
+  await hud.click('#theme-toggle');
+  await hud.reload();
+  await hud.waitForFunction(() => !!window.__frontOfHouse);
+  assert.equal(await hud.getAttribute('html', 'data-theme'), 'dark', 'dark controls persist through reload');
+  const save = (s) => Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: s })).toString('base64');
+  await loadCode(hud, save(createGame(paSeed)));
+  await hud.locator('[data-deal="guarantee"]:visible').first().click();
+  await hud.locator('#panel [role="tab"]', { hasText: 'Actions' }).click();
+  await hud.click('[data-act="starter"]');
+  await hud.locator('#sheet-collapse').tap();
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'collapsed');
+  assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), true, 'hidden controls leave keyboard navigation');
+  await hud.waitForFunction(() => window.__frontOfHouse.board().view.safe.h / innerHeight > 0.8);
+  await hud.locator('#sheet-collapse').tap();
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
+  assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), false, 'show controls restores keyboard access');
+  await hud.click('#sheet-expand');
+  assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'expanded');
+  await hud.click('#sheet-expand');
+  assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await hud.evaluate(() => {
+    window.__sheetInputTrace = [];
+    for (const type of ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend']) document.addEventListener(type, (event) => {
+      window.__sheetInputTrace.push({ type, target: event.target.id, pointer: event.pointerType, x: event.clientX, y: event.clientY, state: document.body.dataset.sheetSize });
+    }, true);
+  });
+  const touch = await review.newCDPSession(hud);
+  let contact = 1;
+  const nativeTap = async (selector) => {
+    await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+    const r = await hud.locator(selector).boundingBox();
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: r.x + r.width / 2, y: r.y + r.height / 2, id: ++contact }] });
+    await new Promise((done) => setTimeout(done, 80));
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  };
+  const handle = await hud.locator('#sheet-grip').boundingBox();
+  const x = handle.x + handle.width / 2;
+  const y = handle.y + handle.height / 2;
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: contact }] });
+  // Keep the swipe and later taps in one native input stream, with a short real motion.
+  for (let step = 1; step <= 5; step += 1) {
+    await new Promise((done) => setTimeout(done, 20));
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - step * 14, id: contact }] });
+  }
+  await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'expanded');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await nativeTap('#sheet-expand');
+  try {
+    await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
+  } catch (error) {
+    console.error('Sheet input trace:', await hud.evaluate(() => ({ events: window.__sheetInputTrace, state: document.body.dataset.sheetSize, controls: document.querySelector('#sheet-controls').getBoundingClientRect().toJSON(), panel: document.querySelector('#panel').getBoundingClientRect().toJSON() })));
+    throw error;
+  }
+  assert.equal(await hud.getAttribute('body', 'data-sheet-size'), 'peek', 'a swipe does not block the next tap');
+  await nativeTap('#sheet-collapse');
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'collapsed');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await nativeTap('#sheet-collapse');
+  await hud.waitForFunction(() => document.body.dataset.sheetSize === 'peek');
+  await touch.detach();
+  await hud.screenshot({ path: join(output, 'review-phone-build.png') });
+  await hud.click('[data-act="confirm-build"]');
+  await hud.click('[data-act="confirm-promo"]');
+  await hud.waitForSelector('[data-act="respond"]');
+  assert.equal(await hud.isVisible('#skip-btn'), false, 'incident responses take priority over skipping');
+  assert.match(await hud.textContent('#show-status'), /Paused.*response needed/);
+  assert.doesNotMatch(await hud.textContent('#incident-box'), /handling|score/i, 'choices explain consequences without a raw handling score');
+  await hud.click('#sheet-collapse');
+  await resizeTo(hud, 1440, 900);
+  assert.equal(await hud.locator('#panel').evaluate((p) => p.inert), false, 'desktop restores controls after phone collapse');
+  await hud.click('#locate-incident');
+  assert.equal((await game(hud)).playback.paused, true, 'locating equipment does not resolve the incident');
+  const located = await hud.evaluate(() => {
+    const s = window.__frontOfHouse.state();
+    const o = s.venue.objects.find((p) => p.type === 'pa-s' || p.type === 'pa-m');
+    const point = window.__frontOfHouse.boardClientOf(o.x + 0.5, o.y + 0.5);
+    return { clear: point.clear, target: document.elementFromPoint(point.x, point.y)?.id, zoom: window.__frontOfHouse.board().camera.zoom };
+  });
+  assert.deepEqual(located, { clear: true, target: 'board', zoom: 2 }, 'Locate PA centres equipment on the unobstructed board');
+  await hud.screenshot({ path: join(output, 'review-show-locate.png') });
+  await hud.click('#zoom-fit');
+  await checkNoScroll(hud, 'show');
+  await resizeTo(hud, 2560, 720);
+  assert.deepEqual((await measureLayout(hud)).scroll, [0, 0, 0, 0], 'ultrawide keeps a viewport shell');
+  await resizeTo(hud, 375, 812);
+  await hud.locator('#panel [role="tab"]', { hasText: 'Problem' }).click();
+  assert.deepEqual((await measureLayout(hud)).scrolling, [], 'the paused Show controls fit at 375px');
+  await hud.screenshot({ path: join(output, 'review-phone-show.png') });
+  await hud.locator('[data-act="respond"]:visible:not([disabled])').first().click();
+  assert.equal((await game(hud)).phase, 'settle', 'the located incident still completes through the real response control');
+  await hud.click('[data-act="accept"]');
+  await hud.click('#menu-btn');
+  await hud.click('[data-act="mode"][data-mode="scenario"]');
+  await hud.click('[data-act="mode"][data-mode="scenario"]');
+  await hud.locator('[data-deal="guarantee"]:visible').first().click();
+  await hud.locator('#panel [role="tab"]', { hasText: 'Actions' }).click();
+  await hud.click('[data-act="confirm-build"]');
+  await hud.click('[data-act="confirm-promo"]');
+  await hud.waitForSelector('[data-act="respond"]');
+  assert.equal(await hud.locator('[data-act="respond"][disabled]').count(), 2, 'the wet lot leaves both paid rain choices unaffordable');
+  await hud.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  const rainFit = await hud.evaluate(() => {
+    const p = document.querySelector('#panel');
+    return { overflow: p.scrollHeight - p.clientHeight, board: window.__frontOfHouse.board().view.safe.h / innerHeight };
+  });
+  assert.ok(rainFit.overflow <= 1 && rainFit.board >= 0.45, `unaffordable rain choices fit at 375px: ${JSON.stringify(rainFit)}`);
+  await hud.screenshot({ path: join(output, 'review-phone-rain.png') });
+  await review.close();
+  ok('phone sheet controls, theme persistence, honest incident status, equipment location and ultrawide layout');
+
+  assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7, ...pilotFailures, ...pilotPhoneFailures, ...reviewFailures], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
 
   await Promise.all([context, other, calm, phone, spritesCtx, small, phoneFlow, pilotDesktop, pilotPhone].map((c) => c.close()));

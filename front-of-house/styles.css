@@ -33,6 +33,28 @@
   --status-w: clamp(300px, 25vw, 340px);
 }
 
+/* Daylight controls are the default; the board keeps the venue's time of day. */
+:root:not([data-theme='dark']) {
+  color-scheme: light;
+  --desk: #e7e9ec;
+  --sheet: #f8fafc;
+  --panel: #e2e8f0;
+  --panel-alt: #f1f5f9;
+  --border: #bdc8d5;
+  --border-strong: #718096;
+  --text: #172332;
+  --text-muted: #475569;
+  --cyan: #006574;
+  --green: #166534;
+  --red: #a51d2d;
+  --amber: #854d0e;
+  --yellow: #875400;
+  --teal: #0e6676;
+  --plate: #f8fafc;
+  --plate-line: #718096;
+}
+:root[data-theme='dark'] { color-scheme: dark; }
+
 * { box-sizing: border-box; }
 /* The page never scrolls (docs/HUD.md): the board is the page, and the panel and the
    menu scroll inside themselves. */
@@ -146,6 +168,9 @@ body[data-layout='hud'] .board-status { max-width: min(520px, calc(var(--clear-w
 .at-bl { bottom: 12px; left: 12px; }
 .at-br { bottom: 12px; right: 12px; }
 .plate[hidden] { display: none; }
+.sheet-controls { display: none; }
+.show-status { color: var(--text-muted); font-size: 0.8rem; }
+body .mixnav.is-idle { opacity: 1; }
 
 /* The sheet on the right, for Book, Promote, Settle and Done (docs/HUD.md step 4). It never
    scrolls at 1024 x 700 and up: forms take two columns, and documents open in a window. */
@@ -464,6 +489,20 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 .save-status { min-height: 1.2em; font-family: var(--font-mono); font-size: 0.8rem; }
 .credit { color: var(--text-muted); font-size: 0.8rem; margin: 0; }
 
+:root:not([data-theme='dark']) button.primary,
+:root:not([data-theme='dark']) .skip-link { color: #fff; }
+:root:not([data-theme='dark']) button.primary:hover:not(:disabled) { background: #004a57; }
+:root:not([data-theme='dark']) .incident h3,
+:root:not([data-theme='dark']) .message.error,
+:root:not([data-theme='dark']) button.danger,
+:root:not([data-theme='dark']) .bad,
+:root:not([data-theme='dark']) .neg { color: #9f1239; }
+:root:not([data-theme='dark']) .checklist { color: #854d0e; }
+:root:not([data-theme='dark']) .checklist.ok,
+:root:not([data-theme='dark']) #fence-btn[aria-pressed='true'],
+:root:not([data-theme='dark']) .pos { color: #166534; }
+:root:not([data-theme='dark']) .win-foot { background: var(--panel-alt); }
+
 /* ---------- Narrower windows ---------- */
 /* The strip makes room for the camera buttons: the game's name is read out but not shown,
    and the turn button shows only its arrow. */
@@ -512,8 +551,9 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   }
   .camera-row {
     position: fixed; z-index: 10; left: 8px; bottom: calc(var(--board-bottom) + 8px);
-    padding: 6px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+    padding: 4px; gap: 2px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
   }
+  .camera-row button { width: 44px; padding: 0; }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
@@ -549,6 +589,33 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .at-sheet .rooms button { min-height: 40px; }
   .palette, .stats { grid-template-columns: minmax(0, 1fr); }
   .sat-row { grid-template-columns: 80px 1fr 40px; }
+
+  .tile-key, .menu-btn .key { display: none; }
+  .tabbar [role='tab'] { min-height: 44px; }
+  body[data-phase='show'] .card-plate h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  body[data-phase='show'] .panel { gap: 4px; padding: 6px 12px; }
+  body[data-layout='hud'] .card-plate .show-status { font-size: 0.75rem; }
+  body[data-layout='hud'] .sheet-controls:not([hidden]) {
+    display: flex; gap: 2px; position: fixed; z-index: 15; right: 8px;
+    bottom: calc(var(--board-bottom) + 8px);
+    padding: 4px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
+  }
+  .sheet-grip { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; touch-action: none; cursor: grab; }
+  .sheet-grip::before { content: ''; width: 18px; height: 6px; border-block: 2px solid var(--text-muted); }
+  .sheet-controls button { width: 44px; height: 44px; padding: 0; font-size: 1.25rem; touch-action: manipulation; }
+  body[data-layout='hud'][data-sheet-size='expanded'] .panel {
+    height: calc(100dvh - var(--strip-h) - 76px);
+  }
+  body[data-layout='hud'][data-sheet-size='collapsed'] .panel {
+    height: 0; padding: 0; border: 0; visibility: hidden; overflow: hidden;
+  }
+  body[data-layout='hud'][data-sheet-size='collapsed'] #locate-incident { visibility: hidden; }
+  /* The gesture is optional; these controls also work by touch, mouse and keyboard. */
+  body[data-layout='hud'] .board-status { max-width: calc(100vw - 24px); top: calc(var(--strip-h) + 62px); }
+}
+
+@media (max-width: 359px) {
+  .sheet-grip { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
