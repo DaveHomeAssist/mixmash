@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-02: Split view and prop occlusion
+
+- Dave's screenshots showed Build controls extending beyond the status card and restrooms appearing on top of the bar. The status row now uses bounded grid columns; split-view meters wrap to a second header row. The occlusion repaint is restricted to PAs hidden by the stage, so amenities follow normal draw order.
+- Added browser regressions for status controls and header containment at 760, 900 and 1024 px, plus a bar with two restrooms immediately behind it. Existing PA visibility and removal checks remain in place. Service worker v22.
+- Recorded the requested continuous 360° camera direction in HUD.md, including dimensional props, tilt, picking and control separation. The art treatment remains an open choice; this patch does not ship a new renderer or claim to provide continuous orbit.
+- Local and deployment verification results are recorded on the delivery PR. Human camera/art acceptance remains separate from automated checks.
+
 ## 2026-10-01: Pre-production documents
 
 - Created `front-of-house/README.md`, `docs/GDD.md`, `docs/DECISIONS.md`, `docs/RULES.md` and `docs/SAVE_FORMAT.md`. No game code, route, hub card or sitemap entry was added.

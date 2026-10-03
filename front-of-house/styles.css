@@ -245,7 +245,10 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 .status-plate .checklist { padding: 0; list-style: none; font-size: 0.8rem; line-height: 1.35; }
 .status-plate .checklist .more { color: var(--text-muted); }
 .status-plate .toggle { min-height: 44px; justify-content: center; font-size: 0.78rem; font-family: var(--font-mono); font-weight: 700; border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0 8px; flex: 0 0 auto; }
-.status-plate .toggle input { width: 16px; height: 16px; }
+.status-plate .toggle input { width: 16px; height: 16px; margin: 0; flex-shrink: 0; }
+.status-plate .toggle { gap: 4px; }
+.status-plate .row.tight { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px; }
+.status-plate .row.tight > * { min-width: 0; padding-inline: 5px; font-size: 0.75rem; }
 .status-plate button, .actions-plate button { padding: 10px; white-space: nowrap; }
 #fence-btn[aria-pressed='true'] { border-color: var(--green); color: #86efac; }
 
@@ -519,6 +522,12 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 }
 @media (max-width: 1100px) {
   .tagline { display: none; }
+}
+
+@media (min-width: 681px) and (max-width: 1023px) {
+  .topbar { flex-wrap: wrap; gap: 4px 10px; }
+  .meters { order: 4; flex-basis: 100%; justify-content: flex-end; }
+  .meters div { flex-direction: row; align-items: baseline; gap: 6px; }
 }
 
 /* Phones (docs/HUD.md section 8): the board takes the top of the window and the phase

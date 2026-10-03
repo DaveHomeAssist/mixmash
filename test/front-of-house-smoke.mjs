@@ -383,6 +383,26 @@ try {
     return n;
   });
   const withM = await boardInfo();
+  await setLayout([
+    { type: 'bar', x: 8, y: 8, rot: 0 },
+    { type: 'restroom', x: 8, y: 7, rot: 0 },
+    { type: 'restroom', x: 9, y: 7, rot: 0 },
+  ]);
+  assert.equal((await boardInfo()).hitStack.filter((o) => o.type === 'restroom').length, 2,
+    'restrooms behind the bar are drawn once, without show-through repaints');
+  await setLayout(STARTER_LAYOUT);
+  for (const width of [760, 900, 1024]) {
+    await resizeTo(page5, width, 900);
+    assert.ok(await page5.evaluate(() => {
+      const plate = document.querySelector('.status-plate').getBoundingClientRect();
+      const stripFits = [...document.querySelector('.topbar').children].every((el) => el.getBoundingClientRect().right <= innerWidth);
+      return stripFits && [...document.querySelectorAll('.status-plate .row.tight > *')].every((el) => {
+        const r = el.getBoundingClientRect();
+        return r.left >= plate.left && r.right <= plate.right && r.right <= innerWidth && el.scrollWidth <= el.clientWidth;
+      });
+    }), `all status controls fit inside the card at ${width}px`);
+  }
+  await resizeTo(page5, 1280, 900);
   await snapshot();
   await setLayout(layoutWith({ 'pa-m': { type: 'pa-s' } }));
   const withS = await boardInfo();
