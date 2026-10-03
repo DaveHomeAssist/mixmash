@@ -1528,6 +1528,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/RESEARCH.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House: Research and Upgrade Dynamics",
+      "description": "Build an organization that gets better at putting on shows. After a night, the player sees what constrained the experience, invests in a capability, then designs a future show that makes that investment worthwhile. A…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/RESEARCH.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/RULES.md",
       "project": "front-of-house",
       "category": "docs",

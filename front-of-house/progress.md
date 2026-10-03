@@ -201,3 +201,10 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 - Aligned the release checklist with SAVE_FORMAT.md: optional fields use normalization defaults and compatibility tests; only breaking changes require a schema bump and migration.
 - Replaced KI-01's claim that a free PA response always wins with a scoped balance question and a paired engine example. At draw 125 with the suggested layout and a $20 door deal, the backup amp produces $828 net versus $821 for waiting, and +19 reputation versus +17. These are controlled inputs, not a universal strategy.
 - No additional gameplay, balance or save changes. Verification and deployment evidence will be recorded on the PR; human playtest and device acceptance remain outstanding.
+
+## 2026-10-03: Research and upgrade dynamics proposal
+
+- Added [RESEARCH.md](docs/RESEARCH.md): eight development branches within the four career tiers, prerequisites, cash and experience, research timing, rental/ownership boundaries, department interactions, venue infrastructure, modes, interface and acceptance criteria.
+- Recorded [CT-DEC-13](docs/DECISIONS.md#ct-dec-13-research-and-upgrade-progression) as Proposed and linked the design from the GDD, future plan, roadmap and README. Corrected the GDD header's claim that every logged decision was accepted.
+- Proposed a first Lot experiment with Patch standards, Service training and Admission lanes. No research mechanic, economy, balance, save or renderer changes are implemented in this documentation update.
+- Delivery checks and deployment evidence are recorded on the associated pull request. Human acceptance of the design and existing public-launch gates remain open.

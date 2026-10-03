@@ -1,6 +1,6 @@
 # Front of House: Game Design Document
 
-*Working title: Concert Tycoon.* **Status:** Draft; every decision in the log is accepted · **Last updated:** 2026-10-01 · **Owner:** Dave Robertson
+*Working title: Concert Tycoon.* **Status:** Draft; individual decisions are Accepted or Proposed as recorded in the log · **Last updated:** 2026-10-03 · **Owner:** Dave Robertson
 **Decisions:** [DECISIONS.md](DECISIONS.md) · **Formulas:** [RULES.md](RULES.md) · **Saves:** [SAVE_FORMAT.md](SAVE_FORMAT.md)
 
 This document is the canonical design. It combines both drafts from the Notion capture page "Concert Tycoon Ideas" (2026-10-01) with the one-page design for the first playable loop. Where they differed, the choice made is noted in the "Reconciled from the Notion drafts" section.
@@ -71,6 +71,14 @@ Phase 3 retuned the first playable to tier 1: the Oak St. Lot is permitted for 1
 **Career milestones (examples):** sell out a 500-capacity show; book an artist on a $10,000 guarantee; run a three-day festival without a major incident; reach a net worth that unlocks the Festival Grounds.
 **Scenario fail states:** the venue loses its operating license; cash reaches zero with debts still owed; reputation falls below a minimum.
 
+### Research and operational development (proposed)
+
+[Research and Upgrade Dynamics](RESEARCH.md) expands the career with an Age of Empires inspired tree of visible prerequisites and competing investments ([CT-DEC-13](DECISIONS.md#ct-dec-13-research-and-upgrade-progression), Proposed). The four venue tiers expose development bands across audio; lighting, video and power; bars; sanitation; vendors; admissions; security; and venue infrastructure.
+
+Cash funds development, department experience establishes readiness, and a limited project slot makes sequencing matter. Completing research unlocks a capability; deploying it still requires suitable staff, equipment, space and operating cash. Knowledge carries across the career, permanent construction belongs to a venue, and rental or staffing decisions belong to a show. Bigger systems can cost more than they earn on a smaller night.
+
+The proposed loop is **settle → diagnose a constraint → develop → deploy → evaluate**. Faster entry can expose a restroom shortage; more bars can add circulation pressure; better sound still needs power and crew. The first experiment would offer Patch standards, Service training and Admission lanes after a Lot settlement. The detailed tree, economy, timing, mode behavior and acceptance gates are in [RESEARCH.md](RESEARCH.md). None of these projects is implemented, and existing venue goals and saves are unchanged.
+
 ## 6. Systems: first playable versus later
 
 | System | In the first playable | Later |
@@ -87,7 +95,7 @@ Phase 3 retuned the first playable to tier 1: the Oak St. Lot is permitted for 1
 | Resource | Role |
 | --- | --- |
 | Cash | The currency for all spending |
-| Crew points / staff experience | Unlock skilled hires and better crew outcomes |
+| Department experience (proposed) | Cumulative, unspent eligibility for development projects; individual crew skills remain a later system ([RESEARCH.md](RESEARCH.md)) |
 | Gear inventory | Owned equipment versus rentals; depreciation and upgrades |
 | Venue reputation | Affects artist interest and ticket demand |
 | Market reputation | Sets draw radius and press attention |
