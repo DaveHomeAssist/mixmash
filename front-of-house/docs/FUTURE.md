@@ -39,6 +39,14 @@ The imported software spec v0.1 remains a proposal. Its M2 target is a *next gam
 
 Purchasing equipment, a ledger, a booking calendar, power zones, travel, charts, rivals and holidays remain separately proposed. [SAVE_FORMAT.md](SAVE_FORMAT.md#proposed-next-save-and-economy-transition) records the compatibility contract for evaluating ownership and accounting. The original milestone order does not replace the shipped roadmap. Resolve the deal basis, asset tenure, calendar pacing and each release gate before their affected system is implemented; keep CT-DEC-10 and CT-DEC-11 Proposed until Dave changes them.
 
+## Research and upgrade progression (proposal)
+
+[RESEARCH.md](RESEARCH.md) now owns the proposed development tree and gameplay dynamics ([CT-DEC-13](DECISIONS.md#ct-dec-13-research-and-upgrade-progression)). Eight branches cover production, bars, sanitation, vendors, admissions, security and venue infrastructure. Research unlocks organizational capabilities; deployment still consumes equipment, staffing, space and cash. The existing four career tiers remain the progression bands.
+
+The next research experiment is a small Lot choice between Patch standards, Service training and Admission lanes, with one development slot and progress over eligible settled nights. Validate the research economy and interaction alongside the doors experiment before extending it to permanent infrastructure or later-tier projects. The existing baseline stays unchanged when the experiment is off. This is a documentation proposal, not a commitment to build the whole tree or accept the proposed economy.
+
+Organizational research and individual employee skill trees are separate. The original crew-skills row below still limits its first pass to one skill affecting one outcome; it does not prohibit this newly proposed organizational tree. Existing room access, house equipment and the second stage must not become retroactively locked. The acceptance criteria and dependencies are in [RESEARCH.md](RESEARCH.md#10-acceptance-and-balancing).
+
 ## Gates for public sign-off and further Club work
 
 These gates were written before Phase 5 shipped. They still matter for public sign-off and the missing Club mechanics, but they do not mean the playable Club has yet to be built.

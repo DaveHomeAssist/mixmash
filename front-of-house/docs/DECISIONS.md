@@ -347,3 +347,30 @@ After step 2 shipped, Dave asked that the panels not scroll either. He agreed to
 ### Evidence and links
 
 - [HUD.md](HUD.md), with four mockups in `docs/hud/` laid over real board captures
+
+## CT-DEC-13: Research and upgrade progression
+
+- Date: 2026-10-03
+- Status: Proposed (Dave requested an Age of Empires inspired research/unlock design; the detailed mechanics below are recommendations, not accepted tuning or implemented behavior)
+- Owner: Dave Robertson
+- Affects: career progression, production, guest services, staffing, security, venue development, future economy and saves
+
+### Context
+
+The career currently unlocks rooms through show milestones. The GDD lists later production, staff and facility systems without a shared mechanism for choosing which capability to develop next. Dave asked to expand gameplay dynamics with research unlocking production systems, bars, restrooms, vendors, door staff, security and venues.
+
+### Proposed decision
+
+1. Keep the four tiers in CT-DEC-09. They expose research bands without replacing the current venue goals or removing existing room access.
+2. Use the eight branches and cross-branch prerequisites in [RESEARCH.md](RESEARCH.md). Research teaches procedures or opens supplier/installation options; equipment, staff and infrastructure still need deployment and funding.
+3. Use cash, cumulative department experience and initially one development slot. Eligible settled nights advance research; no real-time waiting. Knowledge persists across the career, installed works stay with the venue, and show configurations remain booking-specific.
+4. Offer meaningful specialization through costs, dependencies and operating constraints. Baseline sanitation, security, accessible provision and exits are available from the start. No upgrade grants unlimited service or removes occupancy limits.
+5. Start with an opt-in Lot experiment: Patch standards, Service training and Admission lanes. Keep the current rules, balance baseline and doors experiment unchanged when research is off. Extend only after accounting, persistence, strategy comparisons and player understanding are validated.
+6. Treat ownership, permanent works and a transaction ledger as dependent proposals. Research spending must not silently become an artist-deductible show expense. Write exact rules, costs and save compatibility before implementation.
+
+### Consequences
+
+- [RESEARCH.md](RESEARCH.md) owns the proposed mechanics, tree, UI and acceptance criteria; [GDD.md](GDD.md#research-and-operational-development-proposed) summarizes the design and [ROADMAP.md](../ROADMAP.md#research-and-upgrades-proposed-development-track) scopes the possible slices.
+- CT-DEC-10 and CT-DEC-11 keep their existing statuses. Previously unlocked venues and current facilities are not retroactively research-gated.
+- The organizational research tree extends the earlier future-plan scope. It does not require an individual employee skill tree, new renderer or individually simulated crowd.
+- This documentation does not change code, tuning, schema, service-worker behavior or public-launch status. Values and human playtest acceptance remain open.

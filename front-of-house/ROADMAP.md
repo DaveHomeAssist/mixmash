@@ -31,6 +31,18 @@ The phases from the first document to the last career tier. Each phase ships as 
 
 The accepted HUD is [CT-DEC-12](docs/DECISIONS.md#ct-dec-12-hud-layout): Build tools in the bottom-left corner, forms in right-side sheets, settlement in its own window, no page or panel scrolling at 1024 × 700 and up except the history window, and phone tabs in a bottom sheet. The draft's bottom build tray does not supersede this layout. New show controls must fit the existing corner card and phone tab without scrolling. First test whether another meaningful choice improves a Lot night. Only then decide on a full clock, venue purchases, or a larger crowd simulation.
 
+## Research and upgrades (proposed development track)
+
+The design is [RESEARCH.md](docs/RESEARCH.md), recorded as [CT-DEC-13](docs/DECISIONS.md#ct-dec-13-research-and-upgrade-progression), Proposed. This track adds investment choices within the four existing tiers; it does not replace the shipped room goals or authorize a full implementation.
+
+| Slice | Proposed scope | Done when |
+| --- | --- | --- |
+| Lot experiment | Patch standards, Service training, Admission lanes; one project slot; cash, department experience and progress across settled nights | Deterministic accounting and save tests pass; player-visible paired comparisons show different useful choices; players understand unlock versus deployment; normal careers remain unchanged when disabled |
+| Guest services and staffed operations | Restroom servicing, vendor agreements, ticketing, supervisors and coordination | Their service constraints, finite demand and recurring costs exist; baseline provisions remain available; trade-offs survive playtesting |
+| Venue and production networks | Installed infrastructure, distributed sound and services, event control and expanded multi-stage operations | Asset tenure and ledger rules are accepted; venue and tier dependencies have no circular gates; older saves keep their room access and booked terms |
+
+All rows are unimplemented research scope. The underlying rooms and some facilities already exist. Follow the [acceptance gates](docs/RESEARCH.md#10-acceptance-and-balancing), retain public-release gates, and update the rules and save specification before each implementation slice.
+
 ## Phase 5: the Club (original scope, partly outstanding)
 
 Shipped in the same pass as Phases 6 and 7. See CT-DEC-11. The Club is a grid with a house PA. The Lot stays bookable. What that pass does not include (a ticketing platform, a real slope, new simulator verdicts, four venue art looks) is listed in the decision.
