@@ -300,7 +300,7 @@
       "vercelBuild": "passed",
       "performance": "18 valid full Metal windows; all repeats retained",
       "liveScene": "Eight hosted files match PR65; backend and actual-client smoke passed",
-      "shadowReuse": "Backend actual-buffer invalidation, paused queue and lone-worker cases pass; full 3D settlement parity and four queue/six movement journeys pass locally."
+      "shadowReuse": "Backend actual-buffer invalidation, paused queue and lone-worker cases pass; full 3D settlement parity and four queue and two controlled movement journeys pass locally."
     },
     "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
     "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
@@ -331,7 +331,12 @@
       "pagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259285752",
       "runtime": "Seven hosted runtime files match; four Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload, receipt reconciliation and one-time settlement."
     },
-    "shadowComparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline."
+    "shadowComparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
+    "guestTransitions": {
+      "revision": "1059e22617555772e09894d90a3ff09a370de412",
+      "pagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259345053",
+      "live": "Seven deployed runtime files match; four hosted classic/3D desktop/phone queue, worker and reload journeys pass. Two controlled movement journeys separately passed on the local candidate."
+    }
   },
   "decisionState": {
     "D1": {
@@ -596,6 +601,13 @@
             "result": "pass",
             "checkedAt": "2026-10-04T11:29:11.555Z",
             "summary": "Seven hosted runtime files match; four Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload, receipt reconciliation and one-time settlement."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/68",
+            "result": "pass",
+            "checkedAt": "2026-10-04T11:53:24.828Z",
+            "summary": "Seven deployed runtime files match; four hosted classic/3D desktop/phone queue, worker and reload journeys pass. Two controlled movement journeys separately passed on the local candidate."
           }
         ],
         "slices": [
