@@ -1472,6 +1472,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/DECISION_PACKET.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House decision packet",
+      "description": "Reply with IDs and letters, such as D1 A, D2 A. An omitted answer stays Open. Effort describes relative implementation scope, not a delivery estimate.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/DECISION_PACKET.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/FEATURE_BRIEFS.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House feature briefs",
+      "description": "Worked-test specification to write before implementation: Quiet arrivals, sharp arrival surge and busy-bar surge with explicit arrivals per game minute, service rates, travel time, patience/abandonment and refund…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FEATURE_BRIEFS.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/FUTURE.md",
       "project": "front-of-house",
       "category": "docs",
@@ -2182,6 +2202,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/NEXT_STEPS.json",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JSON",
+      "title": "NEXT_STEPS.json",
+      "description": null,
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/NEXT_STEPS.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/engine.mjs",
       "project": "front-of-house",
       "category": "source",
@@ -2870,6 +2900,16 @@
       "description": "MIXMASH brand guide: Mainstage Neons colour tokens, type, components and voice.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/brand.html",
       "open": "/brand.html"
+    },
+    {
+      "path": "CLAUDE.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MixMash Claude instructions",
+      "description": "Read and follow AGENTS.md before editing. It owns execution, feature brief and Next Steps Board maintenance rules for this repository. Use the shared workspace contract when available; do not duplicate its private paths…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/CLAUDE.md",
+      "open": null
     },
     {
       "path": "README.md",

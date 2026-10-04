@@ -1,0 +1,273 @@
+{
+  "id": "front-of-house",
+  "name": "Front of House",
+  "short": "Front of House",
+  "repos": [
+    "DaveHomeAssist/mixmash"
+  ],
+  "head": "ab27c99 · source reviewed 2026-10-04",
+  "lastActivity": "2026-10-04",
+  "status": "amber",
+  "statusReason": "Decision packet and eight feature briefs ready; choices remain open. Phone Book/Promote overflow still in source; controls and undo shipped in PR #49.",
+  "activity30d": {
+    "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
+  },
+  "shipped": [
+    "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
+    "PR #47: split-view controls and sprite occlusion fixes.",
+    "PR #48: research design and CT-DEC-13, still Proposed.",
+    "2026-10-04: decision packet and eight scoped feature briefs authored; documentation is not gameplay."
+  ],
+  "nextStep": {
+    "title": "Choose the next expansion and its art treatment",
+    "why": "D1–D5 define the prototype scope. D6–D11 can wait for their dependent milestone. Ordinary defects do not need a vote.",
+    "doneWhen": "Dave answers with decision IDs and letters; accepted rulings are recorded separately from proposals.",
+    "effort": "S",
+    "owner": "dave",
+    "blockedBy": "Open product choices; human acceptance remains separate."
+  },
+  "findings": [
+    {
+      "id": "MXS-06",
+      "type": "responsive",
+      "sev": "P1",
+      "title": "Book/Promote phone sheet still has a 580px minimum",
+      "detail": "At ab27c99, styles.css still applies the Book/Promote width rule without an equally specific phone override. Earlier audit observed overflow at 360/390px. Current review inspected source; live reproduction pending.",
+      "files": [
+        "front-of-house/styles.css:186",
+        "test/front-of-house-smoke.mjs"
+      ],
+      "evidence": "code-read",
+      "phase": 0
+    },
+    {
+      "id": "FOH-DESIGN",
+      "type": "decision",
+      "sev": "P1",
+      "title": "D1–D5: prototype sequence, art, crowd, Select and performance",
+      "detail": "Multiple-choice options and consequences are in DECISION_PACKET.md. Continuous orbit is already the requested direction; recommendations are not approval.",
+      "files": [
+        "front-of-house/docs/DECISION_PACKET.md",
+        "front-of-house/docs/FEATURE_BRIEFS.md"
+      ],
+      "evidence": "doc",
+      "phase": 1
+    },
+    {
+      "id": "MXS-08",
+      "type": "decision",
+      "sev": "P1",
+      "title": "Performance gate needs an agreed measurement contract",
+      "detail": "D5 proposes stable CI regression scenes plus declared physical-device targets. No device benchmark or replacement threshold is accepted yet.",
+      "files": [
+        "front-of-house/ROADMAP.md",
+        "front-of-house/docs/FEATURE_BRIEFS.md"
+      ],
+      "evidence": "doc",
+      "phase": 1
+    },
+    {
+      "id": "FOH-OPERATIONS",
+      "type": "feature",
+      "sev": "P1",
+      "title": "D6–D7: research and ownership depend on service and accounting rules",
+      "detail": "FB-04 scopes one admission/bar reassignment slice; FB-05 scopes one owned equipment family and ledger; FB-06 follows the existing three-project research proposal. None is implemented by the planning documents.",
+      "files": [
+        "front-of-house/docs/FEATURE_BRIEFS.md",
+        "front-of-house/docs/RESEARCH.md"
+      ],
+      "evidence": "doc",
+      "phase": 2
+    },
+    {
+      "id": "MXS-12",
+      "type": "decision",
+      "sev": "P1",
+      "title": "Public release: provenance, career decisions and human acceptance",
+      "detail": "D8–D11 cover art retention, CT-DEC-10/11 and launch timing. Existing noindex/hub/sitemap gates remain. Screenshot prototype source and asset provenance are unverified.",
+      "files": [
+        "front-of-house/docs/KNOWN_ISSUES.md",
+        "front-of-house/docs/DECISIONS.md"
+      ],
+      "evidence": "doc",
+      "phase": 3
+    }
+  ],
+  "phases": [
+    {
+      "name": "Foundation — routine fixes",
+      "goal": "Readable phone sheets and accurate records",
+      "items": [
+        "Fix MXS-06 after reproducing Book/Promote panel overflow.",
+        "Retain shipped key table and undo; do not implement MXS-07 again.",
+        "Keep prototype/source, CI, deployment and human acceptance evidence distinct."
+      ],
+      "gate": "Internal panel fits at 360/390px; existing functional checks pass; no rules or save changes."
+    },
+    {
+      "name": "Decision — 3D Lot and controls",
+      "goal": "A bounded next feature with an accepted art and performance contract",
+      "items": [
+        "Answer D1–D5.",
+        "FB-01: orbit and presets; FB-07: Select mode if chosen.",
+        "FB-02: dimensional venues follow Lot validation; FB-08 minimap stays deferred."
+      ],
+      "gate": "Record actual answers; obtain prototype source; verify camera picking, input parity and declared device targets."
+    },
+    {
+      "name": "Operations — live services and development",
+      "goal": "Choices with measurable costs across shows",
+      "items": [
+        "FB-04: arrivals, queues, temporary staff, recovery and settlement.",
+        "FB-03: representative crowd movement from real aggregate outcomes.",
+        "D6/FB-06 research follows services; D7/FB-05 ownership follows exact ledger rules."
+      ],
+      "gate": "Quiet/surge/busy-bar fixtures; deterministic reload/speed; no double charges or double-staffing; human comprehension."
+    },
+    {
+      "name": "Release — explicit acceptance",
+      "goal": "Promote only the accepted playable scope",
+      "items": [
+        "Answer D8–D11 when their milestone approaches.",
+        "Document provenance and disposition of unused art.",
+        "Keep CT-DEC-10/11 Proposed until selected; public visibility remains gated."
+      ],
+      "gate": "Recorded design decisions, human career and phone acceptance, asset provenance and release checklist."
+    }
+  ],
+  "decisionsForDave": [
+    "D1 — Which expansion leads? Sets the first feature milestone, after routine defects: A) **3D Lot prototype → live operations → research**. Addresses the requested view first; delays deeper gameplay slightly B) Live operations → 3D → research. Proves choices first; awkward view remains longer C) Research first. Earlier progression; service benefits are harder to validate Recommended: A. OPEN.",
+    "D2 — What art supports orbit? Unlocks the renderer and asset contract: A) **Stylized dimensional 3D**, following the supplied venue references. Medium art scope; readable forms and free yaw B) More realistic 3D. High art, lighting and device cost; greater visual detail C) Illustrated directional sprites. More paintings and limited tilt; continuous movement can expose mismatched facings Recommended: A. OPEN.",
+    "D3 — How deep should the crowd simulation go? Defines CPU, save and gameplay scope: A) **Aggregate queues/services, animated representative people**. Medium effort; visible behavior explains real totals B) Every attendee simulated and routed. High effort; individual stories, larger determinism/performance burden C) Decorative crowd only. Low effort; stronger atmosphere but no service explanation Recommended: A. OPEN.",
+    "D4 — How should Select and deletion behave? Unlocks the remaining Build interaction change: A) **Select tool; Escape cancels placement; single removal uses undo; bulk Clear asks once**. Medium UI work; few interruptions B) Confirm every removal, including single objects. More interruption; fewer immediate mistakes C) Keep current tools and undo only. No new interaction scope; accidental placement remains possible Recommended: A. OPEN.",
+    "D5 — How is performance accepted? Replaces the ambiguous headless 16ms target only if selected: A) **Stable CI regression scenes plus real-device targets**: proposed 60fps desktop / 30fps low-power tier. Thresholds fixed after baselines B) Require 60fps on every supported device. High optimization cost and stricter hardware scope C) Keep current absolute headless p95 <16ms gate. Lowest specification effort; unreliable across software-rendered runners Recommended: A. OPEN.",
+    "D6 — Research scope, CT-DEC-13: A) **Three-project Lot pilot after live services are measurable**: Patch standards, Service training, Admission lanes B) Implement the same pilot before live services, against current outcomes; more rework risk C) Defer all research; leave CT-DEC-13 Proposed Recommended: A. OPEN.",
+    "D7 — Ownership and economy scope: A) **Keep rentals for the first live-show slice; add ownership afterward** B) Ownership and ledger first. More persistent business depth, larger save and accounting work C) Rentals only for this release; no ownership milestone Recommended: A. OPEN.",
+    "D8 — Existing sprite library: A) **Inventory provenance now; retain during prototype; archive unused art once replacements are accepted** B) Keep every asset as a permanent library. Lowest transition risk, ongoing size/style debt C) Commission or regenerate all art immediately. Highest cost before renderer dimensions are proven Recommended: A. OPEN.",
+    "D9 — CT-DEC-10 Lot economy and progression: A) **Keep current numbers experimental; conduct paired strategy tests and a human career before accepting** B) Accept the present Lot goals and deal/relationship rules now; fun still needs testing C) Prioritize retuning first: make PA/lights situationally worthwhile and compare door/guarantee strategies before expansion Recommended: A. OPEN.",
+    "D10 — CT-DEC-11 later rooms: A) **Keep implemented room behavior experimental while venue art and tier-specific tests develop** B) Accept current behavior: grid Club, returnable Lot, house rigs, seated multi-night shell, two-stage grounds C) Reopen room mechanics before art: specify fixed-room versus grid behavior and future stage scheduling first Recommended: A. OPEN.",
+    "D11 — When may the game be promoted publicly?: A) **Wait for the 3D Lot and live-operations pilot plus existing release gates** B) Promote the current playable once existing provenance, design and human acceptance gates pass; label it early access C) Keep it unlisted without a launch milestone for now Recommended: A. OPEN."
+  ],
+  "files": [
+    {
+      "path": "front-of-house/docs/DECISION_PACKET.md",
+      "why": "D1–D11 with recommended options, consequences and recording rules"
+    },
+    {
+      "path": "front-of-house/docs/FEATURE_BRIEFS.md",
+      "why": "Eight scoped proposals, acceptance and exclusions"
+    },
+    {
+      "path": "front-of-house/docs/NEXT_STEPS.json",
+      "why": "Public-safe project snapshot for the private workspace board"
+    },
+    {
+      "path": "front-of-house/docs/DECISIONS.md",
+      "why": "Canonical accepted/proposed rulings"
+    },
+    {
+      "path": "front-of-house/docs/RESEARCH.md",
+      "why": "Existing CT-DEC-13 detailed research proposal"
+    }
+  ],
+  "verify": [
+    "npm test",
+    "npm run docs:front-of-house",
+    "npm run sim:front-of-house",
+    "npm run smoke:front-of-house",
+    "npm run admin:index"
+  ],
+  "context": [
+    "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
+    "Source baseline ab27c99. This planning update does not reproduce all audit findings or declare live performance acceptance.",
+    "Eight briefs are proposed scope, not implementation authorization. Update decisions only from Dave’s actual answers.",
+    "The 3D screenshot source has not been inspected. Do not copy unknown code or assume asset usage rights.",
+    "Refresh this project only; preserve unrelated project records, stable IDs and audit history."
+  ],
+  "links": [
+    {
+      "label": "Decisions",
+      "url": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/DECISION_PACKET.md"
+    },
+    {
+      "label": "Feature briefs",
+      "url": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FEATURE_BRIEFS.md"
+    },
+    {
+      "label": "Live game",
+      "url": "https://mixmash.games/front-of-house/"
+    }
+  ],
+  "kickoffPrompt": "Read the Front of House decision packet and feature briefs in the active MixMash checkout. Reconcile current source with NEXT_STEPS.json. Record any explicit answers Dave has provided, leaving unanswered choices open. Fix ordinary defects only within authorized scope, and implement only the selected feature milestone. Verify the applicable checks and delivery evidence, then refresh the project record and the existing workspace Next Steps Board. Preserve unrelated work and current release gates.",
+  "confidence": "medium",
+  "unknowns": [
+    "Physical-device and human career acceptance pending.",
+    "Prototype source and 3D asset provenance unverified.",
+    "Recommended decisions have not been selected."
+  ],
+  "evidence": {
+    "checkedOn": "2026-10-04",
+    "sourceRevision": "ab27c99d5daa8cc0d87d2c04b3fae326ce1e6be1",
+    "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
+    "controlsCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37181521431",
+    "planningDelivery": "Pending; check this record’s containing commit and PR.",
+    "humanAcceptance": "Pending"
+  },
+  "decisionState": {
+    "D1": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D2": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D3": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D4": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D5": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D6": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D7": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D8": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D9": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D10": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    },
+    "D11": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null
+    }
+  }
+}

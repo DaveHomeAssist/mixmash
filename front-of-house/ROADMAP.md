@@ -4,6 +4,10 @@
 
 The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its **Done when** line. The career tiers come from [CT-DEC-09](docs/DECISIONS.md#ct-dec-09-career-tier-ladder); what each tier contains is in [GDD section 5](docs/GDD.md#5-progression).
 
+## Current planning choices
+
+The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The recommended order is a proposal, not a replacement for accepted milestones.
+
 ## Shipped
 
 | Phase | What shipped | Pull request |

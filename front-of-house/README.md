@@ -7,6 +7,8 @@ Front of House is a management game in the tradition of RollerCoaster Tycoon and
 
 ## Documents
 
+Start new feature planning with the [multiple-choice decision packet](docs/DECISION_PACKET.md), [feature briefs](docs/FEATURE_BRIEFS.md), and [next steps record](docs/NEXT_STEPS.json). Recommendations remain open until Dave selects them.
+
 The set follows the usual game-production paperwork: a design document (GDD), rules spec, world bible and decision log for what the game is; a screen flow, string table and glossary for what the player sees; an asset manifest, game catalogue and save schema for how it is built; and a roadmap, release checklist, known-issues list and dev log for how it ships. Four of them are generated from the code and checked in CI, so they cannot drift.
 
 | File | Owns | Status |
