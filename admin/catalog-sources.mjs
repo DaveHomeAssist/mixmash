@@ -237,6 +237,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/docs/NEXT_STEPS.json': { title: 'Front of House next steps', description: 'Public-safe project snapshot: open decisions, feature briefs, current evidence and remaining acceptance; consumed by the private workspace board.' },
   // Studio root and hosting
   '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on every push to gh-pages.' },
   '.gitignore': { description: 'Ignored paths: node_modules, MarsScape local data and output, Vercel state, local env files and art-validation scratch.' },

@@ -2206,8 +2206,8 @@
       "project": "front-of-house",
       "category": "source",
       "kind": "JSON",
-      "title": "NEXT_STEPS.json",
-      "description": null,
+      "title": "Front of House next steps",
+      "description": "Public-safe project snapshot: open decisions, feature briefs, current evidence and remaining acceptance; consumed by the private workspace board.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/NEXT_STEPS.json",
       "open": null
     },
