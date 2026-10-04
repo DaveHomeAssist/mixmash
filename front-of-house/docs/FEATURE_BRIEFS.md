@@ -1,8 +1,10 @@
 # Front of House feature briefs
 
-**Status:** Feature slices remain proposed scope; D1 and D3–D5 are accepted design choices (CT-DEC-14 through CT-DEC-17), 2026-10-04; no new feature is implemented by this document. Choices are in [DECISION_PACKET.md](DECISION_PACKET.md). Existing [decisions](DECISIONS.md), [rules](RULES.md), [saves](SAVE_FORMAT.md), [HUD](HUD.md) and [research design](RESEARCH.md) retain authority. Each brief names a smallest playable slice, exclusions and proof before expansion.
+**Status:** Feature slices remain proposed scope; D1 and D3–D5 A, plus D2 B, are accepted design choices (CT-DEC-14 through CT-DEC-18), 2026-10-04; no new feature is implemented by this document. Choices are in [DECISION_PACKET.md](DECISION_PACKET.md). Existing [decisions](DECISIONS.md), [rules](RULES.md), [saves](SAVE_FORMAT.md), [HUD](HUD.md) and [research design](RESEARCH.md) retain authority. Each brief names a smallest playable slice, exclusions and proof before expansion.
 
 ## FB-01 Continuous orbit and camera presets
+
+**Art decision:** D2 B accepted in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction): more realistic 3D. Review a representative sample of equipment, material, lighting and guest detail at management and close views. Placeholder geometry proves integration only; it does not satisfy final visual acceptance. Preserve D3 aggregate simulation and D5 device targets.
 
 **Problem / outcome:** The fixed illustrated angle makes placement and occlusion awkward. Players can inspect the site from any yaw and return quickly to useful working views.
 
@@ -19,6 +21,8 @@
 **Dependencies / risks:** D1, D2, D5; the supplied prototype source is now statically reviewed in [PROTOTYPE_REVIEW.md](PROTOTYPE_REVIEW.md); validate runtime, provenance and engine parity before reuse. Occlusion, touch conflict, WebGL failure and device cost are the main risks. **Relative effort:** large. **Expansion:** other venues only after Lot parity and human camera acceptance.
 
 ## FB-02 Distinct venue scenes
+
+**Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.
 
 **Problem / outcome:** Four career rooms currently share stand-in art. Each should communicate its actual capacity, services and operational constraints.
 

@@ -4,7 +4,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- **Front of House accepted planning choices:** recorded D3–D5 A for aggregate crowd services, Select and safe removal, and performance acceptance; explained D2 stylized versus more realistic 3D, leaving it open. Documentation and next-steps projection only; no gameplay or CI changes.
+- **Front of House accepted planning choices:** recorded D3–D5 A for aggregate crowd services, Select and safe removal, and performance acceptance; explained D2 stylized versus more realistic 3D and recorded Dave's selection of B, more realistic 3D. Documentation and next-steps projection only; no gameplay or CI changes.
 
 - **Front of House knowledge reconciliation:** indexed the eleven feature briefs, decision packet and prototype review; recorded the accepted 3D Lot → live operations sequence in the roadmap; labelled the original build order historical and clarified the art transition and shipped phone-layout status. Preserves open decisions, current gameplay, saves and release gates.
 

@@ -8,7 +8,7 @@
   "head": "ab27c99 · source reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "D1 and D3–D5 accepted A: 3D Lot first, aggregate crowd services, Select and safe removal, and CI/device performance contract. D2 and D6–D11 remain open. Existing implementation and human-acceptance gaps remain.",
+  "statusReason": "D1–D5 settled: 3D Lot first; more realistic 3D; aggregate crowd services; Select and safe removal; stable CI/device performance contract. D6–D11 remain open. Prototype implementation, provenance and device/human acceptance remain outstanding.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,12 +19,12 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Choose the 3D Lot art treatment: stylized or more realistic",
-    "why": "D1 and D3–D5 are settled. D2 A/B are explained in the packet; D6–D11 can wait for their dependent milestones.",
-    "doneWhen": "Dave selects D2; preserve accepted choices and define exact prototype specifications before implementation.",
+    "title": "Define and validate the realistic 3D Lot prototype",
+    "why": "D1–D5 are settled. Specify the art sample, renderer contract, engine adapter and device baselines before implementation; D6–D11 wait for their milestones.",
+    "doneWhen": "Lot art/sample and integration contract are reviewable; declared device baselines, source provenance and exact acceptance checks are recorded.",
     "effort": "S",
-    "owner": "dave",
-    "blockedBy": "Open product choices; human acceptance remains separate."
+    "owner": "either",
+    "blockedBy": "Prototype specification, provenance and measurement evidence; later choices do not block independent Lot work."
   },
   "findings": [
     {
@@ -42,10 +42,10 @@
     },
     {
       "id": "FOH-DESIGN",
-      "type": "decision",
+      "type": "feature",
       "sev": "P1",
-      "title": "D2: choose art treatment for the 3D Lot",
-      "detail": "D1 and D3–D5 accepted A. D2 A/B explanation is in DECISION_PACKET.md; no art selection inferred.",
+      "title": "Implement the accepted 3D Lot contract after specification",
+      "detail": "D1 A, D2 B, D3 A, D4 A and D5 A are accepted. Define a realistic Lot sample, renderer contract, aggregate-state adapter, Select behavior and measurable device gates; no implementation is claimed by the approvals.",
       "files": [
         "front-of-house/docs/DECISION_PACKET.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -105,14 +105,14 @@
       "gate": "Internal panel fits at 360/390px; existing functional checks pass; no rules or save changes."
     },
     {
-      "name": "Decision — 3D Lot and controls",
-      "goal": "A bounded next feature with an accepted art and performance contract",
+      "name": "Prototype — realistic 3D Lot and controls",
+      "goal": "A bounded realistic Lot prototype following accepted D1–D5",
       "items": [
-        "D1 and D3–D5 accepted A; answer D2.",
+        "D1–D5 settled. Define realistic art sample, integration contract and device measurement protocol.",
         "FB-01: orbit and presets; FB-07: Select mode if chosen.",
         "FB-02: dimensional venues follow Lot validation; FB-08 minimap stays deferred."
       ],
-      "gate": "Record remaining answers; validate the supplied prototype runtime; prove camera picking, input parity and declared device targets."
+      "gate": "Validate prototype runtime and source rights; prove camera picking, input parity, engine independence and declared device targets; obtain art/camera acceptance."
     },
     {
       "name": "Operations — live services and development",
@@ -136,7 +136,6 @@
     }
   ],
   "decisionsForDave": [
-    "D2 — What art supports orbit? Unlocks the renderer and asset contract: A) Stylized dimensional 3D, following the supplied venue references. Medium art scope; readable forms and free yaw B) More realistic 3D. High art, lighting and device cost; greater visual detail C) Illustrated directional sprites. More paintings and limited tilt; continuous movement can expose mismatched facings Recommended: A. OPEN.",
     "D6 — Research scope, CT-DEC-13: A) Three-project Lot pilot after live services are measurable: Patch standards, Service training, Admission lanes B) Implement the same pilot before live services, against current outcomes; more rework risk C) Defer all research; leave CT-DEC-13 Proposed Recommended: A. OPEN.",
     "D7 — Ownership and economy scope: A) Keep rentals for the first live-show slice; add ownership afterward B) Ownership and ledger first. More persistent business depth, larger save and accounting work C) Rentals only for this release; no ownership milestone Recommended: A. OPEN.",
     "D8 — Existing sprite library: A) Inventory provenance now; retain during prototype; archive unused art once replacements are accepted B) Keep every asset as a permanent library. Lowest transition risk, ongoing size/style debt C) Commission or regenerate all art immediately. Highest cost before renderer dimensions are proven Recommended: A. OPEN.",
@@ -185,7 +184,8 @@
     "Refresh this project only; preserve unrelated project records, stable IDs and audit history.",
     "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied.",
     "2026-10-04 knowledge reconciliation: README is the topic index; CT-DEC-14 owns accepted sequence. FUTURE build order is historical; prototype and source exports are supporting material. Notion and additional chats are not synchronized by this repository review.",
-    "2026-10-04: Dave accepted D3, D4 and D5 A in CT-DEC-15 through CT-DEC-17 and requested a D2 A/B explanation. D2 remains Open. Prior reconciliation reports are historical snapshots, not the current decision state."
+    "2026-10-04: Dave accepted D3, D4 and D5 A in CT-DEC-15 through CT-DEC-17 and requested a D2 A/B explanation. D2 remains Open. Prior reconciliation reports are historical snapshots, not the current decision state.",
+    "2026-10-04: After the A/B explanation Dave explicitly selected D2 B, more realistic 3D, recorded in CT-DEC-18. This settles D1–D5 without changing implementation or later decisions."
   ],
   "links": [
     {
@@ -206,7 +206,7 @@
   "unknowns": [
     "Physical-device and human career acceptance pending.",
     "Prototype runtime, dependency integrity, 3D asset provenance and engine integration unverified.",
-    "D2 and D6–D11 recommendations remain unanswered."
+    "D6–D11 recommendations remain unanswered."
   ],
   "evidence": {
     "checkedOn": "2026-10-04",
@@ -230,9 +230,11 @@
       "answer": "3D Lot prototype first, then live operations"
     },
     "D2": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "B",
+      "decidedOn": "2026-10-04",
+      "answer": "More realistic 3D"
     },
     "D3": {
       "status": "accepted",

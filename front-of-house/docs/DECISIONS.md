@@ -21,6 +21,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-15](#ct-dec-15-crowd-model) | Aggregate service simulation with representative animated guests (D3 A) | Accepted |
 | [CT-DEC-16](#ct-dec-16-select-and-safe-removal) | Select, Escape cancellation, undo and bulk Clear confirmation (D4 A) | Accepted |
 | [CT-DEC-17](#ct-dec-17-performance-acceptance) | Stable CI regression scenes and declared real-device targets (D5 A) | Accepted |
+| [CT-DEC-18](#ct-dec-18-realistic-3d-art-direction) | More realistic 3D visual target (D2 B) | Accepted |
 
 ## CT-DEC-01: Core scope
 
@@ -389,7 +390,7 @@ The career currently unlocks rooms through show milestones. The GDD lists later 
 
 ### Decision
 
-Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. At the time of D1 acceptance those remained open. D3–D5 were subsequently accepted in CT-DEC-15 through CT-DEC-17; D2 and later scope choices remain open in [DECISION_PACKET.md](DECISION_PACKET.md). Existing saves, balance and public-release gates are unchanged.
+Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. At the time of D1 acceptance those remained open. D3–D5 were subsequently accepted in CT-DEC-15 through CT-DEC-17 and D2 B in CT-DEC-18; later scope choices remain open in [DECISION_PACKET.md](DECISION_PACKET.md). Existing saves, balance and public-release gates are unchanged.
 
 ### Consequences
 
@@ -439,3 +440,22 @@ Use stable CI regression scenes plus declared real-device targets of 60fps for t
 ### Consequences
 
 Record device/browser, scene/save/seed, crowd size, resolution/DPR, warm-up, sample length and foreground state. Establish a repeatable runner baseline and explicit regression limit; the suggested 20% alert is still a proposal. Translate the accepted frame-rate targets into documented frame-time/stall criteria before signing off. Device roster, sample protocol and exact statistical limits remain to be specified; none has passed by this approval. Existing checks remain until a tested replacement is delivered. No CI workflow, renderer or quality setting changes in this documentation update.
+
+## CT-DEC-18: Realistic 3D art direction
+
+- Date: 2026-10-04
+- Status: Accepted (Dave explicitly selected “Choose B — more realistic 3D”; D2 B)
+- Owner: Dave Robertson
+- Affects: [FB-01](FEATURE_BRIEFS.md#fb-01-continuous-orbit-and-camera-presets), FB-02 and [ART_DIRECTION.md](ART_DIRECTION.md)
+
+### Decision
+
+Use more realistic 3D as the visual target: closer-to-life venue and equipment proportions, detailed materials, people, clothing and convincing lighting that hold up in closer camera views. Both art options supported continuous 360° movement; this selects the visual treatment, not a different simulation model. D3 remains aggregate service simulation with representative animated guests.
+
+For the new 3D renderer, this replaces the earlier isometric pixel-sheet production direction in CT-DEC-02. It does not change that decision's engine separation or require a particular framework or engine. The existing 2D artwork remains the playable implementation until a replacement passes its acceptance checks.
+
+### Consequences
+
+Start with the Lot under CT-DEC-14. Define and review a representative realistic art sample and renderer contract before expanding the asset set: consistent scale, ground contact, materials, lighting, selection readability and close-view detail. Technical placeholder geometry may establish integration, but is not final art acceptance. Validate source/provenance and runtime before reusing the supplied archive; its simplified models are reference/prototype material, not automatically the chosen final look.
+
+Meet CT-DEC-17's accepted performance model; realistic styling does not waive device targets or establish a budget without measurement. If quality and measured performance conflict, bring back a concrete trade-off rather than silently substituting another art direction. Existing saves, economy, D8 library disposition and public-launch gates remain unchanged. No asset purchase, commissioning, deletion or implementation completion is implied by this design choice.

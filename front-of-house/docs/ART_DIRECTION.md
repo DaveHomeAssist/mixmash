@@ -1,13 +1,13 @@
 # Front of House Art Direction
 
-**Status:** Direction accepted from Dave (2026-10-01, drafted with Gemini). Phase 1 is in `board.js`. As of 2026-10-01 the board also draws provisional prop sprites from `sprites/`; those files are a stand-in, not the pixel sheets in section 6. Phases 2 and 3 are not started. The feature order is in [`FUTURE.md`](FUTURE.md).
+**Status:** Historical direction accepted from Dave (2026-10-01, drafted with Gemini); retained for the existing renderer. CT-DEC-18 supersedes its future pixel-art production direction with more realistic 3D. Phase 1 is in `board.js`. As of 2026-10-01 the board also draws provisional prop sprites from `sprites/`; those files are a stand-in, not the pixel sheets in section 6. Phases 2 and 3 are not started. The feature order is in [`FUTURE.md`](FUTURE.md).
 **Decisions:** [CT-DEC-02](DECISIONS.md#ct-dec-02-engine-and-art) (placeholder tiles drawn in code first; pixel art only after the loop is fun)
 
 > **Before any sprite is commissioned**, write a render contract module (tile size, anchors, footprints, frame counts, timing, palette) and reconcile the open conflicts listed at the end of this document. MarsScape's DEC-79 is the reason: its art was planned against a renderer that had since changed.
 
 ## Relationship to the 3D prototype
 
-**Reconciled 2026-10-04:** this remains the accepted historical art direction and the current sprite specification reference. [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence) accepts a 3D Lot prototype first; it does not approve a replacement art treatment. D2 and D8 in [DECISION_PACKET.md](DECISION_PACKET.md) cover orbit-compatible art and the existing library. Use [FB-01 and FB-02](FEATURE_BRIEFS.md) to scope the prototype and a renderer contract. Keep the existing specification until an explicit replacement decision is recorded; do not commission new directional sheets solely because the original roadmap lists them next.
+**Updated 2026-10-04:** Dave accepted D2 B, more realistic 3D, in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction). This supersedes the pixel-sheet direction for the new renderer while preserving the existing game and this specification as historical reference. [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence) keeps the Lot first; CT-DEC-15 keeps aggregate crowd services and CT-DEC-17 keeps the accepted performance model. Use [FB-01 and FB-02](FEATURE_BRIEFS.md) for a realistic Lot sample and renderer contract before asset expansion. Do not treat technical placeholders or archive screenshots as final art approval. D8 library disposition remains open; no existing art is deleted by this decision.
 
 ## 1. Visual pillars
 

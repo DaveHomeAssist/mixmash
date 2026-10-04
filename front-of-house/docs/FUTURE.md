@@ -140,7 +140,7 @@ GDD section 6 lists these as "later". This is the order. A system does not jump 
 
 ## Art
 
-The painted props on the lot are a stand-in so the board is readable. They are not art Phase 2.
+The painted props on the lot are a stand-in so the board is readable. They are not art Phase 2. The original pixel-sheet plan below is historical: [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction) now selects more realistic 3D for the new renderer. Existing assets remain until a validated replacement; D8 disposition is still open.
 
 | Step | What changes | Blocked by |
 | --- | --- | --- |

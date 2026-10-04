@@ -1,6 +1,6 @@
 # Front of House decision packet
 
-**Reviewed:** 2026-10-04 against `ab27c99` (PR #49 merged). **Status:** D1, D3, D4 and D5 accepted A; D2 and D6–D11 open. Recommendations are not approvals. Owner: Dave. This packet summarizes choices; accepted rulings belong in [DECISIONS.md](DECISIONS.md), with the date and Dave's actual answer. Feature scope is in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md). Current next steps are exported in [NEXT_STEPS.json](NEXT_STEPS.json).
+**Reviewed:** 2026-10-04 against `ab27c99` (PR #49 merged). **Status:** D1, D3, D4 and D5 accepted A; D2 accepted B; D6–D11 open. Recommendations are not approvals. Owner: Dave. This packet summarizes choices; accepted rulings belong in [DECISIONS.md](DECISIONS.md), with the date and Dave's actual answer. Feature scope is in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md). Current next steps are exported in [NEXT_STEPS.json](NEXT_STEPS.json).
 
 ## Already settled or not a product decision
 
@@ -11,9 +11,9 @@
 - Asset provenance, save integrity, accurate labels, reachable controls and source-based status updates are ordinary completion requirements.
 - The supplied 3D archive is now statically inspected in [PROTOTYPE_REVIEW.md](PROTOTYPE_REVIEW.md). Orbit, venues and service previews exist in source; runtime behavior, usage rights and integration are not verified.
 
-## Choose now: scope and interaction
+## Settled prototype choices: scope and interaction
 
-D2 is the remaining open choice in this section. D1 and D3–D5 are retained below as accepted reference. Reply with IDs and letters, such as `D2 A`. An omitted answer stays Open. Effort describes relative implementation scope, not a delivery estimate.
+D1–D5 are settled: D1 A, D2 B, D3 A, D4 A, D5 A. The original alternatives and recommendations are retained below for provenance; selected answers override recommendations. D6–D11 remain Open. An omitted answer stays Open. Effort describes relative implementation scope, not a delivery estimate.
 
 | ID | Decision and what it unlocks | A | B | C | Recommendation / confidence |
 | --- | --- | --- | --- | --- | --- |
@@ -35,7 +35,7 @@ Both options use actual 3D geometry and support the requested continuous 360° c
 | Production trade-off | Spend art effort on silhouettes, consistent scale, composition and useful state changes | Spend more effort on material/detail consistency and close-view fidelity; profile the resulting scene |
 | Reference fit | The supplied dimensional mockups are a starting direction, not a final quality bar or a requirement to retain block crowds | Needs an additional realistic style sample; the supplied mockups do not establish that target |
 
-Recommendation: **A with credible production equipment and strong stage lighting**. Stylized does not mean unfinished or low quality. The expected art/performance trade-offs are design estimates, not measured budgets or guarantees; both options must meet accepted D5. D2 remains Open until Dave selects it.
+Original recommendation was A; **Dave selected B — more realistic 3D** on 2026-10-04, recorded in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction). The expected art/performance trade-offs are design estimates, not measured budgets or guarantees. Realistic art must still meet accepted D5; the supplied mockups are references, not final quality acceptance.
 
 ## Choose before the dependent milestone
 
@@ -57,11 +57,11 @@ These do not prevent documenting or fixing existing behavior.
 - **D3 = A, accepted 2026-10-04:** Aggregate queues/services with representative animated people. Recorded in [CT-DEC-15](DECISIONS.md#ct-dec-15-crowd-model).
 - **D4 = A, accepted 2026-10-04:** Select tool, Escape cancellation, existing undo for single removals, and one bulk Clear confirmation. Recorded in [CT-DEC-16](DECISIONS.md#ct-dec-16-select-and-safe-removal).
 - **D5 = A, accepted 2026-10-04:** Stable CI regression scenes plus 60fps desktop / 30fps low-power real-device targets, with measurement thresholds fixed after baselines. Recorded in [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance). Device roster, measurement details and proof remain outstanding.
-- Dave's wording: “d2, explain a vs b, accept A for d3 d4 d5”. This does not select D2.
+- Dave initially requested “d2, explain a vs b, accept A for d3 d4 d5”, then explicitly answered “Choose B — more realistic 3D”. **D2 = B, accepted 2026-10-04**, recorded in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction).
 
 ## Remaining recommendations, not yet selected
 
-D1, D3, D4 and D5 are selected A. D2 and D6–D11 are recommended **A**, still Open. First prove the dimensional Lot and its controls, then put meaningful arrivals and crew trade-offs into that space. Research follows measurable service constraints; ownership follows explicit accounting. The minimap remains deferred under CT-DEC-12 and is not a new decision request.
+D1, D3, D4 and D5 are selected A; D2 is selected B. D6–D11 are recommended **A**, still Open. First prove the dimensional Lot and its controls, then put meaningful arrivals and crew trade-offs into that space. Research follows measurable service constraints; ownership follows explicit accounting. The minimap remains deferred under CT-DEC-12 and is not a new decision request.
 
 ## Recording an answer
 
