@@ -7,7 +7,7 @@ import { createLotModels, MODEL_REVISION, MODEL_METADATA, AUTHORING_REFERENCE } 
 import { OBJECT_TYPES } from '../data.mjs';
 const root = new URL('../', import.meta.url), hash = b => createHash('sha256').update(b).digest('hex');
 const sources = {};
-for (const file of ['lot-models.mjs', 'lot-camera.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
+for (const file of ['lot-models.mjs', 'lot-camera.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs', 'service-crowd.mjs', 'service-guests.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
 const models = createLotModels(), round = n => Math.round(n * 100000) / 100000;
 const assets = [];
 for (const type of [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit), 'guest']) {

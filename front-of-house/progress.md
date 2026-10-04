@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Shadow and guest-transition integration
+
+- PR69 passed CI and merged into the PR67 performance branch. Reconciled production PR66/68 at 1059e22; preserved service projection, guest transitions and concurrent departure-core records. Shadow invalidation follows actual instance buffers, including paused queue changes and a worker with no guests. Service worker v35.
+- Verification: 258 repository tests, build/generated-document checks, backend shadow work/recovery checks, full-client 3D settlement parity, four classic/3D queue journeys and two controlled guest-motion journeys. Both prior branch CI runs passed; the combined revision requires its own CI and hosted verification.
+- The optimized benchmark stopped after seven valid windows and an unfinished eighth. Retained the partial attempt and exact source attribution; the original 18-window uncached baseline remains the complete baseline. No physical/human acceptance is inferred.
+
 ## 2026-10-04: Static shadow reuse and concurrent service delivery
 
 - Reconciled PR62's live service pilot with the performance branch, preserving both test suites and one authoritative service implementation. The separate unshipped model was superseded. PR62 is deployed at 3698c0a / Pages build1259285752; seven runtime files match, and all four hosted Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload and one-time settlement. Representative queue movement remains open.
@@ -312,3 +318,24 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Final pre-integration validation: 246 repository tests, build, unchanged legacy simulation, 28 legacy browser checks and four live Chromium/WebKit desktop/phone journeys pass. Warmed offline reload preserves a travelling worker and cash. The game action client also reaches live minute 5 using its coordinate input payload. The Promote option now opens a settings window so short desktop and phone layouts fit. Combined 3D preview validation follows the merge reconciliation.
 
 - Linux CI exposed 5px vertical overflow in the phone Costs tab, despite all four macOS live journeys passing. Mobile ledger cell padding now leaves space for the different font metrics without reducing text size or changing the no-scroll assertion. The failed run is retained on PR62; final CI must pass.
+
+## 2026-10-04: FOH-O01c service crowd projection
+
+- Added one presentation model for admission, bar and floor zones in both renderers. Bar waiting remains a subset of admitted attendance; guest samples are capped at 180 (outside markers at 40) while numeric HUD totals remain exact. A separately colored worker follows the saved transfer interval on a bounded route around placed equipment. Missing visual routes leave service rules unchanged and expose a diagnostic.
+- Camera/render quality never enters service calculations. Paused/reduced-motion frames use the logical minute; reload reconstructs the same zone and worker positions. The classic view uses the same positions as the instanced 3D actors.
+- Three model tests and four classic/3D desktop/phone browser journeys cover conservation, sample bounds, routes, camera state and transfer/reload. Screenshots show a surge with both admission and bar queues. Full CI, deployed behavior and physical readability remain distinct gates.
+- Shortened the guest-sample hint and stabilized worker status height after a fast-play browser run exposed shifting control positions. Unchanged legacy careers remain the separate regression baseline.
+
+- Final local checks: 251 repository tests and build pass; all four Chromium/WebKit live journeys pass with manual Pause at 1× and automatic incident stopping at 12× tested separately. The supplied action client reaches a surge with exact outside/bar/floor totals and the worker at admission; its screenshot and text diagnostics were inspected. A dedicated 3D pause probe confirms stable button bounds and a successful real click.
+
+- PR62 delivery verified: merge `3698c0a`, full CI run37197151483 passed, Pages build1259285752 built and eight runtime files match. Four production Chromium/WebKit desktop/phone journeys and two production 3D journeys pass. The first production WebKit-phone run hit the old 12× manual-Pause timing assumption; the separated manual 1× / automatic 12× assertions pass and preserve both behaviors.
+- PR66 implements zone samples and worker travel. FB-03 still requires animated representative guest transitions and visible admission-abandonment departures; these remain explicit FOH-O01d work. Neither this projection nor static queue groups close the whole live-operations phase.
+
+
+## 2026-10-04: FOH-O01d recorded guest transitions
+
+- Reconstruct cosmetic FIFO guest identities from service events and animate representative samples through the actual gate, bar and free floor cells. Admission abandonment produces bounded grey departures; bar abandonment returns guests to the floor. No transactions, checkpoint fields or service formulas change.
+- Both renderers consume one projection. Paused/reduced-motion frames show the committed outcome, and reload reconstructs it. Missing visual routes retain endpoint samples with a diagnostic. Normal end-of-show departure remains FOH-O02.
+- Pure checks cover conservation, same-minute arrival/admission/sale, batched clocks, reload, obstacle paths and the 6,000-guest bound. Four real-client renderer/viewport journeys and controlled visible-motion checks are the browser acceptance rail; delivery evidence follows the PR.
+
+- Local evidence: 255 repository tests and build pass; four renderer/viewport client journeys and two controlled motion journeys pass. The initial isolated harness omitted canvas resize, causing a frame-comparison failure; explicit resize fixes the harness and both rendered motion/frozen-frame assertions now pass. Desktop motion and phone queue captures were inspected.

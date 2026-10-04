@@ -734,13 +734,13 @@ function liveServicesPanel() {
       <div class="row"><button data-act="live-worker" data-station="gate">Help admission</button><button data-act="live-worker" data-station="bar">Return to bar</button></div>
       <div class="row"><button data-act="live-play" id="live-play">Play</button><button data-act="live-step">+5 min</button><button data-act="live-next">Next event</button></div>
       <label>Clock speed <select id="live-speed" data-input="live-speed"><option value="1">1×</option><option value="4">4×</option><option value="12">12×</option></select></label>
-      <p class="hint"><span id="crowd-now">0</span> admitted · one marker per guest on the Lot.</p>
+      <p class="hint"><span id="crowd-now">0</span> admitted · samples ≤180.</p>
       <button data-act="locate-incident" id="locate-incident" hidden>Locate equipment</button>
     </div>`;
 }
 
 function updateLiveServices() {
-  ui.services = liveServicesFor(state);
+  ui.services = liveServicesFor(state, { events: true });
   const r = ui.services, play = ui.play;
   if (!r || !play) return;
   play.p = r.minute / D.LIVE_SERVICES.closeAt;
@@ -751,7 +751,7 @@ function updateLiveServices() {
   const wait = q => q.estimatedMinutes === null ? 'unavailable' : q.estimatedMinutes + 'm';
   $('#live-queues').innerHTML = row('Admission', queue(r.gate)) + row('Bar', queue(r.bar)) + row('Rate per minute', `Gate ${r.gate.rate} · Bar ${r.bar.rate}`) + row('Wait estimate', `Gate ${wait(r.gate)} · Bar ${wait(r.bar)}`) + row('Bar requests', `${r.barServed} served · ${r.barLost} lost`);
   $('#live-money').textContent = `Held ticket receipts ${money(r.ticketCash)} (refunds ${money(r.refunds)}) · Bar ${money(r.barCash)}. Paid to the career at settlement.`;
-  $('#live-worker').textContent = r.worker.destination ? `Worker travelling to ${r.worker.destination === 'gate' ? 'admission' : 'the bar'} · arrives in ${r.worker.arrivesAt - r.minute}m. Neither station gets their capacity in transit.` : `Worker at ${r.worker.station === 'gate' ? 'admission' : 'the bar'}. Transfer takes ${D.LIVE_SERVICES.travelMinutes}m.`;
+  $('#live-worker').textContent = r.worker.destination ? `Travelling to ${r.worker.destination === 'gate' ? 'admission' : 'the bar'} · ${r.worker.arrivesAt - r.minute}m left. No service in transit.` : `Worker at ${r.worker.station === 'gate' ? 'admission' : 'the bar'} · transfer takes ${D.LIVE_SERVICES.travelMinutes}m.`;
   for (const b of el.panel.querySelectorAll('[data-act="live-worker"]')) b.disabled = !!r.worker.destination || b.dataset.station === r.worker.station;
   const waiting = !state.show.responseId && r.minute >= liveIncidentMinute(state);
   $('#live-play').textContent = play.paused ? 'Play' : 'Pause';
@@ -1254,6 +1254,7 @@ function crowdNow() {
 }
 
 function draw() {
+  const services = state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
   const night = ['show', 'settle', 'done'].includes(state.phase);
   const scene = {
     objects: state.venue.objects,
@@ -1268,11 +1269,13 @@ function draw() {
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
-    services: state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state)) : null,
+    serviceProgress: state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(1, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 1,
+    serviceMinute: services ? services.minute + (state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(0.999, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 0) : 0,
+    services,
     incident: night && state.show && (!state.show.services || state.show.services.minute >= liveIncidentMinute(state)) ? state.show.incidentId : null,
     night,
     lightTower: state.venue.objects.some((o) => o.type === 'lights'),
-    t: night && !reduceMotion && ui.raf ? performance.now() / 1000 : 0,
+    t: night && !reduceMotion && ui.raf && (!ui.play?.live || !ui.play.paused) ? performance.now() / 1000 : 0,
   };
   if (state.phase === 'settle' || state.phase === 'done') {
     if (state.show && state.show.incidentId !== 'rain') scene.incident = null;
@@ -1287,6 +1290,8 @@ function draw() {
   }
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
   board.draw(scene);
+  const worker = $('#live-worker');
+  if (worker) worker.title = board.info().serviceCrowd?.diagnostic || '';
   updateZoomButtons();
   const crowd = $('#crowd-now');
   if (crowd) crowd.textContent = String(crowdNow());
@@ -1632,7 +1637,7 @@ function onAct(e) {
   else if (a === 'live-settings' && state.phase === 'promote') {
     openWindow('live-settings', 'Live services trial', `<label class="live-optin"><input id="live-services" type="checkbox" data-input="services" ${(state.promotion.liveServices ?? liveServicesPilot) ? 'checked' : ''} /> Run live arrivals and bar queues</label>
       <p>Move one bar worker to admission and back. Served demand, lost sales and ticket refunds change this show's settlement. Requires a bar.</p>
-      <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p>`, target, { foot: '<button data-win="close">Done</button>' });
+      <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p><p>Blue: admission queue. Gold: bar queue. Orange: worker. Grey: departing admission guests. Up to 180 guest samples illustrate the totals; bar customers are already admitted.</p>`, target, { foot: '<button data-win="close">Done</button>' });
   }
   else if (a === 'live-worker') act({ type: 'assignLiveWorker', station: target.dataset.station });
   else if (a === 'live-play' && ui.play?.live) { stopPlayback(); ui.play.paused = !ui.play.paused; ui.play.last = performance.now(); updateLiveServices(); if (!ui.play.paused) loop(); }
@@ -1957,6 +1962,7 @@ function importCode(code) {
 // Automation hooks (the MIXMASH and MarsScape convention)
 
 window.render_game_to_text = () => {
+  const serviceView = board.info().serviceCrowd;
   const v = evaluateVenue(state.venue);
   const r = settlementFor(state);
   return JSON.stringify({
@@ -1979,6 +1985,7 @@ window.render_game_to_text = () => {
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
     crowd: crowdNow(),
     services: liveServicesFor(state),
+    serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
   });

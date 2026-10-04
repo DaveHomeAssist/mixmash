@@ -42,6 +42,20 @@ try {
   assert.equal(cached.staticScene.renderedFrames, cached.start.renderedFrames + 3);
   assert.equal(cached.paused.shadowUpdates, cached.staticScene.shadowUpdates, 'paused invalidation does not render');
   assert.equal(cached.changed.shadowUpdates, cached.paused.shadowUpdates + 1, 'resume refreshes changed layout shadows');
+  assert.ok(cached.staticScene.calls < cached.start.calls, 'reusing populated shadows removes render work');
+  const queueShadows = await page.evaluate(() => {
+    const records = [];
+    for (const minute of [1, 2, 3, 4]) {
+      backend.draw({ ...input, t: 0, services: { minute, worker: { station: 'bar' } },
+        serviceCrowd: { actors: minute < 3 ? [{ x: minute, y: 4, zone: 'bar' }] : [],
+          worker: { x: minute + 2, y: 5, zone: 'worker' }, totals: { gate: 0, bar: minute < 3 ? 1 : 0, floor: 0 } } });
+      records.push(backend.info());
+    }
+    backend.draw(input); return records;
+  });
+  assert.equal(queueShadows[1].shadowUpdates, queueShadows[0].shadowUpdates + 1, 'paused queue movement refreshes shadows without changing attendance');
+  assert.equal(queueShadows[3].representativeGuests, 0);
+  assert.equal(queueShadows[3].shadowUpdates, queueShadows[2].shadowUpdates + 1, 'a lone moving worker also refreshes shadows');
   for (const yaw of [37, 135]) {
     const result = await page.evaluate(yaw => {
       backend.setCamera({ yaw, pitch: 48, zoom: 1 });

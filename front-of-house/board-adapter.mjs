@@ -1,9 +1,11 @@
 // Application-owned board facade: failure changes presentation, never the game or save.
 import { createBoard } from './board.js';
+import { createServiceLayout, projectServiceCrowd } from './service-crowd.mjs';
 
 export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {} } = {}) {
   const fallback = createBoard(canvas);
   let backend = null, layer = null, lastScene = null, clear = null, loading = null, destroyed = false;
+  let serviceLayout = null, serviceLayoutKey = '';
   let reason = '', active = false, createRenderer = null, loadAttempt = 0;
   function sync() {
     active = !!(enabled && backend?.status().state === 'ready' && lastScene?.floor === 'lot');
@@ -48,6 +50,11 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
   function current() { return active ? backend : fallback; }
   function draw(scene) {
     if (destroyed) return;
+    if (scene.services) {
+      const key = JSON.stringify([scene.objects, scene.grid]);
+      if (key !== serviceLayoutKey) { serviceLayout = createServiceLayout(scene.objects, scene.grid); serviceLayoutKey = key; }
+      scene = { ...scene, serviceCrowd: projectServiceCrowd(serviceLayout, scene.services, scene.serviceMinute, scene.serviceProgress) };
+    }
     lastScene = scene;
     if (enabled && backend?.status().state === 'ready' && scene.floor === 'lot') backend.draw(scene);
     sync();
@@ -62,7 +69,7 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
     setEnabled: (value) => { enabled = !!value; reason = ''; sync(); if (enabled && (!backend || backend.status().state === 'failed')) return initialize(); if (active && lastScene) backend.draw(lastScene); return Promise.resolve(); },
     retry: () => { enabled = true; reason = ''; return initialize(); },
     setClear: (rect) => { clear = rect; fallback.setClear(rect); backend?.setClear(rect); },
-    info: () => ({ ...current().info(), renderer: active ? 'three-webgl' : 'canvas-2d', adapter: status() }),
+    info: () => ({ ...current().info(), renderer: active ? 'three-webgl' : 'canvas-2d', adapter: status(), serviceCrowd: lastScene?.serviceCrowd || null }),
     setCamera: (value) => active ? backend.setCamera(value) : null,
     preset: (name) => active ? backend.preset(name) : false,
     placeOf: (x, y) => active ? { renderer: 'three-webgl', ground: backend.clientOf(x, y) } : fallback.placeOf(x, y),

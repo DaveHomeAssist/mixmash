@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "3698c0a · Live services verified; static shadow optimization in progress",
+  "head": "1059e22 · Guest transitions merged; performance delivery in progress",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "The live service pilot is deployed and passes hosted Chromium/WebKit desktop/phone journeys. The 18-run hardware baseline is in PR67 delivery. Shadow reuse is the next bounded performance change; queue representation, device evidence and later phases remain open.",
+  "statusReason": "PR62 live services are deployed and verified. PR66/68 queue projection and event-derived transitions are merged. PR67 combines the original 18-run hardware baseline and unchanged-shadow reuse; integration verification is in progress. Later phases and physical/human acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with optional 3D Lot and live service pilots; further operations and release acceptance remain in progress."
   },
@@ -20,9 +20,9 @@
     "PR64 and PR65: explicit Lot preview and authored scene candidate deployed; hosted backend/game behavior and full settlement parity verified."
   ],
   "nextStep": {
-    "title": "Complete shadow reuse and connect representative queues",
-    "why": "PR62 supplies the authoritative service model, clock, staffing, saves and settlement. Preserve that implementation; extend its actual outcomes into representative movement while continuing performance work.",
-    "doneWhen": "Rendering optimization is compared at declared quality with preserved engine/input parity; quiet, arrival-surge and busy-bar operations fixtures conserve guests, staff time and money through reload and speed changes. Physical-device and human acceptance remain separately tracked.",
+    "title": "Deliver performance integration and continue guest operations",
+    "why": "The live service and guest transition implementations now share production source. Preserve their renderer and settlement parity while finishing performance delivery and advancing FOH-O02.",
+    "doneWhen": "PR67 performance integration passes CI, merge and hosted proof. Continue PR70 departure access/control/save integration, followed by food and sanitation; keep physical and human acceptance separately tracked.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -228,7 +228,8 @@
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
     "The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice.",
     "2026-10-04: PR64/65 supersede earlier adapter-not-implemented status. The available-host Metal baseline is renderer-only evidence; performance, final art and later phases are not complete.",
-    "2026-10-04: PR62 merged at 3698c0a while the performance branch was in delivery. Reconciled both test suites and project evidence; the separate unshipped operations model was superseded to retain one service authority."
+    "2026-10-04: PR62 merged at 3698c0a while the performance branch was in delivery. Reconciled both test suites and project evidence; the separate unshipped operations model was superseded to retain one service authority.",
+    "2026-10-04: Preserve concurrent departure-core progress from PR70 at 5312d1e95f0a2821865ce24a9c7ae5307b427522; its source model and tests are separate from the pending player integration. Performance integration does not remove or claim that work complete."
   ],
   "links": [
     {
@@ -295,11 +296,11 @@
       "rawReportSha256": "957244e413b67ed47529c824178e559d93a4552e4944c466e29ee77edf5cd848"
     },
     "localChecks": {
-      "npmTest": "251 passed",
+      "npmTest": "258 passed after queue/transition integration",
       "vercelBuild": "passed",
       "performance": "18 valid full Metal windows; all repeats retained",
       "liveScene": "Eight hosted files match PR65; backend and actual-client smoke passed",
-      "shadowReuse": "Backend reuse/invalidation/recovery checks and actual-client 3D settlement parity passed"
+      "shadowReuse": "Backend actual-buffer invalidation, paused queue and lone-worker cases pass; full 3D settlement parity and four queue/six movement journeys pass locally."
     },
     "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
     "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
@@ -329,7 +330,8 @@
       "revision": "3698c0a6e8b1e5d772384a653cdc2c289970187b",
       "pagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259285752",
       "runtime": "Seven hosted runtime files match; four Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload, receipt reconciliation and one-time settlement."
-    }
+    },
+    "shadowComparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline."
   },
   "decisionState": {
     "D1": {
@@ -587,7 +589,7 @@
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
         "status": "in_progress",
         "evidence": [
-          "Experimental live service core and player controls implemented; PR62 final delivery checks pending.",
+          "PR62 merged and deployed; seven runtime files and four hosted Chromium/WebKit journeys independently verified.",
           {
             "stage": "deployment",
             "locator": "https://github.com/DaveHomeAssist/mixmash/pull/62",
@@ -600,29 +602,48 @@
           {
             "id": "FOH-O01a",
             "scope": "Deterministic admission/bar service core independent of renderer",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "12 service core tests cover conservation, transfers, replay, bounded checkpoints and prospective incident effects.",
               "Core is connected to the optional Lot pilot; unselected shows retain existing rules."
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/62",
+            "mergeCommit": "3698c0a6e8b1e5d772384a653cdc2c289970187b"
           },
           {
             "id": "FOH-O01b",
             "scope": "Opt-in live Lot controls, fixed clock, incident-aware replay, career settlement and saved staffing",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
-              "61 engine/service tests and 246 repository tests pass; 28 legacy browser checks and four desktop/phone Chromium/WebKit live journeys pass; offline transfer/reload preserves cash",
-              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)",
-              "Combined local 3D/live desktop and phone journeys pass. Linux CI found 5px phone Costs overflow; mobile ledger padding fixed, final CI rerun required."
-            ]
+              "248 combined repository tests and all required CI checks pass on ba39c4f.",
+              "Pages build1259285752 built; eight deployed runtime files match. Four Chromium/WebKit desktop/phone and two 3D production journeys verify transfers, clock control, incident stopping, reload and signed cash.",
+              "A first WebKit phone run failed a timing-sensitive 12x manual Pause assertion. Separate 1x manual Pause and 12x automatic incident-stop assertions pass against production; the failing evidence is retained.",
+              "Paired Lot policies: seed 1 favors bar staffing ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/62",
+            "mergeCommit": "3698c0a6e8b1e5d772384a653cdc2c289970187b"
           },
           {
             "id": "FOH-O01c",
-            "scope": "Representative admission/bar movement integrated with the accepted renderer",
-            "status": "pending",
+            "scope": "Shared admission/bar/floor samples and saved worker travel",
+            "status": "implemented-local-verification",
             "evidence": [
-              "Live pilot draws the correct admitted count; distinct queue movement is still unimplemented"
-            ]
+              "Shared classic/3D projection conserves admitted/bar totals, caps guest samples at 180 and outside markers at 40, and follows a saved worker transfer around equipment.",
+              "Three pure tests and four renderer/viewport browser journeys pass, including paused reload and camera invariance; full delivery gates pending.",
+              "251 repository tests, build and four live-control browser journeys pass locally; two full 3D journeys and supplied action-client surge also pass. Guest transition animation remains the next slice."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/66"
+          },
+          {
+            "id": "FOH-O01d",
+            "scope": "Animated representative guest transitions tied to service outcomes",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Event-derived guest identities and obstacle-respecting paths animate admission, bar service, floor movement and recorded admission abandonment in both renderers.",
+              "No new saved state or transactions; pause/reduced motion use committed outcomes. Pure tests cover same-minute transitions, reload, batched clocks, missing paths and bounded 6000-guest demand. Required CI and deployed verification remain pending.",
+              "255 repository tests and build pass. Four client renderer/viewport journeys and two controlled motion journeys pass, proving visible travel, recorded departures, immutable event input and frozen reduced-motion outcomes."
+            ],
+            "doneWhen": "Derive bounded cosmetic transitions from recorded service outcomes, preserve exact zone/cash totals through camera/speed/reload, and verify reduced motion plus visible departures without introducing per-guest saved AI."
           }
         ]
       },
@@ -635,8 +656,38 @@
           "FOH-O01"
         ],
         "doneWhen": "Finite budgets/stock, serviced stalls, negotiated artist preference and conserved guest flow with no capacity inflation.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [],
+        "slices": [
+          {
+            "id": "FOH-O02a",
+            "scope": "Pure modeled access and normal departure core",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Six tests cover disconnected/rotated layouts, unchanged occupancy authority, finite conserved departure, reduced throughput, batching/reload and malformed checkpoints. No client behavior or save migration is enabled by the core alone.",
+              "261 repository tests, build, asset-manifest checks and the legacy balance simulation pass locally; generated balance/docs remain unchanged. CI, merge and hosted source verification are pending."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/70"
+          },
+          {
+            "id": "FOH-O02b",
+            "scope": "Pre-doors access explanation, saved departure clock, player controls and rendered normal exits",
+            "status": "pending",
+            "evidence": []
+          },
+          {
+            "id": "FOH-O02c",
+            "scope": "Finite food demand, budget, stock and vendor terms",
+            "status": "pending",
+            "evidence": []
+          },
+          {
+            "id": "FOH-O02d",
+            "scope": "Sanitation service and one negotiated artist preference",
+            "status": "pending",
+            "evidence": []
+          }
+        ]
       },
       {
         "id": "FOH-R01",

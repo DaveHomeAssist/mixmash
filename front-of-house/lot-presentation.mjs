@@ -1,6 +1,7 @@
 // Cosmetic Lot presentation. Counts/incidents come from the engine snapshot; no simulated transactions.
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
+import { SERVICE_COLORS } from './service-crowd.mjs';
 
 const MAX_GUESTS = 180;
 const PALETTES = {
@@ -30,13 +31,13 @@ export function createLotPresentation(models) {
   const template = models.guest(); template.updateMatrixWorld(true);
   const batches = template.children.map(part => {
     const material = part.material.clone(); material.color.set(0xffffff); ownedMaterial.add(material);
-    const mesh = new T.InstancedMesh(part.geometry, material, MAX_GUESTS);
+    const mesh = new T.InstancedMesh(part.geometry, material, MAX_GUESTS + 1);
     mesh.castShadow = true; mesh.receiveShadow = true; mesh.frustumCulled = false;
     mesh.count = 0; mesh.visible = false; group.add(mesh);
     return { mesh, local: part.matrix.clone(), surface: part.name };
   });
   const transform = new T.Object3D(), matrix = new T.Matrix4(), color = new T.Color();
-  let layoutKey = '', actorKey = '', positions = [], crowdCount = 0, fencePanels = 0, gateOpenings = 0, incident = null, offsets = [], lastTime = null, disposed = false;
+  let layoutKey = '', actorKey = '', positions = [], crowdCount = 0, fencePanels = 0, gateOpenings = 0, incident = null, offsets = [], lastTime = null, serviceWorker = false, disposed = false;
   function rebuildFence(objects) {
     const hasFence = objects.some(o => o.type === 'fence');
     const points = []; fencePanels = 0; gateOpenings = 0;
@@ -76,13 +77,16 @@ export function createLotPresentation(models) {
     const key = JSON.stringify(objects);
     if (key !== layoutKey) { rebuildFence(objects); rebuildPositions(objects); layoutKey = key; }
     const requested = Math.max(0, Math.round(input.crowd || 0));
-    const nextActorKey = `${key}:${requested}`;
+    const service = input.serviceCrowd;
+    serviceWorker = !!service?.worker;
+    const actors = service ? [...service.actors, ...(service.worker ? [service.worker] : [])] : null;
+    const nextActorKey = `${key}:${requested}:${JSON.stringify([input.services?.minute, input.services?.worker, service?.totals, service?.actors.length])}`;
     if (nextActorKey !== actorKey) {
-      crowdCount = Math.min(MAX_GUESTS, requested, positions.length);
+      crowdCount = actors ? actors.length : Math.min(MAX_GUESTS, requested, positions.length);
       for (const batch of batches) {
         batch.mesh.count = crowdCount; batch.mesh.visible = crowdCount > 0;
         const palette = PALETTES[batch.surface] || PALETTES.clothing;
-        for (let i = 0; i < crowdCount; i++) batch.mesh.setColorAt(i, color.set(palette[i % palette.length]));
+        for (let i = 0; i < crowdCount; i++) batch.mesh.setColorAt(i, color.set(batch.surface === 'clothing' && SERVICE_COLORS[actors?.[i]?.zone] || palette[i % palette.length]));
         if (batch.mesh.instanceColor) batch.mesh.instanceColor.needsUpdate = true;
       }
       actorKey = nextActorKey; lastTime = null;
@@ -92,7 +96,7 @@ export function createLotPresentation(models) {
       offsets = [];
       for (let i = 0; i < crowdCount; i++) {
         const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
-        transform.position.set(positions[i][0], 0, positions[i][1]); transform.rotation.set(0, Math.PI + sway, 0); transform.updateMatrix();
+        transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
         for (const batch of batches) { matrix.multiplyMatrices(transform.matrix, batch.local); batch.mesh.setMatrixAt(i, matrix); }
         if (i < 3) offsets.push(sway);
       }
@@ -126,5 +130,5 @@ export function createLotPresentation(models) {
     batches.forEach(b => b.mesh.dispose()); ownedGeometry.forEach(g => g.dispose()); ownedMaterial.forEach(m => m.dispose());
     ownedGeometry.clear(); ownedMaterial.clear(); group.clear();
   }
-  return { group, update, dispose, info: () => ({ fencePanels, gateOpenings, incident, rain: rain.visible, grid: grid.visible, representativeGuests: crowdCount, guestBatches: batches.length, offsets }) };
+  return { group, update, dispose, info: () => ({ fencePanels, gateOpenings, incident, rain: rain.visible, grid: grid.visible, representativeGuests: crowdCount - (serviceWorker ? 1 : 0), guestBatches: batches.length, offsets }) };
 }

@@ -69,10 +69,9 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     const key = JSON.stringify(input.objects || []);
     if (key !== layoutKey) { rebuildObjects(input.objects || []); layoutKey = key; }
     presentation.update(input, objects, objectHeights, motion);
-    // The light and its camera are fixed. Only shadow-casting transforms invalidate this map.
-    const guests = presentation.info().representativeGuests;
-    const poseTime = guests && motion && Number.isFinite(input.t) ? input.t : 0;
-    const nextShadow = JSON.stringify([key, guests, poseTime]);
+    // Track the actual instance buffers, including a lone worker and paused queue changes.
+    const casters = presentation.group.children.filter(mesh => mesh.isInstancedMesh && mesh.castShadow);
+    const nextShadow = JSON.stringify([key, ...casters.map(mesh => [mesh.count, mesh.count ? mesh.instanceMatrix.version : 0])]);
     if (nextShadow !== shadowKey) { renderer.shadowMap.needsUpdate = true; shadowKey = nextShadow; }
     const nextOverlay = JSON.stringify([key, input.showClear, [...(input.clearSet || [])], [...(input.blockedSet || [])], input.cursor, input.cursorColor, input.selection, input.ghost]);
     if (nextOverlay !== overlayKey) {
