@@ -1383,7 +1383,7 @@ function roomProfileHtml() {
     ${field('System', v.housePa ? profile.label : 'Portable PA')}${field('Sound capacity', `${v.soundCapacity} people`)}
     ${field('Room capacity', `${v.capacity} people`)}${field('Clear-view tiles', v.clearTiles)}${field('Blocked-view tiles', v.blockedTiles)}</dl>
     <p>The house system is included in rent. A placed PA replaces it.</p><p>Lights are still needed for full sound-and-light quality.</p>
-    ${state.venue.id === 'festival' ? '<p>The site is flat. Its raised main stage provides long views; tall objects can still block them.</p><p>The main system covers half the full permit. Both stages use shared site quality.</p>' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>`;
+    ${state.venue.id === 'festival' ? '<p>Flat ground; raised main stage. Tall objects block views.</p><p>Main rig covers half the permit. Shared site quality.</p>' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>`;
 }
 
 function openSeating(opener) {

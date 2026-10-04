@@ -378,7 +378,8 @@
       "localChecks": "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending.",
       "diagnostic": "Thirty paired starter-layout seeds at usual price and best response: old satisfaction14–22 with0/30passes; profile42–67 with3/30passes. This diagnostic does not establish full career balance. Spatial delays, VIP deck, bus compound and dimensional scenes remain open.",
       "release": "Pending required CI, merge/Pages and hosted acceptance",
-      "artAndDeviceAcceptance": "Not claimed; existing Canvas artwork remains a fallback"
+      "artAndDeviceAcceptance": "Not claimed; existing Canvas artwork remains a fallback",
+      "ciCorrection": "CI37217349921 failed a9px Festival account overflow at320×256 on Linux. Two explanations shortened; six Chromium/WebKit journeys and edge cases, five-size/two-theme checks, build/docs pass locally after correction. Fresh CI and hosted proof remain pending."
     }
   },
   "decisionState": {

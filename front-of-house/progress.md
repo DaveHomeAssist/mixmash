@@ -617,3 +617,8 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 -401 repository tests, build/docs and unchanged Lot simulator baseline pass. New tests cover exact Festival obstruction rays, all stage rotations, sound/cost/light limits, three deal receipts and malformed-marker recovery.180 unmarked transitions and complete receipts match the prior8d715b0 implementation. Six Festival and six Amphitheater player journeys, trusted-headline/no-side branches,28 legacy browser checks, five-size/two-theme compact pages, portable placement/undo and paid reload pass.
 - Offline player booking/settlement retains Main3000,592clear/8blocked tiles with exact overlay parity; cash1257430 equals the journal after a257430 net show. Supplied action runner passes after binding its import to the repository's installed Playwright; its default dependency pointed at a missing browser binary. Full HUD, canvas and WebKit phone receipt images inspected.
 -30 paired starter seeds improve satisfaction14–22 to42–67 and passes0/30 to3/30. This is diagnostic only: spatial delays, facilities, VIP/bus functions, dimensional scenes and full career balance remain. The footprint/height rules are authored game units, not physical calibration. Required CI, merge/Pages and hosted proof are still pending.
+
+## 2026-10-04: Festival profile compact CI correction
+
+- PR106 CI37217349921 found9px of overflow in the320×256 Festival account window on Linux. Shortened the flat-ground and shared-quality explanations without removing either rule.
+- Six Chromium/WebKit Festival journeys, edge cases, both themes and all compact sizes pass after correction; build/docs pass. Fresh CI and hosted acceptance remain pending.
