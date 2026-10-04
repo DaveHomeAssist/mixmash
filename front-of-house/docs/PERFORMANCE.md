@@ -196,6 +196,8 @@ Reproduce with `npm run perf:front-of-house-native-hud` using installed Chrome o
 
 ## Full native HUD batching comparison
 
+Delivery CI37208943333 caught a stale renderer digest in the generated Lot manifest. Regeneration changes only that digest; vendor and asset checks pass afterward. The frozen candidate below also contained the old manifest entry, while its independently recorded renderer source hash is correct. Original measurement bytes and hashes are retained; this metadata correction does not alter the measured geometry or runtime.
+
 [All six candidate windows](../performance/2026-10-04-batched-hud.json) at clean `5f47c4ae370f87caab60123090bd961b7f22181a` pass the full audit. The fixture hash, installed Chrome154, native5120×1286/DPR1 window, private harness, timing/camera protocol and exact final game states match the baseline. Only the adapter and renderer runtime source digests differ. Geometry, materials, backing, attendance, model resources and provenance match; the application now opts into deferred rendering.
 
 | Repeat | Fixed cadence Hz / intervals >50ms | Moving cadence Hz / intervals >50ms | Fixed / moving render calls across warm-up and measurement |

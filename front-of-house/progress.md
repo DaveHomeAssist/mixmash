@@ -2,6 +2,8 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Full native HUD gap and render batching
 
+- PR92 CI37208943333 failed its generated-asset check after integration with equipment career116a743. Regenerated the stale renderer source digest; measured bounds and asset content are unchanged. Vendor/asset checks pass. All324 tests/build/docs/simulation had passed on the integrated source. Frozen5f47c4a measurement metadata retains its original stale manifest entry and independently correct renderer hash; no historical evidence is rewritten. Cache v44r1 distinguishes this delivery from concurrent v44 work. Replacement CI and hosted verification remain required.
+
 - Six native full3D/HUD windows at aa5f6a3 are valid, exact engine replay passes and all digests verify. Cadence47.58–59.98Hz, three intervals over50ms. Retained lower repeats; this does not establish sustained60fps. Camera movement roughly doubles submitted renders compared with the show loop alone.
 - Added application-only deferred rendering, preserving immediate scene/camera/picking state and synchronous standalone semantics. The focused browser check passes single-render coalescing, cancellation, real context recovery and disposal; backend/resolution rails pass. Full player and candidate timing evidence remain separate.
 - Published a native HUD reproduction command and recorded the delegated CI measurement policy as CT-DEC-21. Catalog validation initially rejected a string-shaped metadata note; corrected it to the required title/description object and regenerated.

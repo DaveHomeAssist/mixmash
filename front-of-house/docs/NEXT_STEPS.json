@@ -744,7 +744,8 @@
               "All276 repository tests/build/generated docs/simulation pass with unchanged generated balance/docs. Full3D player gestures, inspection, accessible controls, fallback/recovery, DPR2 backing, reload and exact classic/3D settlement parity pass.",
               "Full candidate measurement at clean5f47c4a: six valid windows,55.91–59.84Hz and two intervals over50ms. Identical fixture/browser/viewport/procedure and exact game states; only adapter/renderer runtime digests differ from baseline. Moving-window render calls reduce from3918–4843 to2211–2381 across warm-up/measurement; shared-host timing remains variable.",
               "All28 legacy checks, four live control journeys, eight crowd/movement journeys and six vendor journeys pass on the batching source; no gameplay or quality changes.",
-              "After integration with cf74906/193c54c:315 tests/build/docs/simulation, deferred-render lifecycle, actual DPR1→2→1 display moves and complete3D gestures/recovery/reload/settlement parity pass. Generated reference/balance files unchanged; cache version44 prepared."
+              "After integration with cf74906/193c54c:315 tests/build/docs/simulation, deferred-render lifecycle, actual DPR1→2→1 display moves and complete3D gestures/recovery/reload/settlement parity pass. Generated reference/balance files unchanged; cache version44 prepared.",
+              "PR92 CI37208943333 rejected a stale renderer digest in the generated Lot manifest. Regenerated only that digest; asset and vendor checks pass. Integrated equipment career116a743 passes324 tests/build/docs/simulation. Frozen5f47c4a measurement retains original bytes and independently correct renderer hash; manifest metadata correction is recorded in PERFORMANCE.md. Cache v44r1 prevents collision with concurrent v44 work. Replacement CI and hosted verification pending."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/92"
           }
