@@ -607,7 +607,8 @@
             "evidence": [
               "Six tests cover disconnected/rotated layouts, unchanged occupancy authority, finite conserved departure, reduced throughput, batching/reload and malformed checkpoints. No client behavior or save migration is enabled by the core alone.",
               "261 repository tests, build, asset-manifest checks and the legacy balance simulation pass locally; generated balance/docs remain unchanged. CI, merge and hosted source verification are pending."
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/70"
           },
           {
             "id": "FOH-O02b",
