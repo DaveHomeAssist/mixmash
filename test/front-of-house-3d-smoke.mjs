@@ -17,7 +17,7 @@ for (const action of [{ type: 'chooseDeal', deal: 'door', artistId: 'sodium-arca
 }
 const errors = [];
 async function open(three, viewport = { width: 1440, height: 900 }) {
-  const context = await browser.newContext({ viewport, hasTouch: true, reducedMotion: 'reduce', serviceWorkers: 'block' });
+  const context = await browser.newContext({ viewport, deviceScaleFactor: 2, hasTouch: true, reducedMotion: 'reduce', serviceWorkers: 'block' });
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   await page.goto(`${server.origin}/front-of-house/${three ? '?renderer=3d' : ''}`);
   await page.waitForFunction(() => window.__frontOfHouse);
@@ -27,7 +27,8 @@ async function open(three, viewport = { width: 1440, height: 900 }) {
 }
 const state = page => page.evaluate(() => __frontOfHouse.state());
 try {
-  const { page, context } = await open(true), baseline = await state(page);
+  const { page, context } = await open(true, { width: 1920, height: 1080 }), baseline = await state(page);
+  assert.deepEqual(await page.evaluate(() => { const canvas = document.querySelector('.lot-webgl'); return [canvas.width, canvas.height]; }), [2880, 1620], 'full application uses the documented large-screen backing rule');
   await page.evaluate(() => __frontOfHouse.boardCamera({ yaw: 37, pitch: 48, zoom: 1 }));
   const point = await page.evaluate(() => __frontOfHouse.boardClientOf(12.5, 8.5));
   await page.mouse.move(point.x, point.y); await page.mouse.down(); await page.mouse.move(point.x + 70, point.y + 25, { steps: 6 }); await page.mouse.up();

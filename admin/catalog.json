@@ -620,6 +620,10 @@
           "description": "node test/front-of-house-floor-smoke.mjs"
         },
         {
+          "name": "npm run smoke:front-of-house-resolution",
+          "description": "node test/front-of-house-resolution-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-lot",
           "description": "node test/front-of-house-lot-smoke.mjs"
         },
@@ -2385,6 +2389,16 @@
       "title": "front-of-house-performance.test.mjs",
       "description": "Validate reporting math independently of machine speed; no synthetic FPS acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-performance.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-resolution-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-resolution-smoke.mjs",
+      "description": "Browser backing allocation and density lifecycle; emulation is not physical display acceptance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-resolution-smoke.mjs",
       "open": null
     },
     {
