@@ -61,5 +61,32 @@ test('sample orientation and occupied bounds agree with engine footprints in all
     }
     assert.deepEqual(object, original);
   }
-  models.dispose(); models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0 });
+  models.dispose(); models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
+});
+
+test('authored reference makes guest, deck, counter and restroom dimensions consistent', () => {
+  const models = createLotModels();
+  const guest = new Box3().setFromObject(models.guest());
+  assert.ok(Math.abs((guest.max.y - guest.min.y) * 2 - 1.8) < 0.005);
+  const restroom = new Box3().setFromObject(models.create({ type: 'restroom', x: 0, y: 0, rot: 0 }));
+  assert.ok(Math.abs(restroom.max.y * 2 - 2.3) < 0.005);
+  for (const [type, child] of [['stage', 0], ['bar', 1]]) {
+    const group = models.create({ type, x: 0, y: 0, rot: 0 });
+    const top = new Box3().setFromObject(group.children[child]).max.y;
+    assert.ok(Math.abs(top * 2 - 1.1) < 0.005, `${type} reference top`);
+  }
+  models.dispose();
+});
+
+test('FOH and Stage use explicit authored eyes following each stage facing, then leave for bounded orbit', () => {
+  const c = createLotCamera(); c.resize({ x: 0, y: 0, w: 1440, h: 900 });
+  for (let rot = 0; rot < 4; rot++) {
+    c.setStage({ type: 'stage', x: 9, y: 2, rot }); c.preset('foh');
+    const eye = c.info().authoredEye;
+    assert.equal(eye.position[1], 0.83);
+    const forward = [[0, 1], [-1, 0], [0, -1], [1, 0]][rot];
+    assert.ok((eye.position[0] - eye.target[0]) * forward[0] + (eye.position[2] - eye.target[2]) * forward[1] > 0);
+    c.preset('stage'); assert.ok(Math.abs(c.info().authoredEye.position[1] - 1.38) < 1e-8);
+    c.setCamera({ yaw: 37, pitch: 1 }); assert.equal(c.info().authoredEye, null); assert.equal(c.info().pitch, 15);
+  }
 });

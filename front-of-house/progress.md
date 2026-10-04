@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Lot scene and authored reference
+
+- Added fence/opening and grid presentation, current-object incident markers, static reduced-motion rain/crowd cues and instanced guest parts. Scene inputs remain presentation-only; the complete game settlement parity rail still passes.
+- Authored a consistent provisional two-metres-per-tile reference, with measured guest/equipment bounds and stage-relative eye positions. The source-owned manifest freezes nine samples and SHA-256 source/content digests. This is not physical calibration or final realistic-art approval.
+- Verification: 231 repository tests, build checks, expanded backend smoke (scene cues, instancing, live reduced motion, eight captures, restoration and disposal) and the actual-client 3D smoke passed. Inspection corrected texture aliasing and dominant fence lines. Service worker v31.
+- Backend PR63 delivered at merge 756246b and Pages build1259227598; seven live files and the hosted backend behavior match. PR64 integration remains in delivery. Performance measurements, close-up art, physical devices and human acceptance remain separate work.
+
+
 ## 2026-10-04: 3D application integration
 
 - Menu → Camera enables an explicit Lot preview. The facade preserves the latest scene and input canvas, selects the classic board for other rooms/failures and resumes the same show after context restoration. Focusable presets and orbit/pitch controls supplement mouse/touch gestures. No engine, save or economy change. Service worker v30.

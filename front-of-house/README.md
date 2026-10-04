@@ -19,6 +19,7 @@ The set follows the usual game-production paperwork: a design document (GDD), ru
 | [`docs/PROTOTYPE_REVIEW.md`](docs/PROTOTYPE_REVIEW.md) | Archive/dependency integrity, isolated runtime evidence, provenance and reuse limits | Runtime checked with verified dependency replay; archive rights and device/human acceptance pending |
 | [`docs/RENDER_CONTRACT.md`](docs/RENDER_CONTRACT.md) | Source-traced Lot adapter, coordinates, picking, cameras, lifecycle, fallback and parity cases | Proposed specification against production 522f3f2; adapter not implemented |
 | [`docs/LOT_BACKEND.md`](docs/LOT_BACKEND.md) | Isolated camera, WebGL backend, dimensional sample and verification commands | Backend and explicit preview locally verified; complete scene/art/device acceptance pending |
+| [`docs/LOT_SAMPLE.md`](docs/LOT_SAMPLE.md) | Source-owned dimensional candidate, scene cues and manifest | Technical tests pass; close-up art, performance and physical/human acceptance remain open |
 | [`docs/GDD.md`](docs/GDD.md) | The design: pillars, modes, the first playable loop, progression, and what each system includes now versus later | Draft |
 | [`docs/RESEARCH.md`](docs/RESEARCH.md) | Gameplay dynamics for research, prerequisites, upgrade branches, operating costs, venue development and the first experiment | Proposed 2026-10-03; not implemented (CT-DEC-13) |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log, CT-DEC-01 to CT-DEC-19 | 16 accepted; CT-DEC-10 (the Lot career), CT-DEC-11 (rooms after the Lot) and CT-DEC-13 (research progression) proposed |

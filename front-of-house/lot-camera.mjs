@@ -1,4 +1,6 @@
 // Logical-unit perspective camera. Presentation only: never reads or writes a save.
+import { OBJECT_TYPES } from './data.mjs';
+import { AUTHORING_REFERENCE } from './lot-models.mjs';
 import { PerspectiveCamera, Vector2, Vector3, Raycaster, Plane } from './vendor/three/three.module.min.js';
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
@@ -14,6 +16,8 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
   let rect = { x: 0, y: 0, w: 1, h: 1 };
   let safe = { x: 0, y: 0, w: 1, h: 1 };
   let distance = 40;
+  let stage = { x: 12, y: 1.5, rot: 0, w: 6, h: 3 };
+  let authoredEye = null;
 
   function project(x, y, height = 0) {
     const p = new Vector3(x, height, y).project(camera);
@@ -28,8 +32,25 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
   function pose(d) {
     const yaw = radians(state.yaw), pitch = radians(state.pitch);
     const target = new Vector3(state.x, 0, state.y);
+    camera.zoom = 1;
     camera.position.set(target.x + d * Math.cos(pitch) * Math.sin(yaw), d * Math.sin(pitch), target.z + d * Math.cos(pitch) * Math.cos(yaw));
     camera.up.set(0, state.pitch === 90 ? 0 : 1, state.pitch === 90 ? -1 : 0);
+    if (state.preset === 'foh' || state.preset === 'stage') {
+      const [fx, fz] = [[0, 1], [-1, 0], [0, -1], [1, 0]][stage.rot];
+      const eyeHeight = AUTHORING_REFERENCE.operatorEyeMetres / AUTHORING_REFERENCE.metresPerTile;
+      const deck = AUTHORING_REFERENCE.stageDeckMetres / AUTHORING_REFERENCE.metresPerTile;
+      const dx = state.x - width / 2, dz = state.y - depth / 2;
+      const front = (stage.rot % 2 ? stage.w : stage.h) / 2;
+      if (state.preset === 'foh') {
+        camera.position.set(stage.x + fx * (front + 7.5) + dx, eyeHeight, stage.y + fz * (front + 7.5) + dz);
+        target.set(stage.x + dx, deck + 0.4, stage.y + dz);
+      } else {
+        camera.position.set(stage.x - fx * 0.5 + dx, deck + eyeHeight, stage.y - fz * 0.5 + dz);
+        target.set(stage.x + fx * 8 + dx, 0.65, stage.y + fz * 8 + dz);
+      }
+      authoredEye = { position: camera.position.toArray(), target: target.toArray(), reference: 'provisional authored scale' };
+      camera.zoom = state.zoom;
+    } else authoredEye = null;
     camera.lookAt(target);
     camera.aspect = rect.w / rect.h;
     camera.clearViewOffset();
@@ -42,6 +63,7 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
   }
 
   function apply() {
+    if (state.preset === 'foh' || state.preset === 'stage') { pose(1); distance = camera.position.distanceTo(new Vector3(...authoredEye.target)); return; }
     // Fit the whole logical volume, including tall props, then apply bounded zoom.
     // Fit uses the actual safe rectangle at the current yaw and pitch, not a fixed aspect guess.
     const x = state.x, y = state.y;
@@ -113,14 +135,19 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
   function preset(name) {
     if (!['wide', 'foh', 'stage', 'plan'].includes(name)) return false;
     Object.assign(state, { x: width / 2, y: depth / 2, zoom: 1, yaw: 0, pitch: 48, preset: name });
-    // FOH and Stage are provisional elevated inspection views, not calibrated eye views.
+    // Authored eye positions use the documented provisional scale; field calibration remains pending.
     if (name === 'wide') state.yaw = 45;
-    if (name === 'foh') Object.assign(state, { pitch: 15, zoom: 3 });
-    if (name === 'stage') Object.assign(state, { yaw: 180, pitch: 20, zoom: 2 });
+    if (name === 'foh') Object.assign(state, { pitch: 15, yaw: (360 - stage.rot * 90) % 360 });
+    if (name === 'stage') Object.assign(state, { yaw: (540 - stage.rot * 90) % 360, pitch: 20 });
     if (name === 'plan') state.pitch = 90;
     apply(); return true;
   }
-  function info() { return { ...state, zooms: [...LOT_ZOOMS], distance, safe: { ...safe }, viewport: { ...rect } }; }
+  function info() { return { ...state, authoredEye: authoredEye ? structuredClone(authoredEye) : null, zooms: [...LOT_ZOOMS], distance, safe: { ...safe }, viewport: { ...rect } }; }
+  function setStage(object) {
+    if (!object) return;
+    const rot = object.rot || 0, spec = OBJECT_TYPES.stage, w = rot % 2 ? spec.h : spec.w, h = rot % 2 ? spec.w : spec.h;
+    stage = { x: object.x + w / 2, y: object.y + h / 2, rot, w, h }; apply();
+  }
   apply();
-  return { camera, resize, setCamera, preset, project, ray, groundAt, tileAt, zoomTo, panBy, info };
+  return { setStage, camera, resize, setCamera, preset, project, ray, groundAt, tileAt, zoomTo, panBy, info };
 }
