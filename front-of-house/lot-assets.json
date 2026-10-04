@@ -31,9 +31,10 @@
   "sources": {
     "lot-models.mjs": "5c7377ac82bf53af22ef949f0abee7f7a2005bb9e2f9be447be1c5d3e6034486",
     "lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
-    "lot-presentation.mjs": "d8f7a1290548e972177ffa4ae7dec876c39ffabf5442c1ce95634f274cf0a728",
+    "lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
     "lot-renderer.mjs": "1e8510347f7f5a43f9a63f9dd195e67eea5e781f83ed9dfa89359a9168d1db61",
-    "service-crowd.mjs": "f639f42c38975d04f70f6178241890d39856c0a6ede7dbdec0720bed0a532cef"
+    "service-crowd.mjs": "c9b90f10a1fbece68ff5d18d68cd61f010f6fe4359387a15f59da810134152a8",
+    "service-guests.mjs": "7906ffedfab57bb3735db6476d979d6a9246c914da7fc4925d9977b01868a7f8"
   },
   "assets": [
     {

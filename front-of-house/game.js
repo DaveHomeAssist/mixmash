@@ -740,7 +740,7 @@ function liveServicesPanel() {
 }
 
 function updateLiveServices() {
-  ui.services = liveServicesFor(state);
+  ui.services = liveServicesFor(state, { events: true });
   const r = ui.services, play = ui.play;
   if (!r || !play) return;
   play.p = r.minute / D.LIVE_SERVICES.closeAt;
@@ -1254,7 +1254,7 @@ function crowdNow() {
 }
 
 function draw() {
-  const services = state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state)) : null;
+  const services = state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
   const night = ['show', 'settle', 'done'].includes(state.phase);
   const scene = {
     objects: state.venue.objects,
@@ -1269,6 +1269,7 @@ function draw() {
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
+    serviceProgress: state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(1, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 1,
     serviceMinute: services ? services.minute + (state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(0.999, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 0) : 0,
     services,
     incident: night && state.show && (!state.show.services || state.show.services.minute >= liveIncidentMinute(state)) ? state.show.incidentId : null,
@@ -1636,7 +1637,7 @@ function onAct(e) {
   else if (a === 'live-settings' && state.phase === 'promote') {
     openWindow('live-settings', 'Live services trial', `<label class="live-optin"><input id="live-services" type="checkbox" data-input="services" ${(state.promotion.liveServices ?? liveServicesPilot) ? 'checked' : ''} /> Run live arrivals and bar queues</label>
       <p>Move one bar worker to admission and back. Served demand, lost sales and ticket refunds change this show's settlement. Requires a bar.</p>
-      <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p><p>Blue: admission queue. Gold: bar queue. Orange: worker. Up to 180 guest samples illustrate the totals; bar customers are already admitted.</p>`, target, { foot: '<button data-win="close">Done</button>' });
+      <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p><p>Blue: admission queue. Gold: bar queue. Orange: worker. Grey: departing admission guests. Up to 180 guest samples illustrate the totals; bar customers are already admitted.</p>`, target, { foot: '<button data-win="close">Done</button>' });
   }
   else if (a === 'live-worker') act({ type: 'assignLiveWorker', station: target.dataset.station });
   else if (a === 'live-play' && ui.play?.live) { stopPlayback(); ui.play.paused = !ui.play.paused; ui.play.last = performance.now(); updateLiveServices(); if (!ui.play.paused) loop(); }
@@ -1984,7 +1985,7 @@ window.render_game_to_text = () => {
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
     crowd: crowdNow(),
     services: liveServicesFor(state),
-    serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, diagnostic: serviceView.diagnostic } : null,
+    serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
   });

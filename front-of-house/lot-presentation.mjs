@@ -80,7 +80,7 @@ export function createLotPresentation(models) {
     const service = input.serviceCrowd;
     serviceWorker = !!service?.worker;
     const actors = service ? [...service.actors, ...(service.worker ? [service.worker] : [])] : null;
-    const nextActorKey = `${key}:${requested}:${JSON.stringify([input.services?.minute, input.services?.worker, service?.totals])}`;
+    const nextActorKey = `${key}:${requested}:${JSON.stringify([input.services?.minute, input.services?.worker, service?.totals, service?.actors.length])}`;
     if (nextActorKey !== actorKey) {
       crowdCount = actors ? actors.length : Math.min(MAX_GUESTS, requested, positions.length);
       for (const batch of batches) {
@@ -96,7 +96,7 @@ export function createLotPresentation(models) {
       offsets = [];
       for (let i = 0; i < crowdCount; i++) {
         const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
-        transform.position.set(actors ? actors[i].x : positions[i][0], 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, Math.PI + sway, 0); transform.updateMatrix();
+        transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
         for (const batch of batches) { matrix.multiplyMatrices(transform.matrix, batch.local); batch.mesh.setMatrixAt(i, matrix); }
         if (i < 3) offsets.push(sway);
       }
