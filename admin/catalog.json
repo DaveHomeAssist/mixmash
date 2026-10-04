@@ -2186,6 +2186,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-service-crowd.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-service-crowd.mjs",
+      "description": "Service presentation conservation, bounded samples and obstacle-respecting worker paths.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-service-crowd.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-services.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2243,6 +2253,16 @@
       "title": "front-of-house-lot-smoke.mjs",
       "description": "Browser proof for the isolated Lot backend; this does not claim game integration or final art acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-lot-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-service-crowd-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-service-crowd-smoke.mjs",
+      "description": "Real-client service zone parity and saved worker travel in both Lot renderers.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-service-crowd-smoke.mjs",
       "open": null
     },
     {
@@ -2403,6 +2423,16 @@
       "title": "lot-renderer.mjs",
       "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/service-crowd.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "service-crowd.mjs",
+      "description": "Presentation-only service zones shared by the classic and 3D Lot views. Samples never supply attendance, service capacity, transactions or saved state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/service-crowd.mjs",
       "open": null
     },
     {

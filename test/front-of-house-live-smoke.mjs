@@ -67,7 +67,7 @@ try {
         assert.deepEqual((await text(page)).services, before);
         await tab(page, 'Controls');
         await page.locator('[data-act="live-step"]').click();
-        await page.selectOption('#live-speed', '12');
+        await page.selectOption('#live-speed', '1');
         await page.locator('#live-play').click();
         await page.waitForFunction(() => JSON.parse(window.render_game_to_text()).services.minute >= 11);
         await page.locator('#live-play').click();
@@ -84,7 +84,9 @@ try {
         }
         assert.deepEqual((await text(page)).services, unchanged);
         await tab(page, 'Controls');
-        await page.locator('[data-act="live-next"]').click();
+        await page.selectOption('#live-speed', '12');
+        await page.locator('#live-play').click();
+        await page.waitForFunction(() => document.querySelector('#live-play').disabled && JSON.parse(render_game_to_text()).playback.paused);
         assert.equal(await page.locator('#live-play').isDisabled(), true);
         await page.locator('[data-act="respond"]:not([disabled]):visible').first().click();
         assert.equal((await text(page)).phase, 'show');

@@ -7,6 +7,7 @@
 
 import * as D from './data.mjs';
 import { footprint } from './engine.mjs';
+import { SERVICE_COLORS } from './service-crowd.mjs';
 
 const COLORS = {
   lot: '#2a2d34',
@@ -561,6 +562,7 @@ export function createBoard(canvas) {
   }
 
   function crowdPoints(scene) {
+    if (scene.serviceCrowd) return [...scene.serviceCrowd.actors, ...(scene.serviceCrowd.worker ? [scene.serviceCrowd.worker] : [])].map((p, i) => ({ ...p, i }));
     const points = [];
     if (scene.crowd <= 0) return points;
     const tiles = crowdTiles(scene.objects, scene.clearSet, scene.pillars);
@@ -585,8 +587,8 @@ export function createBoard(canvas) {
       const bob = t ? Math.sin(t * 6 + p.i) * 0.06 : 0;
       const [px, py] = iso(p.x, p.y, 0.25 + bob);
       ctx.beginPath();
-      ctx.arc(px, py, r, 0, Math.PI * 2);
-      ctx.fillStyle = COLORS.crowd[p.i % COLORS.crowd.length];
+      ctx.arc(px, py, p.zone === 'worker' ? r * 1.6 : r, 0, Math.PI * 2);
+      ctx.fillStyle = SERVICE_COLORS[p.zone] || COLORS.crowd[p.i % COLORS.crowd.length];
       ctx.fill();
     }
   }

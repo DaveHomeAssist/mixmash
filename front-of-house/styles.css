@@ -657,3 +657,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 .board-wrap:has(#board.board-3d-input:focus-visible) .lot-webgl { box-shadow: inset 0 0 0 3px var(--yellow); }
 .lot-camera-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 body[data-phase='done'] .lot-webgl { filter: brightness(0.55) saturate(0.8); }
+
+/* Keep clock controls still as a travelling worker arrives or the crowd count grows. */
+.live-controls #live-worker { min-height: 2.9em; }
+.live-controls #crowd-now { display: inline-block; min-width: 3ch; font-variant-numeric: tabular-nums; }
