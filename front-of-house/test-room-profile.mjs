@@ -15,8 +15,8 @@ const finish=s=>act(s,{type:'respond',responseId:[...D.INCIDENTS[s.show.incident
 test('room profile source is strict, versioned and ignores derived imported coverage',()=>{
  assert.deepEqual(roomProfileTerms({version:1,soundCapacity:1e9},'amphitheater'),{version:1});
  for(const raw of [null,[],{version:0},{version:2}])assert.throws(()=>roomProfileTerms(raw,'amphitheater'),TypeError);
- for(const id of ['lot','club','festival','missing'])assert.throws(()=>roomProfileTerms({version:1},id),TypeError);
- assert.equal(roomProfileFor({id:'amphitheater'}),null);assert.equal(roomProfileFor({id:'festival',profile:{version:1}}),null);
+ for(const id of ['lot','club','missing','toString','__proto__'])assert.throws(()=>roomProfileTerms({version:1},id),TypeError);
+ assert.equal(roomProfileFor({id:'amphitheater'}),null);assert.equal(roomProfileFor({id:'toString',profile:{version:1}}),null);
  assert.ok(Object.isFrozen(profile));assert.ok(Object.isFrozen(profile.obstacleHeights));
 });
 test('lawn starts at row10 in fixed room coordinates and remains level across each row',()=>{
@@ -90,4 +90,51 @@ test('bad optional profile recovery never rewrites paid cash/history and room ch
  for(const profile of [{version:2},null,[],{version:'1'}]){const loaded=E.normalizeState({...done,venue:{...done.venue,profile}});assert.equal(loaded.cash,done.cash);assert.deepEqual(loaded.history,done.history);assert.equal(loaded.venue.profile,undefined);assert.match(loaded.roomNotice,/paid cash and history/);}
  const fresh=act(done,{type:'nextShow'}),lot=act(fresh,{type:'chooseVenue',venueId:'lot'});assert.equal(lot.venue.profile,undefined);
  const before=structuredClone(lot),r=E.applyAction(lot,{type:'chooseDeal',deal:'guarantee',roomPolicy:1});assert.match(r.error,/room profile/);assert.deepEqual(r.state,before);
+});
+
+function festival(marked=true,deal='guarantee'){
+ let s=act(E.createGame(8,{mode:'sandbox'}),{type:'enableEquipment'});s=act(s,{type:'chooseVenue',venueId:'festival'});
+ let artistId=E.offersFor(s)[0];
+ if(deal==='door'){s.reputation.artists['salt-ledger']=20;while(!E.offersFor(s).includes('salt-ledger'))s.seed++;artistId='salt-ledger';}
+ s=act(s,{type:'chooseDeal',artistId,secondId:'hollow-census',deal,stagePolicy:1,festivalPolicy:1,...(marked?{roomPolicy:1}:{})});
+ return act(s,{type:'setLayout',objects:D.FEST_STARTER});
+}
+test('Festival profile is flat, immutable and has exact elevated sight rays',()=>{
+ const p=roomProfileFor({id:'festival',profile:{version:1}});assert.ok(Object.isFrozen(p));assert.ok(Object.isFrozen(p.obstacleHeights));
+ assert.deepEqual(roomProfileTerms({version:1,soundCapacity:6000,performerHeight:999},'festival'),{version:1});
+ for(const y of [-20,0,10,23,100])assert.equal(groundHeight(p,20,y),0);
+ const from={x:0.5,y:0,z:2.38},to={x:0.5,y:20,z:0.83},block={x:0,y:10,w:1,h:1,height:1.15};
+ // The ray is1.5275 high at the far edge of this block.
+ assert.equal(blocksView(p,from,to,block),false);assert.equal(blocksView(p,from,to,{...block,height:1.528}),true);
+ for(let rot=0;rot<4;rot++){
+  const venue={id:'festival',profile:{version:1},objects:[{type:'stage',x:17,y:10,rot}]},r=E.sightlineTiles(venue),v=E.evaluateVenue(venue);
+  assert.ok(r.clear.size>0);assert.equal(v.clearTiles,r.clear.size);assert.equal(v.blockedTiles,r.blocked.size);
+  const probes=['20,23','0,11','20,0','39,11'];assert.equal(r.clear.has(probes[rot]),true);assert.equal(r.clear.has(probes[(rot+2)%4]),false);
+ }
+});
+test('Festival base sound covers3000 without extra cost or admission capacity; portable rigs replace it',()=>{
+ const marked=festival(),legacy=festival(false),v=E.evaluateVenue(marked.venue),old=E.evaluateVenue(legacy.venue);
+ assert.equal(v.soundCapacity,3000);assert.equal(v.capacity,6000);assert.equal(old.capacity,v.capacity);assert.equal(old.soundCapacity,undefined);
+ assert.equal(E.upfrontFor(marked),E.upfrontFor(legacy));assert.ok(v.clearTiles>old.clearTiles);
+ for(const[type,tier]of [['pa-s','S'],['pa-m','M']]){const portable=act(marked,{type:'place',object:{type,x:15,y:0,rot:0}});assert.equal(E.evaluateVenue(portable.venue).soundCapacity,D.PA_COVERAGE[tier]);assert.equal(E.upfrontFor(portable)-E.upfrontFor(marked),D.PA_RENTAL[tier]);}
+ const full=E.settlementFor(finish(open(marked)));assert.equal(full.parts.sound,Math.min(1,3000/full.attendance));
+ const dark=act(marked,{type:'setLayout',objects:D.FEST_STARTER.filter(o=>o.type!=='lights')}),unlit=E.settlementFor(finish(open(dark)));
+ assert.equal(unlit.parts.sound,full.parts.sound*D.NO_LIGHTS_MULT);
+});
+test('Festival profiles conserve all three deal receipts, cash and replay while legacy stays unmarked',()=>{
+ for(const deal of ['guarantee','sponsor','door']){
+  const base=festival(false,deal),marked=festival(true,deal),legacy=E.settlementFor(finish(open(base))),result=E.settlementFor(finish(open(marked)));
+  assert.equal(result.attendance,legacy.attendance);assert.equal(result.ticketGross,legacy.ticketGross);assert.deepEqual(result.costs,legacy.costs);assert.ok(result.satisfaction>=legacy.satisfaction);if(result.attendance>250)assert.ok(result.satisfaction>legacy.satisfaction);
+  for(const booking of [base,marked]){
+   const paid=open(booking),ended=finish(paid),r=E.settlementFor(ended),done=act(ended,{type:'acceptSettlement'});
+   assert.equal(r.stageAccounts.main.attendance+r.stageAccounts.second.attendance,r.attendance);assert.equal(r.stageAccounts.net,r.net);assert.equal(done.cash,booking.cash+r.net);
+   for(const state of [booking,paid,ended,done]){const copy=structuredClone(state),loaded=E.normalizeState(state);assert.deepEqual(state,copy);assert.deepEqual(E.settlementFor(loaded),E.settlementFor(state));assert.deepEqual(loaded.venue.profile,booking.venue.profile);}
+   if(booking.venue.profile){const next=act(done,{type:'nextShow'});assert.deepEqual(next.venue.profile,{version:1});assert.equal(act(next,{type:'chooseVenue',venueId:'club'}).venue.profile,undefined);}
+  }
+ }
+});
+test('Festival invalid optional profiles preserve paid money and signed history',()=>{
+ const done=act(finish(open(festival())),{type:'acceptSettlement'});
+ for(const profile of [{version:2},{version:'1'},null,[]]){const loaded=E.normalizeState({...done,venue:{...done.venue,profile}});assert.equal(loaded.venue.profile,undefined);assert.equal(loaded.cash,done.cash);assert.deepEqual(loaded.history,done.history);assert.match(loaded.roomNotice,/paid cash and history/);}
+ const loaded=E.normalizeState({...done,venue:{...done.venue,profile:{version:1,soundCapacity:1e9}}});assert.equal(E.evaluateVenue(loaded.venue).soundCapacity,3000);assert.deepEqual(E.settlementFor(loaded),E.settlementFor(done));
 });

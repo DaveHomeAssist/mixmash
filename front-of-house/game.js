@@ -205,6 +205,7 @@ function render() {
 function renderTop() {
   $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
   $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice);
+  $('#seating-menu').textContent = state.venue.id === 'festival' ? 'Sound and views' : 'Seats and lawn';
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
@@ -311,7 +312,7 @@ function bookPanel() {
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
-      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : ''}</p>
+      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : spec.id === 'festival' ? ' Main system included: 3,000 people.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
       ${opener === id ? '<p class="lede">Selected for side stage. Choose another side act first.</p>' : opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
@@ -454,7 +455,7 @@ function updateBuild() {
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
     ? `<p class="checklist"><span>${esc(notes[0])}.</span>${notes.length > 1 ? ` <span class="more">${notes.length - 1} more in Details.</span>` : ''}</p>`
-    : roomProfileFor(state.venue) ? `<p class="checklist ${v.soundCapacity < v.capacity ? 'warn' : 'ok'}">Ready · ${v.housePa ? 'shell system' : 'portable PA'} for ${v.soundCapacity} people.</p>`
+    : roomProfileFor(state.venue) ? `<p class="checklist ${v.soundCapacity < v.capacity ? 'warn' : 'ok'}">Ready · ${v.housePa ? esc(roomProfileFor(state.venue).label) : 'portable PA'} for ${v.soundCapacity} people.</p>`
     : `<p class="checklist ok">✓ The ${spec.id === 'lot' ? 'lot' : 'room'} is ready for a show.</p>`;
   $('#obj-count').textContent = String(state.venue.objects.length);
   $('#details-btn').setAttribute('aria-label', `Details: readiness and the ${state.venue.objects.length} placed objects`);
@@ -499,7 +500,7 @@ function lotDetailsHtml() {
     <section aria-labelledby="ready-title">
       <h3 id="ready-title">Readiness</h3>
       ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<p class="checklist ok">✓ Ready for a show.</p>'}
-      ${roomProfileFor(state.venue) ? '<button data-act="room-open">Sound and slope</button>' : ''}
+      ${roomProfileFor(state.venue) ? '<button data-act="room-open">Sound and views</button>' : ''}
       ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}
     </section>
     <section aria-labelledby="placed-title">
@@ -1128,7 +1129,7 @@ function sheetParts(r, { signed: done }) {
   const tip = r.net < 0
     ? 'The night lost money. Try a door deal, a different ticket price, or fewer rentals.'
     : r.weakest === 'sound' && roomProfileFor(state.venue)
-      ? 'Use the included shell system and lights. A placed portable PA replaces the house sound capacity.' : TIPS[r.weakest];
+      ? 'Use the included house system and lights. A placed portable PA replaces the house sound capacity.' : TIPS[r.weakest];
   const head = `
     <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${clock(1)} CURFEW</span></div>
     <div class="meta-strip">
@@ -1367,7 +1368,7 @@ function openStages(opener) {
     ${field('Sponsor income',money(receipt.sponsor))}${field('Broadcast income',money(receipt.broadcast))}${field('Both artist payments',money(receipt.artistPay))}
     ${field('Production and site costs',money(receipt.costs))}${field('Site net',money(receipt.net))}</dl>`
     : quote ? `<dl class="live-readouts">${field('Site capacity',quote.capacity)}${field('Likely attendance',`${quote.attendance.low} to ${quote.attendance.high}`)}${field('Opening cost',money(upfrontFor(state)))}</dl><p>Bar and broadcast are paid once per site.</p>` : '<p>Site forecasts open in Promote.</p><p>Cash receipts follow the show.</p>';
-  openWindow('stages','Stage accounts',`<p class="development-summary">Two stages · one paid audience</p>${bill}${stages}
+  openWindow('stages','Stage accounts',`<p class="development-summary">Two stages · one paid audience</p>${bill}${stages}${roomProfileHtml()}
     <section data-tab="Site" data-always-tabs><h3>Whole site</h3>${site}</section>
     <section data-tab="Cash" data-always-tabs><h3>Cash movements</h3>${receipt ? `<dl class="live-readouts">${field('Cash before the day',money(cashAfter-receipt.net))}${field('Opening outflow',money(receipt.upfront))}
       ${field('Response paid',money(receipt.siteCosts.incident))}${field('Signing income',money(settlementPayout(result,state.booking.deal)))}${field('Cash after signing',money(cashAfter))}</dl><p>Response costs were already paid.</p>` : '<p>Cash receipts follow the show.</p>'}${receipt ? '<button data-act="food-back">Back to settlement</button>' : ''}</section>
@@ -1378,11 +1379,11 @@ function roomProfileHtml() {
   const profile = roomProfileFor(state.venue);
   if (!profile) return '';
   const v = evaluateVenue(state.venue), field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
-  return `<section data-tab="Room" data-always-tabs><h3>Shell sound and slope</h3><dl class="live-readouts">
+  return `<section data-tab="Room" data-always-tabs><h3>${state.venue.id === 'festival' ? 'Festival sound and views' : 'Shell sound and slope'}</h3><dl class="live-readouts">
     ${field('System', v.housePa ? profile.label : 'Portable PA')}${field('Sound capacity', `${v.soundCapacity} people`)}
     ${field('Room capacity', `${v.capacity} people`)}${field('Clear-view tiles', v.clearTiles)}${field('Blocked-view tiles', v.blockedTiles)}</dl>
-    <p>The shell system is included in rent. A placed PA replaces it.</p><p>Lights are still needed for full sound-and-light quality.</p>
-    <p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p></section>`;
+    <p>The house system is included in rent. A placed PA replaces it.</p><p>Lights are still needed for full sound-and-light quality.</p>
+    ${state.venue.id === 'festival' ? '<p>The site is flat. Its raised main stage provides long views; tall objects can still block them.</p><p>The main system covers half the full permit. Both stages use shared site quality.</p>' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>`;
 }
 
 function openSeating(opener) {
@@ -1949,7 +1950,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.

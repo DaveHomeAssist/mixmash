@@ -1,13 +1,12 @@
 // Versioned room acoustics and authored terrain; logical game units, not venue engineering.
 import { ROOM_PROFILES } from './data.mjs';
-const SHELL = ROOM_PROFILES.amphitheater;
 const object = x => x !== null && typeof x === 'object' && !Array.isArray(x);
 export function roomProfileTerms(raw, venueId) {
-  if (!object(raw) || raw.version !== 1 || venueId !== SHELL.venueId) throw new TypeError('Invalid room profile');
+  if (!object(raw) || raw.version !== 1 || !Object.hasOwn(ROOM_PROFILES, venueId)) throw new TypeError('Invalid room profile');
   return { version: 1 };
 }
 export function roomProfileFor(venue) {
-  return venue?.id === SHELL.venueId && venue.profile?.version === 1 ? SHELL : null;
+  return venue?.profile?.version === 1 && Object.hasOwn(ROOM_PROFILES, venue.id) ? ROOM_PROFILES[venue.id] : null;
 }
 export function groundHeight(profile, x, y) {
   if (!Number.isFinite(x) || !Number.isFinite(y)) throw new TypeError('Invalid ground point');
