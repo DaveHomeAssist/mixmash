@@ -7,7 +7,7 @@
 
 ## Relationship to the 3D prototype
 
-**Updated 2026-10-04:** Dave accepted D2 B, more realistic 3D, in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction). This supersedes the pixel-sheet direction for the new renderer while preserving the existing game and this specification as historical reference. [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence) keeps the Lot first; CT-DEC-15 keeps aggregate crowd services and CT-DEC-17 keeps the accepted performance model. Use [FB-01 and FB-02](FEATURE_BRIEFS.md) for a realistic Lot sample and renderer contract before asset expansion. Do not treat technical placeholders or archive screenshots as final art approval. D8 library disposition remains open; no existing art is deleted by this decision.
+**Updated 2026-10-04:** Dave accepted D2 B, more realistic 3D, in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction). This supersedes the pixel-sheet direction for the new renderer while preserving the existing game and this specification as historical reference. [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence) keeps the Lot first; CT-DEC-15 keeps aggregate crowd services and CT-DEC-17 keeps the accepted performance model. Use [FB-01 and FB-02](FEATURE_BRIEFS.md) for a realistic Lot sample and renderer contract before asset expansion. Do not treat technical placeholders or archive screenshots as final art approval. D8 A is settled under [CT-DEC-19](DECISIONS.md#ct-dec-19-delegated-milestone-decisions): inventory provenance now, retain existing art during the prototype, then archive unused art after replacement acceptance. No existing art is deleted by this decision update.
 
 ## Realistic Lot sample specification
 

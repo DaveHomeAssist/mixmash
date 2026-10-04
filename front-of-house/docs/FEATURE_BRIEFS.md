@@ -1,6 +1,6 @@
 # Front of House feature briefs
 
-**Status:** Feature slices remain proposed scope; D1 and D3–D5 A, plus D2 B, are accepted design choices (CT-DEC-14 through CT-DEC-18), 2026-10-04; no new feature is implemented by this document. Choices are in [DECISION_PACKET.md](DECISION_PACKET.md). Existing [decisions](DECISIONS.md), [rules](RULES.md), [saves](SAVE_FORMAT.md), [HUD](HUD.md) and [research design](RESEARCH.md) retain authority. Each brief names a smallest playable slice, exclusions and proof before expansion.
+**Status:** D1 and D3–D11 A, plus D2 B, are accepted design choices (CT-DEC-14 through CT-DEC-19), 2026-10-04. Codex selected D6–D11 under Dave’s delegated authority. Briefs specify the scoped work and remaining proof; no new feature is implemented by this document. Choices are in [DECISION_PACKET.md](DECISION_PACKET.md). Existing [decisions](DECISIONS.md), [rules](RULES.md), [saves](SAVE_FORMAT.md), [HUD](HUD.md) and [research design](RESEARCH.md) retain authority. Each brief names a smallest playable slice, exclusions and proof before expansion.
 
 ## FB-01 Continuous orbit and camera presets
 
@@ -38,7 +38,7 @@
 
 **Acceptance:** Every placed prop has the correct footprint, orientation and pick target; stage/amenity occlusion is correct; capacities and house-rig costs match the engine; near/far views remain legible; every shipped asset has documented provenance; device and save parity checks pass per venue.
 
-**Dependencies / risks:** FB-01, D8, D10. Screenshot geometry is not proof of production readiness. **Relative effort:** large per venue. **Expansion:** never treat art acceptance as gameplay balance acceptance.
+**Dependencies / risks:** FB-01; selected D8 A retains current art until replacement acceptance, and D10 A keeps later-room mechanics experimental while art and tier-specific tests develop. Screenshot geometry is not proof of production readiness. **Relative effort:** large per venue. **Expansion:** never treat art acceptance as gameplay balance acceptance.
 
 ## FB-03 Crowd service behavior
 
@@ -90,7 +90,7 @@
 
 **Acceptance:** Purchase cannot charge twice; deployment does not duplicate assets; rental/purchase policy comparisons use the same shows; insufficient funds and reload are safe; cancel/sell/rebuy cannot mint money. Settlement profit reconciles separately from capital cash movement.
 
-**Dependencies / risks:** D7, exact ledger and migration specification, new balance fixtures. **Relative effort:** large. **Expansion:** owned infrastructure and multi-venue allocation get explicit accounting rules first.
+**Dependencies / risks:** Selected D7 A puts rentals in the first live-show slice and ownership afterward; exact ledger and migration specification, new balance fixtures. **Relative effort:** large. **Expansion:** owned infrastructure and multi-venue allocation get explicit accounting rules first.
 
 ## FB-06 Research and operational development
 
@@ -106,7 +106,7 @@
 
 **Acceptance:** No prerequisite cycles; every project has an affordable entry path; progress and spending happen once; save/reload and multi-night settlement are deterministic. Different projects help in different conditions and sometimes saving cash wins. Players can explain learned versus deployed status and the observed benefit.
 
-**Dependencies / risks:** D6 and measurable production/bar/admission outcomes; FB-04 recommended before service research. **Relative effort:** medium/large. **Expansion:** new branches only after service capacity, resource and accounting models exist.
+**Dependencies / risks:** Selected D6 A requires measurable production/bar/admission outcomes; FB-04 precedes the three-project service research pilot. Codex specifies costs, durations and compatibility within the accepted pilot scope. **Relative effort:** medium/large. **Expansion:** new branches only after service capacity, resource and accounting models exist.
 
 ## FB-07 Select mode and safe removal
 

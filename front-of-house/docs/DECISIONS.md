@@ -1,6 +1,6 @@
 # Front of House Decision Log
 
-This file records Front of House decisions that affect more than one part of the game. IDs use the `CT-DEC-NN` prefix, from the working title Concert Tycoon, so they don't collide with MarsScape's `DEC-NN` series. A decision's status is one of **Open**, **Proposed**, **Accepted**, **Superseded** or **Rejected**. Only Dave moves a decision to Accepted.
+This file records Front of House decisions that affect more than one part of the game. IDs use the `CT-DEC-NN` prefix, from the working title Concert Tycoon, so they don't collide with MarsScape's `DEC-NN` series. A decision's status is one of **Open**, **Proposed**, **Accepted**, **Superseded** or **Rejected**. Dave may accept a decision directly or explicitly delegate the choice to Codex. Delegated decisions record their decider, authority and rationale; recommendations alone are not acceptance.
 
 | ID | Decision | Status |
 | --- | --- | --- |
@@ -22,6 +22,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-16](#ct-dec-16-select-and-safe-removal) | Select, Escape cancellation, undo and bulk Clear confirmation (D4 A) | Accepted |
 | [CT-DEC-17](#ct-dec-17-performance-acceptance) | Stable CI regression scenes and declared real-device targets (D5 A) | Accepted |
 | [CT-DEC-18](#ct-dec-18-realistic-3d-art-direction) | More realistic 3D visual target (D2 B) | Accepted |
+| [CT-DEC-19](#ct-dec-19-delegated-milestone-decisions) | Autonomous D6–D11 A selections and delegated decision authority | Accepted |
 
 ## CT-DEC-01: Core scope
 
@@ -390,7 +391,7 @@ The career currently unlocks rooms through show milestones. The GDD lists later 
 
 ### Decision
 
-Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. At the time of D1 acceptance those remained open. D3–D5 were subsequently accepted in CT-DEC-15 through CT-DEC-17 and D2 B in CT-DEC-18; later scope choices remain open in [DECISION_PACKET.md](DECISION_PACKET.md). Existing saves, balance and public-release gates are unchanged.
+Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. At the time of D1 acceptance those remained open. D3–D5 were subsequently accepted in CT-DEC-15 through CT-DEC-17 and D2 B in CT-DEC-18; D6–D11 were subsequently selected A under delegated authority in CT-DEC-19. Existing saves, balance and public-release gates are unchanged.
 
 ### Consequences
 
@@ -458,4 +459,31 @@ For the new 3D renderer, this replaces the earlier isometric pixel-sheet product
 
 Start with the Lot under CT-DEC-14. Define and review a representative realistic art sample and renderer contract before expanding the asset set: consistent scale, ground contact, materials, lighting, selection readability and close-view detail. Technical placeholder geometry may establish integration, but is not final art acceptance. Validate source/provenance and runtime before reusing the supplied archive; its simplified models are reference/prototype material, not automatically the chosen final look.
 
-Meet CT-DEC-17's accepted performance model; realistic styling does not waive device targets or establish a budget without measurement. If quality and measured performance conflict, bring back a concrete trade-off rather than silently substituting another art direction. Existing saves, economy, D8 library disposition and public-launch gates remain unchanged. No asset purchase, commissioning, deletion or implementation completion is implied by this design choice.
+Meet CT-DEC-17's accepted performance model; realistic styling does not waive device targets or establish a budget without measurement. If quality and measured performance conflict, evaluate and document a concrete trade-off under CT-DEC-19’s delegated authority while preserving the realistic direction and measured device targets. Existing saves and economy remain unchanged; CT-DEC-19 settles D8 library disposition and D11 launch sequencing while retaining release gates. No asset purchase, commissioning, deletion or implementation completion is implied by this design choice.
+
+## CT-DEC-19: Delegated milestone decisions
+
+- Date: 2026-10-04
+- Status: Accepted (Codex selected D6–D11 A under Dave’s explicit instruction to make decisions autonomously and stop asking again)
+- Owner: Dave Robertson
+- Decider: Codex, under delegated authority
+- Affects: [decision packet](DECISION_PACKET.md), FB-02, FB-04, FB-05, FB-06, art retention, progression evidence and public promotion
+
+### Decision
+
+| Choice | Selected scope | Rationale |
+| --- | --- | --- |
+| D6 A | Three-project Lot research pilot after live services are measurable: Patch standards, Service training, Admission lanes | Research benefits need actual service constraints. Specify costs, durations and save compatibility within this scope before implementation. |
+| D7 A | Rentals for the first live-show slice; ownership and career ledger afterward | Prove show-level consequences before adding persistent inventory, migration and accounting. |
+| D8 A | Inventory provenance now, retain existing sprites through the prototype, archive unused art after replacement acceptance | Preserve the working renderer and traceable source history while the realistic replacement develops. No asset deletion or purchase is part of this decision update. |
+| D9 A | Keep Lot numbers experimental; run paired strategy tests and a human career before accepting the tuning | Current simulation evidence does not establish enjoyable career balance. CT-DEC-10 remains Proposed by deliberate choice. |
+| D10 A | Keep implemented later-room mechanics experimental while venue art and tier-specific tests develop | Avoid treating implemented behavior as proven design. CT-DEC-11 remains Proposed by deliberate choice. |
+| D11 A | Public promotion follows the realistic 3D Lot, live-operations pilot and existing release gates | Present a coherent playable scope with provenance, technical and human acceptance evidence. |
+
+### Authority and consequences
+
+Dave delegated decision making; Codex selected these options. Do not attribute six literal A answers to Dave. D1–D11 are settled; do not present them again as unanswered choices or approval requests. Make subsequent routine product and implementation decisions autonomously within the accepted scope and record material trade-offs. Resolve research values, ledger rules and measurement criteria through scoped briefs and evidence rather than another product questionnaire.
+
+CT-DEC-13’s broader research tree remains Proposed; D6 accepts the bounded pilot and sequence, not every branch or unmeasured value. CT-DEC-10 and CT-DEC-11 retain Proposed status because D9 and D10 deliberately require evidence. Those statuses are no longer unanswered selection questions. CT-DEC-14 through CT-DEC-18 remain accepted.
+
+This update records decisions; it does not implement the pilots or certify unperformed human/device tests. Archive rights, renderer parity, real-device measurements and human acceptance remain evidence requirements. Obtain available evidence, use owned or independently authored alternatives where reuse rights cannot be established, and report exact missing evidence without reopening settled product choices. Public visibility remains gated under D11.

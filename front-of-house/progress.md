@@ -1,6 +1,14 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-04: Autonomous milestone decisions
+
+Delivery and mandatory checks: [PR #59](https://github.com/DaveHomeAssist/mixmash/pull/59).
+
+- Dave explicitly delegated decision making and instructed Codex not to ask again. Codex selected D6–D11 A in [CT-DEC-19](docs/DECISIONS.md#ct-dec-19-delegated-milestone-decisions): services before research, rentals before ownership, preserve existing art through replacement, keep tuning and later rooms experimental while collecting evidence, and promote after the Lot and operations pilots plus release gates.
+- Updated the packet, dependent briefs, art/renderer references, topic index and next-steps projection. Removed all six questions from the active board projection and recorded the decider and authority separately from Dave’s direct D1–D5 answers. Earlier progress entries remain historical snapshots.
+- Remaining work concerns implementation and evidence; it is not an unanswered D6–D11 questionnaire. CI, delivery and board parity are verified on the delivery PR. No gameplay, assets, saves or release visibility changed.
+
 ## 2026-10-04: Realistic 3D Lot preflight
 
 Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmash/pull/58).
@@ -196,7 +204,7 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 ## TODO
 
 - Dave: play Lot Night and sign off the first playable (or list what to change). On sign-off: hub card on the landing page (with a gameplay preview and its provenance), sitemap entry, and remove `noindex`.
-- Dave: accept or change CT-DEC-10 (the Lot career) and CT-DEC-11 (the rooms after the Lot).
+- D9/D10 A deliberately retain experimental CT-DEC-10/11 behavior while paired career and tier-specific evidence develops; these are settled choices under CT-DEC-19.
 - Not built with the rooms: a ticketing platform, a hillside model, cancelling a held night, simulator verdicts for the Club and later, and four venue art looks.
 - Balance: careful play always picks the budget layout on the Lot, so the light tower and the medium PA rarely pay for themselves at this scale. The paired comparisons confirm it across every pairing; the question for Dave, after a playtest, is whether satisfaction should cost more on the Lot. No retune until then.
 - The Done screen's out-of-money figure assumes the cheapest layout with no ads. Consider saying so there, or pointing to Cut ads or rentals (Dave, with the playtest).
