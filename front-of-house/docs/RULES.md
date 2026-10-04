@@ -265,3 +265,9 @@ The optional trial replaces the restroom half of amenities with served/requested
 ### Fixed pillars and new layout commands
 
 New `place` and `setLayout` commands reject equipment whose footprint overlaps the venue's existing pillar tiles; the placement ghost uses the same check. This closes the former mismatch between occupied/sight-blocking pillars and editing. Loading legacy layouts and evaluating already recorded shows retain their previous behavior, so an old overlapping object is not silently removed or repriced. Safe edits elsewhere remain possible; removing the conflicting object clears it normally.
+
+### Optional held-run cancellation policy (FOH-V02b)
+
+New player bookings of two/three Amphitheater nights disclose a fee of25% of the nightly quoted ask per unplayed night, rounded per night and frozen at doors. At each completed-night settlement, the player signs and continues with the next opening charge, or signs and explicitly cancels every remaining night. Completed-show income, artist pay, attendance, history and earned reputation remain intact; cancellation is a separate promoter expense and never a completed-show artist deduction. Unplayed nights earn no progress or receipts. Reputation accumulated by played nights applies once at the end of the run, including cancellation.
+
+The UI quotes cash after signing and after either next opening or cancellation. Insufficient cash refuses continuation before any signing or payment. Explicit cancellation can leave debt, after which ordinary next-show affordability/start-over rules apply. A final night cannot be cancelled again. Earlier unmarked runs retain their original rules.

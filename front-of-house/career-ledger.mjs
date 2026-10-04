@@ -1,7 +1,7 @@
 // Bounded itemized career cash journal with exact archived totals and monotonic event identity.
 export const CAREER_LEDGER_ROWS = 128;
-export const CAREER_CATEGORIES = Object.freeze(['acquisition', 'disposal', 'development', 'developmentRefund', 'showOpening', 'incident', 'settlement']);
-const negative = new Set(['acquisition', 'development', 'incident']);
+export const CAREER_CATEGORIES = Object.freeze(['acquisition', 'disposal', 'development', 'developmentRefund', 'showOpening', 'incident', 'settlement', 'cancellation']);
+const negative = new Set(['acquisition', 'development', 'incident', 'cancellation']);
 const positive = new Set(['disposal', 'developmentRefund', 'settlement']);
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const copy = value => structuredClone(value);
@@ -39,7 +39,7 @@ export function loadCareerLedger(raw) {
   if (!object(raw) || raw.version !== 1 || !object(raw.archived) || !object(raw.archived.totals) || !Array.isArray(raw.entries) || raw.entries.length > CAREER_LEDGER_ROWS) throw new TypeError('Invalid career journal');
   const through = integer(raw.archived.through, 'archived sequence');
   if (through < 0) throw new TypeError('Invalid archived sequence');
-  const totals = Object.fromEntries(CAREER_CATEGORIES.map(category => [category, amountFor(category, raw.archived.totals[category])]));
+  const totals = Object.fromEntries(CAREER_CATEGORIES.map(category => [category, amountFor(category, category === 'cancellation' && raw.archived.totals[category] === undefined ? 0 : raw.archived.totals[category])]));
   if (!through && Object.values(totals).some(value => value !== 0)) throw new TypeError('Unexpected archived cash');
   if (through > 0 && raw.entries.length !== CAREER_LEDGER_ROWS) throw new TypeError('Incomplete compacted journal');
   const entries = raw.entries.map(eventFor);

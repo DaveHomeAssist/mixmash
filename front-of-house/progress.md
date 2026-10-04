@@ -2,11 +2,15 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Loam Shell technical scene
 
+Held-run source7a111c2 integrated:353 tests/build/assets/docs and unchanged simulation pass. The held-run browser suite adds actual3D desktop/phone continuation/cancellation; full player verification is running before native measurements.
+
 FOH-V02r2 adds a source-owned cutaway shell, house PA and pick-through seating/lawn guides to the existing28×18 room. No new collision, pricing, capacity or save fields. Two geometry/camera tests and desktop/phone/ultrawide camera, placement, switching, recovery and fit checks pass. Four classic/3D desktop/phone rain-show journeys retain identical two-night receipts,400-seat allocation and final state. The initial phone harness missed the existing Actions tab; corrected navigation passes. 341 repository tests/build/assets/docs/unchanged simulation and seven performance tests pass. Club/Lot backend/coalescing/full3D regressions pass. Native performance and delivery remain pending. Technical scenery is not final art/human acceptance.
 
 ## 2026-10-04: Fathom Hall technical preview
 
 ## 2026-10-04 — Club integrated and native verification
+
+Held-run delivery633f60a is integrated.351 tests/build/assets, six held-run journeys, Club room/recovery/parity smoke, generated docs and unchanged balance simulation pass. Native Club measurement5330eb3 is retained unchanged; replacement CI and hosted verification remain required.
 
 Ticketing controls368edba integrated with339 passing tests/build/assets. The inherited ticketing smoke expected Club fallback; the new preview requires active3D and adds a phone3D journey. All seven ticketing journeys now pass, including desktop/phone3D, followed by a passing Club camera/room/recovery/settlement suite; balance simulation remains unchanged.
 
@@ -579,3 +583,17 @@ FOH-V02a3 adds Club Plan/Forecast/Receipt controls, an honest public draw-range 
 The final browser rerun explicitly verifies that a 3D request falls back to classic in Club. The first attempt hit local Python preview image connection resets; the same checks pass against the repository test server without suppressing request failures. Required CI and hosted UI acceptance remain open. Held-night cancellation is the next venue slice.
 
 - Supplied action runner executes a fresh Sandbox Club booking, Platform choice and public forecast (108–228 presales, fee121–255, unchanged1000000 cash) without console errors on the repository server. Canvas-only capture under its virtual clock was blank/headed floor-only, so it is not used as visual UI proof. A headed rerun used installed Chrome because the matching headed Playwright binary is absent; no dependency was installed. Actual full-page Chromium/WebKit dialog captures were inspected, including the375px signed receipt, and show all controls/readouts correctly. The private Next Steps Board matches this source; other projects, global metadata and surrounding HTML were preserved.
+
+### 2026-10-04 Equipment hosted acceptance
+
+PR90 passed CI37208474473 and merged4600649 at14:34:34Z; Pages built14:34:57Z. All22 checked deployed runtime files match. Seven hosted Chromium/WebKit classic/3D desktop/phone journeys pass actual purchase, assignment, live settlement, sale, reload and cash journal; both-theme compact/ultrawide checks remain in that rail. Hosted offline ownership reload and sale600 preserve exact999400 cash. The first byte check received503; retry passed all files without suppressing errors. Equipment is delivered. PR91 ticketing authority also passed CI and merged8e76f4f; ticketing UI remains in delivery.
+
+### 2026-10-04 held-night cancellation implementation
+
+FOH-V02b adds optional source terms, exact cancellation quote, frozen per-run booking/show terms, explicit signing choice and separate journal category. Eleven targeted tests and all346 repository tests/build/docs pass. Completed-night history/net and earned reputation remain intact; unplayed nights never open or earn progress. Insufficient continuation is refused before mutation; explicit cancellation can retain honest debt. Legacy unmarked runs and seven-category journals still load and play.
+
+Book quotes terms before choice; Menu and settlement expose Terms/Continue/Cancel/Receipt with exact cash outcomes. Six initial Chromium/WebKit journeys pass both deals, continuation then cancellation, phone/desktop/short dark layouts, all parts at five sizes and both themes. Smallest-window copy initially exceeded available height by8px; splitting the terms into short paragraphs fixed it. The phone door fixture initially tried the guarantee-only act's tab; the test now chooses the offered act that accepts a door deal. Seven Equipment regression journeys pass the added journal category and shared paging. Offline booking/reload/show/cancel/reload passes with6000 fee for two unplayed nights and1021246 cash reconciled to the journal. Final full-hold/debt browser branches, legacy/ticketing regression and release checks follow. Seating/stage accounting and distinct room scenes remain open.
+
+- Held-run final evidence:347 tests/build/generated docs, six complete browser journeys plus alternate full-hold and controlled-debt signing branches pass. Every visible dialog part and Book panel fits; cancellation is also recorded in signed Show history. Seven Equipment, six ticketing and28 legacy regressions pass. Seed3 now fixes the test's fresh career before the Sandbox UI is selected: random offers could otherwise contain only guarantee acts, making a requested door fixture unavailable. The actual offered door act is chosen on its tab. Unpaid room/night changes clear obsolete run quotes. The text probe correctly reports zero completed nights before doors. Supplied action runner's fresh booking/page tour passes without console errors; canvas and full-page dialog screenshots were inspected. Board parity and preservation verified. CI, Pages and hosted cancellation acceptance remain pending.
+
+- PR93 ticketing adapter passed CI37208947770, mergedbc929d7 at14:43:22Z and Pages built14:43:44Z. Three hosted runtime files match. Hosted browser-engine both-deal signing/retry/reload verifies fee147 and exact journal cash1001458 door /1001615 guarantee. This is engine evidence; PR94 player controls remain in delivery.
