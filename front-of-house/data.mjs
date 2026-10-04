@@ -367,3 +367,6 @@ export const RESEARCH_PROJECTS = Object.freeze({
   service: Object.freeze({ label: 'Service training', department: 'guestServices', cost: 180, experience: 1, nights: 2 }),
   admission: Object.freeze({ label: 'Admission lanes', department: 'admissions', cost: 180, experience: 1, nights: 2 }),
 });
+
+// Bounded benefits apply only to learned projects frozen at booking.
+export const RESEARCH_EFFECTS = Object.freeze({ patchScore: 0.15, barWorkerRate: 1, gateRate: 1 });

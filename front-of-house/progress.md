@@ -440,3 +440,7 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Sanitation integration at f5408fc preserves the merged floor cache: Chromium/WebKit cached/direct pixel and invalidation checks plus all seven player journeys pass. Actual Lot seed3 produces48/61/85 completed visits for unserviced portables/serviced portables/full trailer package; net114/34/−266 demonstrates the explicit cost tradeoff. Research core full-suite evidence follows below.
 
 - Research core final local validation: all296 npm tests, build and generated documentation pass. No gameplay effect or historical career spending was introduced by this prerequisite.
+
+### 2026-10-04 research career adapter
+
+FOH-R01b1 now connects the pilot to career cash, signed-night department experience and versioned booking prefixes. Seven integration checks cover actual outcomes, frozen held nights, separate development cash, paid Patch response, finite live capacity, legacy recovery and full-history signing. All303 npm tests and build pass. Development costs remain outside show/artist costs; old careers are unchanged until opt-in. Player research controls, required delivery and production proof remain open.

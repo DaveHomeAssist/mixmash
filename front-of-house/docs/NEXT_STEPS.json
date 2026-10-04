@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "87ea09c · playable sanitation integrated; CI and live verification pending",
+  "head": "7f8a197 base \u00b7 research career adapter locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Playable sanitation passes local controls, renderer, offline and floor-cache integration checks; required CI/live delivery is pending in PR79. The three-project research core passes targeted tests; career/UI integration and later phases remain.",
+  "statusReason": "Sanitation PR79 correction passes local verification and is in required CI. Research core and career adapter pass303 tests; player controls, hosted acceptance and later phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -25,7 +25,7 @@
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
-    "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
+    "blockedBy": "No outstanding D1\u2013D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
   },
   "findings": [
     {
@@ -73,7 +73,7 @@
       "id": "FOH-OPERATIONS",
       "type": "feature",
       "sev": "P1",
-      "title": "D6–D7: research and ownership depend on service and accounting rules",
+      "title": "D6\u2013D7: research and ownership depend on service and accounting rules",
       "detail": "Live admission/bar services, controls and representative guest transitions are deployed. The departure core is delivered; PR71 contains the separate control integration. Food, sanitation, three-project research and ownership/ledger work remain within the accepted D6/D7 scopes.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
@@ -87,7 +87,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Public release: selected sequence and remaining acceptance evidence",
-      "detail": "D8–D11 selected A under CT-DEC-19; promotion follows the 3D Lot and operations pilots plus release gates; noindex/hub/sitemap gates unchanged. Archive and eight dependency hashes checked; isolated runtime exercised. Archive code/image rights, physical calibration and human art/career acceptance remain pending.",
+      "detail": "D8\u2013D11 selected A under CT-DEC-19; promotion follows the 3D Lot and operations pilots plus release gates; noindex/hub/sitemap gates unchanged. Archive and eight dependency hashes checked; isolated runtime exercised. Archive code/image rights, physical calibration and human art/career acceptance remain pending.",
       "files": [
         "front-of-house/docs/KNOWN_ISSUES.md",
         "front-of-house/docs/DECISIONS.md"
@@ -124,7 +124,7 @@
   ],
   "phases": [
     {
-      "name": "Foundation — routine fixes",
+      "name": "Foundation \u2014 routine fixes",
       "goal": "Readable phone sheets and accurate records",
       "items": [
         "Fix MXS-06 after reproducing Book/Promote panel overflow.",
@@ -134,17 +134,17 @@
       "gate": "Internal panel fits at 360/390px; existing functional checks pass; no rules or save changes."
     },
     {
-      "name": "Prototype — realistic 3D Lot and controls",
-      "goal": "A bounded realistic Lot prototype following accepted D1–D5",
+      "name": "Prototype \u2014 realistic 3D Lot and controls",
+      "goal": "A bounded realistic Lot prototype following accepted D1\u2013D5",
       "items": [
         "Preflight documented: source-traced renderer contract, realistic five-subject sample specification and repeatable diagnostic measurement procedure.",
         "FB-01: implement Lot adapter, orbit/presets and parity; FB-07: accepted Select behavior and safe removal.",
         "FB-02: other venues follow Lot validation; FB-08 minimap remains deferred."
       ],
-      "gate": "Verify asset/source reuse rights and physical scale; fix or reimplement prototype gaps; prove picking/input/engine/save/fallback parity; measure accepted device roster and obtain Dave’s art/camera acceptance."
+      "gate": "Verify asset/source reuse rights and physical scale; fix or reimplement prototype gaps; prove picking/input/engine/save/fallback parity; measure accepted device roster and obtain Dave\u2019s art/camera acceptance."
     },
     {
-      "name": "Operations — live services and development",
+      "name": "Operations \u2014 live services and development",
       "goal": "Choices with measurable costs across shows",
       "items": [
         "FB-04: arrivals, queues, temporary staff, recovery and settlement.",
@@ -154,7 +154,7 @@
       "gate": "Quiet/surge/busy-bar fixtures; deterministic reload/speed; no double charges or double-staffing; human comprehension."
     },
     {
-      "name": "Release — explicit acceptance",
+      "name": "Release \u2014 explicit acceptance",
       "goal": "Promote only the accepted playable scope",
       "items": [
         "Apply D11 A: complete the realistic Lot and live-operations pilots before promotion.",
@@ -168,7 +168,7 @@
   "files": [
     {
       "path": "front-of-house/docs/DECISION_PACKET.md",
-      "why": "D1–D11 selections, alternatives, consequences and delegated authority"
+      "why": "D1\u2013D11 selections, alternatives, consequences and delegated authority"
     },
     {
       "path": "front-of-house/docs/FEATURE_BRIEFS.md",
@@ -219,15 +219,15 @@
   "context": [
     "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
     "Preflight production baseline 522f3f2; earlier ab27c99 controls/audit claims remain historical. A diagnostic software-rendered host run does not establish supported-device performance.",
-    "Eleven briefs define scoped work and proof. CT-DEC-19 records Dave’s delegation: Codex makes routine product and implementation decisions autonomously within accepted scope and records material rationale.",
+    "Eleven briefs define scoped work and proof. CT-DEC-19 records Dave\u2019s delegation: Codex makes routine product and implementation decisions autonomously within accepted scope and records material rationale.",
     "The supplied 3D archive now has isolated runtime and dependency integrity evidence in PROTOTYPE_REVIEW.md; archive rights, production integration and human approval remain pending.",
     "Refresh this project only; preserve unrelated project records, stable IDs and audit history.",
     "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied.",
     "2026-10-04 knowledge reconciliation: README is the topic index; CT-DEC-14 owns accepted sequence. FUTURE build order is historical; prototype and source exports are supporting material. Notion and additional chats are not synchronized by this repository review.",
     "2026-10-04: Dave accepted D3, D4 and D5 A in CT-DEC-15 through CT-DEC-17 and requested a D2 A/B explanation. D2 remains Open. Prior reconciliation reports are historical snapshots, not the current decision state.",
-    "2026-10-04: After the A/B explanation Dave explicitly selected D2 B, more realistic 3D, recorded in CT-DEC-18. This settles D1–D5 without changing implementation or later decisions.",
+    "2026-10-04: After the A/B explanation Dave explicitly selected D2 B, more realistic 3D, recorded in CT-DEC-18. This settles D1\u2013D5 without changing implementation or later decisions.",
     "2026-10-04 Lot preflight changes only public-safe documentation and its index. No runtime, engine formulas, balance, saves, progression, renderer behavior, CI gates, assets or release visibility changed. Notion and other chats were not updated.",
-    "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
+    "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6\u2013D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
     "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
@@ -258,7 +258,7 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
-  "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1–D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
+  "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1\u2013D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
   "confidence": "medium",
   "unknowns": [
     "Final realistic art and physical calibration remain unaccepted; the deployed Lot preview, service movement and shadow reuse have hosted automated proof.",
@@ -308,7 +308,7 @@
       "liveShadow": "Eight deployed runtime files match f258625; hosted backend and actual-client gesture/recovery/reload/settlement rails passed"
     },
     "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
-    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
+    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6\u2013D11 A under CT-DEC-19.",
     "decisionPR": "https://github.com/DaveHomeAssist/mixmash/pull/59",
     "preflightReviewedRevision": "522f3f2f49de6dcf74fa22fa51b900684dd54360",
     "preflightProductionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259075807",
@@ -591,7 +591,7 @@
             "locator": "front-of-house/performance/2026-10-04-shadow.json",
             "result": "recorded",
             "checkedAt": "2026-10-04T12:13:23.832Z",
-            "summary": "All 18 integrated renderer windows at daebe36 valid; same fixture hashes, Metal/DPR 1/quality. 59.9986–60.0029Hz cadence, no intervals over 50 ms. Full HUD and physical-device acceptance are separate."
+            "summary": "All 18 integrated renderer windows at daebe36 valid; same fixture hashes, Metal/DPR 1/quality. 59.9986\u201360.0029Hz cadence, no intervals over 50 ms. Full HUD and physical-device acceptance are separate."
           },
           {
             "stage": "measurement",
@@ -850,7 +850,8 @@
         "doneWhen": "Patch standards, Service training and Admission lanes have deterministic cost/progress/save rules and useful paired outcomes.",
         "status": "in-progress",
         "evidence": [
-          "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet."
+          "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
+          "Career adapter locally verified: separate cash deltas, actual signed-night experience, frozen booking prefix, three bounded benefits and conservative save recovery. All303 repository tests and build pass. No player research controls yet."
         ],
         "slices": [
           {
@@ -860,13 +861,16 @@
             "evidence": [
               "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
               "All296 npm tests, build and generated documentation pass. Required CI and hosted core proof remain pending; career/UI effects are not implemented by this prerequisite."
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/80"
           },
           {
             "id": "FOH-R01b",
             "scope": "Career spending, booking snapshots, measurable effects and player controls",
-            "status": "pending",
-            "evidence": []
+            "status": "in-progress",
+            "evidence": [
+              "FOH-R01b1 career engine implemented and verified by seven integration tests. FOH-R01b2 player controls and browser acceptance remain pending."
+            ]
           }
         ]
       },
@@ -886,7 +890,7 @@
         "id": "FOH-V02",
         "phase": "Venues",
         "scope": "Distinct rooms and remaining tier mechanics",
-        "source": "FB-02, original phases 5–7, KI-11",
+        "source": "FB-02, original phases 5\u20137, KI-11",
         "dependsOn": [
           "FOH-P01",
           "FOH-O02",
@@ -912,7 +916,7 @@
         "id": "FOH-L01",
         "phase": "Release",
         "scope": "Acceptance evidence, manual and public promotion",
-        "source": "RELEASE.md, D8–D11 A",
+        "source": "RELEASE.md, D8\u2013D11 A",
         "dependsOn": [
           "FOH-V02",
           "FOH-R01",

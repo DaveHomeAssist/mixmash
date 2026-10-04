@@ -7,6 +7,7 @@
 
 import * as D from './data.mjs';
 import * as Services from './services.mjs';
+import * as Research from './research.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
@@ -498,7 +499,9 @@ export function doorRushPilot(venue, attendance, presale, choice) {
 export function evaluateShow(inputs) {
   const artist = artistFor(inputs.artistId);
   const v = inputs.venue;
-  const response = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
+  const baseResponse = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
+  const response = baseResponse && inputs.incidentId === 'pa-dropout' && inputs.responseId === 'backup-amp' && inputs.research?.patchScore
+    ? { ...baseResponse, score: Math.min(1, baseResponse.score + inputs.research.patchScore) } : baseResponse;
   const pf = priceFactor(inputs.price, artist.fairPrice);
   const bz = buzz(inputs.ads);
   const ask = isInt(inputs.ask) && inputs.ask > 0 ? inputs.ask : artist.ask;
@@ -576,6 +579,7 @@ function showInputs(state, venueStats, withIncident) {
   const roll = rollShow(state.seed, state.booking.artistId);
   return {
     venue: venueStats,
+    ...(state.booking.research ? { research: researchEffectsFor(state) } : {}),
     deal: state.booking.deal,
     price: state.promotion.price,
     ads: state.promotion.ads,
@@ -682,6 +686,33 @@ function secondStage(state) {
   };
 }
 
+// The booking stores a prefix, so later learning cannot rewrite an already sold show.
+export function researchFor(state) {
+  return state.research ? Research.loadResearch(state.research) : null;
+}
+
+export function researchEffectsFor(state) {
+  const marker = state.booking?.research, checkpoint = state.research;
+  const learned = marker?.version === 1 && checkpoint && isInt(marker.at) && marker.at >= 0 && marker.at <= checkpoint.commands.length
+    ? Research.loadResearch({ ...checkpoint, commands: checkpoint.commands.slice(0, marker.at) }).learned : [];
+  const venue = evaluateVenue(state.venue), live = state.show?.flow?.version === 1;
+  return { learned, patchScore: learned.includes('patch') && venue.paTier ? D.RESEARCH_EFFECTS.patchScore : 0,
+    barWorkerRate: learned.includes('service') && live ? D.RESEARCH_EFFECTS.barWorkerRate : 0,
+    gateRate: learned.includes('admission') && live ? D.RESEARCH_EFFECTS.gateRate : 0 };
+}
+
+export function researchNightFor(state) {
+  if (!state.research || !state.show) return null;
+  const receipt = settlementFor(state);
+  if (!receipt) return null;
+  return { kind: 'night', id: `show_${state.seed}_${state.show.night || 1}`, departments: {
+    production: receipt.attendance > 0 && !!evaluateVenue(state.venue).paTier,
+    guestServices: (receipt.services?.barServed || 0) > 0,
+    admissions: (receipt.services?.admitted || 0) > 0,
+    venueOperations: receipt.attendance > 0,
+  } };
+}
+
 // Live pilot specifications are derived from the booked show, never imported balances.
 export function liveIncidentMinute(state) {
   const roll = rollShow(state.seed, state.booking.artistId);
@@ -696,14 +727,14 @@ export function liveArrivalPlan(state) {
 function liveServiceSpec(state) {
   const source = { ...state, show: { ...state.show, services: undefined } };
   const preview = showPreview(source), venue = evaluateVenue(state.venue);
-  const rule = D.LIVE_SERVICES;
+  const rule = D.LIVE_SERVICES, research = researchEffectsFor(state);
   const access = state.show.flow?.version === 1 ? liveAccessFor(state) : null;
   const minutes = liveArrivalPlan(state).minutes;
   const split = (n, i) => Math.floor(n * i / minutes) - Math.floor(n * (i - 1) / minutes);
   return { id: 'show_' + state.seed + '_' + (state.show.night || 1), closeAt: rule.closeAt,
-    gateRate: (access?.usableGates ?? venue.gates) * D.GATE_RATE,
+    gateRate: (access?.usableGates ?? venue.gates) * (D.GATE_RATE + research.gateRate),
     barRate: rule.barBaseRate + Math.max(0, (access?.usableBars ?? venue.bars) - 1) * rule.extraBarRate,
-    workerRate: rule.workerRate, gateWorkerRate: rule.gateWorkerRate,
+    workerRate: rule.workerRate + research.barWorkerRate, gateWorkerRate: rule.gateWorkerRate,
     gatePatience: rule.gatePatience, barPatience: rule.barPatience, travelMinutes: rule.travelMinutes,
     ticketPrice: state.promotion.price, barNet: D.BAR_NET_PER_HEAD,
     arrivals: Array.from({ length: minutes }, (_, i) => ({ minute: i + 1,
@@ -816,6 +847,22 @@ export function applyAction(state, action) {
   let err;
 
   switch (action.type) {
+    case 'enableResearch': {
+      if (!['book', 'done'].includes(s.phase)) return fail(state, 'Development is available between bookings');
+      if (s.research) return fail(state, 'Development is already enabled');
+      if (!s.history.length && s.mode !== 'sandbox') return fail(state, 'Settle your first show before enabling development');
+      s.research = Research.saveResearch(Research.createResearch(s.mode));
+      return { state: s, error: null };
+    }
+    case 'research': {
+      if (!['book', 'done'].includes(s.phase)) return fail(state, 'Development is available between bookings');
+      if (!s.research) return fail(state, 'Enable development first');
+      if (!['start', 'pause', 'resume', 'cancel'].includes(action.command?.kind)) return fail(state, 'Choose a development project action');
+      const result = Research.applyResearch(researchFor(s), action.command, { cash: s.cash });
+      if (result.error) return fail(state, result.error);
+      s.research = Research.saveResearch(result.state); s.cash += result.cashDelta;
+      return { state: s, error: null };
+    }
     case 'chooseDeal': {
       if ((err = need('book'))) return fail(state, err);
       if (!DEALS.includes(action.deal) && action.deal !== 'sponsor') return fail(state, 'Choose a guarantee or a door deal');
@@ -840,6 +887,7 @@ export function applyAction(state, action) {
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (s.research) s.booking.research = { version: 1, at: s.research.commands.length };
       if (spec.seats) s.promotion.seatPrice = s.promotion.price + 10;
       s.phase = 'build';
       return { state: s, error: null };
@@ -1014,6 +1062,11 @@ export function applyAction(state, action) {
       if ((err = need('settle'))) return fail(state, err);
       const r = settlementFor(s);
       s.cash += settlementPayout(r, s.booking.deal);
+      if (s.research) {
+        const progress = Research.applyResearch(researchFor(s), researchNightFor(s), { cash: s.cash });
+        if (!progress.error) s.research = Research.saveResearch(progress.state);
+        else s.researchNotice = progress.error;
+      }
       const night = s.show.night || 1;
       const nights = s.booking.nights || 1;
       s.history.push({
@@ -1082,6 +1135,8 @@ export function applyAction(state, action) {
         fresh.reputation = s.reputation;
         fresh.unlocks = s.unlocks;
         fresh.history = s.history;
+        if (s.research) fresh.research = clone(s.research);
+        if (s.researchNotice) fresh.researchNotice = s.researchNotice;
         if (s.mode === 'sandbox') fresh.cash = s.cash;
       }
       const first = offersFor(fresh)[0];
@@ -1188,6 +1243,20 @@ export function normalizeState(raw, fallbackSeed = 1) {
   if (s.mode === 'scenario') {
     s.scenario = 'wet-lot';
     s.forcedIncident = 'rain';
+  }
+  if (raw.research !== undefined) {
+    try {
+      const research = Research.loadResearch(raw.research);
+      if (research.mode !== s.mode) throw new Error('Development mode mismatch');
+      s.research = Research.saveResearch(research);
+      if (booking.research?.version === 1 && isInt(booking.research.at) && booking.research.at >= 0 && booking.research.at <= research.commands.length) {
+        s.booking.research = { version: 1, at: booking.research.at };
+      } else if (booking.research !== undefined) s.researchNotice = 'Invalid booking development was removed';
+      if (research.commands.length >= Research.RESEARCH_COMMAND_LIMIT) s.researchNotice = 'Research history is full; no new development command was applied';
+    } catch {
+      s.research = Research.saveResearch(Research.createResearch(s.mode));
+      s.researchNotice = 'Invalid development was reset; cash was preserved';
+    }
   }
   const room = venueSpec(s.venue);
   if (s.booking.deal === 'sponsor' && !room.sponsor) s.booking.deal = null;
