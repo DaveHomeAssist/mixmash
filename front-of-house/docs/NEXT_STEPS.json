@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "f967085 equipment controls in CI \u00b7 Club ticketing core locally verified",
+  "head": "116a743 adapter deployed \u00b7 Club ticketing career checks pass",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Sanitation, research and the journal are delivered. Equipment controls await current-head CI and hosted acceptance. The Club ticketing authority now passes five targeted checks and all329 repository tests; career/UI integration and the remaining venue phases continue.",
+  "statusReason": "Equipment adapter is merged and hosted-verified; controls PR90 is in required CI. Club ticketing now reconciles source terms, collection fees and career cash under both deals, with334 tests/build/docs passing. Ticketing controls and remaining phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -1061,7 +1061,8 @@
               "Career adapter has nine integration tests; all324 repository checks pass. Explicit capital/deployment, all cash paths, frozen nightly terms and source recovery are implemented in PR89.",
               "Equipment Asset/Deploy/Cash/History pages pass initial seven player journeys and offline inventory/journal/sale preservation. Final signed-cash and short-window paging checks remain in progress.",
               "Seven complete Chromium/WebKit classic/3D desktop/phone journeys pass actual buy/rent/assign/live settlement/sale/reload and double-click protection. Both themes and every short-window part pass viewport checks through844x390 and320x256, plus3840x1080. Offline sale credits600 once and journal/inventory survive reload; supplied action-client purchase and all pages verified. New signed cash snapshots remain fixed after resale.",
-              "Controlled identical-show seeds1/3/6: owned operation reduces production expense200 to20. Door net gains166/124/180 because eligible artist costs also change; guarantee net gains180. Capital1200/resale600 remain separate, so this is operating comparison rather than a claim of immediate purchase profit."
+              "Controlled identical-show seeds1/3/6: owned operation reduces production expense200 to20. Door net gains166/124/180 because eligible artist costs also change; guarantee net gains180. Capital1200/resale600 remain separate, so this is operating comparison rather than a claim of immediate purchase profit.",
+              "Adapter PR89 passed CI37207764232 and merged116a743; Pages built14:19:17Z. Four hosted source files match. Hosted engine buy/retry/assign/sign/sell/reload verifies operation20/rental0, net509, sale600 and exact999909 journal/cash. Player controls remain PR90."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/90"
           }
@@ -1089,7 +1090,8 @@
             "scope": "Club ticketing authority, career adapter and controls",
             "status": "in-progress",
             "evidence": [
-              "Pure version1 terms, presale split and collection receipt locally verified. Controlled100-person fixture: quiet direct/platform cash2000/1952;50% walk-up-loss cash1400/1552. These isolate ticket collection, not full show net. Career/save/artist/journal integration and controls remain pending."
+              "Pure version1 terms, presale split and collection receipt locally verified. Controlled100-person fixture: quiet direct/platform cash2000/1952;50% walk-up-loss cash1400/1552. These isolate ticket collection, not full show net. Career/save/artist/journal integration and controls remain pending.",
+              "FOH-V02a2 Club-only adapter adds frozen source terms, fee withholding outside artist costs, exact both-deal payout/journal reconciliation, all-six-phase legacy parity and cash-preserving recovery. Five integration checks plus334 repository tests/build/docs pass; controls and production acceptance remain pending."
             ]
           },
           {
@@ -1109,12 +1111,14 @@
           {
             "id": "FOH-V02r1",
             "scope": "Fathom Hall source-owned technical scene and fixed-scenery picking",
-            "status": "implemented-local-verification",
+            "status": "verified-awaiting-delivery",
             "evidence": [
               "Existing20\u00d714 room, four pillar tiles and medium house PA; camera, grid and representative crowd follow real room bounds; classic remains the default.",
               "328 tests/build/vendor/generated-asset checks and balance simulation pass. Desktop/phone four-view and arbitrary-yaw checks, pillar refusal, room-switch cleanup, context recovery, reload and exact classic/3D settlement parity pass.",
               "New placement and ghost reject fixed pillars; old layouts/normalization/accounting remain unchanged. Fixed scenery blocks selection/removal fallthrough, and status text no longer intercepts touch.",
-              "Lot coalescing/lifecycle/backend checks pass. Required integrated CI, delivery and hosted checks remain pending; no human art/physical acceptance claimed."
+              "Lot coalescing/lifecycle/backend checks pass. Required integrated CI, delivery and hosted checks remain pending; no human art/physical acceptance claimed.",
+              "Integrated333 tests/build/assets pass. Complete legacy/live/crowd/food/sanitation/research/equipment journeys and Club desktop/phone switching/recovery/parity pass.",
+              "Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance."
             ]
           }
         ]

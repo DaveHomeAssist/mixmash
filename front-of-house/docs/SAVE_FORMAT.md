@@ -194,3 +194,9 @@ New signed history rows also retain optional `cashAfter`, the exact cash immedia
 ### Club fixed-pillar editing compatibility
 
 The technical Club preview introduces no saved fields or schema change. New editing commands reject pillar overlaps, but normalization and historical evaluation keep their existing layout rules. Existing overlap saves are preserved without removing objects, charging money or rewriting past show outcomes; newly submitted replacement layouts must obey the fixed pillars.
+
+## Optional Club ticketing contract (FOH-V02a2)
+
+Schema2 accepts `promotion.ticketing` as null or `{version:1,plan:"direct"|"platform"}` only in Fathom Hall. Doors copy recognized terms to `show.ticketing`. Active and signed shows read that frozen source; saved fee amounts and rates are ignored. An absent marker retains the original split and output shape. The platform's4% presale collection fee is withheld once from settlement receipts, outside artist-deductible production costs and show opening. Net, payout and the optional journal use the same derived amount.
+
+Room changes and Next Show clear the optional selection. Invalid/wrong-room optional terms are removed with `ticketingNotice`, preserving career cash and signed history; reloading never replays payment. Such recovery does not claim to reconstruct missing contract terms. Five adapter checks cover all six old phases, exact legacy/Direct parity, quiet/loss pairs, both artist deals, one-time settlement/journal reconciliation, locked terms and source recovery. Controls and hosted acceptance remain separate work.

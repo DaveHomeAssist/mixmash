@@ -1798,6 +1798,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-club-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Club native renderer measurements",
+      "description": "Six full visible native Chrome empty/crowd windows on frozen Club source, retaining quality, timing and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-club-native.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-density.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -2445,6 +2455,16 @@
       "title": "test-services.mjs",
       "description": "Behavioral fixtures for the aggregate live-service prerequisite.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-services.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-ticketing-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-ticketing-integration.mjs",
+      "description": "Club ticket collection reconciles frozen terms, artist contracts and career cash.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-ticketing-integration.mjs",
       "open": null
     },
     {

@@ -2,6 +2,10 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Fathom Hall technical preview
 
+## 2026-10-04 — Club integrated and native verification
+
+Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance. Integrated333 tests/build/assets and complete player journeys pass; room smoke also passes after integration. Source5330eb3 is committed/pushed. Current required CI, merge and hosted checks remain separate.
+
 FOH-V02r1 authors a source-owned20×14 cutaway, fixed pillar cells and suspended house PA; the explicit preview now switches between Lot/Club dimensions and resources. Three geometry/camera/crowd tests and a legacy-compatible editing test pass.328 repository tests/build/assets/vendor checks and unchanged balance simulation pass. Desktop/phone journeys verify all four views, arbitrary-yaw picking, room-switch cleanup, real context recovery, reload and exact classic/3D settlement parity.
 
 The first browser run exposed pre-existing pillar-overlap placement; new commands/ghosts now refuse it while older layouts/accounting are retained. Further checks exposed ground-selection fallthrough behind fixed scenery and a phone status overlay intercepting taps; both are corrected and covered. One incorrect promotion selector was repaired in the harness. Lot coalescing/lifecycle/backend regressions pass; remaining full-client, required CI and hosted delivery proof is tracked separately. CT-DEC-22 records the compatibility choice; final art/physical/human acceptance remains open.
@@ -555,3 +559,9 @@ Initial seven player journeys and offline buy-state reload/sale600 pass. The new
 ### 2026-10-04 Club ticketing authority
 
 FOH-V02a begins the remaining venue mechanics with strict optional Direct/Platform terms, a bounded presale split and a collection receipt. Platform increases the presale share20 points (uplift capped90%) and retains4% of presale gross, rounded once; it neither creates guests nor alters ticket price. Five targeted tests and all329 repository tests/build/generated reference pass, including malformed/unsafe inputs and exact integer rounding. The100-person/$20 hand fixture gives quiet direct/platform cash2000/1952, versus1400/1552 when half of later walk-ups are lost. This is isolated ticket collection, not career show profit or a delivered UI. The Club-only adapter, frozen save terms, artist-basis exclusion, journal reconciliation and player controls are next.
+
+### 2026-10-04 Club ticketing career adapter
+
+FOH-V02a2 connects Club-only promotion selection to frozen show terms, presale protection and collection receipts. The fee is withheld once on signing, outside production deductions and opening cash. Five integration checks pass legacy/Direct parity in all six phases, both deals, useful quiet/loss outcomes, one-time payout and journal reconciliation, locked imports and recovery/room isolation. All334 repository tests, build and generated reference pass; cache v45 includes the new engine dependency. This adapter does not yet expose a player ticketing control; UI, browser/offline and delivery evidence remain open.
+
+- Equipment adapter PR89 passed CI37207764232 and merged116a743; Pages built14:19:17Z. Hosted engine/ownership/journal/worker files match the merge. Isolated hosted engine actions prove buy/retry/assignment/sign/sale/reload: operation20, rental0, net509,600 resale and999909 cash equal to the journal. This is hosted engine evidence; Equipment UI acceptance still awaits PR90.
