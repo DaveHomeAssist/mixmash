@@ -8,8 +8,9 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
+  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
+import { heldRunQuote } from './held-run.mjs';
 import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
@@ -201,6 +202,7 @@ function render() {
 }
 
 function renderTop() {
+  $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
   el.cash.textContent = money(state.cash);
@@ -306,6 +308,7 @@ function bookPanel() {
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
       <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.</p>
+      ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
       ${opener ? `<p class="lede">The other stage opens with ${esc(artistFor(opener).name)}.</p>` : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
       ${deal('door', 'Door deal', `${Math.round(D.DOOR_SPLIT * 100)}% of the net`, !t.doorOk ? doorNote : teach ? `Cheaper on a slow night, but they expect ${money(t.ask)}.` : '', !t.doorOk)}
@@ -1083,7 +1086,7 @@ function sheetParts(r, { signed: done }) {
   const response = findResponse(state.show.incidentId, state.show.responseId);
   const incident = D.INCIDENTS[state.show.incidentId];
   const cashAfter = done ? (state.history.at(-1)?.cashAfter ?? state.cash) : state.cash + settlementPayout(r, deal);
-  const cashBefore = cashAfter - r.net;
+  const cashBefore = cashAfter - r.net + (done && state.show?.cancelled ? heldRunFor(state).penalty : 0);
   const cost = (n) => `<td class="num neg">${money(-n)}</td>`;
   const rows = [
     ['Lot lease and permit', 'Site', r.costs.lot + r.costs.permit],
@@ -1186,9 +1189,12 @@ function openSettlement(opener, { signed: done = false } = {}) {
   const r = settlementFor(state);
   if (!r) return;
   const { body, foot } = sheetParts(r, { signed: done });
+  const run = heldRunFor(state);
+  const action = !done && run?.remaining ? '<button type="button" class="primary" data-act="held-run-open">Choose next night</button>'
+    : done ? (state.show?.cancelled ? '<button data-act="held-run-open">Cancellation receipt</button>' : '') : '<button type="button" class="primary" data-act="accept">Sign the settlement</button>';
   openWindow('settlement', done ? 'Last settlement' : 'Settlement', body, opener, {
     wide: true,
-    foot: `${foot}${done ? '' : '<button type="button" class="primary" data-act="accept">Sign the settlement</button>'}`,
+    foot: `${foot}${action}`,
   });
 }
 
@@ -1312,6 +1318,32 @@ function openDevelopment(opener) {
     ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
 }
 
+function openHeldRun(opener) {
+  const q = heldRunFor(state), terms = q?.terms;
+  if (!terms) { openWindow('held-run', 'Held nights', `<p>${esc(state.runNotice || 'No held-run cancellation terms recorded.')}</p>`, opener); return; }
+  const settled = state.phase === 'settle', cancelled = state.phase === 'done' && state.show?.cancelled;
+  const result = settled ? settlementFor(state) : null;
+  const signing = result ? state.cash + settlementPayout(result, state.booking.deal) : null;
+  const opening = settled ? upfrontFor(state) : null;
+  const canContinue = settled && q.remaining > 0 && (state.mode === 'sandbox' || signing >= opening);
+  const field = (label,value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  const locked = '<p>Finish the current night to choose. A completed run cannot be signed again.</p>';
+  const receipt = cancelled ? `<dl class="live-readouts">${field('Completed nights',q.completed)}${field('Cancelled nights',q.remaining)}${field('Cancellation paid',money(q.penalty))}${field('Cash after signing',money(state.history.at(-1)?.cashAfter ?? state.cash))}</dl><p>The completed show keeps its earnings. No next-night opening was charged.</p>`
+    : '<p>No cancellation has been signed for this run.</p>';
+  openWindow('held-run', 'Held nights', `<p class="development-summary">${terms.nights} nights · ${money(terms.ask)} nightly ask</p>
+    <section data-tab="Terms" data-always-tabs><h3>Ending a hold early</h3>${state.runNotice ? `<p role="status">${esc(state.runNotice)}</p>` : ''}
+      <p>After a night, cancel the rest for ${money(q.feeEach)} each.</p><p>That is 25% of the booked ask, rounded per night.</p>
+      <p>Completed nights keep earnings and reputation.</p><p>The cancellation expense never reduces the completed artist deal.</p>
+      <p>Terms stay fixed after doors. Unplayed nights earn no money or progress.</p></section>
+    <section data-tab="Continue" data-always-tabs><h3>Play the next night</h3>${settled && q.remaining ? `<dl class="live-readouts">${field('Cash after this show',money(signing))}${field('Next night opening',money(opening))}${field('Cash after opening',money(signing-opening))}</dl>
+      <p>${canContinue ? 'Sign this show and pay the next opening once. The booked terms remain fixed.' : 'There is not enough cash to open the next night. Open Cancel to end the hold with its quoted fee.'}</p>
+      <button data-act="held-run-sign" ${canContinue?'':'disabled'}>Sign and open night ${q.completed+1}</button>` : locked}</section>
+    <section data-tab="Cancel" data-always-tabs><h3>End the hold</h3>${settled && q.remaining ? `<dl class="live-readouts">${field('Unplayed nights',q.remaining)}${field('Cash after this show',money(signing))}${field('Cancellation fee',money(q.penalty))}${field('Cash after cancellation',money(signing-q.penalty))}</dl>
+      <p>No next-night opening is charged.${signing-q.penalty<0 ? ' This leaves debt; starting over may be necessary.' : ''}</p>
+      <button data-act="held-run-sign" data-cancel="true">Sign and cancel ${q.remaining} night${q.remaining===1?'':'s'}</button>` : locked}</section>
+    <section data-tab="Receipt" data-always-tabs><h3>Cancellation receipt</h3>${receipt}${['settle','done'].includes(state.phase)?'<button data-act="food-back">Back to settlement</button>':''}</section>`, opener);
+}
+
 function openTicketing(opener) {
   if (state.venue.id !== 'club') return;
   const terms = ticketingPlanFor(state) || { version: 1, plan: 'direct' };
@@ -1335,7 +1367,7 @@ function openTicketing(opener) {
       ${result ? '<button data-act="food-back">Back to settlement</button>' : ''}</section>`, opener);
 }
 
-const CASH_LABELS = { acquisition: 'Equipment purchases', disposal: 'Equipment sales', development: 'Development', developmentRefund: 'Development refunds', showOpening: 'Show opening', incident: 'Incident responses', settlement: 'Settlements' };
+const CASH_LABELS = { acquisition: 'Equipment purchases', disposal: 'Equipment sales', development: 'Development', developmentRefund: 'Development refunds', showOpening: 'Show opening', incident: 'Incident responses', settlement: 'Settlements', cancellation: 'Held-night cancellation' };
 function cashReference(entry) {
   if (entry.reference.startsWith('show_')) {
     const [,seed,night] = entry.reference.split('_');
@@ -1348,7 +1380,7 @@ function cashReference(entry) {
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
 function paginateCompactWindow(step = 0) {
-  if (!['equipment', 'ticketing'].includes(win.kind) || innerHeight > 560) return;
+  if (!['equipment', 'ticketing', 'held-run'].includes(win.kind) || innerHeight > 560) return;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
   if (!panel._compactAtoms) {
     for (const list of [...panel.children].filter(e => e.matches('dl,ol'))) {
@@ -1414,8 +1446,10 @@ function openEquipment(opener) {
 }
 
 function historyHtml() {
-  return `<ul class="history">${state.history.slice().reverse().map((h) =>
-    `<li>Show ${h.showId}${h.night > 1 ? ` night ${h.night}` : ''}: ${h.deal === 'door' ? 'door deal' : h.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${D.VENUES[h.venueId] ? D.VENUES[h.venueId].name : 'Oak St. Lot'} · ${h.attendance} people · ${money(h.net)} · ${h.result === 'pass' ? 'pass' : 'retry'}</li>`).join('')}</ul>`;
+  return `<ul class="history">${state.history.slice().reverse().map((h) => {
+    const cancelled = h.runCancellation ? heldRunQuote(h.runCancellation.terms, h.runCancellation.completed) : null;
+    return `<li>Show ${h.showId}${h.night > 1 ? ` night ${h.night}` : ''}: ${h.deal === 'door' ? 'door deal' : h.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${D.VENUES[h.venueId] ? D.VENUES[h.venueId].name : 'Oak St. Lot'} · ${h.attendance} people · ${money(h.net)} · ${h.result === 'pass' ? 'pass' : 'retry'}${cancelled ? `<p>Cancelled ${cancelled.remaining} remaining night${cancelled.remaining===1?'':'s'} · ${money(cancelled.penalty)} separate fee · cash after signing ${h.cashAfter === undefined ? 'not recorded' : money(h.cashAfter)}</p>` : ''}</li>`;
+  }).join('')}</ul>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -1787,6 +1821,11 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'held-run-open') { openHeldRun(target); return; }
+  if (a === 'held-run-sign') {
+    if (act({ type: 'acceptSettlement', cancelRemaining: target.dataset.cancel === 'true', at: new Date().toISOString() })) { closeWindow(); focusHeading(); }
+    return;
+  }
   if (a === 'ticketing-open') { openTicketing(target); return; }
   if (a === 'ticketing-plan') {
     if (act({ type: 'setPromotion', ticketing: { version: 1, plan: target.dataset.plan } })) { openTicketing($('#ticketing-settings')); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); }
@@ -1813,14 +1852,14 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1 });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
     const again = `[data-act="${a}"][data-${a}="${target.dataset[a]}"]`;
     ui.mounted = null;
     if (a === 'venue') act({ type: 'chooseVenue', venueId: target.dataset.venue });
-    else { state.booking.nights = Number(target.dataset.nights); render(); }
+    else { state.booking.nights = Number(target.dataset.nights); delete state.booking.run; render(); }
     const button = el.panel.querySelector(again);
     if (button) button.focus();
   }
@@ -2046,7 +2085,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && ['equipment', 'ticketing'].includes(win.kind)) paginateCompactWindow();
+  if (root === el.winBody && ['equipment', 'ticketing', 'held-run'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2067,6 +2106,7 @@ window.addEventListener('resize', () => {
   if (el.win.hidden) return;
   if (win.kind === 'equipment') openEquipment(win.opener);
   if (win.kind === 'ticketing') openTicketing(win.opener);
+  if (win.kind === 'held-run') openHeldRun(win.opener);
 });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
@@ -2077,7 +2117,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (['equipment', 'ticketing'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'ticketing', 'held-run'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -2085,7 +2125,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
   syncTabs(el.winBody, `win:${kind}`);
-  if (['equipment', 'ticketing'].includes(kind)) paginateCompactWindow();
+  if (['equipment', 'ticketing', 'held-run'].includes(kind)) paginateCompactWindow();
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2243,6 +2283,7 @@ function importCode(code) {
 // Automation hooks (the MIXMASH and MarsScape convention)
 
 window.render_game_to_text = () => {
+  const held = heldRunFor(state);
   const serviceView = board.info().serviceCrowd;
   const v = evaluateVenue(state.venue);
   const r = settlementFor(state);
@@ -2267,6 +2308,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    heldRun: held ? { terms: held.terms, feeEach: held.feeEach, completedNights: state.show ? state.show.night - (['settle', 'done'].includes(state.phase) ? 0 : 1) : 0, cancellationAfterCurrentNight: state.show ? { remaining: held.remaining, penalty: held.penalty } : null, cancelled: state.show?.cancelled === true, notice: state.runNotice || null } : null,
     ticketing: state.venue.id === 'club' ? { terms: ticketingPlanFor(state), forecast: state.phase === 'promote' ? ticketingForecastFor(state) : null, receipt: r?.ticketing || null, notice: state.ticketingNotice || null } : null,
     equipment: state.equipment ? { assets: equipmentFor(state).assets, deployment: equipmentPlanFor(state), journal: careerLedgerFor(state), notice: state.equipmentNotice || null } : null,
     development: state.research ? { ...researchFor(state), booked: researchEffectsFor(state).learned } : null,

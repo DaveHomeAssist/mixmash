@@ -2378,6 +2378,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-held-run-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-held-run-integration.mjs",
+      "description": "Optional held runs preserve completed shows and account cancellation exactly once.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-held-run-integration.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-held-run.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-held-run.mjs",
+      "description": "Cancellation money is derived from source terms, never saved fee claims.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-held-run.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-lot-camera.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2565,6 +2585,16 @@
       "title": "front-of-house-food-smoke.mjs",
       "description": "Actual vendor placement/settings, finite queue, reload and signed receipt in both renderers.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-food-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-held-run-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-held-run-smoke.mjs",
+      "description": "Player bookings, held-night choices and one-time cancellation receipts across browser engines.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-held-run-smoke.mjs",
       "open": null
     },
     {
@@ -2825,6 +2855,16 @@
       "title": "guest-flow.mjs",
       "description": "Pure game access and normal-departure model. Occupancy and receipts belong to the engine.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/guest-flow.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/held-run.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "held-run.mjs",
+      "description": "Versioned held-run terms and exact remaining-night cancellation quotes.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/held-run.mjs",
       "open": null
     },
     {

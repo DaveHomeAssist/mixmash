@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "116a743 adapter deployed \u00b7 Club ticketing controls locally verified",
+  "head": "4600649 equipment delivered \u00b7 held-run controls locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Equipment controls PR90 and ticketing releases remain in required CI. Club ticketing controls pass335 tests/build/docs, six player journeys, offline signing, seven Equipment regressions and28 legacy checks. Remaining venue phases continue autonomously.",
+  "statusReason": "Equipment is merged and hosted-verified: seven player journeys,22 matching runtime files and offline resale/journal proof. Club ticketing controls PR94 and held-run cancellation controls are advancing through verification and delivery. Seating/stage, scene, navigation and release phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -20,12 +20,13 @@
     "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained.",
     "PR74: classic floor cache and complete full-HUD/shadow evidence merged and hosted-verified; parallel food controls preserved.",
     "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified.",
-    "PR85: sanitation and playable three-project development delivered with14 hosted player journeys, source parity and offline recovery proof."
+    "PR85: sanitation and playable three-project development delivered with14 hosted player journeys, source parity and offline recovery proof.",
+    "PR90: playable Equipment delivered at4600649 with seven hosted journeys,22 matching runtime files and offline inventory/journal/sale continuity."
   ],
   "nextStep": {
-    "title": "Deliver playable equipment, then finish venue and navigation phases",
+    "title": "Deliver ticketing and held-run controls, then complete remaining venue work",
     "why": "Guest operations and the research pilot now have source, CI, Pages and live behavior proof. Complete equipment acceptance and continue the remaining phase queue autonomously.",
-    "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
+    "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1\u2013D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -77,7 +78,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "D6\u2013D7: research and ownership depend on service and accounting rules",
-      "detail": "Food, sanitation and research have controls and local player evidence. Explicit small-PA deployment and reconciled career cash pass324 tests; equipment controls and production acceptance remain open. No D6/D7 decisions are waiting.",
+      "detail": "Food, sanitation, research and owned-PA equipment pilots are delivered with CI, Pages, hosted player journeys and offline proof. No D6/D7 decisions are waiting; remaining venue and release work continues.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/RESEARCH.md"
@@ -1025,9 +1026,10 @@
           "FOH-O01"
         ],
         "doneWhen": "Purchase/rent/deploy/sell policy conserves cash and inventory through reload, cancellation and settlement.",
-        "status": "in-progress",
+        "status": "verified-delivered",
         "evidence": [
-          "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet."
+          "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet.",
+          "PR90 passed CI37208474473 and merged4600649 on2026-10-04 14:34:34Z; Pages built14:34:57Z.22 deployed runtime files match. Seven hosted Chromium/WebKit classic/3D desktop/phone Equipment journeys and offline purchase-state/journal/sale600/reload pass. An initial503 during byte verification cleared on retry; no failed request was suppressed. Physical/human acceptance remains separate."
         ],
         "slices": [
           {
@@ -1056,18 +1058,21 @@
           {
             "id": "FOH-E01b",
             "scope": "Career cash journal, frozen deployment and player equipment controls",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Career adapter has nine integration tests; all324 repository checks pass. Explicit capital/deployment, all cash paths, frozen nightly terms and source recovery are implemented in PR89.",
               "Equipment Asset/Deploy/Cash/History pages pass initial seven player journeys and offline inventory/journal/sale preservation. Final signed-cash and short-window paging checks remain in progress.",
               "Seven complete Chromium/WebKit classic/3D desktop/phone journeys pass actual buy/rent/assign/live settlement/sale/reload and double-click protection. Both themes and every short-window part pass viewport checks through844x390 and320x256, plus3840x1080. Offline sale credits600 once and journal/inventory survive reload; supplied action-client purchase and all pages verified. New signed cash snapshots remain fixed after resale.",
               "Controlled identical-show seeds1/3/6: owned operation reduces production expense200 to20. Door net gains166/124/180 because eligible artist costs also change; guarantee net gains180. Capital1200/resale600 remain separate, so this is operating comparison rather than a claim of immediate purchase profit.",
-              "Adapter PR89 passed CI37207764232 and merged116a743; Pages built14:19:17Z. Four hosted source files match. Hosted engine buy/retry/assign/sign/sell/reload verifies operation20/rental0, net509, sale600 and exact999909 journal/cash. Player controls remain PR90."
+              "Adapter PR89 passed CI37207764232 and merged116a743; Pages built14:19:17Z. Four hosted source files match. Hosted engine buy/retry/assign/sign/sell/reload verifies operation20/rental0, net509, sale600 and exact999909 journal/cash. Player controls remain PR90.",
+              "PR90 passed CI37208474473 and merged4600649 on2026-10-04 14:34:34Z; Pages built14:34:57Z.22 deployed runtime files match. Seven hosted Chromium/WebKit classic/3D desktop/phone Equipment journeys and offline purchase-state/journal/sale600/reload pass. An initial503 during byte verification cleared on retry; no failed request was suppressed. Physical/human acceptance remains separate."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/90"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/90",
+            "mergeCommit": "4600649ca120a5ecb6048eb5da33753422037b6f"
           }
         ],
-        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/90",
+        "mergeCommit": "4600649ca120a5ecb6048eb5da33753422037b6f"
       },
       {
         "id": "FOH-V02",
@@ -1092,14 +1097,18 @@
             "evidence": [
               "Pure version1 terms, presale split and collection receipt locally verified. Controlled100-person fixture: quiet direct/platform cash2000/1952;50% walk-up-loss cash1400/1552. These isolate ticket collection, not full show net. Career/save/artist/journal integration and controls remain pending.",
               "FOH-V02a2 Club-only adapter adds frozen source terms, fee withholding outside artist costs, exact both-deal payout/journal reconciliation, all-six-phase legacy parity and cash-preserving recovery. Five integration checks plus334 repository tests/build/docs pass; controls and production acceptance remain pending.",
-              "FOH-V02a3 controls: Plan/Forecast/Receipt, public draw bounds, immutable terms and distinct settlement collection deduction. All335 repository tests/build/docs, six Chromium/WebKit both-deal journeys, both themes and five viewport sizes, seven Equipment regression journeys,28 legacy checks and offline signing/journal preservation pass. Required CI and hosted acceptance remain pending."
+              "FOH-V02a3 controls: Plan/Forecast/Receipt, public draw bounds, immutable terms and distinct settlement collection deduction. All335 repository tests/build/docs, six Chromium/WebKit both-deal journeys, both themes and five viewport sizes, seven Equipment regression journeys,28 legacy checks and offline signing/journal preservation pass. Required CI and hosted acceptance remain pending.",
+              "Adapter PR93 passed CI37208947770, mergedbc929d7 at14:43:22Z and Pages built14:43:44Z. Hosted engine/ticketing/worker files match; hosted both-deal signing/retry/reload conserves fee147 and journal cash1001458 door /1001615 guarantee. UI PR94 remains in CI."
             ]
           },
           {
             "id": "FOH-V02b",
             "scope": "Held-night cancellation, seating and stage/night accounting",
-            "status": "pending",
-            "evidence": []
+            "status": "in-progress",
+            "evidence": [
+              "Optional version1 held-run policy implemented: quoted25%-of-ask fee per unplayed night, frozen terms, explicit continue/cancel, exact journal/history/reputation and negative-cash recovery. Twelve core/adapter tests and347 repository tests/build/docs pass. Controls pass initial six Chromium/WebKit journeys, full-hold/debt branches and offline cancellation; final regression, CI and hosted acceptance remain pending. Seating/stage accounting remain separate work.",
+              "Held-run cancellation controls final local verification:347 repository tests/build/docs, six complete Chromium/WebKit journeys plus full-hold and controlled-debt branches; both-theme five-size window checks, signed Show history fee/cash record, seven Equipment and six ticketing regressions,28 legacy checks and offline signing/cancellation. Supplied action runner verifies a fresh booking with zero completed nights and correct terms; actual full-page dialog screenshots inspected. Source/CI/Pages/hosted delivery remains pending; seating/stage accounting remains open."
+            ]
           },
           {
             "id": "FOH-V02c",
@@ -1120,7 +1129,8 @@
               "Lot coalescing/lifecycle/backend checks pass. Required integrated CI, delivery and hosted checks remain pending; no human art/physical acceptance claimed.",
               "Integrated333 tests/build/assets pass. Complete legacy/live/crowd/food/sanitation/research/equipment journeys and Club desktop/phone switching/recovery/parity pass.",
               "Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance.",
-              "Ticketing controls368edba integrated;339 tests/build/assets and unchanged balance simulation pass. All seven ticketing journeys pass including actual desktop/phone Club3D, and the Club room/recovery/exact-settlement suite passes again. Required CI, merge and hosted delivery remain pending."
+              "Ticketing controls368edba integrated;339 tests/build/assets and unchanged balance simulation pass. All seven ticketing journeys pass including actual desktop/phone Club3D, and the Club room/recovery/exact-settlement suite passes again. Required CI, merge and hosted delivery remain pending.",
+              "Held-run delivery633f60a integrated without changing frozen native measurements.351 tests/build/assets, six held-run journeys and Club room/recovery/parity smoke pass; generated docs and balance simulation pass unchanged. Replacement current-head CI and hosted delivery remain required."
             ]
           }
         ]

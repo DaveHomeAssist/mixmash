@@ -10,6 +10,7 @@ import * as Services from './services.mjs';
 import * as Research from './research.mjs';
 import * as Ownership from './ownership.mjs';
 import * as Journal from './career-ledger.mjs';
+import { heldRunTerms, heldRunQuote } from './held-run.mjs';
 import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
@@ -708,6 +709,19 @@ function secondStage(state) {
   };
 }
 
+function savedRunCancellation(raw) {
+  if (!raw) return {};
+  try {
+    const q = heldRunQuote(raw.terms, raw.completed);
+    return q.remaining ? { runCancellation: { terms: q.terms, completed: q.completed } } : {};
+  } catch { return {}; }
+}
+
+export function heldRunFor(state) {
+  const source = state.show?.run || (!state.show && state.booking.run);
+  return source ? heldRunQuote(source, state.show?.night || 1) : null;
+}
+
 export function ticketingPlanFor(state) {
   if (state.venue.id !== 'club') return null;
   return state.show ? state.show.ticketing || null : state.promotion.ticketing || null;
@@ -916,7 +930,9 @@ export function applyAction(state, action) {
     if (action.type === 'acceptSettlement') {
       const payout = settlementPayout(settlementFor(state), state.booking.deal);
       if (payout) movements.push({ category: 'settlement', cashDelta: payout, reference });
-      const opening = delta - payout;
+      const cancellation = next.show?.cancelled ? heldRunFor(next).penalty : 0;
+      if (cancellation) movements.push({ category: 'cancellation', cashDelta: -cancellation, reference });
+      const opening = delta - payout + cancellation;
       if (opening) movements.push({ category: 'showOpening', cashDelta: opening, reference: `show_${next.seed}_${next.show.night}` });
     } else if (delta) {
       const category = action.type === 'equipment' ? action.command.kind === 'buy' ? 'acquisition' : 'disposal'
@@ -1014,6 +1030,10 @@ function applyActionCore(state, action) {
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (action.runPolicy !== undefined) {
+        if (action.runPolicy !== 1 || spec.id !== 'amphitheater' || s.booking.nights < 2) return fail(state, 'That booking cannot use a held-run policy');
+        s.booking.run = heldRunTerms({ version: 1, nights: s.booking.nights, ask: terms.ask });
+      }
       if (s.research) s.booking.research = { version: 1, at: s.research.commands.length };
       if (s.equipment) s.booking.equipment = { version: 1, at: s.equipment.commands.length, assetId: null };
       if (spec.seats) s.promotion.seatPrice = s.promotion.price + 10;
@@ -1026,6 +1046,8 @@ function applyActionCore(state, action) {
       if (!D.VENUES[id]) return fail(state, 'Unknown room');
       if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
       if (s.venue.id !== id) {
+        delete s.booking.run;
+        delete s.runNotice;
         delete s.promotion.ticketing;
         delete s.ticketingNotice;
         s.layouts[s.venue.id] = s.venue.objects;
@@ -1144,6 +1166,7 @@ function applyActionCore(state, action) {
       const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, 1);
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
       if (equipment) s.show.equipment = equipment.terms;
+      if (s.booking.run) s.show.run = heldRunTerms(s.booking.run);
       if (s.venue.id === 'club' && s.promotion.ticketing) s.show.ticketing = ticketingTerms(s.promotion.ticketing);
       const v = evaluateVenue(s.venue);
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
@@ -1201,17 +1224,26 @@ function applyActionCore(state, action) {
     case 'acceptSettlement': {
       if ((err = need('settle'))) return fail(state, err);
       const r = settlementFor(s);
-      s.cash += settlementPayout(r, s.booking.deal);
+      const run = heldRunFor(s), cancel = action.cancelRemaining === true;
+      if (action.cancelRemaining !== undefined && typeof action.cancelRemaining !== 'boolean') return fail(state, 'Choose whether to cancel the remaining nights');
+      if (cancel && (!run || !run.remaining)) return fail(state, 'There are no contracted remaining nights to cancel');
+      const signingCash = s.cash + settlementPayout(r, s.booking.deal);
+      if (run?.remaining && !cancel && s.mode !== 'sandbox' && upfrontFor(s) > signingCash) {
+        return fail(state, `Next night needs $${upfrontFor(s)}; signing leaves $${signingCash}. Choose cancellation for $${run.penalty} to end the run.`);
+      }
+      s.cash = signingCash - (cancel ? run.penalty : 0);
+      if (cancel) s.show.cancelled = true;
       if (s.research) {
         const progress = Research.applyResearch(researchFor(s), researchNightFor(s), { cash: s.cash });
         if (!progress.error) s.research = Research.saveResearch(progress.state);
         else s.researchNotice = progress.error;
       }
       const night = s.show.night || 1;
-      const nights = s.booking.nights || 1;
+      const nights = run?.terms.nights || s.booking.nights || 1;
       s.history.push({
         showId: s.history.length + 1,
         cashAfter: s.cash,
+        ...(cancel ? { runCancellation: { terms: run.terms, completed: night } } : {}),
         seed: s.seed,
         deal: s.booking.deal,
         attendance: r.attendance,
@@ -1226,7 +1258,7 @@ function applyActionCore(state, action) {
       });
       const repHold = (s.show.repHold || 0) + r.repDelta;
       const relHold = (s.show.relHold || 0) + r.relDelta;
-      if (night < nights) {
+      if (night < nights && !cancel) {
         const upfront = upfrontFor(s);
         if (s.mode !== 'sandbox' && upfront > s.cash) {
           applyRep(s, repHold, relHold);
@@ -1244,6 +1276,7 @@ function applyActionCore(state, action) {
           repHold,
           relHold,
           ...(s.show.equipment ? { equipment: clone(s.show.equipment) } : {}),
+          ...(s.show.run ? { run: clone(s.show.run) } : {}),
         };
         s.phase = 'show';
         return { state: s, error: null };
@@ -1426,6 +1459,14 @@ export function normalizeState(raw, fallbackSeed = 1) {
   const room = venueSpec(s.venue);
   if (s.booking.deal === 'sponsor' && !room.sponsor) s.booking.deal = null;
   s.booking.nights = room.nights.includes(booking.nights) ? booking.nights : 1;
+  if (booking.run !== undefined) {
+    try {
+      const terms = heldRunTerms(booking.run);
+      if (room.id !== 'amphitheater' || terms.nights !== s.booking.nights || terms.ask !== s.booking.terms?.ask) throw new TypeError('Mismatched run');
+      s.booking.run = terms;
+    } catch { s.runNotice = 'Invalid held-run booking removed; cash was preserved'; }
+  }
+  if (typeof raw.runNotice === 'string' && raw.runNotice) s.runNotice ||= 'Earlier held-run recovery preserved cash; original terms may be incomplete';
   if (room.secondStage && typeof booking.secondId === 'string' && D.ARTISTS[booking.secondId]) {
     s.booking.secondId = booking.secondId;
     const st = isObj(booking.secondTerms) ? booking.secondTerms : null;
@@ -1471,6 +1512,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
     s.history = raw.history.filter(isObj).slice(-200).map((h, i) => ({
       showId: i + 1,
       ...(Number.isSafeInteger(h.cashAfter) ? { cashAfter: h.cashAfter } : {}),
+      ...savedRunCancellation(h.runCancellation),
       seed: isInt(h.seed) ? h.seed >>> 0 : 0,
       deal: DEALS.includes(h.deal) || h.deal === 'sponsor' ? h.deal : null,
       attendance: intOr(h.attendance, 0),
@@ -1497,6 +1539,14 @@ export function normalizeState(raw, fallbackSeed = 1) {
       repHold: intOr(raw.show.repHold, 0),
       relHold: intOr(raw.show.relHold, 0),
     };
+    if (raw.show.run !== undefined) {
+      try {
+        if (room.id !== 'amphitheater') throw new TypeError('Wrong held-run room');
+        const quote = heldRunQuote(raw.show.run, s.show.night);
+        s.show.run = quote.terms;
+        if (raw.phase === 'done' && raw.show.cancelled === true && quote.remaining) s.show.cancelled = true;
+      } catch { s.runNotice = 'Invalid held-run show terms removed; cash and signed history were preserved'; }
+    }
     if (raw.show.ticketing !== undefined) {
       try {
         if (room.id !== 'club') throw new TypeError('Wrong ticketing room');
