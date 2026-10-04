@@ -1165,6 +1165,7 @@ function applyActionCore(state, action) {
       const nights = s.booking.nights || 1;
       s.history.push({
         showId: s.history.length + 1,
+        cashAfter: s.cash,
         seed: s.seed,
         deal: s.booking.deal,
         attendance: r.attendance,
@@ -1416,6 +1417,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
   if (Array.isArray(raw.history)) {
     s.history = raw.history.filter(isObj).slice(-200).map((h, i) => ({
       showId: i + 1,
+      ...(Number.isSafeInteger(h.cashAfter) ? { cashAfter: h.cashAfter } : {}),
       seed: isInt(h.seed) ? h.seed >>> 0 : 0,
       deal: DEALS.includes(h.deal) || h.deal === 'sponsor' ? h.deal : null,
       attendance: intOr(h.attendance, 0),

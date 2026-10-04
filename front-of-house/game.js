@@ -8,8 +8,9 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
+import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
 import { createBoardAdapter } from './board-adapter.mjs';
@@ -1074,13 +1075,13 @@ function sheetParts(r, { signed: done }) {
   const deal = state.booking.deal;
   const response = findResponse(state.show.incidentId, state.show.responseId);
   const incident = D.INCIDENTS[state.show.incidentId];
-  const cashAfter = done ? state.cash : state.cash + settlementPayout(r, deal);
+  const cashAfter = done ? (state.history.at(-1)?.cashAfter ?? state.cash) : state.cash + settlementPayout(r, deal);
   const cashBefore = cashAfter - r.net;
   const cost = (n) => `<td class="num neg">${money(-n)}</td>`;
   const rows = [
     ['Lot lease and permit', 'Site', r.costs.lot + r.costs.permit],
     ['Fence kit', 'Site', r.costs.fence],
-    [`PA rental (${v.paTier === 'M' ? 'medium' : 'small'})`, 'Audio', r.costs.pa],
+    r.equipment ? ['Owned PA operation', 'Audio', r.costs.equipmentOperation] : [`PA rental (${v.paTier === 'M' ? 'medium' : 'small'})`, 'Audio', r.costs.pa],
     ['Light tower', 'Lighting', r.costs.lights],
     [`Bars (${v.bars})`, 'Hospitality', r.costs.bars],
     r.facilities ? ['Facilities', 'Sanitation', r.costs.restrooms + r.costs.facilities] : [`Restrooms (${v.restrooms})`, 'Site', r.costs.restrooms],
@@ -1156,7 +1157,7 @@ function sheetParts(r, { signed: done }) {
     <div class="outcomes" data-tab="Payout">
       <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
       <div class="outcome"><span class="meta-label">Band relationship</span><span class="stat ${r.relDelta >= 0 ? 'pos' : 'neg'}">${signed(r.relDelta)}</span></div>
-      <div class="outcome"><span class="meta-label">Cash on hand</span><span class="stat">${money(cashAfter)}</span><p class="lede">Started at ${money(cashBefore)}</p></div>
+      <div class="outcome"><span class="meta-label">${done && state.history.at(-1)?.cashAfter !== undefined ? 'Cash after signing' : 'Cash on hand'}</span><span class="stat">${money(cashAfter)}</span><p class="lede">${done && state.history.at(-1)?.cashAfter === undefined ? 'Historical cash not recorded' : `Started at ${money(cashBefore)}`}</p></div>
     </div>`;
   return {
     body: `${head}
@@ -1301,6 +1302,84 @@ function openDevelopment(opener) {
   openWindow('development', 'Development', `<p class="development-summary">Cash ${money(state.cash)} · Active: ${r.active ? D.RESEARCH_PROJECTS[r.active].label : 'none'}</p>
     ${state.researchNotice ? `<p role="status">${esc(state.researchNotice)}</p>` : ''}${full ? '<p>History is full. Shows can still settle; new development is unavailable.</p>' : ''}
     ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
+}
+
+const CASH_LABELS = { acquisition: 'Equipment purchases', disposal: 'Equipment sales', development: 'Development', developmentRefund: 'Development refunds', showOpening: 'Show opening', incident: 'Incident responses', settlement: 'Settlements' };
+function cashReference(entry) {
+  if (entry.reference.startsWith('show_')) {
+    const [,seed,night] = entry.reference.split('_');
+    const signed = state.history.find(h => h.seed === Number(seed) && h.night === Number(night));
+    return signed ? `Show ${signed.showId} · night ${night}` : `Current show · night ${night}`;
+  }
+  if (entry.reference.startsWith('research_')) return D.RESEARCH_PROJECTS[entry.reference.split('_')[1]]?.label || 'Development';
+  return 'Career equipment';
+}
+let equipmentPage = 0;
+// Short windows page ordinary content instead of turning the dialog into a scroll area.
+function paginateEquipment(step = 0) {
+  if (win.kind !== 'equipment' || innerHeight > 560) return;
+  const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
+  if (!panel._equipmentAtoms) {
+    for (const list of [...panel.children].filter(e => e.matches('dl,ol'))) {
+      const parts = [...list.children].map(child => { const part = list.cloneNode(false); part.append(child); return part; });
+      list.replaceWith(...parts);
+    }
+    panel._equipmentAtoms = [...panel.children].filter(e => !e.matches('.tabbar, .development-summary'));
+  }
+  const atoms = panel._equipmentAtoms;
+  atoms.forEach(e => { e.hidden = false; });
+  const bottom = el.winBody.getBoundingClientRect().bottom - parseFloat(getComputedStyle(el.winBody).paddingBottom);
+  const height = bottom - (panel === el.winBody ? el.winBody.getBoundingClientRect().top + parseFloat(getComputedStyle(el.winBody).paddingTop) : panel.getBoundingClientRect().top);
+  const pages = [[]]; let used = 0;
+  for (const atom of atoms) {
+    const style = getComputedStyle(atom), size = atom.getBoundingClientRect().height + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+    if (used && used + size > height) { pages.push([]); used = 0; }
+    pages.at(-1).push(atom); used += size;
+  }
+  panel._equipmentPage = Math.min(pages.length - 1, Math.max(0, (panel._equipmentPage || 0) + step));
+  atoms.forEach(e => { e.hidden = !pages[panel._equipmentPage].includes(e); });
+  el.winFoot.innerHTML = `<button data-act="equipment-part" data-step="-1" ${panel._equipmentPage ? '' : 'disabled'}>Back</button><span>Part ${panel._equipmentPage+1} / ${pages.length}</span><button data-act="equipment-part" data-step="1" ${panel._equipmentPage+1<pages.length ? '' : 'disabled'}>More</button>`;
+}
+
+function openEquipment(opener) {
+  const owned = equipmentFor(state), editable = ['book', 'done'].includes(state.phase);
+  if (!owned) {
+    const allowed = editable && (state.history.length > 0 || state.mode === 'sandbox');
+    openWindow('equipment', 'Equipment', `<p>Buy one small PA, then assign it to a placed small system in Build. Rentals and house rigs remain available.</p>
+      <p>Purchase $1,200 · resale $600 · operation $20 per assigned night. Buying does not place equipment.</p>
+      <p>${allowed ? 'Enable to open a cash journal at your current balance. Earlier shows stay in Show history.' : 'Settle your first show, then return between bookings.'}</p>
+      <button data-act="equipment-enable" ${allowed ? '' : 'disabled'}>Enable equipment</button>`, opener);
+    return;
+  }
+  const asset = owned.assets[0], rule = D.OWNED_EQUIPMENT['small-pa'], journal = careerLedgerFor(state);
+  const plan = equipmentPlanFor(state), venue = evaluateVenue(state.venue), full = owned.commands.length >= OWNERSHIP_COMMAND_LIMIT;
+  const canAssign = state.phase === 'build' && state.booking.equipment && asset && !venue.housePa && venue.paTier === 'S';
+  const id = `capital_${Date.now()}_${owned.commands.length}`;
+  const pages = Math.max(1, Math.ceil(journal.entries.length / 3));
+  equipmentPage = Math.min(Math.max(0, equipmentPage), pages - 1);
+  const entries = journal.entries.slice().reverse().slice(equipmentPage * 3, equipmentPage * 3 + 3);
+  const field = (label, value) => `<div><dt>${label}</dt><dd>${money(value)}</dd></div>`;
+  openWindow('equipment', 'Equipment', `<p class="development-summary">Cash ${money(state.cash)} · ${asset ? '1 small PA owned' : 'No owned PA'}</p>
+    <section data-tab="Asset" data-always-tabs><h3>Small PA</h3>
+      ${state.equipmentNotice ? `<p role="status">${esc(state.equipmentNotice)}</p>` : ''}
+      <dl class="live-readouts">${field('Purchase',rule.purchase)}${field('Resale',rule.resale)}${field('Operation / assigned night',rule.operation)}</dl>
+      <p>${asset ? 'Owned. Assign in Build to replace the small PA rental.' : 'Buying pays once from career cash. It does not place or assign the PA.'}</p>
+      <p class="hint">Capital is separate from show costs and artist deductions. House and medium systems cannot use this asset.</p>
+      <div class="actions capital-actions"><button data-act="equipment-capital" data-command="buy" data-transaction="${id}" ${editable && !full && !asset && state.cash >= rule.purchase ? '' : 'disabled'}>Buy for ${money(rule.purchase)}</button><button data-act="equipment-capital" data-command="sell" data-transaction="${id}" ${editable && !full && asset ? '' : 'disabled'}>Sell for ${money(rule.resale)}</button></div>
+      <p class="hint">${full ? 'Equipment transaction history is full.' : !editable ? 'Buy and sell between bookings.' : !asset && state.cash < rule.purchase ? 'Not enough cash. Rental remains available.' : 'Closing this quote costs nothing.'}</p></section>
+    <section data-tab="Deploy" data-always-tabs><h3>This show</h3>
+      <p>${plan ? `Owned PA assigned · ${money(plan.cost)} operation per night.` : venue.housePa ? 'House PA included with this room.' : 'PA rental applies until an owned unit is assigned.'}</p>
+      <p>${state.phase === 'build' ? canAssign ? 'The placed small PA can use your owned unit.' : 'Buy between bookings and place a small PA before assigning it.' : 'Assignment is available in Build. Doors lock it for the full run.'}</p>
+      <div class="actions"><button data-act="equipment-assign" data-owned="yes" ${canAssign && !plan ? '' : 'disabled'}>Use owned PA</button>
+      <button data-act="equipment-assign" data-owned="no" ${state.phase === 'build' && plan ? '' : 'disabled'}>Return to rental</button></div>
+      <p class="hint">Power, staff, placement and capacity rules still apply. An unused owned PA has no nightly charge.</p></section>
+    <section data-tab="Cash" data-always-tabs><h3>Cash reconciliation</h3>
+      <dl class="live-readouts">${field('Opening cash',journal.openingCash)}${Object.entries(journal.totals).map(([key,value])=>field(CASH_LABELS[key],value)).join('')}${field('Available cash',journal.balance)}</dl>
+      <p class="hint">Opening plus all movements equals available cash. Show opening includes any sponsor credit.</p></section>
+    <section data-tab="History" data-always-tabs><h3>Cash movements</h3>
+      <ol class="equipment-events">${entries.map(e=>`<li>${e.sequence}. ${CASH_LABELS[e.category]} · <strong>${money(e.cashDelta)}</strong><small>${esc(cashReference(e))}</small></li>`).join('') || '<li>No movements since the opening balance.</li>'}</ol>
+      <div class="actions"><button data-act="equipment-page" data-step="-1" ${equipmentPage ? '' : 'disabled'}>Newer</button><span>Page ${equipmentPage+1} / ${pages}</span><button data-act="equipment-page" data-step="1" ${equipmentPage+1<pages ? '' : 'disabled'}>Older</button></div>
+      <p class="hint">${journal.archived.through ? `${journal.archived.through} earlier movements retained in Cash totals; the latest128 have itemized rows.` : 'Only movements since equipment enablement are itemized.'} Loading never pays again.</p></section>`, opener);
 }
 
 function historyHtml() {
@@ -1677,6 +1756,16 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'equipment-open') { equipmentPage = 0; openEquipment(target); return; }
+  if (a === 'equipment-part') { paginateEquipment(Number(target.dataset.step)); const button = el.winFoot.querySelector(`[data-step="${target.dataset.step}"]`); (button.disabled ? el.winFoot.querySelector('button:not(:disabled)') : button)?.focus(); return; }
+  if (a === 'equipment-page') { equipmentPage += Number(target.dataset.step); openEquipment(el.menuBtn); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); return; }
+  if (['equipment-enable', 'equipment-capital', 'equipment-assign'].includes(a)) {
+    const action = a === 'equipment-enable' ? { type: 'enableEquipment' }
+      : a === 'equipment-assign' ? { type: 'assignEquipment', assetId: target.dataset.owned === 'yes' ? equipmentFor(state).assets[0]?.id : null }
+      : { type: 'equipment', command: { id: target.dataset.transaction, kind: target.dataset.command, family: 'small-pa', assetId: equipmentFor(state).assets[0]?.id } };
+    if (act(action)) { equipmentPage = 0; openEquipment(el.menuBtn); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); }
+    return;
+  }
   if (a === 'development') { openDevelopment(target); return; }
   if (a === 'research-enable' || a === 'research-command') {
     if (act(a === 'research-enable' ? {type:'enableResearch'} : {type:'research',command:{kind:target.dataset.command,project:target.dataset.project}})) {
@@ -1921,6 +2010,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
+  if (root === el.winBody && win.kind === 'equipment') paginateEquipment();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -1937,6 +2027,7 @@ phoneQuery.addEventListener('change', () => {
 // Close button or a click outside closes it, and focus goes back to what opened it.
 
 const win = { kind: null, opener: null };
+window.addEventListener('resize', () => { if (!el.win.hidden && win.kind === 'equipment') openEquipment(win.opener); });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
 function openWindow(kind, title, html, opener, { foot = '', wide = false, scrolls = false } = {}) {
@@ -1946,6 +2037,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
+  if (kind === 'equipment' && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -1953,6 +2045,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
   syncTabs(el.winBody, `win:${kind}`);
+  if (kind === 'equipment') paginateEquipment();
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2134,6 +2227,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    equipment: state.equipment ? { assets: equipmentFor(state).assets, deployment: equipmentPlanFor(state), journal: careerLedgerFor(state), notice: state.equipmentNotice || null } : null,
     development: state.research ? { ...researchFor(state), booked: researchEffectsFor(state).learned } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
