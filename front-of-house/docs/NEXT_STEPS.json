@@ -8,7 +8,7 @@
   "head": "4aeb533 · phase execution baseline reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation phone-sheet fix implemented and locally verified; CI and deployment follow the phase PR. Autonomous Lot, operations, research, ownership, venue and release work continues from the active execution table. D1–D11 are settled.",
+  "statusReason": "Foundation phone fix and Select/inspection controls implemented and locally verified; delivery proceeds through their phase PRs. The realistic Lot adapter and later operations/research/ownership/venue/release phases remain active work.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,12 +19,12 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Build the bounded Lot adapter and realistic review sample after closing reuse gates",
-    "why": "The preflight now specifies interfaces, acceptance cases and repeatable measurements. Prototype camera/motion/lifecycle gaps and unknown archive rights prevent direct adoption.",
+    "title": "Implement the bounded 3D Lot adapter and independently authored realistic sample",
+    "why": "Phone sheets and safe Select/removal are implemented. The existing render contract defines camera, picking, engine/save and fallback parity; independently authored geometry avoids unverified archive reuse.",
     "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
     "effort": "L",
     "owner": "either",
-    "blockedBy": "Archive reuse requires verified rights; physical scale and FOH calibration, supported device roster/statistical limits, and Dave’s visual acceptance remain pending. D1–D11 are settled; remaining gaps are implementation and evidence."
+    "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
   },
   "findings": [
     {
@@ -218,7 +218,8 @@
     "2026-10-04: After the A/B explanation Dave explicitly selected D2 B, more realistic 3D, recorded in CT-DEC-18. This settles D1–D5 without changing implementation or later decisions.",
     "2026-10-04 Lot preflight changes only public-safe documentation and its index. No runtime, engine formulas, balance, saves, progression, renderer behavior, CI gates, assets or release visibility changed. Notion and other chats were not updated.",
     "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
-    "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire."
+    "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
+    "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change."
   ],
   "links": [
     {
@@ -412,7 +413,8 @@
             "checkedAt": "2026-10-04T10:02:16.158Z",
             "summary": "26 smoke checks, including Book/Promote visible controls and sheet bounds at 360/375/390px; no browser errors."
           }
-        ]
+        ],
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/60"
       },
       {
         "id": "FOH-V01",
@@ -423,8 +425,29 @@
           "FOH-F01"
         ],
         "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
-        "status": "pending",
-        "evidence": []
+        "status": "in_progress",
+        "evidence": [],
+        "slices": [
+          {
+            "id": "FOH-V01a",
+            "scope": "Select, inspect, Escape and safe removal (FB-07)",
+            "status": "implemented",
+            "evidence": [
+              {
+                "stage": "test",
+                "locator": "test/front-of-house-smoke.mjs",
+                "result": "pass",
+                "checkedAt": "2026-10-04T10:10:32.229Z",
+                "summary": "28 full game checks, keyboard/mouse/touch Select, safe default, modal precedence, single and bulk undo, restored focus, reload and HUD containment."
+              }
+            ]
+          },
+          {
+            "id": "FOH-V01b",
+            "scope": "3D Lot adapter and five-subject realistic sample (FB-01)",
+            "status": "pending"
+          }
+        ]
       },
       {
         "id": "FOH-P01",

@@ -285,6 +285,7 @@ try {
   assert.equal((await game(page2)).phase, 'book');
   await page2.click('[data-deal="door"]');
   await page2.focus('#board');
+  await page2.keyboard.press('1');
   await page2.keyboard.press('ArrowUp');
   for (let i = 0; i < 6; i += 1) await page2.keyboard.press('ArrowUp');
   await page2.keyboard.press('Enter');
@@ -745,6 +746,58 @@ try {
   assert.equal(await page7.isVisible('.career'), true, 'a wider window drops the tabs and shows every group');
   ok('on a phone every tab of the sheet and the settlement fits without scrolling, the incident brings its tab forward, and Build and Show keep the board at 45% or more');
 
+  // Select is a safe default. Modal Escape takes precedence; only the next Escape cancels tools.
+  const inspectContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, hasTouch: true });
+  const { page: inspect, failures: inspectFailures } = await open(inspectContext);
+  const inspectLayout = () => inspect.evaluate(() => window.__frontOfHouse.state().venue.objects);
+  const tools = () => inspect.evaluate(() => window.__frontOfHouse.buildTools());
+  await inspect.locator('[data-deal="door"]').first().click();
+  assert.equal((await tools()).tool, 'select', 'Build starts in Select');
+  await inspect.focus('#board');await inspect.keyboard.press('Enter');
+  assert.deepEqual(await inspectLayout(), [], 'Select on empty floor never places');
+  await inspect.click('[data-act="starter"]');
+  const whole = await inspectLayout();
+  await inspect.focus('#board');
+  for (let i = 0; i < 5; i += 1) await inspect.keyboard.press('ArrowUp');
+  await inspect.keyboard.press('Enter');
+  assert.equal(await inspect.textContent('#win-title'), 'Stage', 'keyboard Select inspects the stage');
+  assert.deepEqual(await inspectLayout(), whole, 'inspection preserves layout');
+  assert.equal((await game(inspect)).build.selected.type, 'stage', 'text state reports selection');
+  await inspect.keyboard.press('Escape');
+  assert.equal(await inspect.evaluate(() => document.activeElement.id), 'board', 'inspection closes back to canvas');
+  await inspect.keyboard.press('3');
+  await inspect.click('[data-act="lot-details"]');await inspect.keyboard.press('Escape');
+  assert.equal((await tools()).tool, 'pa-m', 'first Escape closes dialog without cancelling tool');
+  await inspect.keyboard.press('Escape');assert.equal((await tools()).tool, 'select', 'next Escape cancels placement');
+  await inspect.focus('#board');await inspect.keyboard.press('b');await inspect.keyboard.press('Escape');
+  assert.equal((await tools()).tool, 'select', 'Escape cancels bulldozing');
+  await inspect.click('[data-act="clear-lot"]');
+  assert.match(await inspect.textContent('#win-body'), new RegExp('all ' + whole.length + ' placed objects'));
+  await inspect.keyboard.press('Escape');assert.deepEqual(await inspectLayout(), whole, 'cancel Clear preserves layout');
+  assert.equal(await inspect.evaluate(() => document.activeElement.dataset.act), 'clear-lot', 'cancel restores Clear focus');
+  await inspect.click('[data-act="clear-lot"]');await inspect.click('[data-act="confirm-clear"]');
+  assert.deepEqual(await inspectLayout(), [], 'one confirmation clears all objects');
+  await inspect.keyboard.press('Control+z');assert.deepEqual(await inspectLayout(), whole, 'Clear is one undo step');
+  await inspect.focus('#board');await inspect.keyboard.press('Enter');
+  await inspect.click('[data-act="remove-selected"]');
+  assert.equal((await inspectLayout()).length, whole.length - 1, 'single removal has no extra confirmation');
+  assert.equal((await tools()).selection, null, 'removal invalidates selected index');
+  assert.equal(await inspect.evaluate(() => document.activeElement.id), 'board', 'removal restores canvas focus');
+  await inspect.keyboard.press('Control+z');assert.deepEqual(await inspectLayout(), whole, 'single removal undoes');
+  await inspect.setViewportSize({ width: 390, height: 844 });
+  await inspect.locator('#panel .tabbar [role="tab"]', { hasText: 'Tools' }).click();
+  await inspect.tap('#select-btn');
+  const propPoint = await inspect.evaluate(() => {const r = window.__frontOfHouse.board().drawn.find(o => o.type === 'stage').rect;return {x:r.x+r.w/2,y:r.y+r.h/2};});
+  await inspect.touchscreen.tap(propPoint.x, propPoint.y);
+  assert.equal(await inspect.isVisible('#win'), true, 'touch opens the object inspector');
+  assert.deepEqual(await inspectLayout(), whole, 'touch inspection does not place');
+  await inspect.screenshot({path:join(output,'select-phone-inspector.png')});
+  await inspect.keyboard.press('Escape');
+  await inspect.screenshot({path:join(output,'select-phone-tools.png')});
+  assert.deepEqual(inspectFailures, [], 'Select has no browser errors');
+  await inspectContext.close();
+  ok('Select, Escape precedence, touch inspection, single removal, bulk confirmation, undo and focus work');
+
   // The mode buttons start a new game, redraw the page at once and save it.
   const shownCash = async () => Number((await page4.textContent('#meter-cash')).replace(/[^\d]/g, ''));
   const newGame = async (mode) => {
@@ -995,6 +1048,66 @@ try {
 
   assert.deepEqual([...failures, ...failures2, ...failures3, ...failures4, ...failures5, ...failures6, ...failures7, ...pilotFailures, ...pilotPhoneFailures, ...reviewFailures], [], 'no page errors, console errors or failed requests');
   ok('loads clean: no page errors, console errors or failed requests');
+
+  // Select never edits; the same inspector/removal flow works with mouse, keys and touch.
+  for (const touch of [false, true]) {
+    const selectionContext = await browser.newContext({ viewport: touch ? { width: 375, height: 812 } : { width: 1440, height: 900 }, hasTouch: touch });
+    const { page: selectionPage, failures: selectionFailures } = await open(selectionContext);
+    const tools = () => selectionPage.evaluate(() => window.__frontOfHouse.buildTools());
+    const layout = () => selectionPage.evaluate(() => window.__frontOfHouse.state().venue.objects);
+    const tab = async name => { if (touch) await selectionPage.getByRole('tab', { name, exact: true }).click(); };
+    await selectionPage.locator('[data-deal="door"]:visible').first().click();
+    assert.equal((await tools()).tool, 'select', 'Build starts in Select');
+    await selectionPage.focus('#board');
+    await selectionPage.keyboard.press('Enter');
+    assert.equal((await layout()).length, 0, 'Select on empty ground does not place');
+    await selectionPage.keyboard.press('1');
+    await tab('Lot');
+    await selectionPage.click('#details-btn');
+    await selectionPage.keyboard.press('Escape');
+    assert.equal((await tools()).tool, 'stage', 'first Escape closes the dialog without changing tools');
+    await selectionPage.keyboard.press('Escape');
+    assert.equal((await tools()).tool, 'select', 'next Escape cancels placement');
+    await tab('Actions');
+    await selectionPage.click('[data-act="starter"]');
+    const before = await layout();
+    await selectionPage.click('[data-act="clear-lot"]');
+    assert.equal((await layout()).length, before.length, 'Clear waits for confirmation');
+    assert.ok((await selectionPage.locator('#win-body').innerText()).includes(String(before.length)), 'Clear names the object count');
+    await selectionPage.keyboard.press('Escape');
+    assert.equal(await selectionPage.evaluate(() => document.activeElement.dataset.act), 'clear-lot', 'cancel restores focus');
+    assert.deepEqual(await layout(), before, 'cancel preserves layout');
+    await tab('Tools');
+    if (touch) await selectionPage.tap('#select-btn'); else await selectionPage.click('#select-btn');
+    const point = await selectionPage.evaluate(() => {
+      const r = window.__frontOfHouse.board().drawn.find(o => o.type === 'stage').rect;
+      return { x: r.x + r.w / 2, y: r.y + r.h / 2 };
+    });
+    if (touch) await selectionPage.touchscreen.tap(point.x, point.y); else await selectionPage.mouse.click(point.x, point.y);
+    assert.equal(await selectionPage.locator('#win').getAttribute('data-kind'), 'selection', 'object opens inspector');
+    assert.deepEqual(await layout(), before, 'inspection changes no objects');
+    await selectionPage.screenshot({ path: join(output, touch ? 'select-touch.png' : 'select-desktop.png') });
+    await selectionPage.click('[data-act="remove-selected"]');
+    assert.equal((await layout()).length, before.length - 1, 'single removal needs no second confirmation');
+    assert.equal(await selectionPage.evaluate(() => document.activeElement.id), 'board', 'removal returns focus to the board');
+    await selectionPage.keyboard.press('Control+z');
+    assert.deepEqual(await layout(), before, 'undo restores inspected object');
+    assert.equal((await tools()).selection, null, 'undo invalidates selection');
+    await tab('Actions');
+    await selectionPage.click('[data-act="clear-lot"]');
+    await selectionPage.click('[data-act="confirm-clear"]');
+    assert.equal((await layout()).length, 0, 'one confirmation clears all');
+    await selectionPage.keyboard.press('Control+z');
+    assert.deepEqual(await layout(), before, 'one undo restores bulk Clear');
+    await selectionPage.reload();
+    await selectionPage.waitForFunction(() => window.__frontOfHouse);
+    assert.equal((await tools()).tool, 'select', 'reload defaults to safe Select');
+    assert.equal((await tools()).selection, null, 'selection is not saved');
+    assert.deepEqual(await layout(), before, 'reload preserves objects');
+    assert.deepEqual(selectionFailures, [], 'Select flow has no browser errors');
+    await selectionContext.close();
+  }
+  ok('Select, Escape priority, inspection, single removal, confirmed Clear, undo, focus and reload work with mouse and touch');
 
   await Promise.all([context, other, calm, phone, spritesCtx, small, phoneFlow, pilotDesktop, pilotPhone].map((c) => c.close()));
 } finally {

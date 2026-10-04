@@ -27,14 +27,14 @@ export const BINDINGS = [
     keysLabel: 'Shift + arrows', label: 'Move a zoomed view' },
   // Anywhere on the page
   { id: 'close', scope: 'page', phases: 'all', combos: [{ keys: ['Escape'] }],
-    keysLabel: 'Esc', label: 'Close a window or this menu' },
+    keysLabel: 'Esc', label: 'Close a window/menu, or cancel the Build tool' },
   { id: 'menu', scope: 'page', phases: 'all', combos: [{ keys: ['?'] }],
     keysLabel: '?', label: 'Open or close this menu' },
   // Build, on the board
   { id: 'move-cursor', scope: 'board', phases: ['build'], combos: [{ keys: ARROWS }],
     keysLabel: 'Arrows', label: 'Move the build cursor' },
   { id: 'place', scope: 'board', phases: ['build'], combos: [{ keys: ['Enter', ' '] }],
-    keysLabel: 'Enter or Space', label: 'Place the chosen object' },
+    keysLabel: 'Enter or Space', label: 'Place an object or inspect in Select' },
   { id: 'remove', scope: 'board', phases: ['build'], combos: [{ keys: ['Delete', 'Backspace'] }],
     keysLabel: 'Delete', label: 'Remove the object under the cursor' },
   { id: 'rotate', scope: 'board', phases: ['build'], combos: [{ keys: ['r', 'R'] }],

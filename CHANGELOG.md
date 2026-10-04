@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House safe Build tools:** Select is the default and opens object inspection by pointer, touch or Enter. Escape closes a dialog/menu before cancelling placement. Single removal uses Undo, and Clear asks once with an object count. Selection stays out of saves, focus returns predictably, and the tools fit desktop/phone layouts. Service worker v29.
+
 - **Front of House phone forms:** Book and Promote now fit their phone sheet instead of inheriting the desktop 580px minimum. Ticket/ad sliders no longer add browser-default horizontal margins outside the sheet. Regression coverage checks every visible tab and control at 360/375/390px. Service worker v28. The active roadmap now tracks autonomous execution of the remaining phases.
 
 - **Front of House accepted planning choices:** recorded D3–D5 A for aggregate crowd services, Select and safe removal, and performance acceptance; explained D2 stylized versus more realistic 3D and recorded Dave's selection of B, more realistic 3D. Documentation and next-steps projection only; no gameplay or CI changes.

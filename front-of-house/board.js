@@ -824,6 +824,16 @@ export function createBoard(canvas) {
         }
       }
     }
+    if (scene.selection) {
+      const selected = scene.selection;
+      const d = dims(selected);
+      diamond(selected.x, selected.y, d.w, d.h);
+      ctx.strokeStyle = COLORS.cursor;
+      ctx.lineWidth = 3;
+      ctx.setLineDash([6, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
     if (scene.cursor) {
       diamond(scene.cursor.x, scene.cursor.y, 1, 1);
       ctx.strokeStyle = scene.cursorColor || COLORS.cursor;

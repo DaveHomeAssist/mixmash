@@ -110,7 +110,7 @@
 
 ## FB-07 Select mode and safe removal
 
-**Decision:** D4 A accepted in [CT-DEC-16](DECISIONS.md#ct-dec-16-select-and-safe-removal). This brief describes target behavior, not shipped controls.
+**Decision:** D4 A accepted in [CT-DEC-16](DECISIONS.md#ct-dec-16-select-and-safe-removal). Implementation slice FOH-V01a: default to Select on entering Build; pointer/touch/Enter inspect a current object in a named dialog; selection outline follows its logical footprint; Escape first closes a dialog/menu, then returns placement or bulldozing to Select. Single removal uses the existing undo stack; Clear shows the current object count and one confirmation. Selection is cleared on every layout/phase/load/history mutation and is never saved. Verify pointer, touch, keyboard, undo, modal focus and HUD fit before delivery.
 
 **Problem / outcome:** Placement tools can turn an inspection click into a layout change. Players should inspect safely and recover without repeated confirmation dialogs.
 
