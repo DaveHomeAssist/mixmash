@@ -192,8 +192,13 @@ The live Services view separates blue outside admission samples, gold inside bar
 
 ### Club preview and fixed scenery
 
-The Camera window's explicit3D preview supports Oak St. Lot, Fathom Hall and Loam Shell. Its Wide, FOH, Stage and Plan controls use the selected room's bounds. Other rooms continue in classic view with the existing explanation. Fixed pillars and the suspended house PA cannot be removed; a click on opaque fixed scenery does not select equipment behind it. New placement and its ghost reject pillar overlaps. The informational board status remains announced but never intercepts pointer/touch input.
+The Camera window's explicit3D preview supports all four venues. Its Wide, FOH, Stage and Plan controls use the selected room's bounds. Classic remains the default, and graphics failures use the existing fallback explanation. Fixed pillars and the suspended house PA cannot be removed; a click on opaque fixed scenery does not select equipment behind it. New placement and its ghost reject pillar overlaps. The informational board status remains announced but never intercepts pointer/touch input.
 
 ### Loam Shell preview
 
-The existing seat/lawn price and held-night controls retain their behavior. The3D view distinguishes the shell profile and seating/lawn guides within the28×18 room. Guides are illustrative floor decoration: they do not reserve tiles, steal clicks or change the400-seat allocation. Split Acre still uses classic rendering until its separate scene slice.
+The existing seat/lawn price and held-night controls retain their behavior. The3D view distinguishes the shell profile and seating/lawn guides within the28×18 room. Guides are illustrative floor decoration: they do not reserve tiles, steal clicks or change the400-seat allocation. Split Acre has its own technical preview below.
+
+
+### Split Acre preview
+
+The Camera window adds a keyboard-accessible Side stage preset for Split Acre. Wide and Plan fit both stages in the 52 × 24 presentation extent; the editable main yard remains 40 × 24. Taps outside that yard never place equipment. The fixed annex is provisional scenery, not extra capacity or calibrated physical dimensions. New versioned shows distribute representative guests using the actual stage accounts, with at most180 samples across the whole site. Legacy unknown side allocation remains explicit. Cameras, graphics recovery and room changes never change cash, attendance or saved state.

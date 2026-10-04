@@ -647,6 +647,10 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 
 ## 2026-10-04 — Split Acre scene implementation
 
+Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9746–59.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.
+
 FOH-V02r3 adds a source-owned side-stage annex outside the existing editable yard. The 52 × 24 presentation extent is a provisional camera convention, not physical calibration or added capacity. Desktop, phone and ultrawide geometry, yaw picking, forbidden annex placement, keyboard Side stage camera, all-room switching and context recovery pass. Two new geometry/allocation tests pass. Complete accounting journeys, integrated source verification, performance and delivery remain pending. Classic remains default; final art and physical-device acceptance remain open.
 
 - Integrated delivered seating/stage core plus pending career/control branches for combined acceptance. All390 repository tests, build, generated docs and simulator verdicts pass. Three geometry sizes and eight full legacy/versioned classic/3D show, settlement and reload comparisons pass. The browser rail now also exercises actual seating and Festival booking/receipt controls in desktop/phone 3D. Native measurement, CI and hosted delivery remain pending.
+
+- Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification.

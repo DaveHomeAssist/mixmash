@@ -1836,6 +1836,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-festival-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Festival native renderer measurements",
+      "description": "Six full native visible Chrome empty/crowd windows on frozen Split Acre source, with quality, timing and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-festival-native.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-floor.json",
       "project": "front-of-house",
       "category": "evidence",
