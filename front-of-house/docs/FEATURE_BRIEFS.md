@@ -1,6 +1,6 @@
 # Front of House feature briefs
 
-**Status:** Proposed scope, 2026-10-04; no new feature is implemented by this document. Choices are in [DECISION_PACKET.md](DECISION_PACKET.md). Existing [decisions](DECISIONS.md), [rules](RULES.md), [saves](SAVE_FORMAT.md), [HUD](HUD.md) and [research design](RESEARCH.md) retain authority. Each brief names a smallest playable slice, exclusions and proof before expansion.
+**Status:** Feature slices remain proposed scope; D1 and D3–D5 are accepted design choices (CT-DEC-14 through CT-DEC-17), 2026-10-04; no new feature is implemented by this document. Choices are in [DECISION_PACKET.md](DECISION_PACKET.md). Existing [decisions](DECISIONS.md), [rules](RULES.md), [saves](SAVE_FORMAT.md), [HUD](HUD.md) and [research design](RESEARCH.md) retain authority. Each brief names a smallest playable slice, exclusions and proof before expansion.
 
 ## FB-01 Continuous orbit and camera presets
 
@@ -35,6 +35,8 @@
 **Dependencies / risks:** FB-01, D8, D10. Screenshot geometry is not proof of production readiness. **Relative effort:** large per venue. **Expansion:** never treat art acceptance as gameplay balance acceptance.
 
 ## FB-03 Crowd service behavior
+
+**Decision:** D3 A accepted in [CT-DEC-15](DECISIONS.md#ct-dec-15-crowd-model). Service rates, timing and balance remain to be specified.
 
 **Problem / outcome:** Static crowd dots cannot explain why guests queue, spend, wait or leave. Visible movement should help players understand real service pressure.
 
@@ -102,6 +104,8 @@
 
 ## FB-07 Select mode and safe removal
 
+**Decision:** D4 A accepted in [CT-DEC-16](DECISIONS.md#ct-dec-16-select-and-safe-removal). This brief describes target behavior, not shipped controls.
+
 **Problem / outcome:** Placement tools can turn an inspection click into a layout change. Players should inspect safely and recover without repeated confirmation dialogs.
 
 **Player flow:** Choose Select → inspect one prop → choose a placement tool → Escape returns to Select → delete a selected object → Undo restores it. Confirm a bulk Clear with an object count; cancel returns to the unchanged layout.
@@ -134,7 +138,7 @@
 
 ## Performance and delivery contract
 
-D5 selects the acceptance model. For the recommended model, record hardware/browser, scene/save/seed, crowd size, resolution, device pixel ratio, warm-up, sample length and foreground state. Track p50/p95 frame time and stalls on the same CI runner class; review a runner change before resetting a baseline. Propose a 20% regression alert initially, then fix the accepted limit from repeated samples. A relative pass is not a real-device frame-rate pass. Proposed physical targets are p95 <=16.7ms on the declared desktop tier and <=33.3ms on the declared low-power tier; name and test the actual supported devices before claiming acceptance.
+D5 A is accepted in [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance): stable CI regression scenes plus 60fps desktop / 30fps low-power device targets. For this model, record hardware/browser, scene/save/seed, crowd size, resolution, device pixel ratio, warm-up, sample length and foreground state. Track p50/p95 frame time and stalls on the same CI runner class; review a runner change before resetting a baseline. Propose a 20% regression alert initially, then fix the accepted limit from repeated samples. A relative pass is not a real-device frame-rate pass. A proposed statistical translation of those targets is p95 <=16.7ms on the declared desktop tier and <=33.3ms on the declared low-power tier; the exact sampling and statistical limits still require baselines; name and test the actual supported devices before claiming acceptance.
 
 Before any feature implementation, its accepted choices, exact rule/data changes and test scenarios must be ready. For each delivery: update the relevant brief and decisions; record tests, source revision, CI, deployment and human acceptance separately; refresh NEXT_STEPS.json and the workspace board. A docs deployment never marks a feature implemented. Existing release gates remain unchanged.
 

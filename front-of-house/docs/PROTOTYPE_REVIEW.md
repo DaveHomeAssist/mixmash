@@ -28,7 +28,7 @@
 
 ## Next integration milestone
 
-Under accepted CT-DEC-14, start with a Lot renderer adapter and camera parity, not a simultaneous rewrite of the economy. D2–D5 still determine art treatment, crowd scope, Select behavior and performance acceptance. Reuse geometry only after unit/footprint/provenance checks. Feed the scene from production state; keep the prototype's service model isolated until exact rules are reviewed under FB-04 and FB-09–11.
+Under accepted CT-DEC-14, start with a Lot renderer adapter and camera parity, not a simultaneous rewrite of the economy. D2 still determines art treatment. D3–D5 are accepted A under CT-DEC-15 through CT-DEC-17: aggregate services with representative animation, Select and safe removal, and CI regression plus real-device targets. Detailed service rules, measurement thresholds and implementation proof remain outstanding. Reuse geometry only after unit/footprint/provenance checks. Feed the scene from production state; keep the prototype's service model isolated until exact rules are reviewed under FB-04 and FB-09–11.
 
 ## Verification boundary
 

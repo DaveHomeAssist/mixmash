@@ -8,7 +8,7 @@
   "head": "ab27c99 · source reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "D1 accepted: 3D Lot first, then live operations. D2–D11 remain open. Phone sheet overflow remains in source; controls and undo shipped in PR #49.",
+  "statusReason": "D1 and D3–D5 accepted A: 3D Lot first, aggregate crowd services, Select and safe removal, and CI/device performance contract. D2 and D6–D11 remain open. Existing implementation and human-acceptance gaps remain.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,9 +19,9 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Choose art, crowd, Build behavior and performance for the 3D Lot",
-    "why": "D1 is settled. D2–D5 define the prototype contract; D6–D11 can wait for their dependent milestone.",
-    "doneWhen": "Dave answers with decision IDs and letters; accepted rulings are recorded separately from proposals.",
+    "title": "Choose the 3D Lot art treatment: stylized or more realistic",
+    "why": "D1 and D3–D5 are settled. D2 A/B are explained in the packet; D6–D11 can wait for their dependent milestones.",
+    "doneWhen": "Dave selects D2; preserve accepted choices and define exact prototype specifications before implementation.",
     "effort": "S",
     "owner": "dave",
     "blockedBy": "Open product choices; human acceptance remains separate."
@@ -44,8 +44,8 @@
       "id": "FOH-DESIGN",
       "type": "decision",
       "sev": "P1",
-      "title": "D1–D5: prototype sequence, art, crowd, Select and performance",
-      "detail": "Multiple-choice options and consequences are in DECISION_PACKET.md. Continuous orbit is already the requested direction; recommendations are not approval.",
+      "title": "D2: choose art treatment for the 3D Lot",
+      "detail": "D1 and D3–D5 accepted A. D2 A/B explanation is in DECISION_PACKET.md; no art selection inferred.",
       "files": [
         "front-of-house/docs/DECISION_PACKET.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -57,8 +57,8 @@
       "id": "MXS-08",
       "type": "decision",
       "sev": "P1",
-      "title": "Performance gate needs an agreed measurement contract",
-      "detail": "D5 proposes stable CI regression scenes plus declared physical-device targets. No device benchmark or replacement threshold is accepted yet.",
+      "title": "Accepted performance model needs device baselines and thresholds",
+      "detail": "D5 A accepted: stable CI regression scenes plus 60fps desktop / 30fps low-power device targets. Device roster, sampling, statistical limits and actual benchmark results remain outstanding; existing checks stay until replaced.",
       "files": [
         "front-of-house/ROADMAP.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -108,7 +108,7 @@
       "name": "Decision — 3D Lot and controls",
       "goal": "A bounded next feature with an accepted art and performance contract",
       "items": [
-        "D1 accepted; answer D2–D5.",
+        "D1 and D3–D5 accepted A; answer D2.",
         "FB-01: orbit and presets; FB-07: Select mode if chosen.",
         "FB-02: dimensional venues follow Lot validation; FB-08 minimap stays deferred."
       ],
@@ -137,9 +137,6 @@
   ],
   "decisionsForDave": [
     "D2 — What art supports orbit? Unlocks the renderer and asset contract: A) Stylized dimensional 3D, following the supplied venue references. Medium art scope; readable forms and free yaw B) More realistic 3D. High art, lighting and device cost; greater visual detail C) Illustrated directional sprites. More paintings and limited tilt; continuous movement can expose mismatched facings Recommended: A. OPEN.",
-    "D3 — How deep should the crowd simulation go? Defines CPU, save and gameplay scope: A) Aggregate queues/services, animated representative people. Medium effort; visible behavior explains real totals B) Every attendee simulated and routed. High effort; individual stories, larger determinism/performance burden C) Decorative crowd only. Low effort; stronger atmosphere but no service explanation Recommended: A. OPEN.",
-    "D4 — How should Select and deletion behave? Unlocks the remaining Build interaction change: A) Select tool; Escape cancels placement; single removal uses undo; bulk Clear asks once. Medium UI work; few interruptions B) Confirm every removal, including single objects. More interruption; fewer immediate mistakes C) Keep current tools and undo only. No new interaction scope; accidental placement remains possible Recommended: A. OPEN.",
-    "D5 — How is performance accepted? Replaces the ambiguous headless 16ms target only if selected: A) Stable CI regression scenes plus real-device targets: proposed 60fps desktop / 30fps low-power tier. Thresholds fixed after baselines B) Require 60fps on every supported device. High optimization cost and stricter hardware scope C) Keep current absolute headless p95 <16ms gate. Lowest specification effort; unreliable across software-rendered runners Recommended: A. OPEN.",
     "D6 — Research scope, CT-DEC-13: A) Three-project Lot pilot after live services are measurable: Patch standards, Service training, Admission lanes B) Implement the same pilot before live services, against current outcomes; more rework risk C) Defer all research; leave CT-DEC-13 Proposed Recommended: A. OPEN.",
     "D7 — Ownership and economy scope: A) Keep rentals for the first live-show slice; add ownership afterward B) Ownership and ledger first. More persistent business depth, larger save and accounting work C) Rentals only for this release; no ownership milestone Recommended: A. OPEN.",
     "D8 — Existing sprite library: A) Inventory provenance now; retain during prototype; archive unused art once replacements are accepted B) Keep every asset as a permanent library. Lowest transition risk, ongoing size/style debt C) Commission or regenerate all art immediately. Highest cost before renderer dimensions are proven Recommended: A. OPEN.",
@@ -187,7 +184,8 @@
     "The supplied 3D archive has been statically reviewed: OrbitControls, venue builders, instanced crowds and separate service snapshots exist. Runtime, rights and engine parity remain unverified.",
     "Refresh this project only; preserve unrelated project records, stable IDs and audit history.",
     "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied.",
-    "2026-10-04 knowledge reconciliation: README is the topic index; CT-DEC-14 owns accepted sequence. FUTURE build order is historical; prototype and source exports are supporting material. Notion and additional chats are not synchronized by this repository review."
+    "2026-10-04 knowledge reconciliation: README is the topic index; CT-DEC-14 owns accepted sequence. FUTURE build order is historical; prototype and source exports are supporting material. Notion and additional chats are not synchronized by this repository review.",
+    "2026-10-04: Dave accepted D3, D4 and D5 A in CT-DEC-15 through CT-DEC-17 and requested a D2 A/B explanation. D2 remains Open. Prior reconciliation reports are historical snapshots, not the current decision state."
   ],
   "links": [
     {
@@ -208,7 +206,7 @@
   "unknowns": [
     "Physical-device and human career acceptance pending.",
     "Prototype runtime, dependency integrity, 3D asset provenance and engine integration unverified.",
-    "D2–D11 recommendations remain unanswered."
+    "D2 and D6–D11 recommendations remain unanswered."
   ],
   "evidence": {
     "checkedOn": "2026-10-04",
@@ -220,7 +218,8 @@
     "prototypeArchiveSha256": "e4e3e17d05ca343191d799a02d82f84a305a7ff8eb1b74405b0a96f6194c49a8",
     "prototypeReview": "Static source inspection only; see PROTOTYPE_REVIEW.md",
     "knowledgeReviewedRevision": "bcc773b07963ab17afebdd9678615a8c1155c43c",
-    "knowledgeReviewedOn": "2026-10-04"
+    "knowledgeReviewedOn": "2026-10-04",
+    "decisionReviewedRevision": "3d1027e0500b258a2b189d61588bfd0e5d913909"
   },
   "decisionState": {
     "D1": {
@@ -236,19 +235,25 @@
       "selected": null
     },
     "D3": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "answer": "Aggregate queues/services with animated representative people"
     },
     "D4": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "answer": "Select tool; Escape cancels placement; undo single removal; confirm bulk Clear once"
     },
     "D5": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "answer": "Stable CI regression scenes plus 60fps desktop / 30fps low-power device targets; thresholds fixed after baselines"
     },
     "D6": {
       "status": "open",

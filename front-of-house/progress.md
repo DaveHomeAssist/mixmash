@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: D3–D5 accepted; D2 explained
+
+- Recorded Dave's acceptance of A for D3 (aggregate services with representative guests), D4 (Select, Escape cancellation, undo and bulk Clear confirmation), and D5 (stable CI regressions plus 60fps desktop / 30fps low-power device targets) in CT-DEC-15 through CT-DEC-17.
+- Explained stylized versus more realistic 3D in the decision packet. Both support continuous orbit; D2 remains open. Updated dependent briefs, HUD performance wording, roadmap, topic index and the board projection without changing runtime, saves, CI workflows or public-release status.
+- Existing knowledge-reconciliation reports remain dated snapshots; the decision log and current packet own subsequent answers.
+
 ## 2026-10-04: Knowledge reconciliation and planning delivery
 
 - [PR #53](https://github.com/DaveHomeAssist/mixmash/pull/53) delivered the decision packet, eleven proposed feature briefs, prototype source review and next-steps projection. CT-DEC-14 records Dave's accepted 3D Lot first, then live operations sequence; D2–D11 remain open.

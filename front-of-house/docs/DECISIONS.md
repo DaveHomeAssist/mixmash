@@ -16,6 +16,11 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-10](#ct-dec-10-the-lot-career) | The Lot career: a roster, terms that follow the relationship, a four-part goal, and carrying on after a bad night | Proposed |
 | [CT-DEC-11](#ct-dec-11-rooms-after-the-lot) | Rooms after the Lot: Fathom Hall, Loam Shell, Split Acre, Sandbox and a wet-lot scenario | Proposed |
 | [CT-DEC-12](#ct-dec-12-hud-layout) | HUD layout: the board fills the window and the controls float in the lot's empty corners | Accepted |
+| [CT-DEC-13](#ct-dec-13-research-and-upgrade-progression) | Research and upgrade progression | Proposed |
+| [CT-DEC-14](#ct-dec-14-expansion-sequence) | 3D Lot first, then live operations | Accepted |
+| [CT-DEC-15](#ct-dec-15-crowd-model) | Aggregate service simulation with representative animated guests (D3 A) | Accepted |
+| [CT-DEC-16](#ct-dec-16-select-and-safe-removal) | Select, Escape cancellation, undo and bulk Clear confirmation (D4 A) | Accepted |
+| [CT-DEC-17](#ct-dec-17-performance-acceptance) | Stable CI regression scenes and declared real-device targets (D5 A) | Accepted |
 
 ## CT-DEC-01: Core scope
 
@@ -384,8 +389,53 @@ The career currently unlocks rooms through show milestones. The GDD lists later 
 
 ### Decision
 
-Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. Those remain open in [DECISION_PACKET.md](DECISION_PACKET.md). Existing saves, balance and public-release gates are unchanged.
+Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. At the time of D1 acceptance those remained open. D3–D5 were subsequently accepted in CT-DEC-15 through CT-DEC-17; D2 and later scope choices remain open in [DECISION_PACKET.md](DECISION_PACKET.md). Existing saves, balance and public-release gates are unchanged.
 
 ### Consequences
 
 The first prototype should prove camera movement, picking and engine parity before expanding to all venues. Gameplay-depth work follows that proof. Feature briefs are specifications for review, not claims of implementation or blanket execution authorization.
+
+## CT-DEC-15: Crowd model
+
+- Date: 2026-10-04
+- Status: Accepted (Dave: “accept A for d3 d4 d5”; D3 A)
+- Owner: Dave Robertson
+- Affects: [FB-03](FEATURE_BRIEFS.md#fb-03-crowd-service-behavior), FB-04 and subsequent service features
+
+### Decision
+
+Simulate aggregate service demand, queues and outcomes; animate representative people from those real totals. Do not give every attendee a saved individual AI/path model. Visuals must explain service state without inventing attendance, purchases or departures. This extends CT-DEC-02's aggregate-crowd principle to service behavior; D2 still owns art treatment.
+
+### Consequences
+
+Animation and camera changes cannot alter money or service results. Specify cohorts, service rates, patience, deterministic timing and save compatibility under FB-04 before implementation. A representative figure may stand for several guests; expose the ratio when relevant. This accepts the model, not completed crowd behavior or balance values.
+
+## CT-DEC-16: Select and safe removal
+
+- Date: 2026-10-04
+- Status: Accepted (Dave: “accept A for d3 d4 d5”; D4 A)
+- Owner: Dave Robertson
+- Affects: [FB-07](FEATURE_BRIEFS.md#fb-07-select-mode-and-safe-removal), controls and screen flow
+
+### Decision
+
+Add an explicit Select tool. Escape closes an open dialog first; otherwise it cancels placement or bulldozing and returns to Select. Single-object removal uses existing undo without a confirmation dialog; bulk Clear asks once before changing the layout. Reuse the existing 50-step history, including one undo step per bulldozer gesture.
+
+### Consequences
+
+Selection must not place or remove objects. Preserve keyboard, pointer and touch access, editing shortcuts and focus after deletion or cancelled dialogs. Existing shipped controls stay documented as implemented until FB-07 lands; accepting this behavior does not claim it is already in the game.
+
+## CT-DEC-17: Performance acceptance
+
+- Date: 2026-10-04
+- Status: Accepted (Dave: “accept A for d3 d4 d5”; D5 A)
+- Owner: Dave Robertson
+- Affects: [HUD performance](HUD.md#6-performance), roadmap step 6 and the [performance contract](FEATURE_BRIEFS.md#performance-and-delivery-contract)
+
+### Decision
+
+Use stable CI regression scenes plus declared real-device targets of 60fps for the desktop tier and 30fps for the low-power tier. Fix measurement thresholds after representative baselines. This supersedes the earlier absolute headless p95-under-16ms requirement as the sole design acceptance criterion; headless timings remain regression evidence, not proof of physical-device frame rate.
+
+### Consequences
+
+Record device/browser, scene/save/seed, crowd size, resolution/DPR, warm-up, sample length and foreground state. Establish a repeatable runner baseline and explicit regression limit; the suggested 20% alert is still a proposal. Translate the accepted frame-rate targets into documented frame-time/stall criteria before signing off. Device roster, sample protocol and exact statistical limits remain to be specified; none has passed by this approval. Existing checks remain until a tested replacement is delivered. No CI workflow, renderer or quality setting changes in this documentation update.
