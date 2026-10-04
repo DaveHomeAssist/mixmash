@@ -189,3 +189,21 @@ The pilot's board draws the actual admitted population, with integer allocation 
 Settlement retains its existing window. The live pilot splits Revenue and Deal into separate phone tabs to keep both reachable without scrolling. The Crowd tab reconciles presales, walk-up cash, refunds, cancelled future demand and abandonment; the Bar row reports served/lost requests. Signing pays the existing career transition once. Invalid checkpoint recovery is explicitly reported on Show; cash and already-paid response costs are retained.
 
 The live Services view separates blue outside admission samples, gold inside bar samples, ordinary floor guests and an orange worker. The Live services settings explain the colors and representative limit; exact queues and receipts remain in the HUD. Controls keep their position while staffing status and counts change.
+
+### Club preview and fixed scenery
+
+The Camera window's explicit3D preview supports all four venues. Its Wide, FOH, Stage and Plan controls use the selected room's bounds. Classic remains the default, and graphics failures use the existing fallback explanation. Fixed pillars and the suspended house PA cannot be removed; a click on opaque fixed scenery does not select equipment behind it. New placement and its ghost reject pillar overlaps. The informational board status remains announced but never intercepts pointer/touch input.
+
+### Loam Shell preview
+
+The existing seat/lawn price and held-night controls retain their behavior. The3D view distinguishes the shell profile and seating/lawn guides within the28×18 room. Guides are illustrative floor decoration: they do not reserve tiles, steal clicks or change the400-seat allocation. Split Acre has its own technical preview below.
+
+
+### Split Acre preview
+
+The Camera window adds a keyboard-accessible Side stage preset for Split Acre. Wide and Plan fit both stages in the 52 × 24 presentation extent; the editable main yard remains 40 × 24. Taps outside that yard never place equipment. The fixed annex is provisional scenery, not extra capacity or calibrated physical dimensions. New versioned shows distribute representative guests using the actual stage accounts, with at most180 samples across the whole site. Legacy unknown side allocation remains explicit. Cameras, graphics recovery and room changes never change cash, attendance or saved state.
+
+
+### Zoomed site overview
+
+Split Acre shows a small desktop overview above Fit zoom. The blocks rotate with the view; a white outline shows the visible ground and a white dot marks the camera target. The3D overview includes the fixed annex; the classic overview uses the existing yard. Click or drag a valid map location to pan without placing equipment or changing zoom. Arrow keys pan, Enter centres, Home returns to Fit, and Escape returns focus to the board. The map hides at Fit, on phones and when a compact window has no safe HUD gap. Crowd tint is illustrative; stage accounts remain the numeric authority. Camera state is not saved.

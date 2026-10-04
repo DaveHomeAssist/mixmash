@@ -966,3 +966,17 @@ test('live pilot: guarantee and door careers finish at starting cash plus actual
     assert.equal(result.services.prepaidCash + result.services.walkupCash - result.services.refunds, result.ticketGross);
   }
 });
+
+test('new Club placement and replacement layouts reject fixed pillars without altering legacy saves or accounting', () => {
+  const s = run(createGame(170, { mode: 'sandbox' }), [{ type: 'chooseVenue', venueId: 'club' }, { type: 'chooseDeal', deal: 'door', artistId: 'salt-ledger' }, { type: 'setLayout', objects: D.CLUB_STARTER }]);
+  for (const rot of [0, 1]) {
+    const object = { type: 'bar', x: 6, y: 5, rot };
+    for (const action of [{ type: 'place', object }, { type: 'setLayout', objects: [...s.venue.objects, object] }]) {
+      const r = applyAction(s, action); assert.match(r.error, /fixed pillar/); assert.deepEqual(r.state, s);
+    }
+  }
+  const old = structuredClone(s); old.venue.objects.push({ type: 'bar', x: 6, y: 5, rot: 0 });
+  assert.deepEqual(normalizeState(old), old, 'existing saves retain their exact layout');
+  assert.deepEqual(evaluateVenue(normalizeState(old).venue), evaluateVenue(old.venue));
+  assert.equal(applyAction(old, { type: 'place', object: { type: 'restroom', x: 4, y: 12, rot: 0 } }).error, null, 'a legacy overlap does not block unrelated safe editing');
+});

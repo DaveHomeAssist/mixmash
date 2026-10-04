@@ -8,7 +8,7 @@ FOH-V01b technical component, 2026-10-04. The backend is connected through an ex
 - [`lot-models.mjs`](../lot-models.mjs) authors stage, PA, bar, restroom and representative guest geometry, plus dimensional light/gate/exit context. Geometry stays inside authoritative equipment footprints through all four rotations. Metal/paint/plastic materials have explicit roughness and metalness. These simplified samples are technical placeholders, not accepted realistic assets.
 - [`lot-renderer.mjs`](../lot-renderer.mjs) consumes the existing scene fields, draws daylight/show lighting, highlights, engine sight sets and a declared representative population. It returns depth picks resolved to the current layout and exposes camera/resource diagnostics. It has no economy actions, persistence or independent animation clock.
 
-The backend accepts Oak St. Lot only. The application facade in [`board-adapter.mjs`](../board-adapter.mjs) selects the existing board for other rooms, initialization failure or context loss. It retains the latest scene and existing input canvas; the 3D canvas owns presentation only. A status message and Camera dialog provide retry. Context restoration resumes the same show. No camera or renderer preference is inserted into a save.
+The explicit preview accepts Oak St. Lot and Fathom Hall. Each renderer instance uses its room dimensions, and the adapter disposes/recreates it when switching supported rooms. The application facade in [`board-adapter.mjs`](../board-adapter.mjs) selects the existing board for other rooms, initialization failure or context loss. It retains the latest scene and existing input canvas; the 3D canvas owns presentation only. A status message and Camera dialog provide retry. Context restoration resumes the same show. No camera or renderer preference is inserted into a save.
 
 ## Dependency and provenance
 
@@ -29,3 +29,19 @@ The [lot-sample-2 candidate](LOT_SAMPLE.md) adds perimeter/incident cues, idle g
 ## Deployed scene and measurement evidence
 
 PR64 integration and PR65 scene are merged, CI passed and Pages built. Eight scene runtime/asset files match PR65 head 15a576a. The hosted backend and actual game passed their browser rails, including recovery and complete settlement parity. [PERFORMANCE.md](PERFORMANCE.md) records all 18 renderer-only hardware host runs; this is not final art or physical-device acceptance.
+
+## Application render scheduling
+
+The adapter opts into `deferRendering:true`. Camera, scene and picking state change immediately; multiple updates before the next animation-frame callback share one GPU render of the latest state. The standalone backend remains synchronous by default. Pause, context loss, hidden state and disposal cancel queued work; resume/recovery requests a current frame. This changes submission scheduling only, not simulation, geometry, materials, shadows or backing quality. `smoke:front-of-house-batching` covers coalescing, immediate picks and lifecycle; complete player and performance evidence is tracked separately.
+
+## Fathom Hall technical preview
+
+`createLotRenderer` accepts `venue:'club'` for the existing20×14 room. The generated manifest records stable fixed-part IDs, measured bounds, pillar tiles and medium house-PA identity. A cutaway back wall, low side edges and suspended PA leave the management view open without introducing roof collision or free lighting capacity. Props retain their existing footprint rules; representatives use the smaller room and avoid pillars. Lot fixture positions and dimensions remain unchanged.
+
+`pickAt` distinguishes a placed object, opaque fixed scenery and empty ground. `objectAt` keeps its prior object-or-null result. The application must not fall through to ground-based selection/removal after an opaque fixed-scene hit. Room changes rebuild resources once; cached module initialization must finish before reporting ready. Unsupported rooms retain classic rendering. Source-owned materials and the provisional dimensional reference are technical evidence, not human art acceptance.
+
+## Loam Shell technical preview
+
+`venue:'amphitheater'` uses the existing28×18 bounds and medium house rig. Source-owned shell panels stay behind the build floor; the roof is omitted. Twelve low floor bands illustrate seating versus lawn. They are pick-through guides, not400 individually located seats or collision cells; existing placement, capacity and seat-first ticket accounting remain unchanged. The manifest records their IDs, bounds and pick-through policy. Representatives and rain follow the actual room extents.
+
+`npm run smoke:front-of-house-shell` covers desktop, phone and ultrawide cameras, guide placement, repeated room changes, real context recovery and viewport containment. Classic/3D desktop/phone journeys compare both nights of a seeded rain show,400-seat allocation, lawn receipts, signed state and reload. Final architecture, visual calibration and human acceptance remain open.

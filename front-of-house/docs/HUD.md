@@ -240,6 +240,11 @@ Promote and Menu reopen Stage accounts. Main/Side use public draw bounds before 
 
 Settlement includes both production budgets, total artist pay and a link to detailed accounts. A side-stage ticket is never added as extra revenue. The main door basis uses its own stage; side pay is withheld once at signing. The Promote ticket estimate now uses the same independent seating or Festival gross as its detail window, and the Festival presale chart uses the same published forecast. Version50 refreshes the player controls. Physical-device and final scene acceptance remain separate.
 
+
+## 2026-10-04 navigation implementation
+
+Step7 now has a locally verified Split Acre desktop implementation. The overview follows arbitrary3D yaw and clips the actual visible ground at low pitch; it includes the fixed side-stage annex in3D. Classic uses its yard and discrete view turns. Pointer/keyboard pan preserves zoom and saves, and measured HUD gaps keep primary controls clear. Fit, phones and compact windows without room hide the map. Twelve frozen-source native full-client overview windows are recorded in PERFORMANCE.md. Delivery and physical/human acceptance remain open; the existing full-HUD performance issue is not closed by geometry or browser checks.
+
 ### Festival sponsor and headline conditions
 
 Version51 adds the fixed ticket price to every Festival sponsor choice. Promote labels the disabled slider “Sponsor ticket price”; ad controls remain active. The accepted Bill repeats the condition. Guarantee and earned door deals retain adjustable ticket prices. Bill explains the +20 relationship required for earlier-tier headliners. If the selected side act also appears in the main offers, its booking buttons are disabled with an instruction to choose another side act. A Done career with no willing side act offers “Choose another venue” and carries cash/history forward without a new charge.

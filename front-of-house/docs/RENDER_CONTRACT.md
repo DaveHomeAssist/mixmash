@@ -116,3 +116,15 @@ For flow-version-1 shows, event-bearing presentation summaries also include conn
 ### Food projection
 
 Food demand and finance are engine-owned. Presentation consumes food request/outcome events with the same arrival-derived guest identity as bar service. Green food waiting is a subset of inside attendance; bar+food+floor equals inside. Each guest enters the normal-departure FIFO once after their bar outcome, and all food requests resolve by closing before departure begins. Camera/speed/reload never own stock or receipts. The source-owned stall is procedural in both backends; classic adds a FOOD label, and neither palette nor board requests an absent PNG. Lot sample 3 contains the stall alongside the existing samples.
+
+
+### Split Acre technical preview
+
+The logical build grid remains 40 × 24. The renderer alone uses a 52 × 24 presentation extent with a fixed side-stage annex at x40..52, y0..16. Ground picking outside the logical grid returns null; opaque annex scenery also blocks placement. Wide and Plan cover both stages, and the keyboard-accessible Side stage preset focuses the annex. These authored dimensions are provisional presentation geometry, not calibrated physical dimensions or additional sellable capacity.
+
+When the engine supplies versioned stage sales, the renderer retains exact main and side attendance and distributes at most 180 representative guests across both presentations. It does not recalculate admission, stage allocation or settlement. Legacy saves with no authoritative stage allocation report unknown side attendance and preserve their previous accounting. Camera, renderer choice and sampling remain absent from saves. Both presentations dispose on room changes and follow the existing context-loss fallback.
+
+
+### Overview projection and pan
+
+Both backends expose presentation-only `navigation()` and `panTo(x,y)`. Navigation returns the current extent, view rotation and ground polygon clipped to the safe viewport;3D additionally supplies fixed annex rectangles. Perspective clipping uses homogeneous frustum half-planes, including the near plane and positive clip-W, so horizon-crossing views stay finite. The overview clips that polygon to actual floor regions. `panTo` preserves zoom and camera preset, clamps the target to the current extent and never changes simulation state. The adapter notifies camera/renderer changes; the overview reuses unchanged pixels and owns no animation loop.

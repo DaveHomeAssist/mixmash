@@ -1,5 +1,54 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Loam Shell technical scene
+
+Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.
+
+Held-run source7a111c2 integrated:353 tests/build/assets/docs and unchanged simulation pass. The held-run browser suite adds actual3D desktop/phone continuation/cancellation; all integrated player checks pass, including eight held-run journeys and the repeated Shell two-night suite. Native evidence below retains the clean frozen revision.
+
+FOH-V02r2 adds a source-owned cutaway shell, house PA and pick-through seating/lawn guides to the existing28×18 room. No new collision, pricing, capacity or save fields. Two geometry/camera tests and desktop/phone/ultrawide camera, placement, switching, recovery and fit checks pass. Four classic/3D desktop/phone rain-show journeys retain identical two-night receipts,400-seat allocation and final state. The initial phone harness missed the existing Actions tab; corrected navigation passes. 341 repository tests/build/assets/docs/unchanged simulation and seven performance tests pass. Club/Lot backend/coalescing/full3D regressions pass. Native performance and delivery remain pending. Technical scenery is not final art/human acceptance.
+
+## 2026-10-04: Fathom Hall technical preview
+
+## 2026-10-04 — Club integrated and native verification
+
+Held-run delivery633f60a is integrated.351 tests/build/assets, six held-run journeys, Club room/recovery/parity smoke, generated docs and unchanged balance simulation pass. Native Club measurement5330eb3 is retained unchanged; replacement CI and hosted verification remain required.
+
+Ticketing controls368edba integrated with339 passing tests/build/assets. The inherited ticketing smoke expected Club fallback; the new preview requires active3D and adds a phone3D journey. All seven ticketing journeys now pass, including desktop/phone3D, followed by a passing Club camera/room/recovery/settlement suite; balance simulation remains unchanged.
+
+Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance. Integrated333 tests/build/assets and complete player journeys pass; room smoke also passes after integration. Source5330eb3 is committed/pushed. Current required CI, merge and hosted checks remain separate.
+
+FOH-V02r1 authors a source-owned20×14 cutaway, fixed pillar cells and suspended house PA; the explicit preview now switches between Lot/Club dimensions and resources. Three geometry/camera/crowd tests and a legacy-compatible editing test pass.328 repository tests/build/assets/vendor checks and unchanged balance simulation pass. Desktop/phone journeys verify all four views, arbitrary-yaw picking, room-switch cleanup, real context recovery, reload and exact classic/3D settlement parity.
+
+The first browser run exposed pre-existing pillar-overlap placement; new commands/ghosts now refuse it while older layouts/accounting are retained. Further checks exposed ground-selection fallthrough behind fixed scenery and a phone status overlay intercepting taps; both are corrected and covered. One incorrect promotion selector was repaired in the harness. Lot coalescing/lifecycle/backend regressions pass; remaining full-client, required CI and hosted delivery proof is tracked separately. CT-DEC-22 records the compatibility choice; final art/physical/human acceptance remains open.
+
+
+## 2026-10-04: Full native HUD gap and render batching
+
+- PR92 CI37208943333 failed its generated-asset check after integration with equipment career116a743. Regenerated the stale renderer source digest; measured bounds and asset content are unchanged. Vendor/asset checks pass. All324 tests/build/docs/simulation had passed on the integrated source. Frozen5f47c4a measurement metadata retains its original stale manifest entry and independently correct renderer hash; no historical evidence is rewritten. Cache v44r1 distinguishes this delivery from concurrent v44 work. Replacement CI and hosted verification remain required.
+
+- Six native full3D/HUD windows at aa5f6a3 are valid, exact engine replay passes and all digests verify. Cadence47.58–59.98Hz, three intervals over50ms. Retained lower repeats; this does not establish sustained60fps. Camera movement roughly doubles submitted renders compared with the show loop alone.
+- Added application-only deferred rendering, preserving immediate scene/camera/picking state and synchronous standalone semantics. The focused browser check passes single-render coalescing, cancellation, real context recovery and disposal; backend/resolution rails pass. Full player and candidate timing evidence remain separate.
+- Published a native HUD reproduction command and recorded the delegated CI measurement policy as CT-DEC-21. Catalog validation initially rejected a string-shaped metadata note; corrected it to the required title/description object and regenerated.
+
+
+## 2026-10-04: Paired performance gate implemented
+
+- The paired gate's real negative control is complete: CI37207123068 passes36 windows; manual37207121746 passes its normal pair and numerically rejects18 valid CPU-fault windows. Independent source/fixture/raw/statistics audits cover all90 windows. Concurrent equipment controls4600649 are reconciled with preserved gameplay records;324 tests/build/asset checks pass. Current-head CI and hosted delivery remain pending.
+
+- Added pinned-baseline/current comparisons on the same Ubuntu24.04 runner, with complete18-window protocols, raw/source/fixture audit and median frame/CPU limits. Existing correctness checks remain unchanged; timing runs for relevant changes or manual dispatch.
+- Four new evaluator tests cover complete/invalid evidence, median/boundary behavior, incomparable environments/quality and diagnostic fault semantics. All seven reporting/evaluator tests pass. The validator also audits the actual18-window calibration artifact.
+- A20ms isolated CPU fault provides a measured negative control; short local fault checks validate the harness only. Full live paired/fault execution, CI and delivery remain pending.
+
+
+## 2026-10-04: CI calibration and native display evidence
+
+- PR81 and PR82 passed required CI, merged and reached Pages; measurement/procedure files match their tested source. Full CI run37205343575 passed, with all18 source/fixture/raw hashes and recomputed statistics verified. Software crowd cadence1.91–3.06Hz remains distinct from device targets.
+- Six full native visible Chrome154 windows on Apple M4 are valid at5120×1286/DPR1, cadence59.9764–59.9812Hz and zero intervals over50ms. Corrected the inherited graphics-label suffix transparently while retaining original private bytes and attribution.
+- The actual full client passed fixed-CSS-size display moves DPR1→2→1, unchanged state, picking and containment. Added reproducible isolated native and manual display commands; phone, low-power, human acceptance and measured CI regression limits remain open. No runtime or game rules change.
+- Preserved the separate sanitation, research and ownership branch records; their local checks do not imply delivery.
+
+
 ## 2026-10-04: CI calibration workflow prepared
 
 - Added an explicit manual performance option to the existing CI workflow. A separate Ubuntu24.04 job runs the full standard18-window SwiftShader protocol and retains only synthetic JSON fixtures/results plus an allowlist of runner metadata.
@@ -497,6 +546,12 @@ FOH-E01a2 supplies the bounded cash journal needed before equipment enters the c
 
 - Cash journal prerequisite: all315 repository tests, build and generated documentation pass. It remains isolated from career cash until the next adapter slice.
 
+- PR87 original CI37206825027 passed; a concurrent career delivery prevented a clean merge. Reconciled193c54c, retaining both briefs, current gameplay records and measured-source attribution. All315 tests/build/docs/simulation and actual display transitions pass locally; corrected-head CI remains required.
+
+- Full native batching comparison at clean5f47c4a: six valid windows,55.91–59.84Hz, two intervals over50ms, exact baseline/candidate game states and unchanged quality. Moving render calls fall from3918–4843 to2211–2381 per warm-up/measurement span. Shared-host timing does not prove sustained60fps. Full legacy/live/crowd/food rails pass; reconciled current career source without relabeling frozen measurements.
+
+- Reconciled cf74906/193c54c with both feature briefs and current career records intact. All315 tests/build/docs/simulation, batching lifecycle, actual attached-display moves and complete3D client parity pass on the integrated source. Cache version44; required CI and hosted delivery remain pending.
+
 ### 2026-10-04 owned PA and career cash adapter
 
 FOH-E01b1 adds explicit enablement, purchase/sale, Build assignment and frozen per-night deployment. The small PA replaces its200 rental with20 operating cost only when assigned; capital1200/resale600 never enter artist deductions. The optional journal reconciles every cash path, including research refunds, paid incidents and separate held-night payout/opening. Nine adapter tests and all324 repository tests pass, alongside build and generated reference. Version43 precaches both new engine dependencies. The first targeted run exposed incorrect medium/house-PA fixtures, then a zero-versus-negative-zero assertion; both were corrected without changing production rules. Controls, browser/offline proof, required CI and production delivery remain open.
@@ -589,6 +644,24 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 - Corrected the shared Promote ticket estimate to use seat/lawn gross instead of pricing every guest at the lawn rate. Festival presales use the same published bounds as Stage accounts. Added visible cash-bridge assertions and a seating estimate regression.
 - Final six Chromium/WebKit journeys and both-theme/five-size checks pass, including side selection/reload, both legal main deals, signing and journal.28 legacy browser checks,382 repository tests/build and generated docs pass; visible cash-bridge assertions and all six seating regressions pass. Real offline player continuation and signed receipt/journal pass. Supplied action client reaches all six pages with expected cash and no errors; actual full-page and canvas captures inspected. Source/CI/Pages/hosted controls acceptance remains pending.
 
+
+## 2026-10-04 — Split Acre scene implementation
+
+Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9746–59.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.
+
+FOH-V02r3 adds a source-owned side-stage annex outside the existing editable yard. The 52 × 24 presentation extent is a provisional camera convention, not physical calibration or added capacity. Desktop, phone and ultrawide geometry, yaw picking, forbidden annex placement, keyboard Side stage camera, all-room switching and context recovery pass. Two new geometry/allocation tests pass. Complete accounting journeys, integrated source verification, performance and delivery remain pending. Classic remains default; final art and physical-device acceptance remain open.
+
+- Integrated delivered seating/stage core plus pending career/control branches for combined acceptance. All390 repository tests, build, generated docs and simulator verdicts pass. Three geometry sizes and eight full legacy/versioned classic/3D show, settlement and reload comparisons pass. The browser rail now also exercises actual seating and Festival booking/receipt controls in desktop/phone 3D. Native measurement, CI and hosted delivery remain pending.
+
+- Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification.
+
+
+## 2026-10-04 — Split Acre site overview
+
+FOH-U01a implements the scoped desktop minimap. Source projection checks cover arbitrary yaw, low/high pitch, Plan/FOH/Stage and zoom, while four classic/3D desktop journeys verify pan targets, placement isolation, keyboard/focus, Fit/phone hiding, resize, real context recovery, reload, HUD gaps and exact complete-show settlement/state parity. Screenshots were inspected. All392 repository tests, build, generated docs and unchanged simulator pass after restoring the board's leading description comment for the admin index. An extended test first zoomed before the asynchronous3D backend had finished reopening; waiting for its ready state corrects that harness sequence. Renderer toggle and the full player regression are being completed; CI, hosted delivery and integrated performance/device acceptance remain pending.
+
+- Overview native diagnostic setup now supports the actual paused Festival client and a visibility-only comparison. Both fixed/moving quick modes pass with unchanged state and verified repaint/reuse counts. Corrected an initial harness assumption about visible arrivals: the early gate pause shows1267 of6000 total attendees, still using180 representative models. These short runs validate the harness only and ran alongside other checks; full isolated measurements remain pending.
+
 ## 2026-10-04: Festival adapter hosted acceptance and booking constraints
 
 - PR99 career adapter passed CI37212876178, merged9d0050327e3bd82db0c9081cad26296ad1f5b81b at15:46:33Z; Pages built15:47:02Z. Hosted engine/data/core/SW bytes match. Chromium/WebKit browser-engine guarantee/sponsor receipts, paid incidents, signing/reload and Chromium offline replay pass; player controls remain the separate PR101 release.
@@ -609,6 +682,20 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 
 - PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected.
 - Amphitheater profile source remains c538daa; this follow-up updates release evidence only. Its own CI/Pages/hosted acceptance and remaining venue work are still open.
+
+## 2026-10-04 — Overview comparison and combined integration
+
+Twelve full native overview windows at clean ca1f1a7 pass independent source/raw/fixture digests, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1: visible 59.44–59.98 Hz, hidden 59.51–59.98 Hz, zero intervals over50ms. Each mode has three fixed/three actual pointer-pan repeats with10s warmup/30s measurement. All preserve6000 total attendance,1267 displayed arrivals and180 representatives. Visible moving windows repaint; fixed and hidden windows reuse the image. Sequential descriptive results overlap; no causal improvement, running-Lot KI-14 closure, phone/low-power or human acceptance inferred.
+
+Full player, Festival and 3D navigation/toggle regressions passed before integration. Combined source now includes delivered Festival booking conditions and pending PR104 Shell sound/sightlines, preserving both the newer rules checks and desktop/phone3D journeys. Combined checks, current-head CI and hosted acceptance remain pending. The native report remains tied to its original source.
+
+Combined source verification passes407 repository tests, build, asset validation, generated docs and unchanged simulator. All four overview journeys pass after the rules integration; remaining player/venue checks are running before delivery.
+
+## 2026-10-04 — Camera fit reuse
+
+FOH-P01j retains the most recent unzoomed fit distance while panning or zooming. The key includes venue extent, angle, viewport, HUD safe area and lens; authored eye cameras retain their existing path. Camera fit reuse preserves3852 exact prior-source pose/matrix/projection/picking/overview comparisons across all rooms, three viewports, yaw/pitch/zoom/pan, four presets and lens changes. All16 camera tests pass, including repeated invalidation versus a freshly fitted camera. Five alternating Node CPU repetitions of20000 pans: baseline1870.64–2362.12ms, candidate84.80–119.53ms on Apple M4/Node22.22.1. This is helper CPU evidence only; full native game/HUD timing and delivery remain pending.
+
+Camera fit source passes408 repository tests, build, asset validation, generated documentation and unchanged simulator. Browser and native comparison remain separate gates.
 
 ## 2026-10-04: Festival room profile local acceptance
 
@@ -635,3 +722,7 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 - Thirty paired starter seeds improve satisfaction42–67/3passes to59–67/29passes;180 zero-tower transitions and complete receipts match the prior engine. This is diagnostic evidence, not whole-career balance acceptance.
 
 - PR108 CI37218847146 caught the Lot manifest generator treating Festival-only towers as Lot assets and generating its generic fallback prop. Restricted the Lot manifest to supported room types; the Festival tower stays an explicit provisional Canvas model. The unchanged Lot manifest passes regeneration/check; fresh CI follows.
+
+## 2026-10-04 — Stack integration with delivered Festival work
+
+Merged gh-pages `f6532a2` (PR106 Festival profile, PR108 delay towers) into the PR87–PR107 camera-fit/overview stack. Six conflicts were resolved by keeping both sides: overview and Festival account styles, both brief sets, both progress records, delivered release evidence in NEXT_STEPS.json, and the stages smoke keeps the newer Room checks alongside the 3D journeys. The service worker cache moves to `v55`. Local checks on the merge: 416 repository tests, 7 performance tests, vendor/asset checks, build, unchanged Lot simulator, generated docs unchanged, and stages, navigation, Festival, Shell, Club and seating browser journeys. Current-head CI, Pages and hosted acceptance follow.

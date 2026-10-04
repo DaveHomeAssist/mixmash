@@ -52,6 +52,32 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Dependencies / risks:** FB-01; selected D8 A retains current art until replacement acceptance, and D10 A keeps later-room mechanics experimental while art and tier-specific tests develop. Screenshot geometry is not proof of production readiness. **Relative effort:** large per venue. **Expansion:** never treat art acceptance as gameplay balance acceptance.
 
+### FOH-V02r1: Fathom Hall technical scene
+
+**Scope:** Extend the explicit 3D preview to the existing20×14 Club. Author a cutaway room, exactly four blocked pillar tiles and a suspended medium house-PA representation from existing venue metadata. Keep the roof omitted for management visibility. The room uses the same provisional scale, props and material provenance as the Lot; fixed scenery does not add rentable objects, lights or capacity. A discovered pre-existing placement omission is corrected for new edits: equipment cannot overlap fixed pillar tiles. Existing saved layouts and historical evaluation remain unchanged.
+
+**Flow and acceptance:** Open a saved Club show with the preview enabled, inspect at yaw37/135 and Wide/FOH/Stage/Plan, then return to the Lot or a classic-only room. Camera bounds, floor/grid, guests and picking must follow each room's actual extents. Opaque permanent scenery occludes selections behind it, while engine pillar rules remain authoritative. Verify exact saved-show settlement across classic/3D, blocked placement with matching ghost feedback, room-switch cleanup, fallback and desktop/phone containment. Retain the Lot's regression fixtures unchanged.
+
+**Evidence boundary:** This is a technical preview under the delegated all-phase execution instruction. It does not replace classic art or establish human camera/art approval. Final visual review, physical calibration and public promotion remain gated separately; no archive assets or new simulation rules are introduced. Loam Shell and Split Acre remain separate slices.
+
+### FOH-V02r2: Loam Shell technical scene
+
+**Problem and scope:** The28×18 amphitheater still falls back to the generic classic room when the3D preview is requested. Extend the existing preview with a source-owned cutaway shell profile, the existing medium house PA and contrasting seating/lawn guides. These are management-view representations, not a calibrated seating plan:400 seats remain the engine's aggregate allocation, and guides neither reserve build tiles nor change capacity. Keep the roof absent for plan-view visibility. No borrowed art, additional dependencies, new save fields, collision rules or economic changes.
+
+**Flow:** Choose the amphitheater, inspect its shell and seating/lawn distinction, place and inspect the same equipment, set existing seat/lawn prices and held-night count, then run and settle the show. Returning to Club/Lot must recreate the correct room without stale canvases or saves. Seating guides are pick-through floor decoration; opaque shell/rig geometry occludes selection normally.
+
+**Acceptance and risks:** Verify all four camera presets, yaw37/135 and extreme room tiles at desktop/phone/ultrawide dimensions; existing prop footprints and editing remain authoritative. Compare the same seeded seated/lawn show, rain response and held-run settlement through classic and3D, including reload/context recovery. Test decorative guides cannot steal clicks. Keep Lot and Club regressions and manifests current. Technical preview only: final architecture/art, physical calibration, device support and human acceptance remain separate. Split Acre and minimap remain later slices.
+
+### FOH-V02r3: Split Acre technical scene
+
+**Problem and outcome:** The Festival books a second act but its preview still uses the generic classic yard. Give both stages a legible source-owned technical scene while preserving the existing 40×24 editable grid and simulation authority.
+
+**Scene and flow:** Keep the main editable yard at its existing coordinates. Add a fixed, nonbuildable side-stage annex to its east, within a 52×24 presentation extent. The annex is an authored management-view convention, not additional permit capacity or physical calibration. Fit/Plan include both areas; an accessible Side stage camera control focuses the fixed deck. Fixed scenery occludes picks, while ground outside the 40×24 build grid never yields an editable tile. The roof remains absent for legibility.
+
+**Audience and data:** Use the existing show-preview stage-accounting result when available to place representatives in the main and side areas, conserving a total limit of180 models. Never recompute admissions, demand, money or artist terms in the renderer. Unmarked older shows lack a conserved stage allocation: keep their known main crowd and label side attendance unavailable in renderer diagnostics instead of inventing a count. Booking identity may still light the existing stage representation without creating lighting capacity. No new save fields, build restrictions, dependencies, purchased assets or altered pricing.
+
+**Acceptance:** Confirm 40×24 ground picking and 52×24 camera fit at yaw37/135, all camera views, mouse/touch/keyboard access to the side stage, cleanup and fallback across all four venues. Verify known audience totals and the180-model cap, no placement in the annex, exact classic/3D settlement and reload for versioned stage accounts and legacy saves, context recovery, responsive containment and measured native performance. Use actual stage-accounting fixtures after their separately owned integration is delivered. Final art/calibration/human acceptance and the large-site minimap disposition remain distinct gates.
+
 ## FB-03 Crowd service behavior
 
 **Decision:** D3 A accepted in [CT-DEC-15](DECISIONS.md#ct-dec-15-crowd-model). Service rates, timing and balance remain to be specified.
@@ -153,6 +179,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 **Acceptance:** Correct camera location and picking at arbitrary yaw/pitch/zoom; keyboard navigation equivalent; no extra obscured primary controls; rendering stays within the selected performance budget.
 
 **Dependencies / risks:** Existing deferred decision remains in force. Start only when larger-site play demonstrates need after FB-01. **Relative effort:** medium. **Expansion:** none without a concrete navigation problem.
+
+### FOH-U01a — Zoomed Split Acre overview
+
+**Need and decision:** The verified side-stage preset puts the annex in view while most of the main yard leaves the phone/desktop camera. At zoom2/3, arbitrary pan and yaw remove the site boundary from view. Implement the already scoped desktop overview; retain Fit and camera presets on phones. This is an autonomous implementation decision within CT-DEC-19 and FB-08, not a new simulation feature.
+
+**Scope:** A small overview appears only for zoomed Split Acre on desktop. It rotates with the renderer's view, shows current layout blocks and a bounded crowd tint, and outlines the actual visible ground polygon. The perspective outline comes from ground-plane/frustum clipping, including low pitches and authored eye views; it is not an invented rectangle. The 3D map includes the fixed annex, while classic uses its existing yard. Click or drag pans without placing, changing zoom, advancing time or saving camera state. Arrow/Home keys and existing board controls remain available. Locate the map in a free HUD margin, never over primary controls; hide when a compact window has no safe slot. No independent animation loop.
+
+**Acceptance:** Check classic view turns and3D yaw37/135, pitch15/85/Plan, zoom1/1.5/2/3, both stage areas, off-map drags, keyboard focus, resize, theme, renderer recovery and room changes. Verify projected footprint bounds, exact pan targets, unchanged state/receipts and no overlap at desktop sizes; hidden at Fit and on phones. Measure redraw reuse and the integrated rendering cost separately from native full-HUD60fps and human/device acceptance. No source/archive art or new dependencies.
 
 ## Performance and delivery contract
 
@@ -425,6 +459,34 @@ Before career integration, verify affordability, idempotency, one-unit ownership
 
 **Acceptance and next gate:** Dispatch the exact pushed branch, observe the live job, retrieve its artifact, validate all eighteen windows and name the actual runner/browser. Choose explicit limits only after comparing repeat variation; run an intentional slowdown to prove the later gate rejects a regression. No simulation/save changes, quality reduction, weakening of existing checks, or physical-device acceptance in this calibration slice.
 
+### FOH-P01f: Native desktop reproduction and evidence publication
+
+**Problem and outcome:** Headless dimensions cannot establish behavior on attached displays. Preserve the completed CI calibration and native desktop measurements as separate evidence, and make the native checks reproducible with installed Chrome and isolated storage.
+
+**Smallest slice:** Add a native-window mode to the existing renderer harness, recording actual content size, density, focus and visibility. Retain the same fixtures, camera path, warm-up, sampling and three repeats; reject emulated-density/viewport flags in this mode. Add a manual full-client check that moves its own temporary browser window between attached DPR1 and DPR2 displays at fixed CSS size, then returns. Permission for screen enumeration belongs only to the temporary context and loopback origin. No system display settings or user profiles change.
+
+**Acceptance and exclusions:** Preserve exact game state, picking at yaw37/135, backing sizes and viewport containment through actual display moves. Keep raw screenshots/display coordinates private; publish sanitized summaries with source and artifact digests. A missing browser/display produces a retained failure and closes the local server. Normal headless behavior remains covered separately. These checks do not establish touch, thermal/battery, low-power or human readability acceptance, and change no game, save, career or quality policy. CI timing limits and intentional-slowdown proof remain the next performance slice.
+
+### FOH-P01g: Paired CI regression gate
+
+**Problem and outcome:** The measured GitHub software backend is slow and runner hardware varies. Detect material renderer regressions by comparing a pinned calibrated revision and the candidate sequentially on the same runner/browser, preserving all18 windows per revision. Keep the60fps desktop/30fps low-power targets separate.
+
+**Smallest slice:** A dedicated performance workflow runs for renderer, fixture, dependency or measurement changes and on manual dispatch. Check out calibrated6ed7b7c and the candidate into separate clean directories, use identical SwiftShader/DPR1 quality, validate synthetic fixture scenes and all raw digests/statistics, then compare the median of three repeats per scene/viewport. Fail invalid/incomparable evidence. Keep normal CI unchanged.
+
+**Initial regression policy:** Frame mean and p95 medians may increase by at most the larger of25% or8ms; CPU submission p95 medians by the larger of50% or1ms. The observed calibration repeat variation was below these tolerances (frame metrics about10%, CPU p95 up to25%); paired execution reduces runner variation but does not eliminate host noise. These conservative change-detection limits are delegated engineering decisions, not device guarantees. No automatic baseline update. Material fixture/backend/protocol changes require explicit recorded recalibration.
+
+**Failure proof:** A manual diagnostic option inserts20ms of real CPU work in the isolated harness on every draw, without changing production code or scene quality. Run the full protocol, require valid samples and demonstrate that the same budget evaluator rejects those measured results for numeric regression. Invalid evidence or a quick-mode rejection cannot substitute for this proof.
+
+**Acceptance and exclusions:** Unit checks exercise boundaries, incomplete/duplicate/mismatched evidence and preserved quality; live CI must first pass the normal candidate and then reject the deliberate slowdown, retaining all artifacts. Never weaken existing checks or merge a failing regression job. Total sampling is approximately26minutes for a pair or40minutes including the optional fault run; no scheduled task, user data, runtime/save changes or physical-device claim.
+
+### FOH-P01h: Coalesce application 3D rendering
+
+**Observed problem:** Six full native3D/HUD windows at aa5f6a3 are valid but range47.58–59.98Hz. Moving-camera windows submit roughly twice as many renderer calls as the running-show animation alone. Shared-host load remains uncontrolled; duplicate work is confirmed, but it does not explain every cadence variation.
+
+**Smallest slice:** Opt the application adapter into deferred 3D rendering. Camera and scene state update immediately; one pending animation-frame render consumes the latest state. Keep the standalone backend synchronous by default so existing integrations and measurement CPU semantics remain stable. Cancel pending work on pause, context loss and disposal; resume/recovery requests one current frame. Preserve dimensions, shadows, geometry, guest state, picking and all save/settlement rules.
+
+**Acceptance:** A browser test proves one render for many same-task updates, latest-camera picking, cancellation on pause/disposal and recovery. Existing backend and full-client controls/settlement rails must pass. Retain all six original native HUD windows, then repeat the identical fixed/moving protocol after the change, auditing raw/source/fixture hashes and exact engine replay. Reduced render count is independent evidence from cadence or human/device acceptance; do not promise60fps merely from fewer calls.
+
 ### FOH-E01a2 bounded career cash journal
 
 A capital-only list cannot reconcile the career: future research, show opening, incident responses and settlement must share one cash journal. Implement its pure authority before the adapter. Start with one explicit opening balance equal to current cash when enabled; do not reconstruct itemized history. Keep seven categories distinct: acquisition, disposal, development, development refund, show opening, incident and settlement. Show opening may be a credit when a sponsor exceeds costs; acquisition/development/incident are nonpositive and disposal/refund/settlement nonnegative. All amounts are whole-dollar safe integers, preserving schema2 units.
@@ -556,6 +618,14 @@ The same marked profile gives the lawn an authored rise between rows10 and16 (0.
 Flow: Book discloses the included shell rig and sloped sightlines → Build shows the current sound capacity and links from Details to the Room tab, with house/portable status, viewing counts and slope rules → Promote and signed settlement reopen it through Seats and lawn. New player bookings opt in through `chooseDeal.roomPolicy:1`; store only `venue.profile:{version:1}`. It remains frozen through a held run because layout changes are already locked at doors. Existing unmarked bookings and saves retain their earlier numeric rules. Invalid optional profile source is removed with visible recovery feedback, preserving paid cash/history. No terrain editor, engineering calculation, PA purchase, new capacity, extra setup fee, final art claim or Festival rig substitution.
 
 Verify an exact terrain/obstacle visibility fixture, four stage rotations, flat-versus-rising obstruction, invalid profile handling, bounds, no input mutation, house versus portable/owned sound coverage, identical money deductions, marked/unmarked reload, two/three-night settlement/reputation, clear-view overlay parity and honest pre-show/paid receipts. Run player journeys in both browsers, both themes and compact viewports, existing seating/held controls, offline replay, all tests/build/docs and the unchanged Lot baseline. Then extend the larger-venue diagnostic without claiming full career-balance acceptance.
+
+### FOH-P01j — Reuse camera fit while panning
+
+**Problem:** Orbit-camera pan, target and zoom operations rerun the24-step volume-fit search although the projection's yaw, pitch, viewport and free HUD area have not changed. This adds avoidable synchronous work to camera input.
+
+**Bounded fix:** Cache only the last unzoomed fit distance, keyed by all fit inputs. Recompute after yaw, pitch, viewport, free-area or camera-lens changes. Apply the existing pose after every input; authored FOH/Stage views retain their existing path. No render-quality, layout, save, simulation or interaction change.
+
+**Acceptance:** Compare exact poses, projections, picking and navigation against the prior source across all venues, resizing, presets, low pitch, zoom and pan. Exercise actual camera gestures, recovery and complete-show parity. Report repeated camera CPU measurements separately from native full-HUD fixed/moving windows; a faster helper alone cannot close KI-14 or establish low-power/human acceptance.
 
 ### FOH-V02b9 Festival sound and sightlines
 

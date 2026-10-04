@@ -12,6 +12,14 @@ on:
         description: 'Collect a full Front of House CI calibration (at least 12 minutes)'
         type: boolean
         default: false
+      foh_performance_gate:
+        description: 'Run paired Front of House regression checks (about 30 minutes)'
+        type: boolean
+        default: false
+      foh_performance_fault:
+        description: 'Also prove rejection with a full 20ms CPU slowdown (about 15 additional minutes)'
+        type: boolean
+        default: true
 
 jobs:
   test:
@@ -25,7 +33,7 @@ jobs:
       - run: npm ci
       - run: npm run check:front-of-house-vendor
       - run: npm run check:front-of-house-assets
-      - run: node --test test/front-of-house-performance.test.mjs
+      - run: node --test test/front-of-house-performance*.test.mjs
       - run: npm test
       - run: npm run vercel-build
       - run: npm run art:validate
@@ -41,9 +49,14 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run smoke:front-of-house
       - run: npm run smoke:front-of-house-floor
+      - run: npm run smoke:front-of-house-batching
       - run: npm run smoke:front-of-house-resolution
       - run: npm run smoke:front-of-house-lot
       - run: npm run smoke:front-of-house-3d
+      - run: npm run smoke:front-of-house-club
+      - run: npm run smoke:front-of-house-shell
+      - run: npm run smoke:front-of-house-festival
+      - run: npm run smoke:front-of-house-navigation
       - run: npm run art:visual
       - run: npm run smoke:play
       - run: npm run smoke:catalog
@@ -82,5 +95,96 @@ jobs:
         with:
           name: foh-performance-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/foh-performance/*.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  foh-regression:
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.foh_performance_gate)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    env:
+      FOH_PERF_RUNNER_CLASS: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select renderer or measurement changes
+        id: scope
+        working-directory: candidate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = workflow_dispatch ]; then
+            echo 'run=true' >> "$GITHUB_OUTPUT"
+          else
+            git diff --name-only "$BASE_SHA...$HEAD_SHA" > "$RUNNER_TEMP/foh-changed-files"
+            if grep -Eq '^(front-of-house/(.*\.mjs|lot-.*\.json|vendor/.*)|test/front-of-house-performance.*\.mjs|test/static-server\.mjs|package-lock\.json|\.github/workflows/ci\.yml)$' "$RUNNER_TEMP/foh-changed-files"; then
+              echo 'run=true' >> "$GITHUB_OUTPUT"
+            else
+              echo 'run=false' >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - uses: actions/checkout@v4
+        if: steps.scope.outputs.run == 'true'
+        with:
+          ref: 6ed7b7c2991ef0d8ccc71fe167444f5422cd7483
+          path: baseline
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        if: steps.scope.outputs.run == 'true'
+        with:
+          node-version: 22
+      - name: Install both frozen checkouts
+        if: steps.scope.outputs.run == 'true'
+        run: |
+          npm ci --prefix baseline
+          npm ci --prefix candidate
+          npm run check:front-of-house-vendor --prefix baseline
+          npm run check:front-of-house-assets --prefix baseline
+          npm run check:front-of-house-vendor --prefix candidate
+          npm run check:front-of-house-assets --prefix candidate
+          cd candidate
+          npx playwright install --with-deps chromium
+      - name: Measure calibrated baseline
+        if: steps.scope.outputs.run == 'true'
+        working-directory: baseline
+        env:
+          FRONT_OF_HOUSE_PERF_OUTPUT: ${{ runner.temp }}/foh-pair/baseline
+        run: npm run perf:front-of-house -- --gpu=software
+      - name: Measure candidate
+        if: steps.scope.outputs.run == 'true'
+        working-directory: candidate
+        env:
+          FRONT_OF_HOUSE_PERF_OUTPUT: ${{ runner.temp }}/foh-pair/candidate
+        run: npm run perf:front-of-house -- --gpu=software
+      - name: Audit raw evidence and enforce limits
+        if: steps.scope.outputs.run == 'true'
+        env:
+          PAIR_ROOT: ${{ runner.temp }}/foh-pair
+        run: node candidate/front-of-house/tools/performance-gate.mjs "$PAIR_ROOT/baseline" "$PAIR_ROOT/candidate" baseline candidate "$PAIR_ROOT/comparison.json"
+      - name: Measure deliberate CPU regression
+        if: steps.scope.outputs.run == 'true' && github.event_name == 'workflow_dispatch' && inputs.foh_performance_fault
+        working-directory: candidate
+        env:
+          FRONT_OF_HOUSE_PERF_OUTPUT: ${{ runner.temp }}/foh-pair/fault
+        run: npm run perf:front-of-house -- --gpu=software --fault-cpu=20
+      - name: Require numeric rejection of the valid fault run
+        if: steps.scope.outputs.run == 'true' && github.event_name == 'workflow_dispatch' && inputs.foh_performance_fault
+        env:
+          PAIR_ROOT: ${{ runner.temp }}/foh-pair
+        run: node candidate/front-of-house/tools/performance-gate.mjs "$PAIR_ROOT/baseline" "$PAIR_ROOT/fault" baseline candidate "$PAIR_ROOT/fault-comparison.json" --expect-fault
+      - name: Retain paired regression evidence
+        if: always() && steps.scope.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: foh-pair-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/foh-pair/**/*.json
           if-no-files-found: warn
           retention-days: 30

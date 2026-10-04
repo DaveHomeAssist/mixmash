@@ -8,13 +8,14 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
 import { heldRunQuote } from './held-run.mjs';
 import { roomProfileFor } from './room-profile.mjs';
 import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
+import { createSiteMap } from './site-map.mjs';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
 
@@ -547,7 +548,7 @@ function inspectAt(tile) {
 
 function ghostAt(tile) {
   const ghost = { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot };
-  const { problems } = validateLayout([...state.venue.objects, ghost], state.venue);
+  const { problems } = validatePlacement([...state.venue.objects, ghost], state.venue);
   return { ...ghost, valid: !problems.some((p) => p.index === state.venue.objects.length) };
 }
 
@@ -587,7 +588,8 @@ function toggleBulldoze() {
 // Removal by pointer goes to the prop drawn under the pointer (a tall sprite rises well
 // above its footprint), and to the ground tile when no prop is there.
 function targetAt(e) {
-  const hit = board.objectAt(e.clientX, e.clientY);
+  const { object: hit, blocked } = board.pickAt(e.clientX, e.clientY);
+  if (blocked) return null;
   return hit ? { x: hit.x, y: hit.y } : board.tileAt(e.clientX, e.clientY);
 }
 
@@ -1552,17 +1554,20 @@ function historyHtml() {
 
 let rendererStatusKey = '';
 const classicBoardHelp = $('#board-help').textContent;
+let mapRefreshQueued = false;
 const board = createBoardAdapter(el.canvas, {
+  onView: () => { if (!mapRefreshQueued) { mapRefreshQueued = true; queueMicrotask(() => { mapRefreshQueued = false; siteMap.refresh(); }); } },
   enabled: new URLSearchParams(location.search).get('renderer') === '3d',
   onStatus: updateRendererStatus,
 });
+const siteMap = createSiteMap($('#site-map'), board, draw);
 
 function updateRendererStatus(status) {
   const note = $('#renderer-status');
-  const message = status.reason || (status.state === 'loading' ? 'Opening 3D…' : status.active ? '3D Lot preview. Camera and art are still being tested.' : 'Classic view.');
+  const message = status.reason || (status.state === 'loading' ? 'Opening 3D…' : status.active ? '3D room preview. Camera and art are still being tested.' : 'Classic view.');
   if (note && note.textContent !== message) note.textContent = message;
   const toggle = $('[data-act="renderer-toggle"]');
-  if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D Lot'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
+  if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D preview'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
   document.querySelectorAll('[data-camera-preset], [data-camera-orbit]').forEach(button => { button.disabled = !status.active; });
   const help = status.active ? 'Select: tap to inspect, drag to orbit. Place: tap to place; dragging only previews. Two fingers pan and pinch; a middle-button drag pans. Camera controls are in the menu.' : classicBoardHelp;
   if ($('#board-help').textContent !== help) $('#board-help').textContent = help;
@@ -1574,8 +1579,8 @@ function updateRendererStatus(status) {
 
 function openCamera(opener) {
   openWindow('camera', 'Camera', `<p id="renderer-status" class="lede" aria-live="polite"></p>
-    <div class="row"><button type="button" data-act="renderer-toggle">Try 3D Lot</button><button type="button" data-act="renderer-retry">Retry 3D</button></div>
-    <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}</div>
+    <div class="row"><button type="button" data-act="renderer-toggle">Try 3D preview</button><button type="button" data-act="renderer-retry">Retry 3D</button></div>
+    <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}${state.venue.id === 'festival' ? '<button type="button" data-camera-preset="side">Side stage</button>' : ''}</div>
     <div class="lot-camera-controls" role="group" aria-label="Orbit camera"><button type="button" data-camera-orbit="left">Orbit left</button><button type="button" data-camera-orbit="right">Orbit right</button><button type="button" data-camera-orbit="up">Look down</button><button type="button" data-camera-orbit="down">Look forward</button></div>
     <button type="button" data-act="camera-mode" aria-pressed="${!!ui.cameraMode}">Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}</button>
     <p class="hint">Select: tap to inspect, drag to orbit. Two fingers pan and pinch. FOH and Stage use provisional authored eye heights.</p>`, el.menuBtn);
@@ -1603,6 +1608,17 @@ function crowdNow() {
   return 0;
 }
 
+let stageAudienceSource = null, stageAudienceSnapshot = null;
+function stageAudienceForScene() {
+  if (state.venue.id !== 'festival' || !state.show) return null;
+  if (stageAudienceSource !== state) {
+    const sales = (settlementFor(state) || showPreview(state))?.stageAccounts?.sales;
+    stageAudienceSnapshot = sales ? { main: sales.main.attendance, second: sales.second.attendance } : null;
+    stageAudienceSource = state;
+  }
+  return stageAudienceSnapshot;
+}
+
 function draw() {
   const services = state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
   const night = ['show', 'settle', 'done'].includes(state.phase);
@@ -1619,6 +1635,7 @@ function draw() {
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
+    ...(state.venue.id === 'festival' ? { stageAudience: night ? stageAudienceForScene() : null, secondaryStage: { booked: !!state.booking.secondId, artist: state.booking.secondId ? artistFor(state.booking.secondId).name : null } } : {}),
     serviceProgress: state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(1, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 1,
     serviceMinute: services ? services.minute + (state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(0.999, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 0) : 0,
     services,
@@ -1640,6 +1657,7 @@ function draw() {
   }
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
   board.draw(scene);
+  siteMap.update(scene);
   const worker = $('#live-worker');
   if (worker) worker.title = board.info().serviceCrowd?.diagnostic || '';
   updateZoomButtons();
@@ -1673,6 +1691,7 @@ function layoutBoard() {
   root.setProperty('--board-bottom', `${bottom}px`);
   root.setProperty('--clear-cx', `${Math.round(clear.x + clear.w / 2)}px`);
   root.setProperty('--clear-w', `${Math.round(clear.w)}px`);
+  siteMap.layout();
   const key = [width, height, clear.x, clear.y, clear.w, clear.h].join();
   if (key === laidOut) return;
   laidOut = key;
@@ -2434,6 +2453,7 @@ window.__frontOfHouse = {
   buildTools: () => ({ tool: ui.tool, selection: ui.selection, undo: history.undo.length, redo: history.redo.length }),
   board: () => board.info(),
   rendererStatus: () => board.status(),
+  siteMap: () => siteMap.info(),
   rendererRetry: () => board.retry(),
   boardCamera: (value) => value ? board.setCamera(value) : board.camera(),
   boardPreset: (name) => board.preset(name),

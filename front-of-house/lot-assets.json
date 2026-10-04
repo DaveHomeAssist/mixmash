@@ -1,5 +1,5 @@
 {
-  "revision": "lot-sample-4",
+  "revision": "lot-sample-7",
   "provenance": {
     "author": "Codex for Front of House",
     "source": "Procedural geometry and materials in lot-models.mjs",
@@ -29,10 +29,11 @@
     "restroomHeightMetres": 2.3
   },
   "sources": {
-    "lot-models.mjs": "49f3ea9687de21eff8a89fd86c076ea5298c9d5ef4243fadd7d354d0706215bd",
-    "lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
-    "lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
-    "lot-renderer.mjs": "82cbc0b94b83960db4240a269c0c0696e0c951f416f337a78f07e1f16c7b56da",
+    "lot-models.mjs": "8d9d8929658b95e856731fc61f86ff52ee27155d062639a11c655b256ed29758",
+    "lot-camera.mjs": "acb439336f7d19fd7e356ec2cc34a4fa233b3fcbff31a9aaab7172f42d6eb13a",
+    "site-map-geometry.mjs": "496d0f9695ab7939e8228039dbf8e98ebd5be8a403ea7f8280215d444bd1aa3a",
+    "lot-presentation.mjs": "5fdf3765438ab91cb41d6a1f6d2367f4e1a9e5a224ab0c926fcac296159a616e",
+    "lot-renderer.mjs": "1a2f919af6c88d399134d91b3216e63f3e5f5259a836e8540ea59298f0bbbba7",
     "service-crowd.mjs": "cadce68373a76b0284d42717ae6dec557673caa191aba9e668356a3b584427eb",
     "service-guests.mjs": "b66e9f09ce01b53c3c70b013bf913ec3c41294013059890ab85bc78793a2249f",
     "guest-flow.mjs": "5fb4a6775ccab8e5461d282d3d26917c8ad4fc69e83059bf9af7cf720650a1c8"
@@ -60,9 +61,9 @@
       },
       "meshCount": 24,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "d149aab55f414fb44b7918f63cba0a51926aa42a52ccfa83e5e7deb3e3991c2f"
+      "contentDigest": "cf1880db573a44523f58ea5b7d0365de7f3e4504b39f7c10fec709eae7302a87"
     },
     {
       "id": "pa-s",
@@ -86,9 +87,9 @@
       },
       "meshCount": 11,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "13a322893a913e96d05d691ebab59a47015090630f42511033e31992711ca6fd"
+      "contentDigest": "b40ab643906abada8c6d9b854fd90cd2dbe49adb84ed533bc9f21b885f3d5fca"
     },
     {
       "id": "pa-m",
@@ -112,9 +113,9 @@
       },
       "meshCount": 35,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "7659aee9c1057fde50659fc6460aeb66f62cf5280542a9f7b64b5c8d681f2f80"
+      "contentDigest": "c7c8c0c7434d88bfa9bbde728a7f81b5d997d5c05a62470ea3eac665989b0c46"
     },
     {
       "id": "lights",
@@ -138,9 +139,9 @@
       },
       "meshCount": 6,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "7898ec7518798ae7d7ce75576c3ccc81beb04e5adfa53b184a11e033e27c7c4d"
+      "contentDigest": "76156137f2449e94bf5f0f54c73d3b88b4ca381b6ecba4ce5f8ae0e7031c0960"
     },
     {
       "id": "bar",
@@ -164,9 +165,9 @@
       },
       "meshCount": 8,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "c1e3430b397cff5b4cea05761da70336887c00ee0790ec1a7c295d1a2d63f99f"
+      "contentDigest": "374400de481d13fa549b04686ff6763f9ce90a60e994dd292712bde34fe374c3"
     },
     {
       "id": "food",
@@ -190,9 +191,9 @@
       },
       "meshCount": 9,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "100fef4ea55de21e37cfb6cbf565187b89e3631063a617c7fdd6ad3445b45f1a"
+      "contentDigest": "224c7f0d04a316c2c43c4f7b406adfd432e227c16a4665386e4c80c12ff9ffc6"
     },
     {
       "id": "trailer",
@@ -216,9 +217,9 @@
       },
       "meshCount": 18,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "ed29ca1e89755fa8e752dc25d1b121182d50bc40e6531667c7d630ddf4ebe4c9"
+      "contentDigest": "d4637d9f2b8ba58165bf60478283d1a21dcbd7d25aaa556d6e1e9e085cd061e0"
     },
     {
       "id": "restroom",
@@ -242,9 +243,9 @@
       },
       "meshCount": 14,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "1cda18452b2a8dd06305736bdeeef91f4f35f47f9ecd3208a3786608f7730686"
+      "contentDigest": "b2c38ad0f6e0df733510c71f5fdf632c7c84a81d4d2b15753e3898b32b2baa76"
     },
     {
       "id": "gate",
@@ -268,9 +269,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "1abf3b020a2ce1ed1a7e3aef625fe2bbca55a9f47dc481b937a78b151dac9569"
+      "contentDigest": "3a3d98d6fee561d420e2b7f784bfbd483edbd8a3f661572ee4c44aaed631dc2b"
     },
     {
       "id": "exit",
@@ -294,9 +295,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "793aaefaa67d9066f15a65a5d6613be2d72a566a3b8a8d9784d07822069d7a7d"
+      "contentDigest": "4b12a10d16bbc6c6b5a684c31d8d51f42b7fbfc08fb64fc781c20fee65b870fb"
     },
     {
       "id": "guest",
@@ -317,9 +318,1915 @@
       },
       "meshCount": 16,
       "pickProxy": "not selectable; representative decoration",
-      "materialRevision": "lot-sample-4",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "9a11c5182a88a9810c806ad748b0dadd952eef8b95c5ed993beb5cabfe38107d"
+      "contentDigest": "718cae0563160b5b7b212a173ab5485f68e124af26503268239b225c440a0cb1"
+    }
+  ],
+  "rooms": [
+    {
+      "id": "club",
+      "grid": {
+        "w": 20,
+        "h": 14
+      },
+      "housePa": "M",
+      "pillars": [
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          13,
+          5
+        ],
+        [
+          13,
+          6
+        ]
+      ],
+      "seats": 0,
+      "presentationExtent": null,
+      "collision": "Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints",
+      "pickProxy": "Opaque fixed meshes occlude placed objects; permanent scenery is not removable",
+      "parts": [
+        {
+          "id": "club-back-wall",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              0,
+              0,
+              -0.155
+            ],
+            "max": [
+              20,
+              3,
+              -0.005
+            ]
+          }
+        },
+        {
+          "id": "club-west-cutaway",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              -0.155,
+              0,
+              0
+            ],
+            "max": [
+              -0.005,
+              0.3,
+              14
+            ]
+          }
+        },
+        {
+          "id": "club-east-cutaway",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              20.005,
+              0,
+              0
+            ],
+            "max": [
+              20.155,
+              0.3,
+              14
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-6-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              6,
+              0,
+              5
+            ],
+            "max": [
+              7,
+              3,
+              6
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-base-6-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              6,
+              0,
+              5
+            ],
+            "max": [
+              7,
+              0.15,
+              6
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-6-6",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              6,
+              0,
+              6
+            ],
+            "max": [
+              7,
+              3,
+              7
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-base-6-6",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              6,
+              0,
+              6
+            ],
+            "max": [
+              7,
+              0.15,
+              7
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-13-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13,
+              0,
+              5
+            ],
+            "max": [
+              14,
+              3,
+              6
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-base-13-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13,
+              0,
+              5
+            ],
+            "max": [
+              14,
+              0.15,
+              6
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-13-6",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13,
+              0,
+              6
+            ],
+            "max": [
+              14,
+              3,
+              7
+            ]
+          }
+        },
+        {
+          "id": "club-pillar-base-13-6",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13,
+              0,
+              6
+            ],
+            "max": [
+              14,
+              0.15,
+              7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-suspension",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              1,
+              2.89,
+              1.44
+            ],
+            "max": [
+              19,
+              3.01,
+              1.56
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              5.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              5.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              5.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              5.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              5.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              5.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              5.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              5.765,
+              2.87,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              14.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              14.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              14.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              14.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              14.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              14.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              14.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "club-house-pa-grille-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              14.765,
+              2.87,
+              1.7155
+            ]
+          }
+        }
+      ],
+      "contentDigest": "d07e8d4307411d2b03d55920f22f1e0ac3d6f6bf93b88e0b5bee214e67b2b981"
+    },
+    {
+      "id": "amphitheater",
+      "grid": {
+        "w": 28,
+        "h": 18
+      },
+      "housePa": "M",
+      "pillars": [],
+      "seats": 400,
+      "presentationExtent": null,
+      "collision": "Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints",
+      "pickProxy": "Opaque fixed meshes occlude placed objects; permanent scenery is not removable",
+      "parts": [
+        {
+          "id": "shell-panel-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              10.49,
+              2,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              10.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              11.49,
+              2.5,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              11.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              12.49,
+              2.9,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              12.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              13.49,
+              3.2,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-4",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              14.49,
+              3.4,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              14.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              15.49,
+              3.2,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-6",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              16.49,
+              2.9,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-7",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              16.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              17.49,
+              2.5,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-panel-8",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              17.51,
+              0,
+              -0.19
+            ],
+            "max": [
+              18.49,
+              2,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-west-wing",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              8.5,
+              0,
+              -0.19
+            ],
+            "max": [
+              9.5,
+              1.2,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-east-wing",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.5,
+              0,
+              -0.19
+            ],
+            "max": [
+              19.5,
+              1.2,
+              -0.01
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-west-0",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              5.5,
+              0,
+              4.89
+            ],
+            "max": [
+              13,
+              0.008,
+              5.11
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-east-0",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              15,
+              0,
+              4.89
+            ],
+            "max": [
+              22.5,
+              0.008,
+              5.11
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-west-1",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              5.5,
+              0,
+              5.69
+            ],
+            "max": [
+              13,
+              0.008,
+              5.91
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-east-1",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              15,
+              0,
+              5.69
+            ],
+            "max": [
+              22.5,
+              0.008,
+              5.91
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-west-2",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              5.5,
+              0,
+              6.49
+            ],
+            "max": [
+              13,
+              0.008,
+              6.71
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-east-2",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              15,
+              0,
+              6.49
+            ],
+            "max": [
+              22.5,
+              0.008,
+              6.71
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-west-3",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              5.5,
+              0,
+              7.29
+            ],
+            "max": [
+              13,
+              0.008,
+              7.51
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-east-3",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              15,
+              0,
+              7.29
+            ],
+            "max": [
+              22.5,
+              0.008,
+              7.51
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-west-4",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              5.5,
+              0,
+              8.09
+            ],
+            "max": [
+              13,
+              0.008,
+              8.31
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-east-4",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              15,
+              0,
+              8.09
+            ],
+            "max": [
+              22.5,
+              0.008,
+              8.31
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-west-5",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              5.5,
+              0,
+              8.89
+            ],
+            "max": [
+              13,
+              0.008,
+              9.11
+            ]
+          }
+        },
+        {
+          "id": "shell-seat-guide-east-5",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              15,
+              0,
+              8.89
+            ],
+            "max": [
+              22.5,
+              0.008,
+              9.11
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-suspension",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              1,
+              2.89,
+              1.44
+            ],
+            "max": [
+              27,
+              3.01,
+              1.56
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              9.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              9.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              9.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              9.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              9.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              9.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              9.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              9.765,
+              2.87,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              18.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              18.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              18.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              18.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              18.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              18.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              18.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "amphitheater-house-pa-grille-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              18.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              18.765,
+              2.87,
+              1.7155
+            ]
+          }
+        }
+      ],
+      "contentDigest": "db71d42088c779494b5aa486dd1bebf38079a367ac5d6cd1d7a966803313d02b"
+    },
+    {
+      "id": "festival",
+      "grid": {
+        "w": 40,
+        "h": 24
+      },
+      "housePa": "M",
+      "pillars": [],
+      "seats": 0,
+      "presentationExtent": {
+        "width": 52,
+        "depth": 24,
+        "annex": {
+          "x": 40,
+          "y": 0,
+          "w": 12,
+          "h": 16
+        },
+        "stage": {
+          "x": 43,
+          "y": 1,
+          "w": 6,
+          "h": 3
+        }
+      },
+      "collision": "Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints",
+      "pickProxy": "Opaque fixed meshes occlude placed objects; permanent scenery is not removable",
+      "parts": [
+        {
+          "id": "festival-side-apron",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40,
+              -0.02,
+              0
+            ],
+            "max": [
+              52,
+              -0.004,
+              16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-deck",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43,
+              0.42,
+              1
+            ],
+            "max": [
+              49,
+              0.55,
+              4
+            ]
+          }
+        },
+        {
+          "id": "festival-side-skirt",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43,
+              0,
+              3.975
+            ],
+            "max": [
+              49,
+              0.42,
+              4.025
+            ]
+          }
+        },
+        {
+          "id": "festival-side-support-43.1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43.04,
+              0,
+              1.04
+            ],
+            "max": [
+              43.16,
+              2.8,
+              1.16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-43.1-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              42.825,
+              1.7,
+              1.3
+            ],
+            "max": [
+              43.375,
+              1.9,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-43.1-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              42.825,
+              1.92,
+              1.3
+            ],
+            "max": [
+              43.375,
+              2.12,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-43.1-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              42.825,
+              2.14,
+              1.3
+            ],
+            "max": [
+              43.375,
+              2.34,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-support-48.9",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.84,
+              0,
+              1.04
+            ],
+            "max": [
+              48.96,
+              2.8,
+              1.16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-48.9-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.625,
+              1.7,
+              1.3
+            ],
+            "max": [
+              49.175,
+              1.9,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-48.9-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.625,
+              1.92,
+              1.3
+            ],
+            "max": [
+              49.175,
+              2.12,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-48.9-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.625,
+              2.14,
+              1.3
+            ],
+            "max": [
+              49.175,
+              2.34,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-header",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43,
+              2.775,
+              1.04
+            ],
+            "max": [
+              49,
+              2.925,
+              1.16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-backdrop",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43.15,
+              0.575,
+              1.02
+            ],
+            "max": [
+              48.85,
+              2.725,
+              1.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-4",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              3.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              4.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-6",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              5.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              6.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-8",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              7.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              8.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-10",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              9.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              10.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-12",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              11.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              12.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-14",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              13.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              14.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              1,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              3.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              7.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-9",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              11.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-13",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              15.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-17",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              17,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              19.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-21",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              21,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              23.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-25",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              25,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              27.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-29",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              29,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              31.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-33",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              33,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              35.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-37",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              37,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              39.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-suspension",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              1,
+              2.89,
+              1.44
+            ],
+            "max": [
+              39,
+              3.01,
+              1.56
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.87,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.87,
+              1.7155
+            ]
+          }
+        }
+      ],
+      "contentDigest": "452c4878e60a28b2a0c3a9e6a85414889950dd9cb15f76c61097c7d76abafc57"
     }
   ],
   "acceptance": {

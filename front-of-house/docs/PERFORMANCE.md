@@ -140,8 +140,107 @@ Cadence ranges 59.20–60.00 Hz; no interval exceeds 50 ms. The populated ultraw
 
 ## CI calibration
 
-The existing CI workflow exposes an explicit `foh_performance` manual input. Its separate `foh-performance` job uses Ubuntu 24.04, Node22 and Playwright's Chromium/SwiftShader to run the complete standard DPR1 renderer protocol. Invoke the existing workflow with `gh workflow run ci.yml --ref codex/foh-ci-calibration -f foh_performance=true` while evaluating this branch; after delivery, use `--ref gh-pages`. Ordinary PR correctness jobs remain unchanged, and this adds no schedule.
+The existing CI workflow exposes an explicit `foh_performance` manual input. Its separate `foh-performance` job uses Ubuntu 24.04, Node22 and Playwright's Chromium/SwiftShader to run the complete standard DPR1 renderer protocol. Invoke the existing workflow with `gh workflow run ci.yml --ref codex/foh-ci-calibration -f foh_performance=true` for the original calibration; subsequent calibration uses `--ref gh-pages`. Ordinary PR correctness jobs remain unchanged, and this adds no schedule.
 
 Expect at least twelve minutes of sampling plus setup, with a 35-minute job timeout. The JSON report records an allowlist of runner class/OS/architecture/image version and run/attempt IDs. An always-run artifact step retains the report, public synthetic fixtures and returned raw JSON samples for thirty days, including failed-window evidence when available. It uploads no private local measurement directory or browser profile. Whole-job interruption can prevent the final artifact step; the run's logs remain the source for that failure.
 
-Download the named artifact, verify its source and raw/fixture digests and inspect every repeat before adopting limits. The calibration job currently rejects invalid measurement windows; it does not impose a speed threshold or prove the 60fps/30fps physical-device targets. A subsequent regression gate must name the calibrated runner/browser/scene class and demonstrate failure with an intentional slowdown. CI execution and baseline retrieval remain pending until recorded with an actual run ID.
+Download the named artifact, verify its source and raw/fixture digests and inspect every repeat before adopting limits. The calibration job currently rejects invalid measurement windows; it does not impose a speed threshold or prove the 60fps/30fps physical-device targets. A subsequent regression gate must name the calibrated runner/browser/scene class and demonstrate failure with an intentional slowdown. The completed calibration is recorded below; timing limits remain a separate gate.
+
+## Completed GitHub runner calibration
+
+All 18 full windows at clean source `6ed7b7c2991ef0d8ccc71fe167444f5422cd7483` are valid. [Run 37205343575](https://github.com/DaveHomeAssist/mixmash/actions/runs/37205343575) passed both calibration and normal correctness jobs. The downloaded JSON artifact (ID11305185297, thirty-day retention) was audited against every source/fixture/raw digest and recomputed statistics. [Every repeat](../performance/2026-10-04-ci.json) is retained in the public summary.
+
+Runner: Ubuntu24.04 image20260927.320.1, Linux x64, four logical AMD EPYC7763 CPUs, approximately16GiB; Chromium149.0.7827.55, verified SwiftShader. Standard three viewports, requested DPR1, empty/150-guest scenes, three repeats,10s warm-up/30s sampling. Empty cadence ranges10.68–54.74Hz and crowd cadence1.91–3.06Hz. Large software-rendered frame intervals are retained, not treated as hardware performance. Valid measurements do not mean the software backend meets60fps.
+
+[PR82](https://github.com/DaveHomeAssist/mixmash/pull/82) passed required CI37205357305 and merged at `431cec064f4219c09abbfd25e0557920df59ef5c`; Pages built13:41:30Z. Deployed harness, procedure and brief match. [PR81](https://github.com/DaveHomeAssist/mixmash/pull/81) separately delivered the high-density evidence after CI37205050774, mergebc5ed37 and Pages13:35:36Z, with four live files verified.
+
+## Native visible desktop measurement
+
+Six complete renderer windows at the same clean6ed7b7c source use installed Chrome154.0.8037.97 in a visible, focused, isolated window on the available Apple M4 host. Actual content size5120×1286, DPR1 and equal backing dimensions; three empty and three crowd repeats, same full protocol. Cadence59.9764–59.9812Hz, zero intervals over50ms. [All six results](../performance/2026-10-04-native.json) retain source/private-harness/fixture/raw/report digests. No other local test or build from this task ran during timing.
+
+The original private report inherited an incorrect “headless” suffix in its graphics label. The actual launch and protocol were headed; the public summary preserves that original label and explicitly corrects the classification. Original evidence bytes remain unchanged. Chrome154 results are not a same-browser comparison with earlier Chromium149 measurements. This measures the isolated renderer on an actual desktop, excluding full HUD timing, physical touch, human readability and low-power/battery qualification.
+
+Reproduce with `npm run perf:front-of-house -- --native-chrome --gpu=metal`. It requires installed Chrome, uses a fresh profile, fills the actual available display area and records the content geometry. It does not emulate density; combining it with `--dpr=2` or `--large-viewports` fails. Loss of focus invalidates a native timing window. The public command was added after the recorded full run and separately checked with two short validation windows.
+
+## Actual attached-display transitions
+
+The full isolated client passed DPR1 → DPR2 → DPR1 by moving its own Chrome window between actual attached displays. CSS viewport stayed1000×613; backing changed1000×613 →2000×1226 →1000×613. Exact game state, yaw37/135 picking, active3D rendering, focus/visibility and page containment passed. No device-metrics emulation or direct renderer resize was used. [Sanitized evidence](../performance/2026-10-04-displays.json) retains the source6ed7b7c, harness/report hashes and state digest; private display coordinates and screenshots remain local.
+
+Reproduce with `npm run smoke:front-of-house-displays` on a Metal host with installed Chrome and attached DPR1/DPR2 displays. Optional `FRONT_OF_HOUSE_DISPLAY_OUTPUT` must name an empty private directory; the default is temporary. Screen enumeration permission is granted only inside the isolated context for its loopback origin. This is a manual hardware check, excluded from ordinary CI. Both the initial public command and its cleanup refactor passed actual display moves. Native and headless short validation, plus a deliberate missing-browser launch, verify the reproduction tool; the launch failure is recorded and exits without leaving its server running.
+
+Remaining FOH-P01 work includes declared CI regression limits with actual slowdown rejection, reduced-cost/fallback policy and supported low-power/phone measurements. Human art, camera and readability acceptance remains separate. The accepted device targets remain60fps desktop and30fps low-power.
+
+## Paired regression policy under verification
+
+FOH-P01g implements a same-runner comparison against calibrated `6ed7b7c2991ef0d8ccc71fe167444f5422cd7483`. Normal PR correctness checks remain; the additional job measures changes to Front of House modules/vendor files, measurement tools, dependency lock or workflow. Unrelated changes skip timing. Manual dispatch uses `foh_performance_gate=true`; `foh_performance_fault=true` additionally runs the deliberate slowdown.
+
+Each baseline/candidate has all18 full windows. The gate audits source/fixture/raw digests, recomputes statistics, requires identical rendered scenes/browser/runner/backing/motion/guest count and compares median-of-three timing per scene/viewport. Whole fixture state may differ when unrelated career fields evolve, but the exact rendered scene must match. Invalid/quick/missing/duplicate evidence fails before budget evaluation.
+
+Initial delegated engineering limits: frame mean and p95 may increase by the larger of25% or8ms; CPU submission p95 by the larger of50% or1ms. These exceed the repeat variation in the recorded calibration and are conservative regression alarms, not new60fps/30fps device acceptance limits. The baseline is pinned and never updated automatically. Sequential paired runs reduce runner-class variance but retain time-dependent host noise.
+
+The optional `--fault-cpu=20` inserts real CPU work only inside the isolated measurement harness, recorded in protocol metadata. The fault-proof step requires valid full samples and an actual numeric budget failure; a fault flag, invalid report or quick-mode rejection cannot pass that proof. Ordinary comparison rejects injected runs. All JSON is retained30days, including invalid windows. Full pair sampling takes about26minutes; adding fault evidence takes about40minutes. Live paired/fault acceptance remains pending until linked to a completed run.
+
+## Full native 3D client and HUD baseline
+
+[All six native HUD windows](../performance/2026-10-04-native-hud.json) at clean `aa5f6a3339cb666ec5729403afb9dffc00786cfb` are valid. Installed Chrome154.0.8037.97, Apple M4 Metal, actual5120×1286 content/backing at DPR1; full client/HUD and seed170 live flow-version1 show. Each uses10s warm-up and30s sampling, starting at minute25 and reaching65. Fixed and actual middle-drag cameras alternate across three repeats at zoom2. Focus/visibility, containment, real motion and exact engine-state replay all pass. Original report/source/fixture/raw hashes verify.
+
+| Repeat | Fixed cadence Hz / intervals >50ms | Moving cadence Hz / intervals >50ms | Fixed / moving render calls across warm-up and measurement |
+| --- | --- | --- | --- |
+| 1 | 59.98 /0 | 59.97 /0 | 2441 /4843 |
+| 2 | 59.44 /0 | 47.58 /2 | 2421 /3918 |
+| 3 | 52.91 /1 | 49.32 /0 | 2110 /3999 |
+
+These below-target runs are retained. Shared-host load varies; no concurrent local tests/builds/other browser checks from this task ran during timing. The evidence does not establish sustained60fps, thermal causality, GPU completion or human readability. Camera events and the running-show loop both call the renderer; their duplicate submissions are independently observable and motivate application-only deferred rendering. The standalone benchmark stays synchronous. Candidate comparison and delivery remain pending.
+
+Reproduce with `npm run perf:front-of-house-native-hud` using installed Chrome on a Metal host; `FRONT_OF_HOUSE_HUD_OUTPUT` names an empty private output directory. The command uses native geometry/density, isolated storage and six complete windows; `--quick` is only tool validation. It was published after the frozen private-harness baseline; both source attributions remain explicit. Screenshots and raw state stay private.
+
+## Full native HUD batching comparison
+
+Delivery CI37208943333 caught a stale renderer digest in the generated Lot manifest. Regeneration changes only that digest; vendor and asset checks pass afterward. The frozen candidate below also contained the old manifest entry, while its independently recorded renderer source hash is correct. Original measurement bytes and hashes are retained; this metadata correction does not alter the measured geometry or runtime.
+
+[All six candidate windows](../performance/2026-10-04-batched-hud.json) at clean `5f47c4ae370f87caab60123090bd961b7f22181a` pass the full audit. The fixture hash, installed Chrome154, native5120×1286/DPR1 window, private harness, timing/camera protocol and exact final game states match the baseline. Only the adapter and renderer runtime source digests differ. Geometry, materials, backing, attendance, model resources and provenance match; the application now opts into deferred rendering.
+
+| Repeat | Fixed cadence Hz / intervals >50ms | Moving cadence Hz / intervals >50ms | Fixed / moving render calls across warm-up and measurement |
+| --- | --- | --- | --- |
+| 1 | 59.68 /0 | 59.08 /1 | 2322 /2343 |
+| 2 | 56.64 /0 | 55.91 /0 | 2293 /2211 |
+| 3 | 57.78 /1 | 59.84 /0 | 2320 /2381 |
+
+Moving-camera submissions fall from3918–4843 to2211–2381 over each warm-up-plus-measurement span. The deterministic browser test independently verifies coalescing many updates into one frame, immediate picking, pause, real context recovery and disposal. Fixed-camera counts vary with host cadence; their third repeat has more calls than the slower baseline, which is retained. Timing ranges55.91–59.84Hz with two intervals over50ms; these measurements occurred later on the shared host and do not isolate all causes or prove sustained60fps. Renderer work reduction is verified separately from frame-rate acceptance.
+
+The comparison predates integration of the newer career source193c54c. Its original revisions are not relabeled; integrated player/CI/hosted checks follow separately. The source-only reproduction command passed two short native windows before this full comparison. All28 legacy checks, four live-control journeys, eight crowd/movement journeys and six vendor journeys pass with batching, alongside the full3D/recovery/settlement and backend/resolution checks.
+
+## Completed CI regression validation
+
+[Paired evidence and measured negative control](../performance/2026-10-04-ci-paired.json) records two successful comparisons and a valid deliberate20ms CPU slowdown. CI37207123068 measured the actual generated PR merge42c1e0f; manual37207121746 measured branchaa5f6a3, both against pinned6ed7b7c. Independent audits verify all90 full windows, exact source/fixture/raw digests, recalculated statistics and comparison results. The fault run fails CPU p95 in every scene/viewport group:20.9–27.4ms medians against1.3–10.35ms limits. Invalid evidence was not used as a substitute for numeric rejection. These software-runner results establish regression detection, not device frame-rate acceptance; later integrated delivery still requires its own CI.
+
+## Club renderer diagnostic
+
+`npm run perf:front-of-house -- --venue=club --native-chrome --gpu=metal` repeats the full empty/crowd protocol on the actual visible desktop window, with isolated storage. The frozen seed170 Sandbox Club fixture uses existing medium house PA, starter layout,360 actual attendees and180 representative models. Fixed pillars remain present in the empty room. `--quick` validates the harness only. The default Lot fixture, cadence path and CI gate remain unchanged; Club reports are separate diagnostics and cannot substitute for a comparable Lot regression pair or full-client/human acceptance.
+
+[All six Club windows](../performance/2026-10-04-club-native.json) retain every repeat and report/source/fixture/raw digests. Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance. No other browser test or build from this task ran during timing; other host load remains uncontrolled. The canonical camera path is retained literally (including its Lot center), so this is a reproducible diagnostic rather than a room-specific operator camera study.
+
+## Amphitheater renderer diagnostic
+
+`npm run perf:front-of-house -- --venue=amphitheater --native-chrome --gpu=metal` uses a separate seed3 Sandbox fixture with the existing starter,700 attendees/180 representatives and rain. The full protocol is three empty/three crowd windows at10s warm-up plus30s measurement. `--quick` is harness validation only. The canonical camera path, including its original center, is retained; this is a renderer diagnostic, not an operator-camera study or a replacement for the comparable Lot CI gate. Native measurement and full-game/device acceptance are recorded separately.
+
+[All six Shell windows](../performance/2026-10-04-shell-native.json) retain every repeat with source/fixture/raw/report digests. Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.
+
+
+## Festival renderer diagnostic
+
+`npm run perf:front-of-house -- --venue=festival --native-chrome --gpu=metal` uses a separate seed8 Sandbox fixture: Paper Voltage guarantee, Hollow Census side bill, versioned stage policy, starter layout and actual engine allocation of5500 main/500 side attendees. The gate-jam incident is retained. At most180 representatives are shared across both stages. The full protocol retains three empty/three crowd windows,10s warm-up and30s measurement; `--quick` validates the harness only. The standard camera path is unchanged, including its original center. This is a renderer diagnostic, not a venue navigation study or the full game/HUD acceptance gate. Stage-accounting source is included in the fixture digests. Native results and human/low-power acceptance remain separately recorded.
+
+[All six Festival windows](../performance/2026-10-04-festival-native.json) retain every repeat with source/fixture/raw/report digests. Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9746–59.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.
+
+## Site overview full-client comparison
+
+Run `npm run perf:front-of-house-native-hud -- --festival` and a separate `--festival --overview-hidden` run in fresh output directories. Both use the same seed8 Sandbox Festival, versioned two-stage policy, Paper Voltage/Hollow Census bill, starter layout,20-price promotion and gate incident. The engine holds6000 total attendance; playback is paused at its actual incident progress0.095, so the client shows1267 arrivals and180 representatives (165 main/15 side). Each mode records three fixed/three actual-middle-drag native windows at10s warm-up and30s measurement. The hidden comparison only hides the overview element; source, geometry, quality, HUD and immutable saved fixture are identical.
+
+The harness checks actual camera motion, unchanged game state, full attendance/model values and map redraw counts: a fixed or hidden map must reuse its pixels, while a visible moving map must update throughout the window. `--quick` validates setup only. An initial setup check incorrectly expected all6000 attendees to be visible at the early gate pause; it was corrected to the existing playback interpolation, without changing the game. The full-client evidence is separate from renderer-only timing, the live-Lot KI-14 investigation and human/physical-device acceptance. Full measured comparison remains pending until recorded below.
+
+### Native overview comparison, 2026-10-04
+
+[All twelve full-client windows](../performance/2026-10-04-navigation-native.json) retain each repeat and frozen-source digests. Twelve full native overview windows at clean ca1f1a7 pass independent source/raw/fixture digests, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1: visible 59.44–59.98 Hz, hidden 59.51–59.98 Hz, zero intervals over50ms. Each mode has three fixed/three actual pointer-pan repeats with10s warmup/30s measurement. All preserve6000 total attendance,1267 displayed arrivals and180 representatives. Visible moving windows repaint; fixed and hidden windows reuse the image. Sequential descriptive results overlap; no causal improvement, running-Lot KI-14 closure, phone/low-power or human acceptance inferred.
+
+The measurements predate the integrated sponsor and Shell profile rules; they qualify only the recorded frozen source. The combined release receives its own source and browser regression checks.

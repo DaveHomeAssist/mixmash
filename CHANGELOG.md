@@ -4,6 +4,20 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: reuse unchanged camera volume fit for pan and zoom, preserving projection, picking, presets and saved outcomes.
+
+- Front of House: zoomed Split Acre gets a desktop site overview with a perspective-correct ground outline, rotated layout blocks and pointer/keyboard panning. It preserves zoom and saves, avoids HUD controls, and hides at Fit or on phones.
+
+- Front of House: Split Acre technical 3D preview adds a fixed side-stage annex, keyboard-accessible Side stage camera and a shared 180-person representative limit. Stage audience uses versioned accounting when present; legacy unknown allocation stays explicit. The editable yard remains 40 × 24.
+
+- Front of House: Loam Shell technical3D preview adds a source-owned cutaway and pick-through seating/lawn guides, preserving existing prices, capacity, held nights and saves.
+
+- **Front of House Club preview:** source-owned Fathom Hall cutaway, four pillar cells and the existing house PA; room-sized camera/grid/crowd, opaque-scene picking and safe renderer switching. New placement refuses fixed pillars while legacy saves retain their layout and accounting. Noninteractive board status messages no longer intercept touch. Technical preview; final art review remains open.
+
+- **Front of House performance:** recorded full CI, high-density, native renderer and real-display evidence; added paired regression limits with a measured fault control. The full native 3D/HUD diagnostic retains below-target repeats and exact engine replay. The application now coalesces camera/scene renders per animation frame, preserving synchronous standalone behavior and unchanged simulation/quality.
+
+- **Front of House measurement evidence:** published all CI calibration and native desktop/display repeats with source and raw digests; isolated reproduction commands preserve failures and clean up failed launches. No runtime or device-acceptance claim is implied.
+
 - **Front of House food vendor:** optional placed Lot stall, locked pre-doors contracts, finite shared guest budgets/stock, green food queues and separate vendor/house receipts. Only the house share enters settlement; artist pay and old shows retain their rules. Source-owned stall geometry and offline cache v37.
 
 - **Front of House normal departure:** new live Lot shows check connected access before payment, continue the saved clock through visible guest exits and unlock settlement only after the audience clears. Inside counts remain separate from attendance and receipts. Older live shows retain their closing rules. Service worker v35.

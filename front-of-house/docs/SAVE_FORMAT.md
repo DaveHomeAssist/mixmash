@@ -191,6 +191,10 @@ Nine adapter checks cover both offered deals, paid incidents, sponsor opening, h
 
 New signed history rows also retain optional `cashAfter`, the exact cash immediately after signing and before a held run's next opening payment. It is display evidence only and never credits cash. Valid safe-integer values survive normalization; older rows show current cash and explicitly state that historical cash was not recorded. The signed settlement uses this snapshot so later equipment or development spending cannot change its historical cash bridge.
 
+### Club fixed-pillar editing compatibility
+
+The technical Club preview introduces no saved fields or schema change. New editing commands reject pillar overlaps, but normalization and historical evaluation keep their existing layout rules. Existing overlap saves are preserved without removing objects, charging money or rewriting past show outcomes; newly submitted replacement layouts must obey the fixed pillars.
+
 ## Optional Club ticketing contract (FOH-V02a2)
 
 Schema2 accepts `promotion.ticketing` as null or `{version:1,plan:"direct"|"platform"}` only in Fathom Hall. Doors copy recognized terms to `show.ticketing`. Active and signed shows read that frozen source; saved fee amounts and rates are ignored. An absent marker retains the original split and output shape. The platform's4% presale collection fee is withheld once from settlement receipts, outside artist-deductible production costs and show opening. Net, payout and the optional journal use the same derived amount.

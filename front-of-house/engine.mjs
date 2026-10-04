@@ -359,6 +359,17 @@ export function validateLayout(objects, venue) {
   return { accepted: final, problems };
 }
 
+// New editing commands enforce fixed pillars; loading and historical evaluation keep their existing semantics.
+export function validatePlacement(objects, venue) {
+  const result = validateLayout(objects, venue), pillars = new Set(venueSpec(venue).pillars.map(([x, y]) => key(x, y)));
+  objects.forEach((object, index) => {
+    if (result.problems.some(p => p.index === index) || D.OBJECT_TYPES[object.type].kit) return;
+    if (footprint(object).some(([x, y]) => pillars.has(key(x, y)))) result.problems.push({ index, type: object.type, message: `${D.OBJECT_TYPES[object.type].label} overlaps a fixed pillar` });
+  });
+  result.problems.sort((a, b) => a.index - b.index);
+  return result;
+}
+
 function stageGeometry(stage) {
   const { w, h } = dims(stage);
   const facing = [[0, 1], [-1, 0], [0, -1], [1, 0]][stage.rot];
@@ -1253,7 +1264,7 @@ function applyActionCore(state, action) {
       const o = action.object;
       if (!isObj(o)) return fail(state, 'Nothing to place');
       const obj = { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot };
-      const { problems } = validateLayout([...s.venue.objects, obj], s.venue);
+      const { problems } = validatePlacement([...s.venue.objects, obj], s.venue);
       const mine = problems.find((p) => p.index === s.venue.objects.length);
       if (mine) return fail(state, mine.message);
       const t = D.OBJECT_TYPES[obj.type];
@@ -1264,7 +1275,7 @@ function applyActionCore(state, action) {
       if ((err = need('build'))) return fail(state, err);
       if (!Array.isArray(action.objects)) return fail(state, 'A layout is a list of objects');
       const objects = action.objects.map((o) => (isObj(o) ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o));
-      const { accepted, problems } = validateLayout(objects, s.venue);
+      const { accepted, problems } = validatePlacement(objects, s.venue);
       if (problems.length) return fail(state, problems[0].message);
       s.venue.objects = accepted;
       return { state: s, error: null };

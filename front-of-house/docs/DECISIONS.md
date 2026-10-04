@@ -23,6 +23,9 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-17](#ct-dec-17-performance-acceptance) | Stable CI regression scenes and declared real-device targets (D5 A) | Accepted |
 | [CT-DEC-18](#ct-dec-18-realistic-3d-art-direction) | More realistic 3D visual target (D2 B) | Accepted |
 | [CT-DEC-19](#ct-dec-19-delegated-milestone-decisions) | Autonomous D6–D11 A selections and delegated decision authority | Accepted |
+| [CT-DEC-20](#ct-dec-20-live-service-pilot-rules-and-compatibility) | Live service pilot rules and compatibility | Accepted experiment |
+| [CT-DEC-21](#ct-dec-21-measured-ci-regression-policy) | Paired CI timing limits, retained full-client evidence and render batching | Accepted engineering policy |
+| [CT-DEC-22](#ct-dec-22-fixed-scenery-editing-and-legacy-compatibility) | Fixed scenery editing and legacy compatibility | Accepted engineering policy |
 
 ## CT-DEC-01: Core scope
 
@@ -493,3 +496,34 @@ This update records decisions; it does not implement the pilots or certify unper
 **Status:** Accepted for an opt-in experiment, selected autonomously by Codex under Dave's delegated phase-execution authority, 2026-10-04. This is not public-launch or human-playtest acceptance.
 
 Use the bounded deterministic minute model in R-LIVE-01, with explicit Promote selection and a saved show checkpoint. The initial 6/36-minute arrival patterns, two-minute transfers, 12-minute patience, station-specific worker rates and one bar request per admitted guest are experimental values in data.mjs. Preserve the existing career and doors-snapshot paths when unselected. Incident responses change future arrivals/service only; real receipts replace forecasts only in the pilot. Hold all service income until one-time career settlement. Older clients require a forward fix after opt-in because they cannot interpret the checkpoint. Test paired Lot outcomes and browser/reload behavior before delivery; representative queue animation and human readability/balance proof remain separate work.
+
+## CT-DEC-21 Measured CI regression policy
+
+- Date:2026-10-04
+- Status:Accepted engineering policy, selected by Codex under CT-DEC-19; implementation verification and device/human acceptance remain separate.
+- Evidence:[full calibration and repeated hardware diagnostics](PERFORMANCE.md), calibrated source6ed7b7c, CI run37205343575; [full native HUD results](../performance/2026-10-04-native-hud.json) at aa5f6a3.
+
+Compare a pinned calibrated revision and the candidate sequentially on the same CI runner with the same browser, rendered fixtures and quality. Require all18 full windows per revision, audit the raw evidence, and compare median-of-three per scene/viewport. Frame mean/p95 may increase by the larger of25% or8ms; CPU submission p95 by the larger of50% or1ms. These exceed observed within-calibration variation and tolerate measurement noise while flagging substantial regressions. They are not device frame-rate thresholds and do not automatically accept a new baseline. Recalibration is explicit when browser, fixture, camera/reporting or quality changes.
+
+Prove the gate with20ms of actual isolated-harness CPU work and require numeric rejection of valid full samples. Do not equate a flag, invalid evidence or a quick sample with slowdown detection. Existing correctness checks remain mandatory. Full live paired/fault proof is still pending at this decision revision.
+
+The native full client records47.58–59.98Hz across six valid windows; retain every result and exact engine-state replay. It does not meet a claim of sustained60fps. Coalesce application camera/scene updates into one scheduled render without reducing quality; keep standalone rendering synchronous for stable contracts and measurement semantics. Fewer renders prove less submitted work; only repeated measured evidence can support a cadence claim. Thermal/shared-host noise, low-power/phone and human acceptance remain separate.
+
+## CT-DEC-22 Fixed scenery editing and legacy compatibility
+
+**Status:** Accepted engineering policy, selected by Codex under CT-DEC-19 on2026-10-04. Technical previews do not establish human art approval or public-launch acceptance.
+
+Extend the explicit preview one room at a time from existing venue metadata. Fathom Hall uses its20×14 grid, four pillar tiles and medium house PA, with a cutaway roof/edges for management visibility. The engine remains authoritative for capacity, services and money. Fixed opaque scenery prevents pointer selection/removal of objects behind it, while keyboard/list inspection remains available.
+
+Browser verification exposed a pre-existing inconsistency: pillar tiles reduced usable floor and blocked sightlines but new equipment could overlap them. Reject such new placement/replacement commands and use the same rule for the ghost. Preserve normalization, existing layouts and historical evaluation to avoid silently removing gear or changing older show outcomes. A legacy conflict can be removed normally; unrelated safe edits remain possible. No save fields or schema changes.
+
+Loam Shell extends this policy in FOH-V02r2: its cutaway shell stays behind the build area, and seating/lawn floor guides are expressly illustrative and pick-through. The engine's400 aggregate seats do not imply a newly calibrated physical seating plan. No build restriction, capacity or save change is introduced.
+
+
+## CT-DEC-23 Zoomed site overview
+
+- Date: 2026-10-04
+- Status: Implemented under Dave's autonomous execution direction and CT-DEC-19; delivery and performance/device acceptance remain separately verified.
+- Scope: FB-08 and HUD step7 for Split Acre.
+
+Zoomed side-stage and arbitrary-yaw views remove much of the main yard from view, so retain the planned desktop overview. Derive the visible ground from the active renderer: clip the perspective frustum to the site plane and floor regions, rather than showing a misleading rectangle at low pitch. The map rotates with the view, has pointer and keyboard pan controls, preserves zoom and carries no saved state. Fit and phone layouts hide it; compact windows hide it when no unobstructed HUD margin fits. Other venues keep their current navigation. No gameplay, physical scale or final art policy changes.

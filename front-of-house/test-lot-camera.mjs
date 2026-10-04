@@ -2,9 +2,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLotCamera } from './lot-camera.mjs';
-import { createLotModels } from './lot-models.mjs';
+import { createLotModels, FESTIVAL_SCENE } from './lot-models.mjs';
+import { createLotPresentation, stageRepresentatives } from './lot-presentation.mjs';
+import { VENUES } from './data.mjs';
 import { footprint } from './engine.mjs';
-import { Vector3, Box3 } from './vendor/three/three.module.min.js';
+import { Vector3, Box3, Matrix4 } from './vendor/three/three.module.min.js';
 
 test('ground picking inverts CSS projection at arbitrary yaw, pitch, zoom and canvas offset', () => {
   const c = createLotCamera();
@@ -88,5 +90,175 @@ test('FOH and Stage use explicit authored eyes following each stage facing, then
     assert.ok((eye.position[0] - eye.target[0]) * forward[0] + (eye.position[2] - eye.target[2]) * forward[1] > 0);
     c.preset('stage'); assert.ok(Math.abs(c.info().authoredEye.position[1] - 1.38) < 1e-8);
     c.setCamera({ yaw: 37, pitch: 1 }); assert.equal(c.info().authoredEye, null); assert.equal(c.info().pitch, 15);
+  }
+});
+
+test('Club camera fits its actual volume and rejects ground outside the smaller room', () => {
+  const c = createLotCamera({ width: 20, depth: 14 });
+  for (const [w, h] of [[1440, 900], [375, 812], [2560, 720]]) {
+    c.resize({ x: 0, y: 0, w, h }, { x: w * 0.1, y: h * 0.1, w: w * 0.8, h: h * 0.45 });
+    for (const yaw of [37, 135]) {
+      c.setCamera({ yaw, pitch: 48, zoom: 1, x: 10, y: 7 });
+      for (const x of [0, 20]) for (const y of [0, 14]) for (const z of [0, 3.5]) assert.equal(c.project(x, y, z).clear, true);
+      for (const [x, y] of [[0.5, 0.5], [19.5, 13.5], [6.5, 5.5]]) {
+        const p = c.project(x, y); assert.deepEqual(c.tileAt(p.x, p.y), { x: Math.floor(x), y: Math.floor(y) });
+      }
+      const outside = c.project(20.5, 7); assert.equal(c.tileAt(outside.x, outside.y), null);
+    }
+  }
+});
+
+test('Club fixed scenery exactly represents existing pillars and house PA without changing venue metadata', () => {
+  const m = createLotModels(), before = structuredClone(VENUES.club), room = m.room(VENUES.club);
+  assert.equal(new Set(room.children.map(x => x.name)).size, room.children.length);
+  assert.equal(room.children.filter(x => /^club-pillar-\d/.test(x.name)).length, 4);
+  for (const [x, y] of VENUES.club.pillars) {
+    const b = new Box3().setFromObject(room.getObjectByName(`club-pillar-${x}-${y}`));
+    assert.deepEqual(b.min.toArray(), [x, 0, y]); assert.deepEqual(b.max.toArray(), [x + 1, 3, y + 1]);
+  }
+  assert.equal(room.children.filter(x => /^club-house-pa-(left|right)-\d$/.test(x.name)).length, 8);
+  assert.ok(room.children.every(x => x.userData.permanent)); assert.deepEqual(VENUES.club, before);
+  assert.equal(m.room(VENUES.lot).children.length, 0); m.dispose();
+});
+
+test('Club representative guests stay inside the room and outside props and pillar cells', () => {
+  const m = createLotModels(), v = VENUES.club, p = createLotPresentation(m, { width: v.grid.w, depth: v.grid.h, pillars: v.pillars, indoor: true });
+  p.update({ crowd: 360, t: 0 }, v.starter, [], false);
+  const batch = p.group.children.find(x => x.isInstancedMesh), matrix = new Matrix4();
+  assert.equal(p.info().fencePanels, 0); assert.equal(batch.count, 180);
+  const occupied = new Set([...v.pillars, ...v.starter.flatMap(footprint)].map(([x, y]) => `${x},${y}`));
+  for (let i = 0; i < batch.count; i++) {
+    batch.getMatrixAt(i, matrix); const x = matrix.elements[12], y = matrix.elements[14];
+    assert.ok(x >= 0 && x < 20 && y >= 0 && y < 14); assert.equal(occupied.has(`${Math.floor(x)},${Math.floor(y)}`), false);
+  }
+  p.dispose(); m.dispose();
+});
+
+test('Loam Shell fits its real room at arbitrary yaw across desktop, phone and ultrawide', () => {
+  const { w, h } = VENUES.amphitheater.grid, camera = createLotCamera({ width: w, depth: h });
+  for (const [width, height] of [[1440, 900], [375, 812], [2560, 720]]) {
+    camera.resize({ x: 0, y: 0, w: width, h: height }, { x: width * 0.1, y: height * 0.1, w: width * 0.8, h: height * 0.5 });
+    for (const yaw of [37, 135]) {
+      camera.setCamera({ yaw, pitch: 48, zoom: 1, x: w / 2, y: h / 2 });
+      for (const x of [0, w]) for (const y of [0, h]) for (const z of [0, 3.5]) assert.equal(camera.project(x, y, z).clear, true);
+      const p = camera.project(w - 0.5, h - 0.5); assert.deepEqual(camera.tileAt(p.x, p.y), { x: w - 1, y: h - 1 });
+    }
+  }
+});
+
+test('Loam Shell keeps illustrative seating guides pick-through and its shell outside build tiles', () => {
+  const models = createLotModels(), room = models.room(VENUES.amphitheater), names = room.children.map(m => m.name);
+  assert.equal(new Set(names).size, names.length);
+  const guides = room.children.filter(m => m.userData.pickThrough);
+  assert.equal(guides.length, 12);
+  for (const guide of guides) {
+    assert.equal(guide.castShadow, false);
+    const b = new Box3().setFromObject(guide);
+    assert.ok(b.min.x >= 0 && b.max.x <= 28 && b.min.z > 3 && b.max.z < 18 && b.max.y < 0.01);
+  }
+  for (const panel of room.children.filter(m => /^shell-(panel|west|east)/.test(m.name))) {
+    const b = new Box3().setFromObject(panel); assert.ok(b.max.z < 0); assert.ok(b.max.y <= 3.5);
+  }
+  assert.equal(room.children.filter(m => /^amphitheater-house-pa-(left|right)-/.test(m.name)).length, 8);
+  models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
+});
+
+
+test('Festival presentation fits both areas without changing its authored main grid', () => {
+  const camera = createLotCamera({ width: FESTIVAL_SCENE.width, depth: FESTIVAL_SCENE.depth });
+  for (const [w, h] of [[1440, 900], [375, 812], [2560, 720]]) {
+    camera.resize({ x: 0, y: 0, w, h }, { x: w * 0.1, y: h * 0.1, w: w * 0.8, h: h * 0.5 });
+    for (const yaw of [37, 135]) {
+      camera.setCamera({ yaw, pitch: 48, zoom: 1, x: 26, y: 12 });
+      for (const x of [0, 52]) for (const y of [0, 24]) for (const z of [0, 3.5]) assert.equal(camera.project(x, y, z).clear, true);
+    }
+  }
+  assert.deepEqual(VENUES.festival.grid, { w: 40, h: 24 });
+  const models = createLotModels(), room = models.room(VENUES.festival);
+  const deck = new Box3().setFromObject(room.children.find(m => m.name === 'festival-side-deck'));
+  assert.equal(deck.min.x, FESTIVAL_SCENE.stage.x); assert.equal(deck.max.x, FESTIVAL_SCENE.stage.x + FESTIVAL_SCENE.stage.w);
+  assert.ok(deck.min.x >= VENUES.festival.grid.w && deck.max.x <= FESTIVAL_SCENE.width);
+  models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
+});
+
+test('Festival decorative allocation conserves displayed attendance and the global model limit', () => {
+  for (const [main, second] of [[5500, 500], [0, 500], [1, 1], [1, 500], [500, 1], [0, 0]]) {
+    for (const fraction of [0, 0.1, 0.5, 1]) {
+      const crowd = Math.round((main + second) * fraction), input = { main, second }, r = stageRepresentatives(crowd, input);
+      assert.deepEqual(input, { main, second }); assert.equal(r.known, true);
+      assert.equal(r.displayed.main + r.displayed.second, crowd);
+      assert.equal(r.representatives.main + r.representatives.second, Math.min(180, crowd));
+      assert.ok(r.representatives.main <= r.displayed.main && r.representatives.second <= r.displayed.second);
+    }
+  }
+  for (const invalid of [null, {}, { main: -1, second: 2 }, { main: 2.5, second: 2 }]) {
+    const r = stageRepresentatives(900, invalid); assert.equal(r.known, false); assert.equal(r.second, null);
+    assert.deepEqual(r.displayed, { main: 900, second: 0 }); assert.deepEqual(r.representatives, { main: 180, second: 0 });
+  }
+  const models = createLotModels(), main = createLotPresentation(models, { width: 40, depth: 24 }), side = createLotPresentation(models, { width: 12, depth: 16, indoor: true });
+  const split = stageRepresentatives(6000, { main: 5500, second: 500 });
+  main.update({ crowd: split.displayed.main }, [], [], false, split.representatives.main);
+  side.update({ crowd: split.displayed.second }, [{ type: 'stage', x: 3, y: 1, rot: 0 }], [], false, split.representatives.second);
+  assert.equal(main.info().representativeGuests + side.info().representativeGuests, 180);
+  main.dispose(); side.dispose(); models.dispose();
+});
+
+test('overview rotation round trips and fits every site edge', async () => {
+  const { overviewTransform, clipGround } = await import('./site-map-geometry.mjs');
+  for (const rotation of [0, 37, 45, 90, 135, 270, 359]) {
+    const map = overviewTransform(52, 24, rotation);
+    for (const [x, y] of [[0, 0], [52, 24], [0, 24], [52, 0], [46, 10], [20, 12]]) {
+      const q = map.project(x, y), p = map.inverse(q.x, q.y);
+      assert.ok(q.x >= 5.99 && q.x <= 174.01 && q.y >= 5.99 && q.y <= 104.01);
+      assert.ok(Math.abs(p.x - x) < 1e-10 && Math.abs(p.y - y) < 1e-10);
+    }
+  }
+  const polygon = clipGround(10, 10, [p => p.x - 2, p => 5 - p.x, p => p.y - 3, p => 5 - p.y]);
+  assert.equal(polygon.length, 4); assert.deepEqual(new Set(polygon.map(p => `${p.x},${p.y}`)), new Set(['2,3', '5,3', '5,5', '2,5']));
+  assert.deepEqual(clipGround(10, 10, [p => p.x - 11]), []);
+});
+
+test('perspective overview clips the actual safe ground at low pitch and preserves camera pose while panning', () => {
+  const camera = createLotCamera({ width: 52, depth: 24 });
+  camera.resize({ x: 7, y: 11, w: 1440, h: 900 }, { x: 50, y: 90, w: 1050, h: 690 });
+  const check = () => {
+    const n = camera.navigation(); assert.ok(n.footprint.length >= 3);
+    for (const p of n.footprint) {
+      assert.ok(p.x >= -1e-7 && p.y >= -1e-7 && p.x <= 52 + 1e-7 && p.y <= 24 + 1e-7);
+      const q = camera.project(p.x, p.y); assert.ok(q.x >= 57 - 1e-5 && q.x <= 1107 + 1e-5 && q.y >= 101 - 1e-5 && q.y <= 791 + 1e-5, JSON.stringify({ p, q, c: camera.info() }));
+    }
+  };
+  for (const yaw of [0, 37, 135, 359]) for (const pitch of [15, 48, 85]) for (const zoom of [1, 1.5, 2, 3]) { camera.setCamera({ yaw, pitch, zoom, x: 26, y: 12 }); check(); }
+  for (const preset of ['plan', 'foh', 'stage']) {
+    camera.preset(preset); camera.zoomTo(2); const before = camera.info(); camera.panTo(29, 13); const after = camera.info();
+    for (const key of ['zoom', 'yaw', 'pitch', 'preset']) assert.equal(after[key], before[key]); check();
+  }
+});
+
+
+test('reused camera fit stays equal to a fresh fit after lens, view and safe-area changes', () => {
+  for (const [width, depth] of [[24, 16], [22, 14], [28, 18], [52, 24]]) {
+    const used = createLotCamera({ width, depth });
+    for (const yaw of [37, 135]) for (const pitch of [15, 48, 85]) for (const zoom of [1, 2, 3]) {
+      const bounds = { x: 7, y: 11, w: yaw === 37 ? 1440 : 375, h: 812 };
+      const safe = { x: 30, y: pitch, w: bounds.w - 80, h: 520 - pitch };
+      const target = { yaw, pitch, zoom, x: width * 0.6, y: depth * 0.4 };
+      const fresh = createLotCamera({ width, depth });
+      for (const c of [used, fresh]) {
+        Object.assign(c.camera, { fov: zoom === 2 ? 50 : 42, filmOffset: zoom === 3 ? 2 : 0, near: 0.05, far: 900 });
+        c.resize(bounds, safe); c.setCamera(target);
+      }
+      for (const c of [used, fresh]) { c.panBy(5, -7); c.panTo(width * 0.7, depth * 0.3); c.zoomTo(1.5, bounds.w * 0.6, 330); }
+      assert.deepEqual(used.info(), fresh.info());
+      assert.deepEqual(used.camera.matrixWorld.elements, fresh.camera.matrixWorld.elements);
+      assert.deepEqual(used.camera.projectionMatrix.elements, fresh.camera.projectionMatrix.elements);
+      assert.deepEqual(used.navigation(), fresh.navigation());
+      const pt = used.project(width * 0.7, depth * 0.3);
+      assert.deepEqual(used.groundAt(pt.x, pt.y), fresh.groundAt(pt.x, pt.y));
+    }
+    for (const preset of ['plan', 'foh', 'stage', 'wide']) {
+      used.preset(preset); const before = used.info(); used.panTo(width / 2, depth / 2);
+      assert.deepEqual(used.info(), before);
+    }
   }
 });

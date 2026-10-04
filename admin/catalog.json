@@ -620,6 +620,10 @@
           "description": "node test/front-of-house-floor-smoke.mjs"
         },
         {
+          "name": "npm run smoke:front-of-house-displays",
+          "description": "node test/front-of-house-displays-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-resolution",
           "description": "node test/front-of-house-resolution-smoke.mjs"
         },
@@ -646,6 +650,30 @@
         {
           "name": "npm run perf:front-of-house",
           "description": "node test/front-of-house-performance.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-batching",
+          "description": "node test/front-of-house-batching-smoke.mjs"
+        },
+        {
+          "name": "npm run perf:front-of-house-native-hud",
+          "description": "node test/front-of-house-native-hud-performance.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-club",
+          "description": "node test/front-of-house-club-3d-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-shell",
+          "description": "node test/front-of-house-shell-3d-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-festival",
+          "description": "node test/front-of-house-festival-3d-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-navigation",
+          "description": "node test/front-of-house-navigation-smoke.mjs"
         }
       ]
     }
@@ -1752,6 +1780,46 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-batched-hud.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Batched native 3D HUD measurements",
+      "description": "Six full native client repeats after render coalescing, with unchanged game-state replay, scene quality and retained timing variation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-batched-hud.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-ci-paired.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Paired CI performance evidence",
+      "description": "Two complete comparisons and a valid measured20ms negative control, with independent raw/source audits and exact source revisions.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-ci-paired.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-ci.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "CI renderer calibration",
+      "description": "All eighteen Ubuntu24.04 SwiftShader windows with runner/source/fixture/raw digests and separate timing statistics; no hardware FPS claim.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-ci.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-club-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Club native renderer measurements",
+      "description": "Six full visible native Chrome empty/crowd windows on frozen Club source, retaining quality, timing and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-club-native.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-density.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -1759,6 +1827,26 @@
       "title": "Lot high-density Metal diagnostics",
       "description": "Eighteen requested-DPR2 desktop, phone and ultrawide windows, actual backing dimensions, repeated timing summaries and source/raw digests; not physical-device acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-density.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-displays.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Actual display density transitions",
+      "description": "Full-client density1-to2-to1 window moves preserve backing, picking, viewport fit and saved state; private display coordinates omitted.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-displays.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-festival-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Festival native renderer measurements",
+      "description": "Six full native visible Chrome empty/crowd windows on frozen Split Acre source, with quality, timing and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-festival-native.json",
       "open": null
     },
     {
@@ -1782,6 +1870,36 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-native-hud.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native 3D HUD measurements",
+      "description": "Six full native 3D client and HUD windows with real show-clock replay, camera motion and retained stalls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-native-hud.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native visible Chrome measurements",
+      "description": "Six full native-display Metal windows in visible focused Chrome, retaining repeated timing and source/raw evidence separately from headless results.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-native.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-navigation-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native overview comparison",
+      "description": "Twelve full-client native Chrome visible/hidden site overview windows with frozen source, raw timing and fixture replay audits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-navigation-native.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-shadow.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -1789,6 +1907,16 @@
       "title": "Lot shadow reuse Metal comparison",
       "description": "All 18 integrated shadow-cache measurement windows with frozen source/fixture digests, timing statistics, shadow refresh counters and the retained partial attempt.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-shadow.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-shell-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Shell native renderer measurements",
+      "description": "Six full native visible Chrome empty/crowd/rain windows on frozen Loam Shell source, with quality, timing and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-shell-native.json",
       "open": null
     },
     {
@@ -2492,6 +2620,36 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-batching-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-batching-smoke.mjs",
+      "description": "Verify application render coalescing and immediate picking without changing the synchronous backend contract.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-batching-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-club-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-club-3d-smoke.mjs",
+      "description": "Actual Club client: fixed scenery, safe placement, room switching, recovery and settlement parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-club-3d-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-displays-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-displays-smoke.mjs",
+      "description": "Manual actual-display density proof with isolated Chrome storage; requires attached DPR1 and DPR2 displays.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-displays-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-equipment-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2499,6 +2657,16 @@
       "title": "front-of-house-equipment-smoke.mjs",
       "description": "Banked career fixture opens access; all subsequent capital and show actions use player controls.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-equipment-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-festival-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "Split Acre 3D journeys",
+      "description": "Both-stage camera and placement boundaries, shared representative crowd, context recovery and complete legacy/versioned classic/3D settlement parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-festival-3d-smoke.mjs",
       "open": null
     },
     {
@@ -2559,6 +2727,36 @@
       "title": "front-of-house-lot-smoke.mjs",
       "description": "Browser proof for the isolated Lot backend; this does not claim game integration or final art acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-lot-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-native-hud-performance.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-native-hud-performance.mjs",
+      "description": "Full native Chrome client diagnostics: actual 3D HUD, running show and fixed/moving camera repeats.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-native-hud-performance.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-navigation-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "Site overview journeys",
+      "description": "Actual classic/3D overview navigation, keyboard, placement isolation, resize, recovery and saved-state checks.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-navigation-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-performance-gate.test.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-performance-gate.test.mjs",
+      "description": "Budget and evidence rejection tests: synthetic timing is evaluator coverage, never measured acceptance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-performance-gate.test.mjs",
       "open": null
     },
     {
@@ -2629,6 +2827,16 @@
       "title": "front-of-house-service-crowd-smoke.mjs",
       "description": "Real-client service zone parity and saved worker travel in both Lot renderers.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-service-crowd-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-shell-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-shell-3d-smoke.mjs",
+      "description": "Loam Shell preview: real room controls, pick-through guides, recovery and seated two-night parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-shell-3d-smoke.mjs",
       "open": null
     },
     {
@@ -2847,7 +3055,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "lot-renderer.mjs",
-      "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
+      "description": "Lot, Club, amphitheater and Festival preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
       "open": null
     },
@@ -2932,6 +3140,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/site-map-geometry.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "Site overview geometry",
+      "description": "Pure ground-plane clipping and reversible rotated overview projection.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/site-map-geometry.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/site-map.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "Site overview controls",
+      "description": "Desktop zoomed Festival overview with actual ground footprint, pointer and keyboard panning, safe HUD placement and cached redraws.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/site-map.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/sprites/manifest.mjs",
       "project": "front-of-house",
       "category": "source",
@@ -2989,6 +3217,16 @@
       "title": "lot-assets.mjs",
       "description": "Generate/check the source-owned Lot sample manifest with measured bounds and source digests.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/lot-assets.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/tools/performance-gate.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "performance-gate.mjs",
+      "description": "Paired CI regression limits; these are change-detection tolerances, not device frame-rate targets.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/performance-gate.mjs",
       "open": null
     },
     {

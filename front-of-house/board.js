@@ -6,6 +6,7 @@
 // for a stage turned away from the viewer, which has no art).
 
 import * as D from './data.mjs';
+import { clipGround } from './site-map-geometry.mjs';
 import { footprint } from './engine.mjs';
 import { SERVICE_COLORS } from './service-crowd.mjs';
 
@@ -242,6 +243,12 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
   function camera() {
     return { zoom: cam.zoom, x: cam.x, y: cam.y, zooms: ZOOMS.slice() };
   }
+
+  function navigation() {
+    const { x, y, w, h } = view.safe;
+    return { width: room.w, depth: room.h, rotation: 45 - facing * 90, fixed: [], footprint: clipGround(room.w, room.h, [p => iso(p.x, p.y)[0] - x, p => x + w - iso(p.x, p.y)[0], p => iso(p.x, p.y)[1] - y, p => y + h - iso(p.x, p.y)[1]]) };
+  }
+  function panTo(x, y) { if (cam.zoom === 1 || !Number.isFinite(x) || !Number.isFinite(y)) return; cam.x = x; cam.y = y; clampCamera(); applyCamera(); redraw(); }
 
   // Put affected equipment in the clear centre, away from the docked HUD cards.
   function centerOn(x, y) {
@@ -951,7 +958,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
   }
 
   return {
-    resize, setClear, draw, tileAt, turnView, objectAt, info, placeOf, zoomTo, zoomBy, panBy, follow, centerOn, camera, clientOf,
+    resize, setClear, draw, tileAt, turnView, objectAt, info, navigation, panTo, placeOf, zoomTo, zoomBy, panBy, follow, centerOn, camera, clientOf,
     destroy: () => { spriteListeners.delete(onSprites); releaseFloor(); },
   };
 }

@@ -262,6 +262,10 @@ A 3×2 facility trailer consumes 1,500W and provides three guest stalls, includi
 
 The optional trial replaces the restroom half of amenities with served/requested visits. Sanitation production costs are explicit upfront charges under the existing door deal deduction basis; guarantee artist pay is unchanged. Optional accepted Sodium Arcade changing-area preference requires the connected powered trailer and cleaner and adds up to two relationship points within existing step bounds; it changes no artist ask/pay, admission or cash. Declining has no penalty. Facilities settings expose Food, Sanitation and Artist pages; purple waiting/in-use representatives follow the same authoritative identities in both renderers. The settlement Facilities line combines portable rentals and the optional package, with separate amounts in its receipt.
 
+### Fixed pillars and new layout commands
+
+New `place` and `setLayout` commands reject equipment whose footprint overlaps the venue's existing pillar tiles; the placement ghost uses the same check. This closes the former mismatch between occupied/sight-blocking pillars and editing. Loading legacy layouts and evaluating already recorded shows retain their previous behavior, so an old overlapping object is not silently removed or repriced. Safe edits elsewhere remain possible; removing the conflicting object clears it normally.
+
 ### Optional held-run cancellation policy (FOH-V02b)
 
 New player bookings of two/three Amphitheater nights disclose a fee of25% of the nightly quoted ask per unplayed night, rounded per night and frozen at doors. At each completed-night settlement, the player signs and continues with the next opening charge, or signs and explicitly cancels every remaining night. Completed-show income, artist pay, attendance, history and earned reputation remain intact; cancellation is a separate promoter expense and never a completed-show artist deduction. Unplayed nights earn no progress or receipts. Reputation accumulated by played nights applies once at the end of the run, including cancellation.
