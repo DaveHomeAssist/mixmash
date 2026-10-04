@@ -8,8 +8,9 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
+import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
@@ -19,7 +20,7 @@ const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
-const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food'];
+const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
 const AD_LABELS = { flyers: 'Flyers and posters', social: 'Social ads', radio: 'Local radio' };
@@ -333,6 +334,7 @@ const COSTS = {
   'pa-m': money(D.PA_RENTAL.M),
   lights: money(D.LIGHTS_RENTAL),
   bar: `${money(D.BAR_SETUP)} + ${D.BAR_STAFF_PER_BAR} staff`,
+  trailer: `${money(D.SANITATION_COSTS.trailer)} + optional cleaner/utilities`,
   food: 'Vendor supplies staff and power',
   restroom: money(D.RESTROOM_UNIT),
   gate: `${D.DOOR_STAFF_PER_GATE} door staff`,
@@ -340,7 +342,7 @@ const COSTS = {
 };
 
 // Short names for the tool tiles; the full label, size and cost are read out with each.
-const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Restroom', gate: 'Gate', exit: 'Exit', food: 'Food' };
+const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer' };
 // The rotation as an arrow on screen, in FACING order.
 const ARROWS = ['↙', '↖', '↗', '↘'];
 
@@ -357,12 +359,13 @@ function buildPanel() {
   const tiles = PLACEABLE.map((type, i) => {
     const t = D.OBJECT_TYPES[type];
     if (t.lotOnly && spec.id !== 'lot') return '';
-    return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${i + 1}">
+    const shortcut = type === 'trailer' ? 'T' : i + 1;
+    return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
-        <span class="tile-key" aria-hidden="true">${i + 1}</span>
-        ${type === 'food' ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
+        <span class="tile-key" aria-hidden="true">${shortcut}</span>
+        ${['food', 'trailer'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
-        <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${i + 1}</span>
+        <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}</span>
       </label>`;
   }).join('');
   return `
@@ -384,7 +387,7 @@ function buildPanel() {
     <div class="plate at-bl tools-plate" role="group" aria-label="Object to place" data-tab="Tools">
       <div class="tiles"><button type="button" class="tile" data-act="select" id="select-btn" aria-pressed="false" title="Select · Escape cancels placement"><span class="tile-glyph" aria-hidden="true">↖</span><span class="tile-name">Select</span></button>${tiles}
         <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key ${binding('bulldoze').keysLabel}">
-          <span class="tile-key" aria-hidden="true">${binding('bulldoze').keysLabel}</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Bulldoze</span>
+          <span class="tile-key" aria-hidden="true">${binding('bulldoze').keysLabel}</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Remove</span>
         </button>
         <button type="button" class="tile" data-act="rotate" title="Rotate · key ${binding('rotate').keysLabel}">
           <span class="tile-key" aria-hidden="true">${binding('rotate').keysLabel}</span><span class="tile-glyph" id="rot-glyph" aria-hidden="true">${ARROWS[ui.rot]}</span><span class="tile-name" aria-hidden="true">Rotate</span>
@@ -636,7 +639,7 @@ function promotePanel() {
     <div class="actions">
       <button type="button" data-act="back">Back to Build</button>
       ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
-      ${spec.id === 'lot' ? '<button type="button" data-act="food-settings" id="food-settings">Food: Off</button>' : ''}
+      ${spec.id === 'lot' ? '<button type="button" data-act="food-settings" id="food-settings">Facilities</button>' : ''}
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open doors</button>
     </div>`;
 }
@@ -646,7 +649,7 @@ function updatePromote() {
   const settings = $('#live-settings');
   if (settings) settings.textContent = `Live services: ${(p.liveServices ?? liveServicesPilot) ? 'On' : 'Off'}`;
   const foodSettings = $('#food-settings');
-  if (foodSettings) foodSettings.textContent = `Food: ${p.foodPlan || 'Off'}`;
+  if (foodSettings) foodSettings.textContent = 'Facilities';
   const a = artistFor(state.booking.artistId);
   const price = $('#price');
   if (document.activeElement !== price) price.value = String(p.price);
@@ -721,6 +724,45 @@ function showPanel() {
     </div>`;
 }
 
+function facilitySettings() {
+  const access = liveAccessFor(state), terms = state.promotion.sanitation;
+  return `<section data-tab="Food" data-always-tabs>
+    <label>Contract <select id="food-plan" data-input="food-plan"><option value="">Off</option><option value="standard">Standard · $8 meals</option><option value="premium">Premium · $12 meals</option></select></label>
+    <p>Standard: 80 meals, one window, 2/min. Premium: 160 meals, two windows, 4/min.</p>
+    <p>House earns 25% of sales. Vendor pays stock and wages; artist pay is unchanged. Guests have limited budgets and some decline higher prices.</p>
+    <p>Needs live services and one connected Food stall. Connected: ${access.usableVendors}. Terms lock at doors.</p></section>
+    <section data-tab="Sanitation" data-always-tabs class="facility-options">
+    <label><input id="sanitation-enabled" data-input="sanitation" type="checkbox" ${terms ? 'checked' : ''}> Run sanitation visits</label>
+    <label><input id="sanitation-cleaner" data-input="sanitation" type="checkbox" ${terms?.cleaner ? 'checked' : ''}> Dedicated cleaner · $80</label>
+    <label><input id="sanitation-utilities" data-input="sanitation" type="checkbox" ${terms?.utilities ? 'checked' : ''}> Trailer utilities · $60</label>
+    <p id="sanitation-quote" aria-live="polite"></p>
+    <p class="hint">Trailer rental $240; three stalls need utilities. Connected portables work without utilities. Visits take 2m; after 12 uses a stall needs 3m cleaning. Missed visits lower amenities. Costs enter the door deal deduction basis.</p></section>
+    <section data-tab="Artist" data-always-tabs class="facility-options">
+    <h3>Optional quiet changing area</h3>
+    <label><input id="sanitation-preference" data-input="sanitation" type="checkbox" ${terms?.preference ? 'checked' : ''}> Accept Sodium Arcade’s preference</label>
+    <p id="sanitation-artist" aria-live="polite"></p>
+    <p>Requires sanitation, a connected trailer, utilities and a cleaner. The changing area is separate from the three guest stalls.</p>
+    <p>Fulfillment adds up to 2 relationship points within the existing limit. No change to artist pay. Leaving this unchecked declines without penalty. Terms lock at doors.</p></section>`;
+}
+
+function updateFacilitySettings() {
+  const plan = sanitationPlanFor(state), access = liveAccessFor(state), placed = evaluateVenue(state.venue);
+  for (const id of ['sanitation-cleaner', 'sanitation-utilities', 'sanitation-preference']) $('#' + id).disabled = !plan;
+  $('#sanitation-quote').textContent = plan ? `${plan.usableStalls} usable stalls · ${access.restrooms.length}/${placed.restrooms} connected portables. Production total ${money(plan.cost)} before doors${plan.terms.trailer ? ' (includes $240 trailer)' : ''}.` : 'Off. Existing restroom capacity scoring applies. Enable live services for this trial.';
+  $('#sanitation-artist').textContent = !plan ? 'Enable sanitation first.' : plan.preference.available ? `Package ready · preference ${plan.terms.preference ? 'accepted' : 'declined'}.` : 'Package not ready. Complete the requirements before accepting; otherwise opening doors is refused.';
+}
+
+function sanitationDetails(s, minute) {
+  const t = s.totals;
+  const worker = !s.terms.cleaner ? 'Not hired' : s.worker ? `Stall ${s.worker.stall + 1} · ${s.worker.completesAt - Math.min(minute, D.LIVE_SERVICES.closeAt)}m left` : 'No cleaning in progress';
+  return `<dl class="live-readouts"><div><dt>Usable / dirty stalls</dt><dd>${t.usableStalls} / ${t.dirtyStalls}</dd></div>
+    <div><dt>Waiting / in use</dt><dd>${t.waiting} / ${t.using}</dd></div><div><dt>Served / missed visits</dt><dd>${t.served} / ${t.lost}</dd></div>
+    <div><dt>Completed cleanings</dt><dd>${t.cleanings}</dd></div><div><dt>Cleaner</dt><dd>${worker}</dd></div>
+    <div><dt>Trailer / cleaner / utilities</dt><dd>${money(s.charges.trailer)} / ${money(s.charges.cleaner)} / ${money(s.charges.utilities)}</dd></div>
+    <div><dt>Paid portables / package</dt><dd>${money(s.placedPortables * D.RESTROOM_UNIT)} / ${money(s.cost)}</dd></div><div><dt>Changing area preference</dt><dd>${!s.preference.accepted ? 'Declined · no penalty' : s.preference.fulfilled ? 'Fulfilled · up to +2 relationship' : 'Unfulfilled · no benefit'}</dd></div></dl>
+    <p class="hint">Purple guests are waiting or using facilities. Eight-minute patience; missed visits reduce amenities, not attendance. Costs were paid before doors. Normal departure still follows closing.</p>`;
+}
+
 function foodDetails(food) {
   const t = food.totals;
   return `<dl class="live-readouts"><div><dt>Plan / stock left</dt><dd>${esc(food.terms.plan)} / ${food.stock}</dd></div>
@@ -740,7 +782,7 @@ function liveServicesPanel() {
     </div>
     <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
     <div class="plate at-bl status-plate" data-tab="Services">
-      <div class="food-heading"><h3 id="live-heading">Service pressure</h3>${state.show.food ? '<button type="button" data-act="food-receipt">Food</button>' : ''}</div><dl class="live-readouts" id="live-queues"></dl>
+      <div class="food-heading"><h3 id="live-heading">Service pressure</h3>${state.show.food ? '<button type="button" data-act="food-receipt">Food</button>' : ''}${state.show.sanitation ? '<button type="button" data-act="sanitation-receipt">Facilities</button>' : ''}</div><dl class="live-readouts" id="live-queues"></dl>
       <p class="hint" id="live-hint">Wait estimates use current staffing; new arrivals can change them.</p>
       <p class="hint" id="live-money"></p>
     </div>
@@ -758,8 +800,9 @@ function updateLiveServices() {
   ui.services = liveServicesFor(state, { events: true });
   const r = ui.services, play = ui.play;
   if (!r || !play) return;
-  $('#live-hint').hidden = !!r.food;
+  $('#live-hint').hidden = !!(r.food || r.sanitation);
   if (win.kind === 'food-receipt' && r.food) el.winBody.innerHTML = foodDetails(r.food);
+  if (win.kind === 'sanitation-receipt' && r.sanitation) el.winBody.innerHTML = sanitationDetails(r.sanitation, r.minute);
   play.p = r.minute / D.LIVE_SERVICES.closeAt;
   $('#clock').textContent = clock(play.p);
   $('#show-status').textContent = r.departure?.active ? `${play.paused ? 'Paused' : 'Running'} · ${r.inside} inside · ${r.departed} departed` : `${play.paused ? 'Paused' : 'Running'} · ${r.admitted} admitted · ${r.abandoned} left the queue`;
@@ -952,6 +995,7 @@ function reachIncident() {
     if (r.walkupMult !== undefined) bits.push(`walk-ups ${Math.round(r.walkupMult * 100)}%`);
     if (r.flowMult !== undefined) bits.push(`entry flow ${Math.round(r.flowMult * 100)}%`);
     bits.unshift(RESPONSE_TEXT[id]?.[r.id] || 'Respond to the incident.');
+    if (id === 'pa-dropout' && r.id === 'backup-amp' && researchEffectsFor(state).patchScore) bits.push('Patch standards: 95% response');
     return bits.join(' · ');
   };
   const box = $('#incident-box');
@@ -1039,7 +1083,7 @@ function sheetParts(r, { signed: done }) {
     [`PA rental (${v.paTier === 'M' ? 'medium' : 'small'})`, 'Audio', r.costs.pa],
     ['Light tower', 'Lighting', r.costs.lights],
     [`Bars (${v.bars})`, 'Hospitality', r.costs.bars],
-    [`Restrooms (${v.restrooms})`, 'Site', r.costs.restrooms],
+    r.facilities ? ['Facilities', 'Sanitation', r.costs.restrooms + r.costs.facilities] : [`Restrooms (${v.restrooms})`, 'Site', r.costs.restrooms],
     [`Crew (${v.staff} staff)`, 'Labour', r.costs.staff],
     ['Ads', 'Promotion', r.costs.ads],
     [`Incident: ${response.label}`, incident.label, r.costs.incident],
@@ -1088,7 +1132,7 @@ function sheetParts(r, { signed: done }) {
       <div class="ledger-title">SECTION B · PRODUCTION AND SITE COSTS</div>
       <table>
         <thead><tr><th scope="col">Line</th><th scope="col">Category</th><th scope="col" class="num">Total</th></tr></thead>
-        <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr><td>${esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
+        <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr><td>${row[0] === 'Facilities' ? '<button class="receipt-link" data-act="sanitation-receipt">Facilities</button>' : esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
         <tfoot><tr><td colspan="2">Total show costs</td>${cost(r.costs.total)}</tr></tfoot>
       </table>
     </div>`;
@@ -1213,7 +1257,50 @@ function donePanel() {
     <div class="row tight">
       <button type="button" data-act="last-sheet" ${r ? '' : 'disabled'}>Last settlement</button>
       <button type="button" data-act="history">Show history (${state.history.length})</button>
+      <button type="button" data-act="development">Development</button>
     </div>`;
+}
+
+const DEPARTMENT_NAMES = { production: 'Production', guestServices: 'Guest services', admissions: 'Admissions', venueOperations: 'Venue operations' };
+const DEVELOPMENT_BENEFITS = {
+  patch: 'Backup amp response improves from 80% to 95%. Still needs a PA and the $100 response.',
+  service: 'The transferable worker serves one extra bar guest per minute while at the bar. Requires the live Lot clock.',
+  admission: 'Each connected gate admits one extra guest per minute. Requires the live Lot clock; capacity stays fixed.',
+};
+
+function openDevelopment(opener) {
+  const r = researchFor(state), editable = ['book', 'done'].includes(state.phase);
+  if (!r) {
+    const allowed = editable && (state.history.length > 0 || state.mode === 'sandbox');
+    openWindow('development', 'Development', `<p>Learn Patch standards, Service training and Admission lanes. One project at a time, advanced by eligible signed nights.</p>
+      <p>${state.mode === 'sandbox' ? 'Sandbox enables all three projects free.' : 'Starting pays from career cash. Experience is earned from future shows; past shows are not counted.'}</p>
+      <p>${allowed ? 'Enable between bookings, then choose a project. Development is optional.' : 'Settle your first show, then return here between bookings.'}</p>
+      <button data-act="research-enable" ${allowed ? '' : 'disabled'}>Enable development</button>`, opener);
+    return;
+  }
+  const frozen = researchEffectsFor(state).learned, full = r.commands.length >= RESEARCH_COMMAND_LIMIT;
+  const pages = Object.entries(D.RESEARCH_PROJECTS).map(([id,rule]) => {
+    const project = r.projects[id], xp = r.experience[rule.department], available = editable && !full;
+    const button = (kind,label,enabled) => `<button data-act="research-command" data-command="${kind}" data-project="${id}" ${available && enabled ? '' : 'disabled'}>${label}</button>`;
+    const actions = project.status === 'available' ? button('start',`Start · ${money(rule.cost)}`,!r.active && state.cash >= rule.cost)
+      : project.status === 'active' ? button('pause','Pause',true) + button('cancel',`Cancel · refund ${money(researchRefundFor(r,id))}`,true)
+      : project.status === 'paused' ? button('resume','Resume · free',!r.active) + button('cancel',`Cancel · refund ${money(researchRefundFor(r,id))}`,true) : '';
+    return `<section data-tab="${id === 'patch' ? 'Patch' : id === 'service' ? 'Service' : 'Admission'}" data-always-tabs>
+      <h3>${rule.label}</h3><p>${DEVELOPMENT_BENEFITS[id]}</p>
+      <dl class="live-readouts"><div><dt>Status</dt><dd>${project.status}</dd></div><div><dt>${DEPARTMENT_NAMES[rule.department]} experience</dt><dd>${xp} / ${rule.experience} required</dd></div>
+      <div><dt>Eligible nights</dt><dd>${project.progress} / ${rule.nights}</dd></div><div><dt>Cost</dt><dd>${money(rule.cost)}</dd></div></dl>
+      <p class="hint">${project.status === 'researched' ? frozen.includes(id) ? 'Included in this booking. Equipment and live-service requirements still apply.' : 'Learned. Included when you book your next show.' : `Progress requires a signed night with ${id === 'patch' ? 'an audience and PA' : id === 'service' ? 'actual live bar service' : 'actual live admission'}. Experience is cumulative, never spent.`}</p>
+      <div class="actions">${actions}</div>${project.status === 'available' && state.cash < rule.cost ? '<p>Not enough career cash.</p>' : ''}</section>`;
+  }).join('');
+  const night = researchNightFor(state), recorded = night && r.settledNights.includes(night.id);
+  const receipt = night ? `<p class="hint">${recorded ? 'Recorded for this night' : 'On signing this night'}: ${Object.entries(night.departments).filter(([,yes])=>yes).map(([id])=>DEPARTMENT_NAMES[id]+' +1').join(', ') || 'no eligible experience'}.</p>` : '';
+  const ledger = `<section data-tab="Ledger" data-always-tabs><h3>Development ledger</h3><dl class="live-readouts">
+    <div><dt>Paid for research</dt><dd>${money(r.spent)}</dd></div><div><dt>Cancellation refunds</dt><dd>${money(r.refunded)}</dd></div><div><dt>Net development cost</dt><dd>${money(r.spent-r.refunded)}</dd></div>
+    ${Object.entries(r.experience).map(([id,xp])=>`<div><dt>${DEPARTMENT_NAMES[id]} experience</dt><dd>${xp}</dd></div>`).join('')}</dl>
+    <p class="hint">Separate from show costs and artist deductions. Loading never pays or refunds again. Cancelling refunds only unfinished eligible nights.</p>${receipt}</section>`;
+  openWindow('development', 'Development', `<p class="development-summary">Cash ${money(state.cash)} · Active: ${r.active ? D.RESEARCH_PROJECTS[r.active].label : 'none'}</p>
+    ${state.researchNotice ? `<p role="status">${esc(state.researchNotice)}</p>` : ''}${full ? '<p>History is full. Shows can still settle; new development is unavailable.</p>' : ''}
+    ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
 }
 
 function historyHtml() {
@@ -1590,6 +1677,13 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'development') { openDevelopment(target); return; }
+  if (a === 'research-enable' || a === 'research-command') {
+    if (act(a === 'research-enable' ? {type:'enableResearch'} : {type:'research',command:{kind:target.dataset.command,project:target.dataset.project}})) {
+      openDevelopment(el.menuBtn); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus();
+    }
+    return;
+  }
   if (a === 'camera-open') { openCamera(target); return; }
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
@@ -1665,9 +1759,13 @@ function onAct(e) {
       <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p><p>Blue: admission queue. Gold: bar queue. Orange: worker. Grey: departing admission guests. Up to 180 guest samples illustrate the totals; bar customers are already admitted.</p>`, target, { foot: '<button data-win="close">Done</button>' });
   }
   else if (a === 'food-settings' && state.phase === 'promote') {
-    const access = liveAccessFor(state);
-    openWindow('food-settings', 'Food vendor', `<label>Contract <select id="food-plan" data-input="food-plan"><option value="">Off</option><option value="standard">Standard · $8 meals</option><option value="premium">Premium · $12 meals</option></select></label><p>Standard: 80 meals, one window, 2 meals/min. Premium: 160 meals, two windows, 4 meals/min.</p><p>House receives 25% of sales. The vendor pays stock and wages; artist pay is unchanged. Guests have limited budgets and some decline higher prices.</p><p>Place one Food stall and enable live services. Connected stalls: ${access.usableVendors}. Terms lock when doors open.</p>`, target, { foot: '<button data-win="close">Done</button>' });
+    openWindow('food-settings', 'Facilities', facilitySettings(), target, { foot: '<button data-win="close">Done</button>' });
     $('#food-plan').value = state.promotion.foodPlan || '';
+    updateFacilitySettings();
+  }
+  else if (a === 'sanitation-receipt') {
+    const service = liveServicesFor(state);
+    if (service?.sanitation) openWindow('sanitation-receipt', 'Facilities', sanitationDetails(service.sanitation, service.minute), target, { foot: state.phase === 'settle' || state.phase === 'done' ? '<button data-act="food-back">Back to settlement</button>' : '<button data-win="close">Done</button>' });
   }
   else if (a === 'food-receipt') {
     const food = liveServicesFor(state)?.food;
@@ -1701,6 +1799,12 @@ el.panel.addEventListener('input', (e) => {
 el.win.addEventListener('change', e => {
   if (e.target.dataset.input === 'services') act({ type: 'setPromotion', services: e.target.checked }, { quiet: true });
   else if (e.target.dataset.input === 'food-plan') act({ type: 'setPromotion', foodPlan: e.target.value || null }, { quiet: true });
+  else if (e.target.dataset.input === 'sanitation') {
+    const enabled = $('#sanitation-enabled').checked;
+    const sanitation = enabled ? { version: 1, cleaner: $('#sanitation-cleaner').checked,
+      utilities: $('#sanitation-utilities').checked, preference: $('#sanitation-preference').checked } : null;
+    act({ type: 'setPromotion', sanitation }, { quiet: true }); updateFacilitySettings();
+  }
 });
 
 el.panel.addEventListener('change', (e) => {
@@ -1730,6 +1834,7 @@ function pickTool(type) {
 // screens every group shows and the tab bar is removed.
 
 const phoneQuery = window.matchMedia('(max-width: 680px)');
+const shortWindowQuery = window.matchMedia('(max-height: 760px)');
 ui.tabs = {};
 
 function setSheetSize(size) {
@@ -1774,7 +1879,8 @@ function syncTabs(root, key, pick) {
   all.forEach((g) => { g.classList.remove('tab-off'); g.removeAttribute('role'); g.removeAttribute('aria-labelledby'); });
   const groups = all.filter((g) => !g.hidden);
   const names = [...new Set(groups.map((g) => g.dataset.tab))];
-  if (!phoneQuery.matches || names.length < 2) return;
+  const compactSettlement = root === el.winBody && win.kind === 'settlement' && shortWindowQuery.matches;
+  if ((!phoneQuery.matches && !compactSettlement && !root.querySelector('[data-always-tabs]')) || names.length < 2) return;
   if (pick) ui.tabs[key] = pick;
   const current = names.includes(ui.tabs[key]) ? ui.tabs[key] : names[0];
   const bar = document.createElement('div');
@@ -1817,6 +1923,9 @@ function syncTabs(root, key, pick) {
   (first.parentElement === root ? first : first.parentElement).before(bar);
 }
 
+shortWindowQuery.addEventListener('change', () => {
+  if (!el.win.hidden) syncTabs(el.winBody, `win:${win.kind}`);
+});
 phoneQuery.addEventListener('change', () => {
   setSheetSize('peek');
   syncTabs(el.panel, state.phase);
@@ -1898,7 +2007,7 @@ document.addEventListener('keydown', (e) => {
   if (!el.win.hidden) {
     if (matches('close', e)) { e.preventDefault(); closeWindow(); return; }
     if (e.key === 'Tab') {
-      const stops = [...el.win.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled])')];
+      const stops = [...el.win.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled])')].filter(e => e.getClientRects().length && e.tabIndex >= 0);
       const first = stops[0];
       const last = stops[stops.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
@@ -1912,7 +2021,7 @@ document.addEventListener('keydown', (e) => {
   if (matches('close', e)) { e.preventDefault(); selectTool(); return; }
   if (matches('pick-tool', e)) {
     e.preventDefault();
-    const tool = PLACEABLE[Number(e.key) - 1];
+    const tool = e.key.toLowerCase() === 't' ? 'trailer' : PLACEABLE[Number(e.key) - 1];
     if (!D.OBJECT_TYPES[tool].lotOnly || state.venue.id === 'lot') pickTool(tool);
   } else if (matches('undo', e)) {
     e.preventDefault();
@@ -2025,6 +2134,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    development: state.research ? { ...researchFor(state), booked: researchEffectsFor(state).learned } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
   });

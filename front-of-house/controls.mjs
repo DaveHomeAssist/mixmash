@@ -43,8 +43,8 @@ export const BINDINGS = [
     keysLabel: 'B', label: 'Bulldozer on or off' },
   // Build, anywhere on the page
   { id: 'pick-tool', scope: 'page', phases: ['build'],
-    combos: [{ keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], ctrl: false, meta: false, alt: false }],
-    keysLabel: '1 to 9', label: 'Pick an object, in the order of the tiles' },
+    combos: [{ keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', 't', 'T'], ctrl: false, meta: false, alt: false }],
+    keysLabel: '1 to 9, T', label: 'Pick an object, in the order of the tiles' },
   { id: 'undo', scope: 'page', phases: ['build'],
     combos: [{ keys: ['z', 'Z'], ctrl: true, alt: false, shift: false }, { keys: ['z', 'Z'], meta: true, alt: false, shift: false }],
     keysLabel: 'Ctrl+Z or ⌘Z', label: 'Undo the last change to the layout' },

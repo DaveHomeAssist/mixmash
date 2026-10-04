@@ -437,3 +437,72 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Four integration tests pass, including connected-access refusal before payment, save recovery, repeated-signing protection and every-minute four-zone conservation through normal departure. All 276 repository tests and build pass. A quiet test fixture served requests immediately; the surge/temporary-admission fixture supplies a real queue. Browser tests caught phone Services height and an ellipsized Revenue tab; a redundant hint was removed and tab padding reduced while retaining 44px touch height. Both-renderer browser and delivery verification follow.
 
 - Final local evidence: all 276 tests and build, six complete browser journeys and all 28 legacy checks pass. Screenshots of the 3D stall/queues and WebKit phone vendor receipt were inspected. Warmed offline reload preserves minute 15 with three food requests waiting, 70 stock, $80 vendor gross and $20 house income. A short-desktop Promote overflow was fixed with compact action padding; desktop tool tiles widened to retain legible WebKit labels. The supplied action client places the stall and reaches live minute 5; its native-select sequence leaves food Off, so enabled contract acceptance is proved by the separate six browser journeys, not that action-client run.
+
+## 2026-10-04: FOH-O02d1 sanitation replay
+
+- Added finite delayed restroom visits after bar/food resolution, portable/trailer access and utilities, two-minute stall visits, twelve-use condition, three-minute cleaning by one exclusive worker, eight-minute queue patience and complete closing resolution. Replay derives queues, visits and ongoing cleaning without guest duplication, refunds, show departures or financial side effects.
+- Seven targeted tests pass, including the6000-guest bound. Client facilities, servicing costs, measurable satisfaction and one negotiated artist preference remain the next slice.
+- PR71 is delivered: CI37201292853 passed; merge719e0f5, built Pages, fourteen matching live files and six production browser journeys. PR72 core is delivered: CI37201342806 passed; merge a04b4a1, built Pages, fifteen matching files and hosted quiet/surge income pairs. PR75 playable food is pushed and in required CI.
+
+- Sanitation core final local validation: all 283 repository tests and build pass. Generated game documentation remains unchanged; the admin index includes the new module/tests. No playable sanitation or artist-preference acceptance is claimed by this core.
+
+- PR75 food integration delivered: full CI37202280052 passed; merged ffcd59f, Pages built12:41:40Z and eighteen deployed files match. Six production vendor journeys and warmed offline queue/stock/cash reload pass. Actual Lot policy fixtures also confirm useful choices: seed1/bar staffing favors standard house income $102 vs $51; seed3/temporary admission favors premium $81 vs $76. The native-select arrow sequence also remains Off in a minimal page without game code, confirming the action-harness limitation separately from game acceptance.
+
+## 2026-10-04: FOH-O02d2 sanitation contract
+
+- Optional live Lot sanitation contract locks trailer rental ($240), cleaner ($80), utilities ($60) and accepted/declined quiet changing-area terms before charging. Connected portables remain independent of research and utilities. Trailer occupies3×2 and consumes1,500W; source-owned 3D geometry and labeled classic fallback cover valid imports.
+- Costs enter the existing promoter production and door artist basis. Amenities use completed visit demand; accepted fulfilled Sodium Arcade preference adds up to two relationship points without artist pay or cash changes. Damaged geometry cannot earn fulfillment; a valid locked quote remains intact. Older absent fields retain legacy results.
+- Five integration tests cover refusal before payment, locking/recovery, actual visit satisfaction, both deals, one-time signing, food ordering and cleaning reload. All288 repository tests and build pass. Required CI/hosted proof pending; player controls, guest projection and production journeys remain FOH-O02d3.
+
+- PR #77 first CI run caught a missing trailer cost entry in the documentation generator. Added the explicit rental/optional-services entry and regenerated the catalog; retained the failed run as evidence. Four local Chromium classic/3D desktop/phone import probes render the trailer without page errors; inspected screenshots show the footprint and both source-owned appearances.
+
+## 2026-10-04: FOH-O02d3 playable sanitation
+
+- Lot Build adds the trailer on T; 0 retains Fit. Promote Facilities pages expose food, sanitation/cleaner/utilities and explicit optional artist preference. Live/settlement receipts show actual visits, dirty stalls, exclusive cleaning progress and separate portable/package costs. Short desktop settlement uses existing tabs, retaining the full-width document when height permits.
+- Shared renderer projection adds purple waiting/in-use sanitation samples with stable source identities, food-first requests, free-floor routes and one normal departure per guest. Six contract/projection tests pass, including every-minute five-zone conservation and reload/midpoint movement.
+- Seven actual-player browser journeys pass across Chromium classic/3D desktop/phone, WebKit classic desktop/phone and a short dark desktop. Placement, enabled terms, quote, preference, visits, closure and signed costs are exercised. Initial tab selector and phone/short-desktop settlement overflow failures were corrected and retained as evidence. The supplied action client places/enables the trailer package and reaches live minute5. Warmed offline reload at minute27 preserves an in-progress cleaning ending at30; an offline step completes it with cash/projection conserved. CI, deployment and live journeys remain pending.
+
+- Final local controls verification: all289 npm tests/build,28 legacy checks, six food regression journeys and seven sanitation journeys pass. Sanitation journeys exercise T and keyboard page switching, light/dark, phone and short desktop. Compact tool labels preserve the original HUD footprint and44px minimum targets. A Skip test now accepts a naturally reached incident atomically while retaining response/signing assertions; the observed timing failure is retained. The final action client repeats the enabled trailer/preference through minute5.
+
+## 2026-10-04: FOH-R01a research authority
+
+- Implemented the accepted three-project pilot as a pure prerequisite: Patch standards, Service training and Admission lanes, one slot, cumulative unspent department experience, eligible distinct nights, explicit pause/resume and partial cancellation refunds. Versioned commands replay project status and separate development ledger; no career spending is applied on load. Sandbox has all knowledge; career/scenario start empty.
+- Seven targeted tests pass: project eligibility/affordability, one slot, eligible-night progress and all-night deduplication, pause/resume/cancel, no cash-creation loops, untrusted-field replay, modes, malformed imports and bounded2,048-command history. This module has no career/UI integration or deployed research benefit yet; that remains FOH-R01b.
+
+- Sanitation integration at f5408fc preserves the merged floor cache: Chromium/WebKit cached/direct pixel and invalidation checks plus all seven player journeys pass. Actual Lot seed3 produces48/61/85 completed visits for unserviced portables/serviced portables/full trailer package; net114/34/−266 demonstrates the explicit cost tradeoff. Research core full-suite evidence follows below.
+
+- Research core final local validation: all296 npm tests, build and generated documentation pass. No gameplay effect or historical career spending was introduced by this prerequisite.
+
+### 2026-10-04 research career adapter
+
+FOH-R01b1 now connects the pilot to career cash, signed-night department experience and versioned booking prefixes. Seven integration checks cover actual outcomes, frozen held nights, separate development cash, paid Patch response, finite live capacity, legacy recovery and full-history signing. All303 npm tests and build pass. Development costs remain outside show/artist costs; old careers are unchanged until opt-in. Player research controls, required delivery and production proof remain open.
+
+### 2026-10-04 sanitation delivery correction
+
+PR79 CI run37204614730 passed the original28 checks, four live-service journeys, eight crowd/movement journeys and six food journeys, then caught a 13px vertical overflow in the phone settlement Costs page. Compact settlement now flattens inactive column wrappers on phones as well as short desktops, removing empty grid tracks without hiding content or reducing controls. The facilities smoke now visits every settlement tab before signing. Integrated delivered resolution PR78 (36bbbf3) and reserved cache v40; source models and resolution behavior are both preserved. Required CI and production sanitation acceptance remain pending.
+
+### 2026-10-04 playable development
+
+The menu and completed-show surface open Development: Patch, Service, Admission and Ledger pages. Controls expose eligibility, progress, start cost, exact cancel refund and booked versus learned knowledge; in-flight bookings are read-only. The paid backup response states its95% researched outcome. Seven local browser journeys cover actual opt-in/start/pause/resume/cancel, live-night learning, next booking and cash/reload on desktop, phone, short dark desktop, Chromium/WebKit and both renderers. Offline reload preserves progress/cash, and offline pause/resume/cancel refunds120 exactly once.
+
+All303 tests and build pass. PR83 CI caught missing generated action notes/payloads, corrected in1a9f074; generated reference now passes. Controlled Sandbox pairs retain staffing tradeoffs: quiet seed1 gains nothing; surge seed3 with the worker at bar improves admissions85→102 and service84→102, net114→562 before career development expenditure. With the worker at the gate, admission remains115 and bar sales23→22, net201→195. No blanket profit guarantee or hardware/human acceptance is claimed. Required CI, hosted research journeys and phase closeout remain pending.
+
+- Development closeout checks:28 existing viewport/player checks also pass, including ultrawide and all phone controls. The supplied coordinate action client successfully enables free Sandbox knowledge and opens all development pages; its separate first-show attempt stopped at departure, so that artifact is not claimed as career proof. The seven selector-driven actual player journeys establish career spending and progression. Phone development and action-client canvas screenshots were inspected.
+
+### 2026-10-04 ownership authority
+
+FOH-E01a implements one small-PA asset family as a pure prerequisite. Six targeted tests pass: affordability/one-unit limit, transaction idempotency, sale/rebuy identity and money conservation, strict replay/import, malformed commands and bounded capital history. Buy1200/sale600 and a proposed later20/night operating charge are explicit game values. No ownership is inferred from layouts, no rental is yet waived and no general career cash ledger or equipment controls are claimed.
+
+- Ownership core: all309 repository tests, build and generated documentation pass. Required CI and hosted core proof remain pending.
+
+- Sanitation full CI37205244572 passed at81a0cc7 on2026-10-04 13:38:27Z. Concurrent merged performance evidence bc5ed37 required documentation reconciliation before delivery; both evidence histories are preserved. Runtime files are unchanged by this merge. Current-head CI and production acceptance remain pending.
+
+- PR85 now combines playable sanitation, development and the pure ownership prerequisite with delivered performance evidence bc5ed37. Additional dark phone touchscreen-tap checks pass on Chromium3D and WebKit classic, retaining44px targets and exact120 refunds. Current-head CI and production acceptance remain pending.
+
+### 2026-10-04 career cash journal authority
+
+FOH-E01a2 supplies the bounded cash journal needed before equipment enters the career. Recent128 rows retain identity and references; earlier movements remain exact category totals. Six targeted tests pass, including mixed capital/research/show reconciliation, more than four compactions, retained/archived retries, corrupted sources and safe-integer arithmetic. Loading pays nothing and no career cash path is connected yet. This is not a claim that ownership is playable.
+
+- Cash journal prerequisite: all315 repository tests, build and generated documentation pass. It remains isolated from career cash until the next adapter slice.
+
+- PR87 original CI37206825027 passed; a concurrent career delivery prevented a clean merge. Reconciled193c54c, retaining both briefs, current gameplay records and measured-source attribution. All315 tests/build/docs/simulation and actual display transitions pass locally; corrected-head CI remains required.

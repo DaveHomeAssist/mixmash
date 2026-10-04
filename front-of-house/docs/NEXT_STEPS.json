@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "6ed7b7c measured · CI and native evidence verified",
+  "head": "76900b4 evidence · reconciled with career baseline193c54c",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "CI calibration and real native/display evidence verified; public summaries and reproduction tools await their own delivery. Parallel sanitation/research/ownership remain separately tracked.",
+  "statusReason": "CI/native/display evidence remains frozen at its measured source. PR87 passed its original CI but required reconciliation with delivered sanitation/research/career work; combined CI and hosted evidence delivery are pending.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -710,7 +710,8 @@
               "Six full visible native Chrome154/Metal windows at clean6ed7b7c:5120×1286/DPR1,59.9764–59.9812Hz, zero intervals over50ms; complete private artifact audit.",
               "Actual full-client DPR1→2→1 moves preserve fixed1000×613 CSS size, exact state and yaw37/135 picking. Public reproduction commands pass; native command quick windows remain distinct from the frozen full measurement.",
               "Default headless quick mode and deliberate missing-browser cleanup are checked separately. Public summary/tool CI and deployment pending.",
-              "Final local validation:276 repository tests, build, generated docs, balance simulation and three reporting tests pass; generated balance/docs unchanged. Six default headless short windows and deliberate missing-browser retained-failure cleanup pass; catalog317 files."
+              "Final local validation:276 repository tests, build, generated docs, balance simulation and three reporting tests pass; generated balance/docs unchanged. Six default headless short windows and deliberate missing-browser retained-failure cleanup pass; catalog317 files.",
+              "Original PR87 CI37206825027 passed. Reconciled delivered career baseline193c54c after a merge conflict, preserving both appended briefs and latest gameplay phase records. All315 tests/build/generated docs/simulation pass with no generated drift; actual display transition reproduction passes on the integrated source. Corrected-head CI pending."
             ]
           }
         ]
@@ -978,6 +979,15 @@
             "evidence": [
               "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet.",
               "All309 repository tests, build and generated documentation pass. Required delivery/hosted core checks and all career ownership integration remain pending."
+            ]
+          },
+          {
+            "id": "FOH-E01a2",
+            "scope": "Bounded career cash journal with exact archived totals",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Six targeted tests cover mixed capital/research/show reconciliation, stable retry identity, more than four compactions, strict source replay, malformed checkpoints and unsafe integer refusal. No career cash path is connected yet.",
+              "All315 repository tests, build and generated documentation pass. Required delivery and career cash-path integration remain pending."
             ]
           },
           {
