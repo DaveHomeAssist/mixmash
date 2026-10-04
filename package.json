@@ -13,7 +13,7 @@
     "smoke:zelda2mario": "node test/zelda2mario-smoke.mjs",
     "smoke:front-of-house": "node test/front-of-house-smoke.mjs",
     "smoke:admin": "node test/admin-smoke.mjs",
-    "vercel-build": "node --check \"api/[...path].mjs\" && node --check api/health.mjs && node --check api/sessions.mjs && node --check \"api/sessions/[sessionId].mjs\" && node --check \"api/sessions/[sessionId]/commands.mjs\" && node --check mars/game.js && node --check mars/golden-scene.js && node --check mars/commissioned-art.mjs && node --check mars/art-spec.js && node --check mars/render-contract.mjs && node --check mars/sprite-canvas.mjs && node --check mars/art/validate-assets.mjs && node --check mars/art/visual-regression.mjs && node --check mars/server.mjs && node --check mars/engine.mjs && node --check mars/legacy-import.mjs && node --check mars/sprites.mjs && node --check mars/sim/baseline.mjs && node --check mars/sim/simulate.mjs && node --check front-of-house/game.js && node --check front-of-house/board.js && node --check admin/app.js && node --check admin/theme.js && node --check admin/build-catalog.mjs && node --check front-of-house/lot-camera.mjs && node --check front-of-house/lot-models.mjs && node --check front-of-house/lot-renderer.mjs",
+    "vercel-build": "node --check \"api/[...path].mjs\" && node --check api/health.mjs && node --check api/sessions.mjs && node --check \"api/sessions/[sessionId].mjs\" && node --check \"api/sessions/[sessionId]/commands.mjs\" && node --check mars/game.js && node --check mars/golden-scene.js && node --check mars/commissioned-art.mjs && node --check mars/art-spec.js && node --check mars/render-contract.mjs && node --check mars/sprite-canvas.mjs && node --check mars/art/validate-assets.mjs && node --check mars/art/visual-regression.mjs && node --check mars/server.mjs && node --check mars/engine.mjs && node --check mars/legacy-import.mjs && node --check mars/sprites.mjs && node --check mars/sim/baseline.mjs && node --check mars/sim/simulate.mjs && node --check front-of-house/game.js && node --check front-of-house/board.js && node --check admin/app.js && node --check admin/theme.js && node --check admin/build-catalog.mjs && node --check front-of-house/lot-camera.mjs && node --check front-of-house/lot-models.mjs && node --check front-of-house/lot-renderer.mjs && node --check front-of-house/board-adapter.mjs",
     "art:index": "node mars/art/validate-assets.mjs --runtime-index mars/assets/commissioned/index.json",
     "art:validate": "node mars/art/validate-assets.mjs --verify-runtime-index mars/assets/commissioned/index.json --verify-approval-reports mars/art/reports",
     "art:report": "node mars/art/validate-assets.mjs --verify-runtime-index mars/assets/commissioned/index.json --report mars/art/reports/art-validation.json --approval-reports mars/art/reports",
@@ -29,7 +29,8 @@
     "admin:index": "node admin/build-catalog.mjs",
     "vendor:front-of-house": "node front-of-house/tools/vendor-three.mjs",
     "check:front-of-house-vendor": "node front-of-house/tools/vendor-three.mjs --check",
-    "smoke:front-of-house-lot": "node test/front-of-house-lot-smoke.mjs"
+    "smoke:front-of-house-lot": "node test/front-of-house-lot-smoke.mjs",
+    "smoke:front-of-house-3d": "node test/front-of-house-3d-smoke.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

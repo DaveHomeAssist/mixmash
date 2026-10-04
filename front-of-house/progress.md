@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: 3D application integration
+
+- Menu → Camera enables an explicit Lot preview. The facade preserves the latest scene and input canvas, selects the classic board for other rooms/failures and resumes the same show after context restoration. Focusable presets and orbit/pitch controls supplement mouse/touch gestures. No engine, save or economy change. Service worker v30.
+- Local verification: 229 repository tests, build checks, all 28 existing game smoke checks, and a new full-client 3D rail covering gesture cancellation, single placement/Undo, inspection, fallback, viewport fit, mid-show reload and complete settlement/state parity. Screenshots inspected; stale recovery feedback found and fixed.
+- Select controls delivered in PR61, merge a4042d7 and Pages build1259218204; four live runtime files match and phone Clear/cancel/Undo/containment pass. Backend PR63 remains a separate delivery.
+- Complete scene parity, realistic art, calibrated views, performance and human/physical-device acceptance remain required; this preview is not FOH-V01 completion.
+
+
 ## 2026-10-04: Isolated Lot backend
 
 - FOH-F01 delivered in PR60, merge c43dff4, successful CI and Pages build1259205127. Live CSS/service worker bytes match; Book fits 360/375/390px with no browser errors.
