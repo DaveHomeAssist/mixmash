@@ -31,7 +31,8 @@ function specification(raw) {
 }
 
 function event(s, cause, entity, result) {
-  s.events.push({ id: `${s.spec.id}:${s.events.length + 1}`, minute: s.minute, cause, entity, result });
+  const action = cause === 'patience' || cause === 'closed' ? 'expire' : cause;
+  s.events.push({ action, id: `${s.spec.id}:${s.events.length + 1}`, minute: s.minute, cause, entity, result });
 }
 
 export function createServices(raw) {

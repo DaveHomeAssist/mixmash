@@ -22,6 +22,7 @@ function conserved(s) {
   assert.equal(r.barCash, r.barServed * s.spec.barNet);
   assert.ok(r.refunds <= r.prepaidCash);
   assert.equal(new Set(s.events.map((e) => e.id)).size, s.events.length);
+  for (const e of s.events) assert.ok(e.action && e.cause && e.entity && Number.isInteger(e.minute));
 }
 
 test('quiet: four arrivals need no transfer and earn $100; absent bar worker loses $20', () => {
