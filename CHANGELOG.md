@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House departure prerequisite:** added a pure tested Lot-access and normal-departure model. Disconnected exits reduce modeled throughput, people remain conserved, and existing occupancy/cash rules stay authoritative. Client integration is still pending.
+
 - Front of House live Lot: representative guests now follow recorded admission and bar outcomes, with visible admission abandonment and frozen pause/reduced-motion endpoints. Service cash, totals and save checkpoints remain authoritative.
 
 - **Front of House service crowd:** the optional live Lot now shows separate admission, bar and floor samples plus a travelling worker in classic and 3D views. Saved aggregate counts stay authoritative; cameras and sample limits do not change receipts or settlement. Service worker v33.

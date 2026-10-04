@@ -63,6 +63,9 @@ export const LIVE_SERVICES = {
   workerRate: 2, gateWorkerRate: 5, barBaseRate: 1, extraBarRate: 3,
 };
 
+// Normal departure pilot: gameplay throughput, never occupancy or evacuation capacity.
+export const GUEST_FLOW = { exitRate: 5 };
+
 // Money (R-10 to R-15)
 export const BAR_NET_PER_HEAD = 6;
 export const BAR_SHORTFALL = 0.6;

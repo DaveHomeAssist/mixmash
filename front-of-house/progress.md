@@ -320,3 +320,12 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Pure checks cover conservation, same-minute arrival/admission/sale, batched clocks, reload, obstacle paths and the 6,000-guest bound. Four real-client renderer/viewport journeys and controlled visible-motion checks are the browser acceptance rail; delivery evidence follows the PR.
 
 - Local evidence: 255 repository tests and build pass; four renderer/viewport client journeys and two controlled motion journeys pass. The initial isolated harness omitted canvas resize, causing a frame-comparison failure; explicit resize fixes the harness and both rendered motion/frozen-frame assertions now pass. Desktop motion and phone queue captures were inspected.
+
+
+## 2026-10-04: FOH-O02a access and normal departure core
+
+- Added a pure largest-connected-floor model with explicit usable/blocked gate and exit routes. It respects rotated equipment footprints and leaves the existing capacity formula unchanged. The normal departure checkpoint conserves admitted guests, drains a bounded per-exit rate and reconstructs events after reload; it has no money fields.
+- Six targeted tests cover quiet/surge/zero demand, blocked exits, partial throughput, batching, reload and malformed checkpoints. This core is not yet called by the client. FOH-O02b must add pre-doors explanation/refusal, preserve older checkpoints, connect the saved clock and exit animation, and gate settlement before FB-11 is complete.
+- PR66 delivered at fc93b98 after full CI37198084252; Pages built at 11:31:17Z, eleven runtime files match and eight production control/queue journeys pass. PR68's event-derived movement passes 255 tests, six motion/zone journeys, six full control/settlement journeys, action-client input and warmed offline reload locally. Its separate CI/merge/deployed gates remain pending.
+
+- Core validation: 261 repository tests, build, manifest verification and legacy simulation pass; generated balance/docs remain unchanged. Initial repository checks caught the missing admin entries and test description; regeneration plus a source description resolved both, and the final full suite passes.
