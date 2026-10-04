@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: CI calibration and native display evidence
+
+- PR81 and PR82 passed required CI, merged and reached Pages; measurement/procedure files match their tested source. Full CI run37205343575 passed, with all18 source/fixture/raw hashes and recomputed statistics verified. Software crowd cadence1.91–3.06Hz remains distinct from device targets.
+- Six full native visible Chrome154 windows on Apple M4 are valid at5120×1286/DPR1, cadence59.9764–59.9812Hz and zero intervals over50ms. Corrected the inherited graphics-label suffix transparently while retaining original private bytes and attribution.
+- The actual full client passed fixed-CSS-size display moves DPR1→2→1, unchanged state, picking and containment. Added reproducible isolated native and manual display commands; phone, low-power, human acceptance and measured CI regression limits remain open. No runtime or game rules change.
+- Preserved the separate sanitation, research and ownership branch records; their local checks do not imply delivery.
+
+
 ## 2026-10-04: CI calibration workflow prepared
 
 - Added an explicit manual performance option to the existing CI workflow. A separate Ubuntu24.04 job runs the full standard18-window SwiftShader protocol and retains only synthetic JSON fixtures/results plus an allowlist of runner metadata.

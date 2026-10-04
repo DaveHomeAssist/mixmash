@@ -30,6 +30,7 @@
     "vendor:front-of-house": "node front-of-house/tools/vendor-three.mjs",
     "check:front-of-house-vendor": "node front-of-house/tools/vendor-three.mjs --check",
     "smoke:front-of-house-floor": "node test/front-of-house-floor-smoke.mjs",
+    "smoke:front-of-house-displays": "node test/front-of-house-displays-smoke.mjs",
     "smoke:front-of-house-resolution": "node test/front-of-house-resolution-smoke.mjs",
     "smoke:front-of-house-lot": "node test/front-of-house-lot-smoke.mjs",
     "smoke:front-of-house-3d": "node test/front-of-house-3d-smoke.mjs",

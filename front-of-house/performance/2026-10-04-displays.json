@@ -1,0 +1,99 @@
+{
+  "title": "Front of House actual display-density transition check",
+  "startedAt": "2026-10-04T13:34:26.636Z",
+  "finishedAt": "2026-10-04T13:34:28.847Z",
+  "source": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
+  "browser": "154.0.8037.97",
+  "scope": "Actual display-density transitions in the isolated full client; not human acceptance",
+  "stateSha256": "bc334ec8f6f4ac5b42d47a9f618aba3117ba377ae18b6343b5f519b298834e8a",
+  "passed": true,
+  "privateReportSha256": "1384d73b4dc9a8036215d392701a5989024171bc9fbcdcbf00246bd3459c7295",
+  "privateHarnessSha256": "a13b708e0de1b8b95f6f23c8f6e687db22b6b8328b5606be584dd8cb4479ad9d",
+  "records": [
+    {
+      "dpr": 1,
+      "viewport": {
+        "width": 1000,
+        "height": 613
+      },
+      "backing": {
+        "width": 1000,
+        "height": 613
+      },
+      "css": {
+        "width": 1000,
+        "height": 613
+      },
+      "focus": true,
+      "visible": "visible",
+      "picks": [
+        {
+          "x": 12,
+          "y": 8
+        },
+        {
+          "x": 12,
+          "y": 8
+        }
+      ],
+      "pageFit": true
+    },
+    {
+      "dpr": 2,
+      "viewport": {
+        "width": 1000,
+        "height": 613
+      },
+      "backing": {
+        "width": 2000,
+        "height": 1226
+      },
+      "css": {
+        "width": 1000,
+        "height": 613
+      },
+      "focus": true,
+      "visible": "visible",
+      "picks": [
+        {
+          "x": 12,
+          "y": 8
+        },
+        {
+          "x": 12,
+          "y": 8
+        }
+      ],
+      "pageFit": true
+    },
+    {
+      "dpr": 1,
+      "viewport": {
+        "width": 1000,
+        "height": 613
+      },
+      "backing": {
+        "width": 1000,
+        "height": 613
+      },
+      "css": {
+        "width": 1000,
+        "height": 613
+      },
+      "focus": true,
+      "visible": "visible",
+      "picks": [
+        {
+          "x": 12,
+          "y": 8
+        },
+        {
+          "x": 12,
+          "y": 8
+        }
+      ],
+      "pageFit": true
+    }
+  ],
+  "notes": "Fresh isolated profile; actual window movement between attached density1 and density2 displays; no emulated metrics override. Private display coordinates and screenshots are retained outside the repository. Native dimensions, focus, scene picking and exact saved-state preservation are checked; human readability and phone hardware acceptance remain open."
+}

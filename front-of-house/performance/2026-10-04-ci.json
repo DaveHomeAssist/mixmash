@@ -1,0 +1,1282 @@
+{
+  "startedAt": "2026-10-04T13:22:19.321Z",
+  "finishedAt": "2026-10-04T13:36:17.739Z",
+  "source": {
+    "commit": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
+    "dirty": false,
+    "sha256": {
+      "package-lock.json": "596f61a2c0224f51bd6eb256e33ffe6f61c581ceb55eabe38002a1275c165628",
+      "front-of-house/lot-assets.json": "05d4eeaf3cc28e7e7ecc32fa1a20614c2aeccb440e14dfd23e3a7a4f2bbcb262",
+      "front-of-house/engine.mjs": "9b0b24a825e6debfd1b5fc3f126d6cbd3731aa37267113e123b4ae7ff89404ae",
+      "front-of-house/data.mjs": "22a0091c8a01477aa0d5fba6574e2c961df4fbda70afe1869577220eefda2495",
+      "front-of-house/lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
+      "front-of-house/lot-models.mjs": "1bb68e8c2bdfef4c459e51e5998e8cd9da0a8dfb1c124608007e5fc5633caea0",
+      "front-of-house/lot-renderer.mjs": "82cbc0b94b83960db4240a269c0c0696e0c951f416f337a78f07e1f16c7b56da",
+      "front-of-house/lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
+      "front-of-house/tools/performance-stats.mjs": "d633beceeb4fb5f0c06a76746f9468f0ef9f17487e95df04f82e9a4c561c92bd",
+      "test/front-of-house-performance.mjs": "36beb3a55acad6ea206906c9aac655f4fbef2762621ccdd6097485e6d138e1f9"
+    }
+  },
+  "ci": {
+    "provider": "github-actions",
+    "runnerClass": "ubuntu-24.04",
+    "os": "Linux",
+    "architecture": "X64",
+    "image": "ubuntu24",
+    "imageVersion": "20260927.320.1",
+    "runId": "37205343575",
+    "attempt": "1"
+  },
+  "host": {
+    "platform": "linux",
+    "architecture": "x64",
+    "kernel": "6.17.0-1022-azure",
+    "model": "unknown",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "cpuCount": 4,
+    "memoryBytes": 16770744320,
+    "osVersion": "unknown",
+    "osBuild": "unknown",
+    "power": "unknown",
+    "lowPower": "unknown",
+    "displayRefresh": "unknown",
+    "thermal": "unknown",
+    "otherHostLoad": "uncontrolled; load averages recorded per run"
+  },
+  "browser": "149.0.7827.55",
+  "protocol": {
+    "layer": "isolated renderer; excludes full game and HUD",
+    "warmupMs": 10000,
+    "measurementMs": 30000,
+    "repeats": 3,
+    "requestedDpr": 1,
+    "viewports": [
+      [
+        1440,
+        900
+      ],
+      [
+        375,
+        812
+      ],
+      [
+        2560,
+        720
+      ]
+    ],
+    "headless": true,
+    "requestedBackend": "software",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--use-angle=swiftshader"
+    ],
+    "reducedMotion": "no-preference",
+    "shadows": "1024 PCFSoft",
+    "antialias": true,
+    "adaptiveQuality": false,
+    "gpuTimestampMs": "unavailable",
+    "acceptance": "descriptive only; no device or statistical pass limits inferred"
+  },
+  "fixtureSha256": {
+    "empty": "f890242c03ef8aeda9bee1b2f4ccf58f645fd77547bd0cdaa17ec1e1333a3ec0",
+    "crowd": "cac5d4e9792ef0c0e34783e225cc26d9ded9f769335e564a0a515185dc4b6e0c"
+  },
+  "title": "Front of House CI software renderer calibration",
+  "originalReportSha256": "24df16112c1a0834d96702e892d3a62b22f27e85ecd11fc06e9c33c79f1f35b8",
+  "artifact": {
+    "run": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37205343575",
+    "id": 11305185297,
+    "name": "foh-performance-37205343575-1",
+    "retentionDays": 30
+  },
+  "runs": [
+    {
+      "id": "1440x900-empty-1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30065.5,
+      "cadenceFps": 10.676689228517738,
+      "frame": {
+        "count": 321,
+        "elapsedMs": 30065.5,
+        "meanMs": 93.6619937694704,
+        "p50Ms": 66.79999999999563,
+        "p95Ms": 200,
+        "p99Ms": 216.60000000000218,
+        "maxMs": 233.29999999999927,
+        "above16_7": 320,
+        "above33_3": 320,
+        "above50": 273,
+        "fullStallMs": 27700.000000000007,
+        "excessStallMs": 14050.000000000007
+      },
+      "cpuSubmission": {
+        "count": 321,
+        "elapsedMs": 142.40000000072177,
+        "meanMs": 0.44361370716735754,
+        "p50Ms": 0.40000000002328306,
+        "p95Ms": 0.6000000000349246,
+        "p99Ms": 1,
+        "maxMs": 3.1000000000349246,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "3cdcd085de7b4e784405cc4d605c6264bb965f111d87bc403bbded5e332028d7",
+      "loadBefore": [
+        0.47,
+        0.16,
+        0.05
+      ],
+      "loadAfter": [
+        2.8,
+        0.81,
+        0.28
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "1440x900-empty-2",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30032.199999999997,
+      "cadenceFps": 11.254586743561912,
+      "frame": {
+        "count": 338,
+        "elapsedMs": 30032.199999999997,
+        "meanMs": 88.85266272189348,
+        "p50Ms": 66.70000000000073,
+        "p95Ms": 200,
+        "p99Ms": 216.60000000000218,
+        "maxMs": 216.6999999999971,
+        "above16_7": 338,
+        "above33_3": 337,
+        "above50": 285,
+        "fullStallMs": 27416.6,
+        "excessStallMs": 13166.599999999997
+      },
+      "cpuSubmission": {
+        "count": 338,
+        "elapsedMs": 149.4000000001397,
+        "meanMs": 0.44201183431993996,
+        "p50Ms": 0.3999999999650754,
+        "p95Ms": 0.7000000000116415,
+        "p99Ms": 2.7000000000116415,
+        "maxMs": 3.2999999999883585,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "4eaef09975e663851eb409a0e14622212a2a94279d1faa043a114c2031432365",
+      "loadBefore": [
+        2.8,
+        0.81,
+        0.28
+      ],
+      "loadAfter": [
+        3.75,
+        1.31,
+        0.47
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "1440x900-empty-3",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30032.2,
+      "cadenceFps": 11.321181931393637,
+      "frame": {
+        "count": 340,
+        "elapsedMs": 30032.2,
+        "meanMs": 88.33,
+        "p50Ms": 66.70000000000073,
+        "p95Ms": 200,
+        "p99Ms": 216.6999999999971,
+        "maxMs": 216.70000000000073,
+        "above16_7": 340,
+        "above33_3": 340,
+        "above50": 281,
+        "fullStallMs": 27083.600000000006,
+        "excessStallMs": 13033.600000000008
+      },
+      "cpuSubmission": {
+        "count": 340,
+        "elapsedMs": 152.59999999956926,
+        "meanMs": 0.44882352941049786,
+        "p50Ms": 0.40000000002328306,
+        "p95Ms": 0.6000000000349246,
+        "p99Ms": 1.7999999999883585,
+        "maxMs": 2.7999999999883585,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "01f5c72fb6e6cf56baa37b31324d6f0261fb82647cd8b032a67866a7ee5b0d1c",
+      "loadBefore": [
+        3.75,
+        1.31,
+        0.47
+      ],
+      "loadAfter": [
+        4.85,
+        1.94,
+        0.72
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "1440x900-crowd-1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30482.1,
+      "cadenceFps": 2.066786737134253,
+      "frame": {
+        "count": 63,
+        "elapsedMs": 30482.099999999995,
+        "meanMs": 483.84285714285704,
+        "p50Ms": 466.6999999999971,
+        "p95Ms": 883.2999999999993,
+        "p99Ms": 1166.5999999999985,
+        "maxMs": 1166.5999999999985,
+        "above16_7": 63,
+        "above33_3": 59,
+        "above50": 55,
+        "fullStallMs": 30248.799999999985,
+        "excessStallMs": 27498.799999999985
+      },
+      "cpuSubmission": {
+        "count": 63,
+        "elapsedMs": 188.80000000010477,
+        "meanMs": 2.99682539682706,
+        "p50Ms": 2.599999999976717,
+        "p95Ms": 4.7999999999883585,
+        "p99Ms": 8.799999999988358,
+        "maxMs": 8.799999999988358,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "4c3cd28c1f445d6743a4dbd806532228c0f8eedf338d2e9769061ae3aa60b5d6",
+      "loadBefore": [
+        4.85,
+        1.94,
+        0.72
+      ],
+      "loadAfter": [
+        5.07,
+        2.42,
+        0.95
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "1440x900-crowd-2",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30865.499999999996,
+      "cadenceFps": 1.9115193338841103,
+      "frame": {
+        "count": 59,
+        "elapsedMs": 30865.499999999996,
+        "meanMs": 523.1440677966101,
+        "p50Ms": 466.6999999999989,
+        "p95Ms": 966.6999999999971,
+        "p99Ms": 1183.300000000003,
+        "maxMs": 1183.300000000003,
+        "above16_7": 58,
+        "above33_3": 58,
+        "above50": 56,
+        "fullStallMs": 30782.100000000002,
+        "excessStallMs": 27982.100000000002
+      },
+      "cpuSubmission": {
+        "count": 59,
+        "elapsedMs": 184.29999999998836,
+        "meanMs": 3.123728813559125,
+        "p50Ms": 2.599999999976717,
+        "p95Ms": 6,
+        "p99Ms": 7.900000000023283,
+        "maxMs": 7.900000000023283,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "2602741fac388103f754bb05ddaf5d285884dc810de0cec5edbe7f646262e8cc",
+      "loadBefore": [
+        5.07,
+        2.42,
+        0.95
+      ],
+      "loadAfter": [
+        4.92,
+        2.79,
+        1.15
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "1440x900-crowd-3",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30448.799999999996,
+      "cadenceFps": 2.0362050392790523,
+      "frame": {
+        "count": 62,
+        "elapsedMs": 30448.799999999996,
+        "meanMs": 491.1096774193548,
+        "p50Ms": 450,
+        "p95Ms": 966.5999999999985,
+        "p99Ms": 1183.4000000000015,
+        "maxMs": 1183.4000000000015,
+        "above16_7": 61,
+        "above33_3": 56,
+        "above50": 55,
+        "fullStallMs": 30282.199999999997,
+        "excessStallMs": 27532.2
+      },
+      "cpuSubmission": {
+        "count": 62,
+        "elapsedMs": 200.60000000032596,
+        "meanMs": 3.2354838709729994,
+        "p50Ms": 2.6000000000931323,
+        "p95Ms": 5.900000000023283,
+        "p99Ms": 10.70000000006985,
+        "maxMs": 10.70000000006985,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "3d40a721e104e35593aeb3ca16276ca1f3a87098bcaf682aad7f88b5551c384a",
+      "loadBefore": [
+        4.92,
+        2.79,
+        1.15
+      ],
+      "loadAfter": [
+        4.98,
+        3.18,
+        1.38
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "375x812-empty-1",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.4,
+      "cadenceFps": 54.73856753533187,
+      "frame": {
+        "count": 1643,
+        "elapsedMs": 30015.4,
+        "meanMs": 18.26865489957395,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 33.29999999999927,
+        "p99Ms": 33.400000000001455,
+        "maxMs": 66.70000000000073,
+        "above16_7": 763,
+        "above33_3": 73,
+        "above50": 2,
+        "fullStallMs": 133.3000000000029,
+        "excessStallMs": 33.30000000000291
+      },
+      "cpuSubmission": {
+        "count": 1643,
+        "elapsedMs": 579.3000000051688,
+        "meanMs": 0.3525867315917035,
+        "p50Ms": 0.30000000004656613,
+        "p95Ms": 0.5,
+        "p99Ms": 2,
+        "maxMs": 6.300000000046566,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "ee0f4c2cb90aeb48d26f9809feab90a2654f3f8bdd14e2e3a6a4639c0a197825",
+      "loadBefore": [
+        4.98,
+        3.18,
+        1.38
+      ],
+      "loadAfter": [
+        4.54,
+        3.31,
+        1.52
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "375x812-empty-2",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.4,
+      "cadenceFps": 54.73856753533187,
+      "frame": {
+        "count": 1643,
+        "elapsedMs": 30015.4,
+        "meanMs": 18.26865489957395,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 33.29999999999927,
+        "p99Ms": 33.400000000001455,
+        "maxMs": 83.5,
+        "above16_7": 753,
+        "above33_3": 80,
+        "above50": 1,
+        "fullStallMs": 83.5,
+        "excessStallMs": 33.5
+      },
+      "cpuSubmission": {
+        "count": 1643,
+        "elapsedMs": 548.6000000042841,
+        "meanMs": 0.3339013998808789,
+        "p50Ms": 0.30000000004656613,
+        "p95Ms": 0.5,
+        "p99Ms": 0.9000000000232831,
+        "maxMs": 3.1000000000931323,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "db7670788457bee8392eb8102bd55e8d1b0d95e99c6f067a91042527d2ec2855",
+      "loadBefore": [
+        4.54,
+        3.31,
+        1.52
+      ],
+      "loadAfter": [
+        3.66,
+        3.27,
+        1.58
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "375x812-empty-3",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 54.67175292765404,
+      "frame": {
+        "count": 1641,
+        "elapsedMs": 30015.5,
+        "meanMs": 18.29098110907983,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 33.29999999999927,
+        "p99Ms": 33.400000000001455,
+        "maxMs": 66.70000000000073,
+        "above16_7": 746,
+        "above33_3": 77,
+        "above50": 3,
+        "fullStallMs": 166.9000000000051,
+        "excessStallMs": 16.900000000005093
+      },
+      "cpuSubmission": {
+        "count": 1641,
+        "elapsedMs": 564.0000000045402,
+        "meanMs": 0.34369287020386363,
+        "p50Ms": 0.30000000004656613,
+        "p95Ms": 0.5,
+        "p99Ms": 0.8999999999068677,
+        "maxMs": 4.400000000023283,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "d8689a749e0efdc04cbd3b368f1ce197bcb3b105af45dba7f4ff02081ad330b0",
+      "loadBefore": [
+        3.66,
+        3.27,
+        1.58
+      ],
+      "loadAfter": [
+        4.05,
+        3.42,
+        1.71
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "375x812-crowd-1",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30198.7,
+      "cadenceFps": 3.0133747479196122,
+      "frame": {
+        "count": 91,
+        "elapsedMs": 30198.7,
+        "meanMs": 331.8538461538462,
+        "p50Ms": 316.7000000000007,
+        "p95Ms": 666.5,
+        "p99Ms": 666.7000000000007,
+        "maxMs": 666.7000000000007,
+        "above16_7": 87,
+        "above33_3": 83,
+        "above50": 80,
+        "fullStallMs": 29948.699999999997,
+        "excessStallMs": 25948.699999999993
+      },
+      "cpuSubmission": {
+        "count": 91,
+        "elapsedMs": 268.8000000002794,
+        "meanMs": 2.953846153849224,
+        "p50Ms": 2.699999999953434,
+        "p95Ms": 5.099999999976717,
+        "p99Ms": 7.799999999930151,
+        "maxMs": 7.799999999930151,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "2e65a190c54b76c87caf1a80c7ca08f86ea7bcbeb71c3ad599705f1e4339aa5b",
+      "loadBefore": [
+        4.05,
+        3.42,
+        1.71
+      ],
+      "loadAfter": [
+        4.41,
+        3.59,
+        1.84
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "375x812-crowd-2",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30498.800000000003,
+      "cadenceFps": 3.0493003003396852,
+      "frame": {
+        "count": 93,
+        "elapsedMs": 30498.800000000003,
+        "meanMs": 327.9440860215054,
+        "p50Ms": 316.7000000000007,
+        "p95Ms": 649.9000000000015,
+        "p99Ms": 650,
+        "maxMs": 650,
+        "above16_7": 90,
+        "above33_3": 85,
+        "above50": 84,
+        "fullStallMs": 30315.4,
+        "excessStallMs": 26115.4
+      },
+      "cpuSubmission": {
+        "count": 93,
+        "elapsedMs": 257.4999999993015,
+        "meanMs": 2.7688172042935646,
+        "p50Ms": 2.599999999976717,
+        "p95Ms": 4.199999999953434,
+        "p99Ms": 5.300000000046566,
+        "maxMs": 5.300000000046566,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "3582f0290add9580c777cb577ed7a602f03ca9bcbad586d1def831609a025f8a",
+      "loadBefore": [
+        4.41,
+        3.59,
+        1.84
+      ],
+      "loadAfter": [
+        4.49,
+        3.75,
+        1.99
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "375x812-crowd-3",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30032.100000000002,
+      "cadenceFps": 3.063388840607217,
+      "frame": {
+        "count": 92,
+        "elapsedMs": 30032.100000000002,
+        "meanMs": 326.4358695652174,
+        "p50Ms": 316.7000000000007,
+        "p95Ms": 633.3000000000029,
+        "p99Ms": 666.7000000000007,
+        "maxMs": 666.7000000000007,
+        "above16_7": 90,
+        "above33_3": 85,
+        "above50": 83,
+        "fullStallMs": 29815.399999999998,
+        "excessStallMs": 25665.399999999998
+      },
+      "cpuSubmission": {
+        "count": 92,
+        "elapsedMs": 250.3000000009779,
+        "meanMs": 2.7206521739236726,
+        "p50Ms": 2.5,
+        "p95Ms": 4.199999999953434,
+        "p99Ms": 6.5,
+        "maxMs": 6.5,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "3c8817e278f409136663b99e909033c5577e8e11d541dc02b3c95d824ce8823f",
+      "loadBefore": [
+        4.49,
+        3.75,
+        1.99
+      ],
+      "loadAfter": [
+        4.54,
+        3.88,
+        2.12
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "2560x720-empty-1",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30032.100000000002,
+      "cadenceFps": 13.918440601889312,
+      "frame": {
+        "count": 418,
+        "elapsedMs": 30032.100000000002,
+        "meanMs": 71.84712918660287,
+        "p50Ms": 50,
+        "p95Ms": 183.29999999999927,
+        "p99Ms": 216.59999999999854,
+        "maxMs": 216.70000000000073,
+        "above16_7": 418,
+        "above33_3": 407,
+        "above50": 207,
+        "fullStallMs": 20035.59999999999,
+        "excessStallMs": 9685.599999999991
+      },
+      "cpuSubmission": {
+        "count": 418,
+        "elapsedMs": 161.2000000004191,
+        "meanMs": 0.3856459330153567,
+        "p50Ms": 0.30000000004656613,
+        "p95Ms": 0.5,
+        "p99Ms": 2.5,
+        "maxMs": 3.400000000023283,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "02bc4419d90e85e65752f661acc29e9d8b3e827de28ec1126eea28ef06ae3da7",
+      "loadBefore": [
+        4.54,
+        3.88,
+        2.12
+      ],
+      "loadAfter": [
+        4.36,
+        3.92,
+        2.22
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "2560x720-empty-2",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.499999999996,
+      "cadenceFps": 13.926138161949662,
+      "frame": {
+        "count": 418,
+        "elapsedMs": 30015.499999999996,
+        "meanMs": 71.80741626794257,
+        "p50Ms": 50,
+        "p95Ms": 183.29999999999927,
+        "p99Ms": 200.10000000000218,
+        "maxMs": 233.29999999999927,
+        "above16_7": 418,
+        "above33_3": 404,
+        "above50": 200,
+        "fullStallMs": 19669.10000000002,
+        "excessStallMs": 9669.100000000022
+      },
+      "cpuSubmission": {
+        "count": 418,
+        "elapsedMs": 178.7000000020489,
+        "meanMs": 0.42751196172738976,
+        "p50Ms": 0.30000000004656613,
+        "p95Ms": 0.5999999999767169,
+        "p99Ms": 3.099999999976717,
+        "maxMs": 5.599999999976717,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "bd90e00cff0e1e2cd5c2dbed0990f49bb71b8287689f7019d6d83679b604d233",
+      "loadBefore": [
+        4.36,
+        3.92,
+        2.22
+      ],
+      "loadAfter": [
+        4.85,
+        4.09,
+        2.36
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "2560x720-empty-3",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30032.100000000002,
+      "cadenceFps": 13.918440601889312,
+      "frame": {
+        "count": 418,
+        "elapsedMs": 30032.100000000002,
+        "meanMs": 71.84712918660287,
+        "p50Ms": 50.099999999998545,
+        "p95Ms": 166.79999999999927,
+        "p99Ms": 216.60000000000218,
+        "maxMs": 216.70000000000073,
+        "above16_7": 417,
+        "above33_3": 399,
+        "above50": 211,
+        "fullStallMs": 20269.999999999993,
+        "excessStallMs": 9719.999999999995
+      },
+      "cpuSubmission": {
+        "count": 418,
+        "elapsedMs": 172.29999999934807,
+        "meanMs": 0.4122009569362394,
+        "p50Ms": 0.40000000002328306,
+        "p95Ms": 0.5999999999767169,
+        "p99Ms": 2.5,
+        "maxMs": 3.299999999930151,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "24d4da97cca1d91cff0c6bc9f55cdd7a525cd8e632a9cd9abc8a113815e2c524",
+      "loadBefore": [
+        4.85,
+        4.09,
+        2.36
+      ],
+      "loadAfter": [
+        4.44,
+        4.08,
+        2.43
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "2560x720-crowd-1",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30615.399999999998,
+      "cadenceFps": 2.1884411113361253,
+      "frame": {
+        "count": 67,
+        "elapsedMs": 30615.399999999998,
+        "meanMs": 456.94626865671637,
+        "p50Ms": 416.59999999999854,
+        "p95Ms": 899.9000000000015,
+        "p99Ms": 1283.2999999999956,
+        "maxMs": 1283.2999999999956,
+        "above16_7": 67,
+        "above33_3": 66,
+        "above50": 62,
+        "fullStallMs": 30398.699999999997,
+        "excessStallMs": 27298.699999999997
+      },
+      "cpuSubmission": {
+        "count": 67,
+        "elapsedMs": 221.5999999997439,
+        "meanMs": 3.3074626865633414,
+        "p50Ms": 2.599999999976717,
+        "p95Ms": 6.600000000093132,
+        "p99Ms": 7.200000000069849,
+        "maxMs": 7.200000000069849,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "fa2901359f6dc97c5e9b42cbf42429b4e74fbaf214074c24c10b6c881458389d",
+      "loadBefore": [
+        4.44,
+        4.08,
+        2.43
+      ],
+      "loadAfter": [
+        4.07,
+        4.02,
+        2.49
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "2560x720-crowd-2",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30248.799999999996,
+      "cadenceFps": 2.1819047367168287,
+      "frame": {
+        "count": 66,
+        "elapsedMs": 30248.799999999996,
+        "meanMs": 458.31515151515146,
+        "p50Ms": 416.6999999999971,
+        "p95Ms": 816.7000000000007,
+        "p99Ms": 1383.2000000000007,
+        "maxMs": 1383.2000000000007,
+        "above16_7": 64,
+        "above33_3": 59,
+        "above50": 57,
+        "fullStallMs": 29982.300000000007,
+        "excessStallMs": 27132.300000000003
+      },
+      "cpuSubmission": {
+        "count": 66,
+        "elapsedMs": 212.59999999846332,
+        "meanMs": 3.221212121188838,
+        "p50Ms": 2.6000000000931323,
+        "p95Ms": 6.600000000093132,
+        "p99Ms": 8.599999999860302,
+        "maxMs": 8.599999999860302,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "b7d8eb5b5e2a60937d6a78ae31836d5c9ae668edf8f6490b15496eabcc678f03",
+      "loadBefore": [
+        4.07,
+        4.02,
+        2.49
+      ],
+      "loadAfter": [
+        4.42,
+        4.13,
+        2.61
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    },
+    {
+      "id": "2560x720-crowd-3",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30315.5,
+      "cadenceFps": 2.111131269482608,
+      "frame": {
+        "count": 64,
+        "elapsedMs": 30315.499999999996,
+        "meanMs": 473.67968749999994,
+        "p50Ms": 449.90000000000146,
+        "p95Ms": 883.3999999999996,
+        "p99Ms": 1166.7000000000044,
+        "maxMs": 1166.7000000000044,
+        "above16_7": 63,
+        "above33_3": 62,
+        "above50": 58,
+        "fullStallMs": 30148.699999999986,
+        "excessStallMs": 27248.69999999999
+      },
+      "cpuSubmission": {
+        "count": 64,
+        "elapsedMs": 222.6000000005588,
+        "meanMs": 3.478125000008731,
+        "p50Ms": 2.6000000000931323,
+        "p95Ms": 7.699999999953434,
+        "p99Ms": 9.5,
+        "maxMs": 9.5,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "5e243e8b25009e26cc3f8d24b8d9100422a022abfa23baad311e93def0e6c604",
+      "loadBefore": [
+        4.42,
+        4.13,
+        2.61
+      ],
+      "loadAfter": [
+        4.44,
+        4.18,
+        2.72
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "graphics": "software"
+      }
+    }
+  ]
+}

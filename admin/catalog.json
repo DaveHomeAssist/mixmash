@@ -620,6 +620,10 @@
           "description": "node test/front-of-house-floor-smoke.mjs"
         },
         {
+          "name": "npm run smoke:front-of-house-displays",
+          "description": "node test/front-of-house-displays-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-resolution",
           "description": "node test/front-of-house-resolution-smoke.mjs"
         },
@@ -1752,6 +1756,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-ci.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "CI renderer calibration",
+      "description": "All eighteen Ubuntu24.04 SwiftShader windows with runner/source/fixture/raw digests and separate timing statistics; no hardware FPS claim.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-ci.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-density.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -1759,6 +1773,16 @@
       "title": "Lot high-density Metal diagnostics",
       "description": "Eighteen requested-DPR2 desktop, phone and ultrawide windows, actual backing dimensions, repeated timing summaries and source/raw digests; not physical-device acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-density.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-displays.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Actual display density transitions",
+      "description": "Full-client density1-to2-to1 window moves preserve backing, picking, viewport fit and saved state; private display coordinates omitted.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-displays.json",
       "open": null
     },
     {
@@ -1779,6 +1803,16 @@
       "title": "Lot renderer Metal baseline",
       "description": "Frozen hardware-host timing summary, source and fixture digests, quality settings and every measurement repeat; interpretation lives in PERFORMANCE.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-metal.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native visible Chrome measurements",
+      "description": "Six full native-display Metal windows in visible focused Chrome, retaining repeated timing and source/raw evidence separately from headless results.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-native.json",
       "open": null
     },
     {
@@ -2329,6 +2363,16 @@
       "title": "front-of-house-3d-smoke.mjs",
       "description": "Full application integration: safe gestures, renderer recovery and identical saved-show outcomes.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-3d-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-displays-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-displays-smoke.mjs",
+      "description": "Manual actual-display density proof with isolated Chrome storage; requires attached DPR1 and DPR2 displays.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-displays-smoke.mjs",
       "open": null
     },
     {
