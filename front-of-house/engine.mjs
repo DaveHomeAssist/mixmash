@@ -6,6 +6,7 @@
 // Rule IDs (R-NN) refer to front-of-house/docs/RULES.md; every number comes from data.mjs.
 
 import * as D from './data.mjs';
+import * as Services from './services.mjs';
 
 export const ENGINE_VERSION = 1;
 export const PHASES = ['book', 'build', 'promote', 'show', 'settle', 'done'];
@@ -503,17 +504,18 @@ export function evaluateShow(inputs) {
   const walkupAfterIncident = Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
   const plannedAttendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
   const doorRush = doorRushPilot(v, plannedAttendance, presale, inputs.pilotCrew);
-  const attendance = doorRush ? doorRush.admitted : plannedAttendance;
+  const live = inputs.services || null;
+  const attendance = live ? live.admitted : doorRush ? doorRush.admitted : plannedAttendance;
   const seatPrice = isInt(inputs.seatPrice) ? inputs.seatPrice : inputs.price;
   const seated = v.seats ? Math.min(v.seats, attendance) : 0;
-  const ticketGross = seated * seatPrice + (attendance - seated) * inputs.price;
+  const ticketGross = live ? live.ticketCash : seated * seatPrice + (attendance - seated) * inputs.price;
   const per = (supply) => (attendance > 0 ? Math.min(1, supply / attendance) : 1);
   const parts = {
     sound: v.paTier ? per(D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
     sightlines: per(v.clearTiles * (v.density || D.FLOOR_DENSITY)),
-    amenities: (per(doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + per(v.restrooms * D.RESTROOM_RATIO)) / 2,
-    flow: (doorRush ? (doorRush.rushArrivals ? doorRush.rushAdmitted / doorRush.rushArrivals : 1)
-      : per(v.gates * D.GATE_RATE * D.DOORS_MINUTES)) * (response && response.flowMult !== undefined ? response.flowMult : 1),
+    amenities: (per(live ? live.barServed : doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + per(v.restrooms * D.RESTROOM_RATIO)) / 2,
+    flow: (live ? (live.arrived ? live.admitted / live.arrived : 1) : doorRush ? (doorRush.rushArrivals ? doorRush.rushAdmitted / doorRush.rushArrivals : 1)
+      : per(v.gates * D.GATE_RATE * D.DOORS_MINUTES)) * (!live && response && response.flowMult !== undefined ? response.flowMult : 1),
     incident: inputs.incidentId ? (response ? response.score : 0) : 1,
   };
   const weights = { sound: D.W_SOUND, sightlines: D.W_SIGHT, amenities: D.W_AMENITY, flow: D.W_FLOW, incident: D.W_INCIDENT };
@@ -523,7 +525,7 @@ export function evaluateShow(inputs) {
 
   // R-10, R-13, R-14, R-15
   const served = Math.min(attendance, doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO);
-  const bar = Math.round(D.BAR_NET_PER_HEAD * (satisfaction / 100)
+  const bar = live ? live.barCash : Math.round(D.BAR_NET_PER_HEAD * (satisfaction / 100)
     * (served + (attendance - served) * D.BAR_SHORTFALL));
   const adSpend = D.AD_CHANNELS.reduce((s, c) => s + ((inputs.ads && inputs.ads[c]) || 0), 0);
   const costs = {
@@ -556,7 +558,7 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
-    sponsor, broadcast, seated, seatPrice, doorRush,
+    sponsor, broadcast, seated, seatPrice, doorRush, services: live,
   };
 }
 
@@ -579,6 +581,7 @@ function showInputs(state, venueStats, withIncident) {
     incidentId: withIncident && state.show ? state.show.incidentId : null,
     responseId: withIncident && state.show ? state.show.responseId : null,
     pilotCrew: state.show && state.venue.id === 'lot' ? state.show.pilotCrew : undefined,
+    services: withIncident ? liveServicesFor(state) : null,
   };
 }
 
@@ -608,7 +611,7 @@ export function showPreview(state) {
 
 // The settlement sheet for a show whose incident has been answered.
 export function settlementFor(state) {
-  if (!state.show || !state.show.responseId) return null;
+  if (!state.show || !state.show.responseId || (state.show.services && !liveServicesFor(state).closed)) return null;
   const main = evaluateShow(showInputs(state, evaluateVenue(state.venue), true));
   const second = secondStage(state);
   if (!second) return main;
@@ -666,6 +669,44 @@ function secondStage(state) {
     artistId: id, name: artist.name, attendance: result.attendance, artistPay: result.artistPay,
     ticketGross: result.ticketGross, bar: result.bar, cash,
   };
+}
+
+// Live pilot specifications are derived from the booked show, never imported balances.
+export function liveIncidentMinute(state) {
+  const roll = rollShow(state.seed, state.booking.artistId);
+  return Math.ceil(incidentAtFor(state.show.incidentId, roll.timing) * D.LIVE_SERVICES.closeAt);
+}
+
+export function liveArrivalPlan(state) {
+  const surge = state.seed % D.LIVE_SERVICES.surgeEvery === 0;
+  return { minutes: surge ? D.LIVE_SERVICES.surgeArrivalMinutes : D.LIVE_SERVICES.steadyArrivalMinutes, label: surge ? 'Concentrated doors rush' : 'Steady arrivals' };
+}
+
+function liveServiceSpec(state) {
+  const source = { ...state, show: { ...state.show, services: undefined } };
+  const preview = showPreview(source), venue = evaluateVenue(state.venue);
+  const rule = D.LIVE_SERVICES;
+  const minutes = liveArrivalPlan(state).minutes;
+  const split = (n, i) => Math.floor(n * i / minutes) - Math.floor(n * (i - 1) / minutes);
+  return { id: 'show_' + state.seed + '_' + (state.show.night || 1), closeAt: rule.closeAt,
+    gateRate: venue.gates * D.GATE_RATE, barRate: rule.barBaseRate + Math.max(0, venue.bars - 1) * rule.extraBarRate,
+    workerRate: rule.workerRate, gateWorkerRate: rule.gateWorkerRate,
+    gatePatience: rule.gatePatience, barPatience: rule.barPatience, travelMinutes: rule.travelMinutes,
+    ticketPrice: state.promotion.price, barNet: D.BAR_NET_PER_HEAD,
+    arrivals: Array.from({ length: minutes }, (_, i) => ({ minute: i + 1,
+      prepaid: split(preview.presale, i + 1), walkup: split(preview.attendance - preview.presale, i + 1) })) };
+}
+
+export function liveServicesFor(state) {
+  if (!state.show?.services) return null;
+  return Services.serviceSummary(Services.loadServices(state.show.services));
+}
+
+function serviceResponse(state, responseId) {
+  const response = findResponse(state.show.incidentId, responseId);
+  return { id: state.show.incidentId + ':' + responseId,
+    walkupPercent: Math.round((response.walkupMult ?? 1) * 100),
+    gatePercent: Math.round((response.flowMult ?? 1) * 100) };
 }
 
 export function settlementPayout(result, deal) {
@@ -795,6 +836,10 @@ export function applyAction(state, action) {
       }
       s.promotion.price = price;
       s.promotion.ads = ads;
+      if (action.services !== undefined) {
+        if (typeof action.services !== 'boolean' || (action.services && s.venue.id !== 'lot')) return fail(state, 'Choose live services only for the Lot');
+        s.promotion.liveServices = action.services;
+      }
       if (spec.seats && action.seatPrice !== undefined) {
         if (!isInt(action.seatPrice) || action.seatPrice < D.PRICE_MIN || action.seatPrice > priceMax) {
           return fail(state, `Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax}`);
@@ -805,6 +850,10 @@ export function applyAction(state, action) {
     }
     case 'confirmPromotion': {
       if ((err = need('promote'))) return fail(state, err);
+      const useServices = action.services === undefined ? s.promotion.liveServices === true : action.services === true;
+      if (useServices && (action.pilot === true || s.venue.id !== 'lot' || !evaluateVenue(s.venue).bars)) {
+        return fail(state, 'Live services needs the Lot and a bar, without the doors snapshot');
+      }
       const upfront = upfrontFor(s);
       if (s.mode !== 'sandbox' && upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
       s.cash -= upfront;
@@ -813,6 +862,8 @@ export function applyAction(state, action) {
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
       const v = evaluateVenue(s.venue);
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
+      if (useServices || s.promotion.liveServices !== undefined) s.promotion.liveServices = useServices;
+      if (useServices) s.show.services = Services.saveServices(Services.createServices(liveServiceSpec(s)));
       s.phase = 'show';
       return { state: s, error: null };
     }
@@ -823,15 +874,39 @@ export function applyAction(state, action) {
       s.show.pilotCrew = action.choice;
       return { state: s, error: null };
     }
+    case 'advanceLive': {
+      if ((err = need('show'))) return fail(state, err);
+      if (!s.show.services) return fail(state, 'Live services is not enabled for this show');
+      const current = s.show.services.minute;
+      if (!isInt(action.minute) || action.minute < current || action.minute > D.LIVE_SERVICES.closeAt) return fail(state, 'Choose a future whole show minute within closing time');
+      const minute = s.show.responseId ? action.minute : Math.min(action.minute, liveIncidentMinute(s));
+      s.show.services = Services.saveServices(Services.advanceServices(Services.loadServices(s.show.services), minute));
+      if (s.show.responseId && minute === D.LIVE_SERVICES.closeAt) s.phase = 'settle';
+      return { state: s, error: null };
+    }
+    case 'assignLiveWorker': {
+      if ((err = need('show'))) return fail(state, err);
+      if (!s.show.services) return fail(state, 'Live services is not enabled for this show');
+      const result = Services.assignServiceWorker(Services.loadServices(s.show.services), action.station);
+      if (result.error) return fail(state, result.error);
+      s.show.services = Services.saveServices(result.state);
+      return { state: s, error: null };
+    }
     case 'respond': {
       if ((err = need('show'))) return fail(state, err);
       if (s.show && s.show.pilotCrew === null) return fail(state, 'Choose where the doors crew works first');
+      if (s.show.responseId) return fail(state, 'The incident response is already recorded');
+      if (s.show.services && s.show.services.minute < liveIncidentMinute(s)) return fail(state, 'The incident has not happened yet');
       const response = findResponse(s.show.incidentId, action.responseId);
       if (!response) return fail(state, 'That response does not fit this incident');
       if (response.cost > s.cash) return fail(state, `${response.label} costs $${response.cost}; you have $${s.cash}`);
       s.cash -= response.cost;
       s.show.responseId = response.id;
-      s.phase = 'settle';
+      if (s.show.services) {
+        const run = Services.loadServices(s.show.services);
+        s.show.services = Services.saveServices(Services.applyServiceResponse(run, serviceResponse(s, response.id)).state);
+      }
+      s.phase = s.show.services && !liveServicesFor(s).closed ? 'show' : 'settle';
       return { state: s, error: null };
     }
     case 'acceptSettlement': {
@@ -928,7 +1003,7 @@ function supportsPhase(s, phase) {
     case 'build': return s.booking.deal !== null;
     case 'promote': return s.booking.deal !== null && venueReady();
     case 'show': return supportsPhase(s, 'promote') && s.promotion.confirmed && s.show !== null;
-    case 'settle': return supportsPhase(s, 'show') && s.show.responseId !== null;
+    case 'settle': return supportsPhase(s, 'show') && s.show.responseId !== null && (!s.show.services || liveServicesFor(s).closed);
     case 'done': return supportsPhase(s, 'settle') && s.history.length > 0;
     default: return false;
   }
@@ -1038,6 +1113,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
   const ads = isObj(promo.ads) ? promo.ads : {};
   for (const c of D.AD_CHANNELS) s.promotion.ads[c] = clamp(intOr(ads[c], 0), 0, D.AD_MAX_PER_CHANNEL);
   s.promotion.confirmed = promo.confirmed === true;
+  if (room.id === 'lot' && typeof promo.liveServices === 'boolean') s.promotion.liveServices = promo.liveServices;
   if (room.seats) s.promotion.seatPrice = clamp(intOr(promo.seatPrice, s.promotion.price + 10), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
 
   const rep = isObj(raw.reputation) ? raw.reputation : {};
@@ -1078,6 +1154,36 @@ export function normalizeState(raw, fallbackSeed = 1) {
       && Object.prototype.hasOwnProperty.call(raw.show, 'pilotCrew')) {
       s.show.pilotCrew = raw.show.pilotCrew === 'bar' || raw.show.pilotCrew === 'gate' ? raw.show.pilotCrew : null;
     }
+  }
+
+  if (s.show && s.venue.id === 'lot' && s.venue.objects.some(o => o.type === 'bar') && isObj(raw.show?.services)) {
+    const spec = liveServiceSpec(s), stored = raw.show.services;
+    try {
+      if (!Array.isArray(stored.commands)) throw new Error('Missing service commands');
+      const commands = stored.commands.map(command => {
+        if (command?.kind !== 'response') return command;
+        if (!s.show.responseId || command.minute < liveIncidentMinute(s)) throw new Error('Invalid service response timing');
+        return { ...command, response: serviceResponse(s, s.show.responseId) };
+      });
+      const minute = s.show.responseId ? stored.minute : Math.min(stored.minute, liveIncidentMinute(s));
+      const run = Services.loadServices({ ...stored, spec, commands, minute });
+      if (!!s.show.responseId !== !!run.response) throw new Error('Missing service response');
+      s.show.services = Services.saveServices(run);
+    } catch {
+      // Retain already-paid response costs and restart only the invalid service timeline.
+      s.show.serviceRecovered = true;
+      let run = Services.createServices(spec);
+      if (s.show.responseId) {
+        run = Services.advanceServices(run, liveIncidentMinute(s));
+        run = Services.applyServiceResponse(run, serviceResponse(s, s.show.responseId)).state;
+      }
+      if (raw.phase === 'done' && s.history.some(h => h.seed === s.seed && h.night === s.show.night)) {
+        run = Services.advanceServices(run, D.LIVE_SERVICES.closeAt);
+      }
+      s.show.services = Services.saveServices(run);
+    }
+    if (raw.show.serviceRecovered === true) s.show.serviceRecovered = true;
+    delete s.show.pilotCrew;
   }
 
   let i = PHASES.indexOf(PHASES.includes(raw.phase) ? raw.phase : 'book');

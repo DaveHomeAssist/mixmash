@@ -162,6 +162,8 @@ const ACTION_NOTES = {
   confirmBuild: 'Lock the layout once the venue is ready',
   setPromotion: 'Set ticket price, ad spend and (with seats) seat price',
   confirmPromotion: 'Pay what is due before doors and open them; rolls the incident',
+  advanceLive: 'Live pilot: advance whole game minutes, pausing at the unanswered incident',
+  assignLiveWorker: 'Live pilot: transfer the worker between admission and bar',
   chooseDoorCrew: 'Opt-in doors trial only: put the spare worker on the bar or the gate',
   respond: 'Answer the incident; pays its cost',
   acceptSettlement: 'Sign the sheet: cash, history, reputation, unlocks; next night of a run',
@@ -172,6 +174,7 @@ const ACTION_NOTES = {
 
 // Refusals whose text is computed rather than written out: what the player sees instead.
 const FAIL_EXPLAIN = {
+  'result.error': 'The live service model refusal, including in-transit, already assigned or closed service',
   'mine.message': 'The placement problem for this object, from `validateLayout` (R-18)',
   'problems[0].message': 'The first placement problem in the layout, from `validateLayout` (R-18)',
   "[...v.missing, ...v.problems.map((p) => p.message)].join('; ') || 'The venue has no capacity'":
@@ -274,6 +277,8 @@ function transitionMatrix(actionIds) {
     setPromotion: { price: 20 },
     confirmPromotion: {},
     chooseDoorCrew: { choice: 'gate' },
+    advanceLive: { minute: 5 },
+    assignLiveWorker: { station: 'gate' },
     respond: { responseId: firstResponse },
     acceptSettlement: {},
     back: {},

@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "756246b · backend deployed; Lot scene candidate tested 2026-10-04",
+  "head": "1e4d34b · 3D preview merged; live service pilot delivery 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation, Select and the isolated 3D backend are deployed and verified. Game integration is in delivery. A revised Lot candidate adds scene cues, coherent authored dimensions, camera eyes and source digests; performance, final art/physical review and later phases remain incomplete.",
+  "statusReason": "Live Lot service pilot implemented and under delivery verification. Clock, staffing, queues, incident effects and career settlement have tests; representative queue movement and remaining renderer/operations phases stay open.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -531,8 +531,39 @@
           "FOH-V01"
         ],
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "Experimental live service core and player controls implemented; PR62 final delivery checks pending."
+        ],
+        "slices": [
+          {
+            "id": "FOH-O01a",
+            "scope": "Deterministic admission/bar service core independent of renderer",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "12 service core tests cover conservation, transfers, replay, bounded checkpoints and prospective incident effects.",
+              "Core is connected to the optional Lot pilot; unselected shows retain existing rules."
+            ]
+          },
+          {
+            "id": "FOH-O01b",
+            "scope": "Opt-in live Lot controls, fixed clock, incident-aware replay, career settlement and saved staffing",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "61 engine/service tests and 246 repository tests pass; 28 legacy browser checks and four desktop/phone Chromium/WebKit live journeys pass; offline transfer/reload preserves cash",
+              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)",
+              "Combined local 3D/live desktop and phone journeys pass. Linux CI found 5px phone Costs overflow; mobile ledger padding fixed, final CI rerun required."
+            ]
+          },
+          {
+            "id": "FOH-O01c",
+            "scope": "Representative admission/bar movement integrated with the accepted renderer",
+            "status": "pending",
+            "evidence": [
+              "Live pilot draws the correct admitted count; distinct queue movement is still unimplemented"
+            ]
+          }
+        ]
       },
       {
         "id": "FOH-O02",

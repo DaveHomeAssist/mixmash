@@ -4,6 +4,9 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House live Lot pilot:** Promote opt-in enables real arrival/bar queues, temporary staffing, a saved minute clock, prospective incident effects and reconciled service receipts. Desktop/phone controls pause at incidents, preserve transfers on reload and settle once. Existing unselected shows retain their rules. Includes the 3D preview and Lot sample integration. Service worker v32.
+
+- **Front of House service model prerequisite:** added a deterministic aggregate admission/bar engine with finite queues, worker travel, refunds and replayable checkpoints, plus quiet/surge/busy-bar fixtures. The optional live pilot uses this core; unselected careers retain their existing economy and saves.
 - **Front of House Lot sample candidate:** consistent authored dimensions and stage-relative eye views; fence openings, grid and incident cues; instanced guests with live reduced motion; reproducible bounds/provenance manifest. Final realistic art and physical acceptance remain open. Service worker v31.
 
 - **Front of House 3D preview integration:** Camera menu enables the Lot backend, with safe orbit/pinch/placement gestures, keyboard-accessible presets and automatic classic-view recovery. Save and full settlement parity are checked in both renderers. Classic remains the default while scene/art acceptance is incomplete. Service worker v30.

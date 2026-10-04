@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
   applyAction, buzz, careerProgress, cheapestShowCost, createGame, doorRushPilot, evaluateShow, evaluateVenue, forecast, migrateSave,
-  nextSeed, nextShowCost, normalizeState, offersFor, termsFor,
+  nextSeed, nextShowCost, normalizeState, offersFor, termsFor, liveServicesFor, liveIncidentMinute,
   presaleSplit, priceFactor, rollShow, incidentAtFor, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
@@ -866,4 +866,103 @@ test('undo: setLayout with an earlier copy restores the layout exactly, fence ki
   const restored = run(changed, [{ type: 'setLayout', objects: before }]);
   assert.deepEqual(restored.venue.objects, before);
   assert.deepEqual(evaluateVenue(restored.venue), evaluateVenue(s.venue));
+});
+
+
+function liveGame(seed = 170) {
+  return run(builtGame(seed), [{ type: 'confirmPromotion', services: true }]);
+}
+function answerLive(s) {
+  return run(s, [{ type: 'respond', responseId: D.INCIDENTS[s.show.incidentId].responses[0].id }]);
+}
+
+test('live pilot: eligibility and clock pause at the actual incident; legacy shows are unchanged', () => {
+  const s = liveGame();
+  assert.equal(liveServicesFor(s).minute, 0);
+  assert.equal(s.show.pilotCrew, undefined);
+  assert.match(applyAction(s, { type: 'respond', responseId: 'wait' }).error, /not happened/);
+  const paused = run(s, [{ type: 'advanceLive', minute: 240 }]);
+  assert.equal(liveServicesFor(paused).minute, liveIncidentMinute(s));
+  assert.equal(paused.phase, 'show');
+  assert.equal(settlementFor(paused), null);
+  const legacy = run(builtGame(170), [{ type: 'confirmPromotion' }]);
+  assert.equal(liveServicesFor(legacy), null);
+  assert.match(applyAction(legacy, { type: 'advanceLive', minute: 1 }).error, /not enabled/);
+  assert.match(applyAction(builtGame(170), { type: 'confirmPromotion', services: true, pilot: true }).error, /without the doors snapshot/);
+});
+
+test('live pilot: transfer, backlog and response survive normalization without trusting rates or cash', () => {
+  let s = run(liveGame(), [{ type: 'advanceLive', minute: 5 }, { type: 'assignLiveWorker', station: 'gate' }, { type: 'advanceLive', minute: 6 }]);
+  assert.equal(liveServicesFor(s).worker.station, null);
+  assert.deepEqual(normalizeState(s).show.services, s.show.services);
+  const forged = structuredClone(s);
+  forged.show.services.spec.ticketPrice = 999;
+  forged.show.services.spec.gateRate = 6000;
+  forged.show.services.totals = { barCash: 999999 };
+  assert.deepEqual(liveServicesFor(normalizeState(forged)), liveServicesFor(s));
+  s = run(s, [{ type: 'advanceLive', minute: 240 }]);
+  s = answerLive(s);
+  assert.deepEqual(normalizeState(s).show.services, s.show.services);
+  assert.equal(normalizeState(s).cash, s.cash);
+  assert.match(applyAction(s, { type: 'respond', responseId: s.show.responseId }).error, /already recorded/);
+});
+
+test('live pilot: minute batching, save/reload and repeated settlement preserve exact career money', () => {
+  let small = liveGame(171), large = liveGame(171);
+  for (let i = 1; i <= liveIncidentMinute(small); i++) small = run(small, [{ type: 'advanceLive', minute: i }]);
+  large = run(large, [{ type: 'advanceLive', minute: 240 }]);
+  assert.deepEqual(small.show.services, large.show.services);
+  small = answerLive(normalizeState(small)); large = answerLive(large);
+  small = run(small, [{ type: 'advanceLive', minute: 240 }]); large = run(large, [{ type: 'advanceLive', minute: 240 }]);
+  assert.deepEqual(settlementFor(small), settlementFor(large));
+  const r = settlementFor(small), cash = small.cash;
+  assert.equal(r.ticketGross, r.services.prepaidCash + r.services.walkupCash - r.services.refunds);
+  assert.equal(r.bar, r.services.barServed * D.BAR_NET_PER_HEAD);
+  assert.equal(r.services.admitted, r.services.barServed + r.services.barLost);
+  const done = run(small, [{ type: 'acceptSettlement' }]);
+  assert.equal(done.cash, cash + settlementPayout(r, done.booking.deal));
+  assert.match(applyAction(done, { type: 'acceptSettlement' }).error, /settle/);
+  assert.equal(normalizeState(done).cash, done.cash);
+  assert.equal(normalizeState(done).phase, 'done');
+  const corrupt = structuredClone(done); corrupt.show.services.commands = [null];
+  const recovered = normalizeState(corrupt);
+  assert.equal(recovered.cash, done.cash);
+  assert.equal(recovered.phase, 'done');
+  assert.match(applyAction(recovered, { type: 'acceptSettlement' }).error, /settle/);
+});
+
+
+test('live pilot: actual Lot policies favor bar staffing for steady arrivals and admission help for a surge', () => {
+  function policy(seed, returnAt) {
+    let s = liveGame(seed);
+    if (returnAt) s = run(s, [{ type: 'assignLiveWorker', station: 'gate' }, { type: 'advanceLive', minute: returnAt }, { type: 'assignLiveWorker', station: 'bar' }]);
+    s = run(s, [{ type: 'advanceLive', minute: 240 }]);
+    s = answerLive(s);
+    s = run(s, [{ type: 'advanceLive', minute: 240 }]);
+    return settlementFor(s);
+  }
+  const quietStay = policy(1, 0), quietMove = policy(1, 6);
+  assert.equal(quietStay.net, 831);
+  assert.equal(quietMove.net, 819);
+  assert.equal(quietStay.attendance, quietMove.attendance);
+  assert.equal(quietMove.services.barLost, 2);
+  const surgeStay = policy(3, 0), surgeMove = policy(3, 6);
+  assert.equal(surgeStay.net, -186);
+  assert.equal(surgeMove.net, 230);
+  assert.equal(surgeStay.attendance, 85);
+  assert.equal(surgeMove.attendance, 110);
+  assert.ok(surgeMove.services.barLost > surgeStay.services.barLost, 'admission improvement still has a real bar cost');
+});
+
+test('live pilot: guarantee and door careers finish at starting cash plus actual net', () => {
+  for (const deal of ['guarantee', 'door']) {
+    let s = run(builtGame(170, deal), [{ type: 'confirmPromotion', services: true }, { type: 'advanceLive', minute: 240 }]);
+    s = answerLive(s);
+    s = run(s, [{ type: 'advanceLive', minute: 240 }]);
+    const result = settlementFor(s);
+    const done = run(s, [{ type: 'acceptSettlement' }]);
+    assert.equal(done.cash, D.START_CASH + result.net, deal);
+    assert.equal(normalizeState(done).cash, done.cash, deal + ' reload');
+    assert.equal(result.services.prepaidCash + result.services.walkupCash - result.services.refunds, result.ticketGross);
+  }
 });

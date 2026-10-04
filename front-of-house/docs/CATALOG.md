@@ -30,10 +30,12 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
 | `remove` | Remove the object at a list index | `index` | build | stays | 1 |
 | `confirmBuild` | Lock the layout once the venue is ready | — | build | promote | 1 |
-| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `seatPrice` | promote | stays | 4 |
-| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `pilot` | promote | show | 1 |
+| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `seatPrice` | promote | stays | 5 |
+| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot` | promote | show | 2 |
 | `chooseDoorCrew` | Opt-in doors trial only: put the spare worker on the bar or the gate | `choice` | show | stays | 2 |
-| `respond` | Answer the incident; pays its cost | `responseId` | show | settle | 3 |
+| `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
+| `assignLiveWorker` | Live pilot: transfer the worker between admission and bar | `station` | show | stays | 2 |
+| `respond` | Answer the incident; pays its cost | `responseId` | show | stays | 5 |
 | `acceptSettlement` | Sign the sheet: cash, history, reputation, unlocks; next night of a run | `at` | settle | done or show | 0 |
 | `back` | Step back from Build to Book, or Promote to Build | — | build, promote | book or build | 1 |
 | `nextShow` | Start the next show, carrying cash, reputation, unlocks and history | — | done | book (a new show state) | 1 |
@@ -43,14 +45,14 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 
 Each action sent from a reference game in each phase (seed 42, door deal, the suggested layout, $20, no ads, the incident answered with `wait`). → names the phase it moves to, ✓ means accepted without a phase change, ✗ means refused with one of the messages in section 4.
 
-| From | `chooseDeal` | `chooseVenue` | `place` | `setLayout` | `remove` | `confirmBuild` | `setPromotion` | `confirmPromotion` | `chooseDoorCrew` | `respond` | `acceptSettlement` | `back` | `nextShow` | `retry` |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| book | → build | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| build | ✗ | ✗ | ✓ | ✓ | ✓ | → promote | ✗ | ✗ | ✗ | ✗ | ✗ | → book | ✗ | ✗ |
-| promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | → show | ✗ | ✗ | ✗ | → build | ✗ | ✗ |
-| show | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → settle | ✗ | ✗ | ✗ | ✗ |
-| settle | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → done | ✗ | ✗ | ✗ |
-| done | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | → book |
+| From | `chooseDeal` | `chooseVenue` | `place` | `setLayout` | `remove` | `confirmBuild` | `setPromotion` | `confirmPromotion` | `chooseDoorCrew` | `advanceLive` | `assignLiveWorker` | `respond` | `acceptSettlement` | `back` | `nextShow` | `retry` |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| book | → build | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| build | ✗ | ✗ | ✓ | ✓ | ✓ | → promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | ✗ | ✗ |
+| promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | → show | ✗ | ✗ | ✗ | ✗ | ✗ | → build | ✗ | ✗ |
+| show | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → settle | ✗ | ✗ | ✗ | ✗ |
+| settle | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → done | ✗ | ✗ | ✗ |
+| done | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | → book |
 
 `chooseDoorCrew` is refused here because the reference show is not in the opt-in doors trial (`?night-slice=1`).
 
@@ -76,11 +78,19 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `setPromotion` | Ticket price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
 | `setPromotion` | Unknown ad channel "${c}" |
 | `setPromotion` | Ad spend must be a whole number from 0 to ${D.AD_MAX_PER_CHANNEL} |
+| `setPromotion` | Choose live services only for the Lot |
 | `setPromotion` | Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
+| `confirmPromotion` | Live services needs the Lot and a bar, without the doors snapshot |
 | `confirmPromotion` | This show needs $${upfront} before doors, but you have $${s.cash} |
 | `chooseDoorCrew` | There is no doors choice to make |
 | `chooseDoorCrew` | Choose bar service or admission |
+| `advanceLive` | Live services is not enabled for this show |
+| `advanceLive` | Choose a future whole show minute within closing time |
+| `assignLiveWorker` | Live services is not enabled for this show |
+| `assignLiveWorker` | *The live service model refusal, including in-transit, already assigned or closed service* |
 | `respond` | Choose where the doors crew works first |
+| `respond` | The incident response is already recorded |
+| `respond` | The incident has not happened yet |
 | `respond` | That response does not fit this incident |
 | `respond` | ${response.label} costs $${response.cost}; you have $${s.cash} |
 | `back` | You can only go back from Build or Promote |
