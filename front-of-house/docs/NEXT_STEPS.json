@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "1e4d34b · 3D preview merged; live service pilot delivery 2026-10-04",
+  "head": "3698c0a · live service pilot deployed and verified; crowd projection in PR66",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live Lot service pilot and representative service zones are implemented. PR62 delivery and the crowd slice are under verification; later operations, research, ownership, venue and release gates remain open.",
+  "statusReason": "The live Lot pilot is merged, deployed and verified in Chromium/WebKit and 3D. Shared queue groups and worker travel are implemented in PR66; animated guest transitions and subsequent phases remain open.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,9 +19,9 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Deliver live service pilot and representative crowd, then guest operations",
-    "why": "The service engine and UI now have queue, staffing, receipt and save coverage. The shared crowd projection makes those counts visible; food, sanitation and normal departure remain separate work.",
-    "doneWhen": "Service and crowd slices pass final CI, merge, Pages/live checks and board parity; FOH-O02 starts from a scoped guest-operations brief.",
+    "title": "Deliver queue projection, then animate recorded guest transitions",
+    "why": "The pilot is live-verified. Shared zones and worker travel are in PR66; FB-03 guest transition animation remains before guest operations expands.",
+    "doneWhen": "PR66 passes final CI, merge and deployed proof; FOH-O01d ties representative movement to recorded outcomes. Then execute FOH-O02.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -533,36 +533,52 @@
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
         "status": "in-progress",
         "evidence": [
-          "Experimental live service core and player controls implemented; PR62 final delivery checks pending."
+          "PR62 merged at 3698c0a after full required CI; Pages build1259285752 built, eight runtime files match, four Chromium/WebKit and two 3D production journeys pass."
         ],
         "slices": [
           {
             "id": "FOH-O01a",
             "scope": "Deterministic admission/bar service core independent of renderer",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "12 service core tests cover conservation, transfers, replay, bounded checkpoints and prospective incident effects.",
               "Core is connected to the optional Lot pilot; unselected shows retain existing rules."
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/62",
+            "mergeCommit": "3698c0a6e8b1e5d772384a653cdc2c289970187b"
           },
           {
             "id": "FOH-O01b",
             "scope": "Opt-in live Lot controls, fixed clock, incident-aware replay, career settlement and saved staffing",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
-              "61 engine/service tests and 246 repository tests pass; 28 legacy browser checks and four desktop/phone Chromium/WebKit live journeys pass; offline transfer/reload preserves cash",
-              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)",
-              "Combined local 3D/live desktop and phone journeys pass. Linux CI found 5px phone Costs overflow; mobile ledger padding fixed, final CI rerun required."
-            ]
+              "248 combined repository tests and all required CI checks pass on ba39c4f.",
+              "Pages build1259285752 built; eight deployed runtime files match. Four Chromium/WebKit desktop/phone and two 3D production journeys verify transfers, clock control, incident stopping, reload and signed cash.",
+              "A first WebKit phone run failed a timing-sensitive 12x manual Pause assertion. Separate 1x manual Pause and 12x automatic incident-stop assertions pass against production; the failing evidence is retained.",
+              "Paired Lot policies: seed 1 favors bar staffing ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/62",
+            "mergeCommit": "3698c0a6e8b1e5d772384a653cdc2c289970187b"
           },
           {
             "id": "FOH-O01c",
-            "scope": "Representative admission/bar movement integrated with the accepted renderer",
+            "scope": "Shared admission/bar/floor samples and saved worker travel",
             "status": "implemented-local-verification",
             "evidence": [
               "Shared classic/3D projection conserves admitted/bar totals, caps guest samples at 180 and outside markers at 40, and follows a saved worker transfer around equipment.",
-              "Three pure tests and four renderer/viewport browser journeys pass, including paused reload and camera invariance; full delivery gates pending."
-            ]
+              "Three pure tests and four renderer/viewport browser journeys pass, including paused reload and camera invariance; full delivery gates pending.",
+              "251 repository tests, build and four live-control browser journeys pass locally; two full 3D journeys and supplied action-client surge also pass. Guest transition animation remains the next slice."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/66"
+          },
+          {
+            "id": "FOH-O01d",
+            "scope": "Animated representative guest transitions tied to service outcomes",
+            "status": "pending",
+            "evidence": [
+              "Queue groups and worker travel are visible; individual sample movement between arrival, bar and floor, and admission-abandonment departures, are not implemented by PR66."
+            ],
+            "doneWhen": "Derive bounded cosmetic transitions from recorded service outcomes, preserve exact zone/cash totals through camera/speed/reload, and verify reduced motion plus visible departures without introducing per-guest saved AI."
           }
         ]
       },
