@@ -1,6 +1,6 @@
 # Front of House decision packet
 
-**Reviewed:** 2026-10-04 against `ab27c99` (PR #49 merged). **Status:** D1, D3, D4 and D5 accepted A; D2 accepted B; D6–D11 open. Recommendations are not approvals. Owner: Dave. This packet summarizes choices; accepted rulings belong in [DECISIONS.md](DECISIONS.md), with the date and Dave's actual answer. Feature scope is in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md). Current next steps are exported in [NEXT_STEPS.json](NEXT_STEPS.json).
+**Reviewed:** 2026-10-04 against `c9b64c2` (PR #58 merged). **Status:** D1 and D3–D11 accepted A; D2 accepted B. Codex selected D6–D11 under Dave’s explicit delegation to decide autonomously, recorded in [CT-DEC-19](DECISIONS.md#ct-dec-19-delegated-milestone-decisions). Owner: Dave; delegated decider: Codex. This packet summarizes choices; accepted rulings belong in [DECISIONS.md](DECISIONS.md), with the date, decider and authority. Feature scope is in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md). Current next steps are exported in [NEXT_STEPS.json](NEXT_STEPS.json).
 
 ## Already settled or not a product decision
 
@@ -9,11 +9,11 @@
 - Keyboard bindings, conflict checks and 50-step Build undo/redo shipped in [PR #49](https://github.com/DaveHomeAssist/mixmash/pull/49). Do not ask to build them again.
 - The phone Book/Promote width defect (MXS-06) needs a fix and regression check; it does not need a design vote. Its 580px rule still exists at this source revision. Live reproduction remains separate.
 - Asset provenance, save integrity, accurate labels, reachable controls and source-based status updates are ordinary completion requirements.
-- The supplied 3D archive is now statically inspected in [PROTOTYPE_REVIEW.md](PROTOTYPE_REVIEW.md). Orbit, venues and service previews exist in source; runtime behavior, usage rights and integration are not verified.
+- The supplied 3D archive has source, dependency-integrity and isolated runtime evidence in [PROTOTYPE_REVIEW.md](PROTOTYPE_REVIEW.md). Usage rights and production integration remain unverified.
 
 ## Settled prototype choices: scope and interaction
 
-D1–D5 are settled: D1 A, D2 B, D3 A, D4 A, D5 A. The original alternatives and recommendations are retained below for provenance; selected answers override recommendations. D6–D11 remain Open. An omitted answer stays Open. Effort describes relative implementation scope, not a delivery estimate.
+D1–D5 are settled: D1 A, D2 B, D3 A, D4 A, D5 A. The original alternatives and recommendations are retained below for provenance; selected answers override recommendations. D6–D11 are also settled A by delegated decision, below. Effort describes relative implementation scope, not a delivery estimate.
 
 | ID | Decision and what it unlocks | A | B | C | Recommendation / confidence |
 | --- | --- | --- | --- | --- | --- |
@@ -37,9 +37,9 @@ Both options use actual 3D geometry and support the requested continuous 360° c
 
 Original recommendation was A; **Dave selected B — more realistic 3D** on 2026-10-04, recorded in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction). The expected art/performance trade-offs are design estimates, not measured budgets or guarantees. Realistic art must still meet accepted D5; the supplied mockups are references, not final quality acceptance.
 
-## Choose before the dependent milestone
+## Settled dependent milestone choices
 
-These do not prevent documenting or fixing existing behavior.
+**D6–D11 = A**, selected by Codex on 2026-10-04 under Dave’s explicit instruction to make decisions autonomously. Alternatives remain here for provenance; they are no longer questions for Dave.
 
 | ID | Decision and what it unlocks | A | B | C | Recommendation / confidence |
 | --- | --- | --- | --- | --- | --- |
@@ -59,10 +59,12 @@ These do not prevent documenting or fixing existing behavior.
 - **D5 = A, accepted 2026-10-04:** Stable CI regression scenes plus 60fps desktop / 30fps low-power real-device targets, with measurement thresholds fixed after baselines. Recorded in [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance). Device roster, measurement details and proof remain outstanding.
 - Dave initially requested “d2, explain a vs b, accept A for d3 d4 d5”, then explicitly answered “Choose B — more realistic 3D”. **D2 = B, accepted 2026-10-04**, recorded in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction).
 
-## Remaining recommendations, not yet selected
+- **D6–D11 = A, accepted 2026-10-04:** Codex selected all six under Dave’s explicit delegation to decide autonomously. These are delegated selections, not six literal letter answers from Dave. Scope and rationale are recorded in [CT-DEC-19](DECISIONS.md#ct-dec-19-delegated-milestone-decisions).
 
-D1, D3, D4 and D5 are selected A; D2 is selected B. D6–D11 are recommended **A**, still Open. First prove the dimensional Lot and its controls, then put meaningful arrivals and crew trade-offs into that space. Research follows measurable service constraints; ownership follows explicit accounting. The minimap remains deferred under CT-DEC-12 and is not a new decision request.
+## Execution sequence
+
+First prove the realistic Lot and its controls, then meaningful arrivals and crew trade-offs using rentals. Research follows measurable service constraints; ownership follows explicit accounting. Inventory art provenance now, retain current assets through prototype work, and archive unused art after replacement acceptance. Keep Lot tuning and later-room behavior experimental while collecting the specified evidence. Public promotion follows the Lot and operations pilots plus release gates. The minimap remains deferred under CT-DEC-12. No D1–D11 selection remains outstanding.
 
 ## Recording an answer
 
-Record the selected letter, actual wording, date, affected brief and remaining gates in the decision log. Update this packet and NEXT_STEPS.json in the same change. An answer may authorize a named prototype while leaving tuning, public release and human acceptance open. Never infer an answer from silence, a screenshot, a recommendation or a green CI result.
+Record the selected letter, date, decider, authority, affected brief and remaining gates in the decision log. Preserve Dave’s actual wording for direct answers; identify agent choices as delegated decisions. Make routine product and implementation choices autonomously within the accepted direction, document the rationale, and do not re-ask D1–D11. Update this packet and NEXT_STEPS.json in the same change. An answer may authorize a named prototype while leaving tuning, public release and human acceptance open. Never infer an answer from silence, a screenshot, a recommendation or a green CI result.

@@ -1,6 +1,6 @@
 # Front of House Lot renderer contract
 
-**Preflight specification, 2026-10-04.** Source baseline: [`522f3f2f49de6dcf74fa22fa51b900684dd54360`](https://github.com/DaveHomeAssist/mixmash/tree/522f3f2f49de6dcf74fa22fa51b900684dd54360/front-of-house), confirmed as the remote production branch and successful legacy Pages build before review; deployed `engine.mjs`, `data.mjs`, `board.js` and `game.js` also matched the baseline bytes. This is a proposed adapter contract, not an implemented WebGL renderer. CT-DEC-14 through CT-DEC-18 retain authority. D6–D11 remain unanswered. The [prototype review](PROTOTYPE_REVIEW.md) is a separate evidence source; its geometry, simulation and storage do not define production behavior.
+**Preflight specification, 2026-10-04.** Source baseline: [`522f3f2f49de6dcf74fa22fa51b900684dd54360`](https://github.com/DaveHomeAssist/mixmash/tree/522f3f2f49de6dcf74fa22fa51b900684dd54360/front-of-house), confirmed as the remote production branch and successful legacy Pages build before review; deployed `engine.mjs`, `data.mjs`, `board.js` and `game.js` also matched the baseline bytes. This is a proposed adapter contract, not an implemented WebGL renderer. CT-DEC-14 through CT-DEC-18 retain authority. D6–D11 were subsequently settled A under delegated authority in [CT-DEC-19](DECISIONS.md#ct-dec-19-delegated-milestone-decisions). The [prototype review](PROTOTYPE_REVIEW.md) is a separate evidence source; its geometry, simulation and storage do not define production behavior.
 
 ## Boundary and source map
 

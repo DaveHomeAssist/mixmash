@@ -1477,7 +1477,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Front of House decision packet",
-      "description": "D1–D5 are settled: D1 A, D2 B, D3 A, D4 A, D5 A. The original alternatives and recommendations are retained below for provenance; selected answers override recommendations. D6–D11 remain Open. An omitted answer stays…",
+      "description": "D1–D5 are settled: D1 A, D2 B, D3 A, D4 A, D5 A. The original alternatives and recommendations are retained below for provenance; selected answers override recommendations. D6–D11 are also settled A by delegated…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/DECISION_PACKET.md",
       "open": null
     },

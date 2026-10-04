@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "522f3f2 · production baseline reviewed 2026-10-04",
+  "head": "c9b64c2 · decision baseline reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Realistic Lot preflight documented: archive/dependency integrity and isolated runtime checked; source-traced render contract, sample specification and diagnostic procedure recorded. WebGL adapter and realistic sample remain unimplemented; provenance, calibration, device and human gates remain open. D6–D11 unanswered.",
+  "statusReason": "Realistic Lot preflight documented: archive/dependency integrity and isolated runtime checked; source-traced render contract, sample specification and diagnostic procedure recorded. WebGL adapter and realistic sample remain unimplemented; provenance, calibration, device and human gates remain open. D6–D11 settled A by Codex under Dave’s delegated authority; no decision questionnaire remains.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -24,7 +24,7 @@
     "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
     "effort": "L",
     "owner": "either",
-    "blockedBy": "Archive reuse requires verified rights; physical scale and FOH calibration, supported device roster/statistical limits, and Dave’s visual acceptance remain pending. D6–D11 do not block independent Lot work."
+    "blockedBy": "Archive reuse requires verified rights; physical scale and FOH calibration, supported device roster/statistical limits, and Dave’s visual acceptance remain pending. D1–D11 are settled; remaining gaps are implementation and evidence."
   },
   "findings": [
     {
@@ -73,7 +73,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "D6–D7: research and ownership depend on service and accounting rules",
-      "detail": "FB-04 scopes one admission/bar reassignment slice; FB-05 scopes one owned equipment family and ledger; FB-06 follows the existing three-project research proposal. None is implemented by the planning documents.",
+      "detail": "D6 A selects the three-project research pilot after measurable live services; D7 A keeps rentals for the first show slice and ownership afterward. Specify service, ledger and compatibility rules within those accepted scopes. The planning documents do not implement these features.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/RESEARCH.md"
@@ -85,8 +85,8 @@
       "id": "MXS-12",
       "type": "decision",
       "sev": "P1",
-      "title": "Public release: provenance, career decisions and human acceptance",
-      "detail": "D8–D11 remain open; noindex/hub/sitemap gates unchanged. Archive and eight dependency hashes checked; isolated runtime exercised. Archive code/image rights, physical calibration and human art/career acceptance remain pending.",
+      "title": "Public release: selected sequence and remaining acceptance evidence",
+      "detail": "D8–D11 selected A under CT-DEC-19; promotion follows the 3D Lot and operations pilots plus release gates; noindex/hub/sitemap gates unchanged. Archive and eight dependency hashes checked; isolated runtime exercised. Archive code/image rights, physical calibration and human art/career acceptance remain pending.",
       "files": [
         "front-of-house/docs/KNOWN_ISSUES.md",
         "front-of-house/docs/DECISIONS.md"
@@ -156,25 +156,18 @@
       "name": "Release — explicit acceptance",
       "goal": "Promote only the accepted playable scope",
       "items": [
-        "Answer D8–D11 when their milestone approaches.",
-        "Document provenance and disposition of unused art.",
-        "Keep CT-DEC-10/11 Proposed until selected; public visibility remains gated."
+        "Apply D11 A: complete the realistic Lot and live-operations pilots before promotion.",
+        "Apply D8 A: inventory provenance now, retain art through the prototype, archive unused art after replacement acceptance.",
+        "Apply D9/D10 A: keep CT-DEC-10/11 experimental until the specified career and tier evidence supports acceptance."
       ],
       "gate": "Recorded design decisions, human career and phone acceptance, asset provenance and release checklist."
     }
   ],
-  "decisionsForDave": [
-    "D6 — Research scope, CT-DEC-13: A) Three-project Lot pilot after live services are measurable: Patch standards, Service training, Admission lanes B) Implement the same pilot before live services, against current outcomes; more rework risk C) Defer all research; leave CT-DEC-13 Proposed Recommended: A. OPEN.",
-    "D7 — Ownership and economy scope: A) Keep rentals for the first live-show slice; add ownership afterward B) Ownership and ledger first. More persistent business depth, larger save and accounting work C) Rentals only for this release; no ownership milestone Recommended: A. OPEN.",
-    "D8 — Existing sprite library: A) Inventory provenance now; retain during prototype; archive unused art once replacements are accepted B) Keep every asset as a permanent library. Lowest transition risk, ongoing size/style debt C) Commission or regenerate all art immediately. Highest cost before renderer dimensions are proven Recommended: A. OPEN.",
-    "D9 — CT-DEC-10 Lot economy and progression: A) Keep current numbers experimental; conduct paired strategy tests and a human career before accepting B) Accept the present Lot goals and deal/relationship rules now; fun still needs testing C) Prioritize retuning first: make PA/lights situationally worthwhile and compare door/guarantee strategies before expansion Recommended: A. OPEN.",
-    "D10 — CT-DEC-11 later rooms: A) Keep implemented room behavior experimental while venue art and tier-specific tests develop B) Accept current behavior: grid Club, returnable Lot, house rigs, seated multi-night shell, two-stage grounds C) Reopen room mechanics before art: specify fixed-room versus grid behavior and future stage scheduling first Recommended: A. OPEN.",
-    "D11 — When may the game be promoted publicly?: A) Wait for the 3D Lot and live-operations pilot plus existing release gates B) Promote the current playable once existing provenance, design and human acceptance gates pass; label it early access C) Keep it unlisted without a launch milestone for now Recommended: A. OPEN."
-  ],
+  "decisionsForDave": [],
   "files": [
     {
       "path": "front-of-house/docs/DECISION_PACKET.md",
-      "why": "D1–D11 with recommended options, consequences and recording rules"
+      "why": "D1–D11 selections, alternatives, consequences and delegated authority"
     },
     {
       "path": "front-of-house/docs/FEATURE_BRIEFS.md",
@@ -216,14 +209,15 @@
   "context": [
     "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
     "Preflight production baseline 522f3f2; earlier ab27c99 controls/audit claims remain historical. A diagnostic software-rendered host run does not establish supported-device performance.",
-    "Eleven briefs are proposed scope, not implementation authorization. Update decisions only from Dave’s actual answers.",
+    "Eleven briefs define scoped work and proof. CT-DEC-19 records Dave’s delegation: Codex makes routine product and implementation decisions autonomously within accepted scope and records material rationale.",
     "The supplied 3D archive now has isolated runtime and dependency integrity evidence in PROTOTYPE_REVIEW.md; archive rights, production integration and human approval remain pending.",
     "Refresh this project only; preserve unrelated project records, stable IDs and audit history.",
     "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied.",
     "2026-10-04 knowledge reconciliation: README is the topic index; CT-DEC-14 owns accepted sequence. FUTURE build order is historical; prototype and source exports are supporting material. Notion and additional chats are not synchronized by this repository review.",
     "2026-10-04: Dave accepted D3, D4 and D5 A in CT-DEC-15 through CT-DEC-17 and requested a D2 A/B explanation. D2 remains Open. Prior reconciliation reports are historical snapshots, not the current decision state.",
     "2026-10-04: After the A/B explanation Dave explicitly selected D2 B, more realistic 3D, recorded in CT-DEC-18. This settles D1–D5 without changing implementation or later decisions.",
-    "2026-10-04 Lot preflight changes only public-safe documentation and its index. No runtime, engine formulas, balance, saves, progression, renderer behavior, CI gates, assets or release visibility changed. Notion and other chats were not updated."
+    "2026-10-04 Lot preflight changes only public-safe documentation and its index. No runtime, engine formulas, balance, saves, progression, renderer behavior, CI gates, assets or release visibility changed. Notion and other chats were not updated.",
+    "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates."
   ],
   "links": [
     {
@@ -247,14 +241,13 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/58"
     }
   ],
-  "kickoffPrompt": "Read the Front of House decision packet and feature briefs in the active MixMash checkout. Reconcile current source with NEXT_STEPS.json. Record any explicit answers Dave has provided, leaving unanswered choices open. Fix ordinary defects only within authorized scope, and implement only the selected feature milestone. Verify the applicable checks and delivery evidence, then refresh the project record and the existing workspace Next Steps Board. Preserve unrelated work and current release gates.",
+  "kickoffPrompt": "Read the Front of House decision log, packet and feature briefs in the active MixMash checkout. Reconcile current source with NEXT_STEPS.json. D1–D11 are settled: D2 B, all others A. Under CT-DEC-19, make routine product and implementation decisions autonomously within accepted scope, document material trade-offs and do not re-ask these choices. Progress the bounded realistic Lot milestone, followed by rentals-based live operations, research and ownership in the accepted order. Verify source rights or use independently authored alternatives; preserve engine/save parity and actual device/human evidence gates. Run applicable checks and complete delivery, then refresh this project and its existing Next Steps Board card. Preserve unrelated work and current release gates.",
   "confidence": "medium",
   "unknowns": [
     "Realistic sample and WebGL adapter not implemented; old/new renderer parity pending.",
     "Archive source and image redistribution rights, physical scale and operator-eye FOH calibration pending.",
     "Supported device/browser roster, accepted statistical/stall limits and hardware-GPU/low-power measurements pending.",
-    "Physical touch/device, camera/art and human career acceptance pending.",
-    "D6–D11 recommendations remain unanswered."
+    "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
     "checkedOn": "2026-10-04",
@@ -267,7 +260,7 @@
     "prototypeReview": "Archive/CRC/path validation, eight SHA-384 matches, isolated Chromium runtime with verified dependency replay; see PROTOTYPE_REVIEW.md",
     "knowledgeReviewedRevision": "bcc773b07963ab17afebdd9678615a8c1155c43c",
     "knowledgeReviewedOn": "2026-10-04",
-    "decisionReviewedRevision": "3d1027e0500b258a2b189d61588bfd0e5d913909",
+    "decisionReviewedRevision": "c9b64c280a69a80f4b1867b649212b297ae86417",
     "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259075807",
     "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE SwiftShader software graphics",
     "rendererImplementation": "Not implemented",
@@ -295,7 +288,8 @@
       "adminIndex": "273 tracked files; catalog diff limited to Front of House",
       "privacyAndLinks": "passed; no archive files/images or private paths added"
     },
-    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58"
+    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
+    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19."
   },
   "decisionState": {
     "D1": {
@@ -334,34 +328,58 @@
       "answer": "Stable CI regression scenes plus 60fps desktop / 30fps low-power device targets; thresholds fixed after baselines"
     },
     "D6": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "decidedBy": "Codex",
+      "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
+      "answer": "Three-project Lot research pilot after measurable live services"
     },
     "D7": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "decidedBy": "Codex",
+      "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
+      "answer": "Rentals for the first live-show slice; ownership and ledger afterward"
     },
     "D8": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "decidedBy": "Codex",
+      "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
+      "answer": "Inventory provenance now; retain sprites through prototype; archive unused art after replacement acceptance"
     },
     "D9": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "decidedBy": "Codex",
+      "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
+      "answer": "Keep Lot numbers experimental; paired strategy tests and human career before tuning acceptance"
     },
     "D10": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "decidedBy": "Codex",
+      "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
+      "answer": "Keep later-room mechanics experimental while venue art and tier-specific tests develop"
     },
     "D11": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "decidedBy": "Codex",
+      "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
+      "answer": "Public promotion after realistic 3D Lot, live-operations pilot and existing release gates"
     }
   }
 }
