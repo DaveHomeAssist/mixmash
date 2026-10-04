@@ -304,6 +304,16 @@ export const VENUES = {
 };
 export const VENUE_ORDER = ['lot', 'club', 'amphitheater', 'festival'];
 
+// Authored logical heights, not calibrated venue dimensions. Applied only to marked rooms.
+export const ROOM_PROFILES = Object.freeze({
+  amphitheater: Object.freeze({
+    version: 1, venueId: 'amphitheater', label: 'Shell system', soundCapacity: 700,
+    lawnStart: 10, lawnEnd: 16, risePerTile: 0.18, sightDegrees: 120, sightRange: 40,
+    eyeHeight: 0.83, performerHeight: 1.38,
+    obstacleHeights: Object.freeze({ lights: 4, bar: 0.55, restroom: 1.15 }),
+  }),
+});
+
 // Show night runs from doors (19:00) to curfew (23:00); times below are shares of that night.
 export const ACT_ON_STAGE_AT = 0.3; // 20:12, when the feed says the act takes the stage
 

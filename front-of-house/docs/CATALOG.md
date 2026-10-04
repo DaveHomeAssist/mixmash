@@ -30,7 +30,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
 | `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
 | `chooseSideAct` | Select an eligible Festival side act in Book without charging or freezing its contract | `artistId` | book | stays | 1 |
-| `chooseDeal` | Book an act on a deal; optional festivalPolicy1 fixes sponsored Festival tickets; stagePolicy1 enables Festival accounts, seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `nights`, `secondId`, `stagePolicy`, `festivalPolicy`, `seatingPolicy`, `runPolicy` | book | build | 11 |
+| `chooseDeal` | Book an act on a deal; optional roomPolicy1 enables the shell rig and slope; festivalPolicy1 fixes sponsored Festival tickets; stagePolicy1 enables Festival accounts, seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `roomPolicy`, `nights`, `secondId`, `stagePolicy`, `festivalPolicy`, `seatingPolicy`, `runPolicy` | book | build | 12 |
 | `chooseVenue` | Switch room before booking; each room keeps its own layout | `venueId` | book | stays | 2 |
 | `place` | Place one object, checked against R-18 | `object` | build | stays | 2 |
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
@@ -90,6 +90,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `chooseDeal` | That act is not on offer for this show |
 | `chooseDeal` | ${a.name} only plays for a guarantee |
 | `chooseDeal` | ${a.name} will only play for a guarantee after the last door deal |
+| `chooseDeal` | Choose a supported room profile |
 | `chooseDeal` | Choose a distinct side act eligible for a door deal |
 | `chooseDeal` | Stage accounting needs a Festival booking with two distinct acts |
 | `chooseDeal` | Unknown Festival booking policy |
