@@ -133,3 +133,10 @@ Schema 2 now accepts an optional `promotion.liveServices` boolean and `show.serv
 Career normalization re-derives prices, populations and rates from the booked show and replays only validated commands. A response's ID and multipliers come from the stored, validated incident choice rather than trusting checkpoint parameters. The incident, service close and phase prerequisites prevent early settlement. The normal phase transition still prevents a signed show from paying twice. A corrupt checkpoint recovers the service timeline while retaining career cash and already-paid response costs, marks `serviceRecovered`, and visibly reports recovery; a previously signed show remains signed. This recovery is not claimed to reconstruct invalid or missing staffing choices.
 
 **Downgrade boundary:** older clients do not understand the live checkpoint or its prospective incident effects. After a career opts in, use a forward fix; do not roll it back to a client that strips this field. Preserve the existing storage namespace and cash/history. The pilot's ledger is held income until signing, so reload/clock ticks cannot credit it to available cash.
+
+
+### Optional normal departure marker
+
+New live Lot shows opened by the client include `show.flow: { version: 1, minute: 0 }`. `minute` is elapsed whole departure minutes after service closes; `show.services.minute` retains the original 0–240 service clock. The engine derives admitted population, connected exit count, duration, rates, routes and departure events from the normalized venue and service replay. Imported balances, rates and event arrays are not trusted or stored.
+
+Without this marker, existing live shows keep their original closing and settlement behavior. Unsupported marker versions or invalid elapsed progress reset departure to zero and set existing recovery feedback, preserving paid response costs and career cash. A valid already-signed history entry remains signed if its departure progress is damaged; its derived departure endpoint is restored without another payment. Normalization cannot advance an unsigned show beyond its validated departure duration.

@@ -7,6 +7,7 @@
 
 import * as D from './data.mjs';
 import * as Services from './services.mjs';
+import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
 
 export const ENGINE_VERSION = 1;
 export const PHASES = ['book', 'build', 'promote', 'show', 'settle', 'done'];
@@ -686,10 +687,12 @@ function liveServiceSpec(state) {
   const source = { ...state, show: { ...state.show, services: undefined } };
   const preview = showPreview(source), venue = evaluateVenue(state.venue);
   const rule = D.LIVE_SERVICES;
+  const access = state.show.flow?.version === 1 ? liveAccessFor(state) : null;
   const minutes = liveArrivalPlan(state).minutes;
   const split = (n, i) => Math.floor(n * i / minutes) - Math.floor(n * (i - 1) / minutes);
   return { id: 'show_' + state.seed + '_' + (state.show.night || 1), closeAt: rule.closeAt,
-    gateRate: venue.gates * D.GATE_RATE, barRate: rule.barBaseRate + Math.max(0, venue.bars - 1) * rule.extraBarRate,
+    gateRate: (access?.usableGates ?? venue.gates) * D.GATE_RATE,
+    barRate: rule.barBaseRate + Math.max(0, (access?.usableBars ?? venue.bars) - 1) * rule.extraBarRate,
     workerRate: rule.workerRate, gateWorkerRate: rule.gateWorkerRate,
     gatePatience: rule.gatePatience, barPatience: rule.barPatience, travelMinutes: rule.travelMinutes,
     ticketPrice: state.promotion.price, barNet: D.BAR_NET_PER_HEAD,
@@ -697,10 +700,38 @@ function liveServiceSpec(state) {
       prepaid: split(preview.presale, i + 1), walkup: split(preview.attendance - preview.presale, i + 1) })) };
 }
 
+export function liveAccessFor(state) {
+  const access = lotAccess(state.venue.objects, venueSpec(state.venue).grid);
+  const floor = new Set(access.floorCells.map(p => key(p.x, p.y)));
+  const bars = state.venue.objects.filter(o => o.type === 'bar' && footprint(o).some(([x, y]) => [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => floor.has(key(x + dx, y + dy)))));
+  return { ...access, bars, usableBars: bars.length };
+}
+
 export function liveServicesFor(state, { events = false } = {}) {
   if (!state.show?.services) return null;
-  const run = Services.loadServices(state.show.services);
-  return { ...Services.serviceSummary(run), ...(events ? { events: run.events } : {}) };
+  const run = Services.loadServices(state.show.services), summary = Services.serviceSummary(run);
+  if (state.show.flow?.version !== 1) return { ...summary, ...(events ? { events: run.events } : {}) };
+  const access = liveAccessFor(state), exits = access.portals.filter(p => p.type === 'exit' && p.usable);
+  const departure = advanceDeparture(createDeparture(summary.admitted, exits.length), summary.closed ? state.show.flow.minute : 0);
+  const flow = departureSummary(departure);
+  const history = events ? [...run.events] : null;
+  if (history) for (const event of departureEvents(departure)) {
+    let remaining = event.result.count;
+    exits.forEach((_, i) => {
+      const count = Math.min(remaining, D.GUEST_FLOW.exitRate); remaining -= count;
+      if (count) history.push({ ...event, id: `${run.spec.id}:${event.id}:exit:${i}`, minute: D.LIVE_SERVICES.closeAt + event.minute,
+        cause: 'normal-departure', result: { count, portal: i } });
+    });
+  }
+  return { ...summary, minute: summary.minute + departure.minute, serviceClosed: summary.closed,
+    closed: summary.closed && flow.complete, inside: flow.remaining, departed: flow.departed,
+    departure: { ...flow, active: summary.closed, ...(events ? { portals: exits, access } : {}) },
+    ...(events ? { events: history } : {}) };
+}
+
+export function liveEndMinute(state) {
+  const summary = liveServicesFor(state);
+  return D.LIVE_SERVICES.closeAt + (summary?.departure?.duration || 0);
 }
 
 function serviceResponse(state, responseId) {
@@ -855,6 +886,12 @@ export function applyAction(state, action) {
       if (useServices && (action.pilot === true || s.venue.id !== 'lot' || !evaluateVenue(s.venue).bars)) {
         return fail(state, 'Live services needs the Lot and a bar, without the doors snapshot');
       }
+      if (action.flow !== undefined && action.flow !== 1) return fail(state, 'Unknown live flow version');
+      if (action.flow === 1) {
+        if (!useServices) return fail(state, 'Normal departure requires live services');
+        const access = liveAccessFor(s);
+        if (!access.usableGates || !access.usableExits || !access.usableBars) return fail(state, 'Connect admission, a bar and an exit to the main audience floor before opening doors');
+      }
       const upfront = upfrontFor(s);
       if (s.mode !== 'sandbox' && upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
       s.cash -= upfront;
@@ -864,6 +901,7 @@ export function applyAction(state, action) {
       const v = evaluateVenue(s.venue);
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
       if (useServices || s.promotion.liveServices !== undefined) s.promotion.liveServices = useServices;
+      if (action.flow === 1) s.show.flow = { version: 1, minute: 0 };
       if (useServices) s.show.services = Services.saveServices(Services.createServices(liveServiceSpec(s)));
       s.phase = 'show';
       return { state: s, error: null };
@@ -878,11 +916,12 @@ export function applyAction(state, action) {
     case 'advanceLive': {
       if ((err = need('show'))) return fail(state, err);
       if (!s.show.services) return fail(state, 'Live services is not enabled for this show');
-      const current = s.show.services.minute;
-      if (!isInt(action.minute) || action.minute < current || action.minute > D.LIVE_SERVICES.closeAt) return fail(state, 'Choose a future whole show minute within closing time');
+      const current = liveServicesFor(s).minute;
+      if (!isInt(action.minute) || action.minute < current || action.minute > liveEndMinute(s)) return fail(state, 'Choose a future whole minute within this show’s timeline');
       const minute = s.show.responseId ? action.minute : Math.min(action.minute, liveIncidentMinute(s));
-      s.show.services = Services.saveServices(Services.advanceServices(Services.loadServices(s.show.services), minute));
-      if (s.show.responseId && minute === D.LIVE_SERVICES.closeAt) s.phase = 'settle';
+      s.show.services = Services.saveServices(Services.advanceServices(Services.loadServices(s.show.services), Math.min(D.LIVE_SERVICES.closeAt, minute)));
+      if (s.show.flow) s.show.flow.minute = Math.max(0, minute - D.LIVE_SERVICES.closeAt);
+      if (s.show.responseId && liveServicesFor(s).closed) s.phase = 'settle';
       return { state: s, error: null };
     }
     case 'assignLiveWorker': {
@@ -1158,6 +1197,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
   }
 
   if (s.show && s.venue.id === 'lot' && s.venue.objects.some(o => o.type === 'bar') && isObj(raw.show?.services)) {
+    if (raw.show.flow !== undefined) { s.show.flow = { version: 1, minute: 0 }; if (raw.show.flow?.version !== 1) s.show.serviceRecovered = true; }
     const spec = liveServiceSpec(s), stored = raw.show.services;
     try {
       if (!Array.isArray(stored.commands)) throw new Error('Missing service commands');
@@ -1182,6 +1222,15 @@ export function normalizeState(raw, fallbackSeed = 1) {
         run = Services.advanceServices(run, D.LIVE_SERVICES.closeAt);
       }
       s.show.services = Services.saveServices(run);
+    }
+    if (s.show.flow) {
+      const saved = raw.show.flow?.version === 1 ? raw.show.flow.minute : null, summary = liveServicesFor(s);
+      const valid = isInt(saved) && saved >= 0 && saved <= (summary.departure.duration || 0)
+        && (s.show.services.minute === D.LIVE_SERVICES.closeAt || saved === 0);
+      if (valid) s.show.flow.minute = saved;
+      else s.show.serviceRecovered = true;
+      // A signed receipt remains signed if its departure field was damaged.
+      if (raw.phase === 'done' && s.history.some(h => h.seed === s.seed && h.night === s.show.night)) s.show.flow.minute = summary.departure.duration || 0;
     }
     if (raw.show.serviceRecovered === true) s.show.serviceRecovered = true;
     delete s.show.pilotCrew;

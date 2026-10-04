@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House normal departure:** new live Lot shows check connected access before payment, continue the saved clock through visible guest exits and unlock settlement only after the audience clears. Inside counts remain separate from attendance and receipts. Older live shows retain their closing rules. Service worker v35.
+
 - **Front of House departure prerequisite:** added a pure tested Lot-access and normal-departure model. Disconnected exits reduce modeled throughput, people remain conserved, and existing occupancy/cash rules stay authoritative. Client integration is still pending.
 
 - Front of House live Lot: representative guests now follow recorded admission and bar outcomes, with visible admission abandonment and frozen pause/reduced-motion endpoints. Service cash, totals and save checkpoints remain authoritative.

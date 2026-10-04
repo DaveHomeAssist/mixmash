@@ -51,8 +51,8 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
   function draw(scene) {
     if (destroyed) return;
     if (scene.services) {
-      const key = JSON.stringify([scene.objects, scene.grid]);
-      if (key !== serviceLayoutKey) { serviceLayout = createServiceLayout(scene.objects, scene.grid); serviceLayoutKey = key; }
+      const key = JSON.stringify([scene.objects, scene.grid, !!scene.services.departure]);
+      if (key !== serviceLayoutKey) { serviceLayout = createServiceLayout(scene.objects, scene.grid, scene.services.departure?.access); serviceLayoutKey = key; }
       scene = { ...scene, serviceCrowd: projectServiceCrowd(serviceLayout, scene.services, scene.serviceMinute, scene.serviceProgress) };
     }
     lastScene = scene;

@@ -348,3 +348,15 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - PR66 delivered at fc93b98 after full CI37198084252; Pages built at 11:31:17Z, eleven runtime files match and eight production control/queue journeys pass. PR68's event-derived movement passes 255 tests, six motion/zone journeys, six full control/settlement journeys, action-client input and warmed offline reload locally. Its separate CI/merge/deployed gates remain pending.
 
 - Core validation: 261 repository tests, build, manifest verification and legacy simulation pass; generated balance/docs remain unchanged. Initial repository checks caught the missing admin entries and test description; regeneration plus a source description resolved both, and the final full suite passes.
+
+
+## 2026-10-04: FOH-O02b playable normal departure
+
+- New client-opened live Lot shows check connected admission, bars and exits before charging. A versioned additive flow marker preserves older live checkpoints. Service closes at minute 240; the existing controls then drain the admitted population through connected exits before settlement. Current inside counts stay distinct from cumulative signed attendance and receipts.
+- Presentation placement stays on the main connected audience floor. Recorded departure events route representative guests through their actual exits; pause/reduced motion and reload use committed outcomes. Staffing controls and incident-location controls hide after service closes, fixing a phone overflow caught by the new browser sequence.
+- Local evidence: 265 repository tests, build, four Chromium/WebKit control/settlement journeys and eight zone/motion journeys pass. Normal-departure screenshots were inspected in 3D and on the phone. Full 3D/offline/action-client checks and delivery are tracked separately.
+- PR68 delivered at 1059e22 after CI37198897404; Pages built, twelve files match, and eight production control/zone journeys pass. PR70 core delivered at 6976dec after CI37199319876; thirteen live files match and the hosted departure module verifies three exits and conserved 75/75 backlog at minute 5. FOH-O01 is engineering-delivered; final human/device acceptance remains a release gate.
+
+- Final local evidence: two full 3D departure journeys, warmed offline reload at departure minute 2, and the supplied action client also pass; screenshots inspected. The first offline attempt received connection refused from the stopped preview server; a new verified listener and rerun pass. Preserved the concurrent PR67 performance record when refreshing the scoped project projection.
+
+- CI37200726884 failed in the legacy wind-down signing test: the natural clock reached the incident before the unconditional Skip click. The test now accepts either route to that same incident while retaining signing assertions; all 28 legacy checks pass locally. Expanded departure controls coverage also passes in four Chromium/WebKit and two full 3D journeys, exercising actual 1× Play/Pause and resumed 12× completion. Required CI on the corrected head remains pending.

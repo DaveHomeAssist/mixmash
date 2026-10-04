@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "fc93b98 · queue/staff projection deployed; guest transitions in PR68; departure core in progress",
+  "head": "6976dec · live operations delivered; departure integration under verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "The live Lot core and queue/staff projection are deployed and verified. PR68 adds recorded guest movement. A tested access/departure core is implemented; player integration, food, sanitation and later phases remain open.",
+  "statusReason": "Live service controls, queues, staffing and recorded guest movement are delivered. The departure/access core is delivered; player controls, saved exit progress and normal exit animation are implemented locally. Food, sanitation, research, ownership, venue and release work remain.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,9 +19,9 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Deliver guest transitions and connect normal departure",
-    "why": "Queues and staff are deployed; guest transitions are in PR68. The tested departure core needs pre-doors access, controls, save compatibility and visible exits before food and sanitation.",
-    "doneWhen": "Deliver PR68 and connect the tested departure core to pre-doors access, saved controls, rendered exits and settlement. Then implement food and sanitation before later phases.",
+    "title": "Deliver playable departure, then implement food and sanitation",
+    "why": "Live operations and the access/departure core are deployed. The integrated normal-departure controls and animation are being verified before finite vendor and sanitation systems.",
+    "doneWhen": "Ship FOH-O02b through CI and live verification, then complete FOH-O02c/d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -558,9 +558,10 @@
           "FOH-V01"
         ],
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
-        "status": "in-progress",
+        "status": "verified-delivered",
         "evidence": [
-          "PR62 merged at 3698c0a after full required CI; Pages build1259285752 built, eight runtime files match, four Chromium/WebKit and two 3D production journeys pass."
+          "PR62 merged at 3698c0a after full required CI; Pages build1259285752 built, eight runtime files match, four Chromium/WebKit and two 3D production journeys pass.",
+          "PR68 merged 1059e22 after CI37198897404; Pages built, twelve source files match, four production control/settlement and four production zone journeys pass. Controlled rendered motion also passes for the merged source."
         ],
         "slices": [
           {
@@ -603,15 +604,17 @@
           {
             "id": "FOH-O01d",
             "scope": "Animated representative guest transitions tied to service outcomes",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Event-derived guest identities and obstacle-respecting paths animate admission, bar service, floor movement and recorded admission abandonment in both renderers.",
               "No new saved state or transactions; pause/reduced motion use committed outcomes. Pure tests cover same-minute transitions, reload, batched clocks, missing paths and bounded 6000-guest demand. Required CI and deployed verification remain pending.",
               "255 repository tests and build pass. Four client renderer/viewport journeys and two controlled motion journeys pass, proving visible travel, recorded departures, immutable event input and frozen reduced-motion outcomes.",
-              "Four full Chromium/WebKit live journeys, two full 3D journeys, the supplied action client and warmed offline reload also pass locally. New guest module is cached; source a10d178 is pushed, required CI/deployment pending."
+              "Four full Chromium/WebKit live journeys, two full 3D journeys, the supplied action client and warmed offline reload also pass locally. New guest module is cached; source a10d178 is pushed, required CI/deployment pending.",
+              "Delivered through PR68: successful full CI, merge1059e22, built Pages release, twelve matching files and eight production browser journeys."
             ],
             "doneWhen": "Derive bounded cosmetic transitions from recorded service outcomes, preserve exact zone/cash totals through camera/speed/reload, and verify reduced motion plus visible departures without introducing per-guest saved AI.",
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/68"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/68",
+            "mergeCommit": "1059e22617555772e09894d90a3ff09a370de412"
           }
         ]
       },
@@ -630,18 +633,26 @@
           {
             "id": "FOH-O02a",
             "scope": "Pure modeled access and normal departure core",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Six tests cover disconnected/rotated layouts, unchanged occupancy authority, finite conserved departure, reduced throughput, batching/reload and malformed checkpoints. No client behavior or save migration is enabled by the core alone.",
-              "261 repository tests, build, asset-manifest checks and the legacy balance simulation pass locally; generated balance/docs remain unchanged. CI, merge and hosted source verification are pending."
+              "261 repository tests, build, asset-manifest checks and the legacy balance simulation pass locally; generated balance/docs remain unchanged. CI, merge and hosted source verification are pending.",
+              "PR70 passed CI37199319876 and merged6976dec. Pages built, thirteen source files match; the hosted pure module reports three exits and conserved75/75 departure at minute5."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/70"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/70",
+            "mergeCommit": "6976dec624a14b55d0ecc040333b231166f9db30"
           },
           {
             "id": "FOH-O02b",
             "scope": "Pre-doors access explanation, saved departure clock, player controls and rendered normal exits",
-            "status": "pending",
-            "evidence": []
+            "status": "implemented-local-verification",
+            "evidence": [
+              "New client-opened live shows require connected admission, bar and exit access before payment, then retain Play/Pause/speed/step controls for normal departure before settlement. Older live saves keep historical closing.",
+              "265 repository tests and build pass. Four Chromium/WebKit desktop/phone control journeys and four renderer/viewport zone plus four controlled movement journeys pass, including normal exit movement, frozen outcomes and reload/cash parity. Required CI and deployed proof remain pending.",
+              "Two full 3D departure/settlement journeys and warmed offline reload at departure minute2 pass. The supplied action client opens a new flow-version-1 show and reaches minute5; screenshots inspected. An initial offline attempt found a stopped preview server; retry on a verified new server passes.",
+              "CI37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71"
           },
           {
             "id": "FOH-O02c",

@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v35';
+const VERSION = 'v36';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -71,6 +71,7 @@ const PRECACHE = [
   './front-of-house/services.mjs',
   './front-of-house/service-crowd.mjs',
   './front-of-house/service-guests.mjs',
+  './front-of-house/guest-flow.mjs',
   './front-of-house/data.mjs',
   './front-of-house/controls.mjs',
   // The Front of House sprites (about 920 KB) are not precached: like other large

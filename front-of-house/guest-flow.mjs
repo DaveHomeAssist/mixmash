@@ -54,7 +54,7 @@ export function lotAccess(objects, grid = { w: 24, h: 16 }) {
     return { type: o.type, x: o.x, y: o.y, usable: !!neighbor, route,
       reason: neighbor ? null : boundary ? 'Disconnected from the main audience floor' : 'Not on the boundary' };
   });
-  return { floorTiles: main.size, disconnectedTiles: free.size - main.size,
+  return { floorCells: [...main].map(id => { const [x, y] = id.split(',').map(Number); return { x, y }; }), floorTiles: main.size, disconnectedTiles: free.size - main.size,
     usableGates: portals.filter(p => p.type === 'gate' && p.usable).length,
     usableExits: portals.filter(p => p.type === 'exit' && p.usable).length, portals };
 }
