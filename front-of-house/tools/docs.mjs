@@ -154,6 +154,9 @@ const PHASE_NOTES = {
 
 // What each engine action is for. An action in applyAction without a line here fails the build.
 const ACTION_NOTES = {
+  enableEquipment: 'Enable explicit ownership and open the optional cash journal at current cash',
+  equipment: 'Buy or sell a small PA between bookings with a stable transaction identity',
+  assignEquipment: 'Assign an owned small PA in Build or return to rental; freezes at doors',
   enableResearch: 'Enable optional development after the first settled show; Sandbox starts learned',
   research: 'Start, pause, resume or cancel a project between bookings; exact career cash delta',
   chooseDeal: 'Book an act on a deal; the deal and terms are fixed here',
@@ -176,7 +179,7 @@ const ACTION_NOTES = {
 
 // Refusals whose text is computed rather than written out: what the player sees instead.
 const FAIL_EXPLAIN = {
-  'result.error': 'The live service model refusal, including in-transit, already assigned or closed service',
+  'result.error': 'The service, research or equipment model refusal, including eligibility, funds and duplicate identity conflicts',
   'mine.message': 'The placement problem for this object, from `validateLayout` (R-18)',
   'problems[0].message': 'The first placement problem in the layout, from `validateLayout` (R-18)',
   "[...v.missing, ...v.problems.map((p) => p.message)].join('; ') || 'The venue has no capacity'":
@@ -220,7 +223,7 @@ function failCalls(seg) {
 // Split applyAction's switch into its cases and read each one's rules from the source.
 function parseActions() {
   const src = readFileSync(join(ROOT, 'engine.mjs'), 'utf8');
-  const start = src.indexOf('export function applyAction(');
+  const start = src.indexOf('function applyActionCore(');
   const end = src.indexOf('\n}\n', start);
   const body = src.slice(start, end);
   const re = /\n {4}case '([A-Za-z]+)':/g;
@@ -270,6 +273,9 @@ function transitionMatrix(actionIds) {
   const done = run(settle, [{ type: 'acceptSettlement' }]);
   const states = { book, build, promote, show, settle, done };
   const payload = {
+    enableEquipment: {},
+    equipment: { command: { id: 'reference_buy', kind: 'buy', family: 'small-pa' } },
+    assignEquipment: { assetId: null },
     enableResearch: {},
     research: { command: { kind: 'start', project: 'patch' } },
     chooseDeal: { deal: 'door' },
@@ -309,7 +315,7 @@ function catalogDoc() {
   const allowed = (id) => {
     const a = actions[id];
     if (a.need.length) return a.need.join(', ');
-    if (id === 'enableResearch' || id === 'research') return 'book, done (eligibility required)';
+    if (['enableResearch', 'research', 'enableEquipment', 'equipment'].includes(id)) return 'book, done (eligibility required)';
     if (id === 'back') return 'build, promote';
     return 'any';
   };

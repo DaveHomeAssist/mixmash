@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "5f47c4a measured · batching evidence reconciled",
+  "head": "ea21d02 base · equipment career adapter locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Native full-HUD render duplication is reduced with exact state and quality preserved; candidate cadence55.91–59.84Hz remains below a sustained60fps claim. Reconciled current gameplay and PR87/88 records; combined CI/hosted delivery remain pending.",
+  "statusReason": "PR85 sanitation/research and PR86 journal are awaiting required delivery checks. The owned-PA adapter and reconciled career cash pass all324 tests; equipment controls, browser proof and remaining phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -22,9 +22,9 @@
     "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
   ],
   "nextStep": {
-    "title": "Verify native HUD render batching and finish paired CI delivery",
-    "why": "Remove confirmed duplicate camera/show render submissions, repeat the complete native client measurement and retain slower windows alongside shared-host limitations.",
-    "doneWhen": "Declared regression limits reject an actual injected slowdown, then the remaining operations, research, ownership, venue and release work meets its own acceptance.",
+    "title": "Deliver operations and research; finish playable equipment",
+    "why": "The owned-PA adapter now covers capital, deployment and all career cash paths. Complete its controls and browser/offline proof while the preceding release clears CI.",
+    "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -76,7 +76,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "D6–D7: research and ownership depend on service and accounting rules",
-      "detail": "Live admission/bar services, controls and representative guest transitions are deployed. The departure core is delivered; PR71 contains the separate control integration. Food, sanitation, three-project research and ownership/ledger work remain within the accepted D6/D7 scopes.",
+      "detail": "Food, sanitation and research have controls and local player evidence. Explicit small-PA deployment and reconciled career cash pass324 tests; equipment controls and production acceptance remain open. No D6/D7 decisions are waiting.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/RESEARCH.md"
@@ -285,7 +285,7 @@
   "unknowns": [
     "Final realistic art and physical calibration remain unaccepted; the deployed Lot preview, service movement and shadow reuse have hosted automated proof.",
     "Archive source and image redistribution rights, physical scale and operator-eye FOH calibration pending.",
-    "Supported phone/low-power roster, thermal/battery and human acceptance remain pending; native Mac measurements and real display transitions now recorded.",
+    "Supported device/browser roster, accepted statistical/stall limits and hardware-GPU/low-power measurements pending.",
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
@@ -745,7 +745,8 @@
               "Full candidate measurement at clean5f47c4a: six valid windows,55.91–59.84Hz and two intervals over50ms. Identical fixture/browser/viewport/procedure and exact game states; only adapter/renderer runtime digests differ from baseline. Moving-window render calls reduce from3918–4843 to2211–2381 across warm-up/measurement; shared-host timing remains variable.",
               "All28 legacy checks, four live control journeys, eight crowd/movement journeys and six vendor journeys pass on the batching source; no gameplay or quality changes.",
               "After integration with cf74906/193c54c:315 tests/build/docs/simulation, deferred-render lifecycle, actual DPR1→2→1 display moves and complete3D gestures/recovery/reload/settlement parity pass. Generated reference/balance files unchanged; cache version44 prepared."
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/92"
           }
         ]
       },

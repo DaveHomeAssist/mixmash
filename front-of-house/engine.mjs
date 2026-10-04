@@ -8,6 +8,8 @@
 import * as D from './data.mjs';
 import * as Services from './services.mjs';
 import * as Research from './research.mjs';
+import * as Ownership from './ownership.mjs';
+import * as Journal from './career-ledger.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
@@ -540,7 +542,7 @@ export function evaluateShow(inputs) {
   const costs = {
     lot: typeof v.rental === 'number' ? v.rental : D.LOT_RENTAL,
     permit: typeof v.permitFee === 'number' ? v.permitFee : D.PERMIT,
-    pa: v.housePa ? 0 : (v.paTier ? D.PA_RENTAL[v.paTier] : 0),
+    pa: inputs.equipment || v.housePa ? 0 : (v.paTier ? D.PA_RENTAL[v.paTier] : 0),
     lights: v.lights ? D.LIGHTS_RENTAL : 0,
     bars: v.bars * D.BAR_SETUP,
     restrooms: v.restrooms * D.RESTROOM_UNIT,
@@ -550,6 +552,7 @@ export function evaluateShow(inputs) {
     incident: response ? response.cost : 0,
   };
   if (inputs.facilities) costs.facilities = inputs.facilities.cost;
+  if (inputs.equipment) costs.equipmentOperation = inputs.equipment.cost;
   costs.total = Object.values(costs).reduce((a, b) => a + b, 0);
   const guarantee = ask;
   const paidUpFront = inputs.deal === 'guarantee' || inputs.deal === 'sponsor';
@@ -570,15 +573,17 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
+    ...(inputs.equipment ? { equipment: inputs.equipment } : {}),
     sponsor, broadcast, seated, seatPrice, doorRush, services: live, ...(food ? { food, foodIncome } : {}),
     ...(inputs.facilities ? { facilities: inputs.facilities, sanitation: live?.sanitation || null, preferenceBonus } : {}),
   };
 }
 
 function showInputs(state, venueStats, withIncident) {
-  const roll = rollShow(state.seed, state.booking.artistId);
+  const roll = rollShow(state.seed, state.booking.artistId), equipment = equipmentPlanFor(state);
   return {
     venue: venueStats,
+    ...(equipment ? { equipment } : {}),
     ...(state.booking.research ? { research: researchEffectsFor(state) } : {}),
     deal: state.booking.deal,
     price: state.promotion.price,
@@ -684,6 +689,29 @@ function secondStage(state) {
     artistId: id, name: artist.name, attendance: result.attendance, artistPay: result.artistPay,
     ticketGross: result.ticketGross, bar: result.bar, cash,
   };
+}
+
+export function equipmentFor(state) {
+  return state.equipment ? Ownership.loadOwnership(state.equipment) : null;
+}
+
+export function careerLedgerFor(state) {
+  return state.cashJournal ? Journal.loadCareerLedger(state.cashJournal) : null;
+}
+
+function equipmentTerms(raw, checkpoint, requireAsset = false) {
+  if (!isObj(raw) || raw.version !== 1 || !checkpoint || !isInt(raw.at) || raw.at < 0 || raw.at > checkpoint.commands.length) throw new TypeError('Invalid equipment booking');
+  const owned = Ownership.loadOwnership({ version: 1, commands: checkpoint.commands.slice(0, raw.at) });
+  if (raw.assetId === null && !requireAsset) return { version: 1, at: raw.at, assetId: null };
+  if (!owned.assets.some(asset => asset.id === raw.assetId)) throw new TypeError('Booked equipment is not in the ownership source');
+  return { version: 1, at: raw.at, assetId: raw.assetId };
+}
+
+export function equipmentPlanFor(state) {
+  const marker = state.show?.equipment || state.booking?.equipment;
+  if (!marker?.assetId || !state.equipment) return null;
+  const terms = equipmentTerms(marker, state.equipment, true), venue = evaluateVenue(state.venue);
+  return { terms, cost: D.OWNED_EQUIPMENT['small-pa'].operation, eligible: !venue.housePa && venue.paTier === 'S' };
 }
 
 // The booking stores a prefix, so later learning cannot rewrite an already sold show.
@@ -841,12 +869,74 @@ function applyUnlocks(s) {
 }
 
 export function applyAction(state, action) {
+  const result = applyActionCore(state, action);
+  if (result.error || !state.cashJournal || !result.state.cashJournal) return result;
+  const next = result.state, delta = next.cash - state.cash;
+  try {
+    let journal = careerLedgerFor(state);
+    if (journal.balance !== state.cash) throw new Error('Journal does not match available cash');
+    const movements = [], reference = `show_${state.seed}_${state.show?.night || 1}`;
+    if (action.type === 'acceptSettlement') {
+      const payout = settlementPayout(settlementFor(state), state.booking.deal);
+      if (payout) movements.push({ category: 'settlement', cashDelta: payout, reference });
+      const opening = delta - payout;
+      if (opening) movements.push({ category: 'showOpening', cashDelta: opening, reference: `show_${next.seed}_${next.show.night}` });
+    } else if (delta) {
+      const category = action.type === 'equipment' ? action.command.kind === 'buy' ? 'acquisition' : 'disposal'
+        : action.type === 'research' ? delta < 0 ? 'development' : 'developmentRefund'
+        : action.type === 'confirmPromotion' ? 'showOpening' : action.type === 'respond' ? 'incident' : null;
+      if (!category) throw new Error('Unclassified career cash movement');
+      movements.push({ category, cashDelta: delta, reference: action.type === 'equipment' ? action.command.id
+        : action.type === 'research' ? `research_${action.command.project}_${next.research.commands.length}` : reference });
+    }
+    if (movements.reduce((total, movement) => total + movement.cashDelta, 0) !== delta) throw new Error('Cash movement mismatch');
+    for (const movement of movements) {
+      const appended = Journal.appendCareerLedger(journal, { sequence: journal.nextSequence, ...movement });
+      if (appended.error) throw new Error(appended.error);
+      journal = appended.state;
+    }
+    if (journal.balance !== next.cash) throw new Error('Journal balance mismatch');
+    next.cashJournal = Journal.saveCareerLedger(journal);
+  } catch {
+    // Optional history must not block paid show operations or change their cash.
+    next.cashJournal = Journal.saveCareerLedger(Journal.createCareerLedger(next.cash));
+    next.equipmentNotice = 'Cash journal restarted at preserved cash; earlier itemized history is incomplete';
+  }
+  return result;
+}
+
+function applyActionCore(state, action) {
   if (!isObj(action)) return fail(state, 'Unknown action');
   const s = clone(state);
   const need = (phase) => (s.phase === phase ? null : `That can only be done during ${phase}`);
   let err;
 
   switch (action.type) {
+    case 'enableEquipment': {
+      if (!['book', 'done'].includes(s.phase)) return fail(state, 'Equipment is available between bookings');
+      if (s.equipment) return fail(state, 'Equipment ownership is already enabled');
+      if (!s.history.length && s.mode !== 'sandbox') return fail(state, 'Settle your first show before enabling equipment');
+      s.equipment = Ownership.saveOwnership(Ownership.createOwnership());
+      s.cashJournal = Journal.saveCareerLedger(Journal.createCareerLedger(s.cash));
+      return { state: s, error: null };
+    }
+    case 'equipment': {
+      if (!['book', 'done'].includes(s.phase)) return fail(state, 'Buy and sell equipment between bookings');
+      if (!s.equipment) return fail(state, 'Enable equipment ownership first');
+      const result = Ownership.applyOwnership(equipmentFor(s), action.command, { cash: s.cash });
+      if (result.error) return fail(state, result.error);
+      s.equipment = Ownership.saveOwnership(result.state); s.cash += result.cashDelta;
+      return { state: s, error: null };
+    }
+    case 'assignEquipment': {
+      if ((err = need('build'))) return fail(state, err);
+      if (!s.equipment || !s.booking.equipment) return fail(state, 'Enable equipment before booking this show');
+      const terms = { ...s.booking.equipment, assetId: action.assetId };
+      try { s.booking.equipment = equipmentTerms(terms, s.equipment); }
+      catch { return fail(state, 'Choose an owned asset or return to rental'); }
+      if (action.assetId !== null && !equipmentPlanFor(s).eligible) return fail(state, 'Place a small PA; house and medium systems cannot use this asset');
+      return { state: s, error: null };
+    }
     case 'enableResearch': {
       if (!['book', 'done'].includes(s.phase)) return fail(state, 'Development is available between bookings');
       if (s.research) return fail(state, 'Development is already enabled');
@@ -888,6 +978,7 @@ export function applyAction(state, action) {
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
       if (s.research) s.booking.research = { version: 1, at: s.research.commands.length };
+      if (s.equipment) s.booking.equipment = { version: 1, at: s.equipment.commands.length, assetId: null };
       if (spec.seats) s.promotion.seatPrice = s.promotion.price + 10;
       s.phase = 'build';
       return { state: s, error: null };
@@ -991,6 +1082,8 @@ export function applyAction(state, action) {
         if (!access.usableGates || !access.usableExits || !access.usableBars) return fail(state, 'Connect admission, a bar and an exit to the main audience floor before opening doors');
       }
       if (s.promotion.foodPlan && (!useServices || action.flow !== 1 || liveAccessFor(s).usableVendors !== 1)) return fail(state, 'Food needs live services and one connected stall before doors');
+      const equipment = equipmentPlanFor(s);
+      if (equipment && !equipment.eligible) return fail(state, 'The assigned asset needs a placed small PA before doors');
       const facilities = sanitationPlanFor(s);
       if (s.venue.objects.some(o => o.type === 'trailer') && !facilities) return fail(state, 'Enable sanitation for the placed trailer before doors');
       if (facilities) {
@@ -1005,6 +1098,7 @@ export function applyAction(state, action) {
       s.promotion.confirmed = true;
       const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, 1);
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
+      if (equipment) s.show.equipment = equipment.terms;
       const v = evaluateVenue(s.venue);
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
       if (useServices || s.promotion.liveServices !== undefined) s.promotion.liveServices = useServices;
@@ -1102,6 +1196,7 @@ export function applyAction(state, action) {
           venueRep: s.show.venueRep,
           repHold,
           relHold,
+          ...(s.show.equipment ? { equipment: clone(s.show.equipment) } : {}),
         };
         s.phase = 'show';
         return { state: s, error: null };
@@ -1135,6 +1230,9 @@ export function applyAction(state, action) {
         fresh.reputation = s.reputation;
         fresh.unlocks = s.unlocks;
         fresh.history = s.history;
+        if (s.equipment) fresh.equipment = clone(s.equipment);
+        if (s.cashJournal) fresh.cashJournal = clone(s.cashJournal);
+        if (s.equipmentNotice) fresh.equipmentNotice = s.equipmentNotice;
         if (s.research) fresh.research = clone(s.research);
         if (s.researchNotice) fresh.researchNotice = s.researchNotice;
         if (s.mode === 'sandbox') fresh.cash = s.cash;
@@ -1258,6 +1356,26 @@ export function normalizeState(raw, fallbackSeed = 1) {
       s.researchNotice = 'Invalid development was reset; cash was preserved';
     }
   }
+  if (raw.equipment !== undefined) {
+    try { s.equipment = Ownership.saveOwnership(Ownership.loadOwnership(raw.equipment)); }
+    catch {
+      s.equipment = Ownership.saveOwnership(Ownership.createOwnership());
+      s.equipmentNotice = 'Invalid ownership was cleared; cash was preserved';
+    }
+    if (booking.equipment !== undefined) {
+      try { s.booking.equipment = equipmentTerms(booking.equipment, s.equipment); }
+      catch { s.equipmentNotice = 'Invalid booked equipment was removed; cash was preserved'; }
+    }
+    try {
+      const journal = Journal.loadCareerLedger(raw.cashJournal);
+      if (journal.balance !== s.cash) throw new Error('Journal mismatch');
+      s.cashJournal = Journal.saveCareerLedger(journal);
+    } catch {
+      s.cashJournal = Journal.saveCareerLedger(Journal.createCareerLedger(s.cash));
+      s.equipmentNotice = 'Cash journal restarted at preserved cash; earlier itemized history is incomplete';
+    }
+    if (typeof raw.equipmentNotice === 'string' && raw.equipmentNotice) s.equipmentNotice ||= 'Earlier equipment or journal recovery left incomplete history';
+  }
   const room = venueSpec(s.venue);
   if (s.booking.deal === 'sponsor' && !room.sponsor) s.booking.deal = null;
   s.booking.nights = room.nights.includes(booking.nights) ? booking.nights : 1;
@@ -1324,6 +1442,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
       repHold: intOr(raw.show.repHold, 0),
       relHold: intOr(raw.show.relHold, 0),
     };
+    if (raw.show.equipment !== undefined) {
+      try { s.show.equipment = equipmentTerms(raw.show.equipment, s.equipment, true); }
+      catch { s.equipmentNotice = 'Invalid paid equipment terms were removed; cash and signed history were preserved'; }
+    }
     if (s.venue.id === 'lot' && s.venue.objects.some((o) => o.type === 'bar')
       && Object.prototype.hasOwnProperty.call(raw.show, 'pilotCrew')) {
       s.show.pilotCrew = raw.show.pilotCrew === 'bar' || raw.show.pilotCrew === 'gate' ? raw.show.pilotCrew : null;

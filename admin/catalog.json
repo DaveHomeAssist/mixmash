@@ -2324,6 +2324,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-equipment-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-equipment-integration.mjs",
+      "description": "Owned equipment and the career journal reconcile every cash path without rewriting bookings.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-equipment-integration.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-food-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
