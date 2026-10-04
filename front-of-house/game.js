@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
-  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor,
+  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan,
   settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { createBoard, LOOK } from './board.js';
@@ -16,6 +16,7 @@ import { binding, matches } from './controls.mjs';
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
 const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
@@ -192,6 +193,7 @@ function render() {
     mount();
   }
   update();
+  if (state.show?.serviceRecovered && state.phase !== 'show') say('Recovered an invalid service timeline. Recorded career cash and signed history were retained.', 'error');
   draw();
 }
 
@@ -242,6 +244,7 @@ function focusHeading() {
 function update() {
   if (state.phase === 'build') updateBuild();
   if (state.phase === 'promote') updatePromote();
+  if (state.phase === 'show' && state.show.services) updateLiveServices();
 }
 
 // ---------------------------------------------------------------------------
@@ -621,6 +624,11 @@ function promotePanel() {
       </div>
       <div class="col">
         <dl class="stats" id="promo-stats" data-tab="Forecast"></dl>
+        ${spec.id === 'lot' ? `<div data-tab="Live services">
+          <label class="live-optin"><input id="live-services" type="checkbox" data-input="services" ${(state.promotion.liveServices ?? liveServicesPilot) ? 'checked' : ''} ${evaluateVenue(state.venue).bars || (state.promotion.liveServices ?? liveServicesPilot) ? '' : 'disabled'} /> Live services trial</label>
+          <p class="hint">Run arrivals and bar queues minute by minute. Move one bar worker to admission and back. Real service, lost demand and refunds change this show's settlement. Requires a bar.</p>
+          <p class="hint">${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p>
+        </div>` : ''}
         <figure data-tab="Presales">
           <svg id="presale" class="chart" viewBox="0 0 280 96" role="img" aria-labelledby="presale-cap"></svg>
           <figcaption id="presale-cap"></figcaption>
@@ -688,6 +696,7 @@ function updatePromote() {
 // The Show HUD: the clock top left, the incident top right when it comes, the event feed
 // bottom left and the crowd bottom right.
 function showPanel() {
+  if (state.show.services) return liveServicesPanel();
   return `
     <div class="plate at-tl card-plate">
       <p class="eyebrow">Show night · ${esc(venueSpec(state.venue).name)}</p>
@@ -706,6 +715,63 @@ function showPanel() {
       <p class="hint" id="rush-now" hidden></p>
       <button type="button" data-act="skip" id="skip-btn">Skip to the problem</button>
     </div>`;
+}
+
+function liveServicesPanel() {
+  return `
+    <div class="plate at-tl card-plate">
+      <p class="eyebrow">Live services · ${esc(venueSpec(state.venue).name)}</p>
+      <h2>Run the show</h2><p class="timecode" id="clock" aria-label="Show clock"></p>
+      <p class="show-status" id="show-status"></p><p id="msg" class="message" aria-live="polite"></p>
+    </div>
+    <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
+    <div class="plate at-bl status-plate" data-tab="Services">
+      <h3>Service pressure</h3><dl class="live-readouts" id="live-queues"></dl>
+      <p class="hint">Wait estimates use current staffing; new arrivals can change them.</p>
+      <p class="hint" id="live-money"></p>
+    </div>
+    <div class="plate at-br actions-plate live-controls" data-tab="Controls">
+      <p class="hint" id="live-worker" aria-live="polite"></p>
+      <div class="row"><button data-act="live-worker" data-station="gate">Help admission</button><button data-act="live-worker" data-station="bar">Return to bar</button></div>
+      <div class="row"><button data-act="live-play" id="live-play">Play</button><button data-act="live-step">+5 min</button><button data-act="live-next">Next event</button></div>
+      <label>Clock speed <select id="live-speed" data-input="live-speed"><option value="1">1×</option><option value="4">4×</option><option value="12">12×</option></select></label>
+      <p class="hint"><span id="crowd-now">0</span> admitted · one marker per guest on the Lot.</p>
+      <button data-act="locate-incident" id="locate-incident" hidden>Locate equipment</button>
+    </div>`;
+}
+
+function updateLiveServices() {
+  ui.services = liveServicesFor(state);
+  const r = ui.services, play = ui.play;
+  if (!r || !play) return;
+  play.p = r.minute / D.LIVE_SERVICES.closeAt;
+  $('#clock').textContent = clock(play.p);
+  $('#show-status').textContent = `${play.paused ? 'Paused' : 'Running'} · ${r.admitted} admitted · ${r.abandoned} left the queue`;
+  const row = (name, v) => `<div><dt>${name}</dt><dd>${v}</dd></div>`;
+  const queue = q => `${q.waiting} queued · oldest ${q.oldestWait}m`;
+  const wait = q => q.estimatedMinutes === null ? 'unavailable' : q.estimatedMinutes + 'm';
+  $('#live-queues').innerHTML = row('Admission', queue(r.gate)) + row('Bar', queue(r.bar)) + row('Rate per minute', `Gate ${r.gate.rate} · Bar ${r.bar.rate}`) + row('Wait estimate', `Gate ${wait(r.gate)} · Bar ${wait(r.bar)}`) + row('Bar requests', `${r.barServed} served · ${r.barLost} lost`);
+  $('#live-money').textContent = `Held ticket receipts ${money(r.ticketCash)} (refunds ${money(r.refunds)}) · Bar ${money(r.barCash)}. Paid to the career at settlement.`;
+  $('#live-worker').textContent = r.worker.destination ? `Worker travelling to ${r.worker.destination === 'gate' ? 'admission' : 'the bar'} · arrives in ${r.worker.arrivesAt - r.minute}m. Neither station gets their capacity in transit.` : `Worker at ${r.worker.station === 'gate' ? 'admission' : 'the bar'}. Transfer takes ${D.LIVE_SERVICES.travelMinutes}m.`;
+  for (const b of el.panel.querySelectorAll('[data-act="live-worker"]')) b.disabled = !!r.worker.destination || b.dataset.station === r.worker.station;
+  const waiting = !state.show.responseId && r.minute >= liveIncidentMinute(state);
+  $('#live-play').textContent = play.paused ? 'Play' : 'Pause';
+  $('[data-act="live-next"]').textContent = state.show.responseId ? 'Close show' : 'Next event';
+  for (const b of el.panel.querySelectorAll('[data-act="live-play"], [data-act="live-step"], [data-act="live-next"]')) b.disabled = waiting;
+  $('#live-speed').value = String(play.speed);
+  $('#crowd-now').textContent = r.admitted;
+  if (state.show.serviceRecovered) say('Recovered an invalid service timeline. Paid costs and career cash were retained.', 'error');
+  if (waiting && $('#incident-box').hidden) { play.paused = false; reachIncident(); }
+}
+
+function stepLive(minute) {
+  const play = ui.play;
+  if (!play?.live || state.phase !== 'show') return;
+  act({ type: 'advanceLive', minute: Math.min(D.LIVE_SERVICES.closeAt, minute) }, { quiet: true });
+  if (state.phase === 'show' && !state.show.responseId && ui.services.minute >= liveIncidentMinute(state)) {
+    play.paused = true;
+    $('#live-play').textContent = 'Play';
+  }
 }
 
 // The feed keeps its last four lines on screen.
@@ -727,6 +793,12 @@ function clock(p) {
 
 function startPlayback() {
   stopPlayback();
+  if (state.show.services) {
+    ui.play = { live: true, paused: true, p: state.show.services.minute / D.LIVE_SERVICES.closeAt,
+      at: liveIncidentMinute(state) / D.LIVE_SERVICES.closeAt, speed: 1, last: performance.now() };
+    updateLiveServices();
+    return;
+  }
   // Each night of a run rolls from its own seed, as incidentFor does (R-11a).
   const night = state.show && state.show.night > 1 ? state.show.night : 1;
   const roll = rollShow(night > 1 ? ((state.seed ^ night) >>> 0) : state.seed, state.booking.artistId);
@@ -769,6 +841,15 @@ function loop() {
   ui.raf = requestAnimationFrame(() => {
     const play = ui.play;
     if (!play) return;
+    if (play.live) {
+      if (state.phase === 'show' && !play.paused) {
+        const now = performance.now(), minutes = Math.floor((now - play.last) * play.speed / 1000);
+        if (minutes > 0) { play.last += minutes * 1000 / play.speed; stepLive(state.show.services.minute + minutes); }
+      }
+      draw();
+      if (state.phase === 'show' && !play.paused) loop();
+      return;
+    }
     if (state.phase === 'show' && !play.paused) {
       play.p = Math.min(play.at, (performance.now() - play.start) / 1000 / PLAY_SECONDS);
       const beats = [[0.15, 'Walk-up is buying at the gate.'], [D.ACT_ON_STAGE_AT, `${artistFor(state.booking.artistId).name} take the stage.`]];
@@ -901,6 +982,12 @@ function respond(responseId) {
   const play = ui.play;
   if (!act({ type: 'respond', responseId })) return;
   stopPlayback();
+  if (play?.live) {
+    play.paused = true;
+    const box = $('#incident-box'); if (box) box.hidden = true;
+    if (state.phase === 'show') { syncTabs(el.panel, 'show', 'Controls'); updateLiveServices(); $('#live-play').focus(); }
+    return;
+  }
   if (play && !reduceMotion) {
     play.after = { start: performance.now(), done: false };
     loop();
@@ -957,6 +1044,7 @@ function sheetParts(r, { signed: done }) {
       <div><span class="meta-label">Attendance</span><span class="meta-val">${r.attendance} / ${v.capacity}</span></div>
       <div><span class="meta-label">Satisfaction</span><span class="meta-val score">${r.satisfaction}/100</span></div>
     </div>`;
+  const serviceReceipts = r.services ? `<p class="hint">Prepaid ${money(r.services.prepaidCash)} + walk-ups ${money(r.services.walkupCash)} − refunds ${money(r.services.refunds)} = ${money(r.ticketGross)} ticket receipts. ${r.services.cancelledWalkups} future walk-ups cancelled; ${r.services.abandoned} guests left admission.</p>` : '';
   const revenue = `
     <div class="ledger">
       <div class="ledger-title">SECTION A · GROSS REVENUE</div>
@@ -964,7 +1052,7 @@ function sheetParts(r, { signed: done }) {
         <thead><tr><th scope="col">Source</th><th scope="col">Units</th><th scope="col" class="num">Total</th></tr></thead>
         <tbody>
           <tr><td>Tickets (presale and gate)</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(state.promotion.price)}` : `${r.attendance} × ${money(state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
-          <tr><td>Bar</td><td>${r.attendance} guests</td><td class="num pos">${money(r.bar)}</td></tr>
+          <tr><td>Bar</td><td>${r.services ? `${r.services.barServed} served · ${r.services.barLost} lost` : `${r.attendance} guests`}</td><td class="num pos">${money(r.bar)}</td></tr>
           ${r.sponsor ? `<tr><td>Sponsor</td><td>Site deal</td><td class="num pos">${money(r.sponsor)}</td></tr>` : ''}
           ${r.broadcast ? `<tr><td>Broadcast</td><td>${r.attendance} viewers</td><td class="num pos">${money(r.broadcast)}</td></tr>` : ''}
           ${r.second ? `<tr><td>${esc(r.second.name)} (second stage)</td><td>${r.second.attendance} people</td><td class="num pos">${money(r.second.cash)}</td></tr>` : ''}
@@ -997,7 +1085,7 @@ function sheetParts(r, { signed: done }) {
   const crowd = `
     <div data-tab="Crowd">
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
-      <div class="meters-sat">${parts}</div>
+      <div class="meters-sat">${parts}</div>${serviceReceipts}
     </div>
     <div class="outcomes" data-tab="Payout">
       <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
@@ -1007,7 +1095,7 @@ function sheetParts(r, { signed: done }) {
   return {
     body: `${head}
       <div class="sheet-cols">
-        <div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>
+        ${r.services ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
         <div class="sheet-col" data-tab="Costs">${costs}</div>
         <div class="sheet-col">${payouts}${crowd}</div>
       </div>`,
@@ -1118,6 +1206,7 @@ const board = createBoard(el.canvas);
 
 function crowdNow() {
   if (state.phase === 'show') {
+    if (state.show.services) return ui.services?.admitted || 0;
     const play = ui.play;
     if (!play) return 0;
     return Math.round(play.preview * Math.min(1, play.p / 0.45));
@@ -1150,7 +1239,8 @@ function draw() {
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
-    incident: night && state.show ? state.show.incidentId : null,
+    services: state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state)) : null,
+    incident: night && state.show && (!state.show.services || state.show.services.minute >= liveIncidentMinute(state)) ? state.show.incidentId : null,
     night,
     lightTower: state.venue.objects.some((o) => o.type === 'lights'),
     t: night && !reduceMotion && ui.raf ? performance.now() / 1000 : 0,
@@ -1439,8 +1529,12 @@ function onAct(e) {
     if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${label(type).toLowerCase()}.`);
   } else if (a === 'back') act({ type: 'back' });
   else if (a === 'confirm-build') act({ type: 'confirmBuild' });
-  else if (a === 'confirm-promo') act({ type: 'confirmPromotion', pilot: lotNightSlice });
+  else if (a === 'confirm-promo') { const services = !!$('#live-services')?.checked; act({ type: 'confirmPromotion', services, pilot: lotNightSlice && !services }); }
   else if (a === 'skip') skipToIncident();
+  else if (a === 'live-worker') act({ type: 'assignLiveWorker', station: target.dataset.station });
+  else if (a === 'live-play' && ui.play?.live) { stopPlayback(); ui.play.paused = !ui.play.paused; ui.play.last = performance.now(); updateLiveServices(); if (!ui.play.paused) loop(); }
+  else if (a === 'live-step') stepLive(state.show.services.minute + 5);
+  else if (a === 'live-next') stepLive(state.show.responseId ? D.LIVE_SERVICES.closeAt : liveIncidentMinute(state));
   else if (a === 'choose-crew') chooseDoorCrew(target.dataset.choice);
   else if (a === 'respond') respond(target.dataset.response);
   else if (a === 'accept') act({ type: 'acceptSettlement', at: new Date().toISOString() });
@@ -1463,7 +1557,9 @@ el.panel.addEventListener('input', (e) => {
 
 el.panel.addEventListener('change', (e) => {
   const t = e.target;
-  if (t.dataset.input === 'tool') pickTool(t.value);
+  if (t.dataset.input === 'services') act({ type: 'setPromotion', services: t.checked }, { quiet: true });
+  else if (t.dataset.input === 'live-speed' && ui.play?.live) { ui.play.speed = Number(t.value); ui.play.last = performance.now(); }
+  else if (t.dataset.input === 'tool') pickTool(t.value);
   else if (t.dataset.input === 'clear') {
     ui.showClear = t.checked;
     draw();
@@ -1775,6 +1871,7 @@ window.render_game_to_text = () => {
     show: state.show,
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
     crowd: crowdNow(),
+    services: liveServicesFor(state),
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
   });

@@ -487,3 +487,9 @@ Dave delegated decision making; Codex selected these options. Do not attribute s
 CT-DEC-13’s broader research tree remains Proposed; D6 accepts the bounded pilot and sequence, not every branch or unmeasured value. CT-DEC-10 and CT-DEC-11 retain Proposed status because D9 and D10 deliberately require evidence. Those statuses are no longer unanswered selection questions. CT-DEC-14 through CT-DEC-18 remain accepted.
 
 This update records decisions; it does not implement the pilots or certify unperformed human/device tests. Archive rights, renderer parity, real-device measurements and human acceptance remain evidence requirements. Obtain available evidence, use owned or independently authored alternatives where reuse rights cannot be established, and report exact missing evidence without reopening settled product choices. Public visibility remains gated under D11.
+
+## CT-DEC-20 Live service pilot rules and compatibility
+
+**Status:** Accepted for an opt-in experiment, selected autonomously by Codex under Dave's delegated phase-execution authority, 2026-10-04. This is not public-launch or human-playtest acceptance.
+
+Use the bounded deterministic minute model in R-LIVE-01, with explicit Promote selection and a saved show checkpoint. The initial 6/36-minute arrival patterns, two-minute transfers, 12-minute patience, station-specific worker rates and one bar request per admitted guest are experimental values in data.mjs. Preserve the existing career and doors-snapshot paths when unselected. Incident responses change future arrivals/service only; real receipts replace forecasts only in the pilot. Hold all service income until one-time career settlement. Older clients require a forward fix after opt-in because they cannot interpret the checkpoint. Test paired Lot outcomes and browser/reload behavior before delivery; representative queue animation and human readability/balance proof remain separate work.

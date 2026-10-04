@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House live Lot pilot:** Promote opt-in enables real arrival/bar queues, temporary staffing, a saved minute clock, prospective incident effects and reconciled service receipts. Desktop/phone controls pause at incidents, preserve transfers on reload and settle once. Existing unselected shows retain their rules. Service worker v30.
+
 - **Front of House service model prerequisite:** added a deterministic aggregate admission/bar engine with finite queues, worker travel, refunds and replayable checkpoints, plus quiet/surge/busy-bar fixtures. It is not yet enabled in the game; existing economy and saves remain unchanged.
 
 - **Front of House safe Build tools:** Select is the default and opens object inspection by pointer, touch or Enter. Escape closes a dialog/menu before cancelling placement. Single removal uses Undo, and Clear asks once with an object count. Selection stays out of saves, focus returns predictably, and the tools fit desktop/phone layouts. Service worker v29.

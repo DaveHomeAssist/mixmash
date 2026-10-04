@@ -1,7 +1,7 @@
 // Behavioral fixtures for the aggregate live-service prerequisite.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createServices, advanceServices, assignServiceWorker, serviceSummary, saveServices, loadServices } from './services.mjs';
+import { createServices, advanceServices, assignServiceWorker, applyServiceResponse, serviceSummary, saveServices, loadServices } from './services.mjs';
 
 const spec = (arrivals, extra = {}) => ({ id: 'fixture', closeAt: 12, gateRate: 2, barRate: 0, workerRate: 2, travelMinutes: 2, gatePatience: 3, barPatience: 6, ticketPrice: 20, barNet: 5, arrivals, ...extra });
 const move = (s, station) => {
@@ -163,4 +163,40 @@ test('invalid or excessive inputs and checkpoint commands fail without trusting 
   assert.throws(() => loadServices({ ...raw, minute: 2, commands: [{ minute: 0, station: 'gate' }, { minute: 1, station: 'bar' }] }));
   assert.deepEqual(loadServices({ ...raw, totals: { barCash: 999999 }, events: ['forged'] }), s);
   assert.throws(() => advanceServices(advanceServices(s, 2), 1));
+});
+
+
+test('incident reduces only future walk-ups, preserving admitted and queued guests', () => {
+  let s = advanceServices(createServices(spec([{ minute: 1, prepaid: 2, walkup: 8 }, { minute: 2, walkup: 3 }, { minute: 3, walkup: 3 }], { gateRate: 1 })), 1);
+  const before = structuredClone(s);
+  const result = applyServiceResponse(s, { id: 'rain:ride-out', walkupPercent: 50 });
+  assert.equal(result.error, null);
+  s = result.state;
+  assert.deepEqual(s.gate, before.gate);
+  assert.equal(s.totals.admitted, before.totals.admitted);
+  assert.equal(s.totals.cancelledWalkups, 3);
+  assert.deepEqual(s.schedule.map(r => r.walkup), [8, 1, 2]);
+  assert.equal(s.totals.prepaidCash, before.totals.prepaidCash);
+  assert.deepEqual(loadServices(saveServices(s)), s);
+  s = finish(s);
+  assert.equal(s.totals.arrived + s.totals.cancelledWalkups, 16);
+  conserved(s);
+  assert.deepEqual(loadServices(saveServices(s)), s);
+  assert.match(applyServiceResponse(s, { id: 'rain:canopy' }).error, /already/);
+});
+
+test('gate response affects future service, preserves transfer, and replays command order', () => {
+  let s = advanceServices(move(createServices(surge), 'gate'), 1);
+  const before = structuredClone(s);
+  s = applyServiceResponse(s, { id: 'gate-jam:ride-out', gatePercent: 50 }).state;
+  assert.deepEqual(s.worker, before.worker);
+  assert.equal(serviceSummary(s).gate.rate, 1);
+  s = advanceServices(s, 2);
+  assert.equal(serviceSummary(s).gate.rate, 2);
+  s = move(s, 'bar');
+  assert.equal(serviceSummary(s).gate.rate, 1);
+  assert.deepEqual(loadServices(saveServices(s)), s);
+  assert.deepEqual(finish(loadServices(saveServices(s))), finish(s));
+  assert.equal(applyServiceResponse(before, { id: 'bad', gatePercent: -1 }).state, before);
+  assert.throws(() => loadServices({ ...saveServices(before), commands: [{ minute: 0, kind: 'bogus' }] }));
 });

@@ -8,7 +8,7 @@
   "head": "4aeb533 · phase execution baseline reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation and Select delivery in progress; deterministic services core implemented and tested independently while the Lot renderer develops. Player integration and later phases remain active.",
+  "statusReason": "Live Lot service pilot implemented and under delivery verification. Clock, staffing, queues, incident effects and career settlement have tests; representative queue movement and remaining renderer/operations phases stay open.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -486,9 +486,20 @@
           },
           {
             "id": "FOH-O01b",
-            "scope": "Integrate authoritative live clock, controls, save and settlement; crowd visualization follows renderer parity",
+            "scope": "Opt-in live Lot controls, fixed clock, incident-aware replay, career settlement and saved staffing",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "60 engine/service tests pass; desktop/phone Chromium and WebKit journeys pass, including settlement tabs",
+              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)"
+            ]
+          },
+          {
+            "id": "FOH-O01c",
+            "scope": "Representative admission/bar movement integrated with the accepted renderer",
             "status": "pending",
-            "evidence": []
+            "evidence": [
+              "Live pilot draws the correct admitted count; distinct queue movement is still unimplemented"
+            ]
           }
         ]
       },

@@ -17,6 +17,7 @@ function specification(raw) {
     ['gatePatience', 1, 240], ['barPatience', 1, 240],
     ['ticketPrice', 0, 10000], ['barNet', 0, 10000],
   ]) spec[name] = integer(raw[name], name, min, max);
+  spec.gateWorkerRate = integer(raw.gateWorkerRate ?? raw.workerRate, 'gate worker rate', 1, 6000);
   if (!Array.isArray(raw.arrivals) || raw.arrivals.length > 240) throw new TypeError('Invalid arrivals');
   spec.arrivals = raw.arrivals.map((row) => {
     if (!row || typeof row !== 'object') throw new TypeError('Invalid arrival cohort');
@@ -39,11 +40,11 @@ export function createServices(raw) {
   const spec = specification(raw);
   const prepaid = spec.arrivals.reduce((sum, row) => sum + row.prepaid, 0);
   const s = {
-    version: VERSION, spec, minute: 0, commands: [],
+    version: VERSION, spec, minute: 0, commands: [], schedule: copy(spec.arrivals), response: null,
     worker: { station: 'bar', destination: null, arrivesAt: null },
     gate: [], bar: [],
     totals: { arrived: 0, admitted: 0, abandoned: 0, barServed: 0, barLost: 0,
-      prepaidCash: prepaid * spec.ticketPrice, walkupCash: 0, refunds: 0, barCash: 0 },
+      prepaidCash: prepaid * spec.ticketPrice, walkupCash: 0, refunds: 0, barCash: 0, cancelledWalkups: 0 },
     events: [],
   };
   if (prepaid) event(s, 'presale', 'tickets', { count: prepaid, cash: s.totals.prepaidCash });
@@ -61,6 +62,40 @@ export function assignServiceWorker(state, station) {
   s.worker = { station: null, destination: station, arrivesAt: s.minute + s.spec.travelMinutes };
   event(s, 'transfer-start', 'worker', { destination: station, arrivesAt: s.worker.arrivesAt });
   return { state: s, error: null };
+}
+
+// Incident changes apply prospectively; admitted guests and existing queues survive.
+export function applyServiceResponse(state, raw) {
+  if (state.response) return { state, error: 'The service response is already recorded' };
+  if (!raw || typeof raw.id !== 'string' || !/^[a-zA-Z0-9_:-]{1,96}$/.test(raw.id)) {
+    return { state, error: 'Invalid service response' };
+  }
+  let response;
+  try {
+    response = { id: raw.id,
+      walkupPercent: integer(raw.walkupPercent ?? 100, 'walk-up percent', 0, 100),
+      gatePercent: integer(raw.gatePercent ?? 100, 'gate percent', 0, 100) };
+  } catch { return { state, error: 'Invalid service response rates' }; }
+  const s = copy(state);
+  s.response = response;
+  s.commands.push({ kind: 'response', minute: s.minute, response });
+  // Cumulative rounding preserves the percentage of total remaining demand.
+  let before = 0, after = 0;
+  for (const row of s.schedule) {
+    if (row.minute <= s.minute) continue;
+    before += row.walkup;
+    const next = Math.floor(before * response.walkupPercent / 100);
+    row.walkup = next - after;
+    after = next;
+  }
+  s.totals.cancelledWalkups += before - after;
+  event(s, 'incident-response', 'services', { ...response, cancelledWalkups: before - after });
+  return { state: s, error: null };
+}
+
+function serviceRate(s, station) {
+  const rate = s.spec[`${station}Rate`] + (s.worker.station === station ? (station === 'gate' ? s.spec.gateWorkerRate : s.spec.workerRate) : 0);
+  return station === 'gate' && s.response ? Math.floor(rate * s.response.gatePercent / 100) : rate;
 }
 
 function expire(s, queue, station, closing = false) {
@@ -112,7 +147,7 @@ export function advanceServices(state, targetMinute) {
       event(s, 'transfer-complete', 'worker', { station: s.worker.station });
     }
     for (const kind of ['prepaid', 'walkup']) {
-      for (const row of s.spec.arrivals.filter((item) => item.minute === s.minute)) {
+      for (const row of s.schedule.filter((item) => item.minute === s.minute)) {
         if (!row[kind]) continue;
         s.gate.push({ at: s.minute, kind, count: row[kind] });
         s.totals.arrived += row[kind];
@@ -121,8 +156,8 @@ export function advanceServices(state, targetMinute) {
     }
     expire(s, s.gate, 'gate');
     expire(s, s.bar, 'bar');
-    serve(s, 'gate', s.spec.gateRate + (s.worker.station === 'gate' ? s.spec.workerRate : 0));
-    serve(s, 'bar', s.spec.barRate + (s.worker.station === 'bar' ? s.spec.workerRate : 0));
+    serve(s, 'gate', serviceRate(s, 'gate'));
+    serve(s, 'bar', serviceRate(s, 'bar'));
     if (s.minute === s.spec.closeAt) {
       expire(s, s.gate, 'gate', true);
       expire(s, s.bar, 'bar', true);
@@ -133,7 +168,7 @@ export function advanceServices(state, targetMinute) {
 
 export function serviceSummary(s) {
   const queue = (station) => {
-    const rate = s.spec[`${station}Rate`] + (s.worker.station === station ? s.spec.workerRate : 0);
+    const rate = serviceRate(s, station);
     const waiting = count(s[station]);
     return { waiting, oldestWait: waiting ? s.minute - s[station][0].at : 0,
       rate, estimatedMinutes: rate ? Math.ceil(waiting / rate) : (waiting ? null : 0) };
@@ -159,7 +194,9 @@ export function loadServices(raw) {
     if (!command || typeof command !== 'object') throw new TypeError('Invalid worker command');
     integer(command.minute, 'command minute', s.minute, minute);
     s = advanceServices(s, command.minute);
-    const result = assignServiceWorker(s, command.station);
+    const result = command.kind === 'response' ? applyServiceResponse(s, command.response)
+      : command.kind === undefined || command.kind === 'worker' ? assignServiceWorker(s, command.station)
+        : { error: 'Unknown command kind' };
     if (result.error) throw new TypeError(`Invalid worker command: ${result.error}`);
     s = result.state;
   }

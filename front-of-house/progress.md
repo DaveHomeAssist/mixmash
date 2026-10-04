@@ -265,3 +265,10 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Hand-calculated fixtures: quiet bar staffing earns $100 versus $80 with the worker absent; surge transfer/return admits 10 versus 6 and earns $240 versus $150; busy-bar transfer loses eight sales ($40). Numbers are test-fixture choices, not a silent production retune.
 - Ten targeted tests cover counts/cash conservation, refunds, closing, no dual duty, immutable inputs, transfer refusal/return, frame-batching independence, reload during travel/backlog and malformed checkpoints. Full repository/build/simulation and required delivery checks are recorded with the phase PR.
 - FOH-O01 remains incomplete: controls, authoritative game clock, career save/settlement adapter, forecasts and representative crowd are FOH-O01b. Human playtesting and device proof remain separate.
+
+## 2026-10-04: FOH-O01b live Lot integration
+
+- Connected an explicit Promote opt-in to a saved, engine-owned minute clock, admission/bar queues, temporary staffing, prospective incident effects and one-time career settlement. Added paused start, Play/Pause, speed, +5 min and event/closing controls, with Services/Controls/Problem phone tabs.
+- Tests cover response timing, transfer/reload, derived-spec validation, cash reconciliation, signed-save recovery and speed-independent engine stepping. Paired actual Lot fixtures favor different policies: seed 1 stays at the bar ($831 vs $819); seed 3 benefits from temporary admission ($230 vs −$186), while losing bar service. Legacy balance remains separately unchanged.
+- Chromium and WebKit desktop/phone journeys exercise the real controls through signing and reload. Their first run exposed phone queue-panel overflow and live settlement Revenue scrolling; compact service rows and a separate Deal tab fix those issues. Final checks and deployment proof follow the PR.
+- The live board now respects integer admitted counts. Distinct queue movement and 3D integration remain FOH-O01c; physical-device/human readability and balance acceptance remain unverified.

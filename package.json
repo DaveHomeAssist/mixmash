@@ -11,7 +11,7 @@
     "smoke:catalog": "node test/catalog-smoke.mjs",
     "smoke:landing": "node test/landing-smoke.mjs",
     "smoke:zelda2mario": "node test/zelda2mario-smoke.mjs",
-    "smoke:front-of-house": "node test/front-of-house-smoke.mjs",
+    "smoke:front-of-house": "node test/front-of-house-smoke.mjs && node test/front-of-house-live-smoke.mjs",
     "smoke:admin": "node test/admin-smoke.mjs",
     "vercel-build": "node --check \"api/[...path].mjs\" && node --check api/health.mjs && node --check api/sessions.mjs && node --check \"api/sessions/[sessionId].mjs\" && node --check \"api/sessions/[sessionId]/commands.mjs\" && node --check mars/game.js && node --check mars/golden-scene.js && node --check mars/commissioned-art.mjs && node --check mars/art-spec.js && node --check mars/render-contract.mjs && node --check mars/sprite-canvas.mjs && node --check mars/art/validate-assets.mjs && node --check mars/art/visual-regression.mjs && node --check mars/server.mjs && node --check mars/engine.mjs && node --check mars/legacy-import.mjs && node --check mars/sprites.mjs && node --check mars/sim/baseline.mjs && node --check mars/sim/simulate.mjs && node --check front-of-house/game.js && node --check front-of-house/board.js && node --check admin/app.js && node --check admin/theme.js && node --check admin/build-catalog.mjs",
     "art:index": "node mars/art/validate-assets.mjs --runtime-index mars/assets/commissioned/index.json",

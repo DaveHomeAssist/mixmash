@@ -56,6 +56,13 @@ export const LOT_PILOT_WALKUP_LOSS = 0.2; // share of a rush queue that turns aw
 export const LOT_PILOT_GATE_MULT = 1.5; // existing gate works faster with the reassigned worker
 export const LOT_PILOT_BAR_CAPACITY_LOSS = 0.5; // half of one bar's service capacity
 
+// Opt-in live Lot services (R-LIVE-01). These values never change legacy shows.
+export const LIVE_SERVICES = {
+  closeAt: 240, steadyArrivalMinutes: 36, surgeArrivalMinutes: 6, surgeEvery: 3,
+  gatePatience: 12, barPatience: 12, travelMinutes: 2,
+  workerRate: 2, gateWorkerRate: 5, barBaseRate: 1, extraBarRate: 3,
+};
+
 // Money (R-10 to R-15)
 export const BAR_NET_PER_HEAD = 6;
 export const BAR_SHORTFALL = 0.6;

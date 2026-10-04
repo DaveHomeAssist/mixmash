@@ -177,3 +177,13 @@ Every key above comes from one table, `front-of-house/controls.mjs`, which both 
 ## 8. Keeping this current
 
 Update this file in the same change as any new screen, window, tab, control or edge path. A new phase or action also needs a line in `tools/docs.mjs`, which fails the build until it has one.
+
+## Live Lot services trial (FOH-O01b)
+
+Promote gains a Live services tab on phones and an opt-in checkbox on the Lot. It explains the effect on settlement, the required bar, the known arrival pattern and paused starting clock. It is saved with the promotion and show; the existing doors snapshot remains a separate experiment.
+
+Show keeps the corner HUD. Services displays admission/bar queue counts, oldest waits, current processing rates, current-rate wait estimates, actual bar service/loss and held receipts. Controls provides the worker's current station or travel ETA, Help admission / Return to bar, Play/Pause, +5 min, Next event / Close show and a 1×/4×/12× clock selector. Touch controls are at least 44px high. Worker buttons disable during travel or at the current station. Clock controls disable at an unanswered incident; the Problem tab receives focus. After responding, the clock remains paused and focus returns to Play. Reload restores logical time, queues and travel, with playback paused.
+
+The pilot's board draws the actual admitted population, with integer allocation fixing fractional crowd overdraw for this mode. Distinct admission/bar movement remains FOH-O01c; the current markers are not individual agents. Camera and theme changes cannot advance or settle services. Reduced motion retains the same controls and counts.
+
+Settlement retains its existing window. The live pilot splits Revenue and Deal into separate phone tabs to keep both reachable without scrolling. The Crowd tab reconciles presales, walk-up cash, refunds, cancelled future demand and abandonment; the Bar row reports served/lost requests. Signing pays the existing career transition once. Invalid checkpoint recovery is explicitly reported on Show; cash and already-paid response costs are retained.
