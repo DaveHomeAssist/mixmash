@@ -19,8 +19,8 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Complete Lot scene parity and realistic sample before performance acceptance",
-    "why": "The adapter and game input now work together with a recoverable 3D preview. Perimeter/incident/animation presentation, calibrated views and convincing realistic subjects still need implementation and review.",
+    "title": "Measure and optimize the Lot renderer, then develop the live operations slice",
+    "why": "Technical input/save parity and the candidate scene are tested. Reproducible frame-time evidence and operations fixtures can now advance while final art and physical acceptance remain explicitly open.",
     "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
     "effort": "L",
     "owner": "either",
@@ -476,14 +476,29 @@
                 "result": "pass",
                 "checkedAt": "2026-10-04T10:28:25.114Z",
                 "summary": "Actual client: safe orbit/pinch/cancel, one-tap placement/Undo, touch inspection, accessible controls, context and module fallback, desktop/phone/ultrawide fit, mid-show reload and identical complete settlement/state in both renderers."
+              },
+              {
+                "stage": "deployment",
+                "locator": "https://github.com/DaveHomeAssist/mixmash/commit/756246b675884b2dab471254ad54aa580416790a",
+                "result": "pass",
+                "checkedAt": "2026-10-04T10:42:14.142Z",
+                "summary": "Backend PR63 CI passed; Pages build1259227598 built; seven hosted files match 8efc588; hosted backend passed projection/picking, eight captures, exact context restoration and 20 disposal cycles."
+              },
+              {
+                "stage": "test",
+                "locator": "front-of-house/lot-assets.json",
+                "result": "pass",
+                "checkedAt": "2026-10-04T10:42:14.147Z",
+                "summary": "lot-sample-2 manifest records nine source-owned samples, measured bounds and source digests. 231 repository tests and backend/game smoke pass: authored heights/eyes, scene cues, constant instanced draw calls, reduced motion and full settlement parity."
               }
             ],
             "remaining": [
-              "Perimeter, incident and animation scene parity",
-              "Calibrated FOH/Stage views and realistic sample",
-              "Performance, physical-device and human visual acceptance"
+              "Close-up realistic art refinement and walking/queue poses",
+              "Statistical performance and available-host measurements",
+              "Physical calibration, device and human visual acceptance"
             ],
-            "backendPR": "https://github.com/DaveHomeAssist/mixmash/pull/63"
+            "backendPR": "https://github.com/DaveHomeAssist/mixmash/pull/63",
+            "integrationPR": "https://github.com/DaveHomeAssist/mixmash/pull/64"
           }
         ]
       },
@@ -496,8 +511,16 @@
           "FOH-V01"
         ],
         "doneWhen": "Deterministic CI scenes and documented measured limits; available hardware measurements and unavailable device evidence reported separately.",
-        "status": "pending",
-        "evidence": []
+        "status": "in_progress",
+        "evidence": [
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-lot-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T10:42:14.147Z",
+            "summary": "Instanced representative population keeps draw calls unchanged from 10 to 180 visible representatives; this structural test does not certify frame-time targets."
+          }
+        ]
       },
       {
         "id": "FOH-O01",

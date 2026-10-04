@@ -1,0 +1,276 @@
+{
+  "revision": "lot-sample-2",
+  "provenance": {
+    "author": "Codex for Front of House",
+    "source": "Procedural geometry and materials in lot-models.mjs",
+    "rights": "Newly authored project content; Three.js MIT license retained separately",
+    "units": "logical tiles using the provisional authoring reference",
+    "pivot": "rotated footprint center at ground",
+    "forward": "+Z before rotation",
+    "acceptance": "authored sample candidate; final art and physical review pending",
+    "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+    "reference": {
+      "metresPerTile": 2,
+      "status": "provisional authoring convention; physical calibration pending",
+      "guestHeightMetres": 1.8,
+      "operatorEyeMetres": 1.66,
+      "stageDeckMetres": 1.1,
+      "barCounterMetres": 1.1,
+      "restroomHeightMetres": 2.3
+    }
+  },
+  "authoringReference": {
+    "metresPerTile": 2,
+    "status": "provisional authoring convention; physical calibration pending",
+    "guestHeightMetres": 1.8,
+    "operatorEyeMetres": 1.66,
+    "stageDeckMetres": 1.1,
+    "barCounterMetres": 1.1,
+    "restroomHeightMetres": 2.3
+  },
+  "sources": {
+    "lot-models.mjs": "5c7377ac82bf53af22ef949f0abee7f7a2005bb9e2f9be447be1c5d3e6034486",
+    "lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
+    "lot-presentation.mjs": "05d6002e46385098de9e77ac75b2199e906986712f61761ae56f45d913b395da",
+    "lot-renderer.mjs": "1e8510347f7f5a43f9a63f9dd195e67eea5e781f83ed9dfa89359a9168d1db61"
+  },
+  "assets": [
+    {
+      "id": "stage",
+      "logicalFootprint": [
+        6,
+        3
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          6,
+          1.0775,
+          3
+        ]
+      },
+      "meshCount": 24,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "63d90637943a3162a57a8e1586ea25ebe1b0547e13ad2c1c982ab6651805ac3a"
+    },
+    {
+      "id": "pa-s",
+      "logicalFootprint": [
+        1,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0.2,
+          0,
+          0.22
+        ],
+        "max": [
+          0.8,
+          0.67,
+          0.7775
+        ]
+      },
+      "meshCount": 11,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "182b486efc4132c9904adc5f6da4457c97e74a3d607ccb41862f61a5c2e9a180"
+    },
+    {
+      "id": "pa-m",
+      "logicalFootprint": [
+        1,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0.2,
+          0,
+          0.22
+        ],
+        "max": [
+          0.8,
+          1.285,
+          0.7775
+        ]
+      },
+      "meshCount": 35,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "6cf907882bae12f4421d17d43c901a8d49e3ca89e2bbaf42418b8f76b2765966"
+    },
+    {
+      "id": "lights",
+      "logicalFootprint": [
+        1,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0.075,
+          0,
+          0.15
+        ],
+        "max": [
+          0.925,
+          2.83,
+          0.85
+        ]
+      },
+      "meshCount": 6,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "49913e405605ba7303082b7a61201f82f08c0863f6c5602b053ada983bf443bc"
+    },
+    {
+      "id": "bar",
+      "logicalFootprint": [
+        2,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0,
+          0,
+          0.15
+        ],
+        "max": [
+          2,
+          0.64,
+          0.8525
+        ]
+      },
+      "meshCount": 8,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "9df3b6da037c0472d8592342cf0bd6ff668238f989f04514ea94a30be094fbb8"
+    },
+    {
+      "id": "restroom",
+      "logicalFootprint": [
+        1,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0.18,
+          0,
+          0.16
+        ],
+        "max": [
+          0.82,
+          1.15,
+          0.867
+        ]
+      },
+      "meshCount": 14,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "7d83ce07e7053f90dad75f1087da1a2de470735eccd3a1ad4d8097481e760053"
+    },
+    {
+      "id": "gate",
+      "logicalFootprint": [
+        1,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0,
+          0,
+          0.4725
+        ],
+        "max": [
+          1,
+          1.165,
+          0.5425
+        ]
+      },
+      "meshCount": 4,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "22f0cac792b757c6bb7d42bdb2d07889c8086c29873fde311084c34271f920d1"
+    },
+    {
+      "id": "exit",
+      "logicalFootprint": [
+        1,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0,
+          0,
+          0.4725
+        ],
+        "max": [
+          1,
+          1.165,
+          0.5425
+        ]
+      },
+      "meshCount": 4,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "b580a0f5ec8ae3efd019a57fcdf57eca6e13b0019be974fdc21368aec4267b35"
+    },
+    {
+      "id": "guest",
+      "logicalFootprint": null,
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          -0.18071,
+          0,
+          -0.0644
+        ],
+        "max": [
+          0.18071,
+          0.9,
+          0.09
+        ]
+      },
+      "meshCount": 16,
+      "pickProxy": "not selectable; representative decoration",
+      "materialRevision": "lot-sample-2",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "0736b7014ecb1c9cce72a2f50ac0012d7e0dc38307dc5da5e4b17126448a8fc9"
+    }
+  ],
+  "acceptance": {
+    "technical": "See automated camera, footprint, scene and lifecycle tests",
+    "visual": "Human review pending",
+    "physicalCalibration": "Not performed",
+    "physicalDevices": "Not accepted by this manifest"
+  }
+}

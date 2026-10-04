@@ -46,7 +46,7 @@ Daylight uses a neutral key/sky fill, consistent shadows and exposure; show ligh
 
 **Dave's visual acceptance:** an explicit dated answer tied to the exact sample revision and asset digests, covering all five subjects, all eight view/light combinations, management/close-scale consistency, operator-eye FOH, a short orbit/animation review and reduced motion. Record requested changes and rejected views; silence, archive screenshots, test passes and this specification are not acceptance. Include author/tool/source/license and modification history for every mesh/material/texture/animation, retained license notices and permission for distribution. Unknown rights block that asset's inclusion. No purchases or commissions are authorized by this document.
 
-**Device acceptance:** separately run the declared supported-device matrix and accepted targets after the realistic sample exists. Neither placeholder speed nor the software-rendered preflight diagnostics can approve final-art performance. Current status: sample not produced; physical calibration, rights, supported roster/statistical thresholds and Dave's visual acceptance pending.
+**Device acceptance:** separately run the declared supported-device matrix and accepted targets after the realistic sample exists. Neither placeholder speed nor the software-rendered preflight diagnostics can approve final-art performance. Current status: the source-owned [lot-sample-2 candidate](LOT_SAMPLE.md) is authored and technically tested, with bounds/provenance/digests in its manifest. It remains simplified at close range. Physical calibration, supported-device/statistical acceptance and Dave's visual acceptance remain pending; no archive assets are reused.
 
 ## 1. Visual pillars
 

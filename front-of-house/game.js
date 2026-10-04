@@ -1229,7 +1229,7 @@ function openCamera(opener) {
     <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}</div>
     <div class="lot-camera-controls" role="group" aria-label="Orbit camera"><button type="button" data-camera-orbit="left">Orbit left</button><button type="button" data-camera-orbit="right">Orbit right</button><button type="button" data-camera-orbit="up">Look down</button><button type="button" data-camera-orbit="down">Look forward</button></div>
     <button type="button" data-act="camera-mode" aria-pressed="${!!ui.cameraMode}">Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}</button>
-    <p class="hint">Select: tap to inspect, drag to orbit. Two fingers pan and pinch. FOH and Stage are provisional inspection views.</p>`, el.menuBtn);
+    <p class="hint">Select: tap to inspect, drag to orbit. Two fingers pan and pinch. FOH and Stage use provisional authored eye heights.</p>`, el.menuBtn);
   updateRendererStatus(board.status());
 }
 

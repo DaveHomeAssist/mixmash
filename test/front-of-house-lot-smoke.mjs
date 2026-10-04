@@ -47,6 +47,35 @@ try {
     });
   });
   for (const [expected, actual] of picked) assert.equal(actual, expected);
+  const cues = await page.evaluate(() => {
+    const initial = backend.info().presentation;
+    backend.draw({ ...input, objects: input.objects.filter(o => o.type !== 'fence') });
+    const noFence = backend.info().presentation.fencePanels;
+    const incidents = {};
+    for (const id of ['pa-dropout', 'gate-jam', 'curfew', 'rain']) {
+      backend.draw({ ...input, incident: id }); incidents[id] = backend.info().presentation;
+    }
+    backend.draw({ ...input, crowd: 10 }); const small = backend.info();
+    backend.draw({ ...input, crowd: 200 }); const large = backend.info();
+    backend.draw(input);
+    return { initial, noFence, incidents, smallCalls: small.calls, largeCalls: large.calls, represented: large.representedAttendance, drawn: large.representativeGuests };
+  });
+  assert.ok(cues.initial.fencePanels > 0 && cues.initial.gateOpenings > 0);
+  assert.equal(cues.noFence, 0, 'no rented fence means no rendered fence');
+  assert.equal(cues.incidents['pa-dropout'].incident.type, 'pa-m');
+  assert.equal(cues.incidents['gate-jam'].incident.type, 'gate');
+  assert.equal(cues.incidents.curfew.incident.type, 'stage');
+  assert.equal(cues.incidents.rain.rain, true); assert.equal(cues.incidents.rain.incident, null);
+  assert.equal(cues.drawn, 180); assert.equal(cues.represented, 200);
+  assert.equal(cues.largeCalls, cues.smallCalls, 'instancing keeps draw calls independent of representative count');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.waitForFunction(() => backend.info().motion);
+  const moving = await page.evaluate(() => { backend.draw({ ...input, t: 1 }); const a = backend.info().presentation.offsets; backend.draw({ ...input, t: 2 }); return [a, backend.info().presentation.offsets]; });
+  assert.notDeepEqual(moving[0], moving[1]);
+  await page.emulateMedia({ reducedMotion: 'reduce' }); await page.waitForFunction(() => !backend.info().motion);
+  const still = await page.evaluate(() => { backend.draw({ ...input, t: 3, incident: 'pa-dropout' }); const a = backend.info().presentation; backend.draw({ ...input, t: 9, incident: 'pa-dropout' }); return [a, backend.info().presentation]; });
+  assert.deepEqual(still[0], still[1], 'live reduced motion preserves all cues with a static pose');
+  await page.evaluate(() => backend.draw(input));
   for (const preset of ['wide', 'foh', 'stage', 'plan']) for (const night of [false, true]) {
     await page.evaluate(({ preset, night }) => { backend.preset(preset); backend.draw({ ...input, night }); }, { preset, night });
     await page.screenshot({ path: join(output, `${preset}-${night ? 'show' : 'day'}.png`) });
@@ -77,8 +106,8 @@ try {
     return records;
   });
   for (const cycle of cycles) {
-    assert.deepEqual(cycle.warm, cycles[0].warm); assert.equal(cycle.disposed, 'disposed'); assert.deepEqual(cycle.modelResources, { geometries: 0, materials: 0 });
+    assert.deepEqual(cycle.warm, cycles[0].warm); assert.equal(cycle.disposed, 'disposed'); assert.deepEqual(cycle.modelResources, { geometries: 0, materials: 0, textures: 0 });
   }
   assert.deepEqual(errors, []);
-  console.log(`Lot backend smoke passed: camera and picks, immutable scene, eight review captures, phone fit, real context loss/restore and 20 disposal cycles. Screenshots: ${output}`);
+  console.log(`Lot backend smoke passed: camera and picks, scene cues, instanced counts, live reduced motion, immutable scene, eight review captures, phone fit, real context loss/restore and 20 disposal cycles. Screenshots: ${output}`);
 } finally { await browser.close(); await server.close(); }
