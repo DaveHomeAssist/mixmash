@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Garden OS: Story Mode — MixMash Studio</title>
 <meta name="description" content="A 3D open-world garden adventure by MixMash Studio. Plays free in your browser.">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -25,16 +25,18 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
 #garden-stage:fullscreen { width: 100vw; height: 100vh; height: 100dvh; }
 .garden-bar {
   flex: 0 0 auto;
-  height: 48px;
+  /* viewport-fit=cover: keep the strip clear of the notch and the side insets
+     (zero until the page opts in, and on devices without them). */
+  --inset-top: var(--safe-top, env(safe-area-inset-top, 0px));
+  height: calc(48px + var(--inset-top));
   display: flex; align-items: center;
-  padding: 0 8px;
+  padding: var(--inset-top) max(8px, var(--safe-right, env(safe-area-inset-right, 0px))) 0 max(8px, var(--safe-left, env(safe-area-inset-left, 0px)));
   background: #06060E;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-/* nav.js floats its bar over the page and idle-dims it; here it lives in the
-   strip, so it stays in normal flow at full opacity. */
-.garden-bar .mixnav,
-.garden-bar .mixnav.is-idle { position: static; opacity: 1; }
+/* nav.js floats its bar over the page; here it lives in the strip, so it stays
+   in normal flow and open (the script tag sets data-nav-collapse="off"). */
+.garden-bar .mixnav { position: static; }
 #game-frame {
   flex: 1 1 auto;
   width: 100%; min-height: 0;
@@ -44,7 +46,7 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
 <script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
-<script src="../src/kit/nav.js"></script>
+<script src="../src/kit/nav.js" data-nav-collapse="off"></script>
 <div id="garden-stage">
 <div class="garden-bar"></div>
 <iframe id="game-frame"

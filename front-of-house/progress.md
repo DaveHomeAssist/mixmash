@@ -4,7 +4,7 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 - Every key binding now lives in `controls.mjs`. Both key handlers in `game.js` read it, the menu's key list is one row per binding, and `test-engine.mjs` fails when two bindings could fire on one key press, when a binding takes a key the browser owns, or when the menu list and the table differ. No existing key changed what it does.
 - Build has Undo and Redo: tiles after Rotate, Ctrl+Z or ⌘Z, and Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z. Each place, remove, Suggested layout or Clear is one step, a bulldozer drag is one step, and undo applies the earlier copy through the engine's `setLayout`. The list is kept in memory only (50 steps) and clears when the phase changes or a game is started or loaded; saves and balance are unchanged.
-- The tool grid is six columns so the new tiles fit without a new row; the corner HUD measured 1.40% of the lot at 1024 × 700 against the 2% limit. Service worker v23.
+- The tool grid is six columns so the new tiles fit without a new row; the corner HUD measured 1.40% of the lot at 1024 × 700 against the 2% limit. Service worker v26.
 
 ## 2026-10-02: Split view and prop occlusion
 
