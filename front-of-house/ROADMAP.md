@@ -6,7 +6,7 @@ The phases from the first document to the last career tier. Each phase ships as 
 
 ## Current planning choices
 
-The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The recommended order is a proposal, not a replacement for accepted milestones.
+The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The expansion sequence is accepted in [CT-DEC-14](docs/DECISIONS.md#ct-dec-14-expansion-sequence): 3D Lot prototype first, then live operations. D2–D11 and detailed feature scope remain open; earlier shipped milestones and release gates retain their status.
 
 ## Shipped
 

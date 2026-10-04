@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Knowledge reconciliation and planning delivery
+
+- [PR #53](https://github.com/DaveHomeAssist/mixmash/pull/53) delivered the decision packet, eleven proposed feature briefs, prototype source review and next-steps projection. CT-DEC-14 records Dave's accepted 3D Lot first, then live operations sequence; D2–D11 remain open.
+- Reconciled the document index, roadmap and feature plan with that accepted sequence. Preserved the original build order as historical, distinguished shipped phone layouts from physical-device acceptance, and linked the art specification to the pending replacement decisions.
+- Source review uses production revision `bcc773b`; it does not treat prototype screenshots, archive code or older session claims as proof of deployed 3D. No gameplay, saves, art, decision statuses or launch gates changed. Delivery checks are recorded on the reconciliation PR.
+
 ## 2026-10-03: One key table, and undo in Build
 
 - Every key binding now lives in `controls.mjs`. Both key handlers in `game.js` read it, the menu's key list is one row per binding, and `test-engine.mjs` fails when two bindings could fire on one key press, when a binding takes a key the browser owns, or when the menu list and the table differ. No existing key changed what it does.

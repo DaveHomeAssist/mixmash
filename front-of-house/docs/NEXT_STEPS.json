@@ -186,7 +186,8 @@
     "Eleven briefs are proposed scope, not implementation authorization. Update decisions only from Dave’s actual answers.",
     "The supplied 3D archive has been statically reviewed: OrbitControls, venue builders, instanced crowds and separate service snapshots exist. Runtime, rights and engine parity remain unverified.",
     "Refresh this project only; preserve unrelated project records, stable IDs and audit history.",
-    "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied."
+    "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied.",
+    "2026-10-04 knowledge reconciliation: README is the topic index; CT-DEC-14 owns accepted sequence. FUTURE build order is historical; prototype and source exports are supporting material. Notion and additional chats are not synchronized by this repository review."
   ],
   "links": [
     {
@@ -217,7 +218,9 @@
     "humanAcceptance": "Pending",
     "planningPR": "https://github.com/DaveHomeAssist/mixmash/pull/53",
     "prototypeArchiveSha256": "e4e3e17d05ca343191d799a02d82f84a305a7ff8eb1b74405b0a96f6194c49a8",
-    "prototypeReview": "Static source inspection only; see PROTOTYPE_REVIEW.md"
+    "prototypeReview": "Static source inspection only; see PROTOTYPE_REVIEW.md",
+    "knowledgeReviewedRevision": "bcc773b07963ab17afebdd9678615a8c1155c43c",
+    "knowledgeReviewedOn": "2026-10-04"
   },
   "decisionState": {
     "D1": {
