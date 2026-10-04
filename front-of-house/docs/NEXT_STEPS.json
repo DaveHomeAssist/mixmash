@@ -652,8 +652,26 @@
           {
             "id": "FOH-O02c",
             "scope": "Finite food demand, budget, stock and vendor terms",
-            "status": "pending",
-            "evidence": []
+            "status": "in-progress",
+            "evidence": [
+              "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet."
+            ],
+            "slices": [
+              {
+                "id": "FOH-O02c1",
+                "scope": "Finite food replay and vendor accounting core",
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Seven tests cover budgets, guest identity, demand, stock, access, expiry, closing, replay and useful quiet/surge choices."
+                ]
+              },
+              {
+                "id": "FOH-O02c2",
+                "scope": "Placed vendor, locked player settings, saved terms, projection and career ledgers",
+                "status": "pending",
+                "evidence": []
+              }
+            ]
           },
           {
             "id": "FOH-O02d",

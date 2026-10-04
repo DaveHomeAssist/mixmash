@@ -341,3 +341,10 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Final local evidence: two full 3D departure journeys, warmed offline reload at departure minute 2, and the supplied action client also pass; screenshots inspected. The first offline attempt received connection refused from the stopped preview server; a new verified listener and rerun pass. Preserved the concurrent PR67 performance record when refreshing the scoped project projection.
 
 - CI37200726884 failed in the legacy wind-down signing test: the natural clock reached the incident before the unconditional Skip click. The test now accepts either route to that same incident while retaining signing assertions; all 28 legacy checks pass locally. Expanded departure controls coverage also passes in four Chromium/WebKit and two full 3D journeys, exercising actual 1× Play/Pause and resumed 12× completion. Required CI on the corrected head remains pending.
+
+## 2026-10-04: FOH-O02c1 finite concessions core
+
+- Added engine-side FIFO identity reconstruction, discretionary budgets shared with bar purchases, one-way bar-abandonment alternatives, price acceptance, finite vendor stock, staffing throughput, access refusal, queue expiry and closing. Standard/premium contracts separate gross sales, promoter share and vendor inventory/wage profit. No career or UI integration is enabled by this core.
+- Seven targeted tests pass: every-minute conservation, exact source identity, quiet/surge policy differences, stockout/access/patience/closing, checkpoint/batching/transfer replay, unadmitted guests, malformed input and the6000-guest bound. Full repository and delivery verification follow.
+
+- All 272 repository tests and build pass; generated game documentation remains unchanged. Quiet24-guest and surge960-guest fixtures favor different house-income choices. These core fixtures do not constitute playable or final balance acceptance.
