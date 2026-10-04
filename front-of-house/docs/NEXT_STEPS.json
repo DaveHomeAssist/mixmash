@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Festival stage accounting core locally verified; seating PR97 in CI",
+  "head": "a11a11d seating and e37ab28 core delivered; Festival controls in verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Club ticketing and held cancellation are hosted-verified. Seating Linux layout correction passes local browser/build checks and awaits fresh CI. Festival stage accounting core passes370 repository tests/build/docs; career adapter and player receipts remain pending. Room scenes, navigation and release proof continue.",
+  "statusReason": "Seating and the Festival pure core are merged and hosted-verified. Playable Festival bill/receipt controls pass final journeys, visible cash assertions, six seating regressions,382 repository tests/build/docs and offline signing. Release checks remain; a seating headline estimate correction is included. Room scenes, remaining venue rules, navigation and release gates continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -23,11 +23,13 @@
     "PR85: sanitation and playable three-project development delivered with14 hosted player journeys, source parity and offline recovery proof.",
     "PR90: playable Equipment delivered at4600649 with seven hosted journeys,22 matching runtime files and offline inventory/journal/sale continuity.",
     "PR94: Club ticketing controls delivered at368edba,23 matching hosted files, six player journeys and offline signing/journal proof.",
-    "PR95: held-night cancellation delivered at633f60a with24 matching hosted files, six player journeys plus full-hold/debt branches and offline cash/journal proof."
+    "PR95: held-night cancellation delivered at633f60a with24 matching hosted files, six player journeys plus full-hold/debt branches and offline cash/journal proof.",
+    "PR97: independent seating merged a11a11d,25 matching hosted files, six seating and six held-run journeys plus full-hold/debt branches and offline cancellation/journal proof. Promote headline estimate correction follows with Festival controls.",
+    "PR98: pure Festival accounting merged e37ab28; hosted module/data hashes and hand-calculated stage/site receipt pass."
   ],
   "nextStep": {
-    "title": "Deliver seating and integrate Festival stage accounting",
-    "why": "Single-site admissions and exact stage/shared cost accounting now have a tested pure authority; connect it to booking, opening cash, signing and player receipts while preserving legacy saves.",
+    "title": "Deliver Festival controls, then complete venue rules and scenes",
+    "why": "Separate stage accounting is now visible through bill, forecast and receipt pages. Complete its release proof, then continue the remaining sponsor/headliner/venue constraints and source-owned scene work.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -1118,7 +1120,12 @@
               "Seating final local proof: six Chromium/WebKit journeys exercise both price sliders independently, public forecasts/presales, frozen receipts, both deals, held cancellation and reload; both themes/five viewport sizes. Six held-run regression journeys plus full-hold/debt branches and28 legacy checks pass.359 tests/build/docs, action runner and offline zone receipt/cancellation/journal parity pass. Required CI/Pages/hosted seating proof remains pending.",
               "Held cancellation PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z.24 hosted runtime files match. Six hosted Chromium/WebKit journeys plus full-hold/controlled-debt branches, compact windows, signed history and reload pass. Hosted offline cancellation records two unplayed nights,4000 penalty and1018940 journal cash. Seating PR97 remains in CI; separate stage accounts still pending.",
               "PR97 CI37211585196 found a three-pixel Amphitheater Promote overflow at1024x700 on Linux. Shortened the repeated zone explanation; detailed rules remain accessible. All28 legacy checks, six Chromium/WebKit seating journeys and build/docs pass after correction; fresh CI and hosted proof remain pending.",
-              "Festival version1 pure accounting implemented: one site admission/ticket per guest, capacity-bounded stage allocation, separate PA/lights/crew budgets, shared site cost allocation, independent artist ticket bases and exact opening/signing/site-net bridge. Eleven tests include hand receipts, rounding, malformed sources and hundreds of conservation cases; all370 repository tests/build/docs pass. Core only: career adapter/UI, CI and hosted proof remain pending."
+              "Festival version1 pure accounting implemented: one site admission/ticket per guest, capacity-bounded stage allocation, separate PA/lights/crew budgets, shared site cost allocation, independent artist ticket bases and exact opening/signing/site-net bridge. Eleven tests include hand receipts, rounding, malformed sources and hundreds of conservation cases; all370 repository tests/build/docs pass. Core only: career adapter/UI, CI and hosted proof remain pending.",
+              "Festival optional career adapter implemented: both production budgets paid at opening, incident response once immediately, correct signing/journal bridge, owned PA operation, each artist relationship, total artist history, frozen price/ads and public range forecasts. Nine added adapter tests pass; all379 repository tests/build/docs initially pass. Two legal player deal types and a labeled imported eligible door contract are covered. Final browser regressions, CI, hosted proof and player controls remain pending.",
+              "Festival adapter final local proof:379 repository tests/build/docs,28 legacy browser checks, Chromium/WebKit browser-engine guarantee/sponsor runs with paid incident, exact cash/journal and signed replay. Chromium warmed-shell/module offline repeats the same receipts. These are engine acceptance checks; full player controls and CI/hosted delivery remain pending.",
+              "PR97 seating passed CI37211941185, merged a11a11d and Pages built15:30:54Z.25 hosted runtime files match; six seating plus six held-run journeys/full-hold/debt branches and offline50000gross/6000cancellation/1025340journalcash pass. Actual phone receipts inspected. Promote headline estimate correction is queued with Festival controls.",
+              "PR98 core passed CI37212225285, merged e37ab28 and Pages built15:32:57Z. Hosted core/data bytes match and browser hand fixture reconciles100admissions,60/40stages,5653artistpay,1825opening,4447signing,2622net.",
+              "Playable Festival bill/receipt controls implemented: eligible side selection, new-booking disclosure, six contained pages, visible stage/site/artist/cash reconciliation, exact next opening minimum and public presales. Initial six Chromium/WebKit journeys plus both-theme/five-size checks,28legacy checks,382tests/build/docs, real offline signing and supplied action runner pass. Final visible money and six seating regressions also pass. CI and hosted acceptance remain pending."
             ]
           },
           {

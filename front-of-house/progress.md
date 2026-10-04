@@ -627,6 +627,23 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 - Eleven new tests cover both main deals, sponsorship, admission/presale/capacity conservation, zero/free shows, production, odd/large allocations and strict input recovery. All370 repository tests and build/generated docs pass.
 - This is a core implementation only; no existing game math or saved career is switched yet. Career integration, player receipts, required CI and hosted proof remain separate.
 
+## 2026-10-04: Festival career cash and save integration
+
+- Connected optional version1 stage terms to Festival opening, preview, settlement, signing and source replay. Both production budgets enter opening cash; incident response remains an immediate payment and is not deducted again at signing. Owned-PA operation substitutes for rental, and invalid provisional hardware keeps an explicit before-doors refusal.
+- Frozen ticket price/ad spend and both booked act terms reproduce signed receipts. Single-site admissions, total artist history and each act's relationship reconcile once. Public ranges use published draw corners. Distinct acts and side-door eligibility are enforced; unmarked careers keep their earlier math.
+- All379 repository tests, build/generated docs and28 legacy browser checks pass. Chromium/WebKit browser-engine runs reconcile both legal main deals with paid incidents and signed reload; Chromium also repeats with the shell/module cache warmed, offline. Current headliners offer guarantee/sponsor; the generic door path uses a labeled imported eligible-act fixture. Required CI and hosted proof remain pending. Player booking and receipt controls are the next slice, so this is not complete Festival gameplay.
+
+## 2026-10-04: Seating and Festival core hosted acceptance
+
+- Seating PR97 passed corrected CI37211941185 and merged a11a11d at15:30:29Z. Pages built15:30:54Z;25 deployed runtime files match. Six hosted seating journeys and six held-run journeys plus full-hold/debt branches pass. Hosted warmed-cache offline seating/cancellation records gross50000,400 seated/300 lawn,6000 cancellation and1025340 journal cash. Actual phone receipts inspected. A later review found the Promote headline ticket estimate still used lawn-only pricing; its correction and visible regression assertion are included with Festival controls below, not claimed fixed in PR97.
+- Festival core PR98 passed CI37212225285 and merged e37ab28 at15:32:32Z. Pages built15:32:57Z. Hosted core/data bytes match; a browser hand fixture reconciles100 admissions,60/40 stages,5653 artist pay,1825 opening,4447 signing and2622 net. This proves the pure module, not player integration. Adapter PR99 remains pending its own release gates.
+
+## 2026-10-04: Playable Festival bill and receipts
+
+- Added free, persistent side-act selection before booking; new Festival player bookings disclose one site ticket and both stage budgets, then use the conserved accounting policy. Six contained pages expose bill, stage forecasts/receipts, site totals, exact cash movements and rules. Settlement now includes both production budgets and artist payments. The next Festival opening quote includes production and sponsorship.
+- Corrected the shared Promote ticket estimate to use seat/lawn gross instead of pricing every guest at the lawn rate. Festival presales use the same published bounds as Stage accounts. Added visible cash-bridge assertions and a seating estimate regression.
+- Final six Chromium/WebKit journeys and both-theme/five-size checks pass, including side selection/reload, both legal main deals, signing and journal.28 legacy browser checks,382 repository tests/build and generated docs pass; visible cash-bridge assertions and all six seating regressions pass. Real offline player continuation and signed receipt/journal pass. Supplied action client reaches all six pages with expected cash and no errors; actual full-page and canvas captures inspected. Source/CI/Pages/hosted controls acceptance remains pending.
+
 
 ## 2026-10-04 — Split Acre scene implementation
 

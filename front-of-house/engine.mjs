@@ -10,6 +10,7 @@ import * as Services from './services.mjs';
 import * as Research from './research.mjs';
 import * as Ownership from './ownership.mjs';
 import * as Journal from './career-ledger.mjs';
+import { festivalTerms, festivalSales, festivalSettlement } from './stage-accounts.mjs';
 import { seatingTerms, seatingContract, seatingSales, seatingSatisfaction } from './seating.mjs';
 import { heldRunTerms, heldRunQuote } from './held-run.mjs';
 import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
@@ -135,6 +136,12 @@ export function offersFor(state) {
   return offersForSeed(state.seed, !state.history.length && spec.id === 'lot', spec.roster, spec.defaultArtist);
 }
 
+export function stageOpenersFor(state) {
+  if (state.venue.id !== 'festival') return [];
+  return Object.keys(D.ARTISTS).filter(id => !D.FEST_ROSTER.includes(id) && termsFor(id, state.reputation.artists[id]).doorOk)
+    .sort((a, b) => D.ARTISTS[b].drawMax - D.ARTISTS[a].drawMax || a.localeCompare(b));
+}
+
 function offersForSeed(seed, firstShow, roster = D.ROSTER, defaultArtist = D.DEFAULT_ARTIST) {
   const rng = mulberry32((seed ^ 0x5bd1e995) >>> 0);
   const pool = roster.slice();
@@ -170,7 +177,9 @@ export function nextShowCost(state) {
   const spec = venueSpec(state.venue);
   return Math.min(...offersForSeed(nextSeed(state.seed), false, spec.roster, spec.defaultArtist).map((id) => {
     const terms = termsFor(id, state.reputation.artists[id]);
-    return showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
+    const ordinary = showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
+    return Math.min(ordinary, spec.sponsor ? showCost(spec, 'sponsor', terms.ask) : ordinary)
+      + (spec.id === 'festival' ? 4 * D.STAFF_RATE + D.PA_RENTAL.M + D.LIGHTS_RENTAL : 0);
   }));
 }
 
@@ -532,14 +541,15 @@ export function evaluateShow(inputs) {
     fairPrice: artist.fairPrice, presaleShare: baseline.share, walkupMult: response?.walkupMult ?? 1,
   }) : null;
   if (zoneSales) { dem = zoneSales.demand; presale = zoneSales.presale; walkup = zoneSales.walkupDemand; }
-  const walkupAfterIncident = zoneSales ? zoneSales.walkup : Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
+  if (inputs.stageSales) { dem = inputs.stageSales.demand; presale = inputs.stageSales.presale; walkup = dem - presale; }
+  const walkupAfterIncident = inputs.stageSales ? inputs.stageSales.walkup : zoneSales ? zoneSales.walkup : Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
   const plannedAttendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
   const doorRush = doorRushPilot(v, plannedAttendance, presale, inputs.pilotCrew);
   const live = inputs.services || null;
   const attendance = live ? live.admitted : doorRush ? doorRush.admitted : plannedAttendance;
   const seatPrice = isInt(inputs.seatPrice) ? inputs.seatPrice : inputs.price;
   const seated = zoneSales ? zoneSales.seats.attendance : v.seats ? Math.min(v.seats, attendance) : 0;
-  const ticketGross = live ? live.ticketCash : zoneSales ? zoneSales.ticketGross : seated * seatPrice + (attendance - seated) * inputs.price;
+  const ticketGross = live ? live.ticketCash : inputs.stageSales ? inputs.stageSales.ticketGross : zoneSales ? zoneSales.ticketGross : seated * seatPrice + (attendance - seated) * inputs.price;
   const per = (supply) => (attendance > 0 ? Math.min(1, supply / attendance) : 1);
   const sanitation = live?.sanitation;
   const restroomScore = sanitation ? (sanitation.totals.requested ? sanitation.totals.served / sanitation.totals.requested : 1) : per(v.restrooms * D.RESTROOM_RATIO);
@@ -617,8 +627,8 @@ function showInputs(state, venueStats, withIncident) {
     ...(seating ? { seating } : {}),
     ...(state.booking.research ? { research: researchEffectsFor(state) } : {}),
     deal: state.booking.deal,
-    price: seating?.lawnPrice ?? state.promotion.price,
-    ads: state.promotion.ads,
+    price: state.show?.stages?.price ?? seating?.lawnPrice ?? state.promotion.price,
+    ads: state.show?.stages?.ads ?? state.promotion.ads,
     // The show was sold with the reputation the venue had when the doors opened;
     // settlement changes the reputation, so a replayed sheet must not use the new one.
     venueRep: state.show && isInt(state.show.venueRep) ? state.show.venueRep : state.reputation.venue,
@@ -638,11 +648,13 @@ function showInputs(state, venueStats, withIncident) {
 
 // R-12: money due before the show, for the current choices.
 export function upfrontFor(state) {
-  return evaluateShow(showInputs(state, evaluateVenue(state.venue), false)).upfront;
+  return stageShowFor(state, false).upfront;
 }
 
 // The Promote screen's attendance range. The draw itself stays hidden.
 export function forecast(state) {
+  const stages = stageForecastFor(state);
+  if (stages) return { ...stages.attendance, capacity: stages.capacity };
   const seating = seatingForecastFor(state);
   if (seating) return { low: seating.low.attendance, high: seating.high.attendance, capacity: seating.low.capacity };
   const artist = artistFor(state.booking.artistId);
@@ -659,13 +671,14 @@ export function forecast(state) {
 // Show night before the incident is answered: the crowd as it would be with nothing
 // going wrong. Only for show-night playback; the Promote screen uses forecast().
 export function showPreview(state) {
-  return evaluateShow(showInputs(state, evaluateVenue(state.venue), false));
+  return stageShowFor(state, false);
 }
 
 // The settlement sheet for a show whose incident has been answered.
 export function settlementFor(state) {
   if (!state.show || !state.show.responseId || (state.show.services && !liveServicesFor(state).closed)) return null;
-  const main = evaluateShow(showInputs(state, evaluateVenue(state.venue), true));
+  const main = stageShowFor(state, true);
+  if (main.stageAccounts) return main;
   const second = secondStage(state);
   if (!second) return main;
   return {
@@ -674,6 +687,79 @@ export function settlementFor(state) {
     net: main.net + second.cash,
     secondCash: second.cash,
   };
+}
+
+export function stagePlanFor(state) {
+  if (state.venue.id !== 'festival') return null;
+  return state.show ? state.show.stages || null : state.booking.stages || null;
+}
+
+function stageBookingTerms(raw, state) {
+  const terms = festivalTerms(raw), b = state.booking;
+  if (state.venue.id !== 'festival' || !D.ARTISTS[b.secondId] || b.secondId === b.artistId || !b.secondTerms || !b.terms) throw new TypeError('Invalid Festival bill');
+  return terms;
+}
+
+function stageContract(raw, state) {
+  const terms = stageBookingTerms(raw, state), maxPrice = venueSpec(state.venue).priceMax;
+  if (!isInt(raw.price) || raw.price < D.PRICE_MIN || raw.price > maxPrice || !isObj(raw.ads)) throw new TypeError('Invalid Festival promotion');
+  const ads = {};
+  for (const channel of D.AD_CHANNELS) {
+    const value = raw.ads[channel];
+    if (!isInt(value) || value < 0 || value > D.AD_MAX_PER_CHANNEL) throw new TypeError('Invalid Festival ads');
+    ads[channel] = value;
+  }
+  return { ...terms, price: raw.price, ads };
+}
+
+function stageAudience(state, inputs, mainDraw, secondDraw) {
+  const main = artistFor(state.booking.artistId), v = inputs.venue;
+  const dem = demand({ draw: mainDraw * (state.booking.terms?.drawMult || 1), price: inputs.price,
+    fairPrice: main.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
+  const response = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
+  return { capacity: v.capacity, secondCapacity: venueSpec(state.venue).secondCap,
+    demand: Math.round(dem), mainDraw: Math.round(mainDraw * state.booking.terms.drawMult),
+    secondDraw: Math.round(secondDraw * state.booking.secondTerms.drawMult), price: inputs.price,
+    presaleShare: presaleSplit(dem, buzz(inputs.ads), v.capacity).share, walkupMult: response?.walkupMult ?? 1 };
+}
+
+function stageShowFor(state, withIncident) {
+  const inputs = showInputs(state, evaluateVenue(state.venue), withIncident), terms = stagePlanFor(state);
+  if (!terms) return evaluateShow(inputs);
+  const secondRoll = rollShow((state.seed ^ 0x9e3779b9) >>> 0, state.booking.secondId);
+  const audience = stageAudience(state, inputs, inputs.draw, secondRoll.draw);
+  const main = evaluateShow({ ...inputs, stageSales: festivalSales(terms, audience) });
+  const c = main.costs, v = inputs.venue;
+  const accounts = festivalSettlement(terms, {
+    audience,
+    rig: { paTier: v.paTier || null, housePa: v.housePa, lights: !!v.lights,
+      ...(inputs.equipment ? { equipmentOperation: inputs.equipment.cost } : {}) },
+    siteCosts: { rental: c.lot, permit: c.permit, fence: c.fence, staff: c.staff, bars: c.bars, restrooms: c.restrooms, ads: c.ads, incident: c.incident },
+    mainDeal: state.booking.deal, mainAsk: state.booking.terms.ask, bar: main.bar, broadcast: !!v.broadcast,
+  });
+  const relation = (pay, ask) => clamp(D.REL_BASE + Math.round(D.REL_SLOPE * (pay / ask - 1)), D.REL_MIN_STEP, D.REL_MAX_STEP);
+  return { ...main, stageAccounts: accounts, attendance: accounts.sales.attendance,
+    presale: accounts.sales.presale, walkupAfterIncident: accounts.sales.walkup, ticketGross: accounts.sales.ticketGross,
+    costs: { ...c, mainCrew: accounts.production.main.crew, secondProduction: accounts.production.second.total, total: accounts.costs },
+    upfront: accounts.upfront, artistPay: accounts.main.artistPay, artistTotal: accounts.artistPay,
+    net: accounts.net, result: accounts.net >= 0 && main.satisfaction >= D.PASS_SATISFACTION ? 'pass' : 'retry',
+    relDelta: relation(accounts.main.artistPay, state.booking.terms.ask),
+    secondRelDelta: relation(accounts.second.artistPay, state.booking.secondTerms.ask),
+  };
+}
+
+export function stageForecastFor(state) {
+  const terms = stagePlanFor(state);
+  if (!terms) return null;
+  const inputs = showInputs(state, evaluateVenue(state.venue), false);
+  const main = artistFor(state.booking.artistId), second = artistFor(state.booking.secondId), corners = [];
+  for (const mainDraw of [main.drawMin, main.drawMax]) for (const secondDraw of [second.drawMin, second.drawMax]) {
+    corners.push(festivalSales(terms, stageAudience(state, inputs, mainDraw, secondDraw)));
+  }
+  const range = values => ({ low: Math.min(...values), high: Math.max(...values) });
+  return { capacity: inputs.venue.capacity, attendance: range(corners.map(x => x.attendance)),
+    presale: range(corners.map(x => x.presale)), ticketGross: range(corners.map(x => x.ticketGross)),
+    main: range(corners.map(x => x.main.attendance)), second: range(corners.map(x => x.second.attendance)) };
 }
 
 function secondStage(state) {
@@ -925,6 +1011,8 @@ function serviceResponse(state, responseId) {
 
 export function settlementPayout(result, deal) {
   if (!result) return 0;
+  // The response action has already paid the incident; do not withhold it again.
+  if (result.stageAccounts) return result.stageAccounts.payout + result.stageAccounts.siteCosts.incident;
   // Sponsor money arrives before doors (it reduces upfront). Counting it again here
   // would pay the same check twice. Broadcast and the second stage arrive at settlement.
   return result.ticketGross + result.bar + (result.foodIncome || 0) + (result.broadcast || 0)
@@ -1037,6 +1125,15 @@ function applyActionCore(state, action) {
       s.research = Research.saveResearch(result.state); s.cash += result.cashDelta;
       return { state: s, error: null };
     }
+    case 'chooseSideAct': {
+      if ((err = need('book'))) return fail(state, err);
+      if (!stageOpenersFor(s).includes(action.artistId)) return fail(state, 'Choose an eligible Festival side act');
+      s.booking.secondId = action.artistId;
+      s.booking.secondTerms = null;
+      delete s.booking.stages;
+      delete s.stagesNotice;
+      return { state: s, error: null };
+    }
     case 'chooseDeal': {
       if ((err = need('book'))) return fail(state, err);
       if (!DEALS.includes(action.deal) && action.deal !== 'sponsor') return fail(state, 'Choose a guarantee or a door deal');
@@ -1061,6 +1158,11 @@ function applyActionCore(state, action) {
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (action.stagePolicy !== undefined) {
+        if (action.stagePolicy !== 1 || !secondId || !termsFor(secondId, s.reputation.artists[secondId]).doorOk) return fail(state, 'Choose a distinct side act eligible for a door deal');
+        try { s.booking.stages = stageBookingTerms({ version: 1 }, s); }
+        catch { return fail(state, 'Stage accounting needs a Festival booking with two distinct acts'); }
+      }
       if (action.seatingPolicy !== undefined) {
         if (action.seatingPolicy !== 1 || spec.id !== 'amphitheater') return fail(state, 'That booking cannot use separate seat sales');
         s.booking.seating = seatingTerms({ version: 1 });
@@ -1081,6 +1183,8 @@ function applyActionCore(state, action) {
       if (!D.VENUES[id]) return fail(state, 'Unknown room');
       if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
       if (s.venue.id !== id) {
+        delete s.booking.stages;
+        delete s.stagesNotice;
         delete s.booking.seating;
         delete s.seatingNotice;
         delete s.booking.run;
@@ -1204,6 +1308,7 @@ function applyActionCore(state, action) {
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
       if (equipment) s.show.equipment = equipment.terms;
       if (s.booking.seating) s.show.seating = seatingContract({ ...s.booking.seating, lawnPrice: s.promotion.price, seatPrice: s.promotion.seatPrice });
+      if (s.booking.stages) s.show.stages = stageContract({ ...s.booking.stages, price: s.promotion.price, ads: s.promotion.ads }, s);
       if (s.booking.run) s.show.run = heldRunTerms(s.booking.run);
       if (s.venue.id === 'club' && s.promotion.ticketing) s.show.ticketing = ticketingTerms(s.promotion.ticketing);
       const v = evaluateVenue(s.venue);
@@ -1287,7 +1392,7 @@ function applyActionCore(state, action) {
         attendance: r.attendance,
         satisfaction: r.satisfaction,
         net: r.net,
-        artistPay: r.artistPay,
+        artistPay: r.artistTotal ?? r.artistPay,
         result: r.result,
         weakest: r.weakest,
         settledAt: typeof action.at === 'string' ? action.at : null,
@@ -1321,6 +1426,10 @@ function applyActionCore(state, action) {
         return { state: s, error: null };
       }
       applyRep(s, repHold, relHold);
+      if (r.stageAccounts) {
+        const id = s.booking.secondId;
+        s.reputation.artists[id] = clamp((s.reputation.artists[id] || 0) + r.secondRelDelta, -100, 100);
+      }
       applyUnlocks(s);
       s.phase = 'done';
       return { state: s, error: null };
@@ -1520,6 +1629,11 @@ export function normalizeState(raw, fallbackSeed = 1) {
       s.booking.secondTerms = { ask: clamp(st.ask, 1, 1e6), drawMult: clamp(st.drawMult, 0.5, 1.5) };
     }
   }
+  if (booking.stages !== undefined) {
+    try { s.booking.stages = stageBookingTerms(booking.stages, s); }
+    catch { s.stagesNotice = 'Invalid Festival booking policy removed; cash and history were preserved'; }
+  }
+  if (typeof raw.stagesNotice === 'string' && raw.stagesNotice) s.stagesNotice ||= 'Earlier Festival recovery preserved cash; original terms may be incomplete';
   if (isObj(raw.layouts)) {
     for (const id of D.VENUE_ORDER) {
       if (!Array.isArray(raw.layouts[id])) continue;
@@ -1592,6 +1706,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
         if ([terms.lawnPrice, terms.seatPrice].some(price => price < D.PRICE_MIN || price > room.priceMax)) throw new TypeError('Invalid locked price');
         s.show.seating = terms;
       } catch { s.seatingNotice = 'Invalid paid seat sales terms removed; cash and signed history were preserved'; }
+    }
+    if (raw.show.stages !== undefined) {
+      try { s.show.stages = stageContract(raw.show.stages, s); }
+      catch { s.stagesNotice = 'Invalid paid Festival terms removed; cash and signed history were preserved'; }
     }
     if (raw.show.run !== undefined) {
       try {

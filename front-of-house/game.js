@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
+  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, stageOpenersFor, stagePlanFor, stageForecastFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
@@ -202,6 +202,7 @@ function render() {
 }
 
 function renderTop() {
+  $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
   $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice);
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
@@ -296,10 +297,11 @@ function bookPanel() {
       : rel === 0 ? 'new to you' : rel > D.REL_DOOR_FLOOR ? 'remembers a short payout' : 'wants money up front';
     const doorNote = a.guaranteeOnly ? `${esc(a.name)} only plays for a guarantee.`
       : `${esc(a.name)} will only play for a guarantee after another short payout.`;
-    const opener = spec.secondStage ? offers.find((oid) => oid !== id) : null;
+    const eligible = stageOpenersFor(state);
+    const opener = spec.secondStage ? (eligible.includes(state.booking.secondId) ? state.booking.secondId : eligible[0]) : null;
     const extra = opener ? ` data-second="${opener}"` : '';
     const deal = (kind, title, cost, note, disabled = false) => `
-      <button type="button" class="choice" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled ? 'disabled' : ''}${extra}>
+      <button type="button" class="choice" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled || (spec.secondStage && !opener) ? 'disabled' : ''}${extra}>
         <span class="choice-head"><strong>${title}</strong> <span class="cost">${cost}</span></span>
         ${note ? `<span class="choice-text">${note}</span>` : ''}
       </button>`;
@@ -310,7 +312,7 @@ function bookPanel() {
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
       <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
-      ${opener ? `<p class="lede">The other stage opens with ${esc(artistFor(opener).name)}.</p>` : ''}
+      ${opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
       ${deal('door', 'Door deal', `${Math.round(D.DOOR_SPLIT * 100)}% of the net`, !t.doorOk ? doorNote : teach ? `Cheaper on a slow night, but they expect ${money(t.ask)}.` : '', !t.doorOk)}
       ${spec.sponsor ? deal('sponsor', 'Sponsor', `+${money(D.SPONSOR_PAY)}`, teach ? 'Paid up front; the ticket stays at the usual price.' : '') : ''}
@@ -323,11 +325,12 @@ function bookPanel() {
         <h2>Book the act</h2>
       </div>
       <button type="button" class="info-btn" data-act="deal-help" aria-label="How the deals work">ⓘ Deals</button>
+      ${spec.secondStage ? '<button type="button" class="info-btn" data-act="stages-open" id="stage-bill">Stage bill</button>' : ''}
     </div>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="rooms">${rooms}</div>
     ${nights}
-    <p class="lede">${teach && spec.id === 'lot' ? 'Your first night. Two acts want the date; Sodium Arcade is the safe first booking.' : 'Two acts want this date. Pick one and a deal.'}</p>
+    <p class="lede">${spec.secondStage ? 'One site ticket; both stage budgets. Choose a main act and deal.' : teach && spec.id === 'lot' ? 'Your first night. Two acts want the date; Sodium Arcade is the safe first booking.' : 'Two acts want this date. Pick one and a deal.'}</p>
     <div class="offers">${cards}</div>`;
 }
 
@@ -647,6 +650,7 @@ function promotePanel() {
       <button type="button" data-act="back">Back to Build</button>
       ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
       ${seatingPlanFor(state) ? '<button type="button" data-act="seating-open" id="seating-settings">Seats and lawn</button>' : ''}
+      ${stagePlanFor(state) ? '<button type="button" data-act="stages-open" id="stage-settings">Stage accounts</button>' : ''}
       ${spec.id === 'club' ? '<button type="button" data-act="ticketing-open" id="ticketing-settings">Ticketing: Direct</button>' : ''}
       ${spec.id === 'lot' ? '<button type="button" data-act="food-settings" id="food-settings">Facilities</button>' : ''}
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open doors</button>
@@ -676,12 +680,15 @@ function updatePromote() {
     $(`#ad-${c}-out`).textContent = money(p.ads[c]);
   }
   const f = forecast(state);
+  const seatingQuote = seatingForecastFor(state), stageQuote = stageForecastFor(state);
+  const lowTickets = stageQuote?.ticketGross.low ?? seatingQuote?.low.ticketGross ?? f.low * p.price;
+  const highTickets = stageQuote?.ticketGross.high ?? seatingQuote?.high.ticketGross ?? f.high * p.price;
   const upfront = upfrontFor(state);
   const short = state.mode !== 'sandbox' && upfront > state.cash;
   $('#promo-stats').innerHTML = `
     <div><dt>Forecast crowd</dt><dd>${f.low} to ${f.high} <span class="lede">of ${f.capacity}</span></dd></div>
     <div><dt>Buzz</dt><dd>×${buzz(p.ads).toFixed(2)}</dd></div>
-    <div><dt>Ticket money</dt><dd>${money(f.low * p.price)} to ${money(f.high * p.price)}</dd></div>
+    <div><dt>Ticket money</dt><dd>${money(lowTickets)} to ${money(highTickets)}</dd></div>
     <div><dt>Ad spend</dt><dd>${money(adTotal(p.ads))}</dd></div>
     <div><dt>Due before doors</dt><dd class="${short ? 'bad' : ''}">${money(upfront)}</dd></div>`;
   $('#confirm-promo').disabled = short;
@@ -694,8 +701,8 @@ function updatePromote() {
     const dem = demand({ draw, price: p.price, fairPrice: a.fairPrice, ads: p.ads, venueRep: state.reputation.venue });
     return presaleSplit(dem, buzz(p.ads), f.capacity).presale;
   });
-  const seatingQuote = seatingForecastFor(state);
   if (seatingQuote) { totals[0] = seatingQuote.low.presale; totals[1] = seatingQuote.high.presale; }
+  if (stageQuote) { totals[0] = stageQuote.presale.low; totals[1] = stageQuote.presale.high; }
   const ticketingQuote = ticketingForecastFor(state);
   if (ticketingQuote) { totals[0] = ticketingQuote.low.presale; totals[1] = ticketingQuote.high.presale; }
   const maxY = Math.max(1, f.capacity);
@@ -1100,12 +1107,13 @@ function sheetParts(r, { signed: done }) {
     [`Bars (${v.bars})`, 'Hospitality', r.costs.bars],
     r.facilities ? ['Facilities', 'Sanitation', r.costs.restrooms + r.costs.facilities] : [`Restrooms (${v.restrooms})`, 'Site', r.costs.restrooms],
     [`Crew (${v.staff} staff)`, 'Labour', r.costs.staff],
+    ...(r.stageAccounts ? [['Main production crew (2)', 'Main stage', r.costs.mainCrew], ['Side PA, lights and crew', 'Side stage', r.costs.secondProduction]] : []),
     ['Ads', 'Promotion', r.costs.ads],
     [`Incident: ${response.label}`, incident.label, r.costs.incident],
   ];
-  const pool = r.ticketGross - r.costs.total;
+  const pool = r.stageAccounts ? r.stageAccounts.main.artistBasis : r.ticketGross - r.costs.total;
   const split = deal === 'door'
-    ? `<p>Net ticket pool: ${money(r.ticketGross)} ticket gross − ${money(r.costs.total)} show costs = <strong>${money(Math.max(0, pool))}</strong>${pool < 0 ? ' (nothing to split)' : ''}</p>
+    ? `<p>${r.stageAccounts ? `Main stage eligible ticket balance: <strong>${money(pool)}</strong>` : `Net ticket pool: ${money(r.ticketGross)} ticket gross − ${money(r.costs.total)} show costs = <strong>${money(Math.max(0, pool))}</strong>${pool < 0 ? ' (nothing to split)' : ''}`}</p>
        <p>Artist share: ${Math.round(D.DOOR_SPLIT * 100)}% of the pool = <strong>${money(r.artistPay)}</strong></p>`
     : `<p>Flat guarantee: <strong>${money(r.artistPay)}</strong>, paid before doors.</p>`;
   const parts = Object.keys(WEIGHTS).map((k) => {
@@ -1132,7 +1140,7 @@ function sheetParts(r, { signed: done }) {
       <table>
         <thead><tr><th scope="col">Source</th><th scope="col">Units</th><th scope="col" class="num">Total</th></tr></thead>
         <tbody>
-          <tr><td>${r.seating ? '<button class="receipt-link" data-act="seating-open">Seats and lawn</button>' : 'Tickets (presale and gate)'}</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(r.seating?.lawn.price ?? state.promotion.price)}` : `${r.attendance} × ${money(r.seating?.lawn.price ?? state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
+          <tr><td>${r.stageAccounts ? '<button class="receipt-link" data-act="stages-open">Site tickets</button>' : r.seating ? '<button class="receipt-link" data-act="seating-open">Seats and lawn</button>' : 'Tickets (presale and gate)'}</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(r.stageAccounts?.sales.price ?? r.seating?.lawn.price ?? state.promotion.price)}` : `${r.attendance} × ${money(r.stageAccounts?.sales.price ?? r.seating?.lawn.price ?? state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
           ${r.ticketing ? `<tr><td><button class="receipt-link" data-act="ticketing-open">Ticket collection</button></td><td>${r.ticketing.terms.plan === 'platform' ? '4% of presales' : 'Direct'}</td><td class="num neg">${money(-r.ticketing.fee)}</td></tr>` : ''}
           <tr><td>Bar</td><td>${r.services ? `${r.services.barServed} served · ${r.services.barLost} lost` : `${r.attendance} guests`}</td><td class="num pos">${money(r.bar)}</td></tr>
           ${r.sponsor ? `<tr><td>Sponsor</td><td>Site deal</td><td class="num pos">${money(r.sponsor)}</td></tr>` : ''}
@@ -1155,12 +1163,12 @@ function sheetParts(r, { signed: done }) {
   const dealPart = `
     <div class="calc">
       <div class="ledger-title" style="padding:0;background:none;border:0">SECTION C · DEAL</div>
-      ${split}
+      ${split}${r.stageAccounts ? `<p>Side artist: ${money(r.stageAccounts.second.artistPay)}, withheld at signing.</p><button data-act="stages-open">Stage accounts</button>` : ''}
     </div>`;
   const payouts = `
     <div class="payouts" data-tab="Payout">
-      <div class="payout artist"><span class="meta-label">Artist payout</span><span class="amount">${money(r.artistPay)}</span>
-        <p>${r.artistPay >= quotedAsk() ? 'Paid in full. The act leaves happy.' : `They expected ${money(quotedAsk())}.`}</p></div>
+      <div class="payout artist"><span class="meta-label">${r.stageAccounts ? 'Both artist payouts' : 'Artist payout'}</span><span class="amount">${money(r.artistTotal ?? r.artistPay)}</span>
+        <p>${r.stageAccounts ? `Main ${money(r.artistPay)} · Side ${money(r.stageAccounts.second.artistPay)}` : r.artistPay >= quotedAsk() ? 'Paid in full. The act leaves happy.' : `They expected ${money(quotedAsk())}.`}</p></div>
       <div class="payout promoter ${r.net < 0 ? 'loss' : ''}"><span class="meta-label">Promoter net</span><span class="amount">${money(r.net)}</span>
         <p>${r.doorRush ? `${r.doorRush.waiting} queued · ${r.doorRush.lostWalkups} left · bar cap ${r.doorRush.barCapacity}.` : 'Revenue after every cost and the artist.'}</p></div>
     </div>`;
@@ -1177,7 +1185,7 @@ function sheetParts(r, { signed: done }) {
   return {
     body: `${head}
       <div class="sheet-cols">
-        ${r.services || r.ticketing || r.seating ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
+        ${r.services || r.ticketing || r.seating || r.stageAccounts ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
         <div class="sheet-col" data-tab="Costs">${costs}</div>
         <div class="sheet-col">${payouts}${crowd}</div>
       </div>`,
@@ -1322,6 +1330,40 @@ function openDevelopment(opener) {
     ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
 }
 
+function openStages(opener) {
+  const terms = stagePlanFor(state), editable = state.phase === 'book' && state.venue.id === 'festival';
+  const eligible = stageOpenersFor(state), selected = eligible.includes(state.booking.secondId) ? state.booking.secondId : eligible[0];
+  const result = settlementFor(state), receipt = result?.stageAccounts, quote = terms && state.phase === 'promote' ? stageForecastFor(state) : null;
+  const field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  const bill = `<section data-tab="Bill" data-always-tabs><h3>The Festival bill</h3>${editable ? eligible.length ? `
+    <div class="stage-choice"><label for="stage-side-select">Side stage act</label><select id="stage-side-select">${eligible.map(id => `<option value="${id}" ${selected === id ? 'selected' : ''}>${esc(artistFor(id).name)}</option>`).join('')}</select></div>
+    <button data-act="stage-select">Use this act</button><p>Selection is free. Book the main act next.</p><p>The side act gets 70% of its eligible ticket balance.</p>`
+    : '<p>No side act accepts a door deal.</p><p>Choose another venue to rebuild relationships.</p>'
+    : terms ? `<p>Main: ${esc(artistFor(state.booking.artistId).name)}</p><p>Side: ${esc(artistFor(state.booking.secondId).name)}</p><p>Both acts are fixed for this booking.</p>` : '<p>Original stage rules apply to this saved show.</p>'}
+    ${state.stagesNotice ? `<p role="status">${esc(state.stagesNotice)}</p>` : ''}</section>`;
+  const stages = [['main','Main',state.booking.artistId],['second','Side',state.booking.secondId]].map(([id, label, artistId]) => {
+    const a = receipt?.[id], range = quote?.[id];
+    const content = a ? `<p>${esc(artistFor(artistId).name)}</p><dl class="live-readouts">
+      ${field('Audience',`${a.attendance} / ${a.capacity}`)}${field('Ticket allocation',money(a.ticketGross))}${field('Own production',money(a.production.total))}
+      ${field('Allocated site cost',money(a.allocatedSiteCost))}${field('Artist ticket basis',money(a.artistBasis))}${field('Artist payment',money(a.artistPay))}${field('Stage balance',money(a.net))}</dl>
+      <p>Artist relationship ${signed(id === 'main' ? result.relDelta : result.secondRelDelta)} on signing.</p>`
+      : range ? `<p>${esc(artistFor(artistId).name)}</p><dl class="live-readouts">${field('Likely audience',`${range.low} to ${range.high}`)}</dl><p>Published draw ranges only.</p><p>Actual stage receipts follow the show.</p>`
+      : '<p>Forecasts open in Promote.</p><p>Actual receipts follow the show.</p>';
+    return `<section data-tab="${label}" data-always-tabs><h3>${label} stage</h3>${content}</section>`;
+  }).join('');
+  const cashAfter = receipt ? state.phase === 'done' ? state.history.at(-1)?.cashAfter ?? state.cash : state.cash + settlementPayout(result, state.booking.deal) : null;
+  const site = receipt ? `<dl class="live-readouts">
+    ${field('One site audience',receipt.sales.attendance)}${field('Ticket income',money(receipt.sales.ticketGross))}${field('Bar income',money(receipt.bar))}
+    ${field('Sponsor income',money(receipt.sponsor))}${field('Broadcast income',money(receipt.broadcast))}${field('Both artist payments',money(receipt.artistPay))}
+    ${field('Production and site costs',money(receipt.costs))}${field('Site net',money(receipt.net))}</dl>`
+    : quote ? `<dl class="live-readouts">${field('Site capacity',quote.capacity)}${field('Likely attendance',`${quote.attendance.low} to ${quote.attendance.high}`)}${field('Opening cost',money(upfrontFor(state)))}</dl><p>Bar and broadcast are paid once per site.</p>` : '<p>Site forecasts open in Promote.</p><p>Cash receipts follow the show.</p>';
+  openWindow('stages','Stage accounts',`<p class="development-summary">Two stages · one paid audience</p>${bill}${stages}
+    <section data-tab="Site" data-always-tabs><h3>Whole site</h3>${site}</section>
+    <section data-tab="Cash" data-always-tabs><h3>Cash movements</h3>${receipt ? `<dl class="live-readouts">${field('Cash before the day',money(cashAfter-receipt.net))}${field('Opening outflow',money(receipt.upfront))}
+      ${field('Response paid',money(receipt.siteCosts.incident))}${field('Signing income',money(settlementPayout(result,state.booking.deal)))}${field('Cash after signing',money(cashAfter))}</dl><p>Response costs were already paid.</p>` : '<p>Cash receipts follow the show.</p>'}${receipt ? '<button data-act="food-back">Back to settlement</button>' : ''}</section>
+    <section data-tab="Rules" data-always-tabs><h3>One ticket per guest</h3><p>The main act sets site demand.</p><p>The side act redistributes that audience.</p><p>Each stage pays its own production.</p><p>Shared site costs divide by attendance.</p><p>Empty shows divide costs by capacity.</p><p>Each door act gets 70% of its own positive balance.</p><p>Stage ranges are separate bounds.</p><p>Site quality uses the shared show model.</p></section>`,opener);
+}
+
 function openSeating(opener) {
   const terms = seatingPlanFor(state);
   if (!terms) { openWindow('seating', 'Seats and lawn', `<p>${esc(state.seatingNotice || 'Original seat sales rules apply to this booking.')}</p>`, opener); return; }
@@ -1405,7 +1447,7 @@ function cashReference(entry) {
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
 function paginateCompactWindow(step = 0) {
-  if (!['equipment', 'ticketing', 'held-run', 'seating'].includes(win.kind) || innerHeight > 560) return;
+  if (!['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(win.kind) || innerHeight > 560) return;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
   if (!panel._compactAtoms) {
     for (const list of [...panel.children].filter(e => e.matches('dl,ol'))) {
@@ -1858,6 +1900,12 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'stages-open') { openStages(target); return; }
+  if (a === 'stage-select') {
+    ui.mounted = null;
+    if (act({ type: 'chooseSideAct', artistId: $('#stage-side-select').value })) { openStages($('#stage-bill')); $('#stage-side-select')?.focus(); }
+    return;
+  }
   if (a === 'seating-open') { openSeating(target); return; }
   if (a === 'held-run-open') { openHeldRun(target); return; }
   if (a === 'held-run-sign') {
@@ -1890,7 +1938,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2123,7 +2171,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating'].includes(win.kind)) paginateCompactWindow();
+  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2146,6 +2194,7 @@ window.addEventListener('resize', () => {
   if (win.kind === 'ticketing') openTicketing(win.opener);
   if (win.kind === 'held-run') openHeldRun(win.opener);
   if (win.kind === 'seating') openSeating(win.opener);
+  if (win.kind === 'stages') openStages(win.opener);
 });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
@@ -2156,7 +2205,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (['equipment', 'ticketing', 'held-run', 'seating'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -2164,7 +2213,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
   syncTabs(el.winBody, `win:${kind}`);
-  if (['equipment', 'ticketing', 'held-run', 'seating'].includes(kind)) paginateCompactWindow();
+  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(kind)) paginateCompactWindow();
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2347,6 +2396,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    stages: state.venue.id === 'festival' ? { terms: stagePlanFor(state), eligibleOpeners: state.phase === 'book' ? stageOpenersFor(state) : null, forecast: state.phase === 'promote' ? stageForecastFor(state) : null, receipt: r?.stageAccounts || null, notice: state.stagesNotice || null } : null,
     seating: seatingPlanFor(state) ? { terms: seatingPlanFor(state), forecast: state.phase === 'promote' ? seatingForecastFor(state) : null, receipt: r?.seating || null, notice: state.seatingNotice || null } : null,
     heldRun: held ? { terms: held.terms, feeEach: held.feeEach, completedNights: state.show ? state.show.night - (['settle', 'done'].includes(state.phase) ? 0 : 1) : 0, cancellationAfterCurrentNight: state.show ? { remaining: held.remaining, penalty: held.penalty } : null, cancelled: state.show?.cancelled === true, notice: state.runNotice || null } : null,
     ticketing: state.venue.id === 'club' ? { terms: ticketingPlanFor(state), forecast: state.phase === 'promote' ? ticketingForecastFor(state) : null, receipt: r?.ticketing || null, notice: state.ticketingNotice || null } : null,

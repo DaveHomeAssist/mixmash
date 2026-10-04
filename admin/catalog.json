@@ -2526,6 +2526,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-stage-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-stage-integration.mjs",
+      "description": "Optional Festival stages preserve legacy saves and reconcile opening, response and signing.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-stage-integration.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-ticketing-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2793,6 +2803,16 @@
       "title": "front-of-house-smoke.mjs",
       "description": "Playwright rail for Lot Night end to end: reload, save codes, the next show, the out-of-money stop, keyboard building, the board sprites, the board camera, no page scroll in any phase, the corner HUD, the sheets and windows, the phone tabs, the menu, reduced motion, phone width and contrast (smoke:front-of-house).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-stages-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-stages-smoke.mjs",
+      "description": "Festival bill selection, conserved stage/site receipts and career cash through player controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-stages-smoke.mjs",
       "open": null
     },
     {
