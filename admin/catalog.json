@@ -2360,6 +2360,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-sanitation-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-sanitation-smoke.mjs",
+      "description": "Actual facilities placement, locked sanitation terms, visits, reload and signed production receipt.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-sanitation-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-service-crowd-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",

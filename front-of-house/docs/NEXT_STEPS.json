@@ -8,7 +8,7 @@
   "head": "ffcd59f · normal departure and food delivered; sanitation underway",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live services, guest movement, normal departure and food are delivered. Sanitation replay and contract integration pass local tests. Playable facilities controls, research, ownership, venues and release evidence remain.",
+  "statusReason": "Departure and food are verified in production. Sanitation contracts, controls, renderer guests and offline replay pass local verification; required CI and production delivery remain pending. Research, ownership, venues, navigation and release evidence remain.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -20,7 +20,7 @@
   ],
   "nextStep": {
     "title": "Deliver sanitation and its artist preference, then research",
-    "why": "Sanitation now has locked costs, visit-based amenities, an optional artist preference and safe replay. Connect player controls and guest presentation, then deliver the remaining phases.",
+    "why": "The full sanitation slice is implemented with explicit costs, an optional artist preference and finite visits. Finish CI and hosted acceptance, then implement the accepted three-project research pilot.",
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -746,13 +746,18 @@
                 "evidence": [
                   "Five integration tests cover prepayment refusal, locked quote and malformed saves, both artist deals and one-time signing, optional preference, food ordering and in-progress cleaning reload.",
                   "All288 repository tests and build pass. Source-owned trailer geometry and classic fallback included; required CI and hosted model evidence pending."
-                ]
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/77"
               },
               {
                 "id": "FOH-O02d3",
                 "scope": "Playable facilities controls, servicing readouts and guest presentation",
-                "status": "pending",
-                "evidence": []
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Facilities pages, explicit preference, live/settlement receipts and shared sanitation guest projection implemented. All289 repository tests and build pass.",
+                  "Seven local complete player journeys cover Chromium classic/3D desktop/phone, WebKit classic desktop/phone and short dark desktop. Supplied action client places/enables the package and reaches minute5. Warmed offline cleaning at minute27 survives reload and completes at30 with cash/projection preserved.",
+                  "Final local verification:289 npm tests/build,28 legacy checks, six food journeys and seven sanitation journeys pass, including T/keyboard page switching and short dark desktop. Final supplied action replay reaches enabled minute5. Required CI and production delivery remain pending."
+                ]
               }
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"

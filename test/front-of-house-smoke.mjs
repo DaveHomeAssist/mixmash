@@ -192,7 +192,8 @@ try {
   assert.equal((await game(page)).promotion.ads.social, AD_STEP);
   await page.click('[data-act="confirm-promo"]');
   assert.equal((await game(page)).phase, 'show');
-  await page.click('[data-act="skip"]');
+  // The countdown can finish while the click waits for stable geometry; answer the incident either way.
+  await page.evaluate(() => { const skip = document.querySelector('[data-act="skip"]'); if (skip && skip.getClientRects().length && !skip.disabled) skip.click(); });
   await page.waitForSelector('[data-act="respond"]');
   await checkNoScroll(page, 'show');
   await page.screenshot({ path: join(output, 'show.png') });

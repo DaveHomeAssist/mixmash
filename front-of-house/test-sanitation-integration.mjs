@@ -110,3 +110,30 @@ test('cleaning progress, food ordering and optional legacy omission remain deter
   assert.equal(r.costs.facilities, undefined); assert.equal(r.sanitation,undefined);
   assert.deepEqual(settlementFor(normalizeState(legacy)), r);
 });
+
+test('sanitation representatives conserve five zones, trace visits and leave once after closing', async () => {
+  const { createServiceLayout, projectServiceCrowd } = await import('./service-crowd.mjs');
+  const { liveAccessFor } = await import('./engine.mjs');
+  let s = open(prepare({ objects: [...layout, {type:'food',x:3,y:8,rot:0}], foodPlan:'standard', seed:3 }));
+  s = act(s,{type:'assignLiveWorker',station:'gate'});
+  const visual = createServiceLayout(s.venue.objects,s.venue.grid,liveAccessFor(s));
+  let busy=false,moving=false;
+  for(let minute=1;minute<=liveEndMinute(s);minute++) {
+    s=act(s,{type:'advanceLive',minute});
+    if(!s.show.responseId && s.show.services.minute<minute) {
+      s=act(s,{type:'respond',responseId:INCIDENTS[s.show.incidentId].responses.find(r=>r.cost<=s.cash).id});
+      s=act(s,{type:'advanceLive',minute});
+    }
+    const live=liveServicesFor(s,{events:true}), view=projectServiceCrowd(visual,live), t=view.totals;
+    assert.equal(t.bar+t.food+t.sanitation+t.floor,live.inside);
+    assert.equal(t.sanitation,live.sanitation.totals.waiting+live.sanitation.totals.using);
+    assert.equal(new Set(view.actors.map(a=>a.id)).size,view.actors.length);assert.ok(view.actors.length<=180);
+    if(t.sanitation) {
+      busy=true;assert.ok(view.actors.some(a=>a.zone==='sanitation'));
+      const mid=projectServiceCrowd(visual,live,live.minute,0.5);
+      moving ||= mid.actors.some(a=>a.events?.some(id=>id.includes(':sanitation:')) && view.actors.some(b=>b.id===a.id && (a.x!==b.x || a.y!==b.y)));
+    }
+    if(minute===30) assert.deepEqual(projectServiceCrowd(visual,liveServicesFor(normalizeState(s),{events:true})),view);
+  }
+  assert.ok(busy);assert.ok(moving);assert.equal(s.phase,'settle');assert.equal(liveServicesFor(s).inside,0);
+});
