@@ -137,3 +137,11 @@ This is the isolated renderer with unchanged empty/150-guest fixtures, camera pa
 | 5120x1440-crowd-3 | 1.5 | 59.20 | 18.50 / 33.20 / 35.10 | 3.00 | 0 |
 
 Cadence ranges 59.20–60.00 Hz; no interval exceeds 50 ms. The populated ultrawide repeats are about 59.2–59.4 Hz and are retained without rounding away their deviation. RAF cadence is scheduling evidence, not completed GPU frames, physical display smoothness or a performance guarantee. CPU submission excludes GPU completion. Other host load remains uncontrolled and recorded; no other local tests/builds/browser checks from this task ran during timing. Full-HUD evidence remains the separate classic comparison; low-power hardware, thermal/battery behavior, physical monitor transitions, human readability and declared CI timing limits remain open.
+
+## CI calibration
+
+The existing CI workflow exposes an explicit `foh_performance` manual input. Its separate `foh-performance` job uses Ubuntu 24.04, Node22 and Playwright's Chromium/SwiftShader to run the complete standard DPR1 renderer protocol. Invoke the existing workflow with `gh workflow run ci.yml --ref codex/foh-ci-calibration -f foh_performance=true` while evaluating this branch; after delivery, use `--ref gh-pages`. Ordinary PR correctness jobs remain unchanged, and this adds no schedule.
+
+Expect at least twelve minutes of sampling plus setup, with a 35-minute job timeout. The JSON report records an allowlist of runner class/OS/architecture/image version and run/attempt IDs. An always-run artifact step retains the report, public synthetic fixtures and returned raw JSON samples for thirty days, including failed-window evidence when available. It uploads no private local measurement directory or browser profile. Whole-job interruption can prevent the final artifact step; the run's logs remain the source for that failure.
+
+Download the named artifact, verify its source and raw/fixture digests and inspect every repeat before adopting limits. The calibration job currently rejects invalid measurement windows; it does not impose a speed threshold or prove the 60fps/30fps physical-device targets. A subsequent regression gate must name the calibrated runner/browser/scene class and demonstrate failure with an intentional slowdown. CI execution and baseline retrieval remain pending until recorded with an actual run ID.

@@ -5,7 +5,7 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "4d1113e base \u00b7 integrated guest operations and development release",
+  "head": "d74453c base \u00b7 merged CI calibration431cec0",
   "lastActivity": "2026-10-04",
   "status": "amber",
   "statusReason": "Sanitation, playable development and the inventory prerequisite are combined in PR85 with delivered performance evidence preserved. Local309 tests and browser/offline checks pass; current-head CI and production acceptance remain pending.",
@@ -668,6 +668,15 @@
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/78",
             "mergeCommit": "36bbbf3977cfdb035f86d3268d246ab92726d25d"
+          },
+          {
+            "id": "FOH-P01e",
+            "scope": "CI runner calibration and measured regression limits",
+            "status": "implemented-awaiting-calibration",
+            "evidence": [
+              "Explicit manual performance job prepared on Ubuntu24.04. Full standard18-window DPR1 SwiftShader protocol; runner image/run metadata allowlist and synthetic JSON artifact retention. Normal PR correctness gates unchanged.",
+              "Workflow YAML parses; three reporting/deadline/camera tests pass. Actual dispatch, runner baseline, artifact retrieval and regression limits remain pending."
+            ]
           }
         ]
       },

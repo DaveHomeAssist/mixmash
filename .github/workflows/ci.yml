@@ -7,6 +7,11 @@ on:
     branches: [gh-pages]
   pull_request:
   workflow_dispatch:
+    inputs:
+      foh_performance:
+        description: 'Collect a full Front of House CI calibration (at least 12 minutes)'
+        type: boolean
+        default: false
 
 jobs:
   test:
@@ -46,3 +51,36 @@ jobs:
       - run: npm run smoke:zelda2mario
       - run: npm run smoke:admin
       - run: npm run smoke:mobile
+
+  foh-performance:
+    if: github.event_name == 'workflow_dispatch' && inputs.foh_performance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    env:
+      FOH_PERF_RUNNER_CLASS: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check:front-of-house-vendor
+      - run: npm run check:front-of-house-assets
+      - run: npx playwright install --with-deps chromium
+      - name: Measure the complete CI renderer protocol
+        env:
+          FRONT_OF_HOUSE_PERF_OUTPUT: ${{ runner.temp }}/foh-performance
+        run: npm run perf:front-of-house -- --gpu=software
+      - name: Retain synthetic calibration evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: foh-performance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/foh-performance/*.json
+          if-no-files-found: warn
+          retention-days: 30
