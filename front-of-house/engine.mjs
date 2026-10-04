@@ -133,12 +133,18 @@ function venueUnlocked(state, id) {
 // first night is the one the balance baseline describes; later shows draw from the roster.
 export function offersFor(state) {
   const spec = venueSpec(state.venue);
-  return offersForSeed(state.seed, !state.history.length && spec.id === 'lot', spec.roster, spec.defaultArtist);
+  return offersForSeed(state.seed, !state.history.length && spec.id === 'lot', rosterFor(state), spec.defaultArtist);
+}
+
+function rosterFor(state) {
+  if (venueSpec(state.venue).id !== 'festival') return venueSpec(state.venue).roster;
+  return [...D.FEST_HEADLINERS, ...[...D.ROSTER, ...D.CLUB_ROSTER, ...D.AMP_ROSTER]
+    .filter(id => (state.reputation.artists[id] || 0) >= D.FEST_HEADLINE_RELATIONSHIP)];
 }
 
 export function stageOpenersFor(state) {
   if (state.venue.id !== 'festival') return [];
-  return Object.keys(D.ARTISTS).filter(id => !D.FEST_ROSTER.includes(id) && termsFor(id, state.reputation.artists[id]).doorOk)
+  return Object.keys(D.ARTISTS).filter(id => !D.FEST_HEADLINERS.includes(id) && termsFor(id, state.reputation.artists[id]).doorOk)
     .sort((a, b) => D.ARTISTS[b].drawMax - D.ARTISTS[a].drawMax || a.localeCompare(b));
 }
 
@@ -175,7 +181,9 @@ export function cheapestShowCost(deal = 'door', ask = undefined) {
 // than the door-deal floor.
 export function nextShowCost(state) {
   const spec = venueSpec(state.venue);
-  return Math.min(...offersForSeed(nextSeed(state.seed), false, spec.roster, spec.defaultArtist).map((id) => {
+  const offered = offersForSeed(nextSeed(state.seed), false, rosterFor(state), spec.defaultArtist);
+  const eligible = spec.id === 'festival' ? offered.filter(id => stageOpenersFor(state).some(side => side !== id)) : offered;
+  return Math.min(...(eligible.length ? eligible : offered).map((id) => {
     const terms = termsFor(id, state.reputation.artists[id]);
     const ordinary = showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
     return Math.min(ordinary, spec.sponsor ? showCost(spec, 'sponsor', terms.ask) : ordinary)
@@ -683,6 +691,23 @@ export function stagePlanFor(state) {
   return state.show ? state.show.stages || null : state.booking.stages || null;
 }
 
+export function festivalPolicyFor(state) {
+  if (state.venue.id !== 'festival') return null;
+  return state.show ? state.show.festival || null : state.booking.festival || null;
+}
+
+function festivalBookingPolicy(raw, state) {
+  const b = state.booking;
+  if (!isObj(raw) || raw.version !== 1 || state.venue.id !== 'festival' || !b.stages) throw new TypeError('Invalid Festival booking policy');
+  if (b.deal !== 'sponsor') {
+    if (raw.sponsorPrice !== undefined) throw new TypeError('Invalid sponsor condition');
+    return { version: 1 };
+  }
+  const price = artistFor(b.artistId).fairPrice;
+  if (raw.sponsorPrice !== price) throw new TypeError('Invalid sponsor ticket price');
+  return { version: 1, sponsorPrice: price };
+}
+
 function stageBookingTerms(raw, state) {
   const terms = festivalTerms(raw), b = state.booking;
   if (state.venue.id !== 'festival' || !D.ARTISTS[b.secondId] || b.secondId === b.artistId || !b.secondTerms || !b.terms) throw new TypeError('Invalid Festival bill');
@@ -1120,6 +1145,7 @@ function applyActionCore(state, action) {
       s.booking.secondId = action.artistId;
       s.booking.secondTerms = null;
       delete s.booking.stages;
+      delete s.booking.festival;
       delete s.stagesNotice;
       return { state: s, error: null };
     }
@@ -1152,6 +1178,12 @@ function applyActionCore(state, action) {
         try { s.booking.stages = stageBookingTerms({ version: 1 }, s); }
         catch { return fail(state, 'Stage accounting needs a Festival booking with two distinct acts'); }
       }
+      if (action.festivalPolicy !== undefined) {
+        if (action.festivalPolicy !== 1) return fail(state, 'Unknown Festival booking policy');
+        try { s.booking.festival = festivalBookingPolicy({ version: 1, ...(action.deal === 'sponsor' ? { sponsorPrice: artistFor(artistId).fairPrice } : {}) }, s); }
+        catch { return fail(state, 'Festival booking policy needs stage accounting'); }
+        if (action.deal === 'sponsor') s.promotion.price = s.booking.festival.sponsorPrice;
+      }
       if (action.seatingPolicy !== undefined) {
         if (action.seatingPolicy !== 1 || spec.id !== 'amphitheater') return fail(state, 'That booking cannot use separate seat sales');
         s.booking.seating = seatingTerms({ version: 1 });
@@ -1173,6 +1205,7 @@ function applyActionCore(state, action) {
       if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
       if (s.venue.id !== id) {
         delete s.booking.stages;
+        delete s.booking.festival;
         delete s.stagesNotice;
         delete s.booking.seating;
         delete s.seatingNotice;
@@ -1230,6 +1263,8 @@ function applyActionCore(state, action) {
       if (!isInt(price) || price < D.PRICE_MIN || price > priceMax) {
         return fail(state, `Ticket price must be a whole number from ${D.PRICE_MIN} to ${priceMax}`);
       }
+      const sponsorPrice = festivalPolicyFor(s)?.sponsorPrice;
+      if (sponsorPrice !== undefined && price !== sponsorPrice) return fail(state, `The sponsor contract fixes tickets at $${sponsorPrice}`);
       const ads = { ...s.promotion.ads, ...(isObj(action.ads) ? action.ads : {}) };
       for (const c of Object.keys(ads)) {
         if (!D.AD_CHANNELS.includes(c)) return fail(state, `Unknown ad channel "${c}"`);
@@ -1268,6 +1303,8 @@ function applyActionCore(state, action) {
     }
     case 'confirmPromotion': {
       if ((err = need('promote'))) return fail(state, err);
+      const sponsorPrice = festivalPolicyFor(s)?.sponsorPrice;
+      if (sponsorPrice !== undefined && s.promotion.price !== sponsorPrice) return fail(state, `Restore the sponsor ticket price of $${sponsorPrice} before opening`);
       const useServices = action.services === undefined ? s.promotion.liveServices === true : action.services === true;
       if (useServices && (action.pilot === true || s.venue.id !== 'lot' || !evaluateVenue(s.venue).bars)) {
         return fail(state, 'Live services needs the Lot and a bar, without the doors snapshot');
@@ -1298,6 +1335,7 @@ function applyActionCore(state, action) {
       if (equipment) s.show.equipment = equipment.terms;
       if (s.booking.seating) s.show.seating = seatingContract({ ...s.booking.seating, lawnPrice: s.promotion.price, seatPrice: s.promotion.seatPrice });
       if (s.booking.stages) s.show.stages = stageContract({ ...s.booking.stages, price: s.promotion.price, ads: s.promotion.ads }, s);
+      if (s.booking.festival) s.show.festival = festivalBookingPolicy(s.booking.festival, s);
       if (s.booking.run) s.show.run = heldRunTerms(s.booking.run);
       if (s.venue.id === 'club' && s.promotion.ticketing) s.show.ticketing = ticketingTerms(s.promotion.ticketing);
       const v = evaluateVenue(s.venue);
@@ -1433,7 +1471,8 @@ function applyActionCore(state, action) {
     case 'retry': {
       if ((err = need('done'))) return fail(state, err);
       // R-21: a career carries on after a bad night; it ends only when the next show is unaffordable.
-      if (action.type === 'nextShow' && s.mode !== 'sandbox' && s.cash < nextShowCost(s)) {
+      const needsVenue = s.venue.id === 'festival' && !stageOpenersFor(s).length;
+      if (action.type === 'nextShow' && !needsVenue && s.mode !== 'sandbox' && s.cash < nextShowCost(s)) {
         return fail(state, `The next show needs at least $${nextShowCost(s)} before doors and you have $${s.cash}. Start over to try again.`);
       }
       if (action.type === 'retry' && s.mode === 'scenario') {
@@ -1622,6 +1661,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
     try { s.booking.stages = stageBookingTerms(booking.stages, s); }
     catch { s.stagesNotice = 'Invalid Festival booking policy removed; cash and history were preserved'; }
   }
+  if (booking.festival !== undefined) {
+    try { s.booking.festival = festivalBookingPolicy(booking.festival, s); }
+    catch { s.stagesNotice = 'Invalid Festival booking condition removed; cash and history were preserved'; }
+  }
   if (typeof raw.stagesNotice === 'string' && raw.stagesNotice) s.stagesNotice ||= 'Earlier Festival recovery preserved cash; original terms may be incomplete';
   if (isObj(raw.layouts)) {
     for (const id of D.VENUE_ORDER) {
@@ -1635,6 +1678,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
 
   const promo = isObj(raw.promotion) ? raw.promotion : {};
   s.promotion.price = clamp(intOr(promo.price, artistFor(s.booking.artistId).fairPrice), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
+  if (!raw.show && s.booking.festival?.sponsorPrice !== undefined && s.promotion.price !== s.booking.festival.sponsorPrice) {
+    s.promotion.price = s.booking.festival.sponsorPrice;
+    s.stagesNotice = 'Restored the sponsor ticket price before doors; cash was preserved';
+  }
   const ads = isObj(promo.ads) ? promo.ads : {};
   for (const c of D.AD_CHANNELS) s.promotion.ads[c] = clamp(intOr(ads[c], 0), 0, D.AD_MAX_PER_CHANNEL);
   s.promotion.confirmed = promo.confirmed === true;
@@ -1699,6 +1746,13 @@ export function normalizeState(raw, fallbackSeed = 1) {
     if (raw.show.stages !== undefined) {
       try { s.show.stages = stageContract(raw.show.stages, s); }
       catch { s.stagesNotice = 'Invalid paid Festival terms removed; cash and signed history were preserved'; }
+    }
+    if (raw.show.festival !== undefined) {
+      try {
+        const policy = festivalBookingPolicy(raw.show.festival, s);
+        if (!s.show.stages || (policy.sponsorPrice !== undefined && policy.sponsorPrice !== s.show.stages.price)) throw new TypeError('Mismatched paid sponsor price');
+        s.show.festival = policy;
+      } catch { s.stagesNotice = 'Invalid paid Festival condition removed; cash and signed history were preserved'; }
     }
     if (raw.show.run !== undefined) {
       try {

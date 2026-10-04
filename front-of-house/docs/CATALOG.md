@@ -30,14 +30,14 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
 | `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
 | `chooseSideAct` | Select an eligible Festival side act in Book without charging or freezing its contract | `artistId` | book | stays | 1 |
-| `chooseDeal` | Book an act on a deal; optional stagePolicy1 enables Festival accounts, seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `nights`, `secondId`, `stagePolicy`, `seatingPolicy`, `runPolicy` | book | build | 9 |
+| `chooseDeal` | Book an act on a deal; optional festivalPolicy1 fixes sponsored Festival tickets; stagePolicy1 enables Festival accounts, seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `nights`, `secondId`, `stagePolicy`, `festivalPolicy`, `seatingPolicy`, `runPolicy` | book | build | 11 |
 | `chooseVenue` | Switch room before booking; each room keeps its own layout | `venueId` | book | stays | 2 |
 | `place` | Place one object, checked against R-18 | `object` | build | stays | 2 |
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
 | `remove` | Remove the object at a list index | `index` | build | stays | 1 |
 | `confirmBuild` | Lock the layout once the venue is ready | — | build | promote | 1 |
-| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `foodPlan`, `ticketing`, `sanitation`, `seatPrice` | promote | stays | 10 |
-| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 12 |
+| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `foodPlan`, `ticketing`, `sanitation`, `seatPrice` | promote | stays | 11 |
+| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 13 |
 | `chooseDoorCrew` | Opt-in doors trial only: put the spare worker on the bar or the gate | `choice` | show | stays | 2 |
 | `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
 | `assignLiveWorker` | Live pilot: transfer the worker between admission and bar | `station` | show | stays | 2 |
@@ -92,6 +92,8 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `chooseDeal` | ${a.name} will only play for a guarantee after the last door deal |
 | `chooseDeal` | Choose a distinct side act eligible for a door deal |
 | `chooseDeal` | Stage accounting needs a Festival booking with two distinct acts |
+| `chooseDeal` | Unknown Festival booking policy |
+| `chooseDeal` | Festival booking policy needs stage accounting |
 | `chooseDeal` | That booking cannot use separate seat sales |
 | `chooseDeal` | That booking cannot use a held-run policy |
 | `chooseVenue` | Unknown room |
@@ -103,6 +105,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `remove` | No object at that position in the list |
 | `confirmBuild` | *Every missing requirement and placement problem, joined with "; " (R-18); "The venue has no capacity" if there are none* |
 | `setPromotion` | Ticket price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
+| `setPromotion` | The sponsor contract fixes tickets at $${sponsorPrice} |
 | `setPromotion` | Unknown ad channel "${c}" |
 | `setPromotion` | Ad spend must be a whole number from 0 to ${D.AD_MAX_PER_CHANNEL} |
 | `setPromotion` | Choose live services only for the Lot |
@@ -112,6 +115,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `setPromotion` | Sanitation trial is available in the Lot |
 | `setPromotion` | Choose valid sanitation terms |
 | `setPromotion` | Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
+| `confirmPromotion` | Restore the sponsor ticket price of $${sponsorPrice} before opening |
 | `confirmPromotion` | Live services needs the Lot and a bar, without the doors snapshot |
 | `confirmPromotion` | Unknown live flow version |
 | `confirmPromotion` | Normal departure requires live services |
