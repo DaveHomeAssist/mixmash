@@ -239,6 +239,10 @@
     {
       "label": "Preflight delivery and CI",
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/58"
+    },
+    {
+      "label": "Delegated decisions and delivery",
+      "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
   "kickoffPrompt": "Read the Front of House decision log, packet and feature briefs in the active MixMash checkout. Reconcile current source with NEXT_STEPS.json. D1–D11 are settled: D2 B, all others A. Under CT-DEC-19, make routine product and implementation decisions autonomously within accepted scope, document material trade-offs and do not re-ask these choices. Progress the bounded realistic Lot milestone, followed by rentals-based live operations, research and ownership in the accepted order. Verify source rights or use independently authored alternatives; preserve engine/save parity and actual device/human evidence gates. Run applicable checks and complete delivery, then refresh this project and its existing Next Steps Board card. Preserve unrelated work and current release gates.",
@@ -289,7 +293,8 @@
       "privacyAndLinks": "passed; no archive files/images or private paths added"
     },
     "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
-    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19."
+    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
+    "decisionPR": "https://github.com/DaveHomeAssist/mixmash/pull/59"
   },
   "decisionState": {
     "D1": {

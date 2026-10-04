@@ -3,6 +3,8 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Autonomous milestone decisions
 
+Delivery and mandatory checks: [PR #59](https://github.com/DaveHomeAssist/mixmash/pull/59).
+
 - Dave explicitly delegated decision making and instructed Codex not to ask again. Codex selected D6–D11 A in [CT-DEC-19](docs/DECISIONS.md#ct-dec-19-delegated-milestone-decisions): services before research, rentals before ownership, preserve existing art through replacement, keep tuning and later rooms experimental while collecting evidence, and promote after the Lot and operations pilots plus release gates.
 - Updated the packet, dependent briefs, art/renderer references, topic index and next-steps projection. Removed all six questions from the active board projection and recorded the decider and authority separately from Dave’s direct D1–D5 answers. Earlier progress entries remain historical snapshots.
 - Remaining work concerns implementation and evidence; it is not an unanswered D6–D11 questionnaire. CI, delivery and board parity are verified on the delivery PR. No gameplay, assets, saves or release visibility changed.
