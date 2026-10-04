@@ -22,10 +22,7 @@
  * non-zero. An expected-fail never weakens the assertion: the check still runs
  * and still has to fail.
  *
- * macOS note: Playwright 1.61's WebKit build (v2311) blocks its main thread when MarsScape
- * stores its offline HMAC CryptoKey in IndexedDB (a WebKit bug fixed in later builds; Linux CI is
- * unaffected). Point SMOKE_WEBKIT_EXECUTABLE at a newer Playwright WebKit (for example
- * ~/Library/Caches/ms-playwright/webkit-2359/pw_run.sh) or the Mars row reports an unresponsive page.
+ * SMOKE_WEBKIT_EXECUTABLE points at another WebKit build if the managed one is not installed.
  *
  * Environment: SMOKE_BASE_URL, SMOKE_CHROMIUM_CHANNEL, SMOKE_WEBKIT_EXECUTABLE, SMOKE_REPORT_DIR,
  * SMOKE_ENGINE=webkit|chromium, SMOKE_CONFIGS=<id substring>,
@@ -68,6 +65,12 @@ export const GAMES = [
   { id: 'play', name: 'MIXMASH', path: '/play/', nav: true },
   {
     id: 'mars', name: 'MarsScape', path: '/mars/', nav: true,
+    // On boot MarsScape stores an offline HMAC CryptoKey in IndexedDB. Automation WebKit builds wedge
+    // their main thread on that (a keychain lookup), so WebKit runs without IndexedDB; the game then keeps
+    // the key in memory, which changes nothing this rail measures.
+    async prepare(context, config) {
+      if (config.engine === 'webkit') await context.addInitScript(() => { try { Object.defineProperty(window, 'indexedDB', { value: undefined, configurable: true }); } catch { /* keep going */ } });
+    },
     // The board sits behind the boot dialog; a touch on Start Expedition opens it.
     async begin(page) {
       await page.waitForFunction(() => { const b = document.getElementById('startButton'); return b && !b.disabled && b.getBoundingClientRect().width > 0; }, null, { timeout: 20000 });
@@ -491,19 +494,20 @@ export const KIT_CHECKS = [
           document.dispatchEvent(new Event('visibilitychange'));
         };
         const Ctor = window.AudioContext || window.webkitAudioContext;
-        const ctx = new Ctor();
-        try { await ctx.resume(); } catch { /* policy */ }
-        const unlocked = (await settle(ctx, 'running')) === 'running';
-        const tracked = window.__mixmashNav.audioContexts.includes(ctx);
+        const ctx = Ctor ? new Ctor() : null;
+        if (ctx) { try { await ctx.resume(); } catch { /* policy */ } }
+        const unlocked = ctx ? (await settle(ctx, 'running')) === 'running' : false;
+        const tracked = ctx ? window.__mixmashNav.audioContexts.includes(ctx) : true;
 
         hidden(true);
         window.dispatchEvent(new Event('blur')); // overlapping reason
-        const whileHidden = await settle(ctx, 'suspended');
+        const whileHidden = ctx ? await settle(ctx, 'suspended') : null;
         const pausedOnce = events.filter((e) => e.startsWith('pause')).length;
         hidden(false);
         window.dispatchEvent(new Event('focus'));
-        const afterShow = await settle(ctx, 'running');
+        const afterShow = ctx ? await settle(ctx, 'running') : null;
         const cycle = events.slice();
+        if (!ctx) return { noAudio: true, pausedOnce, cycle, unlocked, tracked };
 
         // A context the player muted stays suspended through a hide and show.
         window.__mixmashNav.setMuted(true);
@@ -525,7 +529,9 @@ export const KIT_CHECKS = [
         if (result.mutedAfter === 'running') problems.push('muted audio was resumed by lifecycle');
         if (result.unmuted !== 'running') problems.push(`audio ${result.unmuted} after unmute`);
       }
-      const note = result.unlocked ? 'audio suspend/resume verified' : 'engine kept the AudioContext locked, so suspend/resume is asserted by events only (audio unlock stays a real-device check)';
+      const note = result.noAudio ? 'this engine has no AudioContext, so audio suspension is not exercised here'
+        : result.unlocked ? 'audio suspend/resume verified'
+          : 'engine kept the AudioContext locked, so suspend/resume is asserted by events only (audio unlock stays a real-device check)';
       return problems.length ? bad(problems.join('; ')) : ok(note);
     },
   },
@@ -748,10 +754,11 @@ export async function run({ baseUrl, engines, configFilter, gameIds, reportDir }
   // Each game and each kit check gets its own browser context: storage never leaks between rows
   // (the mute key, IndexedDB), and the context is what gets closed. Closing a bare page can hang
   // when the WebKit build and the Playwright library are a version apart.
-  const withPage = async (config, fn) => {
+  const withPage = async (config, fn, prepare) => {
     const context = await browsers[config.engine].newContext(contextOptions(config));
     context.setDefaultTimeout(20000);
     try {
+      if (prepare) await prepare(context, config);
       return await fn(await context.newPage());
     } finally {
       await withTimeout(context.close(), 15000, 'context.close').catch(() => {});
@@ -783,7 +790,7 @@ export async function run({ baseUrl, engines, configFilter, gameIds, reportDir }
           } catch (error) {
             results.push({ config: config.id, row: game.id, check: 'load', status: 'fail', detail: `could not load ${game.path}: ${String(error.message).split('\n')[0]}` });
           }
-        });
+        }, game.prepare);
       }
       if (!gameIds || gameIds.includes('kit')) {
         for (const check of KIT_CHECKS) {
