@@ -616,6 +616,10 @@
           "description": "node front-of-house/tools/vendor-three.mjs --check"
         },
         {
+          "name": "npm run smoke:front-of-house-floor",
+          "description": "node test/front-of-house-floor-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-lot",
           "description": "node test/front-of-house-lot-smoke.mjs"
         },
@@ -630,6 +634,10 @@
         {
           "name": "npm run check:front-of-house-assets",
           "description": "node front-of-house/tools/lot-assets.mjs --check"
+        },
+        {
+          "name": "npm run perf:front-of-house-hud",
+          "description": "node test/front-of-house-hud-performance.mjs"
         },
         {
           "name": "npm run perf:front-of-house",
@@ -2277,6 +2285,26 @@
       "title": "front-of-house-3d-smoke.mjs",
       "description": "Full application integration: safe gestures, renderer recovery and identical saved-show outcomes.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-3d-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-floor-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-floor-smoke.mjs",
+      "description": "Classic floor cache: pixel/picking parity, invalidation, allocation failure and disposal.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-floor-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-hud-performance.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-hud-performance.mjs",
+      "description": "Full client diagnostics: identical live-show saves with direct/cached classic floors.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-hud-performance.mjs",
       "open": null
     },
     {

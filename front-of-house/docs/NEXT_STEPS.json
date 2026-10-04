@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "f258625 · Shadow reuse and guest transitions delivered; 18 integrated Metal runs",
+  "head": "Classic floor cache locally verified; full HUD comparison prepared",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live services, guest transitions and unchanged-shadow reuse are deployed and verified. The departure core is delivered; controls are in PR71. All 18 integrated Metal windows are valid. Classic floor caching, full-HUD/DPR/device evidence, food, sanitation and later phases remain open.",
+  "statusReason": "Classic floor caching passes exact pixel and picking checks in both browser engines, plus actual-client settlement parity. Full HUD repeated measurements, CI and delivery are next; remaining operations and later phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -20,8 +20,8 @@
     "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
   ],
   "nextStep": {
-    "title": "Cache the classic floor and measure the full HUD",
-    "why": "The 3D shadow slice is delivered and measured. HUD step 6 still needs its classic floor cache and 1920x1080 full-client comparison; departure controls continue separately in PR71.",
+    "title": "Measure and deliver the classic floor cache",
+    "why": "The cache and real-client measurement harness are locally verified. Freeze the source, complete the 12 full-HUD windows, then verify CI, merge, Pages and hosted behavior.",
     "doneWhen": "Static floor caching preserves exact pixels, sightline occlusion and hit testing across room/layout/camera/resize changes; measure the same full-HUD fixtures before and after at declared pixel ratio. Continue the remaining guest operations, research, ownership, venue and release phases.",
     "effort": "L",
     "owner": "either",
@@ -592,7 +592,19 @@
           "Physical device and human acceptance"
         ],
         "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
-        "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI."
+        "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI.",
+        "slices": [
+          {
+            "id": "FOH-P01c",
+            "status": "implemented-local-verification",
+            "scope": "Classic floor cache and full HUD comparison",
+            "evidence": [
+              "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
+              "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
+              "Four quick full-HUD harness windows passed; 12 full repeated windows, CI, merge and hosted verification pending."
+            ]
+          }
+        ]
       },
       {
         "id": "FOH-O01",
