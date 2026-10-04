@@ -90,7 +90,7 @@ function loadState() {
 
 let state = loadState();
 const ui = {
-  tool: 'stage', placeTool: 'stage', dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
+  tool: 'select', placeTool: 'stage', selection: null, dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
   mounted: null, play: null, raf: 0, sightKey: '', sight: { clear: new Set(), blocked: new Set() }, confirmNew: false,
 };
 
@@ -114,6 +114,8 @@ const history = { undo: [], redo: [], restoring: false, drag: null };
 const copyLayout = (objects) => objects.map((o) => ({ ...o }));
 
 function resetHistory() {
+  ui.selection = null;
+  ui.tool = 'select';
   history.undo = [];
   history.redo = [];
   history.drag = null;
@@ -158,6 +160,10 @@ function act(action, { quiet = false } = {}) {
   }
   if (next.phase !== before.phase) resetHistory();
   else if (before.phase === 'build' && !history.restoring && LAYOUT_ACTIONS.includes(action.type)) recordLayout(before.venue.objects);
+  if (LAYOUT_ACTIONS.includes(action.type)) {
+    ui.selection = null;
+    if (win.kind === 'selection') closeWindow();
+  }
   state = next;
   persist();
   if (!quiet) say('');
@@ -370,7 +376,7 @@ function buildPanel() {
       </div>
     </div>
     <div class="plate at-bl tools-plate" role="group" aria-label="Object to place" data-tab="Tools">
-      <div class="tiles">${tiles}
+      <div class="tiles"><button type="button" class="tile" data-act="select" id="select-btn" aria-pressed="false" title="Select · Escape cancels placement"><span class="tile-glyph" aria-hidden="true">↖</span><span class="tile-name">Select</span></button>${tiles}
         <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key ${binding('bulldoze').keysLabel}">
           <span class="tile-key" aria-hidden="true">${binding('bulldoze').keysLabel}</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Bulldoze</span>
         </button>
@@ -446,7 +452,10 @@ function updateBuild() {
   const doze = $('#doze-btn');
   doze.classList.toggle('on', dozing);
   doze.setAttribute('aria-pressed', dozing ? 'true' : 'false');
-  $('#tool-info').textContent = dozing
+  const selecting = ui.tool === 'select';
+  $('#select-btn').setAttribute('aria-pressed', String(selecting));
+  $('#select-btn').classList.toggle('on', selecting);
+  $('#tool-info').textContent = selecting ? 'Select: click an object to inspect it. Choose a tool to place; Escape returns here.' : dozing
     ? 'Bulldozing: click or drag across anything you want gone. B places again.'
     : `Placing the ${label(ui.tool).toLowerCase()}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. Click a tile for its top corner.`;
   if (win.kind === 'lot') refreshWindow(lotDetailsHtml());
@@ -488,6 +497,30 @@ function objectIndexAt(x, y) {
   return -1;
 }
 
+function selectTool() {
+  ui.tool = 'select';
+  ui.selection = null;
+  ui.dozing = false;
+  history.drag = null;
+  document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = false; });
+  el.boardStatus.textContent = 'Select an object to inspect it. Nothing will be placed.';
+  updateBuild();
+  draw();
+}
+
+function inspectAt(tile) {
+  const index = objectIndexAt(tile.x, tile.y);
+  ui.selection = index >= 0 ? index : null;
+  ui.cursor = tile;
+  draw();
+  if (index < 0) { el.boardStatus.textContent = describeTile(tile); return; }
+  const object = state.venue.objects[index];
+  openWindow('selection', label(object.type),
+    '<p class="lede">Tile ' + object.x + ', ' + object.y + ' · ' + esc(toolFacts(object.type)) + '</p>' +
+    '<p>Removal can be undone while you remain in Build.</p>', el.canvas,
+    { foot: '<button type="button" data-act="remove-selected">Remove object</button><button type="button" class="primary" data-win="close">Done</button>' });
+}
+
 function ghostAt(tile) {
   const ghost = { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot };
   const { problems } = validateLayout([...state.venue.objects, ghost], state.venue);
@@ -496,6 +529,7 @@ function ghostAt(tile) {
 
 function placeAt(tile) {
   if (state.phase !== 'build' || !tile) return;
+  if (ui.tool === 'select') { inspectAt(tile); return; }
   if (ui.tool === 'bulldoze') { doze(tile); return; }
   if (act({ type: 'place', object: { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot } }, { quiet: true })) {
     say(`Placed the ${label(ui.tool).toLowerCase()} at ${tile.x}, ${tile.y}.`);
@@ -512,6 +546,7 @@ function doze(tile) {
 }
 
 function toggleBulldoze() {
+  ui.selection = null;
   if (ui.tool === 'bulldoze') ui.tool = ui.placeTool || 'stage';
   else {
     if (ui.tool !== 'bulldoze') ui.placeTool = ui.tool;
@@ -520,7 +555,7 @@ function toggleBulldoze() {
   document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === ui.tool; });
   el.boardStatus.textContent = ui.tool === 'bulldoze'
     ? 'Bulldozer. Click or drag across an object to remove it. B places again. The fence kit stays on its button.'
-    : `Placing: ${label(ui.tool)}.`;
+    : ui.tool === 'select' ? 'Select an object to inspect it.' : `Placing: ${label(ui.tool)}.`;
   if (state.phase === 'build') updateBuild();
   draw();
 }
@@ -1113,6 +1148,7 @@ function draw() {
     showClear: state.phase === 'build' && ui.showClear,
     cursor: null,
     ghost: null,
+    selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
     incident: night && state.show ? state.show.incidentId : null,
     night,
@@ -1127,7 +1163,7 @@ function draw() {
     if (at) {
       scene.cursor = at;
       scene.cursorColor = ui.tool === 'bulldoze' ? '#ef4444' : null;
-      if (ui.tool !== 'bulldoze') scene.ghost = ghostAt(at);
+      if (ui.tool !== 'bulldoze' && ui.tool !== 'select') scene.ghost = ghostAt(at);
     }
   }
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
@@ -1250,6 +1286,7 @@ el.canvas.addEventListener('click', (e) => {
   if (tile) ui.cursor = tile;
   // Removal hit-tests the sprites first: a tall prop's top can sit above the ground grid.
   if (e.shiftKey) removeUnder(e);
+  else if (ui.tool === 'select') { const target = targetAt(e); if (target) inspectAt(target); }
   else if (tile) placeAt(tile);
 });
 el.canvas.addEventListener('contextmenu', (e) => {
@@ -1375,6 +1412,7 @@ function onAct(e) {
   else if (a === 'open-settlement') openSettlement(target);
   else if (a === 'last-sheet') openSettlement(target, { signed: true });
   else if (a === 'history') openWindow('history', `Show history (${state.history.length})`, historyHtml(), target, { scrolls: true });
+  else if (a === 'select') selectTool();
   else if (a === 'bulldoze') toggleBulldoze();
   else if (a === 'undo') undoLayout();
   else if (a === 'redo') redoLayout();
@@ -1385,7 +1423,16 @@ function onAct(e) {
   } else if (a === 'starter') {
     if (act({ type: 'setLayout', objects: venueSpec(state.venue).starter }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
   } else if (a === 'clear-lot') {
-    if (act({ type: 'setLayout', objects: [] }, { quiet: true })) say('Cleared the lot.');
+    if (!state.venue.objects.length) { say('The lot is already clear.'); return; }
+    openWindow('clear', 'Clear the layout?', '<p>Remove all ' + state.venue.objects.length + ' placed objects? Undo can restore this layout while you remain in Build.</p>', target,
+      { foot: '<button type="button" data-win="close">Cancel</button><button type="button" class="primary" data-act="confirm-clear">Clear all objects</button>' });
+  } else if (a === 'confirm-clear' && win.kind === 'clear' && state.phase === 'build') {
+    closeWindow();
+    if (act({ type: 'setLayout', objects: [] }, { quiet: true })) say('Cleared the lot. Undo restores the layout.');
+  } else if (a === 'remove-selected' && win.kind === 'selection' && state.phase === 'build') {
+    const index = ui.selection;
+    closeWindow();
+    if (index !== null && state.venue.objects[index]) act({ type: 'remove', index });
   } else if (a === 'remove') {
     const i = Number(target.dataset.index);
     const type = state.venue.objects[i] && state.venue.objects[i].type;
@@ -1424,6 +1471,7 @@ el.panel.addEventListener('change', (e) => {
 });
 
 function pickTool(type) {
+  ui.selection = null;
   ui.tool = type;
   ui.placeTool = type;
   document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === type; });
@@ -1615,6 +1663,7 @@ document.addEventListener('keydown', (e) => {
   if (matches('close', e) && !el.menu.hidden) { e.preventDefault(); setMenu(false); return; }
   if (matches('menu', e) && !e.target.closest('input, textarea, select')) { e.preventDefault(); setMenu(el.menu.hidden); return; }
   if (state.phase !== 'build' || !el.menu.hidden || typing(e.target)) return;
+  if (matches('close', e)) { e.preventDefault(); selectTool(); return; }
   if (matches('pick-tool', e)) {
     e.preventDefault();
     pickTool(PLACEABLE[Number(e.key) - 1]);
@@ -1710,6 +1759,11 @@ window.render_game_to_text = () => {
   return JSON.stringify({
     game: 'front-of-house',
     phase: state.phase,
+    build: state.phase === 'build' ? {
+      tool: ui.tool, selected: ui.selection === null ? null : state.venue.objects[ui.selection], cursor: ui.cursor,
+      coordinates: 'logical tiles; origin at grid minimum; x right, y toward stage front at rotation 0',
+      dialog: win.kind, undo: history.undo.length, redo: history.redo.length,
+    } : null,
     cash: state.cash,
     deal: state.booking.deal,
     artist: state.booking.artistId,
@@ -1730,6 +1784,7 @@ window.__frontOfHouse = {
   act: (action) => act(action),
   skip: () => skipToIncident(),
   importCode,
+  buildTools: () => ({ tool: ui.tool, selection: ui.selection, undo: history.undo.length, redo: history.redo.length }),
   board: () => board.info(),
   boardPlace: (x, y) => board.placeOf(x, y),
   boardZoom: (zoom, px, py) => board.zoomTo(zoom, px, py),

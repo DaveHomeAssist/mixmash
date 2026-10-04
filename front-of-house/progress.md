@@ -1,6 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-04: Lot controls — Select and safe removal
+
+- FOH-V01a / FB-07: Build starts in Select. Click, touch or Enter inspects an object without placing; a dashed footprint identifies it. Inspection has a named dialog and Remove action; Escape closes the dialog first, then cancels placement or bulldozing. Single removal uses Undo; Clear counts objects and confirms once. Deletion and dialog cancellation restore focus.
+- Selection is transient, invalidated on layout/phase/load/history changes, and exposed in the text-state diagnostic. The 50-step history remains the sole undo implementation. Tool controls keep two rows on desktop and use three readable rows on phones.
+- Local verification: 28 full-game browser checks, including keyboard/touch selection, modal precedence, clear cancellation/confirmation, undo and focus; 225 repository tests (including 44 engine/key-table tests); build/reference generation; screenshots inspected. Final CI/Pages/live proof belongs to the delivery PR. The 3D adapter/sample remains the next slice.
+
 ## 2026-10-04: Remaining phase execution — foundation
 
 - Dave authorized continuing through all remaining phases. Added the active, dependency-ordered execution table to [ROADMAP.md](ROADMAP.md), with stable FOH item IDs and matching evidence state in [NEXT_STEPS.json](docs/NEXT_STEPS.json). D1–D11 remain settled under delegated authority.

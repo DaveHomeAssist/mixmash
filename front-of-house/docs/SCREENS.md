@@ -31,7 +31,7 @@ stateDiagram-v2
     Done --> Book: Start over (retry)
 ```
 
-Windows (Deals, Lot details, Last settlement, Show history) and the menu open over any screen and close back to it; they never change the phase, except signing in the settlement window. The full action-by-phase grid is [CATALOG.md section 3](CATALOG.md#3-transition-grid).
+Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlement, Show history) and the menu open over any screen and close back to it; they never change the phase, except signing in the settlement window. The full action-by-phase grid is [CATALOG.md section 3](CATALOG.md#3-transition-grid).
 
 ## 2. What is always on screen
 
@@ -60,8 +60,8 @@ Windows (Deals, Lot details, Last settlement, Show history) and the menu open ov
 | --- | --- |
 | Purpose | Lay out the room until it passes R-18 |
 | Arrives from | Book; Back from Promote |
-| Shows | Full board with sightlines on. Top left: phase card and message. Top right: capacity, power bar, clear view, blocked tiles, staff, costs so far, the readiness line, Fence, Sightlines and Details. Bottom left: tools 1 to 8 with sprites and costs, Bulldoze, Rotate, Undo, Redo. Bottom right: Suggested layout, Clear, Back, **Lock the layout** |
-| Controls → engine | Click or Enter on a tile → `place`. Bulldoze or Delete → `remove`. Fence → `place` or `remove` the fence kit. Suggested layout → `setLayout` with the room's starter. Clear → `setLayout` with nothing. Details → Lot details window (remove any object by name). Undo or Redo → `setLayout` with the layout from before or after the last change (a bulldozer drag is one change; the list is kept in memory only and clears when the phase changes or a game is started or loaded). Lock the layout → `confirmBuild` (refused with the missing items until ready) |
+| Shows | Full board with sightlines on. Top left: phase card and message. Top right: capacity, power bar, clear view, blocked tiles, staff, costs so far, the readiness line, Fence, Sightlines and Details. Bottom left: Select (the default), tools 1 to 8 with sprites and costs, Bulldoze, Rotate, Undo, Redo. Bottom right: Suggested layout, Clear, Back, **Lock the layout** |
+| Controls → engine | With a placement tool, click or Enter on a tile → `place`. In Select, click/touch/Enter → inspect the current object without changing the layout; a dashed footprint marks it. Escape closes dialogs/menu first, then returns a placement tool or bulldozing to Select. Bulldoze or Delete → `remove`. Fence → `place` or `remove` the fence kit. Suggested layout → `setLayout` with the room's starter. Clear → one dialog showing the current object count; confirm → `setLayout` with nothing. Cancel preserves the layout. Details → Lot details window (remove any object by name). Undo or Redo → `setLayout` with the layout from before or after the last change (a bulldozer drag is one change; the list is kept in memory only and clears when the phase changes or a game is started or loaded). Lock the layout → `confirmBuild` (refused with the missing items until ready) |
 | Phone | Peek sheet with tabs Lot, Tools, Actions |
 | Leaves to | Promote, or Book |
 
@@ -118,6 +118,8 @@ Windows (Deals, Lot details, Last settlement, Show history) and the menu open ov
 | Show history | Done | Every settled show, newest first | The only window allowed to scroll |
 | How the deals work | Book: Deals (ⓘ) | Guarantee, door deal, and sponsor in Split Acre | |
 | Lot details | Build: Details | Every placed object with a remove button | Keyboard route to removing by name |
+| Object inspection | Build: Select, then click/touch/Enter on an object | Name, coordinates, footprint, rental cost and Remove | Never places; removal uses existing Undo and returns focus to the canvas. Selection is transient and clears after layout/phase/load/history changes |
+| Clear confirmation | Build: Clear | Object count, Cancel and Clear all objects | One confirmation, one undo step; cancel returns focus to Clear |
 | Menu | Menu button or ? | Dark controls, full screen, source link, New game (Career, Sandbox, Wet lot), keys help, Save and load | New game asks for a second press when a game is under way |
 
 All windows are modal dialogs: focus moves in, Tab stays inside, Escape or Close returns focus to the button that opened them.
@@ -155,10 +157,10 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | Input | Where | Does |
 | --- | --- | --- |
 | ? | Anywhere outside a text field | Opens or closes the menu |
-| Escape | Window or menu | Closes it |
+| Escape | Window/menu first, otherwise Build | Closes the dialog/menu; otherwise cancels placement or bulldozing and returns to Select |
 | 1 to 8 | Build | Picks Stage, PA S, PA M, Lights, Bar, Restroom, Gate, Exit |
 | Arrows | Board, Build | Moves the build cursor |
-| Enter or Space | Board, Build | Places at the cursor |
+| Enter or Space | Board, Build | Places with a placement tool, or inspects the object in Select |
 | Delete or Backspace | Board, Build | Removes at the cursor |
 | R | Board, Build | Rotates the next object |
 | B | Board, Build | Bulldoze on or off |
