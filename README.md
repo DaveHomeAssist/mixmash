@@ -16,12 +16,13 @@ The studio hub at **[mixmash.games](https://mixmash.games)**, served from this r
 | `/zelda2mario/` | Evidence-bound public status dashboard for the source-only Zelda2MarioCoop project. The game itself is not yet published as a playable route. |
 | `/admin/` | **Admin index** — every tracked file and reference in this repo, organised by game (one tab each) and purpose (docs, decisions, roadmaps and logs, evidence, art, tests, tooling, source, API, builds, config), with search, category filters and copyable paths. Rendered from the generated `admin/catalog.json`; `noindex`, not in the sitemap, and never links local paths, Notion or private source. |
 | `ROADMAP.md` | Production roadmap **for the MIXMASH fighter specifically** — phased DoD/checkpoints/verification standards |
+| `src/kit/` | **MixKit**, the shared game layer: `nav.js` (hub, mute all, fullscreen), `input.js`, `lifecycle.js`, `viewport.css`, `stage.js`, `save.js`, `pwa.js`. See "MixKit" below. |
 | `src/combat.js` | Canonical, tested knockback math for the fighter (`finite()` guard + `calcKnockback`) |
 | `mars/engine.mjs`, `mars/server.mjs` | Shared MarsScape game engine + the Node authority server (SQLite locally) |
 | `mars/commissioned-art.mjs`, `mars/golden-scene.html` | DEC-79 validated commissioned-art cache and in-renderer golden-scene review surface |
 | `api/` | Vercel serverless functions — the production authority API (Blob-backed sessions) |
 | `test/*.test.{js,mjs}`, `mars/test-*.mjs`, `mars/parity/parity.test.mjs` | Node's built-in test runner (`node --test`) — fighter combat math, the inline combat parity guard, public roster/arena count guard, extracted play modules, MixKit save, MarsScape engine/API/handler/art/parity tests |
-| `.github/workflows/ci.yml` | CI — on pull requests, manual dispatch, and pushes to `gh-pages` touching any game route, `api/`, `src/`, `test/`, the hub pages, the PWA shell, or package files: runs `npm test`, `vercel-build`, the DEC-79 art validation/report/contact-sheet drift gates, `sim`, then the Playwright rails (`art:visual`, `smoke:play`, `smoke:catalog`, `smoke:landing`, `smoke:zelda2mario`, `smoke:front-of-house`, `smoke:admin`), plus the Front of House balance baseline drift gate (`sim:front-of-house`) |
+| `.github/workflows/ci.yml` | CI — on pull requests, manual dispatch, and pushes to `gh-pages` touching any game route, `api/`, `src/`, `test/`, the hub pages, the PWA shell, or package files: runs `npm test`, `vercel-build`, the DEC-79 art validation/report/contact-sheet drift gates, `sim`, then the Playwright rails (`art:visual`, `smoke:play`, `smoke:catalog`, `smoke:landing`, `smoke:zelda2mario`, `smoke:front-of-house`, `smoke:admin`, `smoke:mobile`), plus the Front of House balance baseline drift gate (`sim:front-of-house`) |
 
 ## Commands
 
@@ -36,6 +37,7 @@ npm run smoke:front-of-house # Lot Night end to end, reload, save codes (includi
 npm run sim:front-of-house   # regenerate front-of-house/docs/BALANCE_BASELINE.md (CI fails on drift or a FAIL verdict)
 npm run admin:index     # regenerate admin/catalog.json after adding, removing or renaming any tracked file
 npm run smoke:admin     # admin index: no page scroll at six widths, themes, keyboard tabs, filters, search, privacy
+npm run smoke:mobile    # MixKit mobile and tablet touch rail: 12 touch configs (WebKit and Chromium) across every game plus the kit itself
 npm run start:mars      # run the MarsScape authority server locally (SQLite) — http://localhost:8787/mars/
 npm run vercel-build    # syntax-check all api/ and mars/ server files (what Vercel's build runs)
 npm run art:validate    # validate DEC-79 and verify the runtime index plus strict-report parity
@@ -91,6 +93,26 @@ records where each game's status lives, never the status itself. It is public
 like every Pages route, so keep it public-safe: no local paths, no Notion links,
 and the private Zelda2MarioCoop source named but not linked. For live readback,
 run `ADMIN_BASE_URL=https://mixmash.games/admin/ npm run smoke:admin`.
+
+## MixKit
+
+`src/kit/` is the one shared layer every game uses; there are no mobile-only forks. Scripts load before the game's own scripts (as `nav.js` always has). A page that loads the shared nav declares `viewport-fit=cover` in its viewport meta (the hub pages load only `pwa.js` and have no safe-area padding yet, so they do not). Touch capability is `matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0`; it is never a screen-width test.
+
+| File | Use it for | API and events |
+|---|---|---|
+| `nav.js` | The shared bar: hub, mute all, fullscreen (only where `requestFullscreen` exists), source. 44 px targets; idle state is one 44 px handle, not a faded bar; positioned from the safe-area variables. | `window.__mixmashNav`: `element`, `isMuted()`, `setMuted()`, `audioContexts`, `expand()`, `collapse()`, `isCollapsed()`, `setSlot(name, {top,right,bottom,left})`, `getSlot()`, `setCollapsible(bool)`. A game with HUD in the top-left declares another slot (`top-left` default, `top-right`, `bottom-left`, `bottom-right`) with `data-nav-slot="..."` on the script tag or `setSlot()`; `data-nav-collapse="off"` keeps the bar open. Event `mixmash:mute`. |
+| `input.js` | Touch capability, the player's current input mode, and gestures: tap, long-press as the secondary action, two-finger pan. | `MixKit.input.touchCapable()`, `.mode()` (`touch`, `mouse`, `keyboard`), `.gestures(el, {onTap, onSecondary, onPanStart, onPan, onPanEnd}, opts)` returning `{destroy()}`. Sets `data-input-mode` on `<html>`; event `mixkit:input-mode` `{mode, previous, touchCapable}`. |
+| `lifecycle.js` | One source for `visibilitychange`, `pagehide`/`pageshow`, `freeze`/`resume`, window `blur`/`focus`. Suspends every AudioContext `nav.js` tracks on pause and resumes only the ones it suspended, never while Mute All is on. | `MixKit.lifecycle.isPaused()`, `.reasons()`, `.onPause(fn)`, `.onResume(fn)`. Events `mixkit:pause` `{reason, reasons}` and `mixkit:resume` `{reason}`. |
+| `viewport.css` | Locked root (`overflow: hidden`, `overscroll-behavior: none`), `--safe-top/right/bottom/left` from `env(safe-area-inset-*)`, the `.mixkit-stage` 100dvh stage (its content box is the safe area), and `.mixkit-overlay`, a menu overlay that scrolls instead of clipping. | CSS classes and custom properties. |
+| `stage.js` | Fits a canvas inside the safe area at its base aspect ratio, sizes the backing store to `devicePixelRatio` (cap `dprCap`, default 2), sets `touch-action: none`, and shows one shared rotate prompt when a game declares a preferred orientation and the fitted canvas covers under 50% of the screen. | `MixKit.stage.attach(canvas, {width, height, container, dprCap, orientation, touchAction, onFit})` returning `{fit, info, setBase, setDprCap, destroy}`; pure helpers `fitRect`, `backingSize`, `needsRotate`; event `mixkit:stage-fit`. |
+
+Every added kit file goes into the `sw.js` precache list, and `VERSION` is bumped. `test/kit-layer.test.mjs` unit-tests the logic; `test/mobile-touch-smoke.mjs` exercises it in real browsers.
+
+### Mobile touch rail
+
+`npm run smoke:mobile` loads every game at 12 touch configs: WebKit at 390x844, 430x932, 768x1024, 820x1180 and 1024x1366, and Chromium with an Android user agent at 360x800, each in both orientations (`hasTouch` and `isMobile`). Per game and config it asserts no vertical page scroll, no horizontal overflow, 44 px targets (shared nav, then everything else) and a nav that stays clear of the device safe-area insets (simulated through `--safe-*`, since a headless browser reports none). Per config it also drives the kit on a blank page: viewport locking and scrolling overlays, input and gestures, lifecycle and audio suspension, stage fit, DPR and rotate prompt, and the nav handle, slots and contrast.
+
+The configs, games and checks are exported tables in the file: later phases add a config, a game or a check there instead of adding a rail. A check that a game does not yet pass is listed in `EXPECTED_FAIL` with the audit finding it waits on; it still runs and still has to fail, and an entry whose check starts passing is reported as XPASS so it gets removed. Run it locally with `SMOKE_CHROMIUM_CHANNEL=chrome` to use the installed Chrome for the Chromium config (CI installs `chromium webkit`), and against the live site with `SMOKE_BASE_URL=https://mixmash.games/ npm run smoke:mobile`. `SMOKE_ENGINE`, `SMOKE_CONFIGS`, `SMOKE_GAMES`, `SMOKE_REPORT_DIR` and `SMOKE_STRICT_XPASS=1` narrow, relocate or tighten a run.
 
 ## MarsScape's architecture (as of 2026-08-27)
 

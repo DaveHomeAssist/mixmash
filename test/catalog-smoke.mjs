@@ -1149,12 +1149,14 @@ try {
       const bar = document.querySelector('.mixnav');
       if (!bar) return null;
       return {
-        controls: bar.querySelectorAll('a, button').length,
+        controls: bar.querySelectorAll('a, button:not(.mixnav-handle)').length,
+        handle: bar.querySelectorAll('.mixnav-handle').length,
         api: !!window.__mixmashNav,
       };
     });
     assert.ok(nav, `HUB-102 nav is present on ${path}`);
     assert.equal(nav.controls, 4, `HUB-102 nav has all four controls on ${path}`);
+    assert.equal(nav.handle, 1, `HUB-102 nav collapses to one handle on ${path}`);
     assert.equal(nav.api, true, `HUB-102 nav API is exposed on ${path}`);
     await context.close();
   }

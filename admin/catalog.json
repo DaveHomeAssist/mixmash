@@ -580,6 +580,10 @@
           "description": "Every unit test in the repo with Node's built-in runner, including this index's coverage check."
         },
         {
+          "name": "npm run smoke:mobile",
+          "description": "node test/mobile-touch-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:catalog",
           "description": "Playwright rail for /pitch/, /mars/, the /empires/ shell, the hub and the shared nav."
         },
@@ -2978,6 +2982,16 @@
       "open": null
     },
     {
+      "path": "test/kit-layer.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "kit-layer.test.mjs",
+      "description": "MixKit layer unit tests (input, lifecycle, stage math). The browser behaviour of the same files (real touch, real safe areas, real canvases) is covered by test/mobile-touch-smoke.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/kit-layer.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/kit-save.test.mjs",
       "project": "studio",
       "category": "tests",
@@ -2995,6 +3009,16 @@
       "title": "landing-smoke.mjs",
       "description": "Playwright rail for the landing page at 320 to 1440 px: keyboard order, focus, reduced motion, hit targets, image budgets and contrast (smoke:landing).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/landing-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/mobile-touch-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "mobile-touch-smoke.mjs",
+      "description": "MixKit mobile and tablet touch rail (Mobile & Tablet Fix program, Phase 1).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/mobile-touch-smoke.mjs",
       "open": null
     },
     {
@@ -3068,12 +3092,32 @@
       "open": null
     },
     {
+      "path": "src/kit/input.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "input.js",
+      "description": "MixKit input (Mobile & Tablet Fix Phase 1). One answer to \"is this a touch device, and what is the player using right now?\", plus a small gesture vocabulary every game can share:",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/input.js",
+      "open": null
+    },
+    {
+      "path": "src/kit/lifecycle.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "lifecycle.js",
+      "description": "MixKit lifecycle (Mobile & Tablet Fix Phase 1). One source for \"the page is no longer the thing the player is looking at\": visibilitychange, pagehide / pageshow, freeze / resume, and window blur / focus all collapse…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/lifecycle.js",
+      "open": null
+    },
+    {
       "path": "src/kit/nav.js",
       "project": "studio",
       "category": "source",
       "kind": "JS",
       "title": "nav.js",
-      "description": "MixKit global nav (HUB-102). A single lightweight top bar shared by every game at mixmash.games: back to the hub, a real \"mute all\", fullscreen, and the repo link. Drop it into a page with:",
+      "description": "MixKit global nav (HUB-102). A single lightweight bar shared by every game at mixmash.games: back to the hub, a real \"mute all\", fullscreen, and the repo link. Drop it into a page with:",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/nav.js",
       "open": null
     },
@@ -3095,6 +3139,26 @@
       "title": "save.js",
       "description": "MixKit save codes: encodes and decodes portable save strings that games can share.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/save.js",
+      "open": null
+    },
+    {
+      "path": "src/kit/stage.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "stage.js",
+      "description": "MixKit stage (Mobile & Tablet Fix Phase 1). Fits a game canvas inside the device's safe area at its base aspect ratio, sizes the backing store to the device pixel ratio, and shows one shared \"rotate your device\" prompt…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/stage.js",
+      "open": null
+    },
+    {
+      "path": "src/kit/viewport.css",
+      "project": "studio",
+      "category": "source",
+      "kind": "CSS",
+      "title": "viewport.css",
+      "description": "MixKit viewport (Mobile & Tablet Fix Phase 1). The shared page frame for every game: a root that never scrolls or rubber-bands, a 100dvh stage, the device safe-area insets as custom properties, and overlay rules so a…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/viewport.css",
       "open": null
     },
     {

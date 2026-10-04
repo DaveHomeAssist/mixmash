@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v22';
+const VERSION = 'v24';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -23,6 +23,10 @@ const PRECACHE = [
   './manifest.webmanifest',
   './src/kit/nav.js',
   './src/kit/save.js',
+  './src/kit/input.js',
+  './src/kit/lifecycle.js',
+  './src/kit/stage.js',
+  './src/kit/viewport.css',
   './play/',
   './play/index.html',
   './play/core.js',
