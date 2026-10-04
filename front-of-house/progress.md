@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Static shadow reuse and concurrent service delivery
+
+- Reconciled PR62's live service pilot with the performance branch, preserving both test suites and one authoritative service implementation. The separate unshipped model was superseded. PR62 is deployed at 3698c0a / Pages build1259285752; seven runtime files match, and all four hosted Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload and one-time settlement. Representative queue movement remains open.
+- Reuse unchanged directional shadows while the camera or non-shadow presentation changes. Layout/guest transforms and context restoration invalidate the map; paused/hidden rendering retains pending work. No visual quality, service, engine or save change; service worker v33.
+- Local checks: 251 repository tests, build/asset checks, expanded backend tests for shadow reuse/invalidation plus exact restoration and 20 disposal cycles, and actual-client 3D gestures/fallback/reload/settlement parity. The original 18-run table remains the earlier uncached renderer; this change does not rewrite historical performance evidence or certify device targets. CI, merge and hosted shadow proof follow the delivery PR.
+
 ## 2026-10-04: Hardware renderer baseline and scene delivery
 
 - Added a reproducible renderer-only harness, frozen production fixtures, raw-sample retention, timing validity checks and independently tested percentile/stall reporting. All 18 full windows on Apple M4 Metal at DPR 1 completed; the public summary preserves every repeat and raw/source digests. No runtime quality, rules, economy or save changes.

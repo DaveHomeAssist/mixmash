@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "3698c0a · Live service pilot merged; hardware baseline delivery 2026-10-04",
+  "head": "3698c0a · Live services verified; static shadow optimization in progress",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation, Select and the 3D Lot preview are deployed and live-verified. The live service pilot is merged; its hosted acceptance is being verified. All 18 Apple M4 Metal renderer measurements completed at DPR 1. Representative queues, full HUD/high-DPI/low-power evidence, rendering optimization and later phases remain incomplete.",
+  "statusReason": "The live service pilot is deployed and passes hosted Chromium/WebKit desktop/phone journeys. The 18-run hardware baseline is in PR67 delivery. Shadow reuse is the next bounded performance change; queue representation, device evidence and later phases remain open.",
   "activity30d": {
     "headline": "Four-room playable with optional 3D Lot and live service pilots; further operations and release acceptance remain in progress."
   },
@@ -20,7 +20,7 @@
     "PR64 and PR65: explicit Lot preview and authored scene candidate deployed; hosted backend/game behavior and full settlement parity verified."
   ],
   "nextStep": {
-    "title": "Verify live service delivery and connect representative queues",
+    "title": "Complete shadow reuse and connect representative queues",
     "why": "PR62 supplies the authoritative service model, clock, staffing, saves and settlement. Preserve that implementation; extend its actual outcomes into representative movement while continuing performance work.",
     "doneWhen": "Rendering optimization is compared at declared quality with preserved engine/input parity; quiet, arrival-surge and busy-bar operations fixtures conserve guests, staff time and money through reload and speed changes. Physical-device and human acceptance remain separately tracked.",
     "effort": "L",
@@ -295,10 +295,11 @@
       "rawReportSha256": "957244e413b67ed47529c824178e559d93a4552e4944c466e29ee77edf5cd848"
     },
     "localChecks": {
-      "npmTest": "234 passed",
+      "npmTest": "251 passed",
       "vercelBuild": "passed",
       "performance": "18 valid full Metal windows; all repeats retained",
-      "liveScene": "Eight hosted files match PR65; backend and actual-client smoke passed"
+      "liveScene": "Eight hosted files match PR65; backend and actual-client smoke passed",
+      "shadowReuse": "Backend reuse/invalidation/recovery checks and actual-client 3D settlement parity passed"
     },
     "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
     "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
@@ -323,6 +324,11 @@
       "dpr": 1,
       "scope": "renderer-only hardware host diagnostics; no physical-display/device acceptance",
       "rawReportSha256": "f55555ac853510327353cb5a60e4164b467efb6f871fe73b2fa6d4680f4aa785"
+    },
+    "liveServices": {
+      "revision": "3698c0a6e8b1e5d772384a653cdc2c289970187b",
+      "pagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259285752",
+      "runtime": "Seven hosted runtime files match; four Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload, receipt reconciliation and one-time settlement."
     }
   },
   "decisionState": {
@@ -560,6 +566,13 @@
             "result": "recorded",
             "checkedAt": "2026-10-04T11:08:33.684Z",
             "summary": "All 18 renderer-only windows valid on Apple M4 Metal at DPR 1: two frozen scenes, three viewports, three repeats, 10s warm-up and 30s sampling. No statistical or device acceptance inferred."
+          },
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-lot-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T11:31:31.206Z",
+            "summary": "Static camera/light frames reuse directional shadows; layout and guest transforms refresh them, pause retains invalidation, reduced motion stays static and real context restoration matches the prior image. No quality reduction or device acceptance."
           }
         ]
       },
@@ -572,9 +585,16 @@
           "FOH-V01"
         ],
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
-        "status": "in-progress",
+        "status": "in_progress",
         "evidence": [
-          "Experimental live service core and player controls implemented; PR62 final delivery checks pending."
+          "Experimental live service core and player controls implemented; PR62 final delivery checks pending.",
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/62",
+            "result": "pass",
+            "checkedAt": "2026-10-04T11:29:11.555Z",
+            "summary": "Seven hosted runtime files match; four Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload, receipt reconciliation and one-time settlement."
+          }
         ],
         "slices": [
           {

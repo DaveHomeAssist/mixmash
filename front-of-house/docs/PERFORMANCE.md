@@ -48,3 +48,9 @@ All timings are milliseconds. Percentiles use nearest rank. Cadence is 1000 / me
 The same six **short harness-validation** scenes under SwiftShader showed severe crowd slowdown (roughly 0.8–1.4 fps during those short camera segments), while CPU submission stayed in single-digit milliseconds. Those short samples are not comparable full baselines, but they establish why a software backend cannot stand in for hardware acceptance. No quality setting or acceptance gate was weakened to improve these numbers.
 
 At the end of the populated Metal runs the renderer reports 165 draw calls and 290,610 triangles, including the render passes. Guests are instanced; render cost is still a target for optimization. Required next evidence: full HUD/game measurements, CI runner baselines and explicit regression limits, reduced-cost/fallback behavior, requested DPR2/native resolutions, and physical desktop/low-power/human acceptance. The accepted targets remain 60fps desktop and 30fps low-power.
+
+## Static shadow reuse
+
+The next renderer revision retains the 1024 PCFSoft shadow map while the camera moves around an unchanged scene. Layout or guest-pose changes invalidate it; pause/hidden states retain pending work and context restoration rebuilds it. Rain and overlays do not cast shadows. Geometry, materials, resolution and motion are unchanged.
+
+Backend diagnostics expose cumulative renderedFrames and shadowUpdates. They count completed renderer calls and requested shadow refreshes respectively; they are not frame-time or GPU timestamp measurements. Per-frame draw calls can now differ between a reused-map frame and a refreshed-map frame, so compare scenes and shadow-refresh status explicitly. The 18-run table above remains the original uncached revision; it must not be relabeled as optimized measurements.
