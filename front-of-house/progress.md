@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Corrected full HUD comparison complete
+
+- All 12 direct/cached, fixed/panning windows on frozen clean 2a00f7a are valid with 10s warmup and 30s sampling at 1920×1080, requested DPR2 and effective1.5. The current flow-version-1 show advances from minute25 to65 while the actual HUD runs.
+- The pan path verifies camera coordinates throughout timing; cache counters record repeated rebuilds under motion and reuse at a fixed camera. The previous d080da8 unsupported-zoom attempt remains separately identified as an invalid comparison. No physical-device, display or frame-rate improvement claim is inferred.
+- Published the summary with source, fixture, raw and private-report hashes after verifying all digests against the frozen Git revision. PR74 owns runtime CI and delivery; its original/integrated shadow evidence also preserves PR73’s documentation.
+
 ## 2026-10-04: Integrate departure and food core for cache verification
 
 - Preserved production PR71 departure controls and PR72 finite-food core at a04b4a1, including their saved timelines, tests and model metadata. Reconciled project records with the original/integrated shadow reports and floor-cache work. Service worker v37.

@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "a04b4a1 integrated · classic floor comparison under verification",
+  "head": "2a00f7a · 12 full HUD comparisons complete; floor delivery pending",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Departure controls and the finite food core are merged with successful CI and a built Pages release. Classic floor caching and the corrected full-HUD camera comparison are under verification; food integration, sanitation and later phases remain.",
+  "statusReason": "Classic floor caching passes pixel/picking and actual-client checks; all 12 corrected full-HUD comparisons are valid at 1920×1080 and effective DPR 1.5. Runtime CI and hosted delivery are tracked in PR74. Departure controls and the finite food core are merged; food integration, sanitation and later phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -20,8 +20,8 @@
     "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
   ],
   "nextStep": {
-    "title": "Measure and deliver the classic floor cache",
-    "why": "The cache and real-client measurement harness are locally verified. Freeze the source, complete the 12 full-HUD windows, then verify CI, merge, Pages and hosted behavior.",
+    "title": "Deliver the floor cache, then verify 3D backing resolution",
+    "why": "The corrected comparison is complete on frozen 2a00f7a. Finish PR74 CI/merge/Pages/hosted proof, then apply the documented resolution cap to the 3D path and continue the remaining phases.",
     "doneWhen": "Static floor caching preserves exact pixels, sightline occlusion and hit testing across room/layout/camera/resize changes; measure the same full-HUD fixtures before and after at declared pixel ratio. Continue the remaining guest operations, research, ownership, venue and release phases.",
     "effort": "L",
     "owner": "either",
@@ -333,6 +333,15 @@
       "balanceSimulation": "all verdicts pass; no BALANCE_BASELINE drift",
       "adminIndex": "273 tracked files; catalog diff limited to Front of House",
       "privacyAndLinks": "passed; no archive files/images or private paths added"
+    },
+    "fullHudComparison": {
+      "sourceRevision": "2a00f7a444503bbadeda3939f4b7b46d9b8bafc3",
+      "reportSha256": "f5945cb3d5aef27480f0c46fbb0bae7c5fce91bd1a458099676395e7756df74c",
+      "runs": 12,
+      "viewport": "1920x1080",
+      "requestedDpr": 2,
+      "effectiveDpr": 1.5,
+      "deviceAcceptance": "Not inferred from headless callback cadence"
     }
   },
   "decisionState": {
@@ -583,11 +592,18 @@
             "result": "recorded",
             "checkedAt": "2026-10-04T12:13:23.832Z",
             "summary": "All 18 integrated renderer windows at daebe36 valid; same fixture hashes, Metal/DPR 1/quality. 59.9986–60.0029Hz cadence, no intervals over 50 ms. Full HUD and physical-device acceptance are separate."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-floor.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T12:42:29.283Z",
+            "summary": "All 12 corrected full-HUD comparison windows valid on 2a00f7a. Requested DPR 2, effective 1.5. Fixed camera reuses the floor; the verified pan path rebuilds it. The earlier unsupported-zoom attempt is retained separately as an invalid comparison."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Classic static floor cache and full-HUD 1920x1080 comparison",
+          "Classic floor cache CI/merge/hosted delivery; full-HUD comparison complete at 2a00f7a",
           "High-DPI/native/low-power measurement, declared CI limits and adaptive quality",
           "Physical device and human acceptance"
         ],
@@ -596,13 +612,15 @@
         "slices": [
           {
             "id": "FOH-P01c",
-            "status": "implemented-local-verification",
+            "status": "tested-awaiting-delivery",
             "scope": "Classic floor cache and full HUD comparison",
             "evidence": [
               "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
               "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
-              "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending."
-            ]
+              "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending.",
+              "All 12 corrected full-HUD windows at 2a00f7a are valid: actual flow-version-1 show, 10s warmup, 30s sampling, three repeats, fixed camera and verified continuous pan, direct and cached floors. Raw/source/fixture hashes retained. Cadence and cache counters do not certify physical displays or a frame-rate gain."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
           }
         ]
       },

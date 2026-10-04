@@ -1748,6 +1748,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-floor.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Full HUD classic floor comparison",
+      "description": "Twelve fixed and panning real-client windows with direct/cached floors, real show progression, backing dimensions, counters, timing summaries and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-floor.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-metal.json",
       "project": "front-of-house",
       "category": "evidence",

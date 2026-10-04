@@ -83,3 +83,18 @@ The classic board retains one backing-sized floor image plus the post-prop sight
 A new empty private output directory is required through `FRONT_OF_HOUSE_HUD_OUTPUT`. Each run preserves raw frame intervals, source/fixture hashes, real minute progression, before/after screenshots, errors, long tasks, canvas dimensions and cache counters. Hidden/resized pages, a stopped show or script errors invalidate a run. `--quick` uses one-second warm-up and two-second samples for harness validation only; its four completed windows are not the full comparison. RAF cadence is not GPU completion or total client CPU duration. The full measurement and delivery results will be recorded separately.
 
 The first full-HUD attempt at d080da8 was stopped during counter review: unsupported continuous zoom values returned the classic camera to Fit, so its moving-labeled windows cannot support motion claims. Original samples are retained privately as an invalid comparison. The corrected harness drives the real middle-drag handler and requires camera coordinates to change on over 95% of measured frames (zero in the fixed control). This is a harness validity assertion, not a performance acceptance threshold.
+
+## Full HUD floor comparison: completed windows
+
+All 12 windows at source `2a00f7a444503bbadeda3939f4b7b46d9b8bafc3` are valid. [Every repeated result](../performance/2026-10-04-floor.json) records the original report, fixture, source and raw digests. These are the real classic client and HUD at 1920×1080, browser DPR 2 and effective DPR 1.5, running the seed-170 service show from minute 25. Initial setup/screenshots and final inspection are outside timing. Each fresh context uses 10 seconds warm-up and 30 seconds measurement; direct/cached order alternates between repeats.
+
+| Camera / floor | Observed cadence range (Hz) | Frame interval p95 range (ms) | Intervals >50 ms, all three runs | Floor builds / reuses, after setup including warm-up |
+| --- | --- | --- | --- | --- |
+| fixed / direct | 60.00–60.00 | 18.30–18.60 | 0 | 0/0, 0/0, 0/0 |
+| fixed / cached | 60.00–60.00 | 18.50–18.50 | 0 | 0/2442, 0/2442, 0/2442 |
+| moving / direct | 60.00–60.00 | 18.50–18.50 | 0 | 0/0, 0/0, 0/0 |
+| moving / cached | 59.80–60.00 | 18.50–18.50 | 0 | 2403/2446, 2404/2447, 2397/2442 |
+
+RAF cadence measures callback scheduling, not completed GPU frames or display smoothness on a physical device. No total client CPU duration was inferred. Cache counters describe work across warm-up plus measurement; frame statistics describe only the timed sample. The fixed camera can reuse its floor, while camera movement rebuilds it. The direct control paints the floor on every draw and therefore has no cache builds or reuses. Similar cadence at the host ceiling does not prove a frame-rate improvement; there are no new device or CI timing acceptance limits. Shared-host load is uncontrolled and recorded.
+
+Camera-change counters include the initial sampling callback; frame intervals begin at the following callback. This one-callback difference does not replace the continuous-motion validity check.
