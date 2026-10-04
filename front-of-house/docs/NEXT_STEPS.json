@@ -5,18 +5,19 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "ffcd59f · normal departure and food delivered; sanitation underway",
+  "head": "ba43ea5 integrated · departure and food delivered; sanitation underway",
   "lastActivity": "2026-10-04",
   "status": "amber",
   "statusReason": "Departure and food are verified in production. Sanitation contracts, controls, renderer guests and offline replay pass local verification; required CI and production delivery remain pending. Research, ownership, venues, navigation and release evidence remain.",
   "activity30d": {
-    "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
+    "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
     "PR #47: split-view controls and sprite occlusion fixes.",
     "PR #48: research design and CT-DEC-13, still Proposed.",
-    "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
+    "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay.",
+    "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
   ],
   "nextStep": {
     "title": "Deliver sanitation and its artist preference, then research",
@@ -45,7 +46,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "Implement the documented realistic Lot contract",
-      "detail": "2026-10-04 preflight specifies source-mapped renderer operations, logical transforms, scale calibration, picking/input/lifecycle/fallback and deterministic parity cases. Stage, PA, bar, restroom and guest sample has eight required view/light combinations. Specification is complete; adapter and art are not implemented.",
+      "detail": "The explicit Lot preview, authored sample and recorded guest transitions are deployed and hosted-verified. Final realistic art, physical calibration and human/device acceptance remain open.",
       "files": [
         "front-of-house/docs/DECISION_PACKET.md",
         "front-of-house/docs/FEATURE_BRIEFS.md",
@@ -60,7 +61,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Accepted performance model needs device baselines and thresholds",
-      "detail": "D5 A retains 60fps desktop / 30fps low-power targets. A reproducible 10-second warm-up, 30-second, three-run procedure and available-host software-rendered diagnostics are recorded. Supported devices, statistical pass/stall limits and real-device proof remain pending; CI gates unchanged.",
+      "detail": "Accepted targets remain 60fps desktop / 30fps low-power. PERFORMANCE.md retains 18 original and 18 integrated Metal renderer windows. Full HUD, high-DPI/native/low-power evidence and declared CI/device limits remain open.",
       "files": [
         "front-of-house/ROADMAP.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -73,7 +74,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "D6–D7: research and ownership depend on service and accounting rules",
-      "detail": "D6 A selects the three-project research pilot after measurable live services; D7 A keeps rentals for the first show slice and ownership afterward. Specify service, ledger and compatibility rules within those accepted scopes. The planning documents do not implement these features.",
+      "detail": "Live admission/bar services, controls and representative guest transitions are deployed. The departure core is delivered; PR71 contains the separate control integration. Food, sanitation, three-project research and ownership/ledger work remain within the accepted D6/D7 scopes.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/RESEARCH.md"
@@ -178,6 +179,10 @@
       "why": "Reproducible renderer harness, all hardware host runs and remaining performance acceptance"
     },
     {
+      "path": "front-of-house/performance/2026-10-04-shadow.json",
+      "why": "All 18 integrated shadow-reuse measurement windows and retained partial-attempt provenance"
+    },
+    {
       "path": "front-of-house/docs/NEXT_STEPS.json",
       "why": "Public-safe project snapshot for the private workspace board"
     },
@@ -225,7 +230,7 @@
     "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
-    "The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
+    "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
   ],
   "links": [
     {
@@ -256,14 +261,14 @@
   "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1–D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
   "confidence": "medium",
   "unknowns": [
-    "Realistic sample and WebGL adapter not implemented; old/new renderer parity pending.",
+    "Final realistic art and physical calibration remain unaccepted; the deployed Lot preview, service movement and shadow reuse have hosted automated proof.",
     "Archive source and image redistribution rights, physical scale and operator-eye FOH calibration pending.",
     "Supported device/browser roster, accepted statistical/stall limits and hardware-GPU/low-power measurements pending.",
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
     "checkedOn": "2026-10-04",
-    "sourceRevision": "522f3f2f49de6dcf74fa22fa51b900684dd54360",
+    "sourceRevision": "f258625cddb476533bb52d5c3044d552344fb4ec",
     "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
     "controlsCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37181521431",
     "humanAcceptance": "Pending",
@@ -273,13 +278,42 @@
     "knowledgeReviewedRevision": "bcc773b07963ab17afebdd9678615a8c1155c43c",
     "knowledgeReviewedOn": "2026-10-04",
     "decisionReviewedRevision": "c9b64c280a69a80f4b1867b649212b297ae86417",
-    "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259075807",
-    "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE SwiftShader software graphics",
-    "rendererImplementation": "Not implemented",
+    "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259380379",
+    "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE Metal Apple M4 hardware",
+    "rendererImplementation": "Explicit Lot preview, source-owned sample, service zones, guest transitions and unchanged-shadow reuse deployed; final art and device acceptance remain open",
     "artAcceptance": "Pending exact sample review",
     "deviceAcceptance": "Pending supported roster, thresholds and physical-device measurements",
     "preflightDelivery": "Documentation and diagnostics only; the linked PR owns CI/merge history, and Pages deployment is independently verified at delivery. This sourceRevision identifies reviewed production behavior, not a future renderer release.",
     "diagnosticMeasurements": {
+      "runs": 18,
+      "warmupSeconds": 10,
+      "sampleSeconds": 30,
+      "scenes": [
+        "empty Lot",
+        "150-guest show"
+      ],
+      "graphics": "Apple hardware via Metal, headless DPR 1; renderer diagnostic only",
+      "sourceRevision": "daebe36edd24fe09106286778bdcd16949dfb555",
+      "rawReportSha256": "1bec5c240b28abff17dbb1198ea39c2948c5423074d5535c8eedd65e2541533c"
+    },
+    "localChecks": {
+      "node": "22.22.1",
+      "npmTest": "261 repository tests plus 3 performance-statistics tests passed",
+      "vercelBuild": "passed",
+      "docsGenerator": "passed; no ASSETS/CATALOG/STRINGS drift",
+      "balanceSimulation": "all verdicts pass; no BALANCE_BASELINE drift",
+      "adminIndex": "Catalog regenerated; coverage, metadata and privacy checks pass",
+      "privacyAndLinks": "Admin privacy checks pass; added report links resolve to project files",
+      "performance": "18 valid integrated Metal windows at daebe36; no intervals over 50 ms; descriptive renderer evidence only",
+      "liveShadow": "Eight deployed runtime files match f258625; hosted backend and actual-client gesture/recovery/reload/settlement rails passed"
+    },
+    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
+    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
+    "decisionPR": "https://github.com/DaveHomeAssist/mixmash/pull/59",
+    "preflightReviewedRevision": "522f3f2f49de6dcf74fa22fa51b900684dd54360",
+    "preflightProductionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259075807",
+    "preflightDiagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE SwiftShader software graphics",
+    "preflightDiagnosticMeasurements": {
       "runs": 9,
       "warmupSeconds": 10,
       "sampleSeconds": 30,
@@ -291,7 +325,7 @@
       "graphics": "Software-rendered diagnostic; no supported-device acceptance",
       "rawReportSha256": "957244e413b67ed47529c824178e559d93a4552e4944c466e29ee77edf5cd848"
     },
-    "localChecks": {
+    "preflightLocalChecks": {
       "node": "22.22.1",
       "npmTest": "225 passed; zero failures/skips",
       "vercelBuild": "passed",
@@ -300,9 +334,15 @@
       "adminIndex": "273 tracked files; catalog diff limited to Front of House",
       "privacyAndLinks": "passed; no archive files/images or private paths added"
     },
-    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
-    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
-    "decisionPR": "https://github.com/DaveHomeAssist/mixmash/pull/59"
+    "fullHudComparison": {
+      "sourceRevision": "2a00f7a444503bbadeda3939f4b7b46d9b8bafc3",
+      "reportSha256": "f5945cb3d5aef27480f0c46fbb0bae7c5fce91bd1a458099676395e7756df74c",
+      "runs": 12,
+      "viewport": "1920x1080",
+      "requestedDpr": 2,
+      "effectiveDpr": 1.5,
+      "deviceAcceptance": "Not inferred from headless callback cadence"
+    }
   },
   "decisionState": {
     "D1": {
@@ -552,11 +592,18 @@
             "result": "recorded",
             "checkedAt": "2026-10-04T12:13:23.832Z",
             "summary": "All 18 integrated renderer windows at daebe36 valid; same fixture hashes, Metal/DPR 1/quality. 59.9986–60.0029Hz cadence, no intervals over 50 ms. Full HUD and physical-device acceptance are separate."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-floor.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T12:42:29.283Z",
+            "summary": "All 12 corrected full-HUD comparison windows valid on 2a00f7a. Requested DPR 2, effective 1.5. Fixed camera reuses the floor; the verified pan path rebuilds it. The earlier unsupported-zoom attempt is retained separately as an invalid comparison."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Classic static floor cache and full-HUD 1920x1080 comparison",
+          "Classic floor cache CI/merge/hosted delivery; full-HUD comparison complete at 2a00f7a",
           "High-DPI/native/low-power measurement, declared CI limits and adaptive quality",
           "Physical device and human acceptance"
         ],
@@ -565,13 +612,16 @@
         "slices": [
           {
             "id": "FOH-P01c",
-            "status": "implemented-local-verification",
+            "status": "tested-awaiting-delivery",
             "scope": "Classic floor cache and full HUD comparison",
             "evidence": [
               "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
               "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
-              "Four quick full-HUD harness windows passed; 12 full repeated windows, CI, merge and hosted verification pending."
-            ]
+              "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending.",
+              "All 12 corrected full-HUD windows at 2a00f7a are valid: actual flow-version-1 show, 10s warmup, 30s sampling, three repeats, fixed camera and verified continuous pan, direct and cached floors. Raw/source/fixture hashes retained. Cadence and cache counters do not certify physical displays or a frame-rate gain.",
+              "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
           }
         ]
       },
@@ -622,7 +672,7 @@
               "Shared classic/3D projection conserves admitted/bar totals, caps guest samples at 180 and outside markers at 40, and follows a saved worker transfer around equipment.",
               "Three pure tests and four renderer/viewport browser journeys pass, including paused reload and camera invariance; full delivery gates pending.",
               "251 repository tests, build and four live-control browser journeys pass locally; two full 3D journeys and supplied action-client surge also pass. Guest transition animation remains the next slice.",
-              "PR66 CI37198084252 passed; merged fc93b98, Pages built 2026-10-04T11:31:17Z. Eleven live files match; four Chromium/WebKit control/settlement journeys and four classic/3D queue journeys pass."
+              "PR66 CI 37198084252 passed; merged fc93b98, Pages built 2026-10-04T11:31:17Z. Eleven live files match; four Chromium/WebKit control/settlement journeys and four classic/3D queue journeys pass."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/66",
             "mergeCommit": "fc93b98d8fca76f2874e45afe601840743856013"
@@ -636,12 +686,15 @@
               "No new saved state or transactions; pause/reduced motion use committed outcomes. Pure tests cover same-minute transitions, reload, batched clocks, missing paths and bounded 6000-guest demand. Required CI and deployed verification remain pending.",
               "255 repository tests and build pass. Four client renderer/viewport journeys and two controlled motion journeys pass, proving visible travel, recorded departures, immutable event input and frozen reduced-motion outcomes.",
               "Four full Chromium/WebKit live journeys, two full 3D journeys, the supplied action client and warmed offline reload also pass locally. New guest module is cached; source a10d178 is pushed, required CI/deployment pending.",
-              "Delivered through PR68: successful full CI, merge1059e22, built Pages release, twelve matching files and eight production browser journeys."
+              "PR68 CI 37198897404 passed; Pages build 1259345053 built; seven runtime files match 1059e22. Four actual-client and two controlled movement journeys pass against hosted modules, including both renderers, reload, recorded departures and reduced motion."
             ],
             "doneWhen": "Derive bounded cosmetic transitions from recorded service outcomes, preserve exact zone/cash totals through camera/speed/reload, and verify reduced motion plus visible departures without introducing per-guest saved AI.",
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/68",
             "mergeCommit": "1059e22617555772e09894d90a3ff09a370de412"
           }
+        ],
+        "remaining": [
+          "Human comprehension and balance acceptance remain unverified; further guest services are tracked in FOH-O02."
         ]
       },
       {
@@ -663,7 +716,8 @@
             "evidence": [
               "Six tests cover disconnected/rotated layouts, unchanged occupancy authority, finite conserved departure, reduced throughput, batching/reload and malformed checkpoints. No client behavior or save migration is enabled by the core alone.",
               "261 repository tests, build, asset-manifest checks and the legacy balance simulation pass locally; generated balance/docs remain unchanged. CI, merge and hosted source verification are pending.",
-              "PR70 passed CI37199319876 and merged6976dec. Pages built, thirteen source files match; the hosted pure module reports three exits and conserved75/75 departure at minute5."
+              "PR70 passed CI 37199319876 and merged6976dec. Pages built, thirteen source files match; the hosted pure module reports three exits and conserved75/75 departure at minute5.",
+              "PR70 CI 37199319876 passed; Pages build 1259351136 built; both deployed core sources match 6976dec. This proves source-model delivery, not the separate client/control integration in PR71."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/70",
             "mergeCommit": "6976dec624a14b55d0ecc040333b231166f9db30"
@@ -735,7 +789,8 @@
                 "status": "implemented-local-verification",
                 "evidence": [
                   "Seven tests cover minute-by-minute conservation, no simultaneous food/sanitation queue, cleaning time/exclusivity, access/utilities, reload, closing and6000 guests.",
-                  "All283 repository tests and build pass; required CI and hosted core proof remain pending."
+                  "All283 repository tests and build pass; required CI and hosted core proof remain pending.",
+                  "CI37203133927 passed on d3cd396. Merged current gh-pages ba43ea5 into the branch, preserving newer operations acceptance and performance/floor-cache evidence; required CI must pass the reconciled head before delivery."
                 ],
                 "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"
               },

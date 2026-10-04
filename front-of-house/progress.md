@@ -1,5 +1,36 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Preserve food-control delivery with floor evidence
+
+- Reconciled PR75 food controls at ffcd59f without changing its simulation or accounting. Retained all 12 measured windows at their frozen 2a00f7a source and added food-stall layout coverage to the cache parity check. Service worker v38.
+- Integrated checks pass: 276 repository tests, build, both-browser exact pixels including the food stall, four corrected short HUD windows, and six full vendor journeys through reload and signed income.
+- Shared project-record and generated-catalog conflicts are reconciled; measurements are historical evidence for their exact source, with subsequent integration checks kept separate. PR74 owns the combined delivery.
+
+## 2026-10-04: Corrected full HUD comparison complete
+
+- All 12 direct/cached, fixed/panning windows on frozen clean 2a00f7a are valid with 10s warmup and 30s sampling at 1920×1080, requested DPR2 and effective1.5. The current flow-version-1 show advances from minute25 to65 while the actual HUD runs.
+- The pan path verifies camera coordinates throughout timing; cache counters record repeated rebuilds under motion and reuse at a fixed camera. The previous d080da8 unsupported-zoom attempt remains separately identified as an invalid comparison. No physical-device, display or frame-rate improvement claim is inferred.
+- Published the summary with source, fixture, raw and private-report hashes after verifying all digests against the frozen Git revision. PR74 owns runtime CI and delivery; its original/integrated shadow evidence also preserves PR73’s documentation.
+
+## 2026-10-04: Integrate departure and food core for cache verification
+
+- Preserved production PR71 departure controls and PR72 finite-food core at a04b4a1, including their saved timelines, tests and model metadata. Reconciled project records with the original/integrated shadow reports and floor-cache work. Service worker v37.
+- PR73 documentation CI passed, but concurrent project-record changes prevented its merge. Its complete evidence is retained in the integrated PR74 branch; required CI and delivery will use the reconciled revision.
+- Integrated validation: 272 repository tests, build, eight service/departure journeys and full application settlement parity pass.
+- Corrected full-HUD camera measurement uses the actual middle-drag event handler and requires motion in the timed window. All four short validation windows pass; the original unsupported-zoom attempt is retained as an invalid comparison.
+
+## 2026-10-04: Classic floor cache and full HUD harness
+
+- Added one-image classic floor caching with explicit layout/view/sprite/overlay invalidation, original post-prop sightline placement, direct fallback and backing disposal. Dynamic guests, lighting, incidents and selection remain live. No rules, saves or economy change.
+- Exact cached/direct pixel and picking diagnostics pass in Chromium and WebKit across all rooms, facings, camera changes, overlays, incidents and DPR resizing. Chromium readback uses a consistent raster path to avoid automatic backend switching. Full application 3D/classic settlement, fallback, gesture and reload checks pass; 261 repository plus 3 performance-statistics tests and build pass.
+- Added the real-client 1920×1080 full-HUD comparison harness. All four quick validation windows complete with the real running clock; full 10s/30s repeated comparison, CI and deployment remain pending. Counter review invalidated the first moving-camera protocol because continuous zoom values are unsupported by the classic renderer; the corrected middle-drag path asserts actual movement. Original attempt retained separately. No physical-device or art acceptance is inferred.
+
+## 2026-10-04: Performance delivery and complete integrated comparison
+
+- PR67 delivered at f258625 after CI 37200315506, with Pages build 1259380379 built. Eight deployed runtime files match; hosted backend shadow/queue/worker invalidation, exact context restoration, disposal and actual-client gesture/reload/settlement parity pass.
+- All 18 integrated Metal windows at frozen daebe36 are valid. Original fixture hashes and visual quality remain unchanged; no interval exceeded 50 ms. The public comparison keeps every repeat, counters and source/raw hashes. CPU variations across the shared host are descriptive; no GPU-completion or device acceptance is inferred. The interrupted seven-window a6b1767 attempt remains separately identified.
+- PR68 hosted proof now includes all four client and two controlled movement journeys. PR70 core delivery has successful CI, Pages and source-byte proof; preserve PR71's separate player-integration work. The next performance slice is the scoped classic floor cache and full-HUD measurement; this closes neither FOH-P01 nor the overall phase goal.
+
 ## 2026-10-04: Shadow and guest-transition integration
 
 - PR69 passed CI and merged into the PR67 performance branch. Reconciled production PR66/68 at 1059e22; preserved service projection, guest transitions and concurrent departure-core records. Shadow invalidation follows actual instance buffers, including paused queue changes and a worker with no guests. Service worker v35.

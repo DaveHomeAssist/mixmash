@@ -104,11 +104,12 @@ const FIXTURES = {
   wash: { r: 139, g: 92, b: 246, spread: 2.6, intensity: 0.35 },
 };
 
-export function createBoard(canvas) {
+export function createBoard(canvas, { cacheFloor = true } = {}) {
   const ctx = canvas.getContext('2d');
   let view = { tw: 32, th: 16, ox: 0, oy: 0, cssW: 0, cssH: 0, dpr: 1, safe: { x: 0, y: 0, w: 0, h: 0 } };
   let clear = null; // the part of the canvas the HUD leaves clear (docs/HUD.md section 5), or the whole canvas
   let crowdCache = { key: '', tiles: [] };
+  const floorCache = { canvas: null, context: null, key: null, tiles: null, builds: 0, hits: 0, failed: false };
   let lastScene = null;
   let drawn = []; // the props drawn as sprites in the last frame, back to front
   let hits = []; // every prop in final paint order, show-through repaints included, for clicks
@@ -333,18 +334,18 @@ export function createBoard(canvas) {
     return facing;
   }
 
-  function diamond(x, y, w, h, z = 0) {
+  function diamond(x, y, w, h, z = 0, g = ctx) {
     const p = [iso(x, y, z), iso(x + w, y, z), iso(x + w, y + h, z), iso(x, y + h, z)];
-    ctx.beginPath();
-    ctx.moveTo(p[0][0], p[0][1]);
-    for (let i = 1; i < 4; i += 1) ctx.lineTo(p[i][0], p[i][1]);
-    ctx.closePath();
+    g.beginPath();
+    g.moveTo(p[0][0], p[0][1]);
+    for (let i = 1; i < 4; i += 1) g.lineTo(p[i][0], p[i][1]);
+    g.closePath();
   }
 
-  function fillDiamond(x, y, w, h, color, z = 0) {
-    diamond(x, y, w, h, z);
-    ctx.fillStyle = color;
-    ctx.fill();
+  function fillDiamond(x, y, w, h, color, z = 0, g = ctx) {
+    diamond(x, y, w, h, z, g);
+    g.fillStyle = color;
+    g.fill();
   }
 
   function quad(a, b, c, d, color) {
@@ -721,44 +722,90 @@ export function createBoard(canvas) {
     layers = sorted.flatMap((p) => [p, ...(repaintAfter.get(p) || [])]);
     // Sightline tiles and crowd dots go into the paint order by placement: slot -1 before
     // every layer, slot i right after layer i.
-    const tilesAt = new Map();
+    let tilesAt = new Map();
     const crowdAt = new Map();
     const bucket = (map, slot, item) => { if (!map.has(slot)) map.set(slot, []); map.get(slot).push(item); };
-    const overlay = (x, y) => {
-      if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear);
-      if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked);
+    const overlay = (x, y, g = ctx) => {
+      if (scene.showClear && scene.clearSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.clear, 0, g);
+      if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked, 0, g);
     };
 
-    for (let y = 0; y < room.h; y += 1) {
-      for (let x = 0; x < room.w; x += 1) {
-        const edge = x === 0 || y === 0 || x === room.w - 1 || y === room.h - 1;
-        fillDiamond(x, y, 1, 1, edge ? floor.edge : (x + y) % 2 ? floor.lot : floor.lotAlt);
-        // A sightline tile in front of a prop is drawn after it, so a sprite that
-        // overhangs its footprint cannot hide the tile.
-        const { slot } = placement(x + 0.5, y + 0.5, layers);
-        if (slot < 0) overlay(x, y);
-        else bucket(tilesAt, slot, [x, y]);
+    const paintFloor = (g) => {
+      for (let y = 0; y < room.h; y += 1) {
+        for (let x = 0; x < room.w; x += 1) {
+          const edge = x === 0 || y === 0 || x === room.w - 1 || y === room.h - 1;
+          fillDiamond(x, y, 1, 1, edge ? floor.edge : (x + y) % 2 ? floor.lot : floor.lotAlt, 0, g);
+          // A sightline tile in front of a prop is drawn after it, so a sprite that
+          // overhangs its footprint cannot hide the tile.
+          const { slot } = placement(x + 0.5, y + 0.5, layers);
+          if (slot < 0) overlay(x, y, g);
+          else bucket(tilesAt, slot, [x, y]);
+        }
       }
-    }
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = COLORS.grid;
-    for (let i = 0; i <= room.w; i += 1) { ctx.beginPath(); ctx.moveTo(...iso(i, 0)); ctx.lineTo(...iso(i, room.h)); ctx.stroke(); }
-    for (let j = 0; j <= room.h; j += 1) { ctx.beginPath(); ctx.moveTo(...iso(0, j)); ctx.lineTo(...iso(room.w, j)); ctx.stroke(); }
-    if (!scene.floor || scene.floor === 'lot') {
-      ctx.strokeStyle = COLORS.stall;
-      for (let x = 3; x < room.w - 1; x += 3) {
-        ctx.beginPath(); ctx.moveTo(...iso(x, room.h - 4)); ctx.lineTo(...iso(x, room.h - 1.4)); ctx.stroke();
+      g.lineWidth = 1;
+      g.strokeStyle = COLORS.grid;
+      for (let i = 0; i <= room.w; i += 1) { g.beginPath(); g.moveTo(...iso(i, 0)); g.lineTo(...iso(i, room.h)); g.stroke(); }
+      for (let j = 0; j <= room.h; j += 1) { g.beginPath(); g.moveTo(...iso(0, j)); g.lineTo(...iso(room.w, j)); g.stroke(); }
+      if (!scene.floor || scene.floor === 'lot') {
+        g.strokeStyle = COLORS.stall;
+        for (let x = 3; x < room.w - 1; x += 3) {
+          g.beginPath(); g.moveTo(...iso(x, room.h - 4)); g.lineTo(...iso(x, room.h - 1.4)); g.stroke();
+        }
       }
-    }
 
-    if (scene.objects.some((o) => o.type === 'fence')) {
-      ctx.strokeStyle = COLORS.fence;
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 3]);
-      diamond(0, 0, room.w, room.h, 0.35);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      if (scene.objects.some((o) => o.type === 'fence')) {
+        g.strokeStyle = COLORS.fence;
+        g.lineWidth = 2;
+        g.setLineDash([4, 3]);
+        diamond(0, 0, room.w, room.h, 0.35, g);
+        g.stroke();
+        g.setLineDash([]);
+      }
+
+    };
+    // Cache only the base paint. Tiles in front of props retain their original slots.
+    let copied = false;
+    if (cacheFloor && !floorCache.failed) {
+      const key = JSON.stringify([room, scene.floor, scene.objects, scene.pillars, spritesReady,
+        scene.showClear, scene.showClear ? [...scene.clearSet] : null,
+        scene.showClear && scene.blockedSet ? [...scene.blockedSet] : null,
+        facing, view.tw, view.th, view.ox, view.oy, view.dpr, canvas.width, canvas.height]);
+      try {
+        if (!floorCache.canvas) {
+          floorCache.canvas = document.createElement('canvas');
+          floorCache.context = floorCache.canvas.getContext('2d');
+          if (!floorCache.context) throw new Error('Floor canvas unavailable');
+        }
+        if (floorCache.key !== key) {
+          const g = floorCache.context;
+          // Assigning dimensions also resets context state left by the prior floor.
+          floorCache.canvas.width = canvas.width;
+          floorCache.canvas.height = canvas.height;
+          g.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
+          paintFloor(g);
+          floorCache.key = key;
+          floorCache.tiles = tilesAt;
+          floorCache.builds += 1;
+        } else {
+          tilesAt = floorCache.tiles;
+          floorCache.hits += 1;
+        }
+        ctx.save();
+        try {
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.globalCompositeOperation = 'copy';
+          ctx.drawImage(floorCache.canvas, 0, 0);
+        } finally { ctx.restore(); }
+        copied = true;
+      } catch {
+        // A backing/context allocation failure must not prevent play or picking.
+        releaseFloor();
+        floorCache.failed = true;
+        tilesAt = new Map();
+        ctx.clearRect(0, 0, view.cssW, view.cssH);
+      }
     }
+    if (!copied) paintFloor(ctx);
 
     // Each crowd dot is placed the same way, so the props it stands behind cover it and
     // the ones it stands in front of do not. A dot is in front when nothing covering it
@@ -865,9 +912,19 @@ export function createBoard(canvas) {
   const onSprites = () => { stats.spriteRedraws += 1; if (lastScene) draw(lastScene); };
   if (!spritesReady) spriteListeners.add(onSprites);
 
+  function releaseFloor() {
+    if (floorCache.canvas) { floorCache.canvas.width = 0; floorCache.canvas.height = 0; }
+    floorCache.canvas = null;
+    floorCache.context = null;
+    floorCache.key = null;
+    floorCache.tiles = null;
+  }
+
   // For tests and the smoke rail: what the last frame drew.
   function info() {
     return {
+      floorCache: { enabled: cacheFloor && !floorCache.failed, builds: floorCache.builds, hits: floorCache.hits,
+        width: floorCache.canvas?.width || 0, height: floorCache.canvas?.height || 0, failed: floorCache.failed },
       spritesReady,
       facing,
       camera: camera(),
@@ -894,6 +951,6 @@ export function createBoard(canvas) {
 
   return {
     resize, setClear, draw, tileAt, turnView, objectAt, info, placeOf, zoomTo, zoomBy, panBy, follow, centerOn, camera, clientOf,
-    destroy: () => spriteListeners.delete(onSprites),
+    destroy: () => { spriteListeners.delete(onSprites); releaseFloor(); },
   };
 }
