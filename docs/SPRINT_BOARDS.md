@@ -27,7 +27,7 @@ exposed through `render_game_to_text()` so the Playwright rail can assert on it.
 |---|---|---|---|---|---|
 | MM-101 | P0 | Gamepad connection toast | `gamepadconnected` / `gamepaddisconnected` raise an overlay toast reading `Controller Connected: Player 1`. | 2 | **Shipped** |
 | MM-102 | P1 | Copy match link toast | Copying the match link shows a transient green `Copied!` badge; the menu status line also turns green. Clipboard failure falls back to showing the raw URL. | 1 | **Shipped** |
-| MM-103 | P1 | Touch virtual pad fallback | On coarse-pointer viewports ≤1024px a D-pad plus a 3-button cluster overlays the canvas during a match and merges into `getPlayerInput()` for P1. | 5 | **Shipped** |
+| MM-103 | P1 | Touch virtual pad fallback | On touch devices a D-pad plus a 3-button cluster overlays the canvas during a match and merges into `getPlayerInput()` for P1. (Shipped for coarse-pointer viewports ≤1024px; the width gate was removed in the mobile fix program, so the pad now follows `MixKit.input.touchCapable()` on any screen size.) | 5 | **Shipped** |
 | MM-104 | P1 | Audio context prompt state | While the WebAudio context is missing or suspended, a pulsing "Tap to start audio" prompt appears; clicking it calls `initAudio()`. | 2 | **Shipped** |
 | MM-105 | P3 | Encyclopedia search filter | A search input filters the Mechanics Encyclopedia tiles by title, body, and a `data-terms` keyword index (DI, shield, armor…), with an explicit empty state. | 3 | **Shipped** |
 

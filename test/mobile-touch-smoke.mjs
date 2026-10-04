@@ -20,7 +20,10 @@
  * Statuses: pass, fail, xfail (expected-to-fail, cites the audit finding or
  * issue it waits on), xpass, n/a. Only `fail` (and `xpass` when strict) exits
  * non-zero. An expected-fail never weakens the assertion: the check still runs
- * and still has to fail.
+ * and still has to fail. Every expected-fail names the exact configs it applies
+ * to (`configs`), so a failure at any other config is a plain `fail`: a finding
+ * can never hide behind a neighbouring one, and a flaky page cannot be filed as
+ * "expected".
  *
  * SMOKE_WEBKIT_EXECUTABLE points at another WebKit build if the managed one is not installed.
  *
@@ -62,7 +65,24 @@ export const GAMES = [
   // The hub is a long-form landing page that scrolls by design (audit checkpoint 1 is green for it);
   // it keeps the no-horizontal-overflow check and skips the no-vertical-scroll one.
   { id: 'hub', name: 'Hub', path: '/', nav: false, scrollsVertically: true },
-  { id: 'play', name: 'MIXMASH', path: '/play/', nav: true },
+  {
+    id: 'play', name: 'MIXMASH', path: '/play/', nav: true,
+    // Touch only, from a fresh load: tap the title stage (it opens the command menu), then tap Start
+    // Quick Fight. The match must be running with the touch pad on screen to play it.
+    async begin(page) {
+      await step('the title never appeared', () => page.waitForFunction(() => typeof window.render_game_to_text === 'function' && JSON.parse(window.render_game_to_text()).mode === 'title', null, { timeout: 15000 }));
+      await reachAndTap(page, '#game');
+      await step('tapping the title stage did not open the command menu', () => page.waitForFunction(() => JSON.parse(window.render_game_to_text()).domMenu.open, null, { timeout: 5000 }));
+      await sleep(450); // past the page's 350 ms guard against the click that follows a tap-opened menu
+      await reachAndTap(page, '#menu-quick-fight', { scroller: '.menu-panels' });
+      await step('Start Quick Fight did not start a match', () => page.waitForFunction(() => JSON.parse(window.render_game_to_text()).mode === 'playing', null, { timeout: 8000 }));
+      await sleep(400);
+    },
+    async playing(page) {
+      const s = await page.evaluate(() => { const t = JSON.parse(window.render_game_to_text()); return { mode: t.mode, pad: t.touchControls.visible, inputMode: t.touchControls.inputMode }; });
+      return s.mode === 'playing' && s.pad ? ok(`mode ${s.mode}, touch pad visible`) : bad(`mode ${s.mode}, touch pad visible: ${s.pad} (input mode ${s.inputMode})`);
+    },
+  },
   {
     id: 'mars', name: 'MarsScape', path: '/mars/', nav: true,
     // On boot MarsScape stores an offline HMAC CryptoKey in IndexedDB. Automation WebKit builds wedge
@@ -89,36 +109,50 @@ export const GAMES = [
       await sleep(1000); // the guide fades in
     },
   },
-  { id: 'pitch', name: 'Pitch Riot', path: '/pitch/', nav: true },
+  {
+    id: 'pitch', name: 'Pitch Riot', path: '/pitch/?debug', nav: true,
+    // Touch only, from a fresh load: tap Kick Off (scrolling the menu overlay to it if the screen is
+    // too short to show it), then the match must be live (__pitch.game.state === 1, STATE.PLAY).
+    async begin(page) {
+      await page.waitForFunction(() => window.__pitch && window.__pitch.game.state === 0, null, { timeout: 15000 });
+      await reachAndTap(page, '#kickoff-btn', { scroller: '#menu' });
+      await step('Kick Off did not start a match', () => page.waitForFunction(() => window.__pitch.game.state === 1, null, { timeout: 8000 }));
+      await sleep(400);
+    },
+    async playing(page) {
+      const s = await page.evaluate(() => ({ state: window.__pitch.game.state, playConst: window.__pitch.STATE.PLAY, touchOn: document.getElementById('touch').classList.contains('on') }));
+      if (s.playConst !== 1) return bad(`STATE.PLAY is ${s.playConst}, not the 1 this rail asserts: update the rail`);
+      return s.state === 1 && s.touchOn ? ok('game.state === 1 (playing), touch controls on') : bad(`game.state ${s.state} (want 1), touch controls on: ${s.touchOn}`);
+    },
+  },
   { id: 'front-of-house', name: 'Front of House', path: '/front-of-house/', nav: true },
 ];
 
 // --- expected failures --------------------------------------------------------------
-// One entry per (game, check), optionally limited to some configs. `finding` must
-// cite the audit finding (AUD | MixMash Studio | Mobile & Tablet Audit | 2026-10-03)
-// or an existing GitHub issue, and the phase that fixes it.
-// `partial: true` means the finding shows at some configs and not others (a layout that only
-// breaks at some sizes): a pass at the other configs is then ordinary, not an XPASS.
+// One entry per (game, check). `configs` is required: the exact config ids where the finding
+// shows. `finding` must cite the audit finding (AUD | MixMash Studio | Mobile & Tablet Audit |
+// 2026-10-03) or an existing GitHub issue, and the phase that fixes it. A check that fails at a
+// config an entry does not list is a plain `fail`, and one that passes at a listed config is an
+// XPASS (delete that config from the entry; a failure with SMOKE_STRICT_XPASS=1).
 const AUDIT = 'AUD | MixMash Studio | Mobile & Tablet Audit | 2026-10-03';
+const ALL_CONFIGS = CONFIGS.map((c) => c.id);
+const IPADS = ALL_CONFIGS.filter((id) => id.startsWith('ipad'));
 export const EXPECTED_FAIL = [
   {
-    game: 'play', check: 'targets-game', partial: true,
-    finding: `${AUDIT}, P0 1 (MIXMASH has no touch path from the title; the 38 px "Tap to start audio" button is its only touch target) and coverage grid MIXMASH checkpoint 3 (touch, failing). Fixed in Phase 2.`,
-  },
-  {
-    game: 'empires', check: 'targets-game', partial: true,
+    game: 'empires', check: 'targets-game',
+    configs: ['iphone-max-430x932-portrait', ...IPADS],
     finding: `${AUDIT}, P0 4 (Age of Dave is not playable by touch; its start button and first-visit controls guide use 38 px buttons). Fixed in Phase 4.`,
   },
   {
-    game: 'pitch', check: 'targets-game',
-    finding: `${AUDIT}, coverage grid Pitch Riot checkpoint 3 (touch, at risk) with P0 3 (the menu overlay); the difficulty and length buttons are 42 px. Phase 2 moves the menu onto the kit overlay rules.`,
-  },
-  {
     game: 'front-of-house', check: 'targets-game',
+    configs: ALL_CONFIGS,
     finding: `${AUDIT}, coverage grid Front of House checkpoint 3 (touch, partial); the "Oak St. Lot" and "How the deals work" buttons are 40 px. Phase 3b covers the Book and Promote phone sheet.`,
   },
   {
-    game: 'mars', check: 'targets-playing', partial: true,
+    game: 'mars', check: 'targets-playing',
+    // Measured on every run at these nine configs (35x31 map nodes on phones in portrait, 29 px
+    // skill rows on tablets). At iphone-390x844-portrait the begin hook also times out on some runs.
+    configs: ['iphone-390x844-portrait', 'iphone-max-430x932-portrait', 'android-360x800-portrait', ...IPADS],
     finding: `${AUDIT}, P1 MarsScape (map nodes 35x31 px on phones in portrait, skill rows 29 px, Reset view 27 px). Fixed in Phase 3b.`,
   },
 ];
@@ -128,8 +162,52 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const round = (n) => Math.round(n * 10) / 10;
 
 function expectedFailFor(gameId, checkId, config) {
-  return EXPECTED_FAIL.find((entry) => entry.game === gameId && entry.check === checkId
-    && (!entry.configs || entry.configs.some((part) => config.id.includes(part)))) || null;
+  return EXPECTED_FAIL.find((entry) => entry.game === gameId && entry.check === checkId && entry.configs.includes(config.id)) || null;
+}
+
+// Touch a control the way a player reaches it: if it is not fully on screen, scroll the one container
+// the player can scroll (`scroller`) until it is, make sure nothing else sits on top of it, then tap its
+// centre with the touchscreen. Never scrolls the page itself (it is locked), so a control that only a
+// scripted scroll could reach fails here instead of passing.
+async function reachAndTap(page, selector, { scroller } = {}) {
+  await page.locator(selector).first().waitFor({ state: 'visible', timeout: 15000 });
+  const where = await page.evaluate(({ selector: sel, scroller: scr }) => {
+    const el = document.querySelector(sel);
+    const fits = () => { const r = el.getBoundingClientRect(); return r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5; };
+    let scrolled = false;
+    if (!fits() && scr) {
+      const box = document.querySelector(scr);
+      const r = el.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      box.scrollTop += r.top < b.top ? r.top - b.top - 8 : r.bottom - b.bottom + 8;
+      scrolled = true;
+    }
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const hit = document.elementFromPoint(Math.min(Math.max(cx, 0), innerWidth - 1), Math.min(Math.max(cy, 0), innerHeight - 1));
+    const covered = !hit || !(el === hit || el.contains(hit) || hit.contains(el)) ? (hit ? `${hit.tagName.toLowerCase()}${hit.id ? `#${hit.id}` : ''}${hit.className && typeof hit.className === 'string' ? `.${hit.className.trim().split(/\s+/)[0]}` : ''}` : 'nothing') : '';
+    return { fits: fits(), scrolled, covered, cx, cy, vw: innerWidth, vh: innerHeight, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)] };
+  }, { selector, scroller });
+  if (!where.fits) throw new Error(`${selector} is not reachable: it sits at [${where.rect}] in a ${where.vw}x${where.vh} screen${scroller ? ' even after scrolling its panel' : ' and nothing scrolls'}`);
+  if (where.covered) throw new Error(`${selector} is covered by ${where.covered}`);
+  await page.touchscreen.tap(where.cx, where.cy);
+}
+
+// Names the step that failed instead of a bare waitForFunction timeout.
+async function step(label, fn) {
+  try {
+    return await fn();
+  } catch (error) {
+    throw new Error(`${label} (${String(error && error.message || error).split('\n')[0]})`);
+  }
+}
+
+// A game's touch path to play runs once per page; the checks that need the play surface share it.
+const begun = new WeakMap();
+function ensureBegun(page, game) {
+  if (!begun.has(page)) begun.set(page, game.begin(page));
+  return begun.get(page);
 }
 
 function ok(detail = '') { return { ok: true, detail }; }
@@ -286,12 +364,26 @@ GAME_CHECKS.push({
   title: 'after touching through to the play surface, every visible interactive target is at least 44x44',
   async run({ page, game }) {
     if (!game.begin) return { na: true };
-    await game.begin(page);
+    await ensureBegun(page, game);
     const targets = await framesTargets(page);
     const small = targets.filter((t) => t.width < 43.5 || t.height < 43.5);
     if (!small.length) return ok(`${targets.length} targets`);
     const detail = `${small.length} of ${targets.length} under 44px: ${small.slice(0, 6).map((t) => `${t.tag} "${t.label}" ${t.width}x${t.height}`).join('; ')}`;
     return { ok: false, detail, offenders: small };
+  },
+});
+
+GAME_CHECKS.push({
+  id: 'reaches-play',
+  title: 'from a fresh load, touch alone reaches active play (MIXMASH mode=playing, Pitch Riot __pitch.game.state===1)',
+  async run({ page, game }) {
+    if (!game.playing) return { na: true };
+    try {
+      await ensureBegun(page, game);
+    } catch (error) {
+      return bad(`the touch path to play failed: ${String(error && error.message || error).split('\n')[0]}`);
+    }
+    return game.playing(page);
   },
 });
 
@@ -760,9 +852,7 @@ function classify(rowId, check, config, outcome) {
   const expected = expectedFailFor(rowId, check.id, config);
   if (outcome.ok) {
     if (!expected) return { status: 'pass', detail: outcome.detail };
-    return expected.partial
-      ? { status: 'pass', detail: `${outcome.detail} (the finding does not show at this config)` }
-      : { status: 'xpass', detail: outcome.detail, finding: expected.finding };
+    return { status: 'xpass', detail: outcome.detail, finding: expected.finding };
   }
   return expected ? { status: 'xfail', detail: outcome.detail, finding: expected.finding, offenders: outcome.offenders } : { status: 'fail', detail: outcome.detail, offenders: outcome.offenders };
 }
@@ -789,8 +879,13 @@ async function runCheck(check, ctx, rowId) {
 }
 
 export async function run({ baseUrl, engines, configFilter, gameIds, reportDir } = {}) {
+  const checkIds = new Set([...GAME_CHECKS, ...KIT_CHECKS].map((check) => check.id));
   for (const entry of EXPECTED_FAIL) {
     if (!entry.finding || !entry.game || !entry.check) throw new Error(`EXPECTED_FAIL entry needs game, check and finding: ${JSON.stringify(entry)}`);
+    if (!Array.isArray(entry.configs) || !entry.configs.length) throw new Error(`EXPECTED_FAIL ${entry.game}/${entry.check} must pin the configs it applies to (no "partial" entries)`);
+    for (const id of entry.configs) if (!ALL_CONFIGS.includes(id)) throw new Error(`EXPECTED_FAIL ${entry.game}/${entry.check} names unknown config ${id}`);
+    if (!GAMES.some((g) => g.id === entry.game) && entry.game !== 'kit') throw new Error(`EXPECTED_FAIL names unknown game ${entry.game}`);
+    if (!checkIds.has(entry.check)) throw new Error(`EXPECTED_FAIL ${entry.game} names unknown check ${entry.check}`);
   }
   const server = baseUrl ? null : await startStaticServer();
   const origin = (baseUrl || server.origin).replace(/\/+$/, '');
