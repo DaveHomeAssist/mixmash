@@ -223,3 +223,7 @@ The minimap (step 7) has its own done line, above.
 ## Club ticketing pilot
 
 Club Promote and Menu open a contained Plan/Forecast/Receipt window. Direct costs nothing; Platform adds20 percentage points to the presale share up to90% and retains4% of presale gross. Selecting a plan does not charge cash. Doors lock the choice. Forecast uses public act draw bounds, booked draw multiplier, ads, reputation and capacity; the actual receipt appears only after the show. Settlement displays collection separately from production deductions. Short windows share Equipment's explicit content pager; neither dialog uses ordinary form scrolling.
+
+## Held nights pilot
+
+Multi-night Amphitheater offers show their per-unplayed-night cancellation fee before the deal is chosen. Menu opens Terms/Continue/Cancel/Receipt. Settlement uses Choose next night while contracted nights remain; each choice shows its exact cash outcome and signs the current show once. A disabled continuation explains insufficient cash, while cancellation states any resulting debt. The signed cancellation receipt can be reopened from Menu or the signed sheet. All four pages share the contained compact-window pager.

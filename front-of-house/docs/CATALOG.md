@@ -29,7 +29,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `assignEquipment` | Assign an owned small PA in Build or return to rental; freezes at doors | `assetId` | build | stays | 3 |
 | `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
 | `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
-| `chooseDeal` | Book an act on a deal; the deal and terms are fixed here | `deal`, `artistId`, `nights`, `secondId` | book | build | 5 |
+| `chooseDeal` | Book an act on a deal; optional runPolicy1 freezes cancellation terms for a two/three-night Amphitheater hold | `deal`, `artistId`, `nights`, `secondId`, `runPolicy` | book | build | 6 |
 | `chooseVenue` | Switch room before booking; each room keeps its own layout | `venueId` | book | stays | 2 |
 | `place` | Place one object, checked against R-18 | `object` | build | stays | 2 |
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
@@ -41,7 +41,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
 | `assignLiveWorker` | Live pilot: transfer the worker between admission and bar | `station` | show | stays | 2 |
 | `respond` | Answer the incident; pays its cost | `responseId` | show | stays | 5 |
-| `acceptSettlement` | Sign the sheet: cash, history, reputation, unlocks; next night of a run | `at` | settle | done or show | 0 |
+| `acceptSettlement` | Sign the sheet: cash, history, reputation, unlocks; continue or explicitly cancel remaining contracted nights | `cancelRemaining`, `at` | settle | done or show | 3 |
 | `back` | Step back from Build to Book, or Promote to Build | — | build, promote | book or build | 1 |
 | `nextShow` | Start the next show, carrying cash, reputation, unlocks and history | — | done | book (a new show state) | 1 |
 | `retry` | Start over: a new career that keeps only the layouts | — | done | book (a new show state) | 0 |
@@ -88,6 +88,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `chooseDeal` | That act is not on offer for this show |
 | `chooseDeal` | ${a.name} only plays for a guarantee |
 | `chooseDeal` | ${a.name} will only play for a guarantee after the last door deal |
+| `chooseDeal` | That booking cannot use a held-run policy |
 | `chooseVenue` | Unknown room |
 | `chooseVenue` | That room is still locked |
 | `place` | Nothing to place |
@@ -129,6 +130,9 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `respond` | The incident has not happened yet |
 | `respond` | That response does not fit this incident |
 | `respond` | ${response.label} costs $${response.cost}; you have $${s.cash} |
+| `acceptSettlement` | Choose whether to cancel the remaining nights |
+| `acceptSettlement` | There are no contracted remaining nights to cancel |
+| `acceptSettlement` | Next night needs $${upfrontFor(s)}; signing leaves $${signingCash}. Choose cancellation for $${run.penalty} to end the run. |
 | `back` | You can only go back from Build or Promote |
 | `nextShow` | The next show needs at least $${nextShowCost(s)} before doors and you have $${s.cash}. Start over to try again. |
 
