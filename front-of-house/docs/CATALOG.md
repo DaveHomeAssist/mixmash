@@ -24,6 +24,9 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 
 | Action | What it does | Fields | Allowed in | Moves to | Refusals |
 | --- | --- | --- | --- | --- | --- |
+| `enableEquipment` | Enable explicit ownership and open the optional cash journal at current cash | — | book, done (eligibility required) | stays | 3 |
+| `equipment` | Buy or sell a small PA between bookings with a stable transaction identity | `command` | book, done (eligibility required) | stays | 3 |
+| `assignEquipment` | Assign an owned small PA in Build or return to rental; freezes at doors | `assetId` | build | stays | 3 |
 | `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
 | `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
 | `chooseDeal` | Book an act on a deal; the deal and terms are fixed here | `deal`, `artistId`, `nights`, `secondId` | book | build | 5 |
@@ -33,7 +36,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `remove` | Remove the object at a list index | `index` | build | stays | 1 |
 | `confirmBuild` | Lock the layout once the venue is ready | — | build | promote | 1 |
 | `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `foodPlan`, `sanitation`, `seatPrice` | promote | stays | 8 |
-| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 11 |
+| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 12 |
 | `chooseDoorCrew` | Opt-in doors trial only: put the spare worker on the bar or the gate | `choice` | show | stays | 2 |
 | `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
 | `assignLiveWorker` | Live pilot: transfer the worker between admission and bar | `station` | show | stays | 2 |
@@ -47,14 +50,14 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 
 Each action sent from a reference game in each phase (seed 42, door deal, the suggested layout, $20, no ads, the incident answered with `wait`). → names the phase it moves to, ✓ means accepted without a phase change, ✗ means refused with one of the messages in section 4.
 
-| From | `enableResearch` | `research` | `chooseDeal` | `chooseVenue` | `place` | `setLayout` | `remove` | `confirmBuild` | `setPromotion` | `confirmPromotion` | `chooseDoorCrew` | `advanceLive` | `assignLiveWorker` | `respond` | `acceptSettlement` | `back` | `nextShow` | `retry` |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| book | ✗ | ✗ | → build | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| build | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ | → promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | ✗ | ✗ |
-| promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | → show | ✗ | ✗ | ✗ | ✗ | ✗ | → build | ✗ | ✗ |
-| show | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → settle | ✗ | ✗ | ✗ | ✗ |
-| settle | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → done | ✗ | ✗ | ✗ |
-| done | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | → book |
+| From | `enableEquipment` | `equipment` | `assignEquipment` | `enableResearch` | `research` | `chooseDeal` | `chooseVenue` | `place` | `setLayout` | `remove` | `confirmBuild` | `setPromotion` | `confirmPromotion` | `chooseDoorCrew` | `advanceLive` | `assignLiveWorker` | `respond` | `acceptSettlement` | `back` | `nextShow` | `retry` |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| book | ✗ | ✗ | ✗ | ✗ | ✗ | → build | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| build | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ | → promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | ✗ | ✗ |
+| promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | → show | ✗ | ✗ | ✗ | ✗ | ✗ | → build | ✗ | ✗ |
+| show | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → settle | ✗ | ✗ | ✗ | ✗ |
+| settle | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → done | ✗ | ✗ | ✗ |
+| done | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | → book |
 
 `chooseDoorCrew` is refused here because the reference show is not in the opt-in doors trial (`?night-slice=1`).
 
@@ -64,13 +67,22 @@ What the engine says when it refuses an action, as written in the source (`${…
 
 | Action | Message |
 | --- | --- |
+| `enableEquipment` | Equipment is available between bookings |
+| `enableEquipment` | Equipment ownership is already enabled |
+| `enableEquipment` | Settle your first show before enabling equipment |
+| `equipment` | Buy and sell equipment between bookings |
+| `equipment` | Enable equipment ownership first |
+| `equipment` | *The service, research or equipment model refusal, including eligibility, funds and duplicate identity conflicts* |
+| `assignEquipment` | Enable equipment before booking this show |
+| `assignEquipment` | Choose an owned asset or return to rental |
+| `assignEquipment` | Place a small PA; house and medium systems cannot use this asset |
 | `enableResearch` | Development is available between bookings |
 | `enableResearch` | Development is already enabled |
 | `enableResearch` | Settle your first show before enabling development |
 | `research` | Development is available between bookings |
 | `research` | Enable development first |
 | `research` | Choose a development project action |
-| `research` | *The live service model refusal, including in-transit, already assigned or closed service* |
+| `research` | *The service, research or equipment model refusal, including eligibility, funds and duplicate identity conflicts* |
 | `chooseDeal` | Choose a guarantee or a door deal |
 | `chooseDeal` | This room does not take a sponsor |
 | `chooseDeal` | That act is not on offer for this show |
@@ -97,6 +109,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `confirmPromotion` | Normal departure requires live services |
 | `confirmPromotion` | Connect admission, a bar and an exit to the main audience floor before opening doors |
 | `confirmPromotion` | Food needs live services and one connected stall before doors |
+| `confirmPromotion` | The assigned asset needs a placed small PA before doors |
 | `confirmPromotion` | Enable sanitation for the placed trailer before doors |
 | `confirmPromotion` | Sanitation needs the live Lot clock |
 | `confirmPromotion` | Connect usable sanitation before doors; the trailer also needs utilities |
@@ -108,7 +121,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `advanceLive` | Live services is not enabled for this show |
 | `advanceLive` | Choose a future whole minute within this show’s timeline |
 | `assignLiveWorker` | Live services is not enabled for this show |
-| `assignLiveWorker` | *The live service model refusal, including in-transit, already assigned or closed service* |
+| `assignLiveWorker` | *The service, research or equipment model refusal, including eligibility, funds and duplicate identity conflicts* |
 | `respond` | Choose where the doors crew works first |
 | `respond` | The incident response is already recorded |
 | `respond` | The incident has not happened yet |

@@ -496,3 +496,7 @@ FOH-E01a implements one small-PA asset family as a pure prerequisite. Six target
 FOH-E01a2 supplies the bounded cash journal needed before equipment enters the career. Recent128 rows retain identity and references; earlier movements remain exact category totals. Six targeted tests pass, including mixed capital/research/show reconciliation, more than four compactions, retained/archived retries, corrupted sources and safe-integer arithmetic. Loading pays nothing and no career cash path is connected yet. This is not a claim that ownership is playable.
 
 - Cash journal prerequisite: all315 repository tests, build and generated documentation pass. It remains isolated from career cash until the next adapter slice.
+
+### 2026-10-04 owned PA and career cash adapter
+
+FOH-E01b1 adds explicit enablement, purchase/sale, Build assignment and frozen per-night deployment. The small PA replaces its200 rental with20 operating cost only when assigned; capital1200/resale600 never enter artist deductions. The optional journal reconciles every cash path, including research refunds, paid incidents and separate held-night payout/opening. Nine adapter tests and all324 repository tests pass, alongside build and generated reference. Version43 precaches both new engine dependencies. The first targeted run exposed incorrect medium/house-PA fixtures, then a zero-versus-negative-zero assertion; both were corrected without changing production rules. Controls, browser/offline proof, required CI and production delivery remain open.

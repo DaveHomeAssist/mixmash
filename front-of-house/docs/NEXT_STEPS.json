@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "25110c6 base \u00b7 bounded career journal locally tested",
+  "head": "ea21d02 base \u00b7 equipment career adapter locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "PR85 combines sanitation, playable research and the inventory prerequisite with current performance work; required CI/production checks are running. The bounded career cash journal now passes targeted tests; equipment deployment and remaining phases continue.",
+  "statusReason": "PR85 sanitation/research and PR86 journal are awaiting required delivery checks. The owned-PA adapter and reconciled career cash pass all324 tests; equipment controls, browser proof and remaining phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -22,8 +22,8 @@
     "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
   ],
   "nextStep": {
-    "title": "Deliver guest operations and development, then equipment accounting",
-    "why": "The implemented slices are combined for one current-head release check. Continue the bounded career cash journal and owned-PA deployment after production verification.",
+    "title": "Deliver operations and research; finish playable equipment",
+    "why": "The owned-PA adapter now covers capital, deployment and all career cash paths. Complete its controls and browser/offline proof while the preceding release clears CI.",
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -76,7 +76,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "D6\u2013D7: research and ownership depend on service and accounting rules",
-      "detail": "Live admission/bar services, controls and representative guest transitions are deployed. The departure core is delivered; PR71 contains the separate control integration. Food, sanitation, three-project research and ownership/ledger work remain within the accepted D6/D7 scopes.",
+      "detail": "Food, sanitation and research have controls and local player evidence. Explicit small-PA deployment and reconciled career cash pass324 tests; equipment controls and production acceptance remain open. No D6/D7 decisions are waiting.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/RESEARCH.md"
