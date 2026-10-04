@@ -100,6 +100,7 @@ export const OBJECT_TYPES = {
   lights: { label: 'Light tower', w: 1, h: 1, watts: 8000, group: 'lights', max: 1, blocksSight: true },
   bar: { label: 'Bar', w: 2, h: 1, watts: 1500, blocksSight: true },
   food: { label: 'Food stall', w: 2, h: 1, watts: 0, group: 'food', max: 1, blocksSight: true, lotOnly: true },
+  trailer: { label: 'Facility trailer', w: 3, h: 2, watts: 1500, group: 'trailer', max: 1, blocksSight: true, lotOnly: true },
   restroom: { label: 'Restroom unit', w: 1, h: 1, watts: 0, blocksSight: true },
   gate: { label: 'Entry gate', w: 1, h: 1, watts: 0, edge: true },
   exit: { label: 'Exit', w: 1, h: 1, watts: 0, edge: true },
@@ -356,3 +357,21 @@ export const BALANCE_TARGETS = {
   careerMinShows: 4,
   careGapMin: 0.25,
 };
+
+// Optional Lot sanitation contract; promoter costs, charged once before doors.
+export const SANITATION_COSTS = Object.freeze({ trailer: 240, cleaner: 80, utilities: 60, preferenceRelationship: 2 });
+
+// Optional development pilot; knowledge never grants free equipment or show spending.
+export const RESEARCH_PROJECTS = Object.freeze({
+  patch: Object.freeze({ label: 'Patch standards', department: 'production', cost: 120, experience: 0, nights: 1 }),
+  service: Object.freeze({ label: 'Service training', department: 'guestServices', cost: 180, experience: 1, nights: 2 }),
+  admission: Object.freeze({ label: 'Admission lanes', department: 'admissions', cost: 180, experience: 1, nights: 2 }),
+});
+
+// Bounded benefits apply only to learned projects frozen at booking.
+export const RESEARCH_EFFECTS = Object.freeze({ patchScore: 0.15, barWorkerRate: 1, gateRate: 1 });
+
+// One-family ownership pilot. Acquisition is capital; operation is a later show cost.
+export const OWNED_EQUIPMENT = Object.freeze({
+  'small-pa': Object.freeze({ label: 'Small PA', objectType: 'pa-s', purchase: 1200, resale: 600, operation: 20 }),
+});

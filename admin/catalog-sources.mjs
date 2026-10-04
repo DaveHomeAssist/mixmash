@@ -237,6 +237,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/performance/2026-10-04-batched-hud.json': { title: 'Batched native 3D HUD measurements', description: 'Six full native client repeats after render coalescing, with unchanged game-state replay, scene quality and retained timing variation.' },
   'front-of-house/performance/2026-10-04-ci.json': { title: 'CI renderer calibration', description: 'All eighteen Ubuntu24.04 SwiftShader windows with runner/source/fixture/raw digests and separate timing statistics; no hardware FPS claim.' },
   'front-of-house/performance/2026-10-04-native-hud.json': { title: 'Native 3D HUD measurements', description: 'Six full native 3D client and HUD windows with real show-clock replay, camera motion and retained stalls.' },
   'front-of-house/performance/2026-10-04-native.json': { title: 'Native visible Chrome measurements', description: 'Six full native-display Metal windows in visible focused Chrome, retaining repeated timing and source/raw evidence separately from headless results.' },

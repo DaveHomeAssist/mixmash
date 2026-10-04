@@ -193,3 +193,17 @@ The optional `--fault-cpu=20` inserts real CPU work only inside the isolated mea
 These below-target runs are retained. Shared-host load varies; no concurrent local tests/builds/other browser checks from this task ran during timing. The evidence does not establish sustained60fps, thermal causality, GPU completion or human readability. Camera events and the running-show loop both call the renderer; their duplicate submissions are independently observable and motivate application-only deferred rendering. The standalone benchmark stays synchronous. Candidate comparison and delivery remain pending.
 
 Reproduce with `npm run perf:front-of-house-native-hud` using installed Chrome on a Metal host; `FRONT_OF_HOUSE_HUD_OUTPUT` names an empty private output directory. The command uses native geometry/density, isolated storage and six complete windows; `--quick` is only tool validation. It was published after the frozen private-harness baseline; both source attributions remain explicit. Screenshots and raw state stay private.
+
+## Full native HUD batching comparison
+
+[All six candidate windows](../performance/2026-10-04-batched-hud.json) at clean `5f47c4ae370f87caab60123090bd961b7f22181a` pass the full audit. The fixture hash, installed Chrome154, native5120×1286/DPR1 window, private harness, timing/camera protocol and exact final game states match the baseline. Only the adapter and renderer runtime source digests differ. Geometry, materials, backing, attendance, model resources and provenance match; the application now opts into deferred rendering.
+
+| Repeat | Fixed cadence Hz / intervals >50ms | Moving cadence Hz / intervals >50ms | Fixed / moving render calls across warm-up and measurement |
+| --- | --- | --- | --- |
+| 1 | 59.68 /0 | 59.08 /1 | 2322 /2343 |
+| 2 | 56.64 /0 | 55.91 /0 | 2293 /2211 |
+| 3 | 57.78 /1 | 59.84 /0 | 2320 /2381 |
+
+Moving-camera submissions fall from3918–4843 to2211–2381 over each warm-up-plus-measurement span. The deterministic browser test independently verifies coalescing many updates into one frame, immediate picking, pause, real context recovery and disposal. Fixed-camera counts vary with host cadence; their third repeat has more calls than the slower baseline, which is retained. Timing ranges55.91–59.84Hz with two intervals over50ms; these measurements occurred later on the shared host and do not isolate all causes or prove sustained60fps. Renderer work reduction is verified separately from frame-rate acceptance.
+
+The comparison predates integration of the newer career source193c54c. Its original revisions are not relabeled; integrated player/CI/hosted checks follow separately. The source-only reproduction command passed two short native windows before this full comparison. All28 legacy checks, four live-control journeys, eight crowd/movement journeys and six vendor journeys pass with batching, alongside the full3D/recovery/settlement and backend/resolution checks.

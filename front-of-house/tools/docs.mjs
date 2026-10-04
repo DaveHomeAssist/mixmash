@@ -154,6 +154,8 @@ const PHASE_NOTES = {
 
 // What each engine action is for. An action in applyAction without a line here fails the build.
 const ACTION_NOTES = {
+  enableResearch: 'Enable optional development after the first settled show; Sandbox starts learned',
+  research: 'Start, pause, resume or cancel a project between bookings; exact career cash delta',
   chooseDeal: 'Book an act on a deal; the deal and terms are fixed here',
   chooseVenue: 'Switch room before booking; each room keeps its own layout',
   place: 'Place one object, checked against R-18',
@@ -268,6 +270,8 @@ function transitionMatrix(actionIds) {
   const done = run(settle, [{ type: 'acceptSettlement' }]);
   const states = { book, build, promote, show, settle, done };
   const payload = {
+    enableResearch: {},
+    research: { command: { kind: 'start', project: 'patch' } },
     chooseDeal: { deal: 'door' },
     chooseVenue: { venueId: 'lot' },
     place: { object: { type: 'restroom', x: 5, y: 10, rot: 0 } },
@@ -305,6 +309,7 @@ function catalogDoc() {
   const allowed = (id) => {
     const a = actions[id];
     if (a.need.length) return a.need.join(', ');
+    if (id === 'enableResearch' || id === 'research') return 'book, done (eligibility required)';
     if (id === 'back') return 'build, promote';
     return 'any';
   };
@@ -342,7 +347,7 @@ function catalogDoc() {
   const responseRows = Object.entries(D.INCIDENTS).flatMap(([id, inc]) => inc.responses.map((r) => [`\`${id}\``, `\`${r.id}\``, r.label, usd(r.cost), r.score,
     r.walkupMult ?? '—', r.flowMult ?? '—']));
 
-  const objCost = { stage: 'With the lot', 'pa-s': usd(D.PA_RENTAL.S), 'pa-m': usd(D.PA_RENTAL.M), lights: usd(D.LIGHTS_RENTAL), bar: usd(D.BAR_SETUP), food: 'Vendor funded', restroom: usd(D.RESTROOM_UNIT), gate: 'Free', exit: 'Free', fence: usd(D.FENCE_KIT) };
+  const objCost = { stage: 'With the lot', 'pa-s': usd(D.PA_RENTAL.S), 'pa-m': usd(D.PA_RENTAL.M), lights: usd(D.LIGHTS_RENTAL), bar: usd(D.BAR_SETUP), food: 'Vendor funded', trailer: `${usd(D.SANITATION_COSTS.trailer)} + optional cleaner/utilities`, restroom: usd(D.RESTROOM_UNIT), gate: 'Free', exit: 'Free', fence: usd(D.FENCE_KIT) };
   const objStaff = { bar: `${D.BAR_STAFF_PER_BAR} bar`, gate: `${D.DOOR_STAFF_PER_GATE} door` };
   const objectRows = Object.entries(D.OBJECT_TYPES).map(([id, t]) => {
     const rules = [t.max ? `max ${t.max}` : null, t.edge ? 'on the boundary' : null, t.nextToStage ? 'touches the stage' : null, t.blocksSight ? 'blocks sightlines' : null, t.kit ? 'site-wide kit' : null].filter(Boolean).join(', ');

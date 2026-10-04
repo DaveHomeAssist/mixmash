@@ -1764,6 +1764,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-batched-hud.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Batched native 3D HUD measurements",
+      "description": "Six full native client repeats after render coalescing, with unchanged game-state replay, scene quality and retained timing variation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-batched-hud.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-ci.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -2284,6 +2294,16 @@
       "open": "/front-of-house/sprites/stage.png"
     },
     {
+      "path": "front-of-house/test-career-ledger.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-career-ledger.mjs",
+      "description": "Cash journal conservation, bounded history, retry identity and hostile checkpoint tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-career-ledger.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-concessions.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2331,6 +2351,56 @@
       "title": "test-lot-camera.mjs",
       "description": "Camera contract tests use the real Three.js projection matrices without a GPU.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-lot-camera.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-ownership.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-ownership.mjs",
+      "description": "Inventory authority preserves identity and capital cash through commands and reloads.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-ownership.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-research-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-research-integration.mjs",
+      "description": "Career development: real settled nights, separate money, frozen bookings and save replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-research-integration.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-research.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-research.mjs",
+      "description": "Development costs, eligible nights, one slot, refunds and untrusted checkpoint replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-research.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-sanitation-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-sanitation-integration.mjs",
+      "description": "Sanitation contracts reconcile upfront costs, live visits and one-time career receipts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-sanitation-integration.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-sanitation.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-sanitation.mjs",
+      "description": "Sanitation replay conserves visits, stall use, cleaning work and source identity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-sanitation.mjs",
       "open": null
     },
     {
@@ -2494,6 +2564,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-research-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-research-smoke.mjs",
+      "description": "Player development controls, real signed progress, cash and next-booking benefits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-research-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-resolution-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2501,6 +2581,16 @@
       "title": "front-of-house-resolution-smoke.mjs",
       "description": "Browser backing allocation and density lifecycle; emulation is not physical display acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-resolution-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-sanitation-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-sanitation-smoke.mjs",
+      "description": "Actual facilities placement, locked sanitation terms, visits, reload and signed production receipt.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-sanitation-smoke.mjs",
       "open": null
     },
     {
@@ -2571,6 +2661,16 @@
       "title": "board.js",
       "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the stand-in sprites in ./sprites once all of them…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/career-ledger.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "career-ledger.mjs",
+      "description": "Bounded itemized career cash journal with exact archived totals and monotonic event identity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/career-ledger.mjs",
       "open": null
     },
     {
@@ -2691,6 +2791,36 @@
       "title": "lot-renderer.mjs",
       "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/ownership.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "ownership.mjs",
+      "description": "Replayable one-family inventory and capital movements; placement belongs to the career adapter.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/ownership.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/research.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "research.mjs",
+      "description": "Three-project development authority: replayable progress and separate cash deltas.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/research.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sanitation.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "sanitation.mjs",
+      "description": "Finite restroom visits, stall condition and exclusive cleaning-worker replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sanitation.mjs",
       "open": null
     },
     {

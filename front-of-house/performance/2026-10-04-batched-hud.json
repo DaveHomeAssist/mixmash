@@ -1,0 +1,453 @@
+{
+  "title": "Full native 3D client and HUD performance diagnostic",
+  "startedAt": "2026-10-04T14:10:18.268Z",
+  "finishedAt": "2026-10-04T14:14:37.290Z",
+  "source": {
+    "commit": "5f47c4ae370f87caab60123090bd961b7f22181a",
+    "dirty": false,
+    "sha256": {
+      "front-of-house/board.js": "7fa111a0fb03668b80fa609474c66ce3f29cc946ee9952e1ce21d44c2bfcb24a",
+      "front-of-house/game.js": "d47bc831d64c961f4a881afa70b438e2ebd94e99897a4470d05f02166d690c2d",
+      "front-of-house/board-adapter.mjs": "375787b507322a3d69d6a9d9dc2466b9a1d46488ead0da3856d3ea2df29d0191",
+      "front-of-house/engine.mjs": "9b0b24a825e6debfd1b5fc3f126d6cbd3731aa37267113e123b4ae7ff89404ae",
+      "front-of-house/data.mjs": "22a0091c8a01477aa0d5fba6574e2c961df4fbda70afe1869577220eefda2495",
+      "front-of-house/services.mjs": "bd618c7baee5483e6981c536b948faca10cbaeeef48cd77f7e30dd92295da9f5",
+      "front-of-house/service-crowd.mjs": "72f7b58849b485f1c60fa7b23dc693c24a6e69a0414e08f04f41dd12afb61ccf",
+      "front-of-house/service-guests.mjs": "74bd16fc0912daf62fcfd4f4fbb2d016e36d2632d2b80be9b9b213cc3d166f41",
+      "front-of-house/index.html": "74fa7b25275bffdb044b82264c980975168cde5e6e06e9a79b6c4cd928ddaff3",
+      "front-of-house/styles.css": "0d727d6d713466e594f38caacddbfc2d66a5025af498760ac7a31b96e5480610",
+      "test/front-of-house-hud-performance.mjs": "041a3a8412dfe922062aa1ea2748161587ee6414a4cfe2bcf4c6b14d73199b22",
+      "front-of-house/lot-renderer.mjs": "688fb26e7e2d99325a97af7002d2bd93dcb3e617548f023484974fcc5a5d9333",
+      "front-of-house/lot-models.mjs": "1bb68e8c2bdfef4c459e51e5998e8cd9da0a8dfb1c124608007e5fc5633caea0",
+      "front-of-house/lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
+      "front-of-house/lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
+      "front-of-house/lot-assets.json": "05d4eeaf3cc28e7e7ecc32fa1a20614c2aeccb440e14dfd23e3a7a4f2bbcb262",
+      "package-lock.json": "596f61a2c0224f51bd6eb256e33ffe6f61c581ceb55eabe38002a1275c165628",
+      "privateNativeHUDHarness": "6231730e3f0fa4723ba0fbe6e06283ed75d943ce242904d28e7e0c0359d1bc8b"
+    },
+    "privateHarness": "Native visible Chrome/full 3D variation of the source-traced public HUD harness; no runtime or save mutation."
+  },
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "kernel": "27.0.0",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "cpuCount": 10,
+    "memoryBytes": 17179869184,
+    "osVersion": "27.0.1",
+    "osBuild": "26A434",
+    "otherLoad": "uncontrolled shared host; load averages recorded",
+    "physicalDisplay": "actual native viewport, density and focus recorded per run; human acceptance not measured"
+  },
+  "browser": "154.0.8037.97",
+  "protocol": {
+    "viewport": null,
+    "requestedDpr": "native",
+    "warmupMs": 10000,
+    "measurementMs": 30000,
+    "repeats": 3,
+    "reducedMotion": "no-preference",
+    "headless": false,
+    "launchArgs": [
+      "--use-angle=metal"
+    ],
+    "renderer": "3D Metal; actual game/HUD/real one-minute-per-second show clock",
+    "camera": "zoom2; fixed or ten-second middle-drag cycle around native viewport center,120px horizontal/70px vertical amplitude; actual pointermove handler",
+    "metrics": "observed RAF cadence and long tasks; neither GPU completion nor isolated whole-client CPU duration",
+    "acceptance": "descriptive only; no physical-device or statistical gate inferred"
+  },
+  "fixtureSha256": "51d174aa2a0f01e57569a1d9972a592e2efce5f83385b8d9222d43934960b255",
+  "privateReportSha256": "8063bd1d26ff5eb3b46006a7f195742cb065b27868e9d52c346d14410eae02a6",
+  "limitations": [
+    "RAF scheduling and actual show/camera behavior, not GPU completion or human smoothness/readability acceptance.",
+    "Shared-host background load uncontrolled; no concurrent local tests, builds or other browser checks from this task during measurement.",
+    "Frozen source and native viewport; no supported phone, battery or low-power qualification."
+  ],
+  "runs": [
+    {
+      "id": "fixed-native3d-1",
+      "camera": "fixed",
+      "repeat": 1,
+      "valid": true,
+      "nativeWindow": {
+        "viewport": {
+          "width": 5120,
+          "height": 1286
+        },
+        "outer": {
+          "width": 5120,
+          "height": 1373
+        },
+        "screen": {
+          "width": 5120,
+          "height": 1440
+        },
+        "dpr": 1,
+        "focused": true,
+        "visibility": "visible"
+      },
+      "backing": [
+        5120,
+        1286
+      ],
+      "graphics": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+      "initialMinute": 25,
+      "finalMinute": 65,
+      "finalStateSha256": "593271b148bc5ae13979582fef7a740c924b0571e072fa4148f0994ffaac3b89",
+      "engineReplay": "exact state after advancing the same initial fixture to the recorded final minute",
+      "movedFrames": 0,
+      "renderCallsAcrossWarmupAndMeasurement": 2322,
+      "shadowUpdatesAcrossWarmupAndMeasurement": 2322,
+      "deferredRendering": true,
+      "frame": {
+        "count": 1791,
+        "elapsedMs": 30009.999999999996,
+        "meanMs": 16.756002233389165,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 18.200000000000728,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 35.29999999999927,
+        "above16_7": 888,
+        "above33_3": 4,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cadenceHz": 59.68010663112296,
+      "longTaskCount": 0,
+      "rawSha256": "8f0bf68dd93c7eef8baa620b1692157e5a41a028c93d4d3989b087d266812de5",
+      "loadBefore": [
+        16.41162109375,
+        17.13427734375,
+        12.0751953125
+      ],
+      "loadAfter": [
+        14.802734375,
+        16.54150390625,
+        12.08447265625
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-native3d-1",
+      "camera": "moving",
+      "repeat": 1,
+      "valid": true,
+      "nativeWindow": {
+        "viewport": {
+          "width": 5120,
+          "height": 1286
+        },
+        "outer": {
+          "width": 5120,
+          "height": 1373
+        },
+        "screen": {
+          "width": 5120,
+          "height": 1440
+        },
+        "dpr": 1,
+        "focused": true,
+        "visibility": "visible"
+      },
+      "backing": [
+        5120,
+        1286
+      ],
+      "graphics": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+      "initialMinute": 25,
+      "finalMinute": 65,
+      "finalStateSha256": "593271b148bc5ae13979582fef7a740c924b0571e072fa4148f0994ffaac3b89",
+      "engineReplay": "exact state after advancing the same initial fixture to the recorded final minute",
+      "movedFrames": 1774,
+      "renderCallsAcrossWarmupAndMeasurement": 2343,
+      "shadowUpdatesAcrossWarmupAndMeasurement": 2343,
+      "deferredRendering": true,
+      "frame": {
+        "count": 1773,
+        "elapsedMs": 30010.7,
+        "meanMs": 16.926508742244785,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 18.600000000002183,
+        "p99Ms": 32.5,
+        "maxMs": 50.10000000000218,
+        "above16_7": 874,
+        "above33_3": 9,
+        "above50": 1,
+        "fullStallMs": 50.10000000000218,
+        "excessStallMs": 0.10000000000218279
+      },
+      "cadenceHz": 59.07892851549614,
+      "longTaskCount": 0,
+      "rawSha256": "2e2edcfe5c747ce9956f46e59178a0d4a1047aea03c75f5897e53ef46ba6d768",
+      "loadBefore": [
+        14.802734375,
+        16.54150390625,
+        12.08447265625
+      ],
+      "loadAfter": [
+        11.6640625,
+        15.5654296875,
+        11.95947265625
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-native3d-2",
+      "camera": "fixed",
+      "repeat": 2,
+      "valid": true,
+      "nativeWindow": {
+        "viewport": {
+          "width": 5120,
+          "height": 1286
+        },
+        "outer": {
+          "width": 5120,
+          "height": 1373
+        },
+        "screen": {
+          "width": 5120,
+          "height": 1440
+        },
+        "dpr": 1,
+        "focused": true,
+        "visibility": "visible"
+      },
+      "backing": [
+        5120,
+        1286
+      ],
+      "graphics": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+      "initialMinute": 25,
+      "finalMinute": 65,
+      "finalStateSha256": "593271b148bc5ae13979582fef7a740c924b0571e072fa4148f0994ffaac3b89",
+      "engineReplay": "exact state after advancing the same initial fixture to the recorded final minute",
+      "movedFrames": 0,
+      "renderCallsAcrossWarmupAndMeasurement": 2293,
+      "shadowUpdatesAcrossWarmupAndMeasurement": 2293,
+      "deferredRendering": true,
+      "frame": {
+        "count": 1700,
+        "elapsedMs": 30012.600000000002,
+        "meanMs": 17.654470588235295,
+        "p50Ms": 16.700000000000728,
+        "p95Ms": 31.900000000001455,
+        "p99Ms": 34.400000000001455,
+        "maxMs": 50,
+        "above16_7": 870,
+        "above33_3": 49,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cadenceHz": 56.64287665847011,
+      "longTaskCount": 0,
+      "rawSha256": "64cf1e245a4c3d4cf00d1a56bba6b8e0b27f093f1c4e54b055c720ab8fd8e153",
+      "loadBefore": [
+        11.6640625,
+        15.5654296875,
+        11.95947265625
+      ],
+      "loadAfter": [
+        11.2333984375,
+        14.92041015625,
+        11.90771484375
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-native3d-2",
+      "camera": "moving",
+      "repeat": 2,
+      "valid": true,
+      "nativeWindow": {
+        "viewport": {
+          "width": 5120,
+          "height": 1286
+        },
+        "outer": {
+          "width": 5120,
+          "height": 1373
+        },
+        "screen": {
+          "width": 5120,
+          "height": 1440
+        },
+        "dpr": 1,
+        "focused": true,
+        "visibility": "visible"
+      },
+      "backing": [
+        5120,
+        1286
+      ],
+      "graphics": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+      "initialMinute": 25,
+      "finalMinute": 65,
+      "finalStateSha256": "593271b148bc5ae13979582fef7a740c924b0571e072fa4148f0994ffaac3b89",
+      "engineReplay": "exact state after advancing the same initial fixture to the recorded final minute",
+      "movedFrames": 1679,
+      "renderCallsAcrossWarmupAndMeasurement": 2211,
+      "shadowUpdatesAcrossWarmupAndMeasurement": 2211,
+      "deferredRendering": true,
+      "frame": {
+        "count": 1678,
+        "elapsedMs": 30010.7,
+        "meanMs": 17.884803337306316,
+        "p50Ms": 16.700000000000728,
+        "p95Ms": 33.099999999998545,
+        "p99Ms": 33.80000000000291,
+        "maxMs": 35.20000000000073,
+        "above16_7": 879,
+        "above33_3": 52,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cadenceHz": 55.913390890582356,
+      "longTaskCount": 0,
+      "rawSha256": "350fb58e531d27002891edb327e3396d07c79cc639095b75d4de1e063c0a0eda",
+      "loadBefore": [
+        11.2333984375,
+        14.92041015625,
+        11.90771484375
+      ],
+      "loadAfter": [
+        9.65869140625,
+        14.162109375,
+        11.7744140625
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-native3d-3",
+      "camera": "fixed",
+      "repeat": 3,
+      "valid": true,
+      "nativeWindow": {
+        "viewport": {
+          "width": 5120,
+          "height": 1286
+        },
+        "outer": {
+          "width": 5120,
+          "height": 1373
+        },
+        "screen": {
+          "width": 5120,
+          "height": 1440
+        },
+        "dpr": 1,
+        "focused": true,
+        "visibility": "visible"
+      },
+      "backing": [
+        5120,
+        1286
+      ],
+      "graphics": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+      "initialMinute": 25,
+      "finalMinute": 65,
+      "finalStateSha256": "593271b148bc5ae13979582fef7a740c924b0571e072fa4148f0994ffaac3b89",
+      "engineReplay": "exact state after advancing the same initial fixture to the recorded final minute",
+      "movedFrames": 0,
+      "renderCallsAcrossWarmupAndMeasurement": 2320,
+      "shadowUpdatesAcrossWarmupAndMeasurement": 2320,
+      "deferredRendering": true,
+      "frame": {
+        "count": 1734,
+        "elapsedMs": 30011.299999999996,
+        "meanMs": 17.30755478662053,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 18.600000000002183,
+        "p99Ms": 34,
+        "maxMs": 51.5,
+        "above16_7": 864,
+        "above33_3": 31,
+        "above50": 1,
+        "fullStallMs": 51.5,
+        "excessStallMs": 1.5
+      },
+      "cadenceHz": 57.778236864114525,
+      "longTaskCount": 0,
+      "rawSha256": "0c85c306432056acb0f94a9639954ac50251906188515b4cab308fdecebe3f2c",
+      "loadBefore": [
+        9.65869140625,
+        14.162109375,
+        11.7744140625
+      ],
+      "loadAfter": [
+        11.81201171875,
+        14.0478515625,
+        11.849609375
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-native3d-3",
+      "camera": "moving",
+      "repeat": 3,
+      "valid": true,
+      "nativeWindow": {
+        "viewport": {
+          "width": 5120,
+          "height": 1286
+        },
+        "outer": {
+          "width": 5120,
+          "height": 1373
+        },
+        "screen": {
+          "width": 5120,
+          "height": 1440
+        },
+        "dpr": 1,
+        "focused": true,
+        "visibility": "visible"
+      },
+      "backing": [
+        5120,
+        1286
+      ],
+      "graphics": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+      "initialMinute": 25,
+      "finalMinute": 65,
+      "finalStateSha256": "593271b148bc5ae13979582fef7a740c924b0571e072fa4148f0994ffaac3b89",
+      "engineReplay": "exact state after advancing the same initial fixture to the recorded final minute",
+      "movedFrames": 1797,
+      "renderCallsAcrossWarmupAndMeasurement": 2381,
+      "shadowUpdatesAcrossWarmupAndMeasurement": 2381,
+      "deferredRendering": true,
+      "frame": {
+        "count": 1796,
+        "elapsedMs": 30011.4,
+        "meanMs": 16.710133630289533,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 35,
+        "above16_7": 863,
+        "above33_3": 2,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cadenceHz": 59.84392597479624,
+      "longTaskCount": 0,
+      "rawSha256": "405ad0ca4a32266f4ff79052b19f135435bf16925d631e52d932951df58264fa",
+      "loadBefore": [
+        11.81201171875,
+        14.0478515625,
+        11.849609375
+      ],
+      "loadAfter": [
+        7.27001953125,
+        12.58544921875,
+        11.41259765625
+      ],
+      "errors": []
+    }
+  ]
+}

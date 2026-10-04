@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "aa5f6a3 measured · native HUD gap and batching",
+  "head": "5f47c4a measured · batching evidence reconciled",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Full native HUD measurements reveal47.58–59.98Hz despite exact state replay. Application render batching is implemented and targeted lifecycle checks pass; full candidate timing and delivery are pending. PR87/88 retain separate CI gates.",
+  "statusReason": "Native full-HUD render duplication is reduced with exact state and quality preserved; candidate cadence55.91–59.84Hz remains below a sustained60fps claim. Reconciled current gameplay and PR87/88 records; combined CI/hosted delivery remain pending.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -223,6 +223,10 @@
     {
       "path": "front-of-house/performance/2026-10-04-native-hud.json",
       "why": "All six full native client/HUD windows, including below-target repeats and exact state replay"
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-batched-hud.json",
+      "why": "All six post-batching native HUD repeats and exact replay evidence"
     }
   ],
   "verify": [
@@ -714,9 +718,9 @@
               "Six full visible native Chrome154/Metal windows at clean6ed7b7c:5120×1286/DPR1,59.9764–59.9812Hz, zero intervals over50ms; complete private artifact audit.",
               "Actual full-client DPR1→2→1 moves preserve fixed1000×613 CSS size, exact state and yaw37/135 picking. Public reproduction commands pass; native command quick windows remain distinct from the frozen full measurement.",
               "Default headless quick mode and deliberate missing-browser cleanup are checked separately. Public summary/tool CI and deployment pending.",
-              "Final local validation:276 repository tests, build, generated docs, balance simulation and three reporting tests pass; generated balance/docs unchanged. Six default headless short windows and deliberate missing-browser retained-failure cleanup pass; catalog317 files."
-            ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/87"
+              "Final local validation:276 repository tests, build, generated docs, balance simulation and three reporting tests pass; generated balance/docs unchanged. Six default headless short windows and deliberate missing-browser retained-failure cleanup pass; catalog317 files.",
+              "Original PR87 CI37206825027 passed. Reconciled delivered career baseline193c54c after a merge conflict, preserving both appended briefs and latest gameplay phase records. All315 tests/build/generated docs/simulation pass with no generated drift; actual display transition reproduction passes on the integrated source. Corrected-head CI pending."
+            ]
           },
           {
             "id": "FOH-P01g",
@@ -727,8 +731,7 @@
               "Initial limits: median frame mean/p95 max25% or8ms increase; median CPU p95 max50% or1ms. Four evaluator and three reporting tests pass, including invalid evidence and strict numeric boundaries. Actual calibration18-window audit passes.",
               "20ms diagnostic injection remains confined to the isolated harness. Full live candidate acceptance and numeric rejection of an actual full fault run remain pending.",
               "276 repository tests/build and seven evaluator/reporting tests pass. Six short actual Metal fault windows are valid and record CPU p95 approximately20.2–20.7ms; this proves injection operation only, not full CI budget acceptance."
-            ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/88"
+            ]
           },
           {
             "id": "FOH-P01h",
@@ -738,7 +741,10 @@
               "Six valid full native3D/HUD windows at clean aa5f6a3:5120×1286/DPR1,47.58–59.98Hz and three intervals over50ms; exact engine state at minute65 and all source/raw/fixture hashes verify.",
               "Camera movement and show-loop renders duplicate submission work. Application adapter opts into one deferred render per animation frame; standalone default and scene quality stay unchanged. Focused lifecycle, backend and resolution checks pass.",
               "Native HUD public command short windows pass. Complete player check, candidate full measurement, CI and hosted delivery remain pending.",
-              "All276 repository tests/build/generated docs/simulation pass with unchanged generated balance/docs. Full3D player gestures, inspection, accessible controls, fallback/recovery, DPR2 backing, reload and exact classic/3D settlement parity pass."
+              "All276 repository tests/build/generated docs/simulation pass with unchanged generated balance/docs. Full3D player gestures, inspection, accessible controls, fallback/recovery, DPR2 backing, reload and exact classic/3D settlement parity pass.",
+              "Full candidate measurement at clean5f47c4a: six valid windows,55.91–59.84Hz and two intervals over50ms. Identical fixture/browser/viewport/procedure and exact game states; only adapter/renderer runtime digests differ from baseline. Moving-window render calls reduce from3918–4843 to2211–2381 across warm-up/measurement; shared-host timing remains variable.",
+              "All28 legacy checks, four live control journeys, eight crowd/movement journeys and six vendor journeys pass on the batching source; no gameplay or quality changes.",
+              "After integration with cf74906/193c54c:315 tests/build/docs/simulation, deferred-render lifecycle, actual DPR1→2→1 display moves and complete3D gestures/recovery/reload/settlement parity pass. Generated reference/balance files unchanged; cache version44 prepared."
             ]
           }
         ]
@@ -1006,6 +1012,15 @@
             "evidence": [
               "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet.",
               "All309 repository tests, build and generated documentation pass. Required delivery/hosted core checks and all career ownership integration remain pending."
+            ]
+          },
+          {
+            "id": "FOH-E01a2",
+            "scope": "Bounded career cash journal with exact archived totals",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Six targeted tests cover mixed capital/research/show reconciliation, stable retry identity, more than four compactions, strict source replay, malformed checkpoints and unsafe integer refusal. No career cash path is connected yet.",
+              "All315 repository tests, build and generated documentation pass. Required delivery and career cash-path integration remain pending."
             ]
           },
           {
