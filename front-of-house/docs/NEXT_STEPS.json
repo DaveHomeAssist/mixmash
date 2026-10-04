@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "76900b4 base · paired regression gate implemented",
+  "head": "aa5f6a3 measured · native HUD gap and batching",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "PR87 evidence delivery is in CI. Paired CI regression evaluator and full-protocol slowdown proof are implemented; actual run acceptance remains pending. Parallel gameplay records preserved.",
+  "statusReason": "Full native HUD measurements reveal47.58–59.98Hz despite exact state replay. Application render batching is implemented and targeted lifecycle checks pass; full candidate timing and delivery are pending. PR87/88 retain separate CI gates.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -22,8 +22,8 @@
     "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
   ],
   "nextStep": {
-    "title": "Establish measured CI regression checks while gameplay delivery continues",
-    "why": "Compare the same fixtures on the same runner and prove intentional slowdown rejection; preserve completed native evidence and remaining low-power/human gates.",
+    "title": "Verify native HUD render batching and finish paired CI delivery",
+    "why": "Remove confirmed duplicate camera/show render submissions, repeat the complete native client measurement and retain slower windows alongside shared-host limitations.",
     "doneWhen": "Declared regression limits reject an actual injected slowdown, then the remaining operations, research, ownership, venue and release work meets its own acceptance.",
     "effort": "L",
     "owner": "either",
@@ -219,6 +219,10 @@
     {
       "path": "front-of-house/performance/2026-10-04-displays.json",
       "why": "Actual attached-display density transitions with private coordinates omitted"
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-native-hud.json",
+      "why": "All six full native client/HUD windows, including below-target repeats and exact state replay"
     }
   ],
   "verify": [
@@ -723,6 +727,18 @@
               "Initial limits: median frame mean/p95 max25% or8ms increase; median CPU p95 max50% or1ms. Four evaluator and three reporting tests pass, including invalid evidence and strict numeric boundaries. Actual calibration18-window audit passes.",
               "20ms diagnostic injection remains confined to the isolated harness. Full live candidate acceptance and numeric rejection of an actual full fault run remain pending.",
               "276 repository tests/build and seven evaluator/reporting tests pass. Six short actual Metal fault windows are valid and record CPU p95 approximately20.2–20.7ms; this proves injection operation only, not full CI budget acceptance."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/88"
+          },
+          {
+            "id": "FOH-P01h",
+            "scope": "Full native HUD measurement and application render coalescing",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Six valid full native3D/HUD windows at clean aa5f6a3:5120×1286/DPR1,47.58–59.98Hz and three intervals over50ms; exact engine state at minute65 and all source/raw/fixture hashes verify.",
+              "Camera movement and show-loop renders duplicate submission work. Application adapter opts into one deferred render per animation frame; standalone default and scene quality stay unchanged. Focused lifecycle, backend and resolution checks pass.",
+              "Native HUD public command short windows pass. Complete player check, candidate full measurement, CI and hosted delivery remain pending.",
+              "All276 repository tests/build/generated docs/simulation pass with unchanged generated balance/docs. Full3D player gestures, inspection, accessible controls, fallback/recovery, DPR2 backing, reload and exact classic/3D settlement parity pass."
             ]
           }
         ]

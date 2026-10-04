@@ -33,7 +33,7 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
         backend?.destroy(); backend = null; layer?.remove();
         layer = document.createElement('canvas'); layer.className = 'lot-webgl'; layer.setAttribute('aria-hidden', 'true');
         canvas.before(layer);
-        backend = createRenderer(layer, { onStatus: s => {
+        backend = createRenderer(layer, { deferRendering: true, onStatus: s => {
           if (destroyed) return;
           reason = s.state === 'lost' || s.state === 'failed' ? '3D is unavailable. Your show is unchanged in the classic view.' : '';
           sync();

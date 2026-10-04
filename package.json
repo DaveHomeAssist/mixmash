@@ -1,7 +1,7 @@
 {
   "name": "mixmash",
   "version": "1.0.0",
-  "description": "MIXMASH \u2014 DJ-powered platform fighter (MixMash Studio)",
+  "description": "MIXMASH — DJ-powered platform fighter (MixMash Studio)",
   "type": "module",
   "private": true,
   "scripts": {
@@ -37,7 +37,9 @@
     "assets:front-of-house": "node front-of-house/tools/lot-assets.mjs",
     "check:front-of-house-assets": "node front-of-house/tools/lot-assets.mjs --check",
     "perf:front-of-house-hud": "node test/front-of-house-hud-performance.mjs",
-    "perf:front-of-house": "node test/front-of-house-performance.mjs"
+    "perf:front-of-house": "node test/front-of-house-performance.mjs",
+    "smoke:front-of-house-batching": "node test/front-of-house-batching-smoke.mjs",
+    "perf:front-of-house-native-hud": "node test/front-of-house-native-hud-performance.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

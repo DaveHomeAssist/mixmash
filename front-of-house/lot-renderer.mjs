@@ -5,7 +5,7 @@ import { createLotModels, MODEL_REVISION, MODEL_METADATA } from './lot-models.mj
 import { createLotPresentation } from './lot-presentation.mjs';
 import { OBJECT_TYPES } from './data.mjs';
 
-export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null } = {}) {
+export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false } = {}) {
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
@@ -25,7 +25,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', paused = false, disposed = false;
   let objects = [], pickables = [], objectHeights = [];
   let shadowKey = '', shadowUpdates = 0, renderedFrames = 0;
-  let requestedDpr = 1, densityMedia = null;
+  let requestedDpr = 1, densityMedia = null, renderFrame = 0;
   const ownedOverlayMaterials = new Map();
 
   function report(next, detail = '') { state = next; reason = detail; onStatus({ state, reason }); }
@@ -56,6 +56,13 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     if (stage) { const spec = OBJECT_TYPES.stage; stageLight.position.set(stage.x + (stage.rot % 2 ? spec.h : spec.w) / 2, 2.8, stage.y + (stage.rot % 2 ? spec.w : spec.h) / 2); }
   }
   function render() {
+    if (disposed || paused || state !== 'ready' || globalThis.document?.hidden) return;
+    if (!deferRendering) { renderNow(); return; }
+    if (!renderFrame) renderFrame = requestAnimationFrame(renderNow);
+  }
+  function cancelRender() { if (renderFrame) cancelAnimationFrame(renderFrame); renderFrame = 0; }
+  function renderNow() {
+    renderFrame = 0;
     if (disposed || paused || state !== 'ready' || globalThis.document?.hidden) return;
     // Some browser density changes update media matches without delivering a change event.
     if (pixelRatio === null && density() !== requestedDpr) { resize(); return; }
@@ -119,16 +126,16 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     const hit = hits.sort((a, b) => a.distance - b.distance || a.object.userData.objectIndex - b.object.userData.objectIndex)[0];
     return hit ? { ...objects[hit.object.userData.objectIndex] } : null;
   }
-  function contextLost(event) { event.preventDefault(); report('lost', 'WebGL context lost; retain the current game and use the fallback board.'); }
+  function contextLost(event) { event.preventDefault(); cancelRender(); report('lost', 'WebGL context lost; retain the current game and use the fallback board.'); }
   function contextRestored() { if (disposed) return; renderer.shadowMap.needsUpdate = true; report('ready'); resize(); if (lastScene) draw(lastScene); }
-  function visibility() { if (!globalThis.document?.hidden) render(); }
+  function visibility() { if (globalThis.document?.hidden) cancelRender(); else render(); }
   function motionChanged() { if (reducedMotion === null) { motion = !media?.matches; if (lastScene) draw(lastScene); } }
   media?.addEventListener('change', motionChanged);
   canvas.addEventListener('webglcontextlost', contextLost); canvas.addEventListener('webglcontextrestored', contextRestored);
   globalThis.document?.addEventListener('visibilitychange', visibility);
   function destroy() {
     if (disposed) return;
-    disposed = true;
+    disposed = true; cancelRender();
     canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored); globalThis.document?.removeEventListener('visibilitychange', visibility);
     media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose();
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
@@ -154,8 +161,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     centerOn: (x, y) => { camera.setCamera({ x, y, zoom: 2 }); render(); },
     follow: (x, y) => { const p = camera.project(x + 0.5, y + 0.5); if (!p.clear) { camera.setCamera({ x, y }); render(); } },
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
-    pause: () => { paused = true; }, resume: () => { paused = false; render(); },
+    pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates }),
+    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

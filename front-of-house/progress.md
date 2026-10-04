@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Full native HUD gap and render batching
+
+- Six native full3D/HUD windows at aa5f6a3 are valid, exact engine replay passes and all digests verify. Cadence47.58–59.98Hz, three intervals over50ms. Retained lower repeats; this does not establish sustained60fps. Camera movement roughly doubles submitted renders compared with the show loop alone.
+- Added application-only deferred rendering, preserving immediate scene/camera/picking state and synchronous standalone semantics. The focused browser check passes single-render coalescing, cancellation, real context recovery and disposal; backend/resolution rails pass. Full player and candidate timing evidence remain separate.
+- Published a native HUD reproduction command and recorded the delegated CI measurement policy as CT-DEC-21. Catalog validation initially rejected a string-shaped metadata note; corrected it to the required title/description object and regenerated.
+
+
 ## 2026-10-04: Paired performance gate implemented
 
 - Added pinned-baseline/current comparisons on the same Ubuntu24.04 runner, with complete18-window protocols, raw/source/fixture audit and median frame/CPU limits. Existing correctness checks remain unchanged; timing runs for relevant changes or manual dispatch.

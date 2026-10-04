@@ -386,3 +386,11 @@ Verify actual settings/placement, refusal before charge, fixed terms, both artis
 **Failure proof:** A manual diagnostic option inserts20ms of real CPU work in the isolated harness on every draw, without changing production code or scene quality. Run the full protocol, require valid samples and demonstrate that the same budget evaluator rejects those measured results for numeric regression. Invalid evidence or a quick-mode rejection cannot substitute for this proof.
 
 **Acceptance and exclusions:** Unit checks exercise boundaries, incomplete/duplicate/mismatched evidence and preserved quality; live CI must first pass the normal candidate and then reject the deliberate slowdown, retaining all artifacts. Never weaken existing checks or merge a failing regression job. Total sampling is approximately26minutes for a pair or40minutes including the optional fault run; no scheduled task, user data, runtime/save changes or physical-device claim.
+
+### FOH-P01h: Coalesce application 3D rendering
+
+**Observed problem:** Six full native3D/HUD windows at aa5f6a3 are valid but range47.58–59.98Hz. Moving-camera windows submit roughly twice as many renderer calls as the running-show animation alone. Shared-host load remains uncontrolled; duplicate work is confirmed, but it does not explain every cadence variation.
+
+**Smallest slice:** Opt the application adapter into deferred 3D rendering. Camera and scene state update immediately; one pending animation-frame render consumes the latest state. Keep the standalone backend synchronous by default so existing integrations and measurement CPU semantics remain stable. Cancel pending work on pause, context loss and disposal; resume/recovery requests one current frame. Preserve dimensions, shadows, geometry, guest state, picking and all save/settlement rules.
+
+**Acceptance:** A browser test proves one render for many same-task updates, latest-camera picking, cancellation on pause/disposal and recovery. Existing backend and full-client controls/settlement rails must pass. Retain all six original native HUD windows, then repeat the identical fixed/moving protocol after the change, auditing raw/source/fixture hashes and exact engine replay. Reduced render count is independent evidence from cadence or human/device acceptance; do not promise60fps merely from fewer calls.

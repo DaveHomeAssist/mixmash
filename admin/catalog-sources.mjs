@@ -238,6 +238,7 @@ export const PATTERN_NOTES = [
 
 export const FILE_NOTES = {
   'front-of-house/performance/2026-10-04-ci.json': { title: 'CI renderer calibration', description: 'All eighteen Ubuntu24.04 SwiftShader windows with runner/source/fixture/raw digests and separate timing statistics; no hardware FPS claim.' },
+  'front-of-house/performance/2026-10-04-native-hud.json': { title: 'Native 3D HUD measurements', description: 'Six full native 3D client and HUD windows with real show-clock replay, camera motion and retained stalls.' },
   'front-of-house/performance/2026-10-04-native.json': { title: 'Native visible Chrome measurements', description: 'Six full native-display Metal windows in visible focused Chrome, retaining repeated timing and source/raw evidence separately from headless results.' },
   'front-of-house/performance/2026-10-04-displays.json': { title: 'Actual display density transitions', description: 'Full-client density1-to2-to1 window moves preserve backing, picking, viewport fit and saved state; private display coordinates omitted.' },
   'front-of-house/performance/2026-10-04-density.json': { title: 'Lot high-density Metal diagnostics', description: 'Eighteen requested-DPR2 desktop, phone and ultrawide windows, actual backing dimensions, repeated timing summaries and source/raw digests; not physical-device acceptance.' },

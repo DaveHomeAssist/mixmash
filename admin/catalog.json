@@ -650,6 +650,14 @@
         {
           "name": "npm run perf:front-of-house",
           "description": "node test/front-of-house-performance.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-batching",
+          "description": "node test/front-of-house-batching-smoke.mjs"
+        },
+        {
+          "name": "npm run perf:front-of-house-native-hud",
+          "description": "node test/front-of-house-native-hud-performance.mjs"
         }
       ]
     }
@@ -1806,6 +1814,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-native-hud.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native 3D HUD measurements",
+      "description": "Six full native 3D client and HUD windows with real show-clock replay, camera motion and retained stalls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-native-hud.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-native.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -2366,6 +2384,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-batching-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-batching-smoke.mjs",
+      "description": "Verify application render coalescing and immediate picking without changing the synchronous backend contract.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-batching-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-displays-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2423,6 +2451,16 @@
       "title": "front-of-house-lot-smoke.mjs",
       "description": "Browser proof for the isolated Lot backend; this does not claim game integration or final art acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-lot-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-native-hud-performance.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-native-hud-performance.mjs",
+      "description": "Full native Chrome client diagnostics: actual 3D HUD, running show and fixed/moving camera repeats.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-native-hud-performance.mjs",
       "open": null
     },
     {

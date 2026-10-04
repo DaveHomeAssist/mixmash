@@ -29,3 +29,7 @@ The [lot-sample-2 candidate](LOT_SAMPLE.md) adds perimeter/incident cues, idle g
 ## Deployed scene and measurement evidence
 
 PR64 integration and PR65 scene are merged, CI passed and Pages built. Eight scene runtime/asset files match PR65 head 15a576a. The hosted backend and actual game passed their browser rails, including recovery and complete settlement parity. [PERFORMANCE.md](PERFORMANCE.md) records all 18 renderer-only hardware host runs; this is not final art or physical-device acceptance.
+
+## Application render scheduling
+
+The adapter opts into `deferRendering:true`. Camera, scene and picking state change immediately; multiple updates before the next animation-frame callback share one GPU render of the latest state. The standalone backend remains synchronous by default. Pause, context loss, hidden state and disposal cancel queued work; resume/recovery requests a current frame. This changes submission scheduling only, not simulation, geometry, materials, shadows or backing quality. `smoke:front-of-house-batching` covers coalescing, immediate picks and lifecycle; complete player and performance evidence is tracked separately.

@@ -49,6 +49,7 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run smoke:front-of-house
       - run: npm run smoke:front-of-house-floor
+      - run: npm run smoke:front-of-house-batching
       - run: npm run smoke:front-of-house-resolution
       - run: npm run smoke:front-of-house-lot
       - run: npm run smoke:front-of-house-3d

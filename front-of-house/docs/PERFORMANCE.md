@@ -179,3 +179,17 @@ Each baseline/candidate has all18 full windows. The gate audits source/fixture/r
 Initial delegated engineering limits: frame mean and p95 may increase by the larger of25% or8ms; CPU submission p95 by the larger of50% or1ms. These exceed the repeat variation in the recorded calibration and are conservative regression alarms, not new60fps/30fps device acceptance limits. The baseline is pinned and never updated automatically. Sequential paired runs reduce runner-class variance but retain time-dependent host noise.
 
 The optional `--fault-cpu=20` inserts real CPU work only inside the isolated measurement harness, recorded in protocol metadata. The fault-proof step requires valid full samples and an actual numeric budget failure; a fault flag, invalid report or quick-mode rejection cannot pass that proof. Ordinary comparison rejects injected runs. All JSON is retained30days, including invalid windows. Full pair sampling takes about26minutes; adding fault evidence takes about40minutes. Live paired/fault acceptance remains pending until linked to a completed run.
+
+## Full native 3D client and HUD baseline
+
+[All six native HUD windows](../performance/2026-10-04-native-hud.json) at clean `aa5f6a3339cb666ec5729403afb9dffc00786cfb` are valid. Installed Chrome154.0.8037.97, Apple M4 Metal, actual5120×1286 content/backing at DPR1; full client/HUD and seed170 live flow-version1 show. Each uses10s warm-up and30s sampling, starting at minute25 and reaching65. Fixed and actual middle-drag cameras alternate across three repeats at zoom2. Focus/visibility, containment, real motion and exact engine-state replay all pass. Original report/source/fixture/raw hashes verify.
+
+| Repeat | Fixed cadence Hz / intervals >50ms | Moving cadence Hz / intervals >50ms | Fixed / moving render calls across warm-up and measurement |
+| --- | --- | --- | --- |
+| 1 | 59.98 /0 | 59.97 /0 | 2441 /4843 |
+| 2 | 59.44 /0 | 47.58 /2 | 2421 /3918 |
+| 3 | 52.91 /1 | 49.32 /0 | 2110 /3999 |
+
+These below-target runs are retained. Shared-host load varies; no concurrent local tests/builds/other browser checks from this task ran during timing. The evidence does not establish sustained60fps, thermal causality, GPU completion or human readability. Camera events and the running-show loop both call the renderer; their duplicate submissions are independently observable and motivate application-only deferred rendering. The standalone benchmark stays synchronous. Candidate comparison and delivery remain pending.
+
+Reproduce with `npm run perf:front-of-house-native-hud` using installed Chrome on a Metal host; `FRONT_OF_HOUSE_HUD_OUTPUT` names an empty private output directory. The command uses native geometry/density, isolated storage and six complete windows; `--quick` is only tool validation. It was published after the frozen private-harness baseline; both source attributions remain explicit. Screenshots and raw state stay private.
