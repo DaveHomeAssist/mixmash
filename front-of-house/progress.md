@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Isolated Lot backend
+
+- FOH-F01 delivered in PR60, merge c43dff4, successful CI and Pages build1259205127. Live CSS/service worker bytes match; Book fits 360/375/390px with no browser errors.
+- FOH-V01b now has a pinned locally served Three.js backend, arbitrary-yaw camera, procedural equipment/guest samples and explicit context/resource ownership. The production client still uses the existing board; integration follows as a separate bounded slice.
+- Camera/footprint tests and real WebGL smoke passed locally, including eight view/light captures and 20 disposal cycles. Technical geometry is not realistic-art acceptance. FOH eye height, complete scene parity, input/fallback integration, settlement comparison and physical-device proof remain required.
+
+
 
 ## 2026-10-04: Lot controls — Select and safe removal
 

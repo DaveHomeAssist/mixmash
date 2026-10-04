@@ -5,7 +5,7 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "4aeb533 · phase execution baseline reviewed 2026-10-04",
+  "head": "756246b · Select and Lot backend merged; service core delivery 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
   "statusReason": "Live Lot service pilot implemented and under delivery verification. Clock, staffing, queues, incident effects and career settlement have tests; representative queue movement and remaining renderer/operations phases stay open.",
@@ -19,8 +19,8 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Implement the bounded 3D Lot adapter and independently authored realistic sample",
-    "why": "Phone sheets and safe Select/removal are implemented. The existing render contract defines camera, picking, engine/save and fallback parity; independently authored geometry avoids unverified archive reuse.",
+    "title": "Connect the Lot backend to the game with safe gestures and Canvas 2D recovery",
+    "why": "The isolated backend now draws source-owned dimensional props and passes camera/lifecycle checks; player input, full scene parity and deterministic game integration are the next required proof.",
     "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
     "effort": "L",
     "owner": "either",
@@ -219,7 +219,8 @@
     "2026-10-04 Lot preflight changes only public-safe documentation and its index. No runtime, engine formulas, balance, saves, progression, renderer behavior, CI gates, assets or release visibility changed. Notion and other chats were not updated.",
     "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
-    "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change."
+    "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
+    "The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
   ],
   "links": [
     {
@@ -404,7 +405,7 @@
         "source": "MXS-06",
         "dependsOn": [],
         "doneWhen": "All visible tabs and controls fit at 360, 375 and 390 CSS px; desktop layout and full show smoke remain valid.",
-        "status": "implemented",
+        "status": "deployed",
         "evidence": [
           {
             "stage": "test",
@@ -412,6 +413,13 @@
             "result": "pass",
             "checkedAt": "2026-10-04T10:02:16.158Z",
             "summary": "26 smoke checks, including Book/Promote visible controls and sheet bounds at 360/375/390px; no browser errors."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/commit/c43dff4c2b2097c81d8b80afee77d0b33e3cb2b7",
+            "result": "pass",
+            "checkedAt": "2026-10-04T10:18:39.660Z",
+            "summary": "PR60 CI passed; Pages build1259205127 built; deployed CSS and service worker byte parity; live Book sheet fits 360/375/390px without page overflow or browser errors. Local full smoke separately covers Book and Promote tabs."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/60"
@@ -440,12 +448,28 @@
                 "checkedAt": "2026-10-04T10:10:32.229Z",
                 "summary": "28 full game checks, keyboard/mouse/touch Select, safe default, modal precedence, single and bulk undo, restored focus, reload and HUD containment."
               }
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/61"
           },
           {
             "id": "FOH-V01b",
             "scope": "3D Lot adapter and five-subject realistic sample (FB-01)",
-            "status": "pending"
+            "status": "in_progress",
+            "evidence": [
+              {
+                "stage": "test",
+                "locator": "test/front-of-house-lot-smoke.mjs",
+                "result": "pass",
+                "checkedAt": "2026-10-04T10:18:39.662Z",
+                "summary": "Isolated backend: arbitrary-yaw ground picking, sample depth picks, eight camera/light captures, phone framing, real context loss/restoration and 20 disposal cycles. Not game integration or final art acceptance."
+              }
+            ],
+            "remaining": [
+              "Game facade, input and accessible camera controls",
+              "Complete scene parity and failure/retry switching",
+              "Same-save deterministic settlement comparison",
+              "Realistic sample, physical scale and human/device acceptance"
+            ]
           }
         ]
       },
@@ -481,7 +505,8 @@
             "status": "implemented-local-verification",
             "evidence": [
               "10 service tests: quiet/surge/busy bar, counts/cash, transfer, replay, bounded checkpoints",
-              "Existing game integration and representative crowd remain FOH-O01b"
+              "Existing game integration and representative crowd remain FOH-O01b",
+              "PR #62: 235 tests, 28 browser checks and Chromium/WebKit model parity; final merge reconciliation is being verified."
             ]
           },
           {
