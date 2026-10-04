@@ -190,3 +190,9 @@ Every subsequent cash-changing action posts the actual movement: acquisition, di
 Nine adapter checks cover both offered deals, paid incidents, sponsor opening, held nights, research refunds, duplicate capital commands, sale after signing, reload/recovery and bounded history. Player controls and browser/offline evidence remain a separate delivery slice.
 
 New signed history rows also retain optional `cashAfter`, the exact cash immediately after signing and before a held run's next opening payment. It is display evidence only and never credits cash. Valid safe-integer values survive normalization; older rows show current cash and explicitly state that historical cash was not recorded. The signed settlement uses this snapshot so later equipment or development spending cannot change its historical cash bridge.
+
+## Optional Club ticketing contract (FOH-V02a2)
+
+Schema2 accepts `promotion.ticketing` as null or `{version:1,plan:"direct"|"platform"}` only in Fathom Hall. Doors copy recognized terms to `show.ticketing`. Active and signed shows read that frozen source; saved fee amounts and rates are ignored. An absent marker retains the original split and output shape. The platform's4% presale collection fee is withheld once from settlement receipts, outside artist-deductible production costs and show opening. Net, payout and the optional journal use the same derived amount.
+
+Room changes and Next Show clear the optional selection. Invalid/wrong-room optional terms are removed with `ticketingNotice`, preserving career cash and signed history; reloading never replays payment. Such recovery does not claim to reconstruct missing contract terms. Five adapter checks cover all six old phases, exact legacy/Direct parity, quiet/loss pairs, both artist deals, one-time settlement/journal reconciliation, locked terms and source recovery. Controls and hosted acceptance remain separate work.

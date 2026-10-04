@@ -35,7 +35,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
 | `remove` | Remove the object at a list index | `index` | build | stays | 1 |
 | `confirmBuild` | Lock the layout once the venue is ready | — | build | promote | 1 |
-| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `foodPlan`, `sanitation`, `seatPrice` | promote | stays | 8 |
+| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `foodPlan`, `ticketing`, `sanitation`, `seatPrice` | promote | stays | 10 |
 | `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 12 |
 | `chooseDoorCrew` | Opt-in doors trial only: put the spare worker on the bar or the gate | `choice` | show | stays | 2 |
 | `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
@@ -101,6 +101,8 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `setPromotion` | Ad spend must be a whole number from 0 to ${D.AD_MAX_PER_CHANNEL} |
 | `setPromotion` | Choose live services only for the Lot |
 | `setPromotion` | Choose a valid Lot food plan |
+| `setPromotion` | Ticketing options are available in Fathom Hall |
+| `setPromotion` | Choose valid ticketing terms |
 | `setPromotion` | Sanitation trial is available in the Lot |
 | `setPromotion` | Choose valid sanitation terms |
 | `setPromotion` | Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
