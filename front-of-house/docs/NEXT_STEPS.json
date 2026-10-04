@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "8d715b0 Festival rules delivered; Amphitheater and Festival profiles in verification",
+  "head": "Delay towers locally verified; Amphitheater profile delivered; Festival profile corrected CI pending",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Festival accounting, controls and sponsor/headliner rules are hosted-verified. Amphitheater profile release checks continue. Festival base sound and sightlines pass 401 tests, six both-browser player journeys, six seating regressions, 28 legacy browser checks, exact unmarked parity and offline cash reconciliation. CI and hosted profile releases remain; infrastructure, dimensional scenes, career acceptance and navigation continue.",
+  "statusReason": "Delay placement, spatial coverage, main production charges, receipts and offline saves pass local checks. Amphitheater sound/slope is hosted-verified. Festival profile and delay release checks remain; infrastructure, dimensional scenes and full careers are open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -28,7 +28,8 @@
     "PR98: pure Festival accounting merged e37ab28; hosted module/data hashes and hand-calculated stage/site receipt pass.",
     "PR99: Festival career adapter merged9d00503; matching hosted source, both browser engine deal receipts and offline journal/reload proof.",
     "PR101: playable Festival bill and stage/site/cash receipts delivered at0c9288d with26 matching hosted files, six Festival/six seating journeys and offline journal/reload proof.",
-    "PR103: fixed Festival sponsor prices and earned headliners delivered at8d715b0, with26 matching files, both-browser player/edge journeys and offline sponsor receipt/journal proof."
+    "PR103: fixed Festival sponsor prices and earned headliners delivered at8d715b0, with26 matching files, both-browser player/edge journeys and offline sponsor receipt/journal proof.",
+    "PR104: Amphitheater sound/slope delivered at33bdc63 with27 matching hosted files, both-browser room/held journeys and offline signing/cancellation/journal proof."
   ],
   "nextStep": {
     "title": "Deliver venue profiles, then complete site systems and scenes",
@@ -368,7 +369,7 @@
       "checkedOn": "2026-10-04",
       "localChecks": "New Amphitheater bookings use a version1 room profile: included700-person shell sound, explicit100/250 portable replacement, fixed lawn rise and level rear concourse, true height-aware obstacle rays and shared overlay/settlement geometry. Nine new tests cover source validation, exact rays, rotations, house/rental/owned costs, legacy replay, three-night cash/reputation and recovery.397 repository tests/build/docs and unchanged Lot baseline pass. Final six Chromium/WebKit seating/room journeys cover placement/undo, identical-layout profile import cache, compact pages and profile-only next booking; six held-run/full-hold/debt journeys,28 legacy checks, offline signing/cancellation and supplied action runner pass. CI and hosted profile acceptance remain pending.",
       "diagnostic": "Controlled30-seed Amphitheater starter comparison at usual prices and best responses: old satisfaction37–43,0/30passes; marked profile67–73,30/30passes. Capacity and opening costs unchanged. This is diagnostic evidence, not a full career or balance acceptance; Festival-scale quality and all dimensional room scenes remain open.",
-      "release": "Pending required CI, merge and hosted acceptance",
+      "release": "PR104 passed CI37216547248 and merged33bdc63a261b11180effaa03143e912d6ba239de at16:42:52Z; Pages built16:43:26Z. All27 checked hosted runtime files match. Six hosted Chromium/WebKit seating/Room journeys and six held-run journeys with full-hold/debt branches pass. Hosted offline cancellation preserves700 sound capacity and294clear/6blocked tiles;41560 ticket gross,2750 cancellation and1027440 cash reconcile with the journal and signed receipt. Actual hosted WebKit phone Room image inspected.",
       "artAndDeviceAcceptance": "Not claimed; dimensional scene remains open",
       "implementationRevision": "c538daaac966a8c87bff81a3ca15256329dbffa0"
     },
@@ -380,6 +381,13 @@
       "release": "Pending required CI, merge/Pages and hosted acceptance",
       "artAndDeviceAcceptance": "Not claimed; existing Canvas artwork remains a fallback",
       "ciCorrection": "CI37217349921 failed a9px Festival account overflow at320×256 on Linux. Two explanations shortened; six Chromium/WebKit journeys and edge cases, five-size/two-theme checks, build/docs pass locally after correction. Fresh CI and hosted proof remain pending."
+    },
+    "festivalDelays": {
+      "localChecks": "Festival delay towers implemented with spatial union coverage, two-tower limit, house-system activation, explicit portable/legacy inactivity and exact rental/operator production costs. 405 repository tests,28 targeted tests, build/docs, unchanged Lot simulator, six Chromium/WebKit Festival journeys plus edge cases, six seating journeys and28 legacy browser checks pass. Both themes/five sizes, actual pointer selection, inactive portable/legacy controls and Site/Production receipt totals pass. Warmed-cache offline two-tower signing/reload preserves6000 sound,467 extra tiles,1350 delay cost and1194656 journal cash. Supplied action runner and actual phone/desktop captures inspected. CI and hosted delivery remain pending.",
+      "diagnostic": "Thirty paired seeds improve satisfaction42–67/3passes to59–67/29passes;180 zero-tower transitions and full receipts match the prior engine. Diagnostic only, not full career acceptance.",
+      "release": "Pending required CI, merge/Pages and hosted acceptance",
+      "artAndDeviceAcceptance": "Source-owned provisional tower geometry; final art and physical-device evidence not claimed",
+      "ciCorrection": "CI37218847146 found that the Lot manifest generator included unsupported Festival-only towers through a generic fallback model. Lot asset enumeration now excludes Festival-only types; existing manifest unchanged and asset checks pass. Fresh CI pending."
     }
   },
   "decisionState": {
@@ -1052,7 +1060,8 @@
           "Controlled30-seed Amphitheater starter comparison at usual prices and best responses: old satisfaction37–43,0/30passes; marked profile67–73,30/30passes. Capacity and opening costs unchanged. This is diagnostic evidence, not a full career or balance acceptance; Festival-scale quality and all dimensional room scenes remain open.",
           "PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected.",
           "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending.",
-          "Thirty paired starter-layout seeds at usual price and best response: old satisfaction14–22 with0/30passes; profile42–67 with3/30passes. This diagnostic does not establish full career balance. Spatial delays, VIP deck, bus compound and dimensional scenes remain open."
+          "Thirty paired starter-layout seeds at usual price and best response: old satisfaction14–22 with0/30passes; profile42–67 with3/30passes. This diagnostic does not establish full career balance. Spatial delays, VIP deck, bus compound and dimensional scenes remain open.",
+          "PR104 passed CI37216547248 and merged33bdc63a261b11180effaa03143e912d6ba239de at16:42:52Z; Pages built16:43:26Z. All27 checked hosted runtime files match. Six hosted Chromium/WebKit seating/Room journeys and six held-run journeys with full-hold/debt branches pass. Hosted offline cancellation preserves700 sound capacity and294clear/6blocked tiles;41560 ticket gross,2750 cancellation and1027440 cash reconcile with the journal and signed receipt. Actual hosted WebKit phone Room image inspected."
         ],
         "slices": [
           {
@@ -1092,7 +1101,8 @@
               "New Amphitheater bookings use a version1 room profile: included700-person shell sound, explicit100/250 portable replacement, fixed lawn rise and level rear concourse, true height-aware obstacle rays and shared overlay/settlement geometry. Nine new tests cover source validation, exact rays, rotations, house/rental/owned costs, legacy replay, three-night cash/reputation and recovery.397 repository tests/build/docs and unchanged Lot baseline pass. Final six Chromium/WebKit seating/room journeys cover placement/undo, identical-layout profile import cache, compact pages and profile-only next booking; six held-run/full-hold/debt journeys,28 legacy checks, offline signing/cancellation and supplied action runner pass. CI and hosted profile acceptance remain pending.",
               "Controlled30-seed Amphitheater starter comparison at usual prices and best responses: old satisfaction37–43,0/30passes; marked profile67–73,30/30passes. Capacity and opening costs unchanged. This is diagnostic evidence, not a full career or balance acceptance; Festival-scale quality and all dimensional room scenes remain open.",
               "PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected.",
-              "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending."
+              "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending.",
+              "Festival delay towers implemented with spatial union coverage, two-tower limit, house-system activation, explicit portable/legacy inactivity and exact rental/operator production costs. 405 repository tests,28 targeted tests, build/docs, unchanged Lot simulator, six Chromium/WebKit Festival journeys plus edge cases, six seating journeys and28 legacy browser checks pass. Both themes/five sizes, actual pointer selection, inactive portable/legacy controls and Site/Production receipt totals pass. Warmed-cache offline two-tower signing/reload preserves6000 sound,467 extra tiles,1350 delay cost and1194656 journal cash. Supplied action runner and actual phone/desktop captures inspected. CI and hosted delivery remain pending."
             ]
           },
           {

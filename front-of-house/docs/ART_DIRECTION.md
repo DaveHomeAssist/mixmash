@@ -195,3 +195,7 @@ The mockup shows a fuller Build screen than the first playable. Adopted now: the
 | Real company names | The source compares the sheet to a named ticketing company and the stage to a named manufacturer, and the generator carries a real product name. Those names stay out of the game (CT-DEC-03). |
 
 The concept images (two sprite-sheet specs, the asset sheet, the build-phase mockup, the tier ladder, the show-night key art and the prop sheet) live in Dave's Gemini chat "Front of House Art Direction"; they are not in this repository.
+
+### Festival delay technical prop (2026-10-04)
+
+The delay tower introduced with FOH-V02b10 is independently authored in `board.js` as a thin, four-logical-unit code-drawn enclosure over its1×1 footprint. Palette glyph and geometry use no image or external asset. Source and runtime use are the repository code under the repository's existing terms. It is a provisional technical representation for placement/picking/occlusion and has no physical calibration or final visual acceptance. The unused legacy delay-tower library image remains unused.

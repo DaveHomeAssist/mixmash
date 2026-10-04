@@ -10,7 +10,7 @@ const sources = {};
 for (const file of ['lot-models.mjs', 'lot-camera.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs', 'service-crowd.mjs', 'service-guests.mjs', 'guest-flow.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
 const models = createLotModels(), round = n => Math.round(n * 100000) / 100000;
 const assets = [];
-for (const type of [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit), 'guest']) {
+for (const type of [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && !OBJECT_TYPES[id].festivalOnly), 'guest']) {
   const model = type === 'guest' ? models.guest() : models.create({ type, x: 0, y: 0, rot: 0 });
   const bounds = new Box3().setFromObject(model); let meshCount = 0; model.traverse(o => { if (o.isMesh) meshCount++; });
   const spec = OBJECT_TYPES[type];

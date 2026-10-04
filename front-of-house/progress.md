@@ -618,7 +618,20 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 - Offline player booking/settlement retains Main3000,592clear/8blocked tiles with exact overlay parity; cash1257430 equals the journal after a257430 net show. Supplied action runner passes after binding its import to the repository's installed Playwright; its default dependency pointed at a missing browser binary. Full HUD, canvas and WebKit phone receipt images inspected.
 -30 paired starter seeds improve satisfaction14–22 to42–67 and passes0/30 to3/30. This is diagnostic only: spatial delays, facilities, VIP/bus functions, dimensional scenes and full career balance remain. The footprint/height rules are authored game units, not physical calibration. Required CI, merge/Pages and hosted proof are still pending.
 
+## 2026-10-04: Amphitheater room profile delivered
+
+- PR104 passed CI37216547248 and merged33bdc63a261b11180effaa03143e912d6ba239de at16:42:52Z; Pages built16:43:26Z. All27 checked hosted runtime files match. Six hosted Chromium/WebKit seating/Room journeys and six held-run journeys with full-hold/debt branches pass. Hosted offline cancellation preserves700 sound capacity and294clear/6blocked tiles;41560 ticket gross,2750 cancellation and1027440 cash reconcile with the journal and signed receipt. Actual hosted WebKit phone Room image inspected.
+- Festival base profile PR106 has its own active CI; spatial delays continue as the next implementation. No dimensional-art, physical-device or whole-career completion is inferred.
+
 ## 2026-10-04: Festival profile compact CI correction
 
 - PR106 CI37217349921 found9px of overflow in the320×256 Festival account window on Linux. Shortened the flat-ground and shared-quality explanations without removing either rule.
 - Six Chromium/WebKit Festival journeys, edge cases, both themes and all compact sizes pass after correction; build/docs pass. Fresh CI and hosted acceptance remain pending.
+
+## 2026-10-04: Festival delay towers local acceptance
+
+- Festival delay towers implemented with spatial union coverage, two-tower limit, house-system activation, explicit portable/legacy inactivity and exact rental/operator production costs. 405 repository tests,28 targeted tests, build/docs, unchanged Lot simulator, six Chromium/WebKit Festival journeys plus edge cases, six seating journeys and28 legacy browser checks pass. Both themes/five sizes, actual pointer selection, inactive portable/legacy controls and Site/Production receipt totals pass. Warmed-cache offline two-tower signing/reload preserves6000 sound,467 extra tiles,1350 delay cost and1194656 journal cash. Supplied action runner and actual phone/desktop captures inspected. CI and hosted delivery remain pending.
+- Radius and overlap hand fixtures, occupied-floor exclusion, capacity caps, rotations, all three deals, exact one-time production charge, paid layout immutability and cached booking recovery pass. Initial Room and Costs compact overflows were resolved with Delay and Site/Production pages; no checks waived.
+- Thirty paired starter seeds improve satisfaction42–67/3passes to59–67/29passes;180 zero-tower transitions and complete receipts match the prior engine. This is diagnostic evidence, not whole-career balance acceptance.
+
+- PR108 CI37218847146 caught the Lot manifest generator treating Festival-only towers as Lot assets and generating its generic fallback prop. Restricted the Lot manifest to supported room types; the Festival tower stays an explicit provisional Canvas model. The unchanged Lot manifest passes regeneration/check; fresh CI follows.

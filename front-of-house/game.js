@@ -23,7 +23,7 @@ const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
-const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer'];
+const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
 const AD_LABELS = { flyers: 'Flyers and posters', social: 'Social ads', radio: 'Local radio' };
@@ -204,7 +204,7 @@ function render() {
 
 function renderTop() {
   $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
-  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice);
+  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice || state.venue.objects.some(o => o.type === 'delay'));
   $('#seating-menu').textContent = state.venue.id === 'festival' ? 'Sound and views' : 'Seats and lawn';
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
@@ -345,6 +345,7 @@ const COSTS = {
   'pa-m': money(D.PA_RENTAL.M),
   lights: money(D.LIGHTS_RENTAL),
   bar: `${money(D.BAR_SETUP)} + ${D.BAR_STAFF_PER_BAR} staff`,
+  delay: `${money(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)} including operator`,
   trailer: `${money(D.SANITATION_COSTS.trailer)} + optional cleaner/utilities`,
   food: 'Vendor supplies staff and power',
   restroom: money(D.RESTROOM_UNIT),
@@ -353,7 +354,7 @@ const COSTS = {
 };
 
 // Short names for the tool tiles; the full label, size and cost are read out with each.
-const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer' };
+const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer', delay: 'Delay' };
 // The rotation as an arrow on screen, in FACING order.
 const ARROWS = ['↙', '↖', '↗', '↘'];
 
@@ -369,12 +370,12 @@ function buildPanel() {
   const where = spec.id === 'lot' ? 'lot' : 'room';
   const tiles = PLACEABLE.map((type, i) => {
     const t = D.OBJECT_TYPES[type];
-    if (t.lotOnly && spec.id !== 'lot') return '';
-    const shortcut = type === 'trailer' ? 'T' : i + 1;
+    if (t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival') return '';
+    const shortcut = type === 'trailer' ? 'T' : type === 'delay' ? 'D' : i + 1;
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
-        ${['food', 'trailer'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
+        ${['food', 'trailer', 'delay'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
         <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}</span>
       </label>`;
@@ -500,7 +501,7 @@ function lotDetailsHtml() {
     <section aria-labelledby="ready-title">
       <h3 id="ready-title">Readiness</h3>
       ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<p class="checklist ok">✓ Ready for a show.</p>'}
-      ${roomProfileFor(state.venue) ? '<button data-act="room-open">Sound and views</button>' : ''}
+      ${roomProfileFor(state.venue) || state.venue.objects.some(o => o.type === 'delay') ? '<button data-act="room-open">Sound and views</button>' : ''}
       ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}
     </section>
     <section aria-labelledby="placed-title">
@@ -1109,6 +1110,7 @@ function sheetParts(r, { signed: done }) {
     ['Fence kit', 'Site', r.costs.fence],
     r.equipment ? ['Owned PA operation', 'Audio', r.costs.equipmentOperation] : [`PA rental (${v.paTier === 'M' ? 'medium' : 'small'})`, 'Audio', r.costs.pa],
     ['Light tower', 'Lighting', r.costs.lights],
+    ...(r.costs.delays ? [[`Delays + operators (${v.delays})`, 'Main stage', r.costs.delays]] : []),
     [`Bars (${v.bars})`, 'Hospitality', r.costs.bars],
     r.facilities ? ['Facilities', 'Sanitation', r.costs.restrooms + r.costs.facilities] : [`Restrooms (${v.restrooms})`, 'Site', r.costs.restrooms],
     [`Crew (${v.staff} staff)`, 'Labour', r.costs.staff],
@@ -1157,12 +1159,14 @@ function sheetParts(r, { signed: done }) {
         <tfoot><tr><td colspan="2">${r.ticketing ? 'After collection' : 'Total revenue'}</td><td class="num pos">${money(r.ticketGross + r.bar + (r.foodIncome || 0) + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0) - (r.ticketing?.fee || 0))}</td></tr></tfoot>
       </table>
     </div>`;
+  const productionCategory = category => ['Audio','Lighting','Main stage','Side stage'].includes(category);
   const costs = `
     <div class="ledger">
       <div class="ledger-title">SECTION B · PRODUCTION AND SITE COSTS</div>
+      ${r.costs.delays ? '<div class="actions" role="group" aria-label="Cost categories"><button data-act="cost-page" data-cost="site" aria-pressed="true">Site</button><button data-act="cost-page" data-cost="production" aria-pressed="false">Production</button></div>' : ''}
       <table>
         <thead><tr><th scope="col">Line</th><th scope="col">Category</th><th scope="col" class="num">Total</th></tr></thead>
-        <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr><td>${row[0] === 'Facilities' ? '<button class="receipt-link" data-act="sanitation-receipt">Facilities</button>' : esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
+        <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr${r.costs.delays ? ` data-cost-group="${productionCategory(row[1]) ? 'production' : 'site'}"${productionCategory(row[1]) ? ' hidden' : ''}` : ''}><td>${row[0] === 'Facilities' ? '<button class="receipt-link" data-act="sanitation-receipt">Facilities</button>' : esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
         <tfoot><tr><td colspan="2">Total show costs</td>${cost(r.costs.total)}</tr></tfoot>
       </table>
     </div>`;
@@ -1355,7 +1359,7 @@ function openStages(opener) {
   const stages = [['main','Main',state.booking.artistId],['second','Side',state.booking.secondId]].map(([id, label, artistId]) => {
     const a = receipt?.[id], range = quote?.[id];
     const content = a ? `<p>${esc(artistFor(artistId).name)}</p><dl class="live-readouts">
-      ${field('Audience',`${a.attendance} / ${a.capacity}`)}${field('Ticket allocation',money(a.ticketGross))}${field('Own production',money(a.production.total))}
+      ${field('Audience',`${a.attendance} / ${a.capacity}`)}${field('Ticket allocation',money(a.ticketGross))}${field('Own production',money(a.production.total))}${a.production.delays ? field('Included delay deployment',money(a.production.delays)) : ''}
       ${field('Allocated site cost',money(a.allocatedSiteCost))}${field('Artist ticket basis',money(a.artistBasis))}${field('Artist payment',money(a.artistPay))}${field('Stage balance',money(a.net))}</dl>
       <p>Artist relationship ${signed(id === 'main' ? result.relDelta : result.secondRelDelta)} on signing.</p>`
       : range ? `<p>${esc(artistFor(artistId).name)}</p><dl class="live-readouts">${field('Likely audience',`${range.low} to ${range.high}`)}</dl><p>Published draw ranges only.</p><p>Actual stage receipts follow the show.</p>`
@@ -1377,13 +1381,14 @@ function openStages(opener) {
 
 function roomProfileHtml() {
   const profile = roomProfileFor(state.venue);
-  if (!profile) return '';
   const v = evaluateVenue(state.venue), field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  if (!profile) return v.delays ? `<section data-tab="Room" data-always-tabs><h3>Original room rules</h3><dl class="live-readouts">${field('Delay towers',v.delays)}${field('Delay deployment',money(v.delayCost))}</dl><p>Delays need the Festival room profile.</p><p>Rental and operators still cost money.</p><p>New bookings include the profile.</p></section>` : '';
   return `<section data-tab="Room" data-always-tabs><h3>${state.venue.id === 'festival' ? 'Festival sound and views' : 'Shell sound and slope'}</h3><dl class="live-readouts">
     ${field('System', v.housePa ? profile.label : 'Portable PA')}${field('Sound capacity', `${v.soundCapacity} people`)}
     ${field('Room capacity', `${v.capacity} people`)}${field('Clear-view tiles', v.clearTiles)}${field('Blocked-view tiles', v.blockedTiles)}</dl>
     <p>The house system is included in rent. A placed PA replaces it.</p><p>Lights are still needed for full sound-and-light quality.</p>
-    ${state.venue.id === 'festival' ? '<p>Flat ground; raised main stage. Tall objects block views.</p><p>Main rig covers half the permit. Shared site quality.</p>' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>`;
+    ${state.venue.id === 'festival' ? '<p>Flat ground; raised main stage. Tall objects block views.</p><p>Main rig covers half the permit. Shared site quality.</p>' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>
+    ${state.venue.id === 'festival' ? `<section data-tab="Delay" data-always-tabs><h3>Delay coverage</h3><dl class="live-readouts">${field('Delay towers',v.delays || 0)}${field('Extra covered tiles',v.delayTiles || 0)}${field('Delay deployment',money(v.delayCost || 0))}</dl><p>Place up to two towers in Build.</p><p>Each costs ${money(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)}, operator included.</p><p>Overlaps count once.</p><p>Extra supply stops at room capacity.</p><p>${v.delays && !v.delayActive ? 'Inactive: use the house PA and room profile.' : 'Uses the house PA and room profile.'}</p></section>` : ''}`;
 }
 
 function openSeating(opener) {
@@ -1918,6 +1923,7 @@ function onAct(e) {
     return;
   }
   if (a === 'seating-open') { openSeating(target); return; }
+  if (a === 'cost-page') { const ledger = target.closest('.ledger'); ledger.querySelectorAll('[data-cost-group]').forEach(row => { row.hidden = row.dataset.costGroup !== target.dataset.cost; }); ledger.querySelectorAll('[data-act="cost-page"]').forEach(button => button.setAttribute('aria-pressed', String(button === target))); return; }
   if (a === 'room-open') { openSeating(target); $('#win [data-tab-name="Room"]')?.click(); return; }
   if (a === 'held-run-open') { openHeldRun(target); return; }
   if (a === 'held-run-sign') {
@@ -2294,8 +2300,9 @@ document.addEventListener('keydown', (e) => {
   if (matches('close', e)) { e.preventDefault(); selectTool(); return; }
   if (matches('pick-tool', e)) {
     e.preventDefault();
-    const tool = e.key.toLowerCase() === 't' ? 'trailer' : PLACEABLE[Number(e.key) - 1];
-    if (!D.OBJECT_TYPES[tool].lotOnly || state.venue.id === 'lot') pickTool(tool);
+    const tool = e.key.toLowerCase() === 't' ? 'trailer' : e.key.toLowerCase() === 'd' ? 'delay' : PLACEABLE[Number(e.key) - 1];
+    const type = D.OBJECT_TYPES[tool];
+    if ((!type.lotOnly || state.venue.id === 'lot') && (!type.festivalOnly || state.venue.id === 'festival')) pickTool(tool);
   } else if (matches('undo', e)) {
     e.preventDefault();
     undoLayout();
@@ -2402,7 +2409,7 @@ window.render_game_to_text = () => {
     career: (({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }) =>
       ({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }))(careerProgress(state)),
     venue: { objects: state.venue.objects.length, capacity: v.capacity, ready: v.ready, missing: v.missing },
-    room: roomProfileFor(state.venue) ? { version: state.venue.profile.version, house: v.housePa, soundCapacity: v.soundCapacity, clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
+    room: roomProfileFor(state.venue) || v.delays ? { version: state.venue.profile?.version ?? null, house: v.housePa, soundCapacity: v.soundCapacity ?? D.PA_COVERAGE[v.paTier] ?? 0, ...(v.delays ? { delays: v.delays, delayTiles: v.delayTiles, delayCost: v.delayCost, delayActive: v.delayActive } : {}), clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
     promotion: state.promotion,
     show: state.show,
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
