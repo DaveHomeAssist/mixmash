@@ -115,6 +115,7 @@ Names the engine, the board and the settlement sheet all use. Act names and genr
 | Object | `lights` | Light tower |
 | Object | `bar` | Bar |
 | Object | `food` | Food stall |
+| Object | `trailer` | Facility trailer |
 | Object | `restroom` | Restroom unit |
 | Object | `gate` | Entry gate |
 | Object | `exit` | Exit |
