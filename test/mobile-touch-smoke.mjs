@@ -674,6 +674,53 @@ export const KIT_CHECKS = [
       return problems.length ? bad(problems.slice(0, 5).join('; ')) : ok(`contrast ${round(ratio)}:1`);
     },
   },
+  {
+    id: 'kit-nav-escape',
+    title: 'nav.js: Escape closes the open bar and still reaches the game (window and document listeners); a bar that cannot collapse ignores it',
+    async run({ page, origin }) {
+      await loadKit(page, origin);
+      await page.evaluate(() => {
+        // Games bind Escape on window (pause) or on document (close a menu); count both.
+        window.__escape = { win: 0, doc: 0 };
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.__escape.win += 1; });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.__escape.doc += 1; });
+      });
+      const problems = [];
+      const focusMute = () => page.evaluate(() => {
+        const mute = document.querySelector('.mixnav button[aria-pressed][title*="udio"]');
+        mute.focus();
+        return document.activeElement === mute;
+      });
+      const snapshot = () => page.evaluate(() => ({
+        ...window.__escape,
+        state: document.querySelector('.mixnav').getAttribute('data-state'),
+        onHandle: document.activeElement === document.querySelector('.mixnav-handle'),
+      }));
+
+      // A collapsible bar, open, with focus on Mute All (what a mouse click leaves behind).
+      await page.evaluate(() => window.__mixmashNav.expand());
+      if (!(await focusMute())) problems.push('could not focus Mute All');
+      await page.keyboard.press('Escape');
+      const closed = await snapshot();
+      if (closed.win !== 1 || closed.doc !== 1) problems.push(`Escape from the open nav reached ${closed.win} window and ${closed.doc} document listeners (want 1 and 1)`);
+      if (closed.state !== 'collapsed') problems.push(`Escape left the bar ${closed.state}`);
+      if (!closed.onHandle) problems.push('focus did not return to the handle');
+
+      // A second Escape (bar closed, focus on the handle) is the game's alone.
+      await page.keyboard.press('Escape');
+      const second = await snapshot();
+      if (second.win !== 2 || second.doc !== 2) problems.push(`second Escape reached ${second.win} window and ${second.doc} document listeners (want 2 and 2)`);
+
+      // A bar that cannot collapse has nothing to close: Escape passes through untouched.
+      await page.evaluate(() => window.__mixmashNav.setCollapsible(false));
+      if (!(await focusMute())) problems.push('could not focus Mute All in the non-collapsible bar');
+      await page.keyboard.press('Escape');
+      const fixed = await snapshot();
+      if (fixed.win !== 3 || fixed.doc !== 3) problems.push(`Escape from a non-collapsible nav reached ${fixed.win} window and ${fixed.doc} document listeners (want 3 and 3)`);
+      if (fixed.state !== 'expanded') problems.push(`non-collapsible bar became ${fixed.state}`);
+      return problems.length ? bad(problems.join('; ')) : ok();
+    },
+  },
 ];
 
 // --- runner -------------------------------------------------------------------------------

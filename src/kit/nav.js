@@ -279,9 +279,12 @@
         if (bar.getAttribute('data-state') === 'expanded') arm();
       });
     });
+    // Escape closes the open bar and then carries on to the page. A game binds Escape
+    // to pause or to close its own menu, and focus can sit in the nav after a click on
+    // Mute All, so the bar must never swallow the key (a bar that cannot collapse has
+    // nothing to close and ignores it entirely).
     bar.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && bar.getAttribute('data-state') === 'expanded') {
-        e.stopPropagation();
+      if (e.key === 'Escape' && collapsible && bar.getAttribute('data-state') === 'expanded') {
         collapse(true);
       }
     });
