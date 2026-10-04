@@ -11,6 +11,8 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Paired performance gate implemented
 
+- The paired gate's real negative control is complete: CI37207123068 passes36 windows; manual37207121746 passes its normal pair and numerically rejects18 valid CPU-fault windows. Independent source/fixture/raw/statistics audits cover all90 windows. Concurrent equipment controls4600649 are reconciled with preserved gameplay records;324 tests/build/asset checks pass. Current-head CI and hosted delivery remain pending.
+
 - Added pinned-baseline/current comparisons on the same Ubuntu24.04 runner, with complete18-window protocols, raw/source/fixture audit and median frame/CPU limits. Existing correctness checks remain unchanged; timing runs for relevant changes or manual dispatch.
 - Four new evaluator tests cover complete/invalid evidence, median/boundary behavior, incomparable environments/quality and diagnostic fault semantics. All seven reporting/evaluator tests pass. The validator also audits the actual18-window calibration artifact.
 - A20ms isolated CPU fault provides a measured negative control; short local fault checks validate the harness only. Full live paired/fault execution, CI and delivery remain pending.
@@ -543,4 +545,6 @@ Initial seven player journeys and offline buy-state reload/sale600 pass. The new
 
 - Controlled equipment policy pairs at seeds1/3/6 retain attendance: operation reduces200 rental to20, with door net gains166/124/180 and guarantee gains180. Purchase1200 and resale600 remain separate capital. PR86 passed full CI37206776118 and merged193c54c; Pages built and hosted journal source/replay pass600 movements with128 retained/472 archived, exact4400 balance from5000 opening. Equipment adapter/controls CI and production proof remain open.
 
-- The paired gate's real negative control is complete: CI37207123068 passes36 windows; manual37207121746 passes its normal pair and numerically rejects18 valid CPU-fault windows. Independent source/fixture/raw/statistics audits cover all90 windows. Concurrent equipment controls4600649 are reconciled with preserved gameplay records;324 tests/build/asset checks pass. Current-head CI and hosted delivery remain pending.
+### 2026-10-04 Club ticketing authority
+
+FOH-V02a begins the remaining venue mechanics with strict optional Direct/Platform terms, a bounded presale split and a collection receipt. Platform increases the presale share20 points (uplift capped90%) and retains4% of presale gross, rounded once; it neither creates guests nor alters ticket price. Five targeted tests and all329 repository tests/build/generated reference pass, including malformed/unsafe inputs and exact integer rounding. The100-person/$20 hand fixture gives quiet direct/platform cash2000/1952, versus1400/1552 when half of later walk-ups are lost. This is isolated ticket collection, not career show profit or a delivered UI. The Club-only adapter, frozen save terms, artist-basis exclusion, journal reconciliation and player controls are next.

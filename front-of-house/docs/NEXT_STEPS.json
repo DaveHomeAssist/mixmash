@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "193c54c live journal \u00b7 equipment controls locally verified",
+  "head": "f967085 equipment controls in CI \u00b7 Club ticketing core locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Sanitation, research and the bounded journal are merged and hosted-verified. Playable equipment passes324 tests, seven complete player journeys, both-theme short-window paging and offline sale/reload checks; required equipment delivery continues.",
+  "statusReason": "Sanitation, research and the journal are delivered. Equipment controls await current-head CI and hosted acceptance. The Club ticketing authority now passes five targeted checks and all329 repository tests; career/UI integration and the remaining venue phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -1063,7 +1063,7 @@
               "Seven complete Chromium/WebKit classic/3D desktop/phone journeys pass actual buy/rent/assign/live settlement/sale/reload and double-click protection. Both themes and every short-window part pass viewport checks through844x390 and320x256, plus3840x1080. Offline sale credits600 once and journal/inventory survive reload; supplied action-client purchase and all pages verified. New signed cash snapshots remain fixed after resale.",
               "Controlled identical-show seeds1/3/6: owned operation reduces production expense200 to20. Door net gains166/124/180 because eligible artist costs also change; guarantee net gains180. Capital1200/resale600 remain separate, so this is operating comparison rather than a claim of immediate purchase profit."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/89"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/90"
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
@@ -1079,8 +1079,32 @@
           "FOH-E01"
         ],
         "doneWhen": "Club, shell and festival scenes, ticketing, held-night cancellation and stage/night accounting have tier-specific tests and playable careers.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "FOH-V02a pure ticketing terms/split/receipt implemented: optional20-point presale uplift,4% fee on presale gross, exact whole-dollar conservation and strict source validation. Five targeted tests and all329 repository tests/build/docs pass. No career or UI ticketing effect yet."
+        ],
+        "slices": [
+          {
+            "id": "FOH-V02a",
+            "scope": "Club ticketing authority, career adapter and controls",
+            "status": "in-progress",
+            "evidence": [
+              "Pure version1 terms, presale split and collection receipt locally verified. Controlled100-person fixture: quiet direct/platform cash2000/1952;50% walk-up-loss cash1400/1552. These isolate ticket collection, not full show net. Career/save/artist/journal integration and controls remain pending."
+            ]
+          },
+          {
+            "id": "FOH-V02b",
+            "scope": "Held-night cancellation, seating and stage/night accounting",
+            "status": "pending",
+            "evidence": []
+          },
+          {
+            "id": "FOH-V02c",
+            "scope": "Distinct source-owned room scenes and tier simulator verdicts",
+            "status": "pending",
+            "evidence": []
+          }
+        ]
       },
       {
         "id": "FOH-U01",
