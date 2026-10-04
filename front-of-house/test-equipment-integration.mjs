@@ -67,6 +67,7 @@ test('both deals replace only the deployed rental and preserve receipts after sa
   const signed=sign(ownedEnd);assert.equal(signed.cash,owned.cash+b.net);
   assert.equal(careerLedgerFor(signed).totals.acquisition,-1200);assert.equal(careerLedgerFor(signed).balance,signed.cash);
   const sold=sell(signed);assert.deepEqual(settlementFor(sold),b);assert.deepEqual(settlementFor(normalizeState(sold)),b);
+  assert.equal(sold.history.at(-1).cashAfter,signed.cash);assert.equal(normalizeState(sold).history.at(-1).cashAfter,signed.cash);
   assert.equal(sold.cash,signed.cash+600);assert.equal(careerLedgerFor(sold).totals.disposal,600);
  }
 });

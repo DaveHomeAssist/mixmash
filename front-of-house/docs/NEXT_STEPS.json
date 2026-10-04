@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "ea21d02 base \u00b7 equipment career adapter locally verified",
+  "head": "193c54c live journal \u00b7 equipment controls locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "PR85 sanitation/research and PR86 journal are awaiting required delivery checks. The owned-PA adapter and reconciled career cash pass all324 tests; equipment controls, browser proof and remaining phases continue.",
+  "statusReason": "Sanitation, research and the bounded journal are merged and hosted-verified. Playable equipment passes324 tests, seven complete player journeys, both-theme short-window paging and offline sale/reload checks; required equipment delivery continues.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -19,11 +19,12 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay.",
     "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained.",
     "PR74: classic floor cache and complete full-HUD/shadow evidence merged and hosted-verified; parallel food controls preserved.",
-    "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
+    "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified.",
+    "PR85: sanitation and playable three-project development delivered with14 hosted player journeys, source parity and offline recovery proof."
   ],
   "nextStep": {
-    "title": "Deliver operations and research; finish playable equipment",
-    "why": "The owned-PA adapter now covers capital, deployment and all career cash paths. Complete its controls and browser/offline proof while the preceding release clears CI.",
+    "title": "Deliver playable equipment, then finish venue and navigation phases",
+    "why": "Guest operations and the research pilot now have source, CI, Pages and live behavior proof. Complete equipment acceptance and continue the remaining phase queue autonomously.",
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -761,10 +762,11 @@
           "FOH-O01"
         ],
         "doneWhen": "Finite budgets/stock, serviced stalls, negotiated artist preference and conserved guest flow with no capacity inflation.",
-        "status": "in-progress",
+        "status": "verified-delivered",
         "evidence": [
           "PR79 failed Linux phone settlement overflow, corrected and all seven all-tab journeys pass locally. Combined289 tests/build and backing resolution check pass. Head81a0cc7 is in required CI37205244572.",
-          "Full CI37205244572 passed at81a0cc7 on2026-10-04 13:38:27Z. Concurrent performance-evidence merge bc5ed37 required reconciliation; both histories are retained. PR85 now combines the completed runtime slices and inventory prerequisite for current-head CI and production proof."
+          "Full CI37205244572 passed at81a0cc7 on2026-10-04 13:38:27Z. Concurrent performance-evidence merge bc5ed37 required reconciliation; both histories are retained. PR85 now combines the completed runtime slices and inventory prerequisite for current-head CI and production proof.",
+          "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
         ],
         "slices": [
           {
@@ -835,50 +837,59 @@
           {
             "id": "FOH-O02d",
             "scope": "Sanitation service and one negotiated artist preference",
-            "status": "in-progress",
+            "status": "verified-delivered",
             "evidence": [
               "Sanitation replay core implemented; seven targeted tests pass. Portable/trailer access, utilities, stall uses, one exclusive cleaner, food-first visits and closing are modeled; client, costs, satisfaction and negotiated artist preference remain pending.",
-              "Sanitation contract integration: 288 repository tests and build pass. Costs, locked saves, visit-based amenities and optional changing-area relationship outcome are implemented; player controls and production acceptance remain pending."
+              "Sanitation contract integration: 288 repository tests and build pass. Costs, locked saves, visit-based amenities and optional changing-area relationship outcome are implemented; player controls and production acceptance remain pending.",
+              "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
             ],
             "slices": [
               {
                 "id": "FOH-O02d1",
                 "scope": "Finite sanitation and servicing core",
-                "status": "implemented-local-verification",
+                "status": "verified-delivered",
                 "evidence": [
                   "Seven tests cover minute-by-minute conservation, no simultaneous food/sanitation queue, cleaning time/exclusivity, access/utilities, reload, closing and6000 guests.",
                   "All283 repository tests and build pass; required CI and hosted core proof remain pending.",
-                  "CI37203133927 passed on d3cd396. Merged current gh-pages ba43ea5 into the branch, preserving newer operations acceptance and performance/floor-cache evidence; required CI must pass the reconciled head before delivery."
+                  "CI37203133927 passed on d3cd396. Merged current gh-pages ba43ea5 into the branch, preserving newer operations acceptance and performance/floor-cache evidence; required CI must pass the reconciled head before delivery.",
+                  "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
                 ],
-                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76",
+                "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
               },
               {
                 "id": "FOH-O02d2",
                 "scope": "Sanitation contract, costs, satisfaction and artist preference",
-                "status": "implemented-local-verification",
+                "status": "verified-delivered",
                 "evidence": [
                   "Five integration tests cover prepayment refusal, locked quote and malformed saves, both artist deals and one-time signing, optional preference, food ordering and in-progress cleaning reload.",
-                  "All288 repository tests and build pass. Source-owned trailer geometry and classic fallback included; required CI and hosted model evidence pending."
+                  "All288 repository tests and build pass. Source-owned trailer geometry and classic fallback included; required CI and hosted model evidence pending.",
+                  "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
                 ],
-                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/77"
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/77",
+                "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
               },
               {
                 "id": "FOH-O02d3",
                 "scope": "Playable facilities controls, servicing readouts and guest presentation",
-                "status": "implemented-local-verification",
+                "status": "verified-delivered",
                 "evidence": [
                   "Facilities pages, explicit preference, live/settlement receipts and shared sanitation guest projection implemented. All289 repository tests and build pass.",
                   "Seven local complete player journeys cover Chromium classic/3D desktop/phone, WebKit classic desktop/phone and short dark desktop. Supplied action client places/enables the package and reaches minute5. Warmed offline cleaning at minute27 survives reload and completes at30 with cash/projection preserved.",
                   "Final local verification:289 npm tests/build,28 legacy checks, six food journeys and seven sanitation journeys pass, including T/keyboard page switching and short dark desktop. Final supplied action replay reaches enabled minute5. Required CI and production delivery remain pending.",
-                  "Reconciled head f5408fc passes289 npm tests/build, both Chromium/WebKit floor-cache pixel/invalidation checks and all seven sanitation player journeys. Actual Lot policy pairs at seeds1/3/6 show servicing improves completed visits while costing cash; the larger package can turn a profitable show into a loss. CI37204614730 remains pending."
+                  "Reconciled head f5408fc passes289 npm tests/build, both Chromium/WebKit floor-cache pixel/invalidation checks and all seven sanitation player journeys. Actual Lot policy pairs at seeds1/3/6 show servicing improves completed visits while costing cash; the larger package can turn a profitable show into a loss. CI37204614730 remains pending.",
+                  "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
                 ],
-                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79",
+                "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
               }
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79",
+            "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
           }
         ],
-        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85",
+        "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
       },
       {
         "id": "FOH-R01",
@@ -889,38 +900,44 @@
           "FOH-O01"
         ],
         "doneWhen": "Patch standards, Service training and Admission lanes have deterministic cost/progress/save rules and useful paired outcomes.",
-        "status": "in-progress",
+        "status": "verified-delivered",
         "evidence": [
           "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
           "Career adapter locally verified: separate cash deltas, actual signed-night experience, frozen booking prefix, three bounded benefits and conservative save recovery. All303 repository tests and build pass. No player research controls yet.",
           "Development controls now expose four contained pages, exact costs/refunds, eligibility, learned versus booked knowledge and separate ledger. Seven local player journeys pass across Chromium/WebKit, classic/3D, phone and short dark desktop; offline start-state reload and pause/resume/cancel preserve cash and progress.",
           "Controlled actual Lot pairs: seed3 with worker at bar admits85/102 and serves84/102 without/with learned service/admission benefits; net114/562. Quiet seed1 has no gain. Worker-at-gate seed3 keeps115 admissions but bar sales fall23/22, net201/195. Research is situational, does not eliminate staffing tradeoffs, and these Sandbox fixtures do not subtract career research purchases.",
-          "Additional actual touchscreen-tap checks pass on375\u00d7812 dark Chromium3D and WebKit classic, with44px controls and an exact120 cancellation refund. Browser emulation is not physical-device acceptance."
+          "Additional actual touchscreen-tap checks pass on375\u00d7812 dark Chromium3D and WebKit classic, with44px controls and an exact120 cancellation refund. Browser emulation is not physical-device acceptance.",
+          "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
         ],
         "slices": [
           {
             "id": "FOH-R01a",
             "scope": "Deterministic research commands, progress and development ledger",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
-              "All296 npm tests, build and generated documentation pass. Required CI and hosted core proof remain pending; career/UI effects are not implemented by this prerequisite."
+              "All296 npm tests, build and generated documentation pass. Required CI and hosted core proof remain pending; career/UI effects are not implemented by this prerequisite.",
+              "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/80"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/80",
+            "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
           },
           {
             "id": "FOH-R01b",
             "scope": "Career spending, booking snapshots, measurable effects and player controls",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "FOH-R01b1 career engine implemented and verified by seven integration tests. FOH-R01b2 player controls and browser acceptance remain pending.",
               "Career adapter PR83 corrected required generated action notes/payloads in1a9f074 after CI37205386621 identified the omissions. Player controls pass seven journeys; required combined CI and hosted proof remain pending.",
-              "Playable controls committed in c33615a (PR84);303 tests/build/generated docs, seven complete development journeys,28 legacy checks and offline progress/refund checks pass locally. CI and production remain pending."
+              "Playable controls committed in c33615a (PR84);303 tests/build/generated docs, seven complete development journeys,28 legacy checks and offline progress/refund checks pass locally. CI and production remain pending.",
+              "PR85 passed full CI37206555693, merged1cf9d7e on2026-10-04 13:59:03Z; Pages built13:59:27Z. All21 deployed runtime files match. Seven hosted sanitation and seven hosted research player journeys pass across Chromium/WebKit, classic/3D, desktop/phone and short dark desktop. Hosted offline cleaning and development pause/resume/cancel preserve progress and cash."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/84"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/84",
+            "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
           }
         ],
-        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85",
+        "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
       },
       {
         "id": "FOH-E01",
@@ -939,26 +956,37 @@
           {
             "id": "FOH-E01a",
             "scope": "Small PA inventory and capital command authority",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet.",
-              "All309 repository tests, build and generated documentation pass. Required delivery/hosted core checks and all career ownership integration remain pending."
-            ]
+              "All309 repository tests, build and generated documentation pass. Required delivery/hosted core checks and all career ownership integration remain pending.",
+              "PR85 delivery and hosted module execution verify purchase1200, duplicate0 and sale600. Inventory core is delivered; playable ownership remains a separate slice."
+            ],
+            "mergeCommit": "1cf9d7e6de72d0d559ff7f87b3406eed343a2e5a"
           },
           {
             "id": "FOH-E01a2",
             "scope": "Bounded career cash journal with exact archived totals",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Six targeted tests cover mixed capital/research/show reconciliation, stable retry identity, more than four compactions, strict source replay, malformed checkpoints and unsafe integer refusal. No career cash path is connected yet.",
-              "All315 repository tests, build and generated documentation pass. Required delivery and career cash-path integration remain pending."
-            ]
+              "All315 repository tests, build and generated documentation pass. Required delivery and career cash-path integration remain pending.",
+              "PR86 passed CI37206776118 and merged193c54c; Pages built. Hosted source matches and a600-row browser replay retains128 rows, archives472 and reconciles opening5000 to4400."
+            ],
+            "mergeCommit": "193c54c9ee7243edac3cc8be232d59ecdb0aaaec",
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/86"
           },
           {
             "id": "FOH-E01b",
             "scope": "Career cash journal, frozen deployment and player equipment controls",
-            "status": "pending",
-            "evidence": []
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Career adapter has nine integration tests; all324 repository checks pass. Explicit capital/deployment, all cash paths, frozen nightly terms and source recovery are implemented in PR89.",
+              "Equipment Asset/Deploy/Cash/History pages pass initial seven player journeys and offline inventory/journal/sale preservation. Final signed-cash and short-window paging checks remain in progress.",
+              "Seven complete Chromium/WebKit classic/3D desktop/phone journeys pass actual buy/rent/assign/live settlement/sale/reload and double-click protection. Both themes and every short-window part pass viewport checks through844x390 and320x256, plus3840x1080. Offline sale credits600 once and journal/inventory survive reload; supplied action-client purchase and all pages verified. New signed cash snapshots remain fixed after resale.",
+              "Controlled identical-show seeds1/3/6: owned operation reduces production expense200 to20. Door net gains166/124/180 because eligible artist costs also change; guarantee net gains180. Capital1200/resale600 remain separate, so this is operating comparison rather than a claim of immediate purchase profit."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/89"
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
