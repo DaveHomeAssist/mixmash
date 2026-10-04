@@ -10,7 +10,8 @@ import {
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan,
   settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
-import { createBoard, LOOK } from './board.js';
+import { LOOK } from './board.js';
+import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
@@ -1200,7 +1201,37 @@ function historyHtml() {
 // ---------------------------------------------------------------------------
 // Board
 
-const board = createBoard(el.canvas);
+let rendererStatusKey = '';
+const classicBoardHelp = $('#board-help').textContent;
+const board = createBoardAdapter(el.canvas, {
+  enabled: new URLSearchParams(location.search).get('renderer') === '3d',
+  onStatus: updateRendererStatus,
+});
+
+function updateRendererStatus(status) {
+  const note = $('#renderer-status');
+  const message = status.reason || (status.state === 'loading' ? 'Opening 3D…' : status.active ? '3D Lot preview. Camera and art are still being tested.' : 'Classic view.');
+  if (note && note.textContent !== message) note.textContent = message;
+  const toggle = $('[data-act="renderer-toggle"]');
+  if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D Lot'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
+  document.querySelectorAll('[data-camera-preset], [data-camera-orbit]').forEach(button => { button.disabled = !status.active; });
+  const help = status.active ? 'Select: tap to inspect, drag to orbit. Place: tap to place; dragging only previews. Two fingers pan and pinch; a middle-button drag pans. Camera controls are in the menu.' : classicBoardHelp;
+  if ($('#board-help').textContent !== help) $('#board-help').textContent = help;
+  const key = status.state + ':' + status.reason;
+  if (key !== rendererStatusKey && status.reason) { cancelLotGesture(); el.boardStatus.textContent = status.reason; }
+  if (key !== rendererStatusKey && status.active && rendererStatusKey.startsWith('fallback:')) el.boardStatus.textContent = '3D view restored. Your show is unchanged.';
+  rendererStatusKey = key;
+}
+
+function openCamera(opener) {
+  openWindow('camera', 'Camera', `<p id="renderer-status" class="lede" aria-live="polite"></p>
+    <div class="row"><button type="button" data-act="renderer-toggle">Try 3D Lot</button><button type="button" data-act="renderer-retry">Retry 3D</button></div>
+    <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}</div>
+    <div class="lot-camera-controls" role="group" aria-label="Orbit camera"><button type="button" data-camera-orbit="left">Orbit left</button><button type="button" data-camera-orbit="right">Orbit right</button><button type="button" data-camera-orbit="up">Look down</button><button type="button" data-camera-orbit="down">Look forward</button></div>
+    <button type="button" data-act="camera-mode" aria-pressed="${!!ui.cameraMode}">Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}</button>
+    <p class="hint">Select: tap to inspect, drag to orbit. Two fingers pan and pinch. FOH and Stage are provisional inspection views.</p>`, el.menuBtn);
+  updateRendererStatus(board.status());
+}
 
 function crowdNow() {
   if (state.phase === 'show') {
@@ -1332,6 +1363,61 @@ function updateZoomButtons() {
   $('#zoom-in').disabled = zoom === zooms[zooms.length - 1];
 }
 
+// The 3D gesture owner consumes pointer events before legacy placement handlers.
+const lotPointers = new Map();
+let lotGesture = null;
+let swallowLotClick = false;
+function cancelLotGesture() {
+  lotPointers.clear(); lotGesture = null; ui.dozing = false; ui.pan = null; history.drag = null;
+}
+function pairGeometry() {
+  const [a, b] = [...lotPointers.values()];
+  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, distance: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) };
+}
+el.canvas.addEventListener('pointerdown', (event) => {
+  if (!board.status().active) { swallowLotClick = false; return; }
+  swallowLotClick = true;
+  event.preventDefault(); event.stopImmediatePropagation();
+  if (!el.win.hidden || !el.menu.hidden || ![0, 1].includes(event.button)) return;
+  lotPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+  if (lotPointers.size === 1) lotGesture = { x: event.clientX, y: event.clientY, moved: false, multi: false, button: event.button };
+  else if (lotGesture) { lotGesture.multi = true; lotGesture.moved = true; }
+  try { el.canvas.setPointerCapture(event.pointerId); } catch { cancelLotGesture(); }
+}, true);
+el.canvas.addEventListener('pointermove', (event) => {
+  if (!board.status().active || !lotPointers.has(event.pointerId) || !lotGesture) return;
+  event.preventDefault(); event.stopImmediatePropagation();
+  const previous = lotPointers.get(event.pointerId), before = lotPointers.size > 1 ? pairGeometry() : null;
+  lotPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+  if (before) {
+    const after = pairGeometry(), rect = el.canvas.getBoundingClientRect();
+    board.panBy(after.x - before.x, after.y - before.y);
+    board.zoomTo(board.camera().zoom * after.distance / before.distance, after.x - rect.left, after.y - rect.top);
+    updateZoomButtons(); return;
+  }
+  if (Math.hypot(event.clientX - lotGesture.x, event.clientY - lotGesture.y) > 6) lotGesture.moved = true;
+  if (!lotGesture.moved) return;
+  const dx = event.clientX - previous.x, dy = event.clientY - previous.y;
+  if (lotGesture.button === 1) board.panBy(dx, dy);
+  else if (lotGesture.multi || ui.cameraMode || ui.tool === 'select' || state.phase !== 'build') {
+    const camera = board.camera(); board.setCamera({ yaw: camera.yaw - dx * 0.35, pitch: camera.pitch + dy * 0.25 });
+  } else { ui.hover = board.tileAt(event.clientX, event.clientY); draw(); }
+}, true);
+el.canvas.addEventListener('pointerup', (event) => {
+  if (!board.status().active || !lotPointers.has(event.pointerId)) return;
+  event.preventDefault(); event.stopImmediatePropagation();
+  const tap = lotPointers.size === 1 && lotGesture && !lotGesture.moved && !lotGesture.multi && lotGesture.button === 0;
+  lotPointers.delete(event.pointerId);
+  if (!lotPointers.size) cancelLotGesture();
+  if (el.canvas.hasPointerCapture(event.pointerId)) el.canvas.releasePointerCapture(event.pointerId);
+  if (tap && state.phase === 'build' && el.win.hidden && el.menu.hidden) {
+    const tile = ui.tool === 'select' || ui.tool === 'bulldoze' ? targetAt(event) : board.tileAt(event.clientX, event.clientY);
+    if (tile) { ui.cursor = tile; placeAt(tile); }
+  }
+}, true);
+for (const name of ['pointercancel', 'lostpointercapture']) el.canvas.addEventListener(name, () => { if (board.status().active) cancelLotGesture(); }, true);
+for (const name of ['click', 'contextmenu']) el.canvas.addEventListener(name, (event) => { if (board.status().active || swallowLotClick) { event.preventDefault(); event.stopImmediatePropagation(); if (name === 'click') swallowLotClick = false; } }, true);
+
 el.canvas.addEventListener('pointerdown', (e) => {
   const pan = e.button === 1 || (e.button === 0 && state.phase !== 'build');
   if (pan && board.camera().zoom !== 1) {
@@ -1400,7 +1486,7 @@ el.canvas.addEventListener('keydown', (e) => {
   if (matches('turn-view', e)) {
     e.preventDefault();
     const step = board.turnView();
-    el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
+    el.boardStatus.textContent = board.status().active ? `3D view: ${Math.round(board.camera().yaw)} degrees.` : `View quarter ${step + 1} of 4. Props keep the original painted side.`;
     return;
   }
   if (matches('zoom-in', e)) { e.preventDefault(); zoomStep(1); return; }
@@ -1450,12 +1536,22 @@ function rotate() {
   draw();
 }
 
+el.win.addEventListener('click', event => {
+  const preset = event.target.closest('[data-camera-preset]'), orbit = event.target.closest('[data-camera-orbit]');
+  if (preset && !preset.disabled) board.preset(preset.dataset.cameraPreset);
+  if (orbit && !orbit.disabled) {
+    const c = board.camera(), direction = orbit.dataset.cameraOrbit;
+    board.setCamera({ yaw: c.yaw + (direction === 'left' ? -15 : direction === 'right' ? 15 : 0), pitch: c.pitch + (direction === 'up' ? 10 : direction === 'down' ? -10 : 0) });
+  }
+  if (preset || orbit) updateZoomButtons();
+});
+
 $('#zoom-in').addEventListener('click', () => zoomStep(1));
 $('#zoom-out').addEventListener('click', () => zoomStep(-1));
 $('#zoom-fit').addEventListener('click', () => zoomStep(-board.camera().zooms.length));
 $('#turn-view').addEventListener('click', () => {
   const step = board.turnView();
-  el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
+  el.boardStatus.textContent = board.status().active ? `3D view: ${Math.round(board.camera().yaw)} degrees.` : `View quarter ${step + 1} of 4. Props keep the original painted side.`;
 });
 
 // ---------------------------------------------------------------------------
@@ -1465,6 +1561,10 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'camera-open') { openCamera(target); return; }
+  if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
+  if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
+  if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
   if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1 });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
@@ -1688,6 +1788,7 @@ const win = { kind: null, opener: null };
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
 function openWindow(kind, title, html, opener, { foot = '', wide = false, scrolls = false } = {}) {
+  cancelLotGesture();
   setMenu(false, { focus: false });
   win.kind = kind;
   win.opener = opener || document.activeElement;
@@ -1735,6 +1836,7 @@ function resetModeButtons() {
 function setMenu(open, { focus = true } = {}) {
   if (open === !el.menu.hidden) return;
   if (!open) resetModeButtons();
+  if (open) cancelLotGesture();
   el.menu.hidden = !open;
   el.menuBtn.setAttribute('aria-expanded', String(open));
   if (!focus) return;
@@ -1888,6 +1990,10 @@ window.__frontOfHouse = {
   importCode,
   buildTools: () => ({ tool: ui.tool, selection: ui.selection, undo: history.undo.length, redo: history.redo.length }),
   board: () => board.info(),
+  rendererStatus: () => board.status(),
+  rendererRetry: () => board.retry(),
+  boardCamera: (value) => value ? board.setCamera(value) : board.camera(),
+  boardPreset: (name) => board.preset(name),
   boardPlace: (x, y) => board.placeOf(x, y),
   boardZoom: (zoom, px, py) => board.zoomTo(zoom, px, py),
   boardClientOf: (x, y, z) => board.clientOf(x, y, z),

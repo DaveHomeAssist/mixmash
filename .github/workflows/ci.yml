@@ -34,6 +34,7 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run smoke:front-of-house
       - run: npm run smoke:front-of-house-lot
+      - run: npm run smoke:front-of-house-3d
       - run: npm run art:visual
       - run: npm run smoke:play
       - run: npm run smoke:catalog

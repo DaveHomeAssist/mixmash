@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: 3D application integration
+
+- Menu → Camera enables an explicit Lot preview. The facade preserves the latest scene and input canvas, selects the classic board for other rooms/failures and resumes the same show after context restoration. Focusable presets and orbit/pitch controls supplement mouse/touch gestures. No engine, save or economy change. Service worker v30.
+- Local verification: 229 repository tests, build checks, all 28 existing game smoke checks, and a new full-client 3D rail covering gesture cancellation, single placement/Undo, inspection, fallback, viewport fit, mid-show reload and complete settlement/state parity. Screenshots inspected; stale recovery feedback found and fixed.
+- Select controls delivered in PR61, merge a4042d7 and Pages build1259218204; four live runtime files match and phone Clear/cancel/Undo/containment pass. Backend PR63 remains a separate delivery.
+- Complete scene parity, realistic art, calibrated views, performance and human/physical-device acceptance remain required; this preview is not FOH-V01 completion.
+
+
 ## 2026-10-04: Isolated Lot backend
 
 - FOH-F01 delivered in PR60, merge c43dff4, successful CI and Pages build1259205127. Live CSS/service worker bytes match; Book fits 360/375/390px with no browser errors.
@@ -279,3 +287,5 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Tests cover response timing, transfer/reload, derived-spec validation, cash reconciliation, signed-save recovery and speed-independent engine stepping. Paired actual Lot fixtures favor different policies: seed 1 stays at the bar ($831 vs $819); seed 3 benefits from temporary admission ($230 vs −$186), while losing bar service. Legacy balance remains separately unchanged.
 - Chromium and WebKit desktop/phone journeys exercise the real controls through signing and reload. Their first run exposed phone queue-panel overflow and live settlement Revenue scrolling; compact service rows and a separate Deal tab fix those issues. Final checks and deployment proof follow the PR.
 - The live board now respects integer admitted counts. Distinct queue movement and 3D integration remain FOH-O01c; physical-device/human readability and balance acceptance remain unverified.
+
+- Final pre-integration validation: 246 repository tests, build, unchanged legacy simulation, 28 legacy browser checks and four live Chromium/WebKit desktop/phone journeys pass. Warmed offline reload preserves a travelling worker and cash. The game action client also reaches live minute 5 using its coordinate input payload. The Promote option now opens a settings window so short desktop and phone layouts fit. Combined 3D preview validation follows the merge reconciliation.

@@ -26,6 +26,10 @@
 
 The first backend slice adds a self-hosted, pinned Three.js renderer module, a camera/picking contract and independently authored dimensional props. It accepts the existing scene snapshot without importing economy rules. Camera tests cover arbitrary yaw, pitch/zoom limits, Plan and ground round trips; runtime tests cover object depth, immutable inputs, loss/restoration and repeated disposal. The game keeps its current renderer until the following integration slice connects gestures, accessible presets and fallback. Technical sample geometry is explicitly provisional and does not establish realistic-art or physical-device acceptance. No Unreal migration or save change is included.
 
+### FOH-V01b application integration
+
+Connect the backend through a facade that retains the existing board and latest scene. An explicit 3D preview toggle enables the Lot only; unsupported rooms and initialization/context failures use Canvas 2D, with status and retry. Add focusable camera presets and orbit/pitch controls. In Select, one-pointer drag orbits and tap inspects; two pointers pan/pinch and cancel placement. Placement remains an explicit tap; camera drag, cancellation, lost capture and modal opening never dispatch an object action. Keep the save namespace and engine unchanged. Verify identical saved-show outcomes, fallback continuity, mouse/touch/keyboard, viewport containment and recovery before merging. The preview does not certify final art or physical devices.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.

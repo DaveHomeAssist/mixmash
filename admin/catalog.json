@@ -618,6 +618,10 @@
         {
           "name": "npm run smoke:front-of-house-lot",
           "description": "node test/front-of-house-lot-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-3d",
+          "description": "node test/front-of-house-3d-smoke.mjs"
         }
       ]
     }
@@ -1559,7 +1563,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Lot renderer backend",
-      "description": "FOH-V01b technical component, 2026-10-04. This is an isolated renderer backend; the game does not import it yet. FB-01 and the renderer contract remain the target. Integration, gestures, fallback switching, complete…",
+      "description": "FOH-V01b technical component, 2026-10-04. The backend is connected through an explicit 3D preview in Menu → Camera. The classic renderer remains the default. FB-01 and the renderer contract remain the target. Input,…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/LOT_BACKEND.md",
       "open": null
     },
@@ -2194,6 +2198,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-3d-smoke.mjs",
+      "description": "Full application integration: safe gestures, renderer recovery and identical saved-show outcomes.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-3d-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-live-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2251,6 +2265,16 @@
       "title": "simulate.mjs",
       "description": "Front of House balance simulator. Runs the real engine (no DOM) and writes front-of-house/docs/BALANCE_BASELINE.md with PASS/FAIL verdicts.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/simulate.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/board-adapter.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "board-adapter.mjs",
+      "description": "Application-owned board facade: failure changes presentation, never the game or save.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board-adapter.mjs",
       "open": null
     },
     {

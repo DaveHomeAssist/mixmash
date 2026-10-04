@@ -649,3 +649,10 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 .live-optin { display: flex; align-items: center; gap: 8px; min-height: 44px; }
 .live-controls label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .live-controls select { min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--panel-alt); border: 1px solid var(--border-strong); border-radius: 6px; }
+/* The input canvas retains keyboard/pointer ownership while the 3D layer presents the Lot. */
+.lot-webgl { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.lot-webgl[hidden] { display: none; }
+#board.board-3d-input { opacity: 0; touch-action: none; }
+.board-wrap:has(#board.board-3d-input:focus-visible) .lot-webgl { box-shadow: inset 0 0 0 3px var(--yellow); }
+.lot-camera-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+body[data-phase='done'] .lot-webgl { filter: brightness(0.55) saturate(0.8); }
