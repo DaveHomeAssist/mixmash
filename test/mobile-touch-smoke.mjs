@@ -76,11 +76,14 @@ export const GAMES = [
       await sleep(450); // past the page's 350 ms guard against the click that follows a tap-opened menu
       await reachAndTap(page, '#menu-quick-fight', { scroller: '.menu-panels' });
       await step('Start Quick Fight did not start a match', () => page.waitForFunction(() => JSON.parse(window.render_game_to_text()).mode === 'playing', null, { timeout: 8000 }));
-      await sleep(400);
+      // The pad follows the mode on the next game frame, and a software-rendered CI browser can take
+      // a good fraction of a second per frame: wait for it instead of sleeping a fixed time.
+      await step('the touch pad never appeared in the match', () => page.waitForFunction(() => JSON.parse(window.render_game_to_text()).touchControls.visible, null, { timeout: 15000 }));
+      await sleep(200);
     },
     async playing(page) {
-      const s = await page.evaluate(() => { const t = JSON.parse(window.render_game_to_text()); return { mode: t.mode, pad: t.touchControls.visible, inputMode: t.touchControls.inputMode }; });
-      return s.mode === 'playing' && s.pad ? ok(`mode ${s.mode}, touch pad visible`) : bad(`mode ${s.mode}, touch pad visible: ${s.pad} (input mode ${s.inputMode})`);
+      const s = await page.evaluate(() => { const t = JSON.parse(window.render_game_to_text()); return { mode: t.mode, pad: t.touchControls.visible, inputMode: t.touchControls.inputMode, frame: t.frame }; });
+      return s.mode === 'playing' && s.pad ? ok(`mode ${s.mode}, touch pad visible`) : bad(`mode ${s.mode}, touch pad visible: ${s.pad} (input mode ${s.inputMode}, frame ${s.frame})`);
     },
   },
   {
