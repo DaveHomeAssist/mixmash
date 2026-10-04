@@ -1472,6 +1472,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/DECISION_PACKET.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House decision packet",
+      "description": "Reply with IDs and letters, such as D1 A, D2 A. An omitted answer stays Open. Effort describes relative implementation scope, not a delivery estimate.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/DECISION_PACKET.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/FEATURE_BRIEFS.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House feature briefs",
+      "description": "Worked-test specification to write before implementation: Quiet arrivals, sharp arrival surge and busy-bar surge with explicit arrivals per game minute, service rates, travel time, patience/abandonment and refund…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FEATURE_BRIEFS.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/FUTURE.md",
       "project": "front-of-house",
       "category": "docs",
@@ -1519,6 +1539,16 @@
       "title": "Front of House Known Issues",
       "description": "One list of what is wrong, weak or unrecorded, so it isn't scattered through session logs.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/KNOWN_ISSUES.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/PROTOTYPE_REVIEW.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House 3D prototype source review",
+      "description": "Under accepted CT-DEC-14, start with a Lot renderer adapter and camera parity, not a simultaneous rewrite of the economy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/PROTOTYPE_REVIEW.md",
       "open": null
     },
     {
@@ -2179,6 +2209,16 @@
       "title": "data.mjs",
       "description": "Front of House adjustable values and content tables. This file is canonical for every number the rules use (CT-DEC-07). The rules themselves are specified by name in front-of-house/docs/RULES.md; change a value here,…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/data.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/NEXT_STEPS.json",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JSON",
+      "title": "Front of House next steps",
+      "description": "Public-safe project snapshot: open decisions, feature briefs, current evidence and remaining acceptance; consumed by the private workspace board.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/NEXT_STEPS.json",
       "open": null
     },
     {
@@ -2870,6 +2910,16 @@
       "description": "MIXMASH brand guide: Mainstage Neons colour tokens, type, components and voice.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/brand.html",
       "open": "/brand.html"
+    },
+    {
+      "path": "CLAUDE.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MixMash Claude instructions",
+      "description": "Read and follow AGENTS.md before editing. It owns execution, feature brief and Next Steps Board maintenance rules for this repository. Use the shared workspace contract when available; do not duplicate its private paths…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/CLAUDE.md",
+      "open": null
     },
     {
       "path": "README.md",
