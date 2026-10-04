@@ -97,6 +97,11 @@ try {
         assert.ok(closed.services.inside > 0); assert.equal(closed.services.departed, 0);
         assert.equal(await page.locator('[data-act="live-worker"][data-station="gate"]').isDisabled(), true);
         await fit(page); await tab(page, 'Controls');
+        await page.selectOption('#live-speed', '1'); await page.locator('#live-play').click();
+        await page.waitForFunction(() => JSON.parse(render_game_to_text()).services.minute >= 241);
+        await page.locator('#live-play').click();
+        assert.equal((await text(page)).playback.paused, true);
+        assert.equal((await text(page)).phase, 'show');
         await page.locator('[data-act="live-step"]').click();
         const departing = await text(page);
         assert.ok(departing.services.departed > 0);
@@ -107,7 +112,10 @@ try {
         await tab(page, 'Services');
         await page.screenshot({ path: join(output, `${browserName}-${viewport.width}-departure.png`) });
         await fit(page); await tab(page, 'Controls');
-        await page.locator('[data-act="live-next"]').click();
+        if (viewport.width >= 500) {
+          await page.selectOption('#live-speed', '12'); await page.locator('#live-play').click();
+          await page.waitForFunction(() => JSON.parse(render_game_to_text()).phase === 'settle');
+        } else await page.locator('[data-act="live-next"]').click();
         assert.equal((await text(page)).services.inside, 0);
         assert.equal((await text(page)).phase, 'settle');
         const settled = await page.evaluate(() => window.__frontOfHouse.state());

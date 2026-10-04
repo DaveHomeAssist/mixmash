@@ -379,7 +379,12 @@ try {
   await page2.click('[data-act="starter"]');
   await page2.click('[data-act="confirm-build"]');
   await page2.click('[data-act="confirm-promo"]');
-  await page2.click('[data-act="skip"]');
+  // This checks signing during wind-down. The natural clock may already have
+  // reached the incident on a busy runner, so do not wait for an obsolete Skip.
+  await page2.evaluate(() => {
+    const skip = document.querySelector('[data-act="skip"]');
+    if (skip && !skip.hidden) skip.click();
+  });
   await page2.click('[data-act="respond"]:not([disabled])');
   await page2.click('[data-act="accept"]');
   await page2.waitForTimeout(150);
