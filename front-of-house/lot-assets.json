@@ -32,7 +32,7 @@
     "lot-models.mjs": "5c7377ac82bf53af22ef949f0abee7f7a2005bb9e2f9be447be1c5d3e6034486",
     "lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
     "lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
-    "lot-renderer.mjs": "1e8510347f7f5a43f9a63f9dd195e67eea5e781f83ed9dfa89359a9168d1db61",
+    "lot-renderer.mjs": "13f8b854dabaa2f4c111dfb88bfc6675cc688b8a164011e69634bb4c95d4bf11",
     "service-crowd.mjs": "993edabc82c5edc71d55874a9bacfc2a1b28a5c82bafb4c2f41afc72b21d7508",
     "service-guests.mjs": "3009ede0073b1a22ac4ec192851c50eb22bdbf3c99f0669079b22ab8d3d83323",
     "guest-flow.mjs": "5fb4a6775ccab8e5461d282d3d26917c8ad4fc69e83059bf9af7cf720650a1c8"

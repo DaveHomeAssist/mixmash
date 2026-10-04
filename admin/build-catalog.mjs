@@ -51,7 +51,7 @@ const CATEGORY_RULES = [
   [(p) => /^test\//.test(p) || /(^|\/)test-[^/]+\.mjs$/.test(p) || /\.test\.m?js$/.test(p) || /(^|\/)test\//.test(p), 'tests'],
   [(p) => /(^|\/)DECISIONS\.md$/.test(p) || p === 'AGENTS.md' || p === 'LICENSE', 'decisions'],
   [(p) => /(^|\/)(ROADMAP|ART_ROADMAP|CHANGELOG|SPRINT_BOARDS|progress)\.md$/.test(p) || /^playcards\/(Changelog|Sprint-Board)/.test(p), 'planning'],
-  [(p) => /BALANCE_BASELINE\.md$|balance-baseline\.json$/.test(p) || /^mars\/art\/reports\//.test(p) || /^mars\/parity\/(LEDGER\.md|mapping\.json|baseline\/)/.test(p), 'evidence'],
+  [(p) => /BALANCE_BASELINE\.md$|balance-baseline\.json$/.test(p) || /^front-of-house\/performance\/.*\.json$/.test(p) || /^mars\/art\/reports\//.test(p) || /^mars\/parity\/(LEDGER\.md|mapping\.json|baseline\/)/.test(p), 'evidence'],
   [(p) => /\/sim\/[^/]+\.mjs$/.test(p) || /^mars\/art\/[^/]+\.mjs$/.test(p) || p === 'mars/parity/build-ledger.mjs' || /^admin\/(build-catalog\.mjs|catalog-sources\.mjs|catalog\.json)$/.test(p), 'tooling'],
   [(p) => /^empires\/assets\/aoe2-clone\.(js|wasm)$/.test(p), 'build'],
   [(p) => /^api\//.test(p) || p === 'mars/server.mjs' || p === 'mars/package.json', 'backend'],

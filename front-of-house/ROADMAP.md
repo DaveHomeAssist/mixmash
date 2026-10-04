@@ -27,7 +27,7 @@ Dave authorized continuing execution until no Front of House phases remain. Code
 
 Imported M4/M5 wish lists, Challenge/Endless and the broader eight-branch research proposal are not additional release phases. The scoped briefs and explicit remaining tier requirements above define this execution; do not turn an unbounded future idea list into a completion claim. Preserve deliberate exclusions and record a new scoped decision before expansion. Missing human or physical-device evidence cannot be replaced with automated results.
 
-FOH-F01 is merged and live-verified in [PR60](https://github.com/DaveHomeAssist/mixmash/pull/60). FOH-V01a Select controls are merged and live-verified in [PR61](https://github.com/DaveHomeAssist/mixmash/pull/61). FOH-V01b has an [isolated backend](docs/LOT_BACKEND.md); the 3D preview integration is locally verified; complete scene parity, realistic art and the named acceptance evidence remain required.
+FOH-F01 is merged and live-verified in [PR60](https://github.com/DaveHomeAssist/mixmash/pull/60). FOH-V01a Select controls are merged and live-verified in [PR61](https://github.com/DaveHomeAssist/mixmash/pull/61). FOH-V01b has a deployed [Lot backend and preview](docs/LOT_BACKEND.md), live-verified through [PR65](https://github.com/DaveHomeAssist/mixmash/pull/65). The [18-run Metal baseline](docs/PERFORMANCE.md) establishes available-host renderer evidence at DPR 1; full HUD, high-DPI/low-power devices, final realistic art and human acceptance remain required.
 
 ## Shipped
 

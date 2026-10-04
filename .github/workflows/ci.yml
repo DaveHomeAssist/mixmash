@@ -20,6 +20,7 @@ jobs:
       - run: npm ci
       - run: npm run check:front-of-house-vendor
       - run: npm run check:front-of-house-assets
+      - run: node --test test/front-of-house-performance.test.mjs
       - run: npm test
       - run: npm run vercel-build
       - run: npm run art:validate

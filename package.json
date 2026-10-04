@@ -32,7 +32,8 @@
     "smoke:front-of-house-lot": "node test/front-of-house-lot-smoke.mjs",
     "smoke:front-of-house-3d": "node test/front-of-house-3d-smoke.mjs",
     "assets:front-of-house": "node front-of-house/tools/lot-assets.mjs",
-    "check:front-of-house-assets": "node front-of-house/tools/lot-assets.mjs --check"
+    "check:front-of-house-assets": "node front-of-house/tools/lot-assets.mjs --check",
+    "perf:front-of-house": "node test/front-of-house-performance.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"
