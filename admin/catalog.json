@@ -2240,6 +2240,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-sanitation.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-sanitation.mjs",
+      "description": "Sanitation replay conserves visits, stall use, cleaning work and source identity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-sanitation.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-service-crowd.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2527,6 +2537,16 @@
       "title": "lot-renderer.mjs",
       "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sanitation.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "sanitation.mjs",
+      "description": "Finite restroom visits, stall condition and exclusive cleaning-worker replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sanitation.mjs",
       "open": null
     },
     {

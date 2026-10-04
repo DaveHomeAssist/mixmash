@@ -5,7 +5,7 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "6976dec · live operations delivered; departure integration under verification",
+  "head": "a04b4a1 · departure delivered; playable food and sanitation underway",
   "lastActivity": "2026-10-04",
   "status": "amber",
   "statusReason": "Live services and recorded guest movement are delivered. Normal departure and the finite food vendor are implemented and in delivery verification. Sanitation, research, ownership, venues and release evidence remain.",
@@ -671,15 +671,17 @@
           {
             "id": "FOH-O02b",
             "scope": "Pre-doors access explanation, saved departure clock, player controls and rendered normal exits",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "New client-opened live shows require connected admission, bar and exit access before payment, then retain Play/Pause/speed/step controls for normal departure before settlement. Older live saves keep historical closing.",
               "265 repository tests and build pass. Four Chromium/WebKit desktop/phone control journeys and four renderer/viewport zone plus four controlled movement journeys pass, including normal exit movement, frozen outcomes and reload/cash parity. Required CI and deployed proof remain pending.",
               "Two full 3D departure/settlement journeys and warmed offline reload at departure minute2 pass. The supplied action client opens a new flow-version-1 show and reaches minute5; screenshots inspected. An initial offline attempt found a stopped preview server; retry on a verified new server passes.",
               "CI37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending.",
-              "Final CI37201292853 passed; PR71 merged719e0f5. Production Pages and behavior verification are running."
+              "Final CI37201292853 passed; PR71 merged719e0f5. Production Pages and behavior verification are running.",
+              "PR71 CI37201292853 passed, merged719e0f5; Pages built12:29:34Z. Fourteen production files match; four Chromium/WebKit plus two 3D production control/departure/settlement journeys pass."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71",
+            "mergeCommit": "719e0f5b174c59b0ce8388a4de44467df26ff203"
           },
           {
             "id": "FOH-O02c",
@@ -693,12 +695,14 @@
               {
                 "id": "FOH-O02c1",
                 "scope": "Finite food replay and vendor accounting core",
-                "status": "implemented-local-verification",
+                "status": "verified-delivered",
                 "evidence": [
                   "Seven tests cover budgets, guest identity, demand, stock, access, expiry, closing, replay and useful quiet/surge choices.",
-                  "All272 repository tests and build pass; required CI and hosted proof pending."
+                  "All272 repository tests and build pass; required CI and hosted proof pending.",
+                  "PR72 CI37201342806 passed, merged a04b4a1; Pages built12:31:48Z. Fifteen live files match; hosted core reproduces quiet24/12 and surge160/480 house-income pairs. Core alone has no playable vendor UI."
                 ],
-                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72",
+                "mergeCommit": "a04b4a18ce0ed3062a246215cbcd6487ebff4220"
               },
               {
                 "id": "FOH-O02c2",
@@ -715,8 +719,26 @@
           {
             "id": "FOH-O02d",
             "scope": "Sanitation service and one negotiated artist preference",
-            "status": "pending",
-            "evidence": []
+            "status": "in-progress",
+            "evidence": [
+              "Sanitation replay core implemented; seven targeted tests pass. Portable/trailer access, utilities, stall uses, one exclusive cleaner, food-first visits and closing are modeled; client, costs, satisfaction and negotiated artist preference remain pending."
+            ],
+            "slices": [
+              {
+                "id": "FOH-O02d1",
+                "scope": "Finite sanitation and servicing core",
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Seven tests cover minute-by-minute conservation, no simultaneous food/sanitation queue, cleaning time/exclusivity, access/utilities, reload, closing and6000 guests."
+                ]
+              },
+              {
+                "id": "FOH-O02d2",
+                "scope": "Playable facilities, servicing costs, satisfaction and artist preference",
+                "status": "pending",
+                "evidence": []
+              }
+            ]
           }
         ]
       },
