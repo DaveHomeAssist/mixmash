@@ -285,6 +285,14 @@ The hardware baseline shows repeated render cost even for an unchanged empty sce
 
 Acceptance: backend diagnostics count actual requested shadow refreshes; repeated static frames and camera movement reuse the map; changed layout, moving guests and restored contexts refresh it; reduced motion stays static; screenshots after restoration match before. Run existing camera/picking/lifecycle and actual-client settlement parity rails. Compare the same frozen empty/crowd camera fixtures at unchanged declared quality. Diagnostics prove render work, not physical display performance or human acceptance. No engine, service, save or career rules change.
 
+### FOH-P01c: classic static floor cache and full HUD
+
+**Outcome:** Avoid repainting unchanged classic floor tiles, grid, parking lines, fence and sightline base layers during show animation. Retain dynamic props, crowd, lighting, rain, markers and controls. Preserve post-prop sightline overlays and sprite occlusion; flattening those layers would change readability.
+
+**Scope and lifecycle:** One viewport-sized offscreen image per board, with explicit invalidation for room/floor, layout/pillars, sprite readiness, visibility overlays, camera transform, size and pixel ratio. Reuse post-prop overlay buckets alongside the image. Copy at matching backing resolution without additional resampling. Release the backing on disposal and retain direct drawing if cache creation fails. Preserve engine/service/save behavior and the current 6 MP pixel-ratio rule; verify its 3D counterpart separately before changing quality.
+
+**Acceptance:** Cached/direct pixel parity and identical hit stacks across all rooms, layout/sprite readiness, pan/zoom/view turns, resize, DPR and clear/blocked overlays; static-frame reuse and correct dynamic crowd/incident behavior. Verify the actual client and both renderer settlement paths. Capture the required 1920×1080 full-HUD fixed-camera and moving-camera evidence with the same seeds before/after. Keep renderer-only Metal measurements, physical devices and human acceptance separate. No new art, economy or simulation policy is included.
+
 ### FOH-O01c: representative service movement
 
 **Problem and outcome:** The live HUD reports real queues, but an evenly distributed crowd cannot show admission pressure, bar demand or a worker in transit. The Lot needs a shared presentation of these zones in classic and 3D views.

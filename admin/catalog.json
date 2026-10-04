@@ -1750,6 +1750,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-shadow.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Lot shadow reuse Metal comparison",
+      "description": "All 18 integrated shadow-cache measurement windows with frozen source/fixture digests, timing statistics, shadow refresh counters and the retained partial attempt.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-shadow.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/hud/hud-build.jpg",
       "project": "front-of-house",
       "category": "art",

@@ -56,3 +56,18 @@ The next renderer revision retains the 1024 PCFSoft shadow map while the camera 
 Backend diagnostics expose cumulative renderedFrames and shadowUpdates. They count completed renderer calls and requested shadow refreshes respectively; they are not frame-time or GPU timestamp measurements. Per-frame draw calls can now differ between a reused-map frame and a refreshed-map frame, so compare scenes and shadow-refresh status explicitly. The 18-run table above remains the original uncached revision; it must not be relabeled as optimized measurements.
 
 The candidate comparison at a6b1767 was interrupted after seven valid windows (six desktop, one phone empty); the eighth window did not finish. Its output and interruption record are retained separately. It is a partial diagnostic, not a completed optimized baseline. The subsequent queue integration tracks actual instanced transform-buffer versions, so paused queue changes and a worker moving with zero guests also invalidate shadows. Its backend, full-game and service-crowd rails pass without changing numeric outcomes.
+
+## Integrated shadow reuse: complete comparison
+
+All 18 windows at source `daebe36edd24fe09106286778bdcd16949dfb555` completed with unchanged fixture hashes, DPR 1 and the same Metal protocol. [Every candidate run](../performance/2026-10-04-shadow.json) is retained with raw/source digests. Mean frame cadence ranged 60.00–60.00 Hz; 0 intervals exceeded 50 ms. These are available-host renderer diagnostics, excluding full HUD, physical display and low-power acceptance.
+
+| Scene | Original CPU p95 range across three runs (ms) | Candidate CPU p95 range (ms) | Shadow refreshes / rendered frames, whole context |
+| --- | --- | --- | --- |
+| 1440x900 empty | 0.60–0.70 | 0.40–0.40 | 2/2407, 2/2408, 2/2408 |
+| 1440x900 crowd | 1.80–2.50 | 1.90–3.30 | 2406/2408, 2406/2408, 2406/2408 |
+| 375x812 empty | 0.60–1.00 | 0.40–0.50 | 2/2407, 2/2407, 2/2407 |
+| 375x812 crowd | 1.90–2.40 | 0.70–2.90 | 2405/2407, 2405/2407, 2405/2407 |
+| 2560x720 empty | 0.50–0.70 | 0.40–0.50 | 2/2406, 2/2406, 2/2406 |
+| 2560x720 crowd | 2.10–2.50 | 3.00–3.60 | 2406/2408, 2405/2407, 2405/2407 |
+
+Counters include initial draws and warm-up; timing percentiles cover the separate 30-second sample. The static scene reuses its shadow map; moving crowd poses still refresh it. The two implementations ran at different times on a shared host with uncontrolled background load, so CPU variation is descriptive and cannot be assigned solely to caching. The empty fixture has no rented props; populated static-frame render-work reduction is independently covered by the backend regression test. The interrupted a6b1767 attempt remains a separate partial record, not a discarded failure or a completed baseline. The original table is unchanged.
