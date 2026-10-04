@@ -39,4 +39,5 @@ The backup costs $100, earns $37 more at the bar and reduces the artist's door-d
 
 | ID | Fixed in | Issue |
 | --- | --- | --- |
+| MXS-06 | FOH-F01 (2026-10-04) | Phone Book/Promote inherited a 580px desktop width, clipping content despite zero page overflow. The mobile phase overrides and range-input margins now fit the sheet; all visible tabs and controls are checked at 360/375/390px |
 | KI-00 | This change (R-11a) | Incidents fired at a random 20% to 80% of the night whatever they were, so "PA dropout mid-set" could arrive at 20:01 with the doors still open and "Rain at doors" after the act was on. Each incident now has its own window in `INCIDENTS`, and each night of a run takes its timing from that night's seed. The balance baseline is unchanged, because timing affects no number on the sheet |

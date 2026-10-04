@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "c9b64c2 · decision baseline reviewed 2026-10-04",
+  "head": "4aeb533 · phase execution baseline reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Realistic Lot preflight documented: archive/dependency integrity and isolated runtime checked; source-traced render contract, sample specification and diagnostic procedure recorded. WebGL adapter and realistic sample remain unimplemented; provenance, calibration, device and human gates remain open. D6–D11 settled A by Codex under Dave’s delegated authority; no decision questionnaire remains.",
+  "statusReason": "Foundation phone-sheet fix implemented and locally verified; CI and deployment follow the phase PR. Autonomous Lot, operations, research, ownership, venue and release work continues from the active execution table. D1–D11 are settled.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -32,7 +32,7 @@
       "type": "responsive",
       "sev": "P1",
       "title": "Book/Promote phone sheet still has a 580px minimum",
-      "detail": "At ab27c99, styles.css still applies the Book/Promote width rule without an equally specific phone override. Earlier audit observed overflow at 360/390px. Current review inspected source; live reproduction pending.",
+      "detail": "Reproduced at 390 CSS px: Book sheet was 580px wide inside a 390px panel while root overflow stayed zero. Phone breakpoint now overrides phase-specific Book/Promote widths. Regression checks cover every visible tab/control at 360, 375 and 390px; delivery evidence follows the phase PR.",
       "files": [
         "front-of-house/styles.css:186",
         "test/front-of-house-smoke.mjs"
@@ -217,7 +217,8 @@
     "2026-10-04: Dave accepted D3, D4 and D5 A in CT-DEC-15 through CT-DEC-17 and requested a D2 A/B explanation. D2 remains Open. Prior reconciliation reports are historical snapshots, not the current decision state.",
     "2026-10-04: After the A/B explanation Dave explicitly selected D2 B, more realistic 3D, recorded in CT-DEC-18. This settles D1–D5 without changing implementation or later decisions.",
     "2026-10-04 Lot preflight changes only public-safe documentation and its index. No runtime, engine formulas, balance, saves, progression, renderer behavior, CI gates, assets or release visibility changed. Notion and other chats were not updated.",
-    "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates."
+    "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
+    "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire."
   ],
   "links": [
     {
@@ -245,7 +246,7 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
-  "kickoffPrompt": "Read the Front of House decision log, packet and feature briefs in the active MixMash checkout. Reconcile current source with NEXT_STEPS.json. D1–D11 are settled: D2 B, all others A. Under CT-DEC-19, make routine product and implementation decisions autonomously within accepted scope, document material trade-offs and do not re-ask these choices. Progress the bounded realistic Lot milestone, followed by rentals-based live operations, research and ownership in the accepted order. Verify source rights or use independently authored alternatives; preserve engine/save parity and actual device/human evidence gates. Run applicable checks and complete delivery, then refresh this project and its existing Next Steps Board card. Preserve unrelated work and current release gates.",
+  "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1–D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
   "confidence": "medium",
   "unknowns": [
     "Realistic sample and WebGL adapter not implemented; old/new renderer parity pending.",
@@ -386,5 +387,145 @@
       "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
       "answer": "Public promotion after realistic 3D Lot, live-operations pilot and existing release gates"
     }
+  },
+  "execution": {
+    "runId": "foh-phases-20261004",
+    "authorizedOn": "2026-10-04",
+    "authority": "Dave: continue phase execution until no phases remain for Front of House; autonomous decisions under CT-DEC-19",
+    "sourceRevision": "4aeb533a5ad9dd694ad583aad069e4305c49198c",
+    "sourcePath": "front-of-house/ROADMAP.md",
+    "sourceSha256": "532c69193a30fb75e285935378f2a7d0bb79b1990688d06ed7b7148b79cee5f4",
+    "items": [
+      {
+        "id": "FOH-F01",
+        "phase": "Foundation",
+        "scope": "Phone Book/Promote containment",
+        "source": "MXS-06",
+        "dependsOn": [],
+        "doneWhen": "All visible tabs and controls fit at 360, 375 and 390 CSS px; desktop layout and full show smoke remain valid.",
+        "status": "implemented",
+        "evidence": [
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T10:02:16.158Z",
+            "summary": "26 smoke checks, including Book/Promote visible controls and sheet bounds at 360/375/390px; no browser errors."
+          }
+        ]
+      },
+      {
+        "id": "FOH-V01",
+        "phase": "Lot renderer",
+        "scope": "Continuous 3D Lot, realistic sample, Select and safe removal",
+        "source": "FB-01, FB-07",
+        "dependsOn": [
+          "FOH-F01"
+        ],
+        "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-P01",
+        "phase": "Performance",
+        "scope": "Cached/adaptive rendering and stable measurement",
+        "source": "HUD step 6, CT-DEC-17",
+        "dependsOn": [
+          "FOH-V01"
+        ],
+        "doneWhen": "Deterministic CI scenes and documented measured limits; available hardware measurements and unavailable device evidence reported separately.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-O01",
+        "phase": "Live operations",
+        "scope": "Aggregate services, staffing and representative crowd",
+        "source": "FB-03, FB-04",
+        "dependsOn": [
+          "FOH-V01"
+        ],
+        "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-O02",
+        "phase": "Guest operations",
+        "scope": "Food vendor, sanitation, admission and normal departure",
+        "source": "FB-09, FB-10, FB-11",
+        "dependsOn": [
+          "FOH-O01"
+        ],
+        "doneWhen": "Finite budgets/stock, serviced stalls, negotiated artist preference and conserved guest flow with no capacity inflation.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-R01",
+        "phase": "Research",
+        "scope": "Three-project Lot research pilot",
+        "source": "FB-06, D6 A",
+        "dependsOn": [
+          "FOH-O01"
+        ],
+        "doneWhen": "Patch standards, Service training and Admission lanes have deterministic cost/progress/save rules and useful paired outcomes.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-E01",
+        "phase": "Ownership",
+        "scope": "Owned equipment family and reconciled career ledger",
+        "source": "FB-05, D7 A",
+        "dependsOn": [
+          "FOH-O01"
+        ],
+        "doneWhen": "Purchase/rent/deploy/sell policy conserves cash and inventory through reload, cancellation and settlement.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-V02",
+        "phase": "Venues",
+        "scope": "Distinct rooms and remaining tier mechanics",
+        "source": "FB-02, original phases 5–7, KI-11",
+        "dependsOn": [
+          "FOH-P01",
+          "FOH-O02",
+          "FOH-E01"
+        ],
+        "doneWhen": "Club, shell and festival scenes, ticketing, held-night cancellation and stage/night accounting have tier-specific tests and playable careers.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-U01",
+        "phase": "Navigation",
+        "scope": "Large-site navigation and minimap disposition",
+        "source": "FB-08, HUD step 7",
+        "dependsOn": [
+          "FOH-V02"
+        ],
+        "doneWhen": "Evaluate zoomed Split Acre navigation; implement minimap if needed or record evidence-backed deferral, without claiming unbuilt work shipped.",
+        "status": "pending",
+        "evidence": []
+      },
+      {
+        "id": "FOH-L01",
+        "phase": "Release",
+        "scope": "Acceptance evidence, manual and public promotion",
+        "source": "RELEASE.md, D8–D11 A",
+        "dependsOn": [
+          "FOH-V02",
+          "FOH-R01",
+          "FOH-U01"
+        ],
+        "doneWhen": "Provenance, recovery, career, art/camera and device evidence meet release checks; promotion only after those gates are satisfied.",
+        "status": "pending",
+        "evidence": []
+      }
+    ]
   }
 }

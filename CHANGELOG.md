@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House phone forms:** Book and Promote now fit their phone sheet instead of inheriting the desktop 580px minimum. Ticket/ad sliders no longer add browser-default horizontal margins outside the sheet. Regression coverage checks every visible tab and control at 360/375/390px. Service worker v28. The active roadmap now tracks autonomous execution of the remaining phases.
+
 - **Front of House accepted planning choices:** recorded D3–D5 A for aggregate crowd services, Select and safe removal, and performance acceptance; explained D2 stylized versus more realistic 3D and recorded Dave's selection of B, more realistic 3D. Documentation and next-steps projection only; no gameplay or CI changes.
 
 - **Front of House knowledge reconciliation:** indexed the eleven feature briefs, decision packet and prototype review; recorded the accepted 3D Lot → live operations sequence in the roadmap; labelled the original build order historical and clarified the art transition and shipped phone-layout status. Preserves open decisions, current gameplay, saves and release gates.

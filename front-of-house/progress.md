@@ -1,6 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-04: Remaining phase execution — foundation
+
+- Dave authorized continuing through all remaining phases. Added the active, dependency-ordered execution table to [ROADMAP.md](ROADMAP.md), with stable FOH item IDs and matching evidence state in [NEXT_STEPS.json](docs/NEXT_STEPS.json). D1–D11 remain settled under delegated authority.
+- FOH-F01 / MXS-06: reproduced a 580px Book sheet inside a 390px phone panel despite zero page overflow. The mobile breakpoint now resets the phase-specific Book and Promote width. The browser smoke rail checks sheet bounds, internal horizontal overflow and visible controls in every tab at 360/375/390px.
+- Runtime change is CSS only; game rules and saves stay compatible. Service worker cache advances for returning clients. Local full-game smoke: 26 checks passed, including all new phone cases; no browser errors. Existing skill action client ran with the repository’s installed Playwright runtime, and screenshots were inspected. CI and delivery follow the phase PR; physical phone acceptance remains separate.
+
 ## 2026-10-04: Autonomous milestone decisions
 
 Delivery and mandatory checks: [PR #59](https://github.com/DaveHomeAssist/mixmash/pull/59).
