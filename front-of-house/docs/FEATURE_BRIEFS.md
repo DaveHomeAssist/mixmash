@@ -30,6 +30,10 @@ The first backend slice adds a self-hosted, pinned Three.js renderer module, a c
 
 Connect the backend through a facade that retains the existing board and latest scene. An explicit 3D preview toggle enables the Lot only; unsupported rooms and initialization/context failures use Canvas 2D, with status and retry. Add focusable camera presets and orbit/pitch controls. In Select, one-pointer drag orbits and tap inspects; two pointers pan/pinch and cancel placement. Placement remains an explicit tap; camera drag, cancellation, lost capture and modal opening never dispatch an object action. Keep the save namespace and engine unchanged. Verify identical saved-show outcomes, fallback continuity, mouse/touch/keyboard, viewport containment and recovery before merging. The preview does not certify final art or physical devices.
 
+### FOH-V01b scene and authored scale
+
+Complete the Lot presentation with the actual fence kit, grid, incident markers and bounded cosmetic guest motion. Author a consistent dimensional reference using the existing two-metres-per-tile comment as a **provisional authoring convention**, not a physical calibration claim: 1.8 m reference guest, 1.66 m operator eye, 1.1 m stage deck and bar counter, and 2.3 m portable toilet. Record source dimensions and digests. FOH and Stage use explicit eye positions; orbit bounds still apply when leaving those views. Preserve logical footprints, costs, saves, crowd totals and incident authority. Reduced motion keeps every cue while stopping cosmetic movement. Review actual captures and keep final visual/physical acceptance open; do not call a self-authored reference physically calibrated.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.

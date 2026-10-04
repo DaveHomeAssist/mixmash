@@ -19,6 +19,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check:front-of-house-vendor
+      - run: npm run check:front-of-house-assets
       - run: npm test
       - run: npm run vercel-build
       - run: npm run art:validate

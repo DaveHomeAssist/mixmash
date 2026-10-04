@@ -2,24 +2,28 @@
 import * as T from './vendor/three/three.module.min.js';
 import { createLotCamera, LOT_ZOOMS } from './lot-camera.mjs';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA } from './lot-models.mjs';
+import { createLotPresentation } from './lot-presentation.mjs';
 import { OBJECT_TYPES } from './data.mjs';
 
-export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = globalThis.devicePixelRatio || 1 } = {}) {
+export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = globalThis.devicePixelRatio || 1, reducedMotion = null } = {}) {
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(2, Math.max(1, pixelRatio)));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
   const camera = createLotCamera(), models = createLotModels(), world = new T.Scene();
-  const props = new T.Group(), crowd = new T.Group(), overlays = new T.Group();
-  const floorGeometry = new T.PlaneGeometry(24, 16), floorMaterial = new T.MeshStandardMaterial({ color: 0x373b3c, roughness: 0.97 });
+  const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models);
+  const media = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let motion = reducedMotion === null ? !media?.matches : !reducedMotion;
+  const floorGeometry = new T.PlaneGeometry(24, 16), floorMaterial = models.material(0x373b3c, 0, 0.97).clone();
+  const floorMap = floorMaterial.map.clone(); floorMap.repeat.set(48, 32); floorMap.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); floorMap.needsUpdate = true; floorMaterial.map = floorMap;
   const floor = new T.Mesh(floorGeometry, floorMaterial); floor.rotation.x = -Math.PI / 2; floor.position.set(12, -0.01, 8); floor.receiveShadow = true;
   const sky = new T.HemisphereLight(0xdce9ff, 0x343a35, 2.2);
   const sun = new T.DirectionalLight(0xffefd8, 3); sun.position.set(5, 28, 15); sun.target.position.set(12, 0, 8);
   sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 80 }); sun.shadow.bias = -0.0005;
   const stageLight = new T.PointLight(0x54b9ff, 60, 22, 2); stageLight.position.set(12, 3, 3);
-  world.add(floor, props, crowd, overlays, sky, sun, sun.target, stageLight);
-  let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', crowdKey = '', paused = false, disposed = false;
-  let objects = [], pickables = [];
+  world.add(floor, props, presentation.group, overlays, sky, sun, sun.target, stageLight);
+  let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', paused = false, disposed = false;
+  let objects = [], pickables = [], objectHeights = [];
   const ownedOverlayMaterials = new Map();
 
   function report(next, detail = '') { state = next; reason = detail; onStatus({ state, reason }); }
@@ -39,25 +43,14 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     const t = 0.06; cell(o.x, o.y, w, t, color, 1); cell(o.x, o.y + h - t, w, t, color, 1); cell(o.x, o.y, t, h, color, 1); cell(o.x + w - t, o.y, t, h, color, 1);
   }
   function rebuildObjects(input) {
-    props.clear(); pickables = []; objects = input.map(o => ({ ...o }));
+    props.clear(); pickables = []; objectHeights = []; objects = input.map(o => ({ ...o }));
     objects.forEach((o, index) => {
       const group = models.create(o); if (!group) return;
       group.traverse(mesh => { if (mesh.isMesh) { mesh.userData.objectIndex = index; pickables.push(mesh); } }); props.add(group);
+      objectHeights[index] = new T.Box3().setFromObject(group).max.y;
     });
-  }
-  function rebuildCrowd(input) {
-    crowd.clear();
-    const count = Math.min(180, Math.max(0, Math.round(input.crowd || 0)));
-    const occupied = (x, y) => objects.some(o => {
-      const spec = OBJECT_TYPES[o.type]; if (!spec || spec.kit) return false;
-      const w = o.rot % 2 ? spec.h : spec.w, h = o.rot % 2 ? spec.w : spec.h;
-      return x >= o.x && x < o.x + w && y >= o.y && y < o.y + h;
-    });
-    const positions = [];
-    for (let i = 0; i < 384; i++) { const n = (i * 137) % 384, x = n % 24 + 0.5, y = Math.floor(n / 24) + 0.5; if (!occupied(x, y)) positions.push([x, y]); }
-    for (let i = 0; i < Math.min(count, positions.length); i++) {
-      const guest = models.guest(); guest.position.set(positions[i][0], 0, positions[i][1]); guest.rotation.y = Math.PI; crowd.add(guest);
-    }
+    const stage = objects.find(o => o.type === 'stage'); camera.setStage(stage);
+    if (stage) { const spec = OBJECT_TYPES.stage; stageLight.position.set(stage.x + (stage.rot % 2 ? spec.h : spec.w) / 2, 2.8, stage.y + (stage.rot % 2 ? spec.w : spec.h) / 2); }
   }
   function render() {
     if (disposed || paused || state !== 'ready' || globalThis.document?.hidden) return;
@@ -69,8 +62,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     lastScene = input;
     const key = JSON.stringify(input.objects || []);
     if (key !== layoutKey) { rebuildObjects(input.objects || []); layoutKey = key; }
-    const nextCrowd = `${key}:${input.crowd || 0}`;
-    if (nextCrowd !== crowdKey) { rebuildCrowd(input); crowdKey = nextCrowd; }
+    presentation.update(input, objects, objectHeights, motion);
     const nextOverlay = JSON.stringify([key, input.showClear, [...(input.clearSet || [])], [...(input.blockedSet || [])], input.cursor, input.cursorColor, input.selection, input.ghost]);
     if (nextOverlay !== overlayKey) {
       clearOverlays();
@@ -85,7 +77,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     }
     const night = !!input.night;
     world.background = new T.Color(night ? 0x111923 : 0x85949d);
-    sky.intensity = night ? 0.6 : 2.2; sun.intensity = night ? 0.45 : 3; stageLight.intensity = night && input.lightTower ? 60 : 0;
+    sky.intensity = night ? 1.15 : 2.2; sun.intensity = night ? 0.7 : 3; stageLight.intensity = night && input.lightTower ? 60 : 0;
     render();
   }
   function resize() {
@@ -102,13 +94,16 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   function contextLost(event) { event.preventDefault(); report('lost', 'WebGL context lost; retain the current game and use the fallback board.'); }
   function contextRestored() { if (disposed) return; report('ready'); resize(); if (lastScene) draw(lastScene); }
   function visibility() { if (!globalThis.document?.hidden) render(); }
+  function motionChanged() { if (reducedMotion === null) { motion = !media?.matches; if (lastScene) draw(lastScene); } }
+  media?.addEventListener('change', motionChanged);
   canvas.addEventListener('webglcontextlost', contextLost); canvas.addEventListener('webglcontextrestored', contextRestored);
   globalThis.document?.addEventListener('visibilitychange', visibility);
   function destroy() {
     if (disposed) return;
     disposed = true;
     canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored); globalThis.document?.removeEventListener('visibilitychange', visibility);
-    clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
+    media?.removeEventListener('change', motionChanged); presentation.dispose();
+    clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
   resize();
   return {
@@ -133,6 +128,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: crowd.children.length, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }),
+    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }),
   };
 }
