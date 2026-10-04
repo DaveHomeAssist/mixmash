@@ -22,6 +22,10 @@
 
 **Dependencies / risks:** D1, D2, D5; the supplied prototype now has an isolated [runtime and dependency review](PROTOTYPE_REVIEW.md). Fix/reimplement its lifecycle, camera bounds and reduced-motion gaps before reuse; source/asset rights and engine parity remain gates. Occlusion, touch conflict, WebGL failure and device cost are the main risks. **Relative effort:** large. **Expansion:** other venues only after Lot parity and human camera acceptance.
 
+### FOH-V01b implementation boundary
+
+The first backend slice adds a self-hosted, pinned Three.js renderer module, a camera/picking contract and independently authored dimensional props. It accepts the existing scene snapshot without importing economy rules. Camera tests cover arbitrary yaw, pitch/zoom limits, Plan and ground round trips; runtime tests cover object depth, immutable inputs, loss/restoration and repeated disposal. The game keeps its current renderer until the following integration slice connects gestures, accessible presets and fallback. Technical sample geometry is explicitly provisional and does not establish realistic-art or physical-device acceptance. No Unreal migration or save change is included.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.

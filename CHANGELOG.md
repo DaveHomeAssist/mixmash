@@ -6,6 +6,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 - **Front of House service model prerequisite:** added a deterministic aggregate admission/bar engine with finite queues, worker travel, refunds and replayable checkpoints, plus quiet/surge/busy-bar fixtures. It is not yet enabled in the game; existing economy and saves remain unchanged.
 
+- **Front of House Lot renderer backend:** pinned self-hosted Three.js, continuous camera projection/picking, source-authored dimensional samples and context/resource lifecycle checks. This isolated backend is not yet connected to the game; final realistic art and integration remain pending.
+
 - **Front of House safe Build tools:** Select is the default and opens object inspection by pointer, touch or Enter. Escape closes a dialog/menu before cancelling placement. Single removal uses Undo, and Clear asks once with an object count. Selection stays out of saves, focus returns predictably, and the tools fit desktop/phone layouts. Service worker v29.
 
 - **Front of House phone forms:** Book and Promote now fit their phone sheet instead of inheriting the desktop 580px minimum. Ticket/ad sliders no longer add browser-default horizontal margins outside the sheet. Regression coverage checks every visible tab and control at 360/375/390px. Service worker v28. The active roadmap now tracks autonomous execution of the remaining phases.

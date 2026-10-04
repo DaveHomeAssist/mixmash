@@ -18,6 +18,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run check:front-of-house-vendor
       - run: npm test
       - run: npm run vercel-build
       - run: npm run art:validate
@@ -32,6 +33,7 @@ jobs:
       - run: git diff --exit-code -- front-of-house/docs/ASSETS.md front-of-house/docs/CATALOG.md front-of-house/docs/STRINGS.md
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run smoke:front-of-house
+      - run: npm run smoke:front-of-house-lot
       - run: npm run art:visual
       - run: npm run smoke:play
       - run: npm run smoke:catalog
