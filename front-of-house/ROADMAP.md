@@ -66,7 +66,7 @@ The design is [RESEARCH.md](docs/RESEARCH.md), recorded as [CT-DEC-13](docs/DECI
 | Guest services and staffed operations | Restroom servicing, vendor agreements, ticketing, supervisors and coordination | Their service constraints, finite demand and recurring costs exist; baseline provisions remain available; trade-offs survive playtesting |
 | Venue and production networks | Installed infrastructure, distributed sound and services, event control and expanded multi-stage operations | Asset tenure and ledger rules are accepted; venue and tier dependencies have no circular gates; older saves keep their room access and booked terms |
 
-All rows are unimplemented research scope. The underlying rooms and some facilities already exist. Follow the [acceptance gates](docs/RESEARCH.md#10-acceptance-and-balancing), retain public-release gates, and update the rules and save specification before each implementation slice.
+These rows describe the original research proposal. The three-project pilot, live guest services and equipment ledger now have bounded implementations; current scope and evidence are maintained in [NEXT_STEPS.json](docs/NEXT_STEPS.json). Further venue networks remain open. Follow the [acceptance gates](docs/RESEARCH.md#10-acceptance-and-balancing), retain public-release gates, and update the rules and save specification before each implementation slice.
 
 ## Phase 5: the Club (original scope, partly outstanding)
 
@@ -84,7 +84,7 @@ The table below is the original scope. The playable slice is the decision, not t
 
 Sandbox and the wet-lot scenario are in the same pass. Challenge and Endless are still after v1.
 
-A ticketing platform was in the Phase 5 list and is not built. The shell is a grid with seats, not a hillside. Simulator verdicts for the new tiers are not in CI. The Lot baseline is unchanged (all 11 verdicts still pass).
+Current execution (2026-10-04): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation and Festival stage/site receipts plus sponsor/headliner rules are delivered. Amphitheater sound/slope rules are in release verification; Festival room sound/sightline rules follow. These rule profiles do not complete dimensional venue scenes. Tier-specific full career simulator verdicts remain open; the existing Lot baseline is unchanged. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
 
 ## HUD layout (CT-DEC-12)
 

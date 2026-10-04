@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "8d715b0 Festival rules delivered; c538daa Amphitheater profile in verification",
+  "head": "8d715b0 Festival rules delivered; Amphitheater and Festival profiles in verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Festival accounting, controls and sponsor/headliner rules are merged and hosted-verified. Amphitheater sound/slope source c538daa passes397 tests, both-browser room/held journeys, offline replay and legacy preservation; its CI/hosted release proof remains. Dimensional scenes, remaining venue rules, career tests, navigation and release gates continue.",
+  "statusReason": "Festival accounting, controls and sponsor/headliner rules are hosted-verified. Amphitheater profile release checks continue. Festival base sound and sightlines pass 401 tests, six both-browser player journeys, six seating regressions, 28 legacy browser checks, exact unmarked parity and offline cash reconciliation. CI and hosted profile releases remain; infrastructure, dimensional scenes, career acceptance and navigation continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -32,7 +32,7 @@
   ],
   "nextStep": {
     "title": "Deliver venue profiles, then complete site systems and scenes",
-    "why": "The larger venues inherited Lot-scale quality. The Amphitheater profile now ties included sound and rising-lawn sightlines to settlement; complete its release proof, then Festival infrastructure, dimensional scenes, time-of-day and career validation.",
+    "why": "Room profiles replace inherited Lot-scale quality with authored venue rules. Complete their release proof, then spatial Festival delay coverage and site infrastructure, dimensional scenes, time-of-day and career validation.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -371,6 +371,15 @@
       "release": "Pending required CI, merge and hosted acceptance",
       "artAndDeviceAcceptance": "Not claimed; dimensional scene remains open",
       "implementationRevision": "c538daaac966a8c87bff81a3ca15256329dbffa0"
+    },
+    "festivalProfile": {
+      "baseRevision": "7976812136469b9e81a91eb94d3afe2c4a529986",
+      "checkedOn": "2026-10-04",
+      "localChecks": "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending.",
+      "diagnostic": "Thirty paired starter-layout seeds at usual price and best response: old satisfaction14–22 with0/30passes; profile42–67 with3/30passes. This diagnostic does not establish full career balance. Spatial delays, VIP deck, bus compound and dimensional scenes remain open.",
+      "release": "Pending required CI, merge/Pages and hosted acceptance",
+      "artAndDeviceAcceptance": "Not claimed; existing Canvas artwork remains a fallback",
+      "ciCorrection": "CI37217349921 failed a9px Festival account overflow at320×256 on Linux. Two explanations shortened; six Chromium/WebKit journeys and edge cases, five-size/two-theme checks, build/docs pass locally after correction. Fresh CI and hosted proof remain pending."
     }
   },
   "decisionState": {
@@ -1041,7 +1050,9 @@
           "PR101 controls passed CI37213803528, merged0c9288d994084262866bebc69012944bc9a6f6da at16:02:30Z; Pages built16:02:52Z.26 hosted runtime files match. Six Festival and six seating browser journeys plus offline1199admissions/29904net/1029904journalcash pass. Actual hosted phone cash receipt inspected. The seating headline estimate correction is delivered.",
           "New Amphitheater bookings use a version1 room profile: included700-person shell sound, explicit100/250 portable replacement, fixed lawn rise and level rear concourse, true height-aware obstacle rays and shared overlay/settlement geometry. Nine new tests cover source validation, exact rays, rotations, house/rental/owned costs, legacy replay, three-night cash/reputation and recovery.397 repository tests/build/docs and unchanged Lot baseline pass. Final six Chromium/WebKit seating/room journeys cover placement/undo, identical-layout profile import cache, compact pages and profile-only next booking; six held-run/full-hold/debt journeys,28 legacy checks, offline signing/cancellation and supplied action runner pass. CI and hosted profile acceptance remain pending.",
           "Controlled30-seed Amphitheater starter comparison at usual prices and best responses: old satisfaction37–43,0/30passes; marked profile67–73,30/30passes. Capacity and opening costs unchanged. This is diagnostic evidence, not a full career or balance acceptance; Festival-scale quality and all dimensional room scenes remain open.",
-          "PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected."
+          "PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected.",
+          "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending.",
+          "Thirty paired starter-layout seeds at usual price and best response: old satisfaction14–22 with0/30passes; profile42–67 with3/30passes. This diagnostic does not establish full career balance. Spatial delays, VIP deck, bus compound and dimensional scenes remain open."
         ],
         "slices": [
           {
@@ -1080,7 +1091,8 @@
               "PR101 controls passed CI37213803528, merged0c9288d994084262866bebc69012944bc9a6f6da at16:02:30Z; Pages built16:02:52Z.26 hosted runtime files match. Six Festival and six seating browser journeys plus offline1199admissions/29904net/1029904journalcash pass. Actual hosted phone cash receipt inspected. The seating headline estimate correction is delivered.",
               "New Amphitheater bookings use a version1 room profile: included700-person shell sound, explicit100/250 portable replacement, fixed lawn rise and level rear concourse, true height-aware obstacle rays and shared overlay/settlement geometry. Nine new tests cover source validation, exact rays, rotations, house/rental/owned costs, legacy replay, three-night cash/reputation and recovery.397 repository tests/build/docs and unchanged Lot baseline pass. Final six Chromium/WebKit seating/room journeys cover placement/undo, identical-layout profile import cache, compact pages and profile-only next booking; six held-run/full-hold/debt journeys,28 legacy checks, offline signing/cancellation and supplied action runner pass. CI and hosted profile acceptance remain pending.",
               "Controlled30-seed Amphitheater starter comparison at usual prices and best responses: old satisfaction37–43,0/30passes; marked profile67–73,30/30passes. Capacity and opening costs unchanged. This is diagnostic evidence, not a full career or balance acceptance; Festival-scale quality and all dimensional room scenes remain open.",
-              "PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected."
+              "PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected.",
+              "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending."
             ]
           },
           {

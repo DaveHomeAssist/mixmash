@@ -312,6 +312,12 @@ export const ROOM_PROFILES = Object.freeze({
     eyeHeight: 0.83, performerHeight: 1.38,
     obstacleHeights: Object.freeze({ lights: 4, bar: 0.55, restroom: 1.15 }),
   }),
+  festival: Object.freeze({
+    version: 1, venueId: 'festival', label: 'Main system', soundCapacity: 3000,
+    lawnStart: 0, lawnEnd: 0, risePerTile: 0, sightDegrees: 120, sightRange: 60,
+    eyeHeight: 0.83, performerHeight: 2.38,
+    obstacleHeights: Object.freeze({ lights: 4, bar: 0.55, restroom: 1.15 }),
+  }),
 });
 
 // Show night runs from doors (19:00) to curfew (23:00); times below are shares of that night.
