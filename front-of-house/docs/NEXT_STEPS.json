@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "36bbbf3 delivered · 18 density windows at5532852 · sanitation CI",
+  "head": "429865c base · CI calibration prepared",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Floor cache and 3D backing resolution are merged, Pages-built and hosted-verified. All18 high-density Metal windows at frozen5532852 are valid. Parallel sanitation remains in its own CI/production workflow; physical-device acceptance and later phases remain open.",
+  "statusReason": "Floor cache and resolution remain deployed and hosted-verified. A separate CI calibration job is implemented locally; runner execution and limits remain pending. PR81 measurement evidence and parallel gameplay deliveries retain their separate CI gates.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -22,8 +22,8 @@
     "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
   ],
   "nextStep": {
-    "title": "Deliver sanitation; continue performance limits and remaining phases",
-    "why": "The floor cache and resolution slices are delivered. Preserve the parallel sanitation work while continuing measured CI limits, low-power evidence, research, ownership, venue and release phases.",
+    "title": "Calibrate CI performance while gameplay delivery continues",
+    "why": "Capture the same frozen scenes on the actual CI runner, inspect variation and establish a verified regression gate. Preserve the parallel sanitation/research work and the outstanding physical-device lane.",
     "doneWhen": "Static floor caching preserves exact pixels, sightline occlusion and hit testing across room/layout/camera/resize changes; measure the same full-HUD fixtures before and after at declared pixel ratio. Continue the remaining guest operations, research, ownership, venue and release phases.",
     "effort": "L",
     "owner": "either",
@@ -668,6 +668,15 @@
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/78",
             "mergeCommit": "36bbbf3977cfdb035f86d3268d246ab92726d25d"
+          },
+          {
+            "id": "FOH-P01e",
+            "scope": "CI runner calibration and measured regression limits",
+            "status": "implemented-awaiting-calibration",
+            "evidence": [
+              "Explicit manual performance job prepared on Ubuntu24.04. Full standard18-window DPR1 SwiftShader protocol; runner image/run metadata allowlist and synthetic JSON artifact retention. Normal PR correctness gates unchanged.",
+              "Workflow YAML parses; three reporting/deadline/camera tests pass. Actual dispatch, runner baseline, artifact retrieval and regression limits remain pending."
+            ]
           }
         ]
       },

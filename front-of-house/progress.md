@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: CI calibration workflow prepared
+
+- Added an explicit manual performance option to the existing CI workflow. A separate Ubuntu24.04 job runs the full standard18-window SwiftShader protocol and retains only synthetic JSON fixtures/results plus an allowlist of runner metadata.
+- Normal PR correctness gates remain unchanged. No timing budget is invented from the Mac diagnostic; the next gate requires retrieved CI samples and an intentional-regression check.
+- YAML parses and the three reporting/deadline/camera tests pass locally. GitHub workflow execution, artifact retention and measured limits remain pending.
+
 ## 2026-10-04: Resolution delivery verified
 
 - PR78 passed CI 37203818090 and merged at 36bbbf3. Pages built at 13:13:51Z; all eight checked live files match the tested source.
