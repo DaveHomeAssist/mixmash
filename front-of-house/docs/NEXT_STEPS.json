@@ -599,6 +599,13 @@
             "result": "recorded",
             "checkedAt": "2026-10-04T12:42:29.283Z",
             "summary": "All 12 corrected full-HUD comparison windows valid on 2a00f7a. Requested DPR 2, effective 1.5. Fixed camera reuses the floor; the verified pan path rebuilds it. The earlier unsupported-zoom attempt is retained separately as an invalid comparison."
+          },
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-resolution-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T12:54:51.909199+00:00",
+            "summary": "Actual backing allocation, threshold and CSS-coordinate picks; browser density emulation plus explicitly dispatched media event, redraw fallback, context restore and listener disposal. Full application DPR2 settlement parity also passes. Local proof only."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
@@ -622,6 +629,17 @@
               "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
+          },
+          {
+            "id": "FOH-P01d",
+            "status": "tested-awaiting-delivery",
+            "scope": "3D backing resolution and browser density lifecycle",
+            "evidence": [
+              "At requested DPR2: 1920x1080 allocates 2880x1620; 375x812 allocates 750x1624. Threshold, 5120x1440 ultrawide, explicit DPR1 and invalid overrides pass actual canvas/WebGL buffer checks.",
+              "CSS-coordinate tile/object picking, real context loss/restore, one rearmed density listener and disposal pass. Chromium density emulation omits some media events; explicit event dispatch tests the listener and redraw detection covers the omitted-event path. No physical monitor acceptance inferred.",
+              "Complete DPR2 application gestures, inspection, viewport fit, fallback/recovery, reload and classic/3D settlement parity pass. Existing backend camera/scene/shadow/reduced-motion and 20 disposal cycles pass.",
+              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending."
+            ]
           }
         ]
       },
