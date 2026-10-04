@@ -47,6 +47,7 @@ const PROPS = {
   'pa-m': { box: { top: '#5d6270', side: '#2a2c33', front: '#1f2026', height: 1.9 }, sprite: { h: 1.55, foot: 0.97 } },
   lights: { box: { top: '#9ca3af', side: '#6b7280', front: '#4b5563', height: 2.6, thin: true }, sprite: { w: 0.62, foot: 0.98, lamp: 0.1 } },
   bar: { box: { top: '#f43f5e', side: '#a8263c', front: '#7f1d2e', height: 0.8 }, sprite: { w: 1.35, foot: 0.94 } },
+  food: { box: { top: '#5faf92', side: '#32785e', front: '#1f5742', height: 1.1 } },
   restroom: { box: { top: '#3b82f6', side: '#1d4ed8', front: '#1e3a8a', height: 1.3 }, sprite: { w: 0.72, foot: 0.97 } },
   gate: { box: { top: '#84cc16', side: '#4d7c0f', front: '#3f6212', height: 0.25 }, sprite: { w: 1.15, foot: 0.96 } },
   exit: { box: { top: '#ef4444', side: '#b91c1c', front: '#7f1d1d', height: 0.25 }, sprite: { w: 1.05, foot: 0.96 } },
@@ -55,7 +56,7 @@ const PROPS = {
 // Box colours and heights, exported so the panel's palette swatches match the board.
 export const LOOK = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, p.box]));
 // Sprite fit per prop, exported for the asset manifest (docs/ASSETS.md, tools/docs.mjs).
-export const SPRITE_FIT = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, { ...p.sprite }]));
+export const SPRITE_FIT = Object.fromEntries(Object.entries(PROPS).filter(([, p]) => p.sprite).map(([id, p]) => [id, { ...p.sprite }]));
 // A room's pillars are part of the building: always a code-drawn box, never placed or removed.
 const PILLAR = { top: '#5c534c', side: '#3f3833', front: '#2c2724', height: 2.4 };
 const lookOf = (o) => (o.type === 'pillar' ? PILLAR : LOOK[o.type]);
@@ -66,7 +67,7 @@ const spriteListeners = new Set();
 let spritesReady = false;
 
 if (typeof Image !== 'undefined') {
-  const loads = Object.keys(PROPS).map((id) => {
+  const loads = Object.keys(PROPS).filter(id => PROPS[id].sprite).map((id) => {
     const img = new Image();
     img.src = new URL(`./sprites/${id}.png`, import.meta.url).href;
     spriteImages[id] = img;
@@ -825,6 +826,10 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       else box(o.x, o.y, d.w, d.h, lookOf(o).height, lookOf(o), flickerOf(o));
       hits.push(g.r ? { o, d, r: g.r } : { o, d, poly: g.poly });
       if (o.type === 'stage' && !repaint) drawStageFacing(o);
+      if (o.type === 'food') {
+        const [x, y] = iso(o.x + d.w / 2, o.y + d.h / 2, LOOK.food.height);
+        ctx.save(); ctx.fillStyle = '#102b21'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('FOOD', x, y); ctx.restore();
+      }
       (tilesAt.get(i) || []).forEach(([x, y]) => overlay(x, y));
       drawCrowd(crowdAt.get(i) || [], scene.t);
     });

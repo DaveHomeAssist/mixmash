@@ -93,3 +93,9 @@ This repository is public, and `gh-pages` is served as it is (`.nojekyll`), so e
 In Promote, open Live services and enable arrivals/queues. The settings show connected gates, bars and exits; a disconnected provider needs a clear path to the main audience floor. Doors refuse before charging if a required provider is unavailable. Menu → Camera enables the optional 3D Lot view.
 
 After the incident response, Close show ends admission and bar service. Play/Pause, clock speed and +5 min then control normal departure; Finish departure advances to the last exit. The readout separates guests still inside from those departed. Settlement unlocks when the site clears, retaining cumulative attendance and the same receipts. Reload starts paused at the saved point. Older live shows imported without the new flow marker keep their original closing behavior.
+
+### Food vendor trial
+
+On the Lot, place one Food stall in Build (key 9). In Promote, enable Live services and open Food to select Standard or Premium. The stall needs a clear route to the main floor. Its staff, power, stock and wages are vendor supplied; the promoter receives 25% of actual sales. Terms lock when doors open.
+
+Standard sells $8 meals, stocks 80 and serves 2/minute; Premium sells $12 meals, stocks 160 and serves 4/minute. Guests share limited spending money with the bar, some decline higher prices, and food requests expire after six minutes. Green samples show the food queue. Open Food from Services for current demand/stock and the vendor ledger, or from settlement Revenue for the final receipt. Only house income enters career cash. Existing shows without a food contract keep their old finances.

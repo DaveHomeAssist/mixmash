@@ -99,6 +99,7 @@ export const OBJECT_TYPES = {
   'pa-m': { label: 'PA (medium)', w: 1, h: 1, watts: 6000, group: 'pa', max: 1, nextToStage: true, paTier: 'M' },
   lights: { label: 'Light tower', w: 1, h: 1, watts: 8000, group: 'lights', max: 1, blocksSight: true },
   bar: { label: 'Bar', w: 2, h: 1, watts: 1500, blocksSight: true },
+  food: { label: 'Food stall', w: 2, h: 1, watts: 0, group: 'food', max: 1, blocksSight: true, lotOnly: true },
   restroom: { label: 'Restroom unit', w: 1, h: 1, watts: 0, blocksSight: true },
   gate: { label: 'Entry gate', w: 1, h: 1, watts: 0, edge: true },
   exit: { label: 'Exit', w: 1, h: 1, watts: 0, edge: true },

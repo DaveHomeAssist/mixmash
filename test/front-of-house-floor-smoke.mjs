@@ -65,13 +65,14 @@ try {
           await page.evaluate(() => { boards.forEach(board => board.turnView()); });
         }
       }
-      for (const change of ['zoom', 'pan', 'safe', 'layout', 'pillar', 'clear', 'blocked', 'overlay']) {
+      for (const change of ['zoom', 'pan', 'safe', 'layout', 'food', 'pillar', 'clear', 'blocked', 'overlay']) {
         const before = await page.evaluate(() => boards[0].info().floorCache.builds);
         await page.evaluate(change => {
           if (change === 'zoom') boards.forEach(board => board.zoomTo(2));
           if (change === 'pan') boards.forEach(board => board.panBy(30, 20));
           if (change === 'safe') boards.forEach(board => { board.setClear({ x: 120, y: 100, w: 800, h: 600 }); board.resize(); });
           if (change === 'layout') scene.objects = scene.objects.filter(o => o.type !== 'fence');
+          if (change === 'food') scene.objects.push({ type: 'food', x: 10, y: 10, rot: 0 });
           if (change === 'pillar') scene.pillars = [[9, 9]];
           if (change === 'clear') scene.clearSet.add('9,9');
           if (change === 'blocked') scene.blockedSet.add('10,9');

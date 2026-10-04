@@ -98,3 +98,5 @@ All 12 windows at source `2a00f7a444503bbadeda3939f4b7b46d9b8bafc3` are valid. [
 RAF cadence measures callback scheduling, not completed GPU frames or display smoothness on a physical device. No total client CPU duration was inferred. Cache counters describe work across warm-up plus measurement; frame statistics describe only the timed sample. The fixed camera can reuse its floor, while camera movement rebuilds it. The direct control paints the floor on every draw and therefore has no cache builds or reuses. Similar cadence at the host ceiling does not prove a frame-rate improvement; there are no new device or CI timing acceptance limits. Shared-host load is uncontrolled and recorded.
 
 Camera-change counters include the initial sampling callback; frame intervals begin at the following callback. This one-callback difference does not replace the continuous-motion validity check.
+
+The 2a00f7a comparison predates the food-control merge ffcd59f. Later integration preserves the cache and is tested separately, including a placed food stall in pixel/picking parity. The original measurements are not relabeled as a later source revision.

@@ -30,8 +30,8 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
 | `remove` | Remove the object at a list index | `index` | build | stays | 1 |
 | `confirmBuild` | Lock the layout once the venue is ready | — | build | promote | 1 |
-| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `seatPrice` | promote | stays | 5 |
-| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 5 |
+| `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `foodPlan`, `seatPrice` | promote | stays | 6 |
+| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 6 |
 | `chooseDoorCrew` | Opt-in doors trial only: put the spare worker on the bar or the gate | `choice` | show | stays | 2 |
 | `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
 | `assignLiveWorker` | Live pilot: transfer the worker between admission and bar | `station` | show | stays | 2 |
@@ -79,11 +79,13 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `setPromotion` | Unknown ad channel "${c}" |
 | `setPromotion` | Ad spend must be a whole number from 0 to ${D.AD_MAX_PER_CHANNEL} |
 | `setPromotion` | Choose live services only for the Lot |
+| `setPromotion` | Choose a valid Lot food plan |
 | `setPromotion` | Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
 | `confirmPromotion` | Live services needs the Lot and a bar, without the doors snapshot |
 | `confirmPromotion` | Unknown live flow version |
 | `confirmPromotion` | Normal departure requires live services |
 | `confirmPromotion` | Connect admission, a bar and an exit to the main audience floor before opening doors |
+| `confirmPromotion` | Food needs live services and one connected stall before doors |
 | `confirmPromotion` | This show needs $${upfront} before doors, but you have $${s.cash} |
 | `chooseDoorCrew` | There is no doors choice to make |
 | `chooseDoorCrew` | Choose bar service or admission |
@@ -150,6 +152,7 @@ Each show has one incident (R-11). *Window* is when it can happen, as a share of
 | `pa-m` | PA (medium) | 1 × 1 | 6 kW | $450 | — | max 1, touches the stage | yes |
 | `lights` | Light tower | 1 × 1 | 8 kW | $175 | — | max 1, blocks sightlines | yes |
 | `bar` | Bar | 2 × 1 | 1.5 kW | $100 | 2 bar | blocks sightlines | yes |
+| `food` | Food stall | 2 × 1 | — | Vendor funded | — | max 1, blocks sightlines | no |
 | `restroom` | Restroom unit | 1 × 1 | — | $60 | — | blocks sightlines | yes |
 | `gate` | Entry gate | 1 × 1 | — | Free | 1 door | on the boundary | yes |
 | `exit` | Exit | 1 × 1 | — | Free | — | on the boundary | yes |

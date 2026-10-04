@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "2a00f7a · 12 full HUD comparisons complete; floor delivery pending",
+  "head": "ffcd59f integrated · 12 measured HUD windows at 2a00f7a",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Classic floor caching passes pixel/picking and actual-client checks; all 12 corrected full-HUD comparisons are valid at 1920×1080 and effective DPR 1.5. Runtime CI and hosted delivery are tracked in PR74. Departure controls and the finite food core are merged; food integration, sanitation and later phases remain.",
+  "statusReason": "Classic floor caching has 12 valid full-HUD windows at frozen 2a00f7a. The later food-control delivery is preserved at ffcd59f and receives separate integration checks. Runtime CI and hosted cache delivery remain in PR74; sanitation and later phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -21,7 +21,7 @@
   ],
   "nextStep": {
     "title": "Deliver the floor cache, then verify 3D backing resolution",
-    "why": "The corrected comparison is complete on frozen 2a00f7a. Finish PR74 CI/merge/Pages/hosted proof, then apply the documented resolution cap to the 3D path and continue the remaining phases.",
+    "why": "Deliver the cache and retained measurement evidence after reconciling food controls. The measurements remain attributed to 2a00f7a; verify the merged integration separately, then continue the 3D resolution cap and remaining phases.",
     "doneWhen": "Static floor caching preserves exact pixels, sightline occlusion and hit testing across room/layout/camera/resize changes; measure the same full-HUD fixtures before and after at declared pixel ratio. Continue the remaining guest operations, research, ownership, venue and release phases.",
     "effort": "L",
     "owner": "either",
@@ -618,7 +618,8 @@
               "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
               "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
               "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending.",
-              "All 12 corrected full-HUD windows at 2a00f7a are valid: actual flow-version-1 show, 10s warmup, 30s sampling, three repeats, fixed camera and verified continuous pan, direct and cached floors. Raw/source/fixture hashes retained. Cadence and cache counters do not certify physical displays or a frame-rate gain."
+              "All 12 corrected full-HUD windows at 2a00f7a are valid: actual flow-version-1 show, 10s warmup, 30s sampling, three repeats, fixed camera and verified continuous pan, direct and cached floors. Raw/source/fixture hashes retained. Cadence and cache counters do not certify physical displays or a frame-rate gain.",
+              "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
           }
@@ -740,7 +741,8 @@
             "scope": "Finite food demand, budget, stock and vendor terms",
             "status": "in-progress",
             "evidence": [
-              "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet."
+              "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet.",
+              "Playable vendor integration: all276 tests and build, six Chromium/WebKit/classic/3D full journeys and all28 legacy checks pass. Warmed offline minute15 preserves a three-person food queue,70 remaining meals,$80 vendor gross,$20 house share and cash. Required CI/hosted gates pending."
             ],
             "slices": [
               {
@@ -757,10 +759,16 @@
               {
                 "id": "FOH-O02c2",
                 "scope": "Placed vendor, locked player settings, saved terms, projection and career ledgers",
-                "status": "pending",
-                "evidence": []
+                "status": "merged",
+                "evidence": [
+                  "Placed Lot stall, locked settings, finite food replay, both-renderer queue projection and separate vendor/house ledgers implemented. Four engine integration tests and all276 repository tests/build pass; browser and delivery checks remain in progress.",
+                  "PR75 CI 37202280052 passed and merged ffcd59f. Hosted behavior and the subsequent floor-cache integration are separate checks."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75",
+                "mergeCommit": "ffcd59fa7f5af1d4567b77a58a58a420abf2990a"
               }
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
           },
           {
             "id": "FOH-O02d",

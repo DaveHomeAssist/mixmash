@@ -2238,6 +2238,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-food-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-food-integration.mjs",
+      "description": "Placed vendor terms, guest projection and one-time career settlement integration.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-food-integration.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-guest-flow.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2315,6 +2325,16 @@
       "title": "front-of-house-floor-smoke.mjs",
       "description": "Classic floor cache: pixel/picking parity, invalidation, allocation failure and disposal.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-floor-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-food-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-food-smoke.mjs",
+      "description": "Actual vendor placement/settings, finite queue, reload and signed receipt in both renderers.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-food-smoke.mjs",
       "open": null
     },
     {

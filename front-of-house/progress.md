@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Preserve food-control delivery with floor evidence
+
+- Reconciled PR75 food controls at ffcd59f without changing its simulation or accounting. Retained all 12 measured windows at their frozen 2a00f7a source and added food-stall layout coverage to the cache parity check. Service worker v38.
+- Integrated checks pass: 276 repository tests, build, both-browser exact pixels including the food stall, four corrected short HUD windows, and six full vendor journeys through reload and signed income.
+- Shared project-record and generated-catalog conflicts are reconciled; measurements are historical evidence for their exact source, with subsequent integration checks kept separate. PR74 owns the combined delivery.
+
 ## 2026-10-04: Corrected full HUD comparison complete
 
 - All 12 direct/cached, fixed/panning windows on frozen clean 2a00f7a are valid with 10s warmup and 30s sampling at 1920×1080, requested DPR2 and effective1.5. The current flow-version-1 show advances from minute25 to65 while the actual HUD runs.
@@ -392,3 +398,10 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Seven targeted tests pass: every-minute conservation, exact source identity, quiet/surge policy differences, stockout/access/patience/closing, checkpoint/batching/transfer replay, unadmitted guests, malformed input and the6000-guest bound. Full repository and delivery verification follow.
 
 - All 272 repository tests and build pass; generated game documentation remains unchanged. Quiet24-guest and surge960-guest fixtures favor different house-income choices. These core fixtures do not constitute playable or final balance acceptance.
+
+## 2026-10-04: FOH-O02c2 playable food vendor
+
+- Connected one visible Lot stall, pre-doors standard/premium settings and locked saved contracts to shared finite spending, food requests/queue/stock, renderer projection and separate vendor/house ledgers. Only house income reaches career settlement; artist cost basis and pay remain unchanged for both deals. Food receipts open in a dedicated window from Services and settlement, with a return to settlement.
+- Four integration tests pass, including connected-access refusal before payment, save recovery, repeated-signing protection and every-minute four-zone conservation through normal departure. All 276 repository tests and build pass. A quiet test fixture served requests immediately; the surge/temporary-admission fixture supplies a real queue. Browser tests caught phone Services height and an ellipsized Revenue tab; a redundant hint was removed and tab padding reduced while retaining 44px touch height. Both-renderer browser and delivery verification follow.
+
+- Final local evidence: all 276 tests and build, six complete browser journeys and all 28 legacy checks pass. Screenshots of the 3D stall/queues and WebKit phone vendor receipt were inspected. Warmed offline reload preserves minute 15 with three food requests waiting, 70 stock, $80 vendor gross and $20 house income. A short-desktop Promote overflow was fixed with compact action padding; desktop tool tiles widened to retain legible WebKit labels. The supplied action client places the stall and reaches live minute 5; its native-select sequence leaves food Off, so enabled contract acceptance is proved by the separate six browser journeys, not that action-client run.
