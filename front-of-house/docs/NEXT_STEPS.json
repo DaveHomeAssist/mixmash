@@ -386,7 +386,8 @@
       "localChecks": "Festival delay towers implemented with spatial union coverage, two-tower limit, house-system activation, explicit portable/legacy inactivity and exact rental/operator production costs. 405 repository tests,28 targeted tests, build/docs, unchanged Lot simulator, six Chromium/WebKit Festival journeys plus edge cases, six seating journeys and28 legacy browser checks pass. Both themes/five sizes, actual pointer selection, inactive portable/legacy controls and Site/Production receipt totals pass. Warmed-cache offline two-tower signing/reload preserves6000 sound,467 extra tiles,1350 delay cost and1194656 journal cash. Supplied action runner and actual phone/desktop captures inspected. CI and hosted delivery remain pending.",
       "diagnostic": "Thirty paired seeds improve satisfaction42–67/3passes to59–67/29passes;180 zero-tower transitions and full receipts match the prior engine. Diagnostic only, not full career acceptance.",
       "release": "Pending required CI, merge/Pages and hosted acceptance",
-      "artAndDeviceAcceptance": "Source-owned provisional tower geometry; final art and physical-device evidence not claimed"
+      "artAndDeviceAcceptance": "Source-owned provisional tower geometry; final art and physical-device evidence not claimed",
+      "ciCorrection": "CI37218847146 found that the Lot manifest generator included unsupported Festival-only towers through a generic fallback model. Lot asset enumeration now excludes Festival-only types; existing manifest unchanged and asset checks pass. Fresh CI pending."
     }
   },
   "decisionState": {
