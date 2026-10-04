@@ -79,6 +79,7 @@ const PRECACHE = [
   './front-of-house/ticketing.mjs',
   './front-of-house/held-run.mjs',
   './front-of-house/seating.mjs',
+  './front-of-house/room-profile.mjs',
   './front-of-house/stage-accounts.mjs',
   './front-of-house/service-crowd.mjs',
   './front-of-house/service-guests.mjs',

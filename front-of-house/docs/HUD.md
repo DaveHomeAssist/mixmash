@@ -248,3 +248,9 @@ Step7 now has a locally verified Split Acre desktop implementation. The overview
 ### Festival sponsor and headline conditions
 
 Version51 adds the fixed ticket price to every Festival sponsor choice. Promote labels the disabled slider “Sponsor ticket price”; ad controls remain active. The accepted Bill repeats the condition. Guarantee and earned door deals retain adjustable ticket prices. Bill explains the +20 relationship required for earlier-tier headliners. If the selected side act also appears in the main offers, its booking buttons are disabled with an instruction to choose another side act. A Done career with no willing side act offers “Choose another venue” and carries cash/history forward without a new charge.
+
+### Amphitheater sound and slope
+
+New Amphitheater Book offers disclose the included shell rig. Build's readiness line identifies shell or portable sound and its audience capacity; Details links to the Room tab in Seats and lawn. Room reports the current system, sound capacity, room capacity and clear/blocked viewing counts. It explains portable replacement, the light requirement and rising-lawn occlusion. Promote, Menu and signed settlement reopen the same information. A profile-only saved room can still open its Room page before booking zone sales. The overlay cache follows the actual profile, matching the engine when only a save's profile changes.
+
+Version52 precaches the room-profile module. These controls and the clear-view overlay expose the new rule; the existing flat fallback artwork is not presented as a completed dimensional Amphitheater scene.

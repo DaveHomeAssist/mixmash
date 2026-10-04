@@ -2470,6 +2470,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-room-profile.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-room-profile.mjs",
+      "description": "Authored Amphitheater terrain, real line-of-sight, house rig and legacy career preservation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-room-profile.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-sanitation-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3057,6 +3067,16 @@
       "title": "research.mjs",
       "description": "Three-project development authority: replayable progress and separate cash deltas.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/research.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/room-profile.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "room-profile.mjs",
+      "description": "Versioned room acoustics and authored terrain; logical game units, not venue engineering.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/room-profile.mjs",
       "open": null
     },
     {
