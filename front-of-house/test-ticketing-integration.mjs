@@ -64,3 +64,10 @@ test('wrong-room, invalid and cleared choices preserve cash and recover optional
   const raw=structuredClone(done);mutate(raw);const restored=E.normalizeState(raw);assert.equal(restored.cash,done.cash);assert.deepEqual(restored.history,done.history);assert.match(restored.ticketingNotice,/preserved/);assert.equal(restored.phase,'done');assert.equal(E.careerLedgerFor(restored).balance,done.cash);
  }
 });
+
+test('public ticketing forecasts use draw bounds and are independent of the hidden seed',()=>{
+ const s=set(build()),quote=E.ticketingForecastFor(s);assert.deepEqual(E.ticketingForecastFor({...s,seed:s.seed+100}),quote);
+ assert.ok(quote.low.presale<=quote.high.presale);assert.ok(quote.low.fee<=quote.high.fee);assert.ok(quote.high.presale<=E.evaluateVenue(s.venue).capacity);
+ const direct=E.ticketingForecastFor(set(s,{version:1,plan:'direct'}));assert.equal(direct.low.fee,0);assert.equal(direct.high.fee,0);assert.ok(quote.low.presale>=direct.low.presale);assert.ok(quote.high.presale>=direct.high.presale);
+ assert.equal(E.ticketingForecastFor(E.createGame(1)),null);
+});
