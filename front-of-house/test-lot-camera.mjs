@@ -133,3 +133,32 @@ test('Club representative guests stay inside the room and outside props and pill
   }
   p.dispose(); m.dispose();
 });
+
+test('Loam Shell fits its real room at arbitrary yaw across desktop, phone and ultrawide', () => {
+  const { w, h } = VENUES.amphitheater.grid, camera = createLotCamera({ width: w, depth: h });
+  for (const [width, height] of [[1440, 900], [375, 812], [2560, 720]]) {
+    camera.resize({ x: 0, y: 0, w: width, h: height }, { x: width * 0.1, y: height * 0.1, w: width * 0.8, h: height * 0.5 });
+    for (const yaw of [37, 135]) {
+      camera.setCamera({ yaw, pitch: 48, zoom: 1, x: w / 2, y: h / 2 });
+      for (const x of [0, w]) for (const y of [0, h]) for (const z of [0, 3.5]) assert.equal(camera.project(x, y, z).clear, true);
+      const p = camera.project(w - 0.5, h - 0.5); assert.deepEqual(camera.tileAt(p.x, p.y), { x: w - 1, y: h - 1 });
+    }
+  }
+});
+
+test('Loam Shell keeps illustrative seating guides pick-through and its shell outside build tiles', () => {
+  const models = createLotModels(), room = models.room(VENUES.amphitheater), names = room.children.map(m => m.name);
+  assert.equal(new Set(names).size, names.length);
+  const guides = room.children.filter(m => m.userData.pickThrough);
+  assert.equal(guides.length, 12);
+  for (const guide of guides) {
+    assert.equal(guide.castShadow, false);
+    const b = new Box3().setFromObject(guide);
+    assert.ok(b.min.x >= 0 && b.max.x <= 28 && b.min.z > 3 && b.max.z < 18 && b.max.y < 0.01);
+  }
+  for (const panel of room.children.filter(m => /^shell-(panel|west|east)/.test(m.name))) {
+    const b = new Box3().setFromObject(panel); assert.ok(b.max.z < 0); assert.ok(b.max.y <= 3.5);
+  }
+  assert.equal(room.children.filter(m => /^amphitheater-house-pa-(left|right)-/.test(m.name)).length, 8);
+  models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
+});

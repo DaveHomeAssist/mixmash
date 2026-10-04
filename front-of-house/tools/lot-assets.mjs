@@ -21,14 +21,17 @@ for (const type of [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].
     materialRevision: MODEL_REVISION, lod: 'fixed source detail; guests instanced',
     contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], three: '0.184.0', type, footprint: spec ? [spec.w, spec.h] : null })) });
 }
-const room = models.room(VENUES.club);
-const rooms = [{ id: 'club', grid: VENUES.club.grid, housePa: VENUES.club.housePa, pillars: VENUES.club.pillars,
-  collision: 'Existing engine pillars only; fixed scenery adds no simulation constraints',
+const rooms = ['club', 'amphitheater'].map(id => {
+  const venue = VENUES[id], room = models.room(venue);
+  return { id, grid: venue.grid, housePa: venue.housePa, pillars: venue.pillars,
+  seats: venue.seats,
+  collision: 'Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints',
   pickProxy: 'Opaque fixed meshes occlude placed objects; permanent scenery is not removable',
   parts: room.children.map(mesh => {
     const bounds = new Box3().setFromObject(mesh);
-    return { id: mesh.name, visualBounds: { min: bounds.min.toArray().map(round), max: bounds.max.toArray().map(round) } };
-  }), contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], venue: VENUES.club.id, grid: VENUES.club.grid, pillars: VENUES.club.pillars, housePa: VENUES.club.housePa })) }];
+    return { id: mesh.name, pickThrough: !!mesh.userData.pickThrough, visualBounds: { min: bounds.min.toArray().map(round), max: bounds.max.toArray().map(round) } };
+  }), contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], venue: venue.id, grid: venue.grid, pillars: venue.pillars, housePa: venue.housePa, seats: venue.seats })) };
+});
 models.dispose();
 const manifest = { revision: MODEL_REVISION, provenance: MODEL_METADATA, authoringReference: AUTHORING_REFERENCE, sources, assets, rooms,
   acceptance: { technical: 'See automated camera, footprint, scene and lifecycle tests', visual: 'Human review pending', physicalCalibration: 'Not performed', physicalDevices: 'Not accepted by this manifest' } };

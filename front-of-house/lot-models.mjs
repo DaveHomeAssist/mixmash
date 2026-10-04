@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-5';
+export const MODEL_REVISION = 'lot-sample-6';
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
   guestHeightMetres: 1.8, operatorEyeMetres: 1.66, stageDeckMetres: 1.1,
@@ -147,26 +147,38 @@ export function createLotModels() {
   }
   function room(venue) {
     const group = new T.Group();
-    if (venue.id !== 'club') return group;
+    if (!['club', 'amphitheater'].includes(venue.id)) return group;
     const { w, h } = venue.grid;
     const fixed = (id, size, position, color, metal = 0) => {
       const mesh = part(group, size, position, color, metal, 'box', id);
       mesh.userData.permanent = true;
       return mesh;
     };
-    // Cutaway edges keep management views open; no roof or additional blocked floor cells.
-    fixed('club-back-wall', [w, 3, 0.15], [w / 2, 1.5, -0.08], 0x625c63);
-    for (const [id, x] of [['west', -0.08], ['east', w + 0.08]]) fixed(`club-${id}-cutaway`, [0.15, 0.3, h], [x, 0.15, h / 2], 0x625c63);
-    for (const [x, y] of venue.pillars) {
-      fixed(`club-pillar-${x}-${y}`, [1, 3, 1], [x + 0.5, 1.5, y + 0.5], 0x676b70);
-      fixed(`club-pillar-base-${x}-${y}`, [1, 0.15, 1], [x + 0.5, 0.075, y + 0.5], 0x363b42);
+    if (venue.id === 'club') {
+      // Cutaway edges keep management views open; no roof or additional blocked floor cells.
+      fixed('club-back-wall', [w, 3, 0.15], [w / 2, 1.5, -0.08], 0x625c63);
+      for (const [id, x] of [['west', -0.08], ['east', w + 0.08]]) fixed(`club-${id}-cutaway`, [0.15, 0.3, h], [x, 0.15, h / 2], 0x625c63);
+      for (const [x, y] of venue.pillars) {
+        fixed(`club-pillar-${x}-${y}`, [1, 3, 1], [x + 0.5, 1.5, y + 0.5], 0x676b70);
+        fixed(`club-pillar-base-${x}-${y}`, [1, 0.15, 1], [x + 0.5, 0.075, y + 0.5], 0x363b42);
+      }
+    } else {
+      // A cutaway acoustic-shell profile keeps the ground and plan view visible.
+      const heights = [2, 2.5, 2.9, 3.2, 3.4, 3.2, 2.9, 2.5, 2];
+      heights.forEach((height, i) => fixed(`shell-panel-${i}`, [0.98, height, 0.18], [w / 2 + i - 4, height / 2, -0.1], i % 2 ? 0xb9b29f : 0x9d988b));
+      for (const [side, x] of [['west', w / 2 - 5], ['east', w / 2 + 5]]) fixed(`shell-${side}-wing`, [1, 1.2, 0.18], [x, 0.6, -0.1], 0x7b8072);
+      // Illustrative floor bands distinguish seating from lawn without reserving tiles.
+      for (let row = 0; row < 6; row++) for (const [side, x] of [['west', w / 2 - 4.75], ['east', w / 2 + 4.75]]) {
+        const guide = fixed(`shell-seat-guide-${side}-${row}`, [7.5, 0.008, 0.22], [x, 0.004, 5 + row * 0.8], 0x858678);
+        guide.userData.pickThrough = true; guide.castShadow = false;
+      }
     }
     if (venue.housePa === 'M') {
-      fixed('club-house-pa-suspension', [w - 2, 0.12, 0.12], [w / 2, 2.95, 1.5], COLORS.steel, 0.6);
+      fixed(`${venue.id}-house-pa-suspension`, [w - 2, 0.12, 0.12], [w / 2, 2.95, 1.5], COLORS.steel, 0.6);
       for (const [side, x] of [['left', w / 2 - 4.5], ['right', w / 2 + 4.5]]) {
         for (let i = 0; i < 4; i++) {
-          fixed(`club-house-pa-${side}-${i}`, [0.6, 0.18, 0.4], [x, 2.2 + i * 0.2, 1.5], 0x171b20);
-          fixed(`club-house-pa-grille-${side}-${i}`, [0.53, 0.14, 0.015], [x, 2.2 + i * 0.2, 1.708], 0x39424a, 0.25);
+          fixed(`${venue.id}-house-pa-${side}-${i}`, [0.6, 0.18, 0.4], [x, 2.2 + i * 0.2, 1.5], 0x171b20);
+          fixed(`${venue.id}-house-pa-grille-${side}-${i}`, [0.53, 0.14, 0.015], [x, 2.2 + i * 0.2, 1.708], 0x39424a, 0.25);
         }
       }
     }

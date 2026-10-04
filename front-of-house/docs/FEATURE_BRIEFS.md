@@ -60,6 +60,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Evidence boundary:** This is a technical preview under the delegated all-phase execution instruction. It does not replace classic art or establish human camera/art approval. Final visual review, physical calibration and public promotion remain gated separately; no archive assets or new simulation rules are introduced. Loam Shell and Split Acre remain separate slices.
 
+### FOH-V02r2: Loam Shell technical scene
+
+**Problem and scope:** The28×18 amphitheater still falls back to the generic classic room when the3D preview is requested. Extend the existing preview with a source-owned cutaway shell profile, the existing medium house PA and contrasting seating/lawn guides. These are management-view representations, not a calibrated seating plan:400 seats remain the engine's aggregate allocation, and guides neither reserve build tiles nor change capacity. Keep the roof absent for plan-view visibility. No borrowed art, additional dependencies, new save fields, collision rules or economic changes.
+
+**Flow:** Choose the amphitheater, inspect its shell and seating/lawn distinction, place and inspect the same equipment, set existing seat/lawn prices and held-night count, then run and settle the show. Returning to Club/Lot must recreate the correct room without stale canvases or saves. Seating guides are pick-through floor decoration; opaque shell/rig geometry occludes selection normally.
+
+**Acceptance and risks:** Verify all four camera presets, yaw37/135 and extreme room tiles at desktop/phone/ultrawide dimensions; existing prop footprints and editing remain authoritative. Compare the same seeded seated/lawn show, rain response and held-run settlement through classic and3D, including reload/context recovery. Test decorative guides cannot steal clicks. Keep Lot and Club regressions and manifests current. Technical preview only: final architecture/art, physical calibration, device support and human acceptance remain separate. Split Acre and minimap remain later slices.
+
 ## FB-03 Crowd service behavior
 
 **Decision:** D3 A accepted in [CT-DEC-15](DECISIONS.md#ct-dec-15-crowd-model). Service rates, timing and balance remain to be specified.

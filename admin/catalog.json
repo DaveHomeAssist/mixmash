@@ -662,6 +662,10 @@
         {
           "name": "npm run smoke:front-of-house-club",
           "description": "node test/front-of-house-club-3d-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-shell",
+          "description": "node test/front-of-house-shell-3d-smoke.mjs"
         }
       ]
     }
@@ -2678,6 +2682,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-shell-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-shell-3d-smoke.mjs",
+      "description": "Loam Shell preview: real room controls, pick-through guides, recovery and seated two-night parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-shell-3d-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2873,7 +2887,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "lot-renderer.mjs",
-      "description": "Lot and Club preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
+      "description": "Lot, Club and amphitheater preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
       "open": null
     },

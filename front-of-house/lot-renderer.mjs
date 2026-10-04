@@ -1,4 +1,4 @@
-// Lot and Club preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.
+// Lot, Club and amphitheater preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.
 import * as T from './vendor/three/three.module.min.js';
 import { createLotCamera, LOT_ZOOMS } from './lot-camera.mjs';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA } from './lot-models.mjs';
@@ -6,7 +6,7 @@ import { createLotPresentation } from './lot-presentation.mjs';
 import { OBJECT_TYPES, VENUES } from './data.mjs';
 
 export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false, venue = 'lot' } = {}) {
-  if (!['lot', 'club'].includes(venue)) throw new Error('Unsupported 3D preview room');
+  if (!['lot', 'club', 'amphitheater'].includes(venue)) throw new Error('Unsupported 3D preview room');
   const spec = VENUES[venue], { w: width, h: depth } = spec.grid;
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
@@ -16,7 +16,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models, { width, depth, pillars: spec.pillars, indoor: venue === 'club' }), room = models.room(spec);
   const media = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   let motion = reducedMotion === null ? !media?.matches : !reducedMotion;
-  const floorGeometry = new T.PlaneGeometry(width, depth), floorMaterial = models.material(venue === 'club' ? 0x4b4040 : 0x373b3c, 0, 0.97).clone();
+  const floorGeometry = new T.PlaneGeometry(width, depth), floorMaterial = models.material(venue === 'club' ? 0x4b4040 : venue === 'amphitheater' ? 0x354532 : 0x373b3c, 0, 0.97).clone();
   const floorMap = floorMaterial.map.clone(); floorMap.repeat.set(width * 2, depth * 2); floorMap.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); floorMap.needsUpdate = true; floorMaterial.map = floorMap;
   const floor = new T.Mesh(floorGeometry, floorMaterial); floor.rotation.x = -Math.PI / 2; floor.position.set(width / 2, -0.01, depth / 2); floor.receiveShadow = true;
   const sky = new T.HemisphereLight(0xdce9ff, 0x343a35, 2.2);
@@ -124,7 +124,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   function pickAt(x, y) {
     if (disposed || state !== 'ready') return { object: null, blocked: false };
     world.updateMatrixWorld(true);
-    const hits = camera.ray(x, y).intersectObjects([...pickables, ...room.children], false);
+    const hits = camera.ray(x, y).intersectObjects([...pickables, ...room.children.filter(mesh => !mesh.userData.pickThrough)], false);
     const hit = hits.sort((a, b) => a.distance - b.distance || a.object.userData.objectIndex - b.object.userData.objectIndex)[0];
     return { object: hit && !hit.object.userData.permanent ? { ...objects[hit.object.userData.objectIndex] } : null, blocked: !!hit?.object.userData.permanent };
   }
@@ -165,6 +165,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', venue, grid: { ...spec.grid }, permanent: room.children.map(mesh => mesh.name), revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', venue, grid: { ...spec.grid }, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

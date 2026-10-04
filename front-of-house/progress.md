@@ -1,5 +1,9 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Loam Shell technical scene
+
+FOH-V02r2 adds a source-owned cutaway shell, house PA and pick-through seating/lawn guides to the existing28×18 room. No new collision, pricing, capacity or save fields. Two geometry/camera tests and desktop/phone/ultrawide camera, placement, switching, recovery and fit checks pass. Four classic/3D desktop/phone rain-show journeys retain identical two-night receipts,400-seat allocation and final state. The initial phone harness missed the existing Actions tab; corrected navigation passes. 341 repository tests/build/assets/docs/unchanged simulation and seven performance tests pass. Club/Lot backend/coalescing/full3D regressions pass. Native performance and delivery remain pending. Technical scenery is not final art/human acceptance.
+
 ## 2026-10-04: Fathom Hall technical preview
 
 ## 2026-10-04 — Club integrated and native verification

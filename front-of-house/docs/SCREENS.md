@@ -192,4 +192,8 @@ The live Services view separates blue outside admission samples, gold inside bar
 
 ### Club preview and fixed scenery
 
-The Camera window's explicit3D preview now supports Fathom Hall as well as Oak St. Lot. Its Wide, FOH, Stage and Plan controls use the selected room's bounds. Other rooms continue in classic view with the existing explanation. Fixed pillars and the suspended house PA cannot be removed; a click on opaque fixed scenery does not select equipment behind it. New placement and its ghost reject pillar overlaps. The informational board status remains announced but never intercepts pointer/touch input.
+The Camera window's explicit3D preview supports Oak St. Lot, Fathom Hall and Loam Shell. Its Wide, FOH, Stage and Plan controls use the selected room's bounds. Other rooms continue in classic view with the existing explanation. Fixed pillars and the suspended house PA cannot be removed; a click on opaque fixed scenery does not select equipment behind it. New placement and its ghost reject pillar overlaps. The informational board status remains announced but never intercepts pointer/touch input.
+
+### Loam Shell preview
+
+The existing seat/lawn price and held-night controls retain their behavior. The3D view distinguishes the shell profile and seating/lawn guides within the28×18 room. Guides are illustrative floor decoration: they do not reserve tiles, steal clicks or change the400-seat allocation. Split Acre still uses classic rendering until its separate scene slice.

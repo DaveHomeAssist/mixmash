@@ -39,3 +39,9 @@ The adapter opts into `deferRendering:true`. Camera, scene and picking state cha
 `createLotRenderer` accepts `venue:'club'` for the existing20×14 room. The generated manifest records stable fixed-part IDs, measured bounds, pillar tiles and medium house-PA identity. A cutaway back wall, low side edges and suspended PA leave the management view open without introducing roof collision or free lighting capacity. Props retain their existing footprint rules; representatives use the smaller room and avoid pillars. Lot fixture positions and dimensions remain unchanged.
 
 `pickAt` distinguishes a placed object, opaque fixed scenery and empty ground. `objectAt` keeps its prior object-or-null result. The application must not fall through to ground-based selection/removal after an opaque fixed-scene hit. Room changes rebuild resources once; cached module initialization must finish before reporting ready. Unsupported rooms retain classic rendering. Source-owned materials and the provisional dimensional reference are technical evidence, not human art acceptance.
+
+## Loam Shell technical preview
+
+`venue:'amphitheater'` uses the existing28×18 bounds and medium house rig. Source-owned shell panels stay behind the build floor; the roof is omitted. Twelve low floor bands illustrate seating versus lawn. They are pick-through guides, not400 individually located seats or collision cells; existing placement, capacity and seat-first ticket accounting remain unchanged. The manifest records their IDs, bounds and pick-through policy. Representatives and rain follow the actual room extents.
+
+`npm run smoke:front-of-house-shell` covers desktop, phone and ultrawide cameras, guide placement, repeated room changes, real context recovery and viewport containment. Classic/3D desktop/phone journeys compare both nights of a seeded rain show,400-seat allocation, lawn receipts, signed state and reload. Final architecture, visual calibration and human acceptance remain open.

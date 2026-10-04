@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: Loam Shell technical3D preview adds a source-owned cutaway and pick-through seating/lawn guides, preserving existing prices, capacity, held nights and saves.
+
 - **Front of House Club preview:** source-owned Fathom Hall cutaway, four pillar cells and the existing house PA; room-sized camera/grid/crowd, opaque-scene picking and safe renderer switching. New placement refuses fixed pillars while legacy saves retain their layout and accounting. Noninteractive board status messages no longer intercept touch. Technical preview; final art review remains open.
 
 - **Front of House performance:** recorded full CI, high-density, native renderer and real-display evidence; added paired regression limits with a measured fault control. The full native 3D/HUD diagnostic retains below-target repeats and exact engine replay. The application now coalesces camera/scene renders per animation frame, preserving synchronous standalone behavior and unchanged simulation/quality.
