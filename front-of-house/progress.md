@@ -565,3 +565,9 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 
 - PR97 CI37211585196 caught a three-pixel Amphitheater Promote overflow at1024x700 despite the passing Mac browser rail. Shortened the repeated zone explanation; the Seats and lawn window retains the complete demand/value rules.
 - All28 legacy browser checks, six Chromium/WebKit seating journeys and build/generated docs pass again. Fresh Linux CI is pending. Source, hosted acceptance and physical/human evidence remain separate.
+
+## 2026-10-04: Festival stage accounting authority
+
+- Added a version1 pure model for one site admission, bounded stage audience allocation, distinct PA/lights/crew budgets and one shared site cost pool. Stage artist payouts, sponsorship, broadcast, opening cash and signing reconcile exactly. An exact integer ratio prevents a floating-point half-dollar payout error caught by the hand-calculated fixture.
+- Eleven new tests cover both main deals, sponsorship, admission/presale/capacity conservation, zero/free shows, production, odd/large allocations and strict input recovery. All370 repository tests and build/generated docs pass.
+- This is a core implementation only; no existing game math or saved career is switched yet. Career integration, player receipts, required CI and hosted proof remain separate.
