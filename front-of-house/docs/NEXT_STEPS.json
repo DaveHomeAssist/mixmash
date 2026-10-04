@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "368edba ticketing delivered \u00b7 independent seating locally verified",
+  "head": "633f60a held nights delivered \u00b7 seating PR97 in CI",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Club ticketing is merged and hosted-verified with23 matching runtime files, six player journeys and offline signing. Held-run cancellation PR95 is in delivery. Independent seat/lawn pricing, receipts and marked nightly draw accounting pass359 tests and initial browser/offline proof; stage accounting and venue scene work continue.",
+  "statusReason": "Club ticketing and held-night cancellation are merged and hosted-verified with exact source, full player journeys and offline journal proof. Independent seating PR97 passes359 tests and local browser/offline checks. Stage accounting, source-owned room scenes, navigation and release evidence continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -22,10 +22,11 @@
     "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified.",
     "PR85: sanitation and playable three-project development delivered with14 hosted player journeys, source parity and offline recovery proof.",
     "PR90: playable Equipment delivered at4600649 with seven hosted journeys,22 matching runtime files and offline inventory/journal/sale continuity.",
-    "PR94: Club ticketing controls delivered at368edba,23 matching hosted files, six player journeys and offline signing/journal proof."
+    "PR94: Club ticketing controls delivered at368edba,23 matching hosted files, six player journeys and offline signing/journal proof.",
+    "PR95: held-night cancellation delivered at633f60a with24 matching hosted files, six player journeys plus full-hold/debt branches and offline cash/journal proof."
   ],
   "nextStep": {
-    "title": "Deliver held nights and seating, then complete stage accounts and room scenes",
+    "title": "Deliver seating, then complete stage accounts and room scenes",
     "why": "Guest operations and the research pilot now have source, CI, Pages and live behavior proof. Complete equipment acceptance and continue the remaining phase queue autonomously.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
@@ -1036,7 +1037,8 @@
               "Optional version1 held-run policy implemented: quoted25%-of-ask fee per unplayed night, frozen terms, explicit continue/cancel, exact journal/history/reputation and negative-cash recovery. Twelve core/adapter tests and347 repository tests/build/docs pass. Controls pass initial six Chromium/WebKit journeys, full-hold/debt branches and offline cancellation; final regression, CI and hosted acceptance remain pending. Seating/stage accounting remain separate work.",
               "Held-run cancellation controls final local verification:347 repository tests/build/docs, six complete Chromium/WebKit journeys plus full-hold and controlled-debt branches; both-theme five-size window checks, signed Show history fee/cash record, seven Equipment and six ticketing regressions,28 legacy checks and offline signing/cancellation. Supplied action runner verifies a fresh booking with zero completed nights and correct terms; actual full-page dialog screenshots inspected. Source/CI/Pages/hosted delivery remains pending; seating/stage accounting remains open.",
               "Independent seat/lawn model and controls implemented locally: frozen prices, separate elasticity, presales/gross/value scores, attendance weighting and public forecasts. New marked held runs now use the same per-night draw seed as playback. Twelve added core/adapter tests and all359 repository tests/build/docs pass; initial six browser journeys and offline zone/cancellation/journal parity pass. Final browser regressions and release acceptance follow; separate stage accounting and slope/scene geometry remain open.",
-              "Seating final local proof: six Chromium/WebKit journeys exercise both price sliders independently, public forecasts/presales, frozen receipts, both deals, held cancellation and reload; both themes/five viewport sizes. Six held-run regression journeys plus full-hold/debt branches and28 legacy checks pass.359 tests/build/docs, action runner and offline zone receipt/cancellation/journal parity pass. Required CI/Pages/hosted seating proof remains pending."
+              "Seating final local proof: six Chromium/WebKit journeys exercise both price sliders independently, public forecasts/presales, frozen receipts, both deals, held cancellation and reload; both themes/five viewport sizes. Six held-run regression journeys plus full-hold/debt branches and28 legacy checks pass.359 tests/build/docs, action runner and offline zone receipt/cancellation/journal parity pass. Required CI/Pages/hosted seating proof remains pending.",
+              "Held cancellation PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z.24 hosted runtime files match. Six hosted Chromium/WebKit journeys plus full-hold/controlled-debt branches, compact windows, signed history and reload pass. Hosted offline cancellation records two unplayed nights,4000 penalty and1018940 journal cash. Seating PR97 remains in CI; separate stage accounts still pending."
             ]
           },
           {
