@@ -16,7 +16,8 @@
       "front-of-house/lot-presentation.mjs": "05d6002e46385098de9e77ac75b2199e906986712f61761ae56f45d913b395da",
       "front-of-house/tools/performance-stats.mjs": "df0d4fd1fe9b38d5ff5a96684d0158fa50d20ed14e4197a5f19b496a1cf8b4e5",
       "test/front-of-house-performance.mjs": "7befae8448e4675a0a31aa5346dc73ecae3919265df64ef869ff259bd4d64969"
-    }
+    },
+    "harnessCommit": "19f9de331e86e51921d4bd465ec4334df5b1b21f"
   },
   "host": {
     "platform": "darwin",

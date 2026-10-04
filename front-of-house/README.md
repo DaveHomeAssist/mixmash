@@ -17,9 +17,10 @@ The set follows the usual game-production paperwork: a design document (GDD), ru
 | [`docs/FEATURE_BRIEFS.md`](docs/FEATURE_BRIEFS.md) | Eleven bounded feature proposals, dependencies and acceptance | Proposed slices; sequence, realistic 3D target, crowd model, Select behavior and performance approach accepted separately |
 | [`docs/NEXT_STEPS.json`](docs/NEXT_STEPS.json) | Evidence-dated project projection for the workspace board | Current projection; does not grant implementation approval |
 | [`docs/PROTOTYPE_REVIEW.md`](docs/PROTOTYPE_REVIEW.md) | Archive/dependency integrity, isolated runtime evidence, provenance and reuse limits | Runtime checked with verified dependency replay; archive rights and device/human acceptance pending |
-| [`docs/RENDER_CONTRACT.md`](docs/RENDER_CONTRACT.md) | Source-traced Lot adapter, coordinates, picking, cameras, lifecycle, fallback and parity cases | Proposed specification against production 522f3f2; adapter not implemented |
-| [`docs/LOT_BACKEND.md`](docs/LOT_BACKEND.md) | Isolated camera, WebGL backend, dimensional sample and verification commands | Backend and explicit preview locally verified; complete scene/art/device acceptance pending |
-| [`docs/LOT_SAMPLE.md`](docs/LOT_SAMPLE.md) | Source-owned dimensional candidate, scene cues and manifest | Technical tests pass; close-up art, performance and physical/human acceptance remain open |
+| [`docs/RENDER_CONTRACT.md`](docs/RENDER_CONTRACT.md) | Source-traced Lot adapter, coordinates, picking, cameras, lifecycle, fallback and parity cases | Historical specification against 522f3f2; Lot adapter now deployed; remaining art/device acceptance tracked separately |
+| [`docs/LOT_BACKEND.md`](docs/LOT_BACKEND.md) | Isolated camera, WebGL backend, dimensional sample and verification commands | Backend and explicit preview deployed and live-verified; final art/device acceptance pending |
+| [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) | Frozen renderer fixtures, measurement commands and all 18 Apple M4 Metal runs | Hardware host diagnostics at DPR 1; full HUD, high-DPI, low-power and human acceptance pending |
+| [`docs/LOT_SAMPLE.md`](docs/LOT_SAMPLE.md) | Source-owned dimensional candidate, scene cues and manifest | Technical candidate deployed; close-up art and physical/human acceptance remain open |
 | [`docs/GDD.md`](docs/GDD.md) | The design: pillars, modes, the first playable loop, progression, and what each system includes now versus later | Draft |
 | [`docs/RESEARCH.md`](docs/RESEARCH.md) | Gameplay dynamics for research, prerequisites, upgrade branches, operating costs, venue development and the first experiment | Proposed 2026-10-03; not implemented (CT-DEC-13) |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log, CT-DEC-01 to CT-DEC-19 | 16 accepted; CT-DEC-10 (the Lot career), CT-DEC-11 (rooms after the Lot) and CT-DEC-13 (research progression) proposed |
@@ -45,7 +46,7 @@ The set follows the usual game-production paperwork: a design document (GDD), ru
 | File | Starts when |
 | --- | --- |
 | `docs/MANUAL.md` | The first playable loop is stable. Until then, the in-game tutorial is the manual. |
-| A render contract module | Implement from [the Lot contract](docs/RENDER_CONTRACT.md) before replacing stand-in sprites; the written preflight is complete, runtime adapter remains pending. |
+| Renderer expansion | The [Lot adapter](docs/LOT_BACKEND.md) is implemented; additional venues follow the bounded Lot validation and their own acceptance evidence. |
 
 ## Source-of-truth rules
 

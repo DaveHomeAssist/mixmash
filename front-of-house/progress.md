@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Hardware renderer baseline and scene delivery
+
+- Added a reproducible renderer-only harness, frozen production fixtures, raw-sample retention, timing validity checks and independently tested percentile/stall reporting. All 18 full windows on Apple M4 Metal at DPR 1 completed; the public summary preserves every repeat and raw/source digests. No runtime quality, rules, economy or save changes.
+- PR64 delivered at 1e4d34b; PR65 delivered at eda0754, Pages build1259263511. Eight live scene files match and hosted backend/game rails pass, including gestures, recovery, reduced motion and complete settlement parity.
+- Verification: 234 repository tests, syntax/build checks and generated indexes. Full HUD/high-DPI/native/low-power testing, CI timing limits, software-rendering mitigation, close-up art and human acceptance remain open. Continue rendering optimization and the scoped aggregate operations implementation.
+
+
 ## 2026-10-04: Lot scene and authored reference
 
 - Added fence/opening and grid presentation, current-object incident markers, static reduced-motion rain/crowd cues and instanced guest parts. Scene inputs remain presentation-only; the complete game settlement parity rail still passes.

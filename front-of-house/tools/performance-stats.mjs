@@ -1,4 +1,13 @@
 // Descriptive measurements only: these bins are not device acceptance gates.
+export async function withDeadline(operation, milliseconds) {
+  let timer;
+  try {
+    return await Promise.race([operation, new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Measurement deadline exceeded; incomplete timing window')), milliseconds);
+    })]);
+  } finally { clearTimeout(timer); }
+}
+
 export function summarize(samples) {
   if (!samples.length || samples.some(n => !Number.isFinite(n) || n < 0)) throw new Error('Expected nonempty finite, nonnegative timing samples');
   const sorted = [...samples].sort((a, b) => a - b), sum = samples.reduce((a, b) => a + b, 0);

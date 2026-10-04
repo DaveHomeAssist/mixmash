@@ -1,7 +1,14 @@
 // Validate reporting math independently of machine speed; no synthetic FPS acceptance.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { summarize, cameraAt } from '../front-of-house/tools/performance-stats.mjs';
+import { summarize, cameraAt, withDeadline } from '../front-of-house/tools/performance-stats.mjs';
+
+test('measurement deadline terminates a stalled window without hiding operation errors', async () => {
+  assert.equal(await withDeadline(Promise.resolve('complete'), 1000), 'complete');
+  const failure = new Error('context closed');
+  await assert.rejects(withDeadline(Promise.reject(failure), 1000), e => e === failure);
+  await assert.rejects(withDeadline(new Promise(() => {}), 5), /Measurement deadline exceeded/);
+});
 
 test('nearest-rank percentiles retain stalls and use strict reporting-bin boundaries', () => {
   const values = [100, 50, 16.7, 33.3, 10], s = summarize(values);

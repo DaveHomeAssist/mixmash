@@ -175,6 +175,8 @@ D5 A is accepted in [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance): 
 
 FOH-P01 adds `npm run perf:front-of-house`: a renderer-only harness using the production empty/show fixtures above, all three CSS viewports at requested DPR 1, three repetitions, 10-second warm-up and 30-second sampling. The player problem is unquantified responsiveness: measure before changing quality or claiming the device targets. The harness freezes source/fixture hashes, retains raw intervals and failed runs privately, reports CPU submission separately, and rejects visibility/resize/context-loss windows. It changes no runtime rules, saves or quality defaults. `--quick` validates the harness only; `--gpu=default` observes the browser-selected backend, `--gpu=metal` requests Metal on compatible hosts, while the default explicitly requests the existing software backend. This is not full HUD, physical device, thermal or native-display acceptance. Acceptance is a reproducible complete report with all attempts retained and no inferred pass thresholds.
 
+See [PERFORMANCE.md](PERFORMANCE.md) for the implemented Lot renderer’s subsequent 18-run Apple M4 Metal baseline. The earlier table below remains the preflight comparison of the old board and separate archive.
+
 ### Available-host diagnostics
 
 See the measured results below and [prototype runtime evidence](PROTOTYPE_REVIEW.md). These characterize the available host only; the proposed WebGL adapter and realistic sample do not exist yet. Full game/HUD performance, hardware-GPU devices, supported roster and statistical acceptance remain pending.

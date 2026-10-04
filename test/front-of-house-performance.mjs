@@ -1,13 +1,13 @@
 // Reproducible renderer-only diagnostics. Raw samples stay in a caller-owned private output directory.
 import assert from 'node:assert/strict';
-import { mkdir, readFile, writeFile, mkdtemp } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile, mkdtemp } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { tmpdir, platform, arch, release, totalmem, cpus, loadavg } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { startStaticServer, launchOptions } from './static-server.mjs';
-import { summarize } from '../front-of-house/tools/performance-stats.mjs';
+import { summarize, withDeadline } from '../front-of-house/tools/performance-stats.mjs';
 import { createGame, applyAction, showPreview, venueSpec, sightlineTiles } from '../front-of-house/engine.mjs';
 import { STARTER_LAYOUT, FLOOR_DENSITY } from '../front-of-house/data.mjs';
 
@@ -15,6 +15,7 @@ const args = process.argv.slice(2), quick = args.includes('--quick'), gpu = args
 for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
 const output = process.env.FRONT_OF_HOUSE_PERF_OUTPUT || await mkdtemp(join(tmpdir(), 'foh-performance-'));
 await mkdir(output, { recursive: true });
+if ((await readdir(output)).length) throw new Error('Output directory must be empty; choose a new directory to preserve previous attempts');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const command = (name, args) => { try { return execFileSync(name, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return 'unknown'; } };
 const actions = [{ type: 'chooseDeal', deal: 'door', artistId: 'sodium-arcade' }];
@@ -64,7 +65,7 @@ try {
       record.coldLoadMs = performance.now() - coldStart;
       // Screenshots and diagnostics are outside the warm-up / timed sample window.
       await page.screenshot({ path: join(output, `${id}.png`) });
-      const raw = await page.evaluate(async ({ warmupMs, measurementMs }) => {
+      const raw = await withDeadline(page.evaluate(async ({ warmupMs, measurementMs }) => {
         const violations = [], tasks = [], frames = [], submissions = [], before = JSON.stringify(input);
         const invalid = event => violations.push({ type: event.type, at: performance.now() });
         document.addEventListener('visibilitychange', invalid); window.addEventListener('resize', invalid); canvas.addEventListener('webglcontextlost', invalid);
@@ -87,7 +88,7 @@ try {
         document.removeEventListener('visibilitychange', invalid); window.removeEventListener('resize', invalid); canvas.removeEventListener('webglcontextlost', invalid);
         const unchanged = before === JSON.stringify(input), status = backend.status(), quality = backend.info();
         return { start, end, frames, submissions, longTasksSupported, longTasks: tasks.filter(e => e.start < end && e.start + e.duration > start), violations, unchanged, status, quality, finalVisibility: document.visibilityState };
-      }, report.protocol);
+      }, report.protocol), report.protocol.warmupMs + report.protocol.measurementMs + 60000);
       await writeFile(join(output, `${id}-raw.json`), JSON.stringify(raw));
       record.rawSha256 = hash(JSON.stringify(raw)); record.frame = summarize(raw.frames); record.cpuSubmission = summarize(raw.submissions);
       record.cadenceFps = 1000 / record.frame.meanMs; record.elapsedMs = raw.end - raw.start;
@@ -96,7 +97,7 @@ try {
       record.valid = !errors.length && !raw.violations.length && raw.unchanged && raw.status.state === 'ready' && raw.finalVisibility === 'visible' && raw.end - raw.start >= report.protocol.measurementMs;
       if (!record.valid) record.failure = 'Invalid timing window, renderer/state failure or browser error; raw samples retained';
       await page.evaluate(() => backend.destroy());
-    } catch (error) { record.failure = error.message; }
+    } catch (error) { record.failure = error.message; if (!record.rawSha256) record.rawUnavailable = 'Timing window did not complete; no complete raw sample returned'; }
     finally { record.errors = errors; record.loadAfter = loadavg(); await context.close(); await save(); }
     console.log(JSON.stringify({ id, valid: record.valid, fps: record.cadenceFps, frameP95: record.frame?.p95Ms, cpuP95: record.cpuSubmission?.p95Ms, failure: record.failure }));
   }

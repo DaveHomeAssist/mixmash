@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "756246b · backend deployed; Lot scene candidate tested 2026-10-04",
+  "head": "eda0754 · Lot scene deployed; 18 hardware diagnostic runs 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation, Select and the isolated 3D backend are deployed and verified. Game integration is in delivery. A revised Lot candidate adds scene cues, coherent authored dimensions, camera eyes and source digests; performance, final art/physical review and later phases remain incomplete.",
+  "statusReason": "Foundation, Select and the explicit 3D Lot preview are deployed and live-verified. All 18 Apple M4 Metal renderer measurements completed at DPR 1. Full HUD/high-DPI/low-power evidence, rendering optimization, final art and later phases remain incomplete.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -16,12 +16,13 @@
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
     "PR #47: split-view controls and sprite occlusion fixes.",
     "PR #48: research design and CT-DEC-13, still Proposed.",
-    "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
+    "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay.",
+    "PR64 and PR65: explicit Lot preview and authored scene candidate deployed; hosted backend/game behavior and full settlement parity verified."
   ],
   "nextStep": {
-    "title": "Measure and optimize the Lot renderer, then develop the live operations slice",
-    "why": "Technical input/save parity and the candidate scene are tested. Reproducible frame-time evidence and operations fixtures can now advance while final art and physical acceptance remain explicitly open.",
-    "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
+    "title": "Optimize rendering cost and implement aggregate live operations",
+    "why": "Available-host renderer evidence and live input/save parity are recorded. Rendering cost and fixed-step service fixtures can advance while final art and device/human acceptance remain separate.",
+    "doneWhen": "Rendering optimization is compared at declared quality with preserved engine/input parity; quiet, arrival-surge and busy-bar operations fixtures conserve guests, staff time and money through reload and speed changes. Physical-device and human acceptance remain separately tracked.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -45,7 +46,7 @@
       "type": "feature",
       "sev": "P1",
       "title": "Implement the documented realistic Lot contract",
-      "detail": "2026-10-04 preflight specifies source-mapped renderer operations, logical transforms, scale calibration, picking/input/lifecycle/fallback and deterministic parity cases. Stage, PA, bar, restroom and guest sample has eight required view/light combinations. Specification is complete; adapter and art are not implemented.",
+      "detail": "The Lot adapter and authored scene candidate are deployed through PR65. Hosted camera, picking, input/fallback and settlement parity pass. Final close-up art, physical calibration and human/device acceptance remain open.",
       "files": [
         "front-of-house/docs/DECISION_PACKET.md",
         "front-of-house/docs/FEATURE_BRIEFS.md",
@@ -60,7 +61,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Accepted performance model needs device baselines and thresholds",
-      "detail": "D5 A retains 60fps desktop / 30fps low-power targets. A reproducible 10-second warm-up, 30-second, three-run procedure and available-host software-rendered diagnostics are recorded. Supported devices, statistical pass/stall limits and real-device proof remain pending; CI gates unchanged.",
+      "detail": "The accepted 60fps desktop / 30fps low-power targets remain. PERFORMANCE.md records all 18 renderer-only Apple M4 Metal runs at DPR 1. Full HUD, high-DPI/native/low-power devices and accepted statistical/CI regression limits remain open.",
       "files": [
         "front-of-house/ROADMAP.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -196,6 +197,10 @@
     {
       "path": "front-of-house/docs/ART_DIRECTION.md",
       "why": "Five-subject realistic sample and separate technical, visual and device acceptance"
+    },
+    {
+      "path": "front-of-house/docs/PERFORMANCE.md",
+      "why": "Reproducible renderer harness, all hardware host runs and remaining performance acceptance"
     }
   ],
   "verify": [
@@ -204,7 +209,8 @@
     "npm run docs:front-of-house",
     "npm run sim:front-of-house",
     "npm run smoke:front-of-house",
-    "npm run admin:index"
+    "npm run admin:index",
+    "npm run perf:front-of-house -- --gpu=metal"
   ],
   "context": [
     "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
@@ -220,7 +226,8 @@
     "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6–D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
-    "The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
+    "The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice.",
+    "2026-10-04: PR64/65 supersede earlier adapter-not-implemented status. The available-host Metal baseline is renderer-only evidence; performance, final art and later phases are not complete."
   ],
   "links": [
     {
@@ -251,14 +258,14 @@
   "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1–D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
   "confidence": "medium",
   "unknowns": [
-    "Realistic sample and WebGL adapter not implemented; old/new renderer parity pending.",
+    "Final realistic art and physical calibration remain unaccepted; the deployed adapter has live input/save/fallback parity evidence.",
     "Archive source and image redistribution rights, physical scale and operator-eye FOH calibration pending.",
-    "Supported device/browser roster, accepted statistical/stall limits and hardware-GPU/low-power measurements pending.",
+    "Full HUD/high-DPI/native/low-power measurements and supported device/browser roster with accepted statistical/stall limits remain pending.",
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
     "checkedOn": "2026-10-04",
-    "sourceRevision": "522f3f2f49de6dcf74fa22fa51b900684dd54360",
+    "sourceRevision": "eda07541c56a0f77f1e615d0659625b409a7726a",
     "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
     "controlsCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37181521431",
     "humanAcceptance": "Pending",
@@ -268,12 +275,12 @@
     "knowledgeReviewedRevision": "bcc773b07963ab17afebdd9678615a8c1155c43c",
     "knowledgeReviewedOn": "2026-10-04",
     "decisionReviewedRevision": "c9b64c280a69a80f4b1867b649212b297ae86417",
-    "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259075807",
-    "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE SwiftShader software graphics",
-    "rendererImplementation": "Not implemented",
+    "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259263511",
+    "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE Metal Apple M4 hardware",
+    "rendererImplementation": "Lot backend, game preview and authored scene deployed and live-verified through PR65; final art acceptance remains open",
     "artAcceptance": "Pending exact sample review",
     "deviceAcceptance": "Pending supported roster, thresholds and physical-device measurements",
-    "preflightDelivery": "Documentation and diagnostics only; the linked PR owns CI/merge history, and Pages deployment is independently verified at delivery. This sourceRevision identifies reviewed production behavior, not a future renderer release.",
+    "preflightDelivery": "Documentation and diagnostics only; the linked PR owns CI/merge history, and Pages deployment is independently verified at delivery. The preflightReviewedRevision identifies reviewed production behavior, not a future renderer release.",
     "diagnosticMeasurements": {
       "runs": 9,
       "warmupSeconds": 10,
@@ -287,6 +294,18 @@
       "rawReportSha256": "957244e413b67ed47529c824178e559d93a4552e4944c466e29ee77edf5cd848"
     },
     "localChecks": {
+      "npmTest": "234 passed",
+      "vercelBuild": "passed",
+      "performance": "18 valid full Metal windows; all repeats retained",
+      "liveScene": "Eight hosted files match PR65; backend and actual-client smoke passed"
+    },
+    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
+    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
+    "decisionPR": "https://github.com/DaveHomeAssist/mixmash/pull/59",
+    "preflightReviewedRevision": "522f3f2f49de6dcf74fa22fa51b900684dd54360",
+    "preflightProductionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259075807",
+    "preflightDiagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE SwiftShader software graphics",
+    "preflightLocalChecks": {
       "node": "22.22.1",
       "npmTest": "225 passed; zero failures/skips",
       "vercelBuild": "passed",
@@ -295,9 +314,15 @@
       "adminIndex": "273 tracked files; catalog diff limited to Front of House",
       "privacyAndLinks": "passed; no archive files/images or private paths added"
     },
-    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58",
-    "decisionAuthority": "Dave explicitly delegated autonomous decision making on 2026-10-04; Codex selected D6–D11 A under CT-DEC-19.",
-    "decisionPR": "https://github.com/DaveHomeAssist/mixmash/pull/59"
+    "rendererMeasurements": {
+      "locator": "front-of-house/performance/2026-10-04-metal.json",
+      "runs": 18,
+      "warmupSeconds": 10,
+      "sampleSeconds": 30,
+      "dpr": 1,
+      "scope": "renderer-only hardware host diagnostics; no physical-display/device acceptance",
+      "rawReportSha256": "f55555ac853510327353cb5a60e4164b467efb6f871fe73b2fa6d4680f4aa785"
+    }
   },
   "decisionState": {
     "D1": {
@@ -490,15 +515,23 @@
                 "result": "pass",
                 "checkedAt": "2026-10-04T10:42:14.147Z",
                 "summary": "lot-sample-2 manifest records nine source-owned samples, measured bounds and source digests. 231 repository tests and backend/game smoke pass: authored heights/eyes, scene cues, constant instanced draw calls, reduced motion and full settlement parity."
+              },
+              {
+                "stage": "deployment",
+                "locator": "https://github.com/DaveHomeAssist/mixmash/pull/65",
+                "result": "pass",
+                "checkedAt": "2026-10-04T11:08:33.684Z",
+                "summary": "PR64 and PR65 CI passed and merged; Pages build1259263511 built. Eight live scene files match 15a576a; hosted backend and actual-client rails pass with context/module recovery, reduced motion, gesture safety and complete settlement parity."
               }
             ],
             "remaining": [
               "Close-up realistic art refinement and walking/queue poses",
-              "Statistical performance and available-host measurements",
+              "Full HUD/high-DPI/native/low-power performance and accepted CI/device limits",
               "Physical calibration, device and human visual acceptance"
             ],
             "backendPR": "https://github.com/DaveHomeAssist/mixmash/pull/63",
-            "integrationPR": "https://github.com/DaveHomeAssist/mixmash/pull/64"
+            "integrationPR": "https://github.com/DaveHomeAssist/mixmash/pull/64",
+            "scenePR": "https://github.com/DaveHomeAssist/mixmash/pull/65"
           }
         ]
       },
@@ -519,6 +552,13 @@
             "result": "pass",
             "checkedAt": "2026-10-04T10:42:14.147Z",
             "summary": "Instanced representative population keeps draw calls unchanged from 10 to 180 visible representatives; this structural test does not certify frame-time targets."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-metal.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T11:08:33.684Z",
+            "summary": "All 18 renderer-only windows valid on Apple M4 Metal at DPR 1: two frozen scenes, three viewports, three repeats, 10s warm-up and 30s sampling. No statistical or device acceptance inferred."
           }
         ]
       },
