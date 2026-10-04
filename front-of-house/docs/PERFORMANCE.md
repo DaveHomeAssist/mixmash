@@ -56,3 +56,47 @@ The next renderer revision retains the 1024 PCFSoft shadow map while the camera 
 Backend diagnostics expose cumulative renderedFrames and shadowUpdates. They count completed renderer calls and requested shadow refreshes respectively; they are not frame-time or GPU timestamp measurements. Per-frame draw calls can now differ between a reused-map frame and a refreshed-map frame, so compare scenes and shadow-refresh status explicitly. The 18-run table above remains the original uncached revision; it must not be relabeled as optimized measurements.
 
 The candidate comparison at a6b1767 was interrupted after seven valid windows (six desktop, one phone empty); the eighth window did not finish. Its output and interruption record are retained separately. It is a partial diagnostic, not a completed optimized baseline. The subsequent queue integration tracks actual instanced transform-buffer versions, so paused queue changes and a worker moving with zero guests also invalidate shadows. Its backend, full-game and service-crowd rails pass without changing numeric outcomes.
+
+## Integrated shadow reuse: complete comparison
+
+All 18 windows at source `daebe36edd24fe09106286778bdcd16949dfb555` completed with unchanged fixture hashes, DPR 1 and the same Metal protocol. [Every candidate run](../performance/2026-10-04-shadow.json) is retained with raw/source digests. Mean frame cadence ranged 60.00–60.00 Hz; 0 intervals exceeded 50 ms. These are available-host renderer diagnostics, excluding full HUD, physical display and low-power acceptance.
+
+| Scene | Original CPU p95 range across three runs (ms) | Candidate CPU p95 range (ms) | Shadow refreshes / rendered frames, whole context |
+| --- | --- | --- | --- |
+| 1440x900 empty | 0.60–0.70 | 0.40–0.40 | 2/2407, 2/2408, 2/2408 |
+| 1440x900 crowd | 1.80–2.50 | 1.90–3.30 | 2406/2408, 2406/2408, 2406/2408 |
+| 375x812 empty | 0.60–1.00 | 0.40–0.50 | 2/2407, 2/2407, 2/2407 |
+| 375x812 crowd | 1.90–2.40 | 0.70–2.90 | 2405/2407, 2405/2407, 2405/2407 |
+| 2560x720 empty | 0.50–0.70 | 0.40–0.50 | 2/2406, 2/2406, 2/2406 |
+| 2560x720 crowd | 2.10–2.50 | 3.00–3.60 | 2406/2408, 2405/2407, 2405/2407 |
+
+Counters include initial draws and warm-up; timing percentiles cover the separate 30-second sample. The static scene reuses its shadow map; moving crowd poses still refresh it. The two implementations ran at different times on a shared host with uncontrolled background load, so CPU variation is descriptive and cannot be assigned solely to caching. The empty fixture has no rented props; populated static-frame render-work reduction is independently covered by the backend regression test. The interrupted a6b1767 attempt remains a separate partial record, not a discarded failure or a completed baseline. The original table is unchanged.
+
+## Classic floor cache and full HUD protocol
+
+The classic board retains one backing-sized floor image plus the post-prop sightline buckets. Room, floor, layout, pillars, decoded sprites, sight sets, camera transform and backing size invalidate it; crowd, lights, incidents and controls remain dynamic. Failure to obtain the offscreen context falls back to direct drawing, and disposal releases the backing. The six-megapixel DPR rule is unchanged.
+
+`npm run smoke:front-of-house-floor` checks exact cached/direct pixels in Chromium and WebKit across all rooms, rotations, overlays, camera changes, dynamic effects and responsive backing dimensions. Chromium uses a constant software raster path for repeated pixel readback, because its automatic GPU-to-CPU switch otherwise changes antialiasing midway. Normal application rails separately use their usual contexts and verify picking, saves and settlement. This is pixel and behavior evidence, not GPU or device acceptance.
+
+`npm run perf:front-of-house-hud` measures the actual classic client, full HUD and real running service clock at 1920×1080, requested DPR 2 (effective 1.5 under the existing rule). Seed 170 uses the current client’s flow-version-1 show and starts at minute 25, safely before its minute-112 incident. It compares fixed zoom 2 with a continuous ten-second middle-drag cycle, direct versus cached floors, with 10 seconds warm-up, 30 seconds sampling and three repeats per combination. Repeat order alternates to reduce systematic order bias; shared-host load remains uncontrolled. A browser-only module response sets the direct control's supported `cacheFloor` default false; both source hashes are recorded. Saves, module source files and deployed configuration are not modified by the harness.
+
+A new empty private output directory is required through `FRONT_OF_HOUSE_HUD_OUTPUT`. Each run preserves raw frame intervals, source/fixture hashes, real minute progression, before/after screenshots, errors, long tasks, canvas dimensions and cache counters. Hidden/resized pages, a stopped show or script errors invalidate a run. `--quick` uses one-second warm-up and two-second samples for harness validation only; its four completed windows are not the full comparison. RAF cadence is not GPU completion or total client CPU duration. The full measurement and delivery results will be recorded separately.
+
+The first full-HUD attempt at d080da8 was stopped during counter review: unsupported continuous zoom values returned the classic camera to Fit, so its moving-labeled windows cannot support motion claims. Original samples are retained privately as an invalid comparison. The corrected harness drives the real middle-drag handler and requires camera coordinates to change on over 95% of measured frames (zero in the fixed control). This is a harness validity assertion, not a performance acceptance threshold.
+
+## Full HUD floor comparison: completed windows
+
+All 12 windows at source `2a00f7a444503bbadeda3939f4b7b46d9b8bafc3` are valid. [Every repeated result](../performance/2026-10-04-floor.json) records the original report, fixture, source and raw digests. These are the real classic client and HUD at 1920×1080, browser DPR 2 and effective DPR 1.5, running the seed-170 service show from minute 25. Initial setup/screenshots and final inspection are outside timing. Each fresh context uses 10 seconds warm-up and 30 seconds measurement; direct/cached order alternates between repeats.
+
+| Camera / floor | Observed cadence range (Hz) | Frame interval p95 range (ms) | Intervals >50 ms, all three runs | Floor builds / reuses, after setup including warm-up |
+| --- | --- | --- | --- | --- |
+| fixed / direct | 60.00–60.00 | 18.30–18.60 | 0 | 0/0, 0/0, 0/0 |
+| fixed / cached | 60.00–60.00 | 18.50–18.50 | 0 | 0/2442, 0/2442, 0/2442 |
+| moving / direct | 60.00–60.00 | 18.50–18.50 | 0 | 0/0, 0/0, 0/0 |
+| moving / cached | 59.80–60.00 | 18.50–18.50 | 0 | 2403/2446, 2404/2447, 2397/2442 |
+
+RAF cadence measures callback scheduling, not completed GPU frames or display smoothness on a physical device. No total client CPU duration was inferred. Cache counters describe work across warm-up plus measurement; frame statistics describe only the timed sample. The fixed camera can reuse its floor, while camera movement rebuilds it. The direct control paints the floor on every draw and therefore has no cache builds or reuses. Similar cadence at the host ceiling does not prove a frame-rate improvement; there are no new device or CI timing acceptance limits. Shared-host load is uncontrolled and recorded.
+
+Camera-change counters include the initial sampling callback; frame intervals begin at the following callback. This one-callback difference does not replace the continuous-motion validity check.
+
+The 2a00f7a comparison predates the food-control merge ffcd59f. Later integration preserves the cache and is tested separately, including a placed food stall in pixel/picking parity. The original measurements are not relabeled as a later source revision.

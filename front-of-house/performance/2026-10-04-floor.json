@@ -1,0 +1,726 @@
+{
+  "title": "Front of House full HUD classic floor comparison",
+  "startedAt": "2026-10-04T12:34:11.307Z",
+  "finishedAt": "2026-10-04T12:42:29.283Z",
+  "source": {
+    "commit": "2a00f7a444503bbadeda3939f4b7b46d9b8bafc3",
+    "dirty": false,
+    "sha256": {
+      "front-of-house/board.js": "6969c25f0035f0a2c85a536da8e293d0c76d6347be7a89fda7c7c0c2016618ac",
+      "front-of-house/game.js": "bdea843e6045b8eddf5484c711b618bba2aaa51dc0b8139ad5a77f03232bb653",
+      "front-of-house/board-adapter.mjs": "4357c21c93f0d1feb033efc3af391deb58a788bcdb2f5d2c7777e290894e4abb",
+      "front-of-house/engine.mjs": "2c670c8454cfdc9f03b7a58efc753b4bc44c09d9efafd0c1abb9ccdaef1075fb",
+      "front-of-house/data.mjs": "adf032a1543890417dd4b02e451651d200e8133a209ada701d0bd97641f2d3eb",
+      "front-of-house/services.mjs": "bd618c7baee5483e6981c536b948faca10cbaeeef48cd77f7e30dd92295da9f5",
+      "front-of-house/service-crowd.mjs": "993edabc82c5edc71d55874a9bacfc2a1b28a5c82bafb4c2f41afc72b21d7508",
+      "front-of-house/service-guests.mjs": "3009ede0073b1a22ac4ec192851c50eb22bdbf3c99f0669079b22ab8d3d83323",
+      "front-of-house/index.html": "599211ef88cec418014e7725b883c8519939a089b708ab0c4406d43ad61fde81",
+      "front-of-house/styles.css": "de62d819e745ebeec756b6a4a59ec7b086a6bd8cca2e0fb41f3aa613347e435a",
+      "test/front-of-house-hud-performance.mjs": "041a3a8412dfe922062aa1ea2748161587ee6414a4cfe2bcf4c6b14d73199b22"
+    },
+    "directControlSha256": "12654ef69ce5d08bbac22737c015244b85ba0685d1628b6f5ce72718deffde54",
+    "directControl": "Only the createBoard cacheFloor default is changed to false through a browser route; no source or save mutation."
+  },
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "kernel": "27.0.0",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "cpuCount": 10,
+    "memoryBytes": 17179869184,
+    "osVersion": "27.0.1",
+    "osBuild": "26A434",
+    "otherLoad": "uncontrolled shared host; load averages recorded",
+    "physicalDisplay": "not measured"
+  },
+  "browser": "149.0.7827.55",
+  "protocol": {
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "requestedDpr": 2,
+    "warmupMs": 10000,
+    "measurementMs": 30000,
+    "repeats": 3,
+    "reducedMotion": "no-preference",
+    "headless": true,
+    "launchArgs": [
+      "--use-angle=metal"
+    ],
+    "renderer": "classic Canvas 2D; actual game/HUD/real one-minute-per-second show clock",
+    "camera": "zoom 2; fixed or a ten-second middle-drag cycle, x=960+120 sin(2pi t/10), y=540+70 sin(4pi t/10), through the actual pointermove handler",
+    "metrics": "observed RAF cadence and long tasks; neither GPU completion nor isolated whole-client CPU duration",
+    "acceptance": "descriptive only; no physical-device or statistical gate inferred"
+  },
+  "fixtureSha256": "51d174aa2a0f01e57569a1d9972a592e2efce5f83385b8d9222d43934960b255",
+  "privateReportSha256": "f5945cb3d5aef27480f0c46fbb0bae7c5fce91bd1a458099676395e7756df74c",
+  "previousAttempt": {
+    "source": "d080da849074dc45f35b81c15af669b2f53fc66d",
+    "validComparison": false,
+    "reason": "Unsupported continuous zoom values invalidated moving-camera coverage; stopped and retained original report/raw files separately."
+  },
+  "runs": [
+    {
+      "id": "fixed-direct-1",
+      "camera": "fixed",
+      "cache": "direct",
+      "repeat": 1,
+      "valid": true,
+      "movedFrames": 0,
+      "summary": {
+        "count": 1801,
+        "elapsedMs": 30016.4,
+        "meanMs": 16.666518600777348,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000000364,
+        "maxMs": 18.799999999999272,
+        "above16_7": 846,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 60.000533041937075,
+      "longTaskCount": 0,
+      "rawSha256": "62988273ccee47ac00cefa266a334e589ccf3d9f0ae928be4b491e7f3f97c16e",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 0,
+        "failed": false
+      },
+      "loadBefore": [
+        7.55126953125,
+        9.5869140625,
+        10.84326171875
+      ],
+      "loadAfter": [
+        5.71337890625,
+        8.841796875,
+        10.5048828125
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-cached-1",
+      "camera": "fixed",
+      "cache": "cached",
+      "repeat": 1,
+      "valid": true,
+      "movedFrames": 0,
+      "summary": {
+        "count": 1800,
+        "elapsedMs": 30001.800000000003,
+        "meanMs": 16.66766666666667,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000000728,
+        "above16_7": 838,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 59.99640021598704,
+      "longTaskCount": 0,
+      "rawSha256": "dd5bade6e592c93f4d65a1081a7c898aa23c9600ab6790416f062614bac79d50",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 2442,
+        "failed": false
+      },
+      "loadBefore": [
+        5.71337890625,
+        8.841796875,
+        10.5048828125
+      ],
+      "loadAfter": [
+        11.40087890625,
+        9.787109375,
+        10.76513671875
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-direct-1",
+      "camera": "moving",
+      "cache": "direct",
+      "repeat": 1,
+      "valid": true,
+      "movedFrames": 1801,
+      "summary": {
+        "count": 1800,
+        "elapsedMs": 30001.6,
+        "meanMs": 16.667555555555555,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000000364,
+        "maxMs": 18.700000000004366,
+        "above16_7": 884,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 59.996800170657565,
+      "longTaskCount": 0,
+      "rawSha256": "6c52381bec05d5f96bc30c2b8775ca7d5e7c74edf3cff7db0fa9bfb5a74954b3",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 0,
+        "failed": false
+      },
+      "loadBefore": [
+        11.40087890625,
+        9.787109375,
+        10.76513671875
+      ],
+      "loadAfter": [
+        8.36962890625,
+        9.189453125,
+        10.49951171875
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-cached-1",
+      "camera": "moving",
+      "cache": "cached",
+      "repeat": 1,
+      "valid": true,
+      "movedFrames": 1802,
+      "summary": {
+        "count": 1801,
+        "elapsedMs": 30014.600000000002,
+        "meanMs": 16.66551915602443,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000000364,
+        "maxMs": 18.700000000004366,
+        "above16_7": 835,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 60.00413132275625,
+      "longTaskCount": 0,
+      "rawSha256": "1635c9e086e0e0471306556fa057e146f81c97e118a6fd31720ecd38dab0b424",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 2403,
+        "hits": 2446,
+        "failed": false
+      },
+      "loadBefore": [
+        8.36962890625,
+        9.189453125,
+        10.49951171875
+      ],
+      "loadAfter": [
+        9.19140625,
+        9.27880859375,
+        10.47021484375
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-cached-2",
+      "camera": "fixed",
+      "cache": "cached",
+      "repeat": 2,
+      "valid": true,
+      "movedFrames": 0,
+      "summary": {
+        "count": 1801,
+        "elapsedMs": 30015.500000000004,
+        "meanMs": 16.66601887840089,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000004366,
+        "above16_7": 856,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 60.002332128400326,
+      "longTaskCount": 0,
+      "rawSha256": "079e4fac9fd12f437972b9e1341b093f830108f649a9af64a0ac11ab3374211b",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 2442,
+        "failed": false
+      },
+      "loadBefore": [
+        9.19140625,
+        9.27880859375,
+        10.47021484375
+      ],
+      "loadAfter": [
+        6.701171875,
+        8.6142578125,
+        10.1630859375
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-direct-2",
+      "camera": "fixed",
+      "cache": "direct",
+      "repeat": 2,
+      "valid": true,
+      "movedFrames": 0,
+      "summary": {
+        "count": 1800,
+        "elapsedMs": 30000.399999999998,
+        "meanMs": 16.666888888888888,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.299999999999272,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000000728,
+        "above16_7": 835,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 59.99920001066653,
+      "longTaskCount": 0,
+      "rawSha256": "68320637cbdb6210cc95ae703afa0ff401e8f67781ee7544179f5f7ff7d1393c",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 0,
+        "failed": false
+      },
+      "loadBefore": [
+        6.701171875,
+        8.6142578125,
+        10.1630859375
+      ],
+      "loadAfter": [
+        5.884765625,
+        8.1982421875,
+        9.94091796875
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-cached-2",
+      "camera": "moving",
+      "cache": "cached",
+      "repeat": 2,
+      "valid": true,
+      "movedFrames": 1802,
+      "summary": {
+        "count": 1801,
+        "elapsedMs": 30016.4,
+        "meanMs": 16.666518600777348,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.80000000000291,
+        "above16_7": 850,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 60.000533041937075,
+      "longTaskCount": 0,
+      "rawSha256": "588bf08bf387f4c56f545bb777ecd6cb3d2e1ed36864d71d41023d2bd0b6abe3",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 2404,
+        "hits": 2447,
+        "failed": false
+      },
+      "loadBefore": [
+        5.884765625,
+        8.1982421875,
+        9.94091796875
+      ],
+      "loadAfter": [
+        5.47509765625,
+        7.82177734375,
+        9.72314453125
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-direct-2",
+      "camera": "moving",
+      "cache": "direct",
+      "repeat": 2,
+      "valid": true,
+      "movedFrames": 1802,
+      "summary": {
+        "count": 1801,
+        "elapsedMs": 30016.399999999998,
+        "meanMs": 16.666518600777344,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.799999999999272,
+        "above16_7": 839,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 60.00053304193708,
+      "longTaskCount": 0,
+      "rawSha256": "69d08d8f439c71b383ae6a3077141221ee9f1c7dc91143beda89cd1956764cd6",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 0,
+        "failed": false
+      },
+      "loadBefore": [
+        5.47509765625,
+        7.82177734375,
+        9.72314453125
+      ],
+      "loadAfter": [
+        6.16845703125,
+        7.6865234375,
+        9.57470703125
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-direct-3",
+      "camera": "fixed",
+      "cache": "direct",
+      "repeat": 3,
+      "valid": true,
+      "movedFrames": 0,
+      "summary": {
+        "count": 1800,
+        "elapsedMs": 30001.500000000004,
+        "meanMs": 16.6675,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.700000000004366,
+        "above16_7": 825,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 59.997000149992495,
+      "longTaskCount": 0,
+      "rawSha256": "e97cbeb756595a456939442a3d99e1bb9c92f484b60fe95a0c6904d40ac990f1",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 0,
+        "failed": false
+      },
+      "loadBefore": [
+        6.16845703125,
+        7.6865234375,
+        9.57470703125
+      ],
+      "loadAfter": [
+        6.1318359375,
+        7.4248046875,
+        9.3876953125
+      ],
+      "errors": []
+    },
+    {
+      "id": "fixed-cached-3",
+      "camera": "fixed",
+      "cache": "cached",
+      "repeat": 3,
+      "valid": true,
+      "movedFrames": 0,
+      "summary": {
+        "count": 1800,
+        "elapsedMs": 30000.799999999996,
+        "meanMs": 16.667111111111108,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.799999999999272,
+        "above16_7": 824,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 59.99840004266554,
+      "longTaskCount": 0,
+      "rawSha256": "695fd4c49154f65807f26c599259419c378c76fcbef5ef24c5d08486ba30eb9c",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 2442,
+        "failed": false
+      },
+      "loadBefore": [
+        6.1318359375,
+        7.4248046875,
+        9.3876953125
+      ],
+      "loadAfter": [
+        5.67138671875,
+        7.1494140625,
+        9.19580078125
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-direct-3",
+      "camera": "moving",
+      "cache": "direct",
+      "repeat": 3,
+      "valid": true,
+      "movedFrames": 1802,
+      "summary": {
+        "count": 1801,
+        "elapsedMs": 30016.399999999998,
+        "meanMs": 16.666518600777344,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.69999999999709,
+        "maxMs": 18.700000000004366,
+        "above16_7": 865,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 60.000533041937075,
+      "longTaskCount": 0,
+      "rawSha256": "7c64973afd100c9218564c01a3bc549a706f0d7a80778559f3197d3f20cb1096",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 0,
+        "hits": 0,
+        "failed": false
+      },
+      "loadBefore": [
+        5.67138671875,
+        7.1494140625,
+        9.19580078125
+      ],
+      "loadAfter": [
+        6.197265625,
+        7.2509765625,
+        9.13720703125
+      ],
+      "errors": []
+    },
+    {
+      "id": "moving-cached-3",
+      "camera": "moving",
+      "cache": "cached",
+      "repeat": 3,
+      "valid": true,
+      "movedFrames": 1796,
+      "summary": {
+        "count": 1795,
+        "elapsedMs": 30014.5,
+        "meanMs": 16.72116991643454,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.69999999999709,
+        "maxMs": 50,
+        "above16_7": 845,
+        "above33_3": 4,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "observedCadenceHz": 59.80442785986773,
+      "longTaskCount": 0,
+      "rawSha256": "6e9872e432f60bc36a0662350856a3e204ea3e440db4ecbca326091691f08b0c",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": [
+          2880,
+          1620
+        ],
+        "pageFit": true
+      },
+      "show": {
+        "initialMinute": 25,
+        "finalMinute": 65,
+        "stillRunning": true
+      },
+      "floorWork": {
+        "builds": 2397,
+        "hits": 2442,
+        "failed": false
+      },
+      "loadBefore": [
+        6.197265625,
+        7.2509765625,
+        9.13720703125
+      ],
+      "loadAfter": [
+        7.06005859375,
+        7.2666015625,
+        9.05126953125
+      ],
+      "errors": []
+    }
+  ]
+}

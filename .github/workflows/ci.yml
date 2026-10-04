@@ -35,6 +35,7 @@ jobs:
       - run: git diff --exit-code -- front-of-house/docs/ASSETS.md front-of-house/docs/CATALOG.md front-of-house/docs/STRINGS.md
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run smoke:front-of-house
+      - run: npm run smoke:front-of-house-floor
       - run: npm run smoke:front-of-house-lot
       - run: npm run smoke:front-of-house-3d
       - run: npm run art:visual

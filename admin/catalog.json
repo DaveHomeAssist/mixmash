@@ -616,6 +616,10 @@
           "description": "node front-of-house/tools/vendor-three.mjs --check"
         },
         {
+          "name": "npm run smoke:front-of-house-floor",
+          "description": "node test/front-of-house-floor-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-lot",
           "description": "node test/front-of-house-lot-smoke.mjs"
         },
@@ -630,6 +634,10 @@
         {
           "name": "npm run check:front-of-house-assets",
           "description": "node front-of-house/tools/lot-assets.mjs --check"
+        },
+        {
+          "name": "npm run perf:front-of-house-hud",
+          "description": "node test/front-of-house-hud-performance.mjs"
         },
         {
           "name": "npm run perf:front-of-house",
@@ -1740,6 +1748,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-floor.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Full HUD classic floor comparison",
+      "description": "Twelve fixed and panning real-client windows with direct/cached floors, real show progression, backing dimensions, counters, timing summaries and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-floor.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-metal.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -1747,6 +1765,16 @@
       "title": "Lot renderer Metal baseline",
       "description": "Frozen hardware-host timing summary, source and fixture digests, quality settings and every measurement repeat; interpretation lives in PERFORMANCE.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-metal.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-shadow.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Lot shadow reuse Metal comparison",
+      "description": "All 18 integrated shadow-cache measurement windows with frozen source/fixture digests, timing statistics, shadow refresh counters and the retained partial attempt.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-shadow.json",
       "open": null
     },
     {
@@ -2290,6 +2318,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-floor-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-floor-smoke.mjs",
+      "description": "Classic floor cache: pixel/picking parity, invalidation, allocation failure and disposal.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-floor-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-food-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2297,6 +2335,16 @@
       "title": "front-of-house-food-smoke.mjs",
       "description": "Actual vendor placement/settings, finite queue, reload and signed receipt in both renderers.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-food-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-hud-performance.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-hud-performance.mjs",
+      "description": "Full client diagnostics: identical live-show saves with direct/cached classic floors.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-hud-performance.mjs",
       "open": null
     },
     {
