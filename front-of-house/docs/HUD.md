@@ -126,7 +126,7 @@ A full-window canvas draws more pixels: 1440 × 900 at a device pixel ratio of 2
 - Cache the floor, the grid, the parking stalls, the fence line and the sightline overlay in an offscreen canvas. Redraw that cache only when the room, the layout, the view, the zoom or the pan changes.
 - Props, the crowd, lights, rain, markers, the cursor and the ghost still draw each frame. Crowd dots are interleaved with the props they stand between, so props can't join the cached floor.
 - Keep the pixel-ratio cap at 2. Drop to 1.5 when the canvas would pass 6 megapixels.
-- Budget: show night at 1920 × 1080 holds 60 frames a second on a mid-range laptop. The smoke rail records frame times in headless Chromium as a proxy and fails over 16 ms at the 95th percentile.
+- Budget: [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance), accepted 2026-10-04, uses stable CI regression scenes plus declared 60fps desktop / 30fps low-power device targets. It supersedes the original absolute headless p95-under-16ms design gate. Specify devices, scenes, sampling and thresholds from baselines before claiming acceptance; headless results are regression evidence, not physical-device proof. Existing checks stay until a tested replacement lands.
 
 ### Review refinement (2026-10-02)
 

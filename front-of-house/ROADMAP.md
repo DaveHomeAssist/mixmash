@@ -6,7 +6,7 @@ The phases from the first document to the last career tier. Each phase ships as 
 
 ## Current planning choices
 
-The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The expansion sequence is accepted in [CT-DEC-14](docs/DECISIONS.md#ct-dec-14-expansion-sequence): 3D Lot prototype first, then live operations. D2–D11 and detailed feature scope remain open; earlier shipped milestones and release gates retain their status.
+The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The expansion sequence is accepted in [CT-DEC-14](docs/DECISIONS.md#ct-dec-14-expansion-sequence): 3D Lot prototype first, then live operations. D3–D5 are also accepted A in CT-DEC-15 through CT-DEC-17. D2 B (more realistic 3D) is accepted in CT-DEC-18. D6–D11 and detailed implementation specifications remain open; earlier shipped milestones and release gates retain their status.
 
 ## Shipped
 
@@ -76,7 +76,7 @@ Accepted by Dave on 2026-10-01. The board fills the window and the controls floa
 | 3. Build and Show HUD | Corner panels, tool keys 1 to 8, the camera buttons, the incident card | The HUD covers no more than 2% of the lot at fit, and the lot covers at least 30% of the window (35% at 1280 × 800 and 1440 × 900) | Done 2026-10-02 |
 | 4. Sheets | Book, Promote and Done in a sheet on the right; the settlement and show history in their own windows; deal explanations on the first show only | The lot re-fits beside an open sheet, and no sheet or window scrolls at 1024 × 700 and up apart from show history | Done 2026-10-02 |
 | 5. Phone | The compact strip and the bottom sheet, with tabs so nothing scrolls (decision 12) | At 390 × 844: no horizontal scroll, every control reachable, the board takes at least 45% of the height, and no tab scrolls | Done 2026-10-02 |
-| 6. Performance | The floor cache, the pixel-ratio rule, a frame-time check | Show night at 1920 × 1080 keeps the 95th-percentile frame under 16 ms in the smoke rail | Next. The pixel-ratio rule already shipped in step 2 |
+| 6. Performance | The floor cache, the pixel-ratio rule, a frame-time check | Stable CI regression scenes plus declared 60fps desktop / 30fps low-power device targets; measurement thresholds fixed after baselines (CT-DEC-17) | Next. The pixel-ratio rule already shipped in step 2 |
 | 7. Minimap | The whole room in a small corner panel with the camera's view rectangle; a click moves the camera. Shown only when zoomed in past fit; hidden on phones | Correct at every zoom, view turn and room; a click centres the camera; hidden at fit; the frame budget still holds | **Deferred** by Dave on 2026-10-01. Starts after step 1 ships and Split Acre is being played zoomed in |
 
 ## Phase 3: tier 1, the Lot (shipped)
@@ -106,7 +106,7 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 
 The accepted mockup review is applied to the existing steps 1 to 5: honest Show status, consequence-based incident copy, equipment location, phone sheet controls and light/dark controls. See [HUD.md](docs/HUD.md#review-refinement-2026-10-02). Engine rules, saves and the optional Lot doors experiment are unchanged.
 
-Next: HUD step 6, performance. Record frame times at 1920 × 1080, cache the static floor with layout/view/camera invalidation, and require the same functional and visual checks plus p95 below 16 ms. Then collect human desktop and phone feedback before public promotion. The minimap stays deferred; remaining venue/economy proposals need their own decisions.
+Next: HUD step 6, performance. Record frame times at 1920 × 1080, cache the static floor with layout/view/camera invalidation, and require the same functional and visual checks plus the accepted [CT-DEC-17 performance contract](docs/DECISIONS.md#ct-dec-17-performance-acceptance). The earlier absolute headless 16ms criterion is superseded as the sole design gate; exact replacement thresholds require measured baselines. Then collect human desktop and phone feedback before public promotion. The minimap stays deferred; remaining venue/economy proposals need their own decisions.
 
 ## Separate tracks
 
