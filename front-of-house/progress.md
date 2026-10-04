@@ -4,7 +4,7 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 - Added one-image classic floor caching with explicit layout/view/sprite/overlay invalidation, original post-prop sightline placement, direct fallback and backing disposal. Dynamic guests, lighting, incidents and selection remain live. No rules, saves or economy change.
 - Exact cached/direct pixel and picking diagnostics pass in Chromium and WebKit across all rooms, facings, camera changes, overlays, incidents and DPR resizing. Chromium readback uses a consistent raster path to avoid automatic backend switching. Full application 3D/classic settlement, fallback, gesture and reload checks pass; 261 repository plus 3 performance-statistics tests and build pass.
-- Added the real-client 1920×1080 full-HUD comparison harness. All four quick validation windows complete with the real running clock; full 10s/30s repeated comparison, CI and deployment remain pending. No physical-device or art acceptance is inferred.
+- Added the real-client 1920×1080 full-HUD comparison harness. All four quick validation windows complete with the real running clock; full 10s/30s repeated comparison, CI and deployment remain pending. Counter review invalidated the first moving-camera protocol because continuous zoom values are unsupported by the classic renderer; the corrected middle-drag path asserts actual movement. Original attempt retained separately. No physical-device or art acceptance is inferred.
 
 ## 2026-10-04: Performance delivery and complete integrated comparison
 

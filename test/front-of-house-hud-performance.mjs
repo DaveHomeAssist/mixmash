@@ -31,7 +31,7 @@ const report = {
   mode: quick ? 'harness validation only' : 'full HUD classic floor comparison', startedAt: new Date().toISOString(),
   source: { commit: command('git', ['rev-parse', 'HEAD']), dirty: command('git', ['status', '--porcelain']).length > 0, sha256: sources, directControlSha256: hash(directSource), directControl: 'Only the createBoard cacheFloor default is changed to false through a browser route; no source or save mutation.' },
   host: { platform: platform(), architecture: arch(), kernel: release(), model: command('sysctl', ['-n', 'hw.model']), cpu: cpus()[0]?.model, cpuCount: cpus().length, memoryBytes: totalmem(), osVersion: command('sw_vers', ['-productVersion']), osBuild: command('sw_vers', ['-buildVersion']), otherLoad: 'uncontrolled shared host; load averages recorded', physicalDisplay: 'not measured' },
-  protocol: { viewport: { width: 1920, height: 1080 }, requestedDpr: 2, warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, reducedMotion: 'no-preference', headless: true, launchArgs: ['--use-angle=metal'], renderer: 'classic Canvas 2D; actual game/HUD/real one-minute-per-second show clock', camera: 'fixed zoom 2 or zoom 2 + 0.6 sin(2 pi seconds / 10), through the actual boardZoom control path on each observed frame', metrics: 'observed RAF cadence and long tasks; neither GPU completion nor isolated whole-client CPU duration', acceptance: 'descriptive only; no physical-device or statistical gate inferred' },
+  protocol: { viewport: { width: 1920, height: 1080 }, requestedDpr: 2, warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, reducedMotion: 'no-preference', headless: true, launchArgs: ['--use-angle=metal'], renderer: 'classic Canvas 2D; actual game/HUD/real one-minute-per-second show clock', camera: 'zoom 2; fixed or a ten-second middle-drag cycle, x=960+120 sin(2pi t/10), y=540+70 sin(4pi t/10), through the actual pointermove handler', metrics: 'observed RAF cadence and long tasks; neither GPU completion nor isolated whole-client CPU duration', acceptance: 'descriptive only; no physical-device or statistical gate inferred' },
   fixtureSha256: hash(fixture), runs: [], errors: [],
 };
 const save = () => writeFile(join(output, 'report.json'), JSON.stringify(report, null, 2));
@@ -59,6 +59,7 @@ try {
       assert.equal(record.initial.pageFit, true); assert.equal(record.initial.board.view.dpr, 1.5); assert.equal(record.initial.board.floorCache.enabled, cache === 'cached');
       await page.screenshot({ path: join(output, `${record.id}-before.png`) });
       await page.click('#live-play');
+      if (camera === 'moving') { await page.mouse.move(960, 540); await page.mouse.down({ button: 'middle' }); }
       const raw = await withDeadline(page.evaluate(async ({ warmupMs, measurementMs, camera }) => {
         const frames = [], violations = [], tasks = [];
         const invalid = event => violations.push({ type: event.type, at: performance.now() });
@@ -66,10 +67,17 @@ try {
         const supported = PerformanceObserver.supportedEntryTypes.includes('longtask');
         const observer = supported ? new PerformanceObserver(list => tasks.push(...list.getEntries().map(e => ({ start: e.startTime, duration: e.duration })))) : null;
         observer?.observe({ type: 'longtask' });
-        const move = t => { if (camera === 'moving') __frontOfHouse.boardZoom(2 + 0.6 * Math.sin(2 * Math.PI * t / 10000)); };
+        const canvas = document.querySelector('#board');
+        let previousCamera = __frontOfHouse.boardCamera(), movedFrames = 0;
+        const move = t => {
+          if (camera === 'moving') canvas.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'mouse', isPrimary: true, buttons: 4, button: -1, clientX: 960 + 120 * Math.sin(2 * Math.PI * t / 10000), clientY: 540 + 70 * Math.sin(4 * Math.PI * t / 10000) }));
+          const current = __frontOfHouse.boardCamera();
+          if (current.x !== previousCamera.x || current.y !== previousCamera.y) movedFrames++;
+          previousCamera = current;
+        };
         const warm = performance.now();
         await new Promise(resolve => { const frame = t => { move(t - warm); if (t - warm >= warmupMs) resolve(); else requestAnimationFrame(frame); }; requestAnimationFrame(frame); });
-        let start, previous, end;
+        let start, previous, end; movedFrames = 0;
         await new Promise(resolve => { const frame = t => {
           if (start === undefined) { start = previous = t; move(0); requestAnimationFrame(frame); return; }
           frames.push(t - previous); previous = t; move(t - start);
@@ -78,8 +86,10 @@ try {
         await new Promise(resolve => setTimeout(resolve, 0));
         if (observer) { tasks.push(...observer.takeRecords().map(e => ({ start: e.startTime, duration: e.duration }))); observer.disconnect(); }
         document.removeEventListener('visibilitychange', invalid); window.removeEventListener('resize', invalid);
-        return { frames, start, end, violations, longTasksSupported: supported, longTasks: tasks.filter(e => e.start < end && e.start + e.duration > start), visibility: document.visibilityState };
+        return { frames, start, end, movedFrames, violations, longTasksSupported: supported, longTasks: tasks.filter(e => e.start < end && e.start + e.duration > start), visibility: document.visibilityState };
       }, { ...report.protocol, camera }), report.protocol.warmupMs + report.protocol.measurementMs + 30000);
+      if (camera === 'moving') await page.mouse.up({ button: 'middle' });
+      assert.ok(camera === 'moving' ? raw.movedFrames > raw.frames.length * 0.95 : raw.movedFrames === 0, 'Verify real camera motion during the timed window');
       record.final = await page.evaluate(() => ({ state: __frontOfHouse.state(), text: JSON.parse(render_game_to_text()), board: __frontOfHouse.board() }));
       await page.click('#live-play');
       await page.screenshot({ path: join(output, `${record.id}-after.png`) });
@@ -87,7 +97,7 @@ try {
       assert.ok(record.final.state.show.services.minute - state.show.services.minute >= Math.floor((report.protocol.warmupMs + report.protocol.measurementMs) / 1000));
       assert.deepEqual(raw.violations, []); assert.equal(raw.visibility, 'visible'); assert.deepEqual(errors, []);
       const rawBytes = JSON.stringify(raw); await writeFile(join(output, `${record.id}-raw.json`), rawBytes);
-      Object.assign(record, { valid: true, summary: summarize(raw.frames), observedCadenceHz: 1000 * raw.frames.length / (raw.end - raw.start), longTaskCount: raw.longTasks.length, rawSha256: hash(rawBytes), loadAfter: loadavg(), errors });
+      Object.assign(record, { valid: true, movedFrames: raw.movedFrames, summary: summarize(raw.frames), observedCadenceHz: 1000 * raw.frames.length / (raw.end - raw.start), longTaskCount: raw.longTasks.length, rawSha256: hash(rawBytes), loadAfter: loadavg(), errors });
       console.log(`${record.id}: ${record.observedCadenceHz.toFixed(2)} Hz; ${record.summary.above50} intervals >50ms; minute ${record.final.state.show.services.minute}`);
     } catch (error) { record.error = error.stack; report.errors.push({ id: record.id, message: error.message }); throw error; }
     finally { await context.close(); await save(); }
