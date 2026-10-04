@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v54camera1';
+const VERSION = 'v55';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [

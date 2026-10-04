@@ -97,6 +97,7 @@ export const OBJECT_TYPES = {
   stage: { label: 'Stage', w: 6, h: 3, watts: 0, group: 'stage', max: 1 },
   'pa-s': { label: 'PA (small)', w: 1, h: 1, watts: 3000, group: 'pa', max: 1, nextToStage: true, paTier: 'S' },
   'pa-m': { label: 'PA (medium)', w: 1, h: 1, watts: 6000, group: 'pa', max: 1, nextToStage: true, paTier: 'M' },
+  delay: { label: 'Delay tower', w: 1, h: 1, watts: 8000, group: 'delay', max: 2, blocksSight: true, festivalOnly: true },
   lights: { label: 'Light tower', w: 1, h: 1, watts: 8000, group: 'lights', max: 1, blocksSight: true },
   bar: { label: 'Bar', w: 2, h: 1, watts: 1500, blocksSight: true },
   food: { label: 'Food stall', w: 2, h: 1, watts: 0, group: 'food', max: 1, blocksSight: true, lotOnly: true },
@@ -310,7 +311,13 @@ export const ROOM_PROFILES = Object.freeze({
     version: 1, venueId: 'amphitheater', label: 'Shell system', soundCapacity: 700,
     lawnStart: 10, lawnEnd: 16, risePerTile: 0.18, sightDegrees: 120, sightRange: 40,
     eyeHeight: 0.83, performerHeight: 1.38,
-    obstacleHeights: Object.freeze({ lights: 4, bar: 0.55, restroom: 1.15 }),
+    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15 }),
+  }),
+  festival: Object.freeze({
+    version: 1, venueId: 'festival', label: 'Main system', soundCapacity: 3000,
+    lawnStart: 0, lawnEnd: 0, risePerTile: 0, sightDegrees: 120, sightRange: 60,
+    eyeHeight: 0.83, performerHeight: 2.38,
+    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15 }),
   }),
 });
 
@@ -387,3 +394,6 @@ export const RESEARCH_EFFECTS = Object.freeze({ patchScore: 0.15, barWorkerRate:
 export const OWNED_EQUIPMENT = Object.freeze({
   'small-pa': Object.freeze({ label: 'Small PA', objectType: 'pa-s', purchase: 1200, resale: 600, operation: 20 }),
 });
+
+// Per-show Festival delay deployment; coverage is a spatial game model.
+export const FESTIVAL_DELAYS = Object.freeze({ range: 12, rental: 600, operator: 75 });

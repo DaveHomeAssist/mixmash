@@ -97,3 +97,11 @@ test('unknown policy and unsafe source values fail explicitly', () => {
   for (const key of ['presaleShare', 'walkupMult']) for (const value of [-1, 1.1, NaN, Infinity, '1']) assert.throws(() => sale({ [key]: value }), /Invalid Festival/);
   for (const extra of [{ mainDeal: 'free' }, { mainAsk: -1 }, { bar: NaN }, { broadcast: 1 }, { rig: { ...rig, lights: 1 } }, { rig: { ...rig, housePa: null } }, { rig: { ...rig, paTier: 'L' } }, { siteCosts: {} }, { siteCosts: { ...siteCosts, incident: -1 } }]) assert.throws(() => sheet(extra), /Invalid Festival/);
 });
+
+test('delay rentals and operators belong to main production once, including the door deduction',()=>{
+ const r=sheet({rig:{...rig,delays:2}});reconciles(r);
+ assert.equal(r.production.main.delays,1350);assert.equal(r.production.main.total,1500);assert.equal(r.production.second.total,775);assert.equal(r.sharedTotal,1000);assert.equal(r.costs,3275);
+ assert.equal(r.main.artistBasis,6000-1500-600);assert.equal(r.main.artistPay,2730);
+ assert.deepEqual(festivalProduction(terms,{...rig,delays:0}),festivalProduction(terms,rig));
+ for(const delays of [-1,0.5,3,'2',NaN])assert.throws(()=>festivalProduction(terms,{...rig,delays}),TypeError);
+});

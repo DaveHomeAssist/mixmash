@@ -46,6 +46,7 @@ const PROPS = {
   stage: { box: { top: '#3a3d45', side: '#1c1d21', front: '#141518', height: 0.5 }, sprite: { w: 1.08, foot: 0.93 } },
   'pa-s': { box: { top: '#4b4f5a', side: '#22242a', front: '#1a1b20', height: 1.4 }, sprite: { h: 1.15, foot: 0.97 } },
   'pa-m': { box: { top: '#5d6270', side: '#2a2c33', front: '#1f2026', height: 1.9 }, sprite: { h: 1.55, foot: 0.97 } },
+  delay: { box: { top: '#536271', side: '#344250', front: '#162532', height: 4, thin: true } },
   lights: { box: { top: '#9ca3af', side: '#6b7280', front: '#4b5563', height: 2.6, thin: true }, sprite: { w: 0.62, foot: 0.98, lamp: 0.1 } },
   bar: { box: { top: '#f43f5e', side: '#a8263c', front: '#7f1d2e', height: 0.8 }, sprite: { w: 1.35, foot: 0.94 } },
   trailer: { box: { top: '#b6a5c8', side: '#806997', front: '#514164', height: 1.4 } },

@@ -1,13 +1,12 @@
 // Versioned room acoustics and authored terrain; logical game units, not venue engineering.
 import { ROOM_PROFILES } from './data.mjs';
-const SHELL = ROOM_PROFILES.amphitheater;
 const object = x => x !== null && typeof x === 'object' && !Array.isArray(x);
 export function roomProfileTerms(raw, venueId) {
-  if (!object(raw) || raw.version !== 1 || venueId !== SHELL.venueId) throw new TypeError('Invalid room profile');
+  if (!object(raw) || raw.version !== 1 || !Object.hasOwn(ROOM_PROFILES, venueId)) throw new TypeError('Invalid room profile');
   return { version: 1 };
 }
 export function roomProfileFor(venue) {
-  return venue?.id === SHELL.venueId && venue.profile?.version === 1 ? SHELL : null;
+  return venue?.profile?.version === 1 && Object.hasOwn(ROOM_PROFILES, venue.id) ? ROOM_PROFILES[venue.id] : null;
 }
 export function groundHeight(profile, x, y) {
   if (!Number.isFinite(x) || !Number.isFinite(y)) throw new TypeError('Invalid ground point');
@@ -59,4 +58,24 @@ export function roomSightlines(profile, { grid, occupied, stage, obstacles }) {
     (obstacles.some(o => blocksView(profile, from, to, o)) ? blocked : clear).add(key);
   }
   return { clear, blocked };
+}
+
+// Delay coverage is a union of open floor cells beyond the included system's
+// nearest-floor allocation. It is a game supply model, not acoustic prediction.
+export function delayCoverage({ grid, occupied, front, towers, baseCapacity, density, capacity, range }) {
+  if (!Number.isInteger(grid?.w) || !Number.isInteger(grid?.h) || grid.w < 1 || grid.h < 1 || grid.w * grid.h > 10000
+    || !(occupied instanceof Set) || !Array.isArray(front) || front.length !== 2 || !front.every(Number.isFinite)
+    || !Array.isArray(towers) || towers.length > 2 || !towers.every(t => Number.isInteger(t.x) && Number.isInteger(t.y) && t.x >= 0 && t.y >= 0 && t.x < grid.w && t.y < grid.h)
+    || ![baseCapacity, capacity].every(n => Number.isSafeInteger(n) && n >= 0)
+    || !Number.isFinite(density) || density <= 0 || !Number.isFinite(range) || range <= 0) throw new TypeError('Invalid delay coverage');
+  const cells = [];
+  for (let y = 0; y < grid.h; y++) for (let x = 0; x < grid.w; x++) {
+    const key = `${x},${y}`;
+    if (!occupied.has(key)) cells.push({ x, y, key, distance: (x + 0.5 - front[0]) ** 2 + (y + 0.5 - front[1]) ** 2 });
+  }
+  cells.sort((a, b) => a.distance - b.distance || a.y - b.y || a.x - b.x);
+  const base = new Set(cells.slice(0, Math.ceil(baseCapacity / density)).map(c => c.key));
+  const added = new Set(cells.filter(c => !base.has(c.key) && towers.some(t => (c.x - t.x) ** 2 + (c.y - t.y) ** 2 <= range ** 2)).map(c => c.key));
+  const extraCapacity = Math.min(Math.max(0, capacity - baseCapacity), Math.floor(added.size * density));
+  return { base, added, extraCapacity, soundCapacity: baseCapacity + extraCapacity };
 }

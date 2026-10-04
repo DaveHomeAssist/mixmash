@@ -696,3 +696,33 @@ Combined source verification passes407 repository tests, build, asset validation
 FOH-P01j retains the most recent unzoomed fit distance while panning or zooming. The key includes venue extent, angle, viewport, HUD safe area and lens; authored eye cameras retain their existing path. Camera fit reuse preserves3852 exact prior-source pose/matrix/projection/picking/overview comparisons across all rooms, three viewports, yaw/pitch/zoom/pan, four presets and lens changes. All16 camera tests pass, including repeated invalidation versus a freshly fitted camera. Five alternating Node CPU repetitions of20000 pans: baseline1870.64–2362.12ms, candidate84.80–119.53ms on Apple M4/Node22.22.1. This is helper CPU evidence only; full native game/HUD timing and delivery remain pending.
 
 Camera fit source passes408 repository tests, build, asset validation, generated documentation and unchanged simulator. Browser and native comparison remain separate gates.
+
+## 2026-10-04: Festival room profile local acceptance
+
+- Added brief FOH-V02b9 before implementation. New Festival player bookings select version1 room terms: included3,000-person Main system, flat site with raised main-stage sightlines and the existing portable replacement/cost rules. Neither capacity nor opening costs increase. Older unmarked saves keep their arithmetic.
+- Build exposes current sound capacity and a Sound and views report; Stage accounts includes a Room page through Promote/Show/settlement. Both-browser testing found cramped seven-tab labels and a short-window overflow; two phone rows and removal of the redundant summary in very short windows resolve both while preserving all account pages and44px controls.
+-401 repository tests, build/docs and unchanged Lot simulator baseline pass. New tests cover exact Festival obstruction rays, all stage rotations, sound/cost/light limits, three deal receipts and malformed-marker recovery.180 unmarked transitions and complete receipts match the prior8d715b0 implementation. Six Festival and six Amphitheater player journeys, trusted-headline/no-side branches,28 legacy browser checks, five-size/two-theme compact pages, portable placement/undo and paid reload pass.
+- Offline player booking/settlement retains Main3000,592clear/8blocked tiles with exact overlay parity; cash1257430 equals the journal after a257430 net show. Supplied action runner passes after binding its import to the repository's installed Playwright; its default dependency pointed at a missing browser binary. Full HUD, canvas and WebKit phone receipt images inspected.
+-30 paired starter seeds improve satisfaction14–22 to42–67 and passes0/30 to3/30. This is diagnostic only: spatial delays, facilities, VIP/bus functions, dimensional scenes and full career balance remain. The footprint/height rules are authored game units, not physical calibration. Required CI, merge/Pages and hosted proof are still pending.
+
+## 2026-10-04: Amphitheater room profile delivered
+
+- PR104 passed CI37216547248 and merged33bdc63a261b11180effaa03143e912d6ba239de at16:42:52Z; Pages built16:43:26Z. All27 checked hosted runtime files match. Six hosted Chromium/WebKit seating/Room journeys and six held-run journeys with full-hold/debt branches pass. Hosted offline cancellation preserves700 sound capacity and294clear/6blocked tiles;41560 ticket gross,2750 cancellation and1027440 cash reconcile with the journal and signed receipt. Actual hosted WebKit phone Room image inspected.
+- Festival base profile PR106 has its own active CI; spatial delays continue as the next implementation. No dimensional-art, physical-device or whole-career completion is inferred.
+
+## 2026-10-04: Festival profile compact CI correction
+
+- PR106 CI37217349921 found9px of overflow in the320×256 Festival account window on Linux. Shortened the flat-ground and shared-quality explanations without removing either rule.
+- Six Chromium/WebKit Festival journeys, edge cases, both themes and all compact sizes pass after correction; build/docs pass. Fresh CI and hosted acceptance remain pending.
+
+## 2026-10-04: Festival delay towers local acceptance
+
+- Festival delay towers implemented with spatial union coverage, two-tower limit, house-system activation, explicit portable/legacy inactivity and exact rental/operator production costs. 405 repository tests,28 targeted tests, build/docs, unchanged Lot simulator, six Chromium/WebKit Festival journeys plus edge cases, six seating journeys and28 legacy browser checks pass. Both themes/five sizes, actual pointer selection, inactive portable/legacy controls and Site/Production receipt totals pass. Warmed-cache offline two-tower signing/reload preserves6000 sound,467 extra tiles,1350 delay cost and1194656 journal cash. Supplied action runner and actual phone/desktop captures inspected. CI and hosted delivery remain pending.
+- Radius and overlap hand fixtures, occupied-floor exclusion, capacity caps, rotations, all three deals, exact one-time production charge, paid layout immutability and cached booking recovery pass. Initial Room and Costs compact overflows were resolved with Delay and Site/Production pages; no checks waived.
+- Thirty paired starter seeds improve satisfaction42–67/3passes to59–67/29passes;180 zero-tower transitions and complete receipts match the prior engine. This is diagnostic evidence, not whole-career balance acceptance.
+
+- PR108 CI37218847146 caught the Lot manifest generator treating Festival-only towers as Lot assets and generating its generic fallback prop. Restricted the Lot manifest to supported room types; the Festival tower stays an explicit provisional Canvas model. The unchanged Lot manifest passes regeneration/check; fresh CI follows.
+
+## 2026-10-04 — Stack integration with delivered Festival work
+
+Merged gh-pages `f6532a2` (PR106 Festival profile, PR108 delay towers) into the PR87–PR107 camera-fit/overview stack. Six conflicts were resolved by keeping both sides: overview and Festival account styles, both brief sets, both progress records, delivered release evidence in NEXT_STEPS.json, and the stages smoke keeps the newer Room checks alongside the 3D journeys. The service worker cache moves to `v55`. Local checks on the merge: 416 repository tests, 7 performance tests, vendor/asset checks, build, unchanged Lot simulator, generated docs unchanged, and stages, navigation, Festival, Shell, Club and seating browser journeys. Current-head CI, Pages and hosted acceptance follow.

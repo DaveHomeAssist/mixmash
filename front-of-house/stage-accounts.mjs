@@ -1,5 +1,5 @@
 // Versioned Festival admissions, stage production and shared-site cash accounting.
-import { PA_RENTAL, LIGHTS_RENTAL, STAFF_RATE, DOOR_SPLIT, SPONSOR_PAY, BROADCAST_PER_HEAD } from './data.mjs';
+import { PA_RENTAL, LIGHTS_RENTAL, STAFF_RATE, DOOR_SPLIT, SPONSOR_PAY, BROADCAST_PER_HEAD, FESTIVAL_DELAYS } from './data.mjs';
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const whole = (value, label, max = 1e12) => {
   if (!Number.isSafeInteger(value) || value < 0 || value > max) throw new TypeError(`Invalid Festival ${label}`);
@@ -46,6 +46,7 @@ export function festivalProduction(raw, rig) {
   const owned = rig.equipmentOperation !== undefined;
   const main = { pa: owned || housePa || !rig.paTier ? 0 : PA_RENTAL[rig.paTier], lights: lights ? LIGHTS_RENTAL : 0, crew: 2 * STAFF_RATE,
     ...(owned ? { equipmentOperation: whole(rig.equipmentOperation, 'equipment operation') } : {}) };
+  if (rig.delays !== undefined) { const count = whole(rig.delays, 'delay count', 2); if (count) main.delays = count * (FESTIVAL_DELAYS.rental + FESTIVAL_DELAYS.operator); }
   const second = { pa: PA_RENTAL.M, lights: LIGHTS_RENTAL, crew: 2 * STAFF_RATE };
   for (const stage of [main, second]) stage.total = Object.values(stage).reduce((sum, value) => sum + value, 0);
   return { main, second, total: main.total + second.total };
