@@ -16,6 +16,7 @@
 <meta property="og:url" content="https://mixmash.games/pitch" />
 <meta property="og:image" content="https://mixmash.games/assets/og-card.png" />
 <meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="../src/kit/viewport.css" />
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700;900&family=Outfit:wght@400;600;800;900&family=Space+Mono:wght@400;700&display=swap');
 
@@ -68,14 +69,19 @@ html, body {
 }
 
 /* ===== overlays ===== */
+/* Every overlay is a .mixkit-overlay (src/kit/viewport.css): it scrolls when its card is taller
+   than the screen, centers it when it fits, and pads it clear of the device safe area. The card
+   (.overlay-body) must be the overlay's only child: the kit centers it with auto margins, and a
+   plain `justify-content: center` would clip the top of a tall menu where nothing can scroll to it. */
 .overlay {
-  position: fixed; inset: 0; z-index: 20;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 24px;
   background: rgba(6,6,14,0.82);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
 .overlay[hidden] { display: none; }
+.overlay-body {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
 
 .kicker {
   font-family: var(--font-mono); font-size: 0.72rem;
@@ -113,7 +119,7 @@ html, body {
   flex: 1 1 0; min-width: 80px;
   font-family: var(--font-body); font-weight: 800; font-size: 0.8rem;
   letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 12px 8px; border-radius: 12px; cursor: pointer;
+  min-height: 44px; padding: 12px 8px; border-radius: 12px; cursor: pointer;
   color: var(--text-secondary);
   background: var(--surface); border: 1px solid var(--glass-border);
   transition: transform 0.12s, border-color 0.15s, color 0.15s, background 0.15s;
@@ -127,7 +133,6 @@ html, body {
 
 /* PR-102: master volume + mute on the pre-match screen. */
 .vol-row { display: flex; align-items: center; gap: 10px; }
-.vol-row--sub .vol-slider { height: 34px; }
 .vol-tag {
   flex: none; width: 44px; text-align: center;
   font-family: var(--font-mono); font-size: 0.6rem;
@@ -302,12 +307,32 @@ html, body {
 @media (max-width: 720px) {
   .controls-hint { display: none; }
 }
+
+/* A phone on its side (360 to 430 px tall): the menu goes two-column and drops the blurb, so Kick
+   Off is on screen when it opens. Anything still taller scrolls (the kit overlay rules). */
+@media (max-height: 520px) {
+  .overlay-body .kicker { margin-bottom: 6px; }
+  .overlay-body .title { font-size: clamp(1.8rem, 9vh, 2.6rem); }
+  #menu .subtitle, #menu .controls-hint { display: none; }
+  #menu .panel {
+    margin-top: 12px; gap: 10px 28px;
+    display: grid; grid-template-columns: 1fr 1fr; width: min(720px, 94vw);
+    align-items: start;
+  }
+  #menu .panel .opt-group:nth-child(1) { grid-column: 1; grid-row: 1; }
+  #menu .panel .opt-group:nth-child(2) { grid-column: 1; grid-row: 2; }
+  #menu .panel .opt-group:nth-child(3) { grid-column: 2; grid-row: 1 / span 2; }
+  #menu .panel #kickoff-btn { grid-column: 1 / span 2; justify-self: center; }
+  .opt-label { margin-bottom: 5px; }
+  .overlay-actions { margin-top: 16px; }
+}
 </style>
 <script src="/src/kit/pwa.js" defer></script>
 </head>
 <body>
 
 <script src="../src/kit/nav.js"></script>
+<script src="../src/kit/input.js"></script>
 <div id="pause-pill" hidden>&#10073;&#10073; Pause</div>
 
 <div id="stage">
@@ -325,7 +350,8 @@ html, body {
 </div>
 
 <!-- Start / menu overlay -->
-<div id="menu" class="overlay" style="--card-glow: var(--strobe-yellow)">
+<div id="menu" class="overlay mixkit-overlay" style="--card-glow: var(--strobe-yellow)">
+ <div class="overlay-body">
   <div class="kicker">MixMash Studio &middot; Arcade Soccer</div>
   <h1 class="title">PITCH <span class="grad">RIOT</span></h1>
   <p class="subtitle">Street soccer with the volume up. Smash it past the keeper, then cover the pitch for the halftime show — a good show hypes up your second half.</p>
@@ -375,20 +401,24 @@ html, body {
     <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> Move &nbsp;&middot;&nbsp;
     <kbd>Space</kbd> Shoot &nbsp;&middot;&nbsp; <kbd>Shift</kbd> Sprint &nbsp;&middot;&nbsp; <kbd>P</kbd> Pause
   </div>
+ </div>
 </div>
 
 <!-- Pause overlay -->
-<div id="pause" class="overlay" hidden>
+<div id="pause" class="overlay mixkit-overlay" hidden>
+ <div class="overlay-body">
   <div class="kicker">Paused</div>
   <h2 class="title" style="font-size: clamp(2rem,10vw,4rem)">TIME <span class="grad">OUT</span></h2>
   <div class="overlay-actions">
     <button class="btn" id="resume-btn">&#9654; Resume</button>
     <button class="btn ghost" id="quit-btn">Quit to Menu</button>
   </div>
+ </div>
 </div>
 
 <!-- Result overlay -->
-<div id="result" class="overlay" hidden>
+<div id="result" class="overlay mixkit-overlay" hidden>
+ <div class="overlay-body">
   <div class="kicker">Full Time</div>
   <div class="result-line" id="result-line">&nbsp;</div>
   <div class="result-score" id="result-score">0 &ndash; 0</div>
@@ -397,6 +427,7 @@ html, body {
     <button class="btn" id="rematch-btn">&#9654; Rematch</button>
     <button class="btn ghost" id="menu-btn">Change Settings</button>
   </div>
+ </div>
 </div>
 
 <script>
@@ -706,8 +737,8 @@ html, body {
   // Touch input
   const touch = { active: false, mag: 0, dx: 0, dy: 0, shoot: false, sprint: false };
   function setupTouch() {
-    const isTouch = ("ontouchstart" in window) || navigator.maxTouchPoints > 0;
-    if (!isTouch) return;
+    // One touch-capability answer for every game (MixKit.input), never the screen width.
+    if (!MixKit.input.touchCapable()) return;
     document.getElementById("touch").classList.add("on");
 
     const zone = document.getElementById("stick-zone");

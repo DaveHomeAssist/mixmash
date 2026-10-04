@@ -42,6 +42,7 @@
 <meta name="twitter:title" content="MIXMASH — Browser Platform Fighter">
 <meta name="twitter:description" content="14 fighters, 11 arenas, solo Platform Rush, local versus, and CPU battles. Free in your browser.">
 <meta name="twitter:image" content="https://mixmash.games/assets/og-card.png">
+<link rel="stylesheet" href="../src/kit/viewport.css">
 <style>
   :root {
     --mix-bg: #070711;
@@ -408,6 +409,7 @@
     display: none;
     align-items: center;
     gap: 8px;
+    min-height: 44px;
     padding: 10px 20px;
     font: inherit;
     font-size: 13px;
@@ -490,10 +492,12 @@
   .touch-btn[data-touch-action="shield"] { grid-area: 1 / 2; }
   .touch-menu-btn {
     position: fixed;
-    top: 14px;
-    right: 14px;
+    top: calc(var(--safe-top, env(safe-area-inset-top, 0px)) + 14px);
+    right: calc(var(--safe-right, env(safe-area-inset-right, 0px)) + 14px);
     z-index: 19;
     display: none;
+    min-width: 44px;
+    min-height: 44px;
     padding: 8px 14px;
     font: inherit;
     font-size: 11px;
@@ -523,6 +527,20 @@
     .control-table th:nth-child(3),
     .control-table td:nth-child(3) { display: none; }
   }
+  /* Short landscape screens (a phone on its side): spend the height on the panel, not the
+     chrome, so Resume and Start Quick Fight sit on screen when the menu opens. */
+  @media (max-height: 520px) {
+    .menu-overlay { padding: max(8px, var(--safe-top, 0px)) max(8px, var(--safe-right, 0px)) max(8px, var(--safe-bottom, 0px)) max(8px, var(--safe-left, 0px)); }
+    .mix-menu { max-height: calc(100dvh - 16px); }
+    .mix-menu__header { padding: 8px 16px; align-items: center; }
+    .mix-menu__summary { display: none; }
+    .mix-menu h1 { font-size: 18px; }
+    .menu-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 6px 12px; }
+    .menu-tab { padding: 0 6px; font-size: 11px; }
+    .menu-panels { padding: 10px 14px 14px; }
+    .menu-card { padding: 12px; }
+    .menu-actions { margin-top: 10px; }
+  }
 </style>
 <script src="/src/kit/pwa.js" defer></script>
 </head>
@@ -551,6 +569,7 @@
             <h2>First Session</h2>
             <p>Quick Fight starts a clean P1 versus CPU stock match. Sandbox opens Training with hitboxes enabled and no scoring pressure.</p>
             <div class="menu-actions">
+              <button id="menu-resume-match" class="menu-action" type="button" hidden>Resume Saved Match</button>
               <button id="menu-quick-fight" class="menu-action" type="button">Start Quick Fight</button>
               <button id="menu-sandbox" class="menu-action secondary" type="button">Enter Sandbox</button>
               <button id="menu-copy-match" class="menu-action secondary" type="button">Copy Match Link</button>
@@ -642,6 +661,7 @@
   </div>
 </div>
 <script src="../src/kit/nav.js"></script>
+<script src="../src/kit/input.js"></script>
 <script src="../src/kit/save.js"></script>
 <script src="./stage-data.js"></script>
 <script src="./fighter-data.js"></script>
@@ -677,6 +697,7 @@ const hudToasts = document.getElementById('hud-toasts');
 const audioPromptBtn = document.getElementById('audio-prompt');
 const touchPad = document.getElementById('touch-pad');
 const touchMenuBtn = document.getElementById('touch-menu');
+const menuResumeBtn = document.getElementById('menu-resume-match');
 const mechanicsFilterInput = document.getElementById('mechanics-filter');
 const mechanicsGrid = document.getElementById('mechanics-grid');
 const mechanicsEmpty = document.getElementById('mechanics-empty');
@@ -1726,11 +1747,22 @@ function mergeInput(a, b) {
 const TOUCH_ACTIONS = ['left', 'right', 'up', 'down', 'attack', 'special', 'shield'];
 const touchInput = { left: false, right: false, up: false, down: false, attack: false, special: false, shield: false };
 let touchPadVisible = false;
+let touchMenuVisible = false;
 
-function isTouchViewport() {
-  const coarsePointer = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-  const touchCapable = ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
-  return (coarsePointer || touchCapable) && window.innerWidth <= 1024;
+// Touch capability comes from MixKit.input (a coarse pointer or any touch points), never from
+// the screen width: a 1366 px iPad Pro is a touch device. The touch UI (pad, Menu button, tap
+// prompts) follows the modality the player used last, so a keyboard on a touch laptop, or an
+// iPad with a keyboard, does not keep the pad in front of the stage.
+let touchCapableNow = MixKit.input.touchCapable();
+// MixKit.input re-announces capability when the device gains or loses a coarse pointer.
+window.addEventListener('mixkit:input-mode', () => { touchCapableNow = MixKit.input.touchCapable(); });
+
+function isTouchCapable() {
+  return touchCapableNow;
+}
+
+function touchUiActive() {
+  return isTouchCapable() && MixKit.input.mode() === 'touch';
 }
 
 function clearTouchInput() {
@@ -1780,14 +1812,51 @@ function setupTouchPad() {
 
 function updateTouchPadVisibility() {
   if (!touchPad) return;
-  const supported = isTouchViewport();
+  const touchUi = touchUiActive();
   const inMatch = state.mode === 'playing' || state.mode === 'training';
-  const shouldShow = supported && inMatch && !domMenuOpen;
-  if (shouldShow === touchPadVisible) return;
-  touchPadVisible = shouldShow;
-  touchPad.classList.toggle('is-visible', shouldShow);
-  if (touchMenuBtn) touchMenuBtn.classList.toggle('is-visible', supported && !domMenuOpen);
-  if (!shouldShow) clearTouchInput();
+  // The pad belongs to a live match. The Menu button belongs to every screen, so a player can
+  // reach the command menu (Quick Fight, Resume, audio) from the title with touch alone.
+  const padShouldShow = touchUi && inMatch && !domMenuOpen;
+  const menuShouldShow = touchUi && !domMenuOpen;
+  if (padShouldShow !== touchPadVisible) {
+    touchPadVisible = padShouldShow;
+    touchPad.classList.toggle('is-visible', padShouldShow);
+    if (!padShouldShow) clearTouchInput();
+  }
+  if (touchMenuBtn && menuShouldShow !== touchMenuVisible) {
+    touchMenuVisible = menuShouldShow;
+    touchMenuBtn.classList.toggle('is-visible', menuShouldShow);
+  }
+}
+
+// A tap on the stage through MixKit.input: on the title it opens the command menu (Quick Fight,
+// Resume, Sandbox, audio), and on a paused match it resumes. Both replace keyboard-only prompts.
+// A touch browser may follow the tap with a click on whatever now sits under the finger, so the
+// menu ignores clicks for a moment after a tap opens it.
+const TAP_OPEN_GUARD_MS = 350;
+let tapOpenedMenuAt = -Infinity;
+
+function setupStageTap() {
+  MixKit.input.gestures(canvas, {
+    onTap() {
+      if (!isTouchCapable() || domMenuOpen) return;
+      if (state.mode === 'title') {
+        initAudio(); // a tap is a user gesture: unlock audio here
+        tapOpenedMenuAt = performance.now();
+        openDomMenu('onboarding');
+      } else if (state.mode === 'paused') {
+        state.mode = state.matchType === 'training' ? 'training' : 'playing';
+      }
+    },
+  });
+  if (menuOverlay) {
+    menuOverlay.addEventListener('click', event => {
+      if (performance.now() - tapOpenedMenuAt < TAP_OPEN_GUARD_MS) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
+  }
 }
 
 const CONTROL_ACTIONS = INPUT_DATA.CONTROL_ACTIONS;
@@ -1900,6 +1969,8 @@ function renderAudioTrackOptions() {
 }
 
 function updateMenuFormState() {
+  // Resume is offered from the title only: mid-match it would overwrite the live match.
+  if (menuResumeBtn) menuResumeBtn.hidden = !(snapshotAvailable && state.mode === 'title');
   renderControlBindings();
   renderAudioTrackOptions();
   renderProfilePanel();
@@ -2044,6 +2115,16 @@ function setupDomMenu() {
   document.getElementById('menu-quick-fight')?.addEventListener('click', () => {
     closeDomMenu({ resume: false });
     startQuickFight();
+  });
+  // The same saved-match resume the R key gives on the title, as a button for touch.
+  menuResumeBtn?.addEventListener('click', () => {
+    initAudio();
+    if (state.mode !== 'title' || !snapshotAvailable || !restoreActiveMatchSnapshot()) {
+      updateMenuFormState();
+      setMenuStatus('No saved match to resume');
+      return;
+    }
+    closeDomMenu({ resume: false });
   });
   document.getElementById('menu-sandbox')?.addEventListener('click', startSandboxFromMenu);
   menuCopyMatchBtn?.addEventListener('click', () => copyShareUrl(buildMatchShareUrl(), 'Match link'));
@@ -7938,8 +8019,18 @@ function renderTitle() {
   ctx.fillStyle = '#d8ccb8'; ctx.font = '18px monospace';
   ctx.fillText('Forge the route. Win the fight.', BASE_W / 2, BASE_H / 3 + 40);
 
-  ctx.fillStyle = '#aaa'; ctx.font = '16px monospace';
   const y0 = BASE_H / 2 + 20;
+  if (touchUiActive()) {
+    // Touch: keyboard prompts mean nothing here. Sized so the text reads at about 15 px on screen
+    // however far the stage is scaled down.
+    const px = Math.round(Math.max(18, 15 / ((parseFloat(canvas.style.width) || BASE_W) / BASE_W)));
+    ctx.fillStyle = '#f0e6d2'; ctx.font = `bold ${Math.round(px * 1.5)}px monospace`;
+    ctx.fillText('TAP TO START', BASE_W / 2, y0 + 8);
+    ctx.fillStyle = '#aaa'; ctx.font = `${px}px monospace`;
+    ctx.fillText(snapshotAvailable ? 'Saved match ready: tap, then Resume' : 'Tap, then Start Quick Fight', BASE_W / 2, y0 + 8 + px * 2);
+    return;
+  }
+  ctx.fillStyle = '#aaa'; ctx.font = '16px monospace';
   ctx.fillText('Q = Quick Fight  |  ENTER = Setup Match', BASE_W / 2, y0);
   const qStage = STAGES[quickFightSetup.selectedStage] || STAGES.battlefield;
   const qP1 = FIGHTER_DEFS[quickFightSetup.p1Fighter] || FIGHTER_DEFS[FIGHTER_KEYS[0]];
@@ -8580,7 +8671,7 @@ function renderPaused() {
   ctx.fillStyle = '#fff'; ctx.font = 'bold 36px monospace'; ctx.textAlign = 'center';
   ctx.fillText('PAUSED', BASE_W / 2, BASE_H / 2);
   ctx.font = '16px monospace';
-  ctx.fillText('P to resume  |  ESC for title', BASE_W / 2, BASE_H / 2 + 30);
+  ctx.fillText(touchUiActive() ? 'Tap to resume' : 'P to resume  |  ESC for title', BASE_W / 2, BASE_H / 2 + 30);
 }
 
 function render() {
@@ -8945,7 +9036,9 @@ window.render_game_to_text = function () {
     controlsTester: (state.mode === 'options' || domMenuOpen) ? getControlsTesterState() : undefined,
     toasts: listActiveToasts(),
     touchControls: {
-      supported: isTouchViewport(),
+      supported: isTouchCapable(),
+      inputMode: MixKit.input.mode(),
+      menuButtonVisible: touchMenuVisible,
       visible: touchPadVisible,
       active: TOUCH_ACTIONS.filter(action => touchInput[action]),
       pressed: hasTouchInput(),
@@ -9083,6 +9176,7 @@ function getMechanicsFilterState() {
 snapshotAvailable = hasActiveMatchSnapshot();
 setupDomMenu();
 setupTouchPad();
+setupStageTap();
 setupMechanicsFilter();
 updateAudioPrompt();
 applySharePresetFromUrl();

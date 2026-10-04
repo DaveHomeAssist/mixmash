@@ -205,6 +205,26 @@ try {
   assert.equal(afterReload.mode, 'title');
   assert.equal(afterReload.snapshotAvailable, true);
 
+  // The same resume as a button, for touch (there is no R key): offered from the title only.
+  await press('KeyO');
+  assert.equal(await page.locator('#menu-resume-match').isVisible(), true, 'Resume Saved Match is offered from the title');
+  await page.click('#menu-resume-match');
+  await step(15);
+  const resumedByButton = await readState();
+  assert.equal(resumedByButton.mode, 'playing');
+  assert.equal(resumedByButton.domMenu.open, false);
+  assert.equal(resumedByButton.players.length, 2);
+  assert.ok(resumedByButton.frame >= beforeReload.frame, 'the Resume button should continue from the saved frame');
+  await press('KeyO');
+  assert.equal(await page.locator('#menu-resume-match').isVisible(), false, 'Resume Saved Match is not offered mid-match, where it would overwrite the live match');
+  await press('Escape'); // close the menu and carry on playing
+  assert.equal((await readState()).mode, 'playing');
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(250);
+  const afterSecondReload = await readState();
+  assert.equal(afterSecondReload.mode, 'title');
+  assert.equal(afterSecondReload.snapshotAvailable, true);
+
   await press('KeyR');
   await step(15);
 
@@ -221,6 +241,7 @@ try {
   assert.equal(afterReset.titleActions.resume, null);
 
   await press('KeyO');
+  assert.equal(await page.locator('#menu-resume-match').isVisible(), false, 'no saved match, no Resume button');
   await page.click('#menu-sandbox');
   await step(30);
   const sandbox = await readState();
