@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "633f60a held nights delivered · seating PR97 in CI",
+  "head": "Festival stage accounting core locally verified; seating PR97 in CI",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Club ticketing and held-night cancellation are hosted-verified. Seating PR97 passed local tests but Linux CI found a three-pixel Promote overflow; shortened the repeated zone explanation, preserving detailed rules in Seats and lawn. All28 legacy browser checks, six seating journeys and build/docs pass again; fresh Linux CI precedes release. Stage accounting, room scenes, navigation and release proof remain.",
+  "statusReason": "Club ticketing and held cancellation are hosted-verified. Seating Linux layout correction passes local browser/build checks and awaits fresh CI. Festival stage accounting core passes370 repository tests/build/docs; career adapter and player receipts remain pending. Room scenes, navigation and release proof continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -26,8 +26,8 @@
     "PR95: held-night cancellation delivered at633f60a with24 matching hosted files, six player journeys plus full-hold/debt branches and offline cash/journal proof."
   ],
   "nextStep": {
-    "title": "Deliver seating, then complete stage accounts and room scenes",
-    "why": "Guest operations and the research pilot now have source, CI, Pages and live behavior proof. Complete equipment acceptance and continue the remaining phase queue autonomously.",
+    "title": "Deliver seating and integrate Festival stage accounting",
+    "why": "Single-site admissions and exact stage/shared cost accounting now have a tested pure authority; connect it to booking, opening cash, signing and player receipts while preserving legacy saves.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -1039,7 +1039,8 @@
               "Independent seat/lawn model and controls implemented locally: frozen prices, separate elasticity, presales/gross/value scores, attendance weighting and public forecasts. New marked held runs now use the same per-night draw seed as playback. Twelve added core/adapter tests and all359 repository tests/build/docs pass; initial six browser journeys and offline zone/cancellation/journal parity pass. Final browser regressions and release acceptance follow; separate stage accounting and slope/scene geometry remain open.",
               "Seating final local proof: six Chromium/WebKit journeys exercise both price sliders independently, public forecasts/presales, frozen receipts, both deals, held cancellation and reload; both themes/five viewport sizes. Six held-run regression journeys plus full-hold/debt branches and28 legacy checks pass.359 tests/build/docs, action runner and offline zone receipt/cancellation/journal parity pass. Required CI/Pages/hosted seating proof remains pending.",
               "Held cancellation PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z.24 hosted runtime files match. Six hosted Chromium/WebKit journeys plus full-hold/controlled-debt branches, compact windows, signed history and reload pass. Hosted offline cancellation records two unplayed nights,4000 penalty and1018940 journal cash. Seating PR97 remains in CI; separate stage accounts still pending.",
-              "PR97 CI37211585196 found a three-pixel Amphitheater Promote overflow at1024x700 on Linux. Shortened the repeated zone explanation; detailed rules remain accessible. All28 legacy checks, six Chromium/WebKit seating journeys and build/docs pass after correction; fresh CI and hosted proof remain pending."
+              "PR97 CI37211585196 found a three-pixel Amphitheater Promote overflow at1024x700 on Linux. Shortened the repeated zone explanation; detailed rules remain accessible. All28 legacy checks, six Chromium/WebKit seating journeys and build/docs pass after correction; fresh CI and hosted proof remain pending.",
+              "Festival version1 pure accounting implemented: one site admission/ticket per guest, capacity-bounded stage allocation, separate PA/lights/crew budgets, shared site cost allocation, independent artist ticket bases and exact opening/signing/site-net bridge. Eleven tests include hand receipts, rounding, malformed sources and hundreds of conservation cases; all370 repository tests/build/docs pass. Core only: career adapter/UI, CI and hosted proof remain pending."
             ]
           },
           {
