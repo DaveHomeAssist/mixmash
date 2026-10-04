@@ -2372,6 +2372,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-ticketing.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-ticketing.mjs",
+      "description": "Ticketing conserves demand and money without claiming career integration.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-ticketing.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test/fixtures/save-v1.json",
       "project": "front-of-house",
       "category": "tests",
@@ -2789,6 +2799,16 @@
       "title": "styles.css",
       "description": "Styles for the Lot Night client.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/styles.css",
+      "open": null
+    },
+    {
+      "path": "front-of-house/ticketing.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "ticketing.mjs",
+      "description": "Optional Club presale policy and collection receipt; no career cash changes on replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/ticketing.mjs",
       "open": null
     },
     {
