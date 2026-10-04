@@ -189,6 +189,8 @@ Every subsequent cash-changing action posts the actual movement: acquisition, di
 
 Nine adapter checks cover both offered deals, paid incidents, sponsor opening, held nights, research refunds, duplicate capital commands, sale after signing, reload/recovery and bounded history. Player controls and browser/offline evidence remain a separate delivery slice.
 
+New signed history rows also retain optional `cashAfter`, the exact cash immediately after signing and before a held run's next opening payment. It is display evidence only and never credits cash. Valid safe-integer values survive normalization; older rows show current cash and explicitly state that historical cash was not recorded. The signed settlement uses this snapshot so later equipment or development spending cannot change its historical cash bridge.
+
 ### Club fixed-pillar editing compatibility
 
 The technical Club preview introduces no saved fields or schema change. New editing commands reject pillar overlaps, but normalization and historical evaluation keep their existing layout rules. Existing overlap saves are preserved without removing objects, charging money or rewriting past show outcomes; newly submitted replacement layouts must obey the fixed pillars.

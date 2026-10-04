@@ -9,10 +9,12 @@ import { chromium } from 'playwright';
 import { startStaticServer, launchOptions } from './static-server.mjs';
 import { summarize, withDeadline } from '../front-of-house/tools/performance-stats.mjs';
 import { createGame, applyAction, showPreview, venueSpec, sightlineTiles } from '../front-of-house/engine.mjs';
-import { STARTER_LAYOUT, FLOOR_DENSITY } from '../front-of-house/data.mjs';
+import { STARTER_LAYOUT, FLOOR_DENSITY, VENUES } from '../front-of-house/data.mjs';
 
 const args = process.argv.slice(2), quick = args.includes('--quick'), gpu = args.includes('--gpu=metal') ? 'metal' : args.includes('--gpu=default') ? 'default' : 'software';
-for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
+for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20', '--venue=club'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
+const venue = args.includes('--venue=club') ? 'club' : 'lot';
+const initial = () => createGame(170, venue === 'club' ? { mode: 'sandbox' } : {});
 const faultCpuMs = args.includes('--fault-cpu=20') ? 20 : 0;
 const nativeChrome = args.includes('--native-chrome');
 if (nativeChrome && (args.includes('--dpr=2') || args.includes('--large-viewports'))) throw new Error('Native Chrome uses the actual display density and available desktop size');
@@ -23,17 +25,17 @@ await mkdir(output, { recursive: true });
 if ((await readdir(output)).length) throw new Error('Output directory must be empty; choose a new directory to preserve previous attempts');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const command = (name, args) => { try { return execFileSync(name, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return 'unknown'; } };
-const actions = [{ type: 'chooseDeal', deal: 'door', artistId: 'sodium-arcade' }];
+const actions = [...(venue === 'club' ? [{ type: 'chooseVenue', venueId: venue }] : []), { type: 'chooseDeal', deal: 'door', artistId: venue === 'club' ? VENUES.club.defaultArtist : 'sodium-arcade' }];
 const step = (s, a) => { const r = applyAction(s, a); assert.equal(r.error, null); return r.state; };
-const empty = step(createGame(170), actions[0]);
-const showActions = [...actions, { type: 'setLayout', objects: STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 } }, { type: 'confirmPromotion' }];
-const crowded = showActions.reduce(step, createGame(170));
+const empty = actions.reduce(step, initial());
+const showActions = [...actions, { type: 'setLayout', objects: venue === 'club' ? VENUES.club.starter : STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 } }, { type: 'confirmPromotion' }];
+const crowded = showActions.reduce(step, initial());
 function fixture(state, actions) {
   const spec = venueSpec(state.venue), sight = sightlineTiles(state.venue), night = state.phase === 'show';
   return { state, actions, scene: { objects: state.venue.objects, grid: state.venue.grid, floor: state.venue.id, pillars: spec.pillars, density: spec.density || FLOOR_DENSITY, clearSet: [...sight.clear], blockedSet: [...sight.blocked], showClear: false, cursor: null, ghost: null, selection: null, crowd: night ? showPreview(state).attendance : 0, incident: night ? state.show.incidentId : null, night, lightTower: state.venue.objects.some(o => o.type === 'lights'), t: 0 } };
 }
 const fixtures = { empty: fixture(empty, actions), crowd: fixture(crowded, showActions) };
-assert.equal(fixtures.crowd.scene.crowd, 150, 'Changed engine fixture requires explicit baseline review');
+assert.equal(fixtures.crowd.scene.crowd, venue === 'club' ? 360 : 150, 'Changed engine fixture requires explicit baseline review');
 assert.equal(fixtures.crowd.scene.incident, 'pa-dropout');
 const sources = {};
 for (const path of ['package-lock.json', 'front-of-house/lot-assets.json', 'front-of-house/engine.mjs', 'front-of-house/data.mjs', 'front-of-house/lot-camera.mjs', 'front-of-house/lot-models.mjs', 'front-of-house/lot-renderer.mjs', 'front-of-house/lot-presentation.mjs', 'front-of-house/tools/performance-stats.mjs', 'test/front-of-house-performance.mjs']) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
@@ -44,7 +46,7 @@ const report = {
   source: { commit: command('git', ['rev-parse', 'HEAD']), dirty: command('git', ['status', '--porcelain']).length > 0, sha256: sources },
   ci: process.env.GITHUB_ACTIONS === 'true' ? { provider: 'github-actions', runnerClass: process.env.FOH_PERF_RUNNER_CLASS || 'unknown', os: process.env.RUNNER_OS || 'unknown', architecture: process.env.RUNNER_ARCH || 'unknown', image: process.env.ImageOS || 'unknown', imageVersion: process.env.ImageVersion || 'unknown', runId: process.env.GITHUB_RUN_ID || 'unknown', attempt: process.env.GITHUB_RUN_ATTEMPT || 'unknown' } : null,
   host: { platform: platform(), architecture: arch(), kernel: release(), model: platform() === 'darwin' ? command('sysctl', ['-n', 'hw.model']) : 'unknown', cpu: cpus()[0]?.model || 'unknown', cpuCount: cpus().length, memoryBytes: totalmem(), osVersion: platform() === 'darwin' ? command('sw_vers', ['-productVersion']) : 'unknown', osBuild: platform() === 'darwin' ? command('sw_vers', ['-buildVersion']) : 'unknown', power: platform() === 'darwin' ? command('pmset', ['-g', 'batt']).split('\n')[0] : 'unknown', lowPower: platform() === 'darwin' ? command('pmset', ['-g', 'custom']).split('\n').filter(s => s.includes('lowpowermode')).map(s => s.trim()) : 'unknown', displayRefresh: 'unknown', thermal: 'unknown', otherHostLoad: 'uncontrolled; load averages recorded per run' },
-  protocol: { layer: 'isolated renderer; excludes full game and HUD', warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, requestedDpr: nativeChrome ? 'native' : requestedDpr, viewports, headless: !nativeChrome, requestedBackend: gpu, launchArgs: options.args || [], reducedMotion: 'no-preference', shadows: '1024 PCFSoft', antialias: true, adaptiveQuality: false, gpuTimestampMs: 'unavailable', acceptance: 'descriptive only; no device or statistical pass limits inferred' },
+  protocol: { venue, layer: 'isolated renderer; excludes full game and HUD', warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, requestedDpr: nativeChrome ? 'native' : requestedDpr, viewports, headless: !nativeChrome, requestedBackend: gpu, launchArgs: options.args || [], reducedMotion: 'no-preference', shadows: '1024 PCFSoft', antialias: true, adaptiveQuality: false, gpuTimestampMs: 'unavailable', acceptance: 'descriptive only; no device or statistical pass limits inferred' },
   fixtureSha256: {}, runs: [], errors: [],
 };
 report.protocol.faultCpuMs = faultCpuMs;
@@ -74,7 +76,7 @@ try {
       record.environment = await page.evaluate(async scene => {
         const { createLotRenderer } = await import('/front-of-house/lot-renderer.mjs');
         window.cameraAt = (await import('/front-of-house/tools/performance-stats.mjs')).cameraAt;
-        window.canvas = document.querySelector('canvas'); window.backend = createLotRenderer(canvas); window.input = scene;
+        window.canvas = document.querySelector('canvas'); window.backend = createLotRenderer(canvas, { venue: scene.floor }); window.input = scene;
         backend.draw(scene); backend.preset('wide');
         const gl = canvas.getContext('webgl2'), debug = gl.getExtension('WEBGL_debug_renderer_info'), renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
         return { browserDpr: devicePixelRatio, effectiveDpr: backend.info().dpr, backing: { width: canvas.width, height: canvas.height }, renderer, vendor: debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR), graphics: /swiftshader|llvmpipe|software/i.test(renderer) ? 'software' : /ANGLE Metal Renderer: Apple/.test(renderer) ? 'Apple hardware via Metal' : 'unverified hardware backend', visibility: document.visibilityState, quality: backend.info(), gpuTimersAvailable: !!gl.getExtension('EXT_disjoint_timer_query_webgl2') };
