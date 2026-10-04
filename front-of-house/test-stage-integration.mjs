@@ -113,3 +113,29 @@ test('an assigned owned main PA substitutes operation for rental without omittin
   assert.equal(r.costs.equipmentOperation, 20); assert.equal(done.cash, s.cash + r.net);
   assert.deepEqual(E.settlementFor(E.normalizeState(done)), r);
 });
+
+test('Book selects an eligible prior-tier side act without charging or silently freezing a deal', () => {
+  let s = act(E.createGame(8, { mode: 'sandbox' }), { type: 'chooseVenue', venueId: 'festival' });
+  const offers = E.stageOpenersFor(s); assert.equal(offers[0], 'hollow-census'); assert.ok(offers.includes('salt-ledger'));
+  for (const id of offers) assert.equal(E.termsFor(id, s.reputation.artists[id]).doorOk, true);
+  const before = s.cash; s = act(s, { type: 'chooseSideAct', artistId: 'salt-ledger' });
+  assert.equal(s.cash, before); assert.equal(s.booking.secondTerms, null); assert.equal(E.normalizeState(s).booking.secondId, 'salt-ledger');
+  refuse(s, { type: 'chooseSideAct', artistId: 'paper-voltage' }, /eligible/);
+  s = act(s, { type: 'chooseDeal', deal: 'guarantee', artistId: E.offersFor(s)[0], secondId: s.booking.secondId, stagePolicy: 1 });
+  refuse(s, { type: 'chooseSideAct', artistId: 'hollow-census' }, /book/);
+  s = act(s, { type: 'back' }); s = act(s, { type: 'chooseSideAct', artistId: 'hollow-census' }); assert.equal(s.booking.stages, undefined);
+});
+test('the next Festival minimum matches a bookable sponsored day including both production budgets', () => {
+  const done = sign(finish(open(build()))), quote = E.nextShowCost(done), fresh = act(done, { type: 'nextShow' });
+  const quotes = E.offersFor(fresh).map(artistId => {
+    let s = act(fresh, { type: 'chooseDeal', deal: 'sponsor', artistId, secondId: E.stageOpenersFor(fresh)[0], stagePolicy: 1 });
+    s = act(s, { type: 'setLayout', objects: D.VENUES.festival.cheapest }); return E.upfrontFor(s);
+  });
+  assert.equal(quote, Math.min(...quotes));
+});
+test('soured side acts disappear from eligible choices while changing venues remains available', () => {
+  let s = act(E.createGame(8, { mode: 'sandbox' }), { type: 'chooseVenue', venueId: 'festival' });
+  for (const id of E.stageOpenersFor(s)) s.reputation.artists[id] = -100;
+  assert.deepEqual(E.stageOpenersFor(s), []); refuse(s, { type: 'chooseSideAct', artistId: 'hollow-census' }, /eligible/);
+  s = act(s, { type: 'chooseVenue', venueId: 'club' }); assert.equal(s.venue.id, 'club');
+});

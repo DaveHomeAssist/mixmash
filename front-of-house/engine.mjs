@@ -136,6 +136,12 @@ export function offersFor(state) {
   return offersForSeed(state.seed, !state.history.length && spec.id === 'lot', spec.roster, spec.defaultArtist);
 }
 
+export function stageOpenersFor(state) {
+  if (state.venue.id !== 'festival') return [];
+  return Object.keys(D.ARTISTS).filter(id => !D.FEST_ROSTER.includes(id) && termsFor(id, state.reputation.artists[id]).doorOk)
+    .sort((a, b) => D.ARTISTS[b].drawMax - D.ARTISTS[a].drawMax || a.localeCompare(b));
+}
+
 function offersForSeed(seed, firstShow, roster = D.ROSTER, defaultArtist = D.DEFAULT_ARTIST) {
   const rng = mulberry32((seed ^ 0x5bd1e995) >>> 0);
   const pool = roster.slice();
@@ -171,7 +177,9 @@ export function nextShowCost(state) {
   const spec = venueSpec(state.venue);
   return Math.min(...offersForSeed(nextSeed(state.seed), false, spec.roster, spec.defaultArtist).map((id) => {
     const terms = termsFor(id, state.reputation.artists[id]);
-    return showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
+    const ordinary = showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
+    return Math.min(ordinary, spec.sponsor ? showCost(spec, 'sponsor', terms.ask) : ordinary)
+      + (spec.id === 'festival' ? 4 * D.STAFF_RATE + D.PA_RENTAL.M + D.LIGHTS_RENTAL : 0);
   }));
 }
 
@@ -1104,6 +1112,15 @@ function applyActionCore(state, action) {
       const result = Research.applyResearch(researchFor(s), action.command, { cash: s.cash });
       if (result.error) return fail(state, result.error);
       s.research = Research.saveResearch(result.state); s.cash += result.cashDelta;
+      return { state: s, error: null };
+    }
+    case 'chooseSideAct': {
+      if ((err = need('book'))) return fail(state, err);
+      if (!stageOpenersFor(s).includes(action.artistId)) return fail(state, 'Choose an eligible Festival side act');
+      s.booking.secondId = action.artistId;
+      s.booking.secondTerms = null;
+      delete s.booking.stages;
+      delete s.stagesNotice;
       return { state: s, error: null };
     }
     case 'chooseDeal': {

@@ -2632,6 +2632,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-stages-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-stages-smoke.mjs",
+      "description": "Festival bill selection, conserved stage/site receipts and career cash through player controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-stages-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-ticketing-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",

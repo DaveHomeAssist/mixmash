@@ -231,3 +231,11 @@ Multi-night Amphitheater offers show their per-unplayed-night cancellation fee b
 ## Seats and lawn pilot
 
 Amphitheater Book discloses separate sales. Promote retains the two price sliders and opens Seats/Lawn/Rules from Seats and lawn. Before doors, each page shows public draw-range tickets, presales and gross; later incidents remain uncertain. After the night, the pages show actual count, frozen price, gross and zone value score alongside shared show quality. The settlement ticket line and Menu reopen these receipts. The overall forecast and presale chart use the same independent zone calculation. Short windows use contained paging.
+
+### Festival bill and stage accounts
+
+Festival Book discloses one site ticket and both stage budgets. Stage bill opens a six-page contained window: Bill, Main, Side, Site, Cash and Rules. Bill selects a prior-tier act currently eligible for a door deal; choosing costs nothing and persists until the main booking freezes both acts. Guarantee-only/soured acts are not forced into door contracts. If none qualify, Book explains the restriction and venue selection remains available.
+
+Promote and Menu reopen Stage accounts. Main/Side use public draw bounds before doors and source-derived actual receipts after response. Site combines the single ticket gross, shared income, all production/site costs and both artist payments. Cash explicitly reconciles opening outflow, response already paid, signing income and final balance; a signed reopen uses recorded historical cash. Rules disclose the aggregate audience allocation and shared site-quality model. Compact windows page content; every field remains reachable without ordinary form scrolling.
+
+Settlement includes both production budgets, total artist pay and a link to detailed accounts. A side-stage ticket is never added as extra revenue. The main door basis uses its own stage; side pay is withheld once at signing. The Promote ticket estimate now uses the same independent seating or Festival gross as its detail window, and the Festival presale chart uses the same published forecast. Version50 refreshes the player controls. Physical-device and final scene acceptance remain separate.
