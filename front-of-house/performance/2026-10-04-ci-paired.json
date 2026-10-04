@@ -1,0 +1,553 @@
+{
+  "title": "Paired CI renderer regression validation and measured negative control",
+  "evidenceDate": "2026-10-04",
+  "protocol": "Pinned calibrated baseline and candidate on each same runner;18 full windows per sample,10s warmup/30s measurement; original artifacts independently audited.",
+  "limitations": [
+    "SwiftShader regression detection, not physical GPU or desktop/low-power frame-rate acceptance.",
+    "PR measurements use the actual generated merge revision; manual dispatch uses the frozen branch revision.",
+    "These runs precede later equipment controls and render batching delivery; current-head CI remains required."
+  ],
+  "replication": {
+    "url": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37207123068",
+    "sourceAndRawDigestsVerified": true,
+    "fullWindows": 36,
+    "baselineReportSha256": "03c3623eff2f71028b9b99925a476149da4f166f238db19bd20562292bacd195",
+    "candidateReportSha256": "c4affb1dfae535411ca38ed74557b64fa228496cd633436b3bd7221a09fbd9ac",
+    "comparison": {
+      "baseline": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
+      "candidate": "42c1e0f808f0fbe476ad2275b2121845f4b58d9d",
+      "ci": {
+        "provider": "github-actions",
+        "runnerClass": "ubuntu-24.04",
+        "os": "Linux",
+        "architecture": "X64",
+        "image": "ubuntu24",
+        "imageVersion": "20260927.320.1",
+        "runId": "37207123068",
+        "attempt": "1"
+      },
+      "fault": false,
+      "limits": {
+        "frameMean": {
+          "ratio": 1.25,
+          "floorMs": 8
+        },
+        "frameP95": {
+          "ratio": 1.25,
+          "floorMs": 8
+        },
+        "cpuP95": {
+          "ratio": 1.5,
+          "floorMs": 1
+        }
+      },
+      "groups": [
+        {
+          "id": "1440x900-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 87.55685131195335,
+              "candidateMs": 87.86198830409357,
+              "limitMs": 109.44606413994168,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 200,
+              "candidateMs": 200,
+              "limitMs": 250,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.6000000000058208,
+              "candidateMs": 0.5999999999767169,
+              "limitMs": 1.6000000000058208,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "1440x900-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 481.23125,
+              "candidateMs": 478.8875,
+              "limitMs": 601.5390625,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 933.3000000000029,
+              "candidateMs": 950,
+              "limitMs": 1166.6250000000036,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 6.599999999976717,
+              "candidateMs": 5.5,
+              "limitMs": 9.899999999965075,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "375x812-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 18.180193821926107,
+              "candidateMs": 18.191212121212125,
+              "limitMs": 26.180193821926107,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 33.29999999999927,
+              "candidateMs": 33.29999999999927,
+              "limitMs": 41.62499999999909,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.40000000002328306,
+              "candidateMs": 0.4000000001396984,
+              "limitMs": 1.400000000023283,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "375x812-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 329.37741935483865,
+              "candidateMs": 323.03723404255317,
+              "limitMs": 411.7217741935483,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 649.9000000000015,
+              "candidateMs": 649.8999999999978,
+              "limitMs": 812.3750000000018,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 5.099999999976717,
+              "candidateMs": 4.199999999953434,
+              "limitMs": 7.649999999965075,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "2560x720-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 72.01966426858513,
+              "candidateMs": 72.6219806763285,
+              "limitMs": 90.02458033573141,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 166.79999999999927,
+              "candidateMs": 166.70000000000073,
+              "limitMs": 208.4999999999991,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.5999999999767169,
+              "candidateMs": 0.5999999998603016,
+              "limitMs": 1.599999999976717,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "2560x720-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 455.53636363636366,
+              "candidateMs": 466.6476923076923,
+              "limitMs": 569.4204545454546,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 816.6999999999971,
+              "candidateMs": 866.6000000000004,
+              "limitMs": 1020.8749999999964,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 6.399999999906868,
+              "candidateMs": 7.099999999860302,
+              "limitMs": 9.599999999860302,
+              "pass": true
+            }
+          },
+          "pass": true
+        }
+      ],
+      "pass": true
+    }
+  },
+  "negativeControl": {
+    "url": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37207121746",
+    "sourceAndRawDigestsVerified": true,
+    "fullWindows": 54,
+    "baselineReportSha256": "f0e8c613c8657dd166468b0c196cba1ab9c68313b5ebe6a6c2b7e479b301e6c5",
+    "candidateReportSha256": "7b9b461258d4d1225eac8500e5de5a2f0967c4bc940052e562bcb322e1265d5a",
+    "comparison": {
+      "baseline": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
+      "candidate": "aa5f6a3339cb666ec5729403afb9dffc00786cfb",
+      "ci": {
+        "provider": "github-actions",
+        "runnerClass": "ubuntu-24.04",
+        "os": "Linux",
+        "architecture": "X64",
+        "image": "ubuntu24",
+        "imageVersion": "20260927.320.1",
+        "runId": "37207121746",
+        "attempt": "1"
+      },
+      "fault": false,
+      "limits": {
+        "frameMean": {
+          "ratio": 1.25,
+          "floorMs": 8
+        },
+        "frameP95": {
+          "ratio": 1.25,
+          "floorMs": 8
+        },
+        "cpuP95": {
+          "ratio": 1.5,
+          "floorMs": 1
+        }
+      },
+      "groups": [
+        {
+          "id": "1440x900-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 86.5,
+              "candidateMs": 88.11964809384165,
+              "limitMs": 108.125,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 199.90000000000146,
+              "candidateMs": 200,
+              "limitMs": 249.87500000000182,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.6000000000058208,
+              "candidateMs": 0.5999999999767169,
+              "limitMs": 1.6000000000058208,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "1440x900-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 488.6903225806452,
+              "candidateMs": 484.36984126984123,
+              "limitMs": 610.8629032258066,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 1133.2999999999956,
+              "candidateMs": 1100,
+              "limitMs": 1416.6249999999945,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 5.900000000023283,
+              "candidateMs": 6,
+              "limitMs": 8.850000000034925,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "375x812-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 18.11436330718165,
+              "candidateMs": 18.257603406326034,
+              "limitMs": 26.11436330718165,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 33.29999999999927,
+              "candidateMs": 33.29999999999927,
+              "limitMs": 41.62499999999909,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.30000000004656613,
+              "candidateMs": 0.4000000001396984,
+              "limitMs": 1.3000000000465661,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "375x812-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 330.0230769230769,
+              "candidateMs": 332.5879120879121,
+              "limitMs": 412.5288461538462,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 649.9000000000015,
+              "candidateMs": 650,
+              "limitMs": 812.3750000000018,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 4.7000000000116415,
+              "candidateMs": 4.300000000046566,
+              "limitMs": 7.050000000017462,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "2560x720-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 71.80717703349282,
+              "candidateMs": 71.84736842105262,
+              "limitMs": 89.75897129186603,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 166.70000000000073,
+              "candidateMs": 166.79999999999927,
+              "limitMs": 208.3750000000009,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.5999999999767169,
+              "candidateMs": 0.5999999998603016,
+              "limitMs": 1.599999999976717,
+              "pass": true
+            }
+          },
+          "pass": true
+        },
+        {
+          "id": "2560x720-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 461.34393939393937,
+              "candidateMs": 461.0924242424242,
+              "limitMs": 576.6799242424242,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 833.2999999999993,
+              "candidateMs": 866.5999999999985,
+              "limitMs": 1041.624999999999,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 6.900000000023283,
+              "candidateMs": 7.100000000093132,
+              "limitMs": 10.350000000034925,
+              "pass": true
+            }
+          },
+          "pass": true
+        }
+      ],
+      "pass": true
+    },
+    "faultReportSha256": "f9a2f8014d316bc12516fb45e72f6756a33049c41287049c7d7b5d2fa2f1b3ba",
+    "faultComparison": {
+      "baseline": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
+      "candidate": "aa5f6a3339cb666ec5729403afb9dffc00786cfb",
+      "ci": {
+        "provider": "github-actions",
+        "runnerClass": "ubuntu-24.04",
+        "os": "Linux",
+        "architecture": "X64",
+        "image": "ubuntu24",
+        "imageVersion": "20260927.320.1",
+        "runId": "37207121746",
+        "attempt": "1"
+      },
+      "fault": true,
+      "limits": {
+        "frameMean": {
+          "ratio": 1.25,
+          "floorMs": 8
+        },
+        "frameP95": {
+          "ratio": 1.25,
+          "floorMs": 8
+        },
+        "cpuP95": {
+          "ratio": 1.5,
+          "floorMs": 1
+        }
+      },
+      "groups": [
+        {
+          "id": "1440x900-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 86.5,
+              "candidateMs": 93.55794392523366,
+              "limitMs": 108.125,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 199.90000000000146,
+              "candidateMs": 200,
+              "limitMs": 249.87500000000182,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.6000000000058208,
+              "candidateMs": 22.800000000046566,
+              "limitMs": 1.6000000000058208,
+              "pass": false
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "1440x900-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 488.6903225806452,
+              "candidateMs": 485.96031746031747,
+              "limitMs": 610.8629032258066,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 1133.2999999999956,
+              "candidateMs": 966.5999999999985,
+              "limitMs": 1416.6249999999945,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 5.900000000023283,
+              "candidateMs": 25.800000000046566,
+              "limitMs": 8.850000000034925,
+              "pass": false
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "375x812-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 18.11436330718165,
+              "candidateMs": 22.184331116038432,
+              "limitMs": 26.11436330718165,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 33.29999999999927,
+              "candidateMs": 33.400000000001455,
+              "limitMs": 41.62499999999909,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.30000000004656613,
+              "candidateMs": 20.899999999906868,
+              "limitMs": 1.3000000000465661,
+              "pass": false
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "375x812-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 330.0230769230769,
+              "candidateMs": 331.489010989011,
+              "limitMs": 412.5288461538462,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 649.9000000000015,
+              "candidateMs": 666.5999999999985,
+              "limitMs": 812.3750000000018,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 4.7000000000116415,
+              "candidateMs": 24.399999999906868,
+              "limitMs": 7.050000000017462,
+              "pass": false
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "2560x720-empty",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 71.80717703349282,
+              "candidateMs": 76.76598465473145,
+              "limitMs": 89.75897129186603,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 166.70000000000073,
+              "candidateMs": 183.20000000000073,
+              "limitMs": 208.3750000000009,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 0.5999999999767169,
+              "candidateMs": 22.799999999813735,
+              "limitMs": 1.599999999976717,
+              "pass": false
+            }
+          },
+          "pass": false
+        },
+        {
+          "id": "2560x720-crowd",
+          "metrics": {
+            "frameMean": {
+              "baselineMs": 461.34393939393937,
+              "candidateMs": 460.1805970149254,
+              "limitMs": 576.6799242424242,
+              "pass": true
+            },
+            "frameP95": {
+              "baselineMs": 833.2999999999993,
+              "candidateMs": 866.5999999999985,
+              "limitMs": 1041.624999999999,
+              "pass": true
+            },
+            "cpuP95": {
+              "baselineMs": 6.900000000023283,
+              "candidateMs": 27.399999999906868,
+              "limitMs": 10.350000000034925,
+              "pass": false
+            }
+          },
+          "pass": false
+        }
+      ],
+      "pass": false
+    }
+  }
+}

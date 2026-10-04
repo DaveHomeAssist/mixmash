@@ -1774,6 +1774,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-ci-paired.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Paired CI performance evidence",
+      "description": "Two complete comparisons and a valid measured20ms negative control, with independent raw/source audits and exact source revisions.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-ci-paired.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-ci.json",
       "project": "front-of-house",
       "category": "evidence",
@@ -2481,6 +2491,16 @@
       "title": "front-of-house-displays-smoke.mjs",
       "description": "Manual actual-display density proof with isolated Chrome storage; requires attached DPR1 and DPR2 displays.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-displays-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-equipment-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-equipment-smoke.mjs",
+      "description": "Banked career fixture opens access; all subsequent capital and show actions use player controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-equipment-smoke.mjs",
       "open": null
     },
     {
