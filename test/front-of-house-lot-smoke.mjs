@@ -29,6 +29,19 @@ try {
     window.backend.draw(window.input);
   });
   assert.equal(await page.evaluate(() => backend.status().state), 'ready');
+  const cached = await page.evaluate(() => {
+    const start = backend.info();
+    backend.draw(input); backend.setCamera({ yaw: 37 }); backend.draw({ ...input, night: true });
+    const staticScene = backend.info();
+    backend.pause(); backend.draw({ ...input, objects: input.objects.filter(o => o.type !== 'bar') });
+    const paused = backend.info(); backend.resume(); const changed = backend.info();
+    backend.draw(input);
+    return { start, staticScene, paused, changed };
+  });
+  assert.equal(cached.staticScene.shadowUpdates, cached.start.shadowUpdates, 'camera and lighting intensity reuse static shadows');
+  assert.equal(cached.staticScene.renderedFrames, cached.start.renderedFrames + 3);
+  assert.equal(cached.paused.shadowUpdates, cached.staticScene.shadowUpdates, 'paused invalidation does not render');
+  assert.equal(cached.changed.shadowUpdates, cached.paused.shadowUpdates + 1, 'resume refreshes changed layout shadows');
   for (const yaw of [37, 135]) {
     const result = await page.evaluate(yaw => {
       backend.setCamera({ yaw, pitch: 48, zoom: 1 });
@@ -55,7 +68,7 @@ try {
     for (const id of ['pa-dropout', 'gate-jam', 'curfew', 'rain']) {
       backend.draw({ ...input, incident: id }); incidents[id] = backend.info().presentation;
     }
-    backend.draw({ ...input, crowd: 10 }); const small = backend.info();
+    backend.draw({ ...input, crowd: 0 }); backend.draw({ ...input, crowd: 10 }); const small = backend.info();
     backend.draw({ ...input, crowd: 200 }); const large = backend.info();
     backend.draw(input);
     return { initial, noFence, incidents, smallCalls: small.calls, largeCalls: large.calls, represented: large.representedAttendance, drawn: large.representativeGuests };
@@ -70,11 +83,14 @@ try {
   assert.equal(cues.largeCalls, cues.smallCalls, 'instancing keeps draw calls independent of representative count');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.waitForFunction(() => backend.info().motion);
-  const moving = await page.evaluate(() => { backend.draw({ ...input, t: 1 }); const a = backend.info().presentation.offsets; backend.draw({ ...input, t: 2 }); return [a, backend.info().presentation.offsets]; });
-  assert.notDeepEqual(moving[0], moving[1]);
+  const moving = await page.evaluate(() => { backend.draw({ ...input, t: 1 }); const a = backend.info(); backend.draw({ ...input, t: 2 }); return [a, backend.info()]; });
+  assert.notDeepEqual(moving[0].presentation.offsets, moving[1].presentation.offsets);
+  assert.equal(moving[1].shadowUpdates, moving[0].shadowUpdates + 1, 'moving guests refresh shadows');
   await page.emulateMedia({ reducedMotion: 'reduce' }); await page.waitForFunction(() => !backend.info().motion);
   const still = await page.evaluate(() => { backend.draw({ ...input, t: 3, incident: 'pa-dropout' }); const a = backend.info().presentation; backend.draw({ ...input, t: 9, incident: 'pa-dropout' }); return [a, backend.info().presentation]; });
   assert.deepEqual(still[0], still[1], 'live reduced motion preserves all cues with a static pose');
+  const reduced = await page.evaluate(() => { const n = backend.info().shadowUpdates; backend.draw({ ...input, t: 100, incident: 'rain' }); return [n, backend.info().shadowUpdates]; });
+  assert.equal(reduced[0], reduced[1], 'reduced motion and non-shadow rain reuse the map');
   await page.evaluate(() => backend.draw(input));
   for (const preset of ['wide', 'foh', 'stage', 'plan']) for (const night of [false, true]) {
     await page.evaluate(({ preset, night }) => { backend.preset(preset); backend.draw({ ...input, night }); }, { preset, night });
