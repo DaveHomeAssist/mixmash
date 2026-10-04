@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-3';
+export const MODEL_REVISION = 'lot-sample-4';
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
   guestHeightMetres: 1.8, operatorEyeMetres: 1.66, stageDeckMetres: 1.1,
@@ -88,6 +88,19 @@ export function createLotModels() {
       b([w, 0.06, 0.8], [0, 1.08, 0], 0x5faf92);
       for (const x of [-0.5, 0, 0.5]) b([0.22, 0.025, 0.23], [x, 0.565, 0.08], 0xe5d8b6);
       b([0.5, 0.2, 0.02], [0, 0.85, -0.22], 0xe5d8b6);
+    } else if (object.type === 'trailer') {
+      // Three guest doors and a separate rear changing area; all within its footprint.
+      b([2.85, 0.16, 1.8], [0, 0.15, 0], COLORS.steel, 0.4);
+      b([2.75, 1.1, 1.55], [0, 0.78, -0.05], 0xb6a5c8);
+      b([2.85, 0.09, 1.65], [0, 1.375, -0.05], 0xe4e2df, 0.3);
+      for (const x of [-0.88, 0, 0.88]) {
+        b([0.66, 0.95, 0.035], [x, 0.72, 0.74], 0x514164);
+        b([0.16, 0.13, 0.015], [x, 1.02, 0.765], 0xe4e2df);
+        b([0.025, 0.08, 0.035], [x + 0.24, 0.7, 0.77], COLORS.aluminium, 0.6);
+      }
+      b([0.7, 0.95, 0.035], [0.7, 0.72, -0.84], 0x806997);
+      b([0.75, 0.12, 0.2], [-0.88, 0.12, 0.86], COLORS.aluminium, 0.6);
+      for (const x of [-0.95, 0.95]) for (const z of [-0.62, 0.62]) b([0.28, 0.28, 0.16], [x, 0.14, z], 0x171b20, 0, 'sphere');
     } else if (object.type === 'restroom') {
       b([0.57, 1.04, 0.62], [0, 0.55, 0], COLORS.plastic);
       b([0.61, 0.08, 0.66], [0, 1.11, 0], COLORS.trim);

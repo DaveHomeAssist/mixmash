@@ -8,7 +8,7 @@
   "head": "ffcd59f · normal departure and food delivered; sanitation underway",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live services, recorded guest movement, normal departure and the finite food vendor are delivered. The sanitation core passes local verification and is in CI. Playable sanitation, research, ownership, venues and release evidence remain.",
+  "statusReason": "Live services, guest movement, normal departure and food are delivered. Sanitation replay and contract integration pass local tests. Playable facilities controls, research, ownership, venues and release evidence remain.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -20,7 +20,7 @@
   ],
   "nextStep": {
     "title": "Deliver sanitation and its artist preference, then research",
-    "why": "Departure and food have CI, Pages, source parity, production player and offline evidence. The sanitation core is implemented; connect facilities, costs, satisfaction and the optional artist preference next.",
+    "why": "Sanitation now has locked costs, visit-based amenities, an optional artist preference and safe replay. Connect player controls and guest presentation, then deliver the remaining phases.",
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -725,7 +725,8 @@
             "scope": "Sanitation service and one negotiated artist preference",
             "status": "in-progress",
             "evidence": [
-              "Sanitation replay core implemented; seven targeted tests pass. Portable/trailer access, utilities, stall uses, one exclusive cleaner, food-first visits and closing are modeled; client, costs, satisfaction and negotiated artist preference remain pending."
+              "Sanitation replay core implemented; seven targeted tests pass. Portable/trailer access, utilities, stall uses, one exclusive cleaner, food-first visits and closing are modeled; client, costs, satisfaction and negotiated artist preference remain pending.",
+              "Sanitation contract integration: 288 repository tests and build pass. Costs, locked saves, visit-based amenities and optional changing-area relationship outcome are implemented; player controls and production acceptance remain pending."
             ],
             "slices": [
               {
@@ -740,7 +741,16 @@
               },
               {
                 "id": "FOH-O02d2",
-                "scope": "Playable facilities, servicing costs, satisfaction and artist preference",
+                "scope": "Sanitation contract, costs, satisfaction and artist preference",
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Five integration tests cover prepayment refusal, locked quote and malformed saves, both artist deals and one-time signing, optional preference, food ordering and in-progress cleaning reload.",
+                  "All288 repository tests and build pass. Source-owned trailer geometry and classic fallback included; required CI and hosted model evidence pending."
+                ]
+              },
+              {
+                "id": "FOH-O02d3",
+                "scope": "Playable facilities controls, servicing readouts and guest presentation",
                 "status": "pending",
                 "evidence": []
               }

@@ -100,6 +100,7 @@ export const OBJECT_TYPES = {
   lights: { label: 'Light tower', w: 1, h: 1, watts: 8000, group: 'lights', max: 1, blocksSight: true },
   bar: { label: 'Bar', w: 2, h: 1, watts: 1500, blocksSight: true },
   food: { label: 'Food stall', w: 2, h: 1, watts: 0, group: 'food', max: 1, blocksSight: true, lotOnly: true },
+  trailer: { label: 'Facility trailer', w: 3, h: 2, watts: 1500, group: 'trailer', max: 1, blocksSight: true, lotOnly: true },
   restroom: { label: 'Restroom unit', w: 1, h: 1, watts: 0, blocksSight: true },
   gate: { label: 'Entry gate', w: 1, h: 1, watts: 0, edge: true },
   exit: { label: 'Exit', w: 1, h: 1, watts: 0, edge: true },
@@ -356,3 +357,6 @@ export const BALANCE_TARGETS = {
   careerMinShows: 4,
   careGapMin: 0.25,
 };
+
+// Optional Lot sanitation contract; promoter costs, charged once before doors.
+export const SANITATION_COSTS = Object.freeze({ trailer: 240, cleaner: 80, utilities: 60, preferenceRelationship: 2 });

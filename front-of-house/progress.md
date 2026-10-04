@@ -384,3 +384,9 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Sanitation core final local validation: all 283 repository tests and build pass. Generated game documentation remains unchanged; the admin index includes the new module/tests. No playable sanitation or artist-preference acceptance is claimed by this core.
 
 - PR75 food integration delivered: full CI37202280052 passed; merged ffcd59f, Pages built12:41:40Z and eighteen deployed files match. Six production vendor journeys and warmed offline queue/stock/cash reload pass. Actual Lot policy fixtures also confirm useful choices: seed1/bar staffing favors standard house income $102 vs $51; seed3/temporary admission favors premium $81 vs $76. The native-select arrow sequence also remains Off in a minimal page without game code, confirming the action-harness limitation separately from game acceptance.
+
+## 2026-10-04: FOH-O02d2 sanitation contract
+
+- Optional live Lot sanitation contract locks trailer rental ($240), cleaner ($80), utilities ($60) and accepted/declined quiet changing-area terms before charging. Connected portables remain independent of research and utilities. Trailer occupies3×2 and consumes1,500W; source-owned 3D geometry and labeled classic fallback cover valid imports.
+- Costs enter the existing promoter production and door artist basis. Amenities use completed visit demand; accepted fulfilled Sodium Arcade preference adds up to two relationship points without artist pay or cash changes. Damaged geometry cannot earn fulfillment; a valid locked quote remains intact. Older absent fields retain legacy results.
+- Five integration tests cover refusal before payment, locking/recovery, actual visit satisfaction, both deals, one-time signing, food ordering and cleaning reload. All288 repository tests and build pass. Required CI/hosted proof pending; player controls, guest projection and production journeys remain FOH-O02d3.
