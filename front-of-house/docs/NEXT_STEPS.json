@@ -538,16 +538,42 @@
             "result": "pass",
             "checkedAt": "2026-10-04T11:31:31.206Z",
             "summary": "Static camera/light frames reuse directional shadows; layout and guest transforms refresh them, pause retains invalidation, reduced motion stays static and real context restoration matches the prior image. No quality reduction or device acceptance."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/67",
+            "result": "pass",
+            "checkedAt": "2026-10-04T12:13:23.831Z",
+            "summary": "CI 37200315506 passed; merge f258625, Pages build 1259380379 built. Eight live runtime files match; hosted shadow invalidation/recovery and actual-client settlement parity pass."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-shadow.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T12:13:23.832Z",
+            "summary": "All 18 integrated renderer windows at daebe36 valid; same fixture hashes, Metal/DPR 1/quality. 59.9986–60.0029Hz cadence, no intervals over 50 ms. Full HUD and physical-device acceptance are separate."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Final combined CI, merge and hosted shadow verification",
-          "Full HUD/high-DPI/native/low-power measurement and adaptive-quality policy",
+          "Classic static floor cache and full-HUD 1920x1080 comparison",
+          "High-DPI/native/low-power measurement, declared CI limits and adaptive quality",
           "Physical device and human acceptance"
         ],
         "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
-        "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI."
+        "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI.",
+        "slices": [
+          {
+            "id": "FOH-P01c",
+            "status": "implemented-local-verification",
+            "scope": "Classic floor cache and full HUD comparison",
+            "evidence": [
+              "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
+              "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
+              "Four quick full-HUD harness windows passed; 12 full repeated windows, CI, merge and hosted verification pending."
+            ]
+          }
+        ]
       },
       {
         "id": "FOH-O01",
@@ -650,7 +676,8 @@
               "New client-opened live shows require connected admission, bar and exit access before payment, then retain Play/Pause/speed/step controls for normal departure before settlement. Older live saves keep historical closing.",
               "265 repository tests and build pass. Four Chromium/WebKit desktop/phone control journeys and four renderer/viewport zone plus four controlled movement journeys pass, including normal exit movement, frozen outcomes and reload/cash parity. Required CI and deployed proof remain pending.",
               "Two full 3D departure/settlement journeys and warmed offline reload at departure minute2 pass. The supplied action client opens a new flow-version-1 show and reaches minute5; screenshots inspected. An initial offline attempt found a stopped preview server; retry on a verified new server passes.",
-              "CI37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending."
+              "CI37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending.",
+              "Final CI37201292853 passed; PR71 merged719e0f5. Production Pages and behavior verification are running."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71"
           },
@@ -679,7 +706,8 @@
                 "status": "implemented-local-verification",
                 "evidence": [
                   "Placed Lot stall, locked settings, finite food replay, both-renderer queue projection and separate vendor/house ledgers implemented. Four engine integration tests and all276 repository tests/build pass; browser and delivery checks remain in progress."
-                ]
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75"
               }
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
