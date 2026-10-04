@@ -7,6 +7,8 @@
 
 import * as D from './data.mjs';
 import * as Services from './services.mjs';
+import * as Research from './research.mjs';
+import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
 
@@ -497,7 +499,9 @@ export function doorRushPilot(venue, attendance, presale, choice) {
 export function evaluateShow(inputs) {
   const artist = artistFor(inputs.artistId);
   const v = inputs.venue;
-  const response = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
+  const baseResponse = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
+  const response = baseResponse && inputs.incidentId === 'pa-dropout' && inputs.responseId === 'backup-amp' && inputs.research?.patchScore
+    ? { ...baseResponse, score: Math.min(1, baseResponse.score + inputs.research.patchScore) } : baseResponse;
   const pf = priceFactor(inputs.price, artist.fairPrice);
   const bz = buzz(inputs.ads);
   const ask = isInt(inputs.ask) && inputs.ask > 0 ? inputs.ask : artist.ask;
@@ -513,10 +517,12 @@ export function evaluateShow(inputs) {
   const seated = v.seats ? Math.min(v.seats, attendance) : 0;
   const ticketGross = live ? live.ticketCash : seated * seatPrice + (attendance - seated) * inputs.price;
   const per = (supply) => (attendance > 0 ? Math.min(1, supply / attendance) : 1);
+  const sanitation = live?.sanitation;
+  const restroomScore = sanitation ? (sanitation.totals.requested ? sanitation.totals.served / sanitation.totals.requested : 1) : per(v.restrooms * D.RESTROOM_RATIO);
   const parts = {
     sound: v.paTier ? per(D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
     sightlines: per(v.clearTiles * (v.density || D.FLOOR_DENSITY)),
-    amenities: (per(live ? live.barServed : doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + per(v.restrooms * D.RESTROOM_RATIO)) / 2,
+    amenities: (per(live ? live.barServed : doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + restroomScore) / 2,
     flow: (live ? (live.arrived ? live.admitted / live.arrived : 1) : doorRush ? (doorRush.rushArrivals ? doorRush.rushAdmitted / doorRush.rushArrivals : 1)
       : per(v.gates * D.GATE_RATE * D.DOORS_MINUTES)) * (!live && response && response.flowMult !== undefined ? response.flowMult : 1),
     incident: inputs.incidentId ? (response ? response.score : 0) : 1,
@@ -543,6 +549,7 @@ export function evaluateShow(inputs) {
     ads: adSpend,
     incident: response ? response.cost : 0,
   };
+  if (inputs.facilities) costs.facilities = inputs.facilities.cost;
   costs.total = Object.values(costs).reduce((a, b) => a + b, 0);
   const guarantee = ask;
   const paidUpFront = inputs.deal === 'guarantee' || inputs.deal === 'sponsor';
@@ -557,12 +564,14 @@ export function evaluateShow(inputs) {
 
   // R-16, R-17
   const repDelta = Math.round(D.REP_SAT_SLOPE * (satisfaction - D.PASS_SATISFACTION));
-  const relDelta = clamp(D.REL_BASE + Math.round(D.REL_SLOPE * (artistPay / ask - 1)), D.REL_MIN_STEP, D.REL_MAX_STEP);
+  const preferenceBonus = live?.sanitation?.preference.fulfilled ? D.SANITATION_COSTS.preferenceRelationship : 0;
+  const relDelta = clamp(D.REL_BASE + Math.round(D.REL_SLOPE * (artistPay / ask - 1)) + preferenceBonus, D.REL_MIN_STEP, D.REL_MAX_STEP);
 
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
     sponsor, broadcast, seated, seatPrice, doorRush, services: live, ...(food ? { food, foodIncome } : {}),
+    ...(inputs.facilities ? { facilities: inputs.facilities, sanitation: live?.sanitation || null, preferenceBonus } : {}),
   };
 }
 
@@ -570,6 +579,7 @@ function showInputs(state, venueStats, withIncident) {
   const roll = rollShow(state.seed, state.booking.artistId);
   return {
     venue: venueStats,
+    ...(state.booking.research ? { research: researchEffectsFor(state) } : {}),
     deal: state.booking.deal,
     price: state.promotion.price,
     ads: state.promotion.ads,
@@ -586,6 +596,7 @@ function showInputs(state, venueStats, withIncident) {
     responseId: withIncident && state.show ? state.show.responseId : null,
     pilotCrew: state.show && state.venue.id === 'lot' ? state.show.pilotCrew : undefined,
     services: withIncident ? liveServicesFor(state) : null,
+    facilities: sanitationPlanFor(state),
   };
 }
 
@@ -675,6 +686,33 @@ function secondStage(state) {
   };
 }
 
+// The booking stores a prefix, so later learning cannot rewrite an already sold show.
+export function researchFor(state) {
+  return state.research ? Research.loadResearch(state.research) : null;
+}
+
+export function researchEffectsFor(state) {
+  const marker = state.booking?.research, checkpoint = state.research;
+  const learned = marker?.version === 1 && checkpoint && isInt(marker.at) && marker.at >= 0 && marker.at <= checkpoint.commands.length
+    ? Research.loadResearch({ ...checkpoint, commands: checkpoint.commands.slice(0, marker.at) }).learned : [];
+  const venue = evaluateVenue(state.venue), live = state.show?.flow?.version === 1;
+  return { learned, patchScore: learned.includes('patch') && venue.paTier ? D.RESEARCH_EFFECTS.patchScore : 0,
+    barWorkerRate: learned.includes('service') && live ? D.RESEARCH_EFFECTS.barWorkerRate : 0,
+    gateRate: learned.includes('admission') && live ? D.RESEARCH_EFFECTS.gateRate : 0 };
+}
+
+export function researchNightFor(state) {
+  if (!state.research || !state.show) return null;
+  const receipt = settlementFor(state);
+  if (!receipt) return null;
+  return { kind: 'night', id: `show_${state.seed}_${state.show.night || 1}`, departments: {
+    production: receipt.attendance > 0 && !!evaluateVenue(state.venue).paTier,
+    guestServices: (receipt.services?.barServed || 0) > 0,
+    admissions: (receipt.services?.admitted || 0) > 0,
+    venueOperations: receipt.attendance > 0,
+  } };
+}
+
 // Live pilot specifications are derived from the booked show, never imported balances.
 export function liveIncidentMinute(state) {
   const roll = rollShow(state.seed, state.booking.artistId);
@@ -689,14 +727,14 @@ export function liveArrivalPlan(state) {
 function liveServiceSpec(state) {
   const source = { ...state, show: { ...state.show, services: undefined } };
   const preview = showPreview(source), venue = evaluateVenue(state.venue);
-  const rule = D.LIVE_SERVICES;
+  const rule = D.LIVE_SERVICES, research = researchEffectsFor(state);
   const access = state.show.flow?.version === 1 ? liveAccessFor(state) : null;
   const minutes = liveArrivalPlan(state).minutes;
   const split = (n, i) => Math.floor(n * i / minutes) - Math.floor(n * (i - 1) / minutes);
   return { id: 'show_' + state.seed + '_' + (state.show.night || 1), closeAt: rule.closeAt,
-    gateRate: (access?.usableGates ?? venue.gates) * D.GATE_RATE,
+    gateRate: (access?.usableGates ?? venue.gates) * (D.GATE_RATE + research.gateRate),
     barRate: rule.barBaseRate + Math.max(0, (access?.usableBars ?? venue.bars) - 1) * rule.extraBarRate,
-    workerRate: rule.workerRate, gateWorkerRate: rule.gateWorkerRate,
+    workerRate: rule.workerRate + research.barWorkerRate, gateWorkerRate: rule.gateWorkerRate,
     gatePatience: rule.gatePatience, barPatience: rule.barPatience, travelMinutes: rule.travelMinutes,
     ticketPrice: state.promotion.price, barNet: D.BAR_NET_PER_HEAD,
     arrivals: Array.from({ length: minutes }, (_, i) => ({ minute: i + 1,
@@ -706,9 +744,34 @@ function liveServiceSpec(state) {
 export function liveAccessFor(state) {
   const access = lotAccess(state.venue.objects, venueSpec(state.venue).grid);
   const floor = new Set(access.floorCells.map(p => key(p.x, p.y)));
-  const bars = state.venue.objects.filter(o => o.type === 'bar' && footprint(o).some(([x, y]) => [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => floor.has(key(x + dx, y + dy)))));
-  const vendors = state.venue.objects.filter(o => o.type === 'food' && footprint(o).some(([x, y]) => [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => floor.has(key(x + dx, y + dy)))));
-  return { ...access, bars, usableBars: bars.length, vendors, usableVendors: vendors.length };
+  const connected = type => state.venue.objects.filter(o => o.type === type && footprint(o).some(([x, y]) => [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => floor.has(key(x + dx, y + dy)))));
+  const bars = connected('bar'), vendors = connected('food');
+  const restrooms = connected('restroom'), trailers = connected('trailer');
+  return { ...access, bars, usableBars: bars.length, vendors, usableVendors: vendors.length, restrooms, trailers };
+}
+
+function facilityTerms(raw, locked = false) {
+  if (!isObj(raw) || raw.version !== 1 || ['cleaner', 'utilities', 'preference', ...(locked ? ['trailer'] : [])].some(k => typeof raw[k] !== 'boolean')) throw new TypeError('Invalid sanitation terms');
+  return { version: 1, cleaner: raw.cleaner, utilities: raw.utilities, preference: raw.preference, ...(locked ? { trailer: raw.trailer } : {}) };
+}
+
+// Quotes become locked production costs; fulfillment always uses actual geometry.
+export function sanitationPlanFor(state) {
+  const terms = state.show ? state.show.sanitation : state.promotion.sanitation;
+  if (!terms || state.venue.id !== 'lot') return null;
+  const access = liveAccessFor(state), venue = evaluateVenue(state.venue);
+  const placedTrailer = state.venue.objects.some(o => o.type === 'trailer');
+  const trailer = state.show ? terms.trailer : placedTrailer;
+  const spec = { version: 1, portables: access.restrooms.length, portableAccess: access.restrooms.length > 0,
+    trailer: placedTrailer && trailer, trailerAccess: access.trailers.length === 1,
+    utilities: terms.utilities && venue.watts <= venueSpec(state.venue).watts, cleaner: terms.cleaner };
+  const readyTrailer = spec.trailer && spec.trailerAccess && spec.utilities;
+  const preferenceAvailable = state.booking.artistId === 'sodium-arcade' && readyTrailer && terms.cleaner;
+  const charges = { trailer: trailer ? D.SANITATION_COSTS.trailer : 0, cleaner: terms.cleaner ? D.SANITATION_COSTS.cleaner : 0,
+    utilities: terms.utilities ? D.SANITATION_COSTS.utilities : 0 };
+  return { terms: { ...terms, trailer }, spec, charges, cost: Object.values(charges).reduce((sum, n) => sum + n, 0),
+    placedPortables: venue.restrooms, usableStalls: access.restrooms.length + (readyTrailer ? SANITATION.trailerStalls : 0),
+    preference: { accepted: terms.preference, available: preferenceAvailable, fulfilled: terms.preference && preferenceAvailable } };
 }
 
 export function liveServicesFor(state, { events = false } = {}) {
@@ -720,7 +783,10 @@ export function liveServicesFor(state, { events = false } = {}) {
   const flow = departureSummary(departure);
   const vendor = state.show.food ? concessionsFor(state.show.services, foodTerms(state.show.food.plan, access.usableVendors === 1)) : null;
   const food = vendor ? { terms: vendor.terms, stock: vendor.stock, totals: vendor.totals, ...(events ? { events: vendor.events } : {}) } : null;
-  const history = events ? [...run.events, ...(vendor?.events || [])].sort((a, b) => a.minute - b.minute) : null;
+  const plan = sanitationPlanFor(state);
+  const facility = plan ? sanitationFor(state.show.services, plan.spec, vendor?.terms || null) : null;
+  const sanitation = facility ? { ...plan, totals: facility.totals, stalls: facility.stalls, worker: facility.worker, ...(events ? { events: facility.events } : {}) } : null;
+  const history = events ? [...run.events, ...(vendor?.events || []), ...(facility?.events.map(e => ({ ...e, entity: 'sanitation' })) || [])].sort((a, b) => a.minute - b.minute) : null;
   if (history) for (const event of departureEvents(departure)) {
     let remaining = event.result.count;
     exits.forEach((_, i) => {
@@ -729,7 +795,7 @@ export function liveServicesFor(state, { events = false } = {}) {
         cause: 'normal-departure', result: { count, portal: i } });
     });
   }
-  return { ...summary, ...(food ? { food } : {}), minute: summary.minute + departure.minute, serviceClosed: summary.closed,
+  return { ...summary, ...(food ? { food } : {}), ...(sanitation ? { sanitation } : {}), minute: summary.minute + departure.minute, serviceClosed: summary.closed,
     closed: summary.closed && flow.complete, inside: flow.remaining, departed: flow.departed,
     departure: { ...flow, active: summary.closed, ...(events ? { portals: exits, access } : {}) },
     ...(events ? { events: history } : {}) };
@@ -781,6 +847,22 @@ export function applyAction(state, action) {
   let err;
 
   switch (action.type) {
+    case 'enableResearch': {
+      if (!['book', 'done'].includes(s.phase)) return fail(state, 'Development is available between bookings');
+      if (s.research) return fail(state, 'Development is already enabled');
+      if (!s.history.length && s.mode !== 'sandbox') return fail(state, 'Settle your first show before enabling development');
+      s.research = Research.saveResearch(Research.createResearch(s.mode));
+      return { state: s, error: null };
+    }
+    case 'research': {
+      if (!['book', 'done'].includes(s.phase)) return fail(state, 'Development is available between bookings');
+      if (!s.research) return fail(state, 'Enable development first');
+      if (!['start', 'pause', 'resume', 'cancel'].includes(action.command?.kind)) return fail(state, 'Choose a development project action');
+      const result = Research.applyResearch(researchFor(s), action.command, { cash: s.cash });
+      if (result.error) return fail(state, result.error);
+      s.research = Research.saveResearch(result.state); s.cash += result.cashDelta;
+      return { state: s, error: null };
+    }
     case 'chooseDeal': {
       if ((err = need('book'))) return fail(state, err);
       if (!DEALS.includes(action.deal) && action.deal !== 'sponsor') return fail(state, 'Choose a guarantee or a door deal');
@@ -805,6 +887,7 @@ export function applyAction(state, action) {
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (s.research) s.booking.research = { version: 1, at: s.research.commands.length };
       if (spec.seats) s.promotion.seatPrice = s.promotion.price + 10;
       s.phase = 'build';
       return { state: s, error: null };
@@ -882,6 +965,11 @@ export function applyAction(state, action) {
         if (s.venue.id !== 'lot' || (action.foodPlan !== null && !Object.hasOwn(FOOD_PLANS, action.foodPlan))) return fail(state, 'Choose a valid Lot food plan');
         s.promotion.foodPlan = action.foodPlan;
       }
+      if (action.sanitation !== undefined) {
+        if (s.venue.id !== 'lot') return fail(state, 'Sanitation trial is available in the Lot');
+        try { s.promotion.sanitation = action.sanitation === null ? null : facilityTerms(action.sanitation); }
+        catch { return fail(state, 'Choose valid sanitation terms'); }
+      }
       if (spec.seats && action.seatPrice !== undefined) {
         if (!isInt(action.seatPrice) || action.seatPrice < D.PRICE_MIN || action.seatPrice > priceMax) {
           return fail(state, `Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax}`);
@@ -903,6 +991,14 @@ export function applyAction(state, action) {
         if (!access.usableGates || !access.usableExits || !access.usableBars) return fail(state, 'Connect admission, a bar and an exit to the main audience floor before opening doors');
       }
       if (s.promotion.foodPlan && (!useServices || action.flow !== 1 || liveAccessFor(s).usableVendors !== 1)) return fail(state, 'Food needs live services and one connected stall before doors');
+      const facilities = sanitationPlanFor(s);
+      if (s.venue.objects.some(o => o.type === 'trailer') && !facilities) return fail(state, 'Enable sanitation for the placed trailer before doors');
+      if (facilities) {
+        if (!useServices || action.flow !== 1) return fail(state, 'Sanitation needs the live Lot clock');
+        if (!facilities.usableStalls) return fail(state, 'Connect usable sanitation before doors; the trailer also needs utilities');
+        if (facilities.terms.utilities && !facilities.terms.trailer) return fail(state, 'Utilities need a placed trailer');
+        if (facilities.terms.preference && !facilities.preference.available) return fail(state, 'The optional changing area needs Sodium Arcade, a connected powered trailer and a cleaner');
+      }
       const upfront = upfrontFor(s);
       if (s.mode !== 'sandbox' && upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
       s.cash -= upfront;
@@ -913,6 +1009,7 @@ export function applyAction(state, action) {
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
       if (useServices || s.promotion.liveServices !== undefined) s.promotion.liveServices = useServices;
       if (action.flow === 1) s.show.flow = { version: 1, minute: 0 };
+      if (facilities) s.show.sanitation = facilityTerms(facilities.terms, true);
       if (s.promotion.foodPlan) s.show.food = { version: 1, plan: s.promotion.foodPlan };
       if (useServices) s.show.services = Services.saveServices(Services.createServices(liveServiceSpec(s)));
       s.phase = 'show';
@@ -965,6 +1062,11 @@ export function applyAction(state, action) {
       if ((err = need('settle'))) return fail(state, err);
       const r = settlementFor(s);
       s.cash += settlementPayout(r, s.booking.deal);
+      if (s.research) {
+        const progress = Research.applyResearch(researchFor(s), researchNightFor(s), { cash: s.cash });
+        if (!progress.error) s.research = Research.saveResearch(progress.state);
+        else s.researchNotice = progress.error;
+      }
       const night = s.show.night || 1;
       const nights = s.booking.nights || 1;
       s.history.push({
@@ -1033,6 +1135,8 @@ export function applyAction(state, action) {
         fresh.reputation = s.reputation;
         fresh.unlocks = s.unlocks;
         fresh.history = s.history;
+        if (s.research) fresh.research = clone(s.research);
+        if (s.researchNotice) fresh.researchNotice = s.researchNotice;
         if (s.mode === 'sandbox') fresh.cash = s.cash;
       }
       const first = offersFor(fresh)[0];
@@ -1140,6 +1244,20 @@ export function normalizeState(raw, fallbackSeed = 1) {
     s.scenario = 'wet-lot';
     s.forcedIncident = 'rain';
   }
+  if (raw.research !== undefined) {
+    try {
+      const research = Research.loadResearch(raw.research);
+      if (research.mode !== s.mode) throw new Error('Development mode mismatch');
+      s.research = Research.saveResearch(research);
+      if (booking.research?.version === 1 && isInt(booking.research.at) && booking.research.at >= 0 && booking.research.at <= research.commands.length) {
+        s.booking.research = { version: 1, at: booking.research.at };
+      } else if (booking.research !== undefined) s.researchNotice = 'Invalid booking development was removed';
+      if (research.commands.length >= Research.RESEARCH_COMMAND_LIMIT) s.researchNotice = 'Research history is full; no new development command was applied';
+    } catch {
+      s.research = Research.saveResearch(Research.createResearch(s.mode));
+      s.researchNotice = 'Invalid development was reset; cash was preserved';
+    }
+  }
   const room = venueSpec(s.venue);
   if (s.booking.deal === 'sponsor' && !room.sponsor) s.booking.deal = null;
   s.booking.nights = room.nights.includes(booking.nights) ? booking.nights : 1;
@@ -1167,6 +1285,9 @@ export function normalizeState(raw, fallbackSeed = 1) {
   s.promotion.confirmed = promo.confirmed === true;
   if (room.id === 'lot' && typeof promo.liveServices === 'boolean') s.promotion.liveServices = promo.liveServices;
   if (room.id === 'lot' && (promo.foodPlan === null || Object.hasOwn(FOOD_PLANS, promo.foodPlan))) s.promotion.foodPlan = promo.foodPlan;
+  if (room.id === 'lot' && promo.sanitation !== undefined) {
+    try { s.promotion.sanitation = promo.sanitation === null ? null : facilityTerms(promo.sanitation); } catch { s.promotion.sanitation = null; }
+  }
   if (room.seats) s.promotion.seatPrice = clamp(intOr(promo.seatPrice, s.promotion.price + 10), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
 
   const rep = isObj(raw.reputation) ? raw.reputation : {};
@@ -1239,6 +1360,12 @@ export function normalizeState(raw, fallbackSeed = 1) {
     if (raw.show.food !== undefined) {
       if (s.show.flow && raw.show.food?.version === 1 && Object.hasOwn(FOOD_PLANS, raw.show.food.plan)) s.show.food = { version: 1, plan: raw.show.food.plan };
       else s.show.serviceRecovered = true;
+    }
+    if (raw.show.sanitation !== undefined) {
+      try {
+        if (!s.show.flow) throw new TypeError('Sanitation requires normal flow');
+        s.show.sanitation = facilityTerms(raw.show.sanitation, true);
+      } catch { s.show.serviceRecovered = true; }
     }
     if (s.show.flow) {
       const saved = raw.show.flow?.version === 1 ? raw.show.flow.minute : null, summary = liveServicesFor(s);
