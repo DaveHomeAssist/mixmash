@@ -14,6 +14,7 @@ import { festivalTerms, festivalSales, festivalSettlement } from './stage-accoun
 import { seatingTerms, seatingContract, seatingSales, seatingSatisfaction } from './seating.mjs';
 import { heldRunTerms, heldRunQuote } from './held-run.mjs';
 import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
+import { roomProfileFor, roomProfileTerms, roomSightlines } from './room-profile.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
@@ -371,11 +372,15 @@ function stageGeometry(stage) {
 
 // R-03: open tiles inside the sight cone with a clear line to the middle of the stage front
 // (clear), and the cone tiles whose line is cut by a blocking object (blocked).
-function sightTileSets(objects, occupied, spec) {
+function sightTileSets(objects, occupied, spec, profile = null) {
   const clear = new Set();
   const blocked = new Set();
   const stage = objects.find((o) => o.type === 'stage');
   if (!stage) return { clear, blocked };
+  if (profile) return roomSightlines(profile, {
+    grid: spec.grid, occupied, stage: stageGeometry(stage),
+    obstacles: objects.filter(o => D.OBJECT_TYPES[o.type].blocksSight).map(o => ({ ...o, ...dims(o), height: profile.obstacleHeights[o.type] ?? 1.2 })),
+  });
   const blocking = new Set();
   for (const o of objects) {
     if (D.OBJECT_TYPES[o.type].blocksSight) footprint(o).forEach(([x, y]) => blocking.add(key(x, y)));
@@ -411,7 +416,7 @@ export function sightlineTiles(venue) {
   const occupied = new Set();
   accepted.forEach((o) => footprint(o).forEach(([x, y]) => occupied.add(key(x, y))));
   for (const [x, y] of spec.pillars) occupied.add(key(x, y));
-  return sightTileSets(accepted, occupied, spec);
+  return sightTileSets(accepted, occupied, spec, roomProfileFor(venue));
 }
 
 export function evaluateVenue(venue) {
@@ -443,7 +448,9 @@ export function evaluateVenue(venue) {
     broadcast: spec.broadcast,
     density: spec.density || D.FLOOR_DENSITY,
   };
-  const sight = sightTileSets(accepted, occupied, spec);
+  const profile = roomProfileFor(venue);
+  if (profile) stats.soundCapacity = placedPa ? D.PA_COVERAGE[stats.paTier] : profile.soundCapacity;
+  const sight = sightTileSets(accepted, occupied, spec, profile);
   stats.clearTiles = sight.clear.size;
   stats.blockedTiles = sight.blocked.size;
   const perExit = spec.exitCapacity || D.EXIT_CAPACITY;
@@ -551,7 +558,7 @@ export function evaluateShow(inputs) {
   const sanitation = live?.sanitation;
   const restroomScore = sanitation ? (sanitation.totals.requested ? sanitation.totals.served / sanitation.totals.requested : 1) : per(v.restrooms * D.RESTROOM_RATIO);
   const parts = {
-    sound: v.paTier ? per(D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
+    sound: v.paTier ? per(v.soundCapacity ?? D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
     sightlines: per(v.clearTiles * (v.density || D.FLOOR_DENSITY)),
     amenities: (per(live ? live.barServed : doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + restroomScore) / 2,
     flow: (live ? (live.arrived ? live.admitted / live.arrived : 1) : doorRush ? (doorRush.rushArrivals ? doorRush.rushAdmitted / doorRush.rushArrivals : 1)
@@ -1164,6 +1171,11 @@ function applyActionCore(state, action) {
       }
       if (artistId !== s.booking.artistId) s.promotion.price = artistFor(artistId).fairPrice;
       const spec = venueSpec(s.venue);
+      if (action.roomPolicy !== undefined) {
+        try { s.venue.profile = roomProfileTerms({ version: action.roomPolicy }, spec.id); }
+        catch { return fail(state, 'Choose a supported room profile'); }
+        delete s.roomNotice;
+      }
       const nights = spec.nights.includes(action.nights) ? action.nights : (s.booking.nights || 1);
       let secondId = null;
       let secondTerms = null;
@@ -1207,6 +1219,7 @@ function applyActionCore(state, action) {
         delete s.booking.stages;
         delete s.booking.festival;
         delete s.stagesNotice;
+        delete s.roomNotice;
         delete s.booking.seating;
         delete s.seatingNotice;
         delete s.booking.run;
@@ -1576,6 +1589,11 @@ export function normalizeState(raw, fallbackSeed = 1) {
     const spec = D.VENUES[raw.venue.id];
     s.venue = { id: spec.id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: [] };
   }
+  if (raw.venue?.profile !== undefined) {
+    try { s.venue.profile = roomProfileTerms(raw.venue.profile, s.venue.id); }
+    catch { s.roomNotice = 'Invalid room profile removed; paid cash and history were preserved'; }
+  }
+  if (typeof raw.roomNotice === 'string' && raw.roomNotice) s.roomNotice ||= 'Earlier room-profile recovery preserved cash; original room conditions may be incomplete';
   s.venue.objects = validateLayout(rawObjects.map((o) => (isObj(o)
     ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), s.venue).accepted;
 

@@ -11,6 +11,7 @@ import {
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { heldRunQuote } from './held-run.mjs';
+import { roomProfileFor } from './room-profile.mjs';
 import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
@@ -177,7 +178,7 @@ function act(action, { quiet = false } = {}) {
 }
 
 function sight() {
-  const key = JSON.stringify(state.venue.objects);
+  const key = JSON.stringify([state.venue.id, state.venue.profile || null, state.venue.objects]);
   if (key !== ui.sightKey) {
     ui.sightKey = key;
     ui.sight = sightlineTiles(state.venue);
@@ -203,7 +204,7 @@ function render() {
 
 function renderTop() {
   $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
-  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice);
+  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice);
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
@@ -310,7 +311,7 @@ function bookPanel() {
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
-      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately.' : ''}</p>
+      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
       ${opener === id ? '<p class="lede">Selected for side stage. Choose another side act first.</p>' : opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
@@ -453,6 +454,7 @@ function updateBuild() {
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
     ? `<p class="checklist"><span>${esc(notes[0])}.</span>${notes.length > 1 ? ` <span class="more">${notes.length - 1} more in Details.</span>` : ''}</p>`
+    : roomProfileFor(state.venue) ? `<p class="checklist ${v.soundCapacity < v.capacity ? 'warn' : 'ok'}">Ready · ${v.housePa ? 'shell system' : 'portable PA'} for ${v.soundCapacity} people.</p>`
     : `<p class="checklist ok">✓ The ${spec.id === 'lot' ? 'lot' : 'room'} is ready for a show.</p>`;
   $('#obj-count').textContent = String(state.venue.objects.length);
   $('#details-btn').setAttribute('aria-label', `Details: readiness and the ${state.venue.objects.length} placed objects`);
@@ -497,6 +499,8 @@ function lotDetailsHtml() {
     <section aria-labelledby="ready-title">
       <h3 id="ready-title">Readiness</h3>
       ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<p class="checklist ok">✓ Ready for a show.</p>'}
+      ${roomProfileFor(state.venue) ? '<button data-act="room-open">Sound and slope</button>' : ''}
+      ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}
     </section>
     <section aria-labelledby="placed-title">
       <h3 id="placed-title">Placed objects (${state.venue.objects.length})</h3>
@@ -1123,7 +1127,8 @@ function sheetParts(r, { signed: done }) {
   const pass = r.result === 'pass';
   const tip = r.net < 0
     ? 'The night lost money. Try a door deal, a different ticket price, or fewer rentals.'
-    : TIPS[r.weakest];
+    : r.weakest === 'sound' && roomProfileFor(state.venue)
+      ? 'Use the included shell system and lights. A placed portable PA replaces the house sound capacity.' : TIPS[r.weakest];
   const head = `
     <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${clock(1)} CURFEW</span></div>
     <div class="meta-strip">
@@ -1369,9 +1374,20 @@ function openStages(opener) {
     <section data-tab="Rules" data-always-tabs><h3>One ticket per guest</h3><p>The main act sets site demand.</p><p>The side act redistributes that audience.</p><p>Each stage pays its own production.</p><p>Shared site costs divide by attendance.</p><p>Empty shows divide costs by capacity.</p><p>Each door act gets 70% of its own positive balance.</p><p>Stage ranges are separate bounds.</p><p>Site quality uses the shared show model.</p></section>`,opener);
 }
 
+function roomProfileHtml() {
+  const profile = roomProfileFor(state.venue);
+  if (!profile) return '';
+  const v = evaluateVenue(state.venue), field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  return `<section data-tab="Room" data-always-tabs><h3>Shell sound and slope</h3><dl class="live-readouts">
+    ${field('System', v.housePa ? profile.label : 'Portable PA')}${field('Sound capacity', `${v.soundCapacity} people`)}
+    ${field('Room capacity', `${v.capacity} people`)}${field('Clear-view tiles', v.clearTiles)}${field('Blocked-view tiles', v.blockedTiles)}</dl>
+    <p>The shell system is included in rent. A placed PA replaces it.</p><p>Lights are still needed for full sound-and-light quality.</p>
+    <p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p></section>`;
+}
+
 function openSeating(opener) {
   const terms = seatingPlanFor(state);
-  if (!terms) { openWindow('seating', 'Seats and lawn', `<p>${esc(state.seatingNotice || 'Original seat sales rules apply to this booking.')}</p>`, opener); return; }
+  if (!terms) { openWindow('seating', 'Room profile', roomProfileHtml() || `<p>${esc(state.roomNotice || state.seatingNotice || 'Original seat sales rules apply to this booking.')}</p>`, opener); return; }
   const quote = state.phase === 'promote' ? seatingForecastFor(state) : null, result = settlementFor(state);
   const field = (label,value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
   const zones = [['seats','Seats'],['lawn','Lawn']].map(([id,label]) => {
@@ -1381,8 +1397,9 @@ function openSeating(opener) {
       : '<p>Forecasts are available in Promote. Actual zone receipts appear after the night.</p>';
     return `<section data-tab="${label}" data-always-tabs><h3>${label} sales</h3>${content}</section>`;
   }).join('');
-  openWindow('seating', 'Seats and lawn', `<p class="development-summary">Separate sales · one settlement</p>${zones}
+  openWindow('seating', 'Seats and lawn', `<p class="development-summary">Separate sales · one settlement</p>${zones}${roomProfileHtml()}
     <section data-tab="Rules" data-always-tabs><h3>Price and value</h3>${state.seatingNotice ? `<p role="status">${esc(state.seatingNotice)}</p>` : ''}
+      ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}
       <p>Audience splits by zone capacity.</p><p>Each price changes its own demand. Unsold places do not transfer.</p>
       <p>Fair value is the act's usual price on lawn, plus ${money(10)} for seats.</p>
       <p>Above fair value, each extra fair-price multiple costs 10 satisfaction points.</p><p>The penalty stops at 20. Discounts add no points.</p>
@@ -1900,6 +1917,7 @@ function onAct(e) {
     return;
   }
   if (a === 'seating-open') { openSeating(target); return; }
+  if (a === 'room-open') { openSeating(target); $('#win [data-tab-name="Room"]')?.click(); return; }
   if (a === 'held-run-open') { openHeldRun(target); return; }
   if (a === 'held-run-sign') {
     if (act({ type: 'acceptSettlement', cancelRemaining: target.dataset.cancel === 'true', at: new Date().toISOString() })) { closeWindow(); focusHeading(); }
@@ -1931,7 +1949,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2383,6 +2401,7 @@ window.render_game_to_text = () => {
     career: (({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }) =>
       ({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }))(careerProgress(state)),
     venue: { objects: state.venue.objects.length, capacity: v.capacity, ready: v.ready, missing: v.missing },
+    room: roomProfileFor(state.venue) ? { version: state.venue.profile.version, house: v.housePa, soundCapacity: v.soundCapacity, clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
     promotion: state.promotion,
     show: state.show,
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
