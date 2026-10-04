@@ -1,5 +1,24 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Shadow and guest-transition integration
+
+- PR69 passed CI and merged into the PR67 performance branch. Reconciled production PR66/68 at 1059e22; preserved service projection, guest transitions and concurrent departure-core records. Shadow invalidation follows actual instance buffers, including paused queue changes and a worker with no guests. Service worker v35.
+- Verification: 258 repository tests, build/generated-document checks, backend shadow work/recovery checks, full-client 3D settlement parity, four classic/3D queue journeys and two controlled guest-motion journeys. Both prior branch CI runs passed; the combined revision requires its own CI and hosted verification.
+- The optimized benchmark stopped after seven valid windows and an unfinished eighth. Retained the partial attempt and exact source attribution; the original 18-window uncached baseline remains the complete baseline. No physical/human acceptance is inferred.
+
+## 2026-10-04: Static shadow reuse and concurrent service delivery
+
+- Reconciled PR62's live service pilot with the performance branch, preserving both test suites and one authoritative service implementation. The separate unshipped model was superseded. PR62 is deployed at 3698c0a / Pages build1259285752; seven runtime files match, and all four hosted Chromium/WebKit desktop/phone journeys pass transfers, clock, incident, reload and one-time settlement. Representative queue movement remains open.
+- Reuse unchanged directional shadows while the camera or non-shadow presentation changes. Layout/guest transforms and context restoration invalidate the map; paused/hidden rendering retains pending work. No visual quality, service, engine or save change; service worker v33.
+- Local checks: 251 repository tests, build/asset checks, expanded backend tests for shadow reuse/invalidation plus exact restoration and 20 disposal cycles, and actual-client 3D gestures/fallback/reload/settlement parity. The original 18-run table remains the earlier uncached renderer; this change does not rewrite historical performance evidence or certify device targets. CI, merge and hosted shadow proof follow the delivery PR.
+
+## 2026-10-04: Hardware renderer baseline and scene delivery
+
+- Added a reproducible renderer-only harness, frozen production fixtures, raw-sample retention, timing validity checks and independently tested percentile/stall reporting. All 18 full windows on Apple M4 Metal at DPR 1 completed; the public summary preserves every repeat and raw/source digests. No runtime quality, rules, economy or save changes.
+- PR64 delivered at 1e4d34b; PR65 delivered at eda0754, Pages build1259263511. Eight live scene files match and hosted backend/game rails pass, including gestures, recovery, reduced motion and complete settlement parity.
+- Verification: 234 repository tests, syntax/build checks and generated indexes. Full HUD/high-DPI/native/low-power testing, CI timing limits, software-rendering mitigation, close-up art and human acceptance remain open. Continue rendering optimization and the scoped aggregate operations implementation.
+
+
 ## 2026-10-04: Lot scene and authored reference
 
 - Added fence/opening and grid presentation, current-object incident markers, static reduced-motion rain/crowd cues and instanced guest parts. Scene inputs remain presentation-only; the complete game settlement parity rail still passes.

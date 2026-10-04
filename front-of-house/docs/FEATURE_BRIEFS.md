@@ -171,6 +171,12 @@ D5 A is accepted in [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance): 
 9. Capture correctness screenshots and state/save/settlement parity outside timed windows. Record visual quality, shadows, AA, reduced motion, crowd/triangle/draw-call counts and any quality adaptation. A lower backing resolution cannot be compared as the same quality setting. Repeat reduced motion and context recovery separately; record whether resize/hide invalidated a run.
 10. Before real-device acceptance, Dave selects the actual desktop and low-power roster and approves statistical limits from repeated baselines. Run on those physical devices, report thermal/power behavior, and retain human readability/control review. CI tracks stable scenes on a named runner class; runner changes need review. A green relative regression alone never proves the accepted frame-rate target.
 
+### Renderer measurement implementation
+
+FOH-P01 adds `npm run perf:front-of-house`: a renderer-only harness using the production empty/show fixtures above, all three CSS viewports at requested DPR 1, three repetitions, 10-second warm-up and 30-second sampling. The player problem is unquantified responsiveness: measure before changing quality or claiming the device targets. The harness freezes source/fixture hashes, retains raw intervals and failed runs privately, reports CPU submission separately, and rejects visibility/resize/context-loss windows. It changes no runtime rules, saves or quality defaults. `--quick` validates the harness only; `--gpu=default` observes the browser-selected backend, `--gpu=metal` requests Metal on compatible hosts, while the default explicitly requests the existing software backend. This is not full HUD, physical device, thermal or native-display acceptance. Acceptance is a reproducible complete report with all attempts retained and no inferred pass thresholds.
+
+See [PERFORMANCE.md](PERFORMANCE.md) for the implemented Lot renderer’s subsequent 18-run Apple M4 Metal baseline. The earlier table below remains the preflight comparison of the old board and separate archive.
+
 ### Available-host diagnostics
 
 See the measured results below and [prototype runtime evidence](PROTOTYPE_REVIEW.md). These characterize the available host only; the proposed WebGL adapter and realistic sample do not exist yet. Full game/HUD performance, hardware-GPU devices, supported roster and statistical acceptance remain pending.
@@ -272,6 +278,12 @@ The next slice connects the service core to an explicitly selected Lot experimen
 Incident policy for the live pilot: a rain/curfew response reduces only walk-ups still scheduled to arrive after the response minute; it cannot erase people already admitted or waiting. Gate-flow penalties change future processing capacity. Queue patience still governs guests already waiting. The response cost is charged once, the chosen response is immutable, and settlement waits for both a response and service close. Presales are held receipts accounted for at settlement, matching the current cash boundary. Refunds reduce ticket receipts; actual bar service replaces the old capacity estimate only for the pilot. Artist costs retain the booked terms and existing cost basis. No retroactive service sales or incident refunds are invented.
 
 Before enabling this pilot in the UI, verify replay across incident/transfer order, migration of old careers, one-time response and settlement, conservation including cancelled future demand, and useful staffing policies against the actual Lot values. The UI must display real queues and current-rate estimates, worker travel, explicit clock controls and a reconciliation of prepaid receipts, walk-up sales, refunds and served/lost bar demand. Representative crowd counts follow admitted population, with no dependence on display quality. Record the pilot's concrete values in data.mjs and RULES.md.
+
+### FOH-P01b: reuse unchanged Lot shadows
+
+The hardware baseline shows repeated render cost even for an unchanged empty scene. Reuse the directional light's shadow map while only the viewing camera, HUD overlays, lighting intensity or non-shadow rain changes. Invalidate it for layout or representative guest transforms and after WebGL context restoration. Preserve the current shadow resolution, geometry, materials and light positions; this slice adds no quality reduction or adaptive policy. A paused or hidden renderer retains pending invalidation until its next actual render.
+
+Acceptance: backend diagnostics count actual requested shadow refreshes; repeated static frames and camera movement reuse the map; changed layout, moving guests and restored contexts refresh it; reduced motion stays static; screenshots after restoration match before. Run existing camera/picking/lifecycle and actual-client settlement parity rails. Compare the same frozen empty/crowd camera fixtures at unchanged declared quality. Diagnostics prove render work, not physical display performance or human acceptance. No engine, service, save or career rules change.
 
 ### FOH-O01c: representative service movement
 
