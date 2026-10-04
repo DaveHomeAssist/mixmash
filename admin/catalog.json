@@ -1477,7 +1477,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Front of House decision packet",
-      "description": "Reply with IDs and letters, such as D1 A, D2 A. An omitted answer stays Open. Effort describes relative implementation scope, not a delivery estimate.",
+      "description": "D1–D5 are settled: D1 A, D2 B, D3 A, D4 A, D5 A. The original alternatives and recommendations are retained below for provenance; selected answers override recommendations. D6–D11 remain Open. An omitted answer stays…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/DECISION_PACKET.md",
       "open": null
     },
@@ -1497,7 +1497,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Front of House: the feature plan",
-      "description": "This document owns the order of features after the Lot career. The design of each system stays in GDD.md. The accepted choices stay in DECISIONS.md. What already shipped is in progress.md.",
+      "description": "This document preserves the original expansion order and later-system proposals. The design of each system stays in GDD.md. The accepted choices stay in DECISIONS.md. What already shipped is in progress.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FUTURE.md",
       "open": null
     },
@@ -1546,7 +1546,7 @@
       "project": "front-of-house",
       "category": "docs",
       "kind": "MD",
-      "title": "Front of House 3D prototype source review",
+      "title": "Front of House 3D prototype preflight review",
       "description": "Under accepted CT-DEC-14, start with a Lot renderer adapter and camera parity, not a simultaneous rewrite of the economy.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/PROTOTYPE_REVIEW.md",
       "open": null
@@ -1559,6 +1559,16 @@
       "title": "Front of House Release Checklist",
       "description": "The site is the gh-pages branch served as-is by GitHub Pages; a merge into gh-pages is a deploy, and there is no build step.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/RELEASE.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/RENDER_CONTRACT.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House Lot renderer contract",
+      "description": "Preflight specification, 2026-10-04. Source baseline: 522f3f2f49de6dcf74fa22fa51b900684dd54360, confirmed as the remote production branch and successful legacy Pages build before review; deployed engine.mjs, data.mjs,…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/RENDER_CONTRACT.md",
       "open": null
     },
     {

@@ -1,5 +1,17 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+
+## 2026-10-04: Realistic 3D Lot preflight
+
+Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmash/pull/58).
+
+- Verified production baseline [`522f3f2`](https://github.com/DaveHomeAssist/mixmash/commit/522f3f2f49de6dcf74fa22fa51b900684dd54360), its successful Pages build and byte parity of the four deployed runtime modules. Delivery changes only this game's documentation and the public admin catalog.
+- Expanded [prototype review](docs/PROTOTYPE_REVIEW.md): archive digest/CRC/path checks; eight declared dependency hashes matched; fresh isolated Chromium contexts exercised orbit, zoom, four presets, resize and reduced motion with verified module replay and blocked external fonts. No archive source or images were published. Observed Spin under reduced motion, missing camera bounds, elevated FOH and tilted Plan; lifecycle/disposal and source-rights gaps remain.
+- Added the [renderer contract](docs/RENDER_CONTRACT.md), tracing the existing scene and board operations to source and labeling new adapter, picking, camera, input, recovery and parity behavior as proposed. No persisted object IDs exist; physical scale calibration remains explicit and pending.
+- Updated [FB-01 and performance procedure](docs/FEATURE_BRIEFS.md) and [art direction](docs/ART_DIRECTION.md#realistic-lot-sample-specification) with stage, PA, bar, restroom and guest; eight camera/light review combinations; separate placeholder, final-art and device gates. Completed nine 10-second-warm-up/30-second diagnostic runs on the named M4 host using headless/software graphics. Prototype p95 RAF intervals were 100.0, 100.0 and 117.3 ms at half resolution; hardware-device targets remain unverified. Existing-board diagnostics exposed 200 drawn dots for 150 attendees, recorded without changing behavior.
+- Local delivery checks: Node 22.22.1; `npm test` 225 passed, zero failed/skipped; `npm run vercel-build` passed; `npm run docs:front-of-house` and `npm run sim:front-of-house` passed with no generated reference or balance drift. `npm run admin:index` registered the contract and refreshed only Front of House catalog metadata. Local link/privacy/diff checks passed. PR CI/merge and independent Pages delivery belong to provider records; local checks alone do not establish them.
+- [Next steps](docs/NEXT_STEPS.json) retain CT-DEC-14 through CT-DEC-18 and unanswered D6–D11. Remaining gates: archive rights, physical calibration, adapter/save/settlement parity, supported-device roster/statistical limits, realistic sample and Dave's art/camera/physical-device acceptance. Notion and other chats were not changed. Board refresh follows merge through the registered scoped updater, with parity and unrelated-entry preservation checks.
+
 ## 2026-10-04: D1–D5 settled; realistic 3D selected
 
 - Recorded Dave's acceptance of A for D3 (aggregate services with representative guests), D4 (Select, Escape cancellation, undo and bulk Clear confirmation), and D5 (stable CI regressions plus 60fps desktop / 30fps low-power device targets) in CT-DEC-15 through CT-DEC-17.
