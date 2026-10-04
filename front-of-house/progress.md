@@ -490,3 +490,9 @@ FOH-E01a implements one small-PA asset family as a pure prerequisite. Six target
 - Sanitation full CI37205244572 passed at81a0cc7 on2026-10-04 13:38:27Z. Concurrent merged performance evidence bc5ed37 required documentation reconciliation before delivery; both evidence histories are preserved. Runtime files are unchanged by this merge. Current-head CI and production acceptance remain pending.
 
 - PR85 now combines playable sanitation, development and the pure ownership prerequisite with delivered performance evidence bc5ed37. Additional dark phone touchscreen-tap checks pass on Chromium3D and WebKit classic, retaining44px targets and exact120 refunds. Current-head CI and production acceptance remain pending.
+
+### 2026-10-04 career cash journal authority
+
+FOH-E01a2 supplies the bounded cash journal needed before equipment enters the career. Recent128 rows retain identity and references; earlier movements remain exact category totals. Six targeted tests pass, including mixed capital/research/show reconciliation, more than four compactions, retained/archived retries, corrupted sources and safe-integer arithmetic. Loading pays nothing and no career cash path is connected yet. This is not a claim that ownership is playable.
+
+- Cash journal prerequisite: all315 repository tests, build and generated documentation pass. It remains isolated from career cash until the next adapter slice.

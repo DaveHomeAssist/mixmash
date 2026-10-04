@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "d74453c base \u00b7 merged CI calibration431cec0",
+  "head": "25110c6 base \u00b7 bounded career journal locally tested",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Sanitation, playable development and the inventory prerequisite are combined in PR85 with delivered performance evidence preserved. Local309 tests and browser/offline checks pass; current-head CI and production acceptance remain pending.",
+  "statusReason": "PR85 combines sanitation, playable research and the inventory prerequisite with current performance work; required CI/production checks are running. The bounded career cash journal now passes targeted tests; equipment deployment and remaining phases continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -943,6 +943,15 @@
             "evidence": [
               "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet.",
               "All309 repository tests, build and generated documentation pass. Required delivery/hosted core checks and all career ownership integration remain pending."
+            ]
+          },
+          {
+            "id": "FOH-E01a2",
+            "scope": "Bounded career cash journal with exact archived totals",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Six targeted tests cover mixed capital/research/show reconciliation, stable retry identity, more than four compactions, strict source replay, malformed checkpoints and unsafe integer refusal. No career cash path is connected yet.",
+              "All315 repository tests, build and generated documentation pass. Required delivery and career cash-path integration remain pending."
             ]
           },
           {
