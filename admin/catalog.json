@@ -2372,6 +2372,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-seating-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-seating-integration.mjs",
+      "description": "Separate zone sales flow into one frozen nightly settlement and reconciled career cash.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-seating-integration.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-seating.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-seating.mjs",
+      "description": "Seats and lawn have conserved capacity, separate sales and weighted value satisfaction.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-seating.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-service-crowd.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2559,6 +2579,16 @@
       "title": "front-of-house-sanitation-smoke.mjs",
       "description": "Actual facilities placement, locked sanitation terms, visits, reload and signed production receipt.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-sanitation-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-seating-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-seating-smoke.mjs",
+      "description": "Independent seat/lawn prices, public forecasts and frozen receipts through real player controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-seating-smoke.mjs",
       "open": null
     },
     {
@@ -2809,6 +2839,16 @@
       "title": "sanitation.mjs",
       "description": "Finite restroom visits, stall condition and exclusive cleaning-worker replay.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sanitation.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/seating.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "seating.mjs",
+      "description": "Versioned independent seat/lawn demand, whole-dollar receipts and value satisfaction.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/seating.mjs",
       "open": null
     },
     {

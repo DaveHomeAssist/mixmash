@@ -8,7 +8,7 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { heldRunQuote } from './held-run.mjs';
 import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
@@ -202,6 +202,7 @@ function render() {
 }
 
 function renderTop() {
+  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice);
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
@@ -307,7 +308,7 @@ function bookPanel() {
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
-      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.</p>
+      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
       ${opener ? `<p class="lede">The other stage opens with ${esc(artistFor(opener).name)}.</p>` : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
@@ -618,7 +619,7 @@ function promotePanel() {
       <label for="seat-price">Seat price <output id="seat-out" for="seat-price"></output></label>
       <input type="range" id="seat-price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="seat" />
     </div>
-    <p class="lede">${spec.seats} seats sell first, then the lawn at the lawn price.</p>` : '';
+    <p class="lede">${seatingPlanFor(state) ? 'Seats and lawn sell separately. Each price changes its own demand.' : `${spec.seats} seats sell first, then the lawn at the lawn price.`}</p>` : '';
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <h2>Promote the show</h2>
@@ -644,6 +645,7 @@ function promotePanel() {
     <div class="actions">
       <button type="button" data-act="back">Back to Build</button>
       ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
+      ${seatingPlanFor(state) ? '<button type="button" data-act="seating-open" id="seating-settings">Seats and lawn</button>' : ''}
       ${spec.id === 'club' ? '<button type="button" data-act="ticketing-open" id="ticketing-settings">Ticketing: Direct</button>' : ''}
       ${spec.id === 'lot' ? '<button type="button" data-act="food-settings" id="food-settings">Facilities</button>' : ''}
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open doors</button>
@@ -691,6 +693,8 @@ function updatePromote() {
     const dem = demand({ draw, price: p.price, fairPrice: a.fairPrice, ads: p.ads, venueRep: state.reputation.venue });
     return presaleSplit(dem, buzz(p.ads), f.capacity).presale;
   });
+  const seatingQuote = seatingForecastFor(state);
+  if (seatingQuote) { totals[0] = seatingQuote.low.presale; totals[1] = seatingQuote.high.presale; }
   const ticketingQuote = ticketingForecastFor(state);
   if (ticketingQuote) { totals[0] = ticketingQuote.low.presale; totals[1] = ticketingQuote.high.presale; }
   const maxY = Math.max(1, f.capacity);
@@ -1127,7 +1131,7 @@ function sheetParts(r, { signed: done }) {
       <table>
         <thead><tr><th scope="col">Source</th><th scope="col">Units</th><th scope="col" class="num">Total</th></tr></thead>
         <tbody>
-          <tr><td>Tickets (presale and gate)</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(state.promotion.price)}` : `${r.attendance} × ${money(state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
+          <tr><td>${r.seating ? '<button class="receipt-link" data-act="seating-open">Seats and lawn</button>' : 'Tickets (presale and gate)'}</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(r.seating?.lawn.price ?? state.promotion.price)}` : `${r.attendance} × ${money(r.seating?.lawn.price ?? state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
           ${r.ticketing ? `<tr><td><button class="receipt-link" data-act="ticketing-open">Ticket collection</button></td><td>${r.ticketing.terms.plan === 'platform' ? '4% of presales' : 'Direct'}</td><td class="num neg">${money(-r.ticketing.fee)}</td></tr>` : ''}
           <tr><td>Bar</td><td>${r.services ? `${r.services.barServed} served · ${r.services.barLost} lost` : `${r.attendance} guests`}</td><td class="num pos">${money(r.bar)}</td></tr>
           ${r.sponsor ? `<tr><td>Sponsor</td><td>Site deal</td><td class="num pos">${money(r.sponsor)}</td></tr>` : ''}
@@ -1162,7 +1166,7 @@ function sheetParts(r, { signed: done }) {
   const crowd = `
     <div data-tab="Crowd">
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
-      <div class="meters-sat">${parts}</div>${serviceReceipts}
+      <div class="meters-sat">${parts}</div>${r.seating ? `<p class="hint">Shared quality ${r.seating.sharedSatisfaction}/100. Seat value ${r.seating.scores.seats}; lawn value ${r.seating.scores.lawn}. Attendance weights the final score.</p>` : ''}${serviceReceipts}
     </div>
     <div class="outcomes" data-tab="Payout">
       <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
@@ -1172,7 +1176,7 @@ function sheetParts(r, { signed: done }) {
   return {
     body: `${head}
       <div class="sheet-cols">
-        ${r.services || r.ticketing ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
+        ${r.services || r.ticketing || r.seating ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
         <div class="sheet-col" data-tab="Costs">${costs}</div>
         <div class="sheet-col">${payouts}${crowd}</div>
       </div>`,
@@ -1317,6 +1321,27 @@ function openDevelopment(opener) {
     ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
 }
 
+function openSeating(opener) {
+  const terms = seatingPlanFor(state);
+  if (!terms) { openWindow('seating', 'Seats and lawn', `<p>${esc(state.seatingNotice || 'Original seat sales rules apply to this booking.')}</p>`, opener); return; }
+  const quote = state.phase === 'promote' ? seatingForecastFor(state) : null, result = settlementFor(state);
+  const field = (label,value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  const zones = [['seats','Seats'],['lawn','Lawn']].map(([id,label]) => {
+    const actual = result?.seating?.[id], low = quote?.low[id], high = quote?.high[id];
+    const content = actual ? `<dl class="live-readouts">${field('Capacity',actual.capacity)}${field('Ticket price',money(actual.price))}${field('Tickets sold',actual.attendance)}${field('Ticket receipts',money(actual.gross))}${field('Value satisfaction',`${result.seating.scores[id]}/100`)}</dl><p>Shared show quality: ${result.seating.sharedSatisfaction}/100.</p><p>This zone's price can lower its value score.</p>`
+      : quote ? `<dl class="live-readouts">${field('Capacity',low.capacity)}${field('Ticket price',money(low.price))}${field('Likely tickets',`${low.attendance} to ${high.attendance}`)}${field('Presale tickets',`${low.presale} to ${high.presale}`)}${field('Ticket gross before incidents',`${money(low.gross)} to ${money(high.gross)}`)}</dl><p>Public draw range only. Later incidents can reduce walk-ups.</p>`
+      : '<p>Forecasts are available in Promote. Actual zone receipts appear after the night.</p>';
+    return `<section data-tab="${label}" data-always-tabs><h3>${label} sales</h3>${content}</section>`;
+  }).join('');
+  openWindow('seating', 'Seats and lawn', `<p class="development-summary">Separate sales · one settlement</p>${zones}
+    <section data-tab="Rules" data-always-tabs><h3>Price and value</h3>${state.seatingNotice ? `<p role="status">${esc(state.seatingNotice)}</p>` : ''}
+      <p>Audience splits by zone capacity.</p><p>Each price changes its own demand. Unsold places do not transfer.</p>
+      <p>Fair value is the act's usual price on lawn, plus ${money(10)} for seats.</p>
+      <p>Above fair value, each extra fair-price multiple costs 10 satisfaction points.</p><p>The penalty stops at 20. Discounts add no points.</p>
+      <p>Actual attendance weights both zone scores. Prices stay fixed after doors.</p>
+      ${result ? '<button data-act="food-back">Back to settlement</button>' : ''}</section>`, opener);
+}
+
 function openHeldRun(opener) {
   const q = heldRunFor(state), terms = q?.terms;
   if (!terms) { openWindow('held-run', 'Held nights', `<p>${esc(state.runNotice || 'No held-run cancellation terms recorded.')}</p>`, opener); return; }
@@ -1379,7 +1404,7 @@ function cashReference(entry) {
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
 function paginateCompactWindow(step = 0) {
-  if (!['equipment', 'ticketing', 'held-run'].includes(win.kind) || innerHeight > 560) return;
+  if (!['equipment', 'ticketing', 'held-run', 'seating'].includes(win.kind) || innerHeight > 560) return;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
   if (!panel._compactAtoms) {
     for (const list of [...panel.children].filter(e => e.matches('dl,ol'))) {
@@ -1820,6 +1845,7 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'seating-open') { openSeating(target); return; }
   if (a === 'held-run-open') { openHeldRun(target); return; }
   if (a === 'held-run-sign') {
     if (act({ type: 'acceptSettlement', cancelRemaining: target.dataset.cancel === 'true', at: new Date().toISOString() })) { closeWindow(); focusHeading(); }
@@ -1851,7 +1877,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2084,7 +2110,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && ['equipment', 'ticketing', 'held-run'].includes(win.kind)) paginateCompactWindow();
+  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2106,6 +2132,7 @@ window.addEventListener('resize', () => {
   if (win.kind === 'equipment') openEquipment(win.opener);
   if (win.kind === 'ticketing') openTicketing(win.opener);
   if (win.kind === 'held-run') openHeldRun(win.opener);
+  if (win.kind === 'seating') openSeating(win.opener);
 });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
@@ -2116,7 +2143,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (['equipment', 'ticketing', 'held-run'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'ticketing', 'held-run', 'seating'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -2124,7 +2151,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
   syncTabs(el.winBody, `win:${kind}`);
-  if (['equipment', 'ticketing', 'held-run'].includes(kind)) paginateCompactWindow();
+  if (['equipment', 'ticketing', 'held-run', 'seating'].includes(kind)) paginateCompactWindow();
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2307,6 +2334,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    seating: seatingPlanFor(state) ? { terms: seatingPlanFor(state), forecast: state.phase === 'promote' ? seatingForecastFor(state) : null, receipt: r?.seating || null, notice: state.seatingNotice || null } : null,
     heldRun: held ? { terms: held.terms, feeEach: held.feeEach, completedNights: state.show ? state.show.night - (['settle', 'done'].includes(state.phase) ? 0 : 1) : 0, cancellationAfterCurrentNight: state.show ? { remaining: held.remaining, penalty: held.penalty } : null, cancelled: state.show?.cancelled === true, notice: state.runNotice || null } : null,
     ticketing: state.venue.id === 'club' ? { terms: ticketingPlanFor(state), forecast: state.phase === 'promote' ? ticketingForecastFor(state) : null, receipt: r?.ticketing || null, notice: state.ticketingNotice || null } : null,
     equipment: state.equipment ? { assets: equipmentFor(state).assets, deployment: equipmentPlanFor(state), journal: careerLedgerFor(state), notice: state.equipmentNotice || null } : null,

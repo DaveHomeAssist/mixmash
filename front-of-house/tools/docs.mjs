@@ -159,7 +159,7 @@ const ACTION_NOTES = {
   assignEquipment: 'Assign an owned small PA in Build or return to rental; freezes at doors',
   enableResearch: 'Enable optional development after the first settled show; Sandbox starts learned',
   research: 'Start, pause, resume or cancel a project between bookings; exact career cash delta',
-  chooseDeal: 'Book an act on a deal; optional runPolicy1 freezes cancellation terms for a two/three-night Amphitheater hold',
+  chooseDeal: 'Book an act on a deal; optional seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms',
   chooseVenue: 'Switch room before booking; each room keeps its own layout',
   place: 'Place one object, checked against R-18',
   setLayout: 'Replace the whole layout (Suggested layout, Clear)',

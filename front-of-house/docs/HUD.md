@@ -227,3 +227,7 @@ Club Promote and Menu open a contained Plan/Forecast/Receipt window. Direct cost
 ## Held nights pilot
 
 Multi-night Amphitheater offers show their per-unplayed-night cancellation fee before the deal is chosen. Menu opens Terms/Continue/Cancel/Receipt. Settlement uses Choose next night while contracted nights remain; each choice shows its exact cash outcome and signs the current show once. A disabled continuation explains insufficient cash, while cancellation states any resulting debt. The signed cancellation receipt can be reopened from Menu or the signed sheet. All four pages share the contained compact-window pager.
+
+## Seats and lawn pilot
+
+Amphitheater Book discloses separate sales. Promote retains the two price sliders and opens Seats/Lawn/Rules from Seats and lawn. Before doors, each page shows public draw-range tickets, presales and gross; later incidents remain uncertain. After the night, the pages show actual count, frozen price, gross and zone value score alongside shared show quality. The settlement ticket line and Menu reopen these receipts. The overall forecast and presale chart use the same independent zone calculation. Short windows use contained paging.
