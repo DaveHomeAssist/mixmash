@@ -10,6 +10,7 @@ import * as Services from './services.mjs';
 import * as Research from './research.mjs';
 import * as Ownership from './ownership.mjs';
 import * as Journal from './career-ledger.mjs';
+import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
@@ -509,7 +510,9 @@ export function evaluateShow(inputs) {
   const ask = isInt(inputs.ask) && inputs.ask > 0 ? inputs.ask : artist.ask;
   const drawMult = typeof inputs.drawMult === 'number' && Number.isFinite(inputs.drawMult) ? inputs.drawMult : 1;
   const dem = demand({ draw: inputs.draw * drawMult, price: inputs.price, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
-  const { share, presale, walkup } = presaleSplit(dem, bz, v.capacity);
+  const baseline = presaleSplit(dem, bz, v.capacity);
+  const { share, presale, walkup } = inputs.ticketing
+    ? ticketingSplit(inputs.ticketing, { demand: dem, baseShare: baseline.share, capacity: v.capacity }) : baseline;
   const walkupAfterIncident = Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
   const plannedAttendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
   const doorRush = doorRushPilot(v, plannedAttendance, presale, inputs.pilotCrew);
@@ -560,7 +563,8 @@ export function evaluateShow(inputs) {
   const sponsor = inputs.deal === 'sponsor' ? D.SPONSOR_PAY : 0;
   const broadcast = inputs.broadcast ? attendance * D.BROADCAST_PER_HEAD : 0;
   const food = live?.food || null, foodIncome = food?.totals.houseIncome || 0;
-  const net = ticketGross + bar + foodIncome + sponsor + broadcast - costs.total - artistPay;
+  const ticketing = inputs.ticketing ? ticketingReceipt(inputs.ticketing, { presale, price: inputs.price }) : null;
+  const net = ticketGross + bar + foodIncome + sponsor + broadcast - costs.total - artistPay - (ticketing?.fee || 0);
   const result = net >= 0 && satisfaction >= D.PASS_SATISFACTION ? 'pass' : 'retry';
 
   const upfront = costs.total - costs.incident + (paidUpFront ? guarantee : 0) - sponsor;
@@ -573,6 +577,7 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
+    ...(ticketing ? { ticketing } : {}),
     ...(inputs.equipment ? { equipment: inputs.equipment } : {}),
     sponsor, broadcast, seated, seatPrice, doorRush, services: live, ...(food ? { food, foodIncome } : {}),
     ...(inputs.facilities ? { facilities: inputs.facilities, sanitation: live?.sanitation || null, preferenceBonus } : {}),
@@ -580,10 +585,11 @@ export function evaluateShow(inputs) {
 }
 
 function showInputs(state, venueStats, withIncident) {
-  const roll = rollShow(state.seed, state.booking.artistId), equipment = equipmentPlanFor(state);
+  const roll = rollShow(state.seed, state.booking.artistId), equipment = equipmentPlanFor(state), ticketing = ticketingPlanFor(state);
   return {
     venue: venueStats,
     ...(equipment ? { equipment } : {}),
+    ...(ticketing ? { ticketing } : {}),
     ...(state.booking.research ? { research: researchEffectsFor(state) } : {}),
     deal: state.booking.deal,
     price: state.promotion.price,
@@ -689,6 +695,11 @@ function secondStage(state) {
     artistId: id, name: artist.name, attendance: result.attendance, artistPay: result.artistPay,
     ticketGross: result.ticketGross, bar: result.bar, cash,
   };
+}
+
+export function ticketingPlanFor(state) {
+  if (state.venue.id !== 'club') return null;
+  return state.show ? state.show.ticketing || null : state.promotion.ticketing || null;
 }
 
 export function equipmentFor(state) {
@@ -846,7 +857,7 @@ export function settlementPayout(result, deal) {
   // Sponsor money arrives before doors (it reduces upfront). Counting it again here
   // would pay the same check twice. Broadcast and the second stage arrive at settlement.
   return result.ticketGross + result.bar + (result.foodIncome || 0) + (result.broadcast || 0)
-    + (result.secondCash || 0) - (deal === 'door' ? result.artistPay : 0);
+    + (result.secondCash || 0) - (result.ticketing?.fee || 0) - (deal === 'door' ? result.artistPay : 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -989,6 +1000,8 @@ function applyActionCore(state, action) {
       if (!D.VENUES[id]) return fail(state, 'Unknown room');
       if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
       if (s.venue.id !== id) {
+        delete s.promotion.ticketing;
+        delete s.ticketingNotice;
         s.layouts[s.venue.id] = s.venue.objects;
         const spec = D.VENUES[id];
         s.venue = { id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: s.layouts[id] || [] };
@@ -1056,6 +1069,12 @@ function applyActionCore(state, action) {
         if (s.venue.id !== 'lot' || (action.foodPlan !== null && !Object.hasOwn(FOOD_PLANS, action.foodPlan))) return fail(state, 'Choose a valid Lot food plan');
         s.promotion.foodPlan = action.foodPlan;
       }
+      if (action.ticketing !== undefined) {
+        if (s.venue.id !== 'club') return fail(state, 'Ticketing options are available in Fathom Hall');
+        try { s.promotion.ticketing = action.ticketing === null ? null : ticketingTerms(action.ticketing); }
+        catch { return fail(state, 'Choose valid ticketing terms'); }
+        delete s.ticketingNotice;
+      }
       if (action.sanitation !== undefined) {
         if (s.venue.id !== 'lot') return fail(state, 'Sanitation trial is available in the Lot');
         try { s.promotion.sanitation = action.sanitation === null ? null : facilityTerms(action.sanitation); }
@@ -1099,6 +1118,7 @@ function applyActionCore(state, action) {
       const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, 1);
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
       if (equipment) s.show.equipment = equipment.terms;
+      if (s.venue.id === 'club' && s.promotion.ticketing) s.show.ticketing = ticketingTerms(s.promotion.ticketing);
       const v = evaluateVenue(s.venue);
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
       if (useServices || s.promotion.liveServices !== undefined) s.promotion.liveServices = useServices;
@@ -1407,6 +1427,13 @@ export function normalizeState(raw, fallbackSeed = 1) {
   if (room.id === 'lot' && promo.sanitation !== undefined) {
     try { s.promotion.sanitation = promo.sanitation === null ? null : facilityTerms(promo.sanitation); } catch { s.promotion.sanitation = null; }
   }
+  if (promo.ticketing !== undefined) {
+    try {
+      if (room.id !== 'club') throw new TypeError('Wrong ticketing room');
+      s.promotion.ticketing = promo.ticketing === null ? null : ticketingTerms(promo.ticketing);
+    } catch { s.ticketingNotice = 'Invalid ticketing selection removed; cash was preserved'; }
+  }
+  if (typeof raw.ticketingNotice === 'string' && raw.ticketingNotice) s.ticketingNotice ||= 'Earlier ticketing recovery preserved cash; original terms may be incomplete';
   if (room.seats) s.promotion.seatPrice = clamp(intOr(promo.seatPrice, s.promotion.price + 10), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
 
   const rep = isObj(raw.reputation) ? raw.reputation : {};
@@ -1444,6 +1471,12 @@ export function normalizeState(raw, fallbackSeed = 1) {
       repHold: intOr(raw.show.repHold, 0),
       relHold: intOr(raw.show.relHold, 0),
     };
+    if (raw.show.ticketing !== undefined) {
+      try {
+        if (room.id !== 'club') throw new TypeError('Wrong ticketing room');
+        s.show.ticketing = ticketingTerms(raw.show.ticketing);
+      } catch { s.ticketingNotice = 'Invalid paid ticketing terms removed; cash and signed history were preserved'; }
+    }
     if (raw.show.equipment !== undefined) {
       try { s.show.equipment = equipmentTerms(raw.show.equipment, s.equipment, true); }
       catch { s.equipmentNotice = 'Invalid paid equipment terms were removed; cash and signed history were preserved'; }
