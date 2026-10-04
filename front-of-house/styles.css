@@ -134,6 +134,7 @@ body:not([data-phase='build']) #board { cursor: default; }
 /* The board's status line: a short toast under the strip, centred on the clear part of
    the board. It fades a few seconds after each change. */
 .board-status {
+  pointer-events: none;
   position: fixed; z-index: 11; top: calc(var(--strip-h) + 8px); left: var(--clear-cx); transform: translateX(-50%);
   width: max-content; max-width: min(520px, calc(var(--clear-w) - 24px));
   margin: 0; padding: 6px 12px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text); text-align: center;

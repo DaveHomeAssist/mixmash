@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Fathom Hall technical preview
+
+FOH-V02r1 authors a source-owned20×14 cutaway, fixed pillar cells and suspended house PA; the explicit preview now switches between Lot/Club dimensions and resources. Three geometry/camera/crowd tests and a legacy-compatible editing test pass.328 repository tests/build/assets/vendor checks and unchanged balance simulation pass. Desktop/phone journeys verify all four views, arbitrary-yaw picking, room-switch cleanup, real context recovery, reload and exact classic/3D settlement parity.
+
+The first browser run exposed pre-existing pillar-overlap placement; new commands/ghosts now refuse it while older layouts/accounting are retained. Further checks exposed ground-selection fallthrough behind fixed scenery and a phone status overlay intercepting taps; both are corrected and covered. One incorrect promotion selector was repaired in the harness. Lot coalescing/lifecycle/backend regressions pass; remaining full-client, required CI and hosted delivery proof is tracked separately. CT-DEC-22 records the compatibility choice; final art/physical/human acceptance remains open.
+
+
 ## 2026-10-04: Full native HUD gap and render batching
 
 - PR92 CI37208943333 failed its generated-asset check after integration with equipment career116a743. Regenerated the stale renderer source digest; measured bounds and asset content are unchanged. Vendor/asset checks pass. All324 tests/build/docs/simulation had passed on the integrated source. Frozen5f47c4a measurement metadata retains its original stale manifest entry and independently correct renderer hash; no historical evidence is rewritten. Cache v44r1 distinguishes this delivery from concurrent v44 work. Replacement CI and hosted verification remain required.

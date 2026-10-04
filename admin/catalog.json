@@ -658,6 +658,10 @@
         {
           "name": "npm run perf:front-of-house-native-hud",
           "description": "node test/front-of-house-native-hud-performance.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-club",
+          "description": "node test/front-of-house-club-3d-smoke.mjs"
         }
       ]
     }
@@ -2474,6 +2478,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-club-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-club-3d-smoke.mjs",
+      "description": "Actual Club client: fixed scenery, safe placement, room switching, recovery and settlement parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-club-3d-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-displays-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2799,7 +2813,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "lot-renderer.mjs",
-      "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
+      "description": "Lot and Club preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
       "open": null
     },

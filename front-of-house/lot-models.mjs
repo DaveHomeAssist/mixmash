@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-4';
+export const MODEL_REVISION = 'lot-sample-5';
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
   guestHeightMetres: 1.8, operatorEyeMetres: 1.66, stageDeckMetres: 1.1,
@@ -145,6 +145,33 @@ export function createLotModels() {
     }
     return g;
   }
+  function room(venue) {
+    const group = new T.Group();
+    if (venue.id !== 'club') return group;
+    const { w, h } = venue.grid;
+    const fixed = (id, size, position, color, metal = 0) => {
+      const mesh = part(group, size, position, color, metal, 'box', id);
+      mesh.userData.permanent = true;
+      return mesh;
+    };
+    // Cutaway edges keep management views open; no roof or additional blocked floor cells.
+    fixed('club-back-wall', [w, 3, 0.15], [w / 2, 1.5, -0.08], 0x625c63);
+    for (const [id, x] of [['west', -0.08], ['east', w + 0.08]]) fixed(`club-${id}-cutaway`, [0.15, 0.3, h], [x, 0.15, h / 2], 0x625c63);
+    for (const [x, y] of venue.pillars) {
+      fixed(`club-pillar-${x}-${y}`, [1, 3, 1], [x + 0.5, 1.5, y + 0.5], 0x676b70);
+      fixed(`club-pillar-base-${x}-${y}`, [1, 0.15, 1], [x + 0.5, 0.075, y + 0.5], 0x363b42);
+    }
+    if (venue.housePa === 'M') {
+      fixed('club-house-pa-suspension', [w - 2, 0.12, 0.12], [w / 2, 2.95, 1.5], COLORS.steel, 0.6);
+      for (const [side, x] of [['left', w / 2 - 4.5], ['right', w / 2 + 4.5]]) {
+        for (let i = 0; i < 4; i++) {
+          fixed(`club-house-pa-${side}-${i}`, [0.6, 0.18, 0.4], [x, 2.2 + i * 0.2, 1.5], 0x171b20);
+          fixed(`club-house-pa-grille-${side}-${i}`, [0.53, 0.14, 0.015], [x, 2.2 + i * 0.2, 1.708], 0x39424a, 0.25);
+        }
+      }
+    }
+    return group;
+  }
   function dispose() { geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); geometries.clear(); materials.clear(); textures.clear(); }
-  return { create, guest, material, dispose, counts: () => ({ geometries: geometries.size, materials: materials.size, textures: textures.size }) };
+  return { create, guest, room, material, dispose, counts: () => ({ geometries: geometries.size, materials: materials.size, textures: textures.size }) };
 }

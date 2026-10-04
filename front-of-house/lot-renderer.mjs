@@ -1,27 +1,29 @@
-// Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.
+// Lot and Club preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.
 import * as T from './vendor/three/three.module.min.js';
 import { createLotCamera, LOT_ZOOMS } from './lot-camera.mjs';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA } from './lot-models.mjs';
 import { createLotPresentation } from './lot-presentation.mjs';
-import { OBJECT_TYPES } from './data.mjs';
+import { OBJECT_TYPES, VENUES } from './data.mjs';
 
-export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false } = {}) {
+export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false, venue = 'lot' } = {}) {
+  if (!['lot', 'club'].includes(venue)) throw new Error('Unsupported 3D preview room');
+  const spec = VENUES[venue], { w: width, h: depth } = spec.grid;
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
-  const camera = createLotCamera(), models = createLotModels(), world = new T.Scene();
-  const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models);
+  const camera = createLotCamera({ width, depth }), models = createLotModels(), world = new T.Scene();
+  const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models, { width, depth, pillars: spec.pillars, indoor: venue === 'club' }), room = models.room(spec);
   const media = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   let motion = reducedMotion === null ? !media?.matches : !reducedMotion;
-  const floorGeometry = new T.PlaneGeometry(24, 16), floorMaterial = models.material(0x373b3c, 0, 0.97).clone();
-  const floorMap = floorMaterial.map.clone(); floorMap.repeat.set(48, 32); floorMap.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); floorMap.needsUpdate = true; floorMaterial.map = floorMap;
-  const floor = new T.Mesh(floorGeometry, floorMaterial); floor.rotation.x = -Math.PI / 2; floor.position.set(12, -0.01, 8); floor.receiveShadow = true;
+  const floorGeometry = new T.PlaneGeometry(width, depth), floorMaterial = models.material(venue === 'club' ? 0x4b4040 : 0x373b3c, 0, 0.97).clone();
+  const floorMap = floorMaterial.map.clone(); floorMap.repeat.set(width * 2, depth * 2); floorMap.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); floorMap.needsUpdate = true; floorMaterial.map = floorMap;
+  const floor = new T.Mesh(floorGeometry, floorMaterial); floor.rotation.x = -Math.PI / 2; floor.position.set(width / 2, -0.01, depth / 2); floor.receiveShadow = true;
   const sky = new T.HemisphereLight(0xdce9ff, 0x343a35, 2.2);
   const sun = new T.DirectionalLight(0xffefd8, 3); sun.position.set(5, 28, 15); sun.target.position.set(12, 0, 8);
   sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 80 }); sun.shadow.bias = -0.0005;
   const stageLight = new T.PointLight(0x54b9ff, 60, 22, 2); stageLight.position.set(12, 3, 3);
-  world.add(floor, props, presentation.group, overlays, sky, sun, sun.target, stageLight);
+  world.add(floor, room, props, presentation.group, overlays, sky, sun, sun.target, stageLight);
   let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', paused = false, disposed = false;
   let objects = [], pickables = [], objectHeights = [];
   let shadowKey = '', shadowUpdates = 0, renderedFrames = 0;
@@ -74,7 +76,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   }
   function draw(input) {
     if (disposed) return;
-    if (input.floor && input.floor !== 'lot') throw new Error('Lot renderer accepts Oak St. Lot only');
+    if (input.floor && input.floor !== venue) throw new Error('Scene does not match this preview room');
     lastScene = input;
     const key = JSON.stringify(input.objects || []);
     if (key !== layoutKey) { rebuildObjects(input.objects || []); layoutKey = key; }
@@ -96,7 +98,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
       overlayKey = nextOverlay;
     }
     const night = !!input.night;
-    world.background = new T.Color(night ? 0x111923 : 0x85949d);
+    world.background = new T.Color(venue === 'club' ? (night ? 0x15121d : 0x55515a) : (night ? 0x111923 : 0x85949d));
     sky.intensity = night ? 1.15 : 2.2; sun.intensity = night ? 0.7 : 3; stageLight.intensity = night && input.lightTower ? 60 : 0;
     render();
   }
@@ -119,12 +121,12 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     densityMedia?.addEventListener('change', densityChanged);
   }
   function densityChanged() { if (disposed) return; watchDensity(); resize(); }
-  function objectAt(x, y) {
-    if (disposed || state !== 'ready') return null;
+  function pickAt(x, y) {
+    if (disposed || state !== 'ready') return { object: null, blocked: false };
     world.updateMatrixWorld(true);
-    const hits = camera.ray(x, y).intersectObjects(pickables, false);
+    const hits = camera.ray(x, y).intersectObjects([...pickables, ...room.children], false);
     const hit = hits.sort((a, b) => a.distance - b.distance || a.object.userData.objectIndex - b.object.userData.objectIndex)[0];
-    return hit ? { ...objects[hit.object.userData.objectIndex] } : null;
+    return { object: hit && !hit.object.userData.permanent ? { ...objects[hit.object.userData.objectIndex] } : null, blocked: !!hit?.object.userData.permanent };
   }
   function contextLost(event) { event.preventDefault(); cancelRender(); report('lost', 'WebGL context lost; retain the current game and use the fallback board.'); }
   function contextRestored() { if (disposed) return; renderer.shadowMap.needsUpdate = true; report('ready'); resize(); if (lastScene) draw(lastScene); }
@@ -142,7 +144,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   }
   resize(); watchDensity();
   return {
-    draw, resize, objectAt, destroy,
+    draw, resize, pickAt, objectAt: (x, y) => pickAt(x, y).object, destroy,
     setClear: (value) => { clear = value; resize(); },
     camera: () => camera.info(),
     setCamera: (value) => { const c = camera.setCamera(value); render(); return c; },
@@ -163,6 +165,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', venue, grid: { ...spec.grid }, permanent: room.children.map(mesh => mesh.name), revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

@@ -189,3 +189,7 @@ The pilot's board draws the actual admitted population, with integer allocation 
 Settlement retains its existing window. The live pilot splits Revenue and Deal into separate phone tabs to keep both reachable without scrolling. The Crowd tab reconciles presales, walk-up cash, refunds, cancelled future demand and abandonment; the Bar row reports served/lost requests. Signing pays the existing career transition once. Invalid checkpoint recovery is explicitly reported on Show; cash and already-paid response costs are retained.
 
 The live Services view separates blue outside admission samples, gold inside bar samples, ordinary floor guests and an orange worker. The Live services settings explain the colors and representative limit; exact queues and receipts remain in the HUD. Controls keep their position while staffing status and counts change.
+
+### Club preview and fixed scenery
+
+The Camera window's explicit3D preview now supports Fathom Hall as well as Oak St. Lot. Its Wide, FOH, Stage and Plan controls use the selected room's bounds. Other rooms continue in classic view with the existing explanation. Fixed pillars and the suspended house PA cannot be removed; a click on opaque fixed scenery does not select equipment behind it. New placement and its ghost reject pillar overlaps. The informational board status remains announced but never intercepts pointer/touch input.

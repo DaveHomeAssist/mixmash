@@ -52,6 +52,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Dependencies / risks:** FB-01; selected D8 A retains current art until replacement acceptance, and D10 A keeps later-room mechanics experimental while art and tier-specific tests develop. Screenshot geometry is not proof of production readiness. **Relative effort:** large per venue. **Expansion:** never treat art acceptance as gameplay balance acceptance.
 
+### FOH-V02r1: Fathom Hall technical scene
+
+**Scope:** Extend the explicit 3D preview to the existing20×14 Club. Author a cutaway room, exactly four blocked pillar tiles and a suspended medium house-PA representation from existing venue metadata. Keep the roof omitted for management visibility. The room uses the same provisional scale, props and material provenance as the Lot; fixed scenery does not add rentable objects, lights or capacity. A discovered pre-existing placement omission is corrected for new edits: equipment cannot overlap fixed pillar tiles. Existing saved layouts and historical evaluation remain unchanged.
+
+**Flow and acceptance:** Open a saved Club show with the preview enabled, inspect at yaw37/135 and Wide/FOH/Stage/Plan, then return to the Lot or a classic-only room. Camera bounds, floor/grid, guests and picking must follow each room's actual extents. Opaque permanent scenery occludes selections behind it, while engine pillar rules remain authoritative. Verify exact saved-show settlement across classic/3D, blocked placement with matching ghost feedback, room-switch cleanup, fallback and desktop/phone containment. Retain the Lot's regression fixtures unchanged.
+
+**Evidence boundary:** This is a technical preview under the delegated all-phase execution instruction. It does not replace classic art or establish human camera/art approval. Final visual review, physical calibration and public promotion remain gated separately; no archive assets or new simulation rules are introduced. Loam Shell and Split Acre remain separate slices.
+
 ## FB-03 Crowd service behavior
 
 **Decision:** D3 A accepted in [CT-DEC-15](DECISIONS.md#ct-dec-15-crowd-model). Service rates, timing and balance remain to be specified.

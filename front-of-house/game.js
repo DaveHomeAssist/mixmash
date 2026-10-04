@@ -8,7 +8,7 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
@@ -532,7 +532,7 @@ function inspectAt(tile) {
 
 function ghostAt(tile) {
   const ghost = { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot };
-  const { problems } = validateLayout([...state.venue.objects, ghost], state.venue);
+  const { problems } = validatePlacement([...state.venue.objects, ghost], state.venue);
   return { ...ghost, valid: !problems.some((p) => p.index === state.venue.objects.length) };
 }
 
@@ -572,7 +572,8 @@ function toggleBulldoze() {
 // Removal by pointer goes to the prop drawn under the pointer (a tall sprite rises well
 // above its footprint), and to the ground tile when no prop is there.
 function targetAt(e) {
-  const hit = board.objectAt(e.clientX, e.clientY);
+  const { object: hit, blocked } = board.pickAt(e.clientX, e.clientY);
+  if (blocked) return null;
   return hit ? { x: hit.x, y: hit.y } : board.tileAt(e.clientX, e.clientY);
 }
 
@@ -1320,10 +1321,10 @@ const board = createBoardAdapter(el.canvas, {
 
 function updateRendererStatus(status) {
   const note = $('#renderer-status');
-  const message = status.reason || (status.state === 'loading' ? 'Opening 3D…' : status.active ? '3D Lot preview. Camera and art are still being tested.' : 'Classic view.');
+  const message = status.reason || (status.state === 'loading' ? 'Opening 3D…' : status.active ? '3D room preview. Camera and art are still being tested.' : 'Classic view.');
   if (note && note.textContent !== message) note.textContent = message;
   const toggle = $('[data-act="renderer-toggle"]');
-  if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D Lot'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
+  if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D preview'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
   document.querySelectorAll('[data-camera-preset], [data-camera-orbit]').forEach(button => { button.disabled = !status.active; });
   const help = status.active ? 'Select: tap to inspect, drag to orbit. Place: tap to place; dragging only previews. Two fingers pan and pinch; a middle-button drag pans. Camera controls are in the menu.' : classicBoardHelp;
   if ($('#board-help').textContent !== help) $('#board-help').textContent = help;
@@ -1335,7 +1336,7 @@ function updateRendererStatus(status) {
 
 function openCamera(opener) {
   openWindow('camera', 'Camera', `<p id="renderer-status" class="lede" aria-live="polite"></p>
-    <div class="row"><button type="button" data-act="renderer-toggle">Try 3D Lot</button><button type="button" data-act="renderer-retry">Retry 3D</button></div>
+    <div class="row"><button type="button" data-act="renderer-toggle">Try 3D preview</button><button type="button" data-act="renderer-retry">Retry 3D</button></div>
     <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}</div>
     <div class="lot-camera-controls" role="group" aria-label="Orbit camera"><button type="button" data-camera-orbit="left">Orbit left</button><button type="button" data-camera-orbit="right">Orbit right</button><button type="button" data-camera-orbit="up">Look down</button><button type="button" data-camera-orbit="down">Look forward</button></div>
     <button type="button" data-act="camera-mode" aria-pressed="${!!ui.cameraMode}">Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}</button>

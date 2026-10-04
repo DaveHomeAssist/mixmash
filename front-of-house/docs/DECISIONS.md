@@ -25,6 +25,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-19](#ct-dec-19-delegated-milestone-decisions) | Autonomous D6–D11 A selections and delegated decision authority | Accepted |
 | [CT-DEC-20](#ct-dec-20-live-service-pilot-rules-and-compatibility) | Live service pilot rules and compatibility | Accepted experiment |
 | [CT-DEC-21](#ct-dec-21-measured-ci-regression-policy) | Paired CI timing limits, retained full-client evidence and render batching | Accepted engineering policy |
+| [CT-DEC-22](#ct-dec-22-fixed-scenery-editing-and-legacy-compatibility) | Fixed scenery editing and legacy compatibility | Accepted engineering policy |
 
 ## CT-DEC-01: Core scope
 
@@ -507,3 +508,11 @@ Compare a pinned calibrated revision and the candidate sequentially on the same 
 Prove the gate with20ms of actual isolated-harness CPU work and require numeric rejection of valid full samples. Do not equate a flag, invalid evidence or a quick sample with slowdown detection. Existing correctness checks remain mandatory. Full live paired/fault proof is still pending at this decision revision.
 
 The native full client records47.58–59.98Hz across six valid windows; retain every result and exact engine-state replay. It does not meet a claim of sustained60fps. Coalesce application camera/scene updates into one scheduled render without reducing quality; keep standalone rendering synchronous for stable contracts and measurement semantics. Fewer renders prove less submitted work; only repeated measured evidence can support a cadence claim. Thermal/shared-host noise, low-power/phone and human acceptance remain separate.
+
+## CT-DEC-22 Fixed scenery editing and legacy compatibility
+
+**Status:** Accepted engineering policy, selected by Codex under CT-DEC-19 on2026-10-04. Technical previews do not establish human art approval or public-launch acceptance.
+
+Extend the explicit preview one room at a time from existing venue metadata. Fathom Hall uses its20×14 grid, four pillar tiles and medium house PA, with a cutaway roof/edges for management visibility. The engine remains authoritative for capacity, services and money. Fixed opaque scenery prevents pointer selection/removal of objects behind it, while keyboard/list inspection remains available.
+
+Browser verification exposed a pre-existing inconsistency: pillar tiles reduced usable floor and blocked sightlines but new equipment could overlap them. Reject such new placement/replacement commands and use the same rule for the ghost. Preserve normalization, existing layouts and historical evaluation to avoid silently removing gear or changing older show outcomes. A legacy conflict can be removed normally; unrelated safe edits remain possible. No save fields or schema changes.

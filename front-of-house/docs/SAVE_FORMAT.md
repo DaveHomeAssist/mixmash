@@ -188,3 +188,7 @@ Schema2 adds optional `equipment: {version:1, commands}` and `cashJournal` check
 Every subsequent cash-changing action posts the actual movement: acquisition, disposal, development, developmentRefund, showOpening, incident or settlement. Held runs record settlement income and next-night opening separately. The journal retains128 sequential rows plus exact older category totals; balance must equal available cash. Loading/reloading never pays a transaction. Invalid optional provenance or a mismatched journal preserves current cash/history and reports incomplete recovery; journal recovery starts a new opening at preserved cash without reconstructing lost rows. Next show carries both sources; explicit retry resets them. Older clients strip these optional fields, so enabled careers require a forward fix rather than downgrade.
 
 Nine adapter checks cover both offered deals, paid incidents, sponsor opening, held nights, research refunds, duplicate capital commands, sale after signing, reload/recovery and bounded history. Player controls and browser/offline evidence remain a separate delivery slice.
+
+### Club fixed-pillar editing compatibility
+
+The technical Club preview introduces no saved fields or schema change. New editing commands reject pillar overlaps, but normalization and historical evaluation keep their existing layout rules. Existing overlap saves are preserved without removing objects, charging money or rewriting past show outcomes; newly submitted replacement layouts must obey the fixed pillars.
