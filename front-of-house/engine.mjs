@@ -10,6 +10,7 @@ import * as Services from './services.mjs';
 import * as Research from './research.mjs';
 import * as Ownership from './ownership.mjs';
 import * as Journal from './career-ledger.mjs';
+import { seatingTerms, seatingContract, seatingSales, seatingSatisfaction } from './seating.mjs';
 import { heldRunTerms, heldRunQuote } from './held-run.mjs';
 import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
@@ -510,18 +511,24 @@ export function evaluateShow(inputs) {
   const bz = buzz(inputs.ads);
   const ask = isInt(inputs.ask) && inputs.ask > 0 ? inputs.ask : artist.ask;
   const drawMult = typeof inputs.drawMult === 'number' && Number.isFinite(inputs.drawMult) ? inputs.drawMult : 1;
-  const dem = demand({ draw: inputs.draw * drawMult, price: inputs.price, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
+  let dem = demand({ draw: inputs.draw * drawMult, price: inputs.price, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep });
   const baseline = presaleSplit(dem, bz, v.capacity);
-  const { share, presale, walkup } = inputs.ticketing
+  let { share, presale, walkup } = inputs.ticketing
     ? ticketingSplit(inputs.ticketing, { demand: dem, baseShare: baseline.share, capacity: v.capacity }) : baseline;
-  const walkupAfterIncident = Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
+  const zoneSales = inputs.seating ? seatingSales(inputs.seating, {
+    potential: demand({ draw: inputs.draw * drawMult, price: artist.fairPrice, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep }),
+    capacity: v.capacity, seats: v.seats, lawnPrice: inputs.price, seatPrice: inputs.seatPrice,
+    fairPrice: artist.fairPrice, presaleShare: baseline.share, walkupMult: response?.walkupMult ?? 1,
+  }) : null;
+  if (zoneSales) { dem = zoneSales.demand; presale = zoneSales.presale; walkup = zoneSales.walkupDemand; }
+  const walkupAfterIncident = zoneSales ? zoneSales.walkup : Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
   const plannedAttendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
   const doorRush = doorRushPilot(v, plannedAttendance, presale, inputs.pilotCrew);
   const live = inputs.services || null;
   const attendance = live ? live.admitted : doorRush ? doorRush.admitted : plannedAttendance;
   const seatPrice = isInt(inputs.seatPrice) ? inputs.seatPrice : inputs.price;
-  const seated = v.seats ? Math.min(v.seats, attendance) : 0;
-  const ticketGross = live ? live.ticketCash : seated * seatPrice + (attendance - seated) * inputs.price;
+  const seated = zoneSales ? zoneSales.seats.attendance : v.seats ? Math.min(v.seats, attendance) : 0;
+  const ticketGross = live ? live.ticketCash : zoneSales ? zoneSales.ticketGross : seated * seatPrice + (attendance - seated) * inputs.price;
   const per = (supply) => (attendance > 0 ? Math.min(1, supply / attendance) : 1);
   const sanitation = live?.sanitation;
   const restroomScore = sanitation ? (sanitation.totals.requested ? sanitation.totals.served / sanitation.totals.requested : 1) : per(v.restrooms * D.RESTROOM_RATIO);
@@ -534,7 +541,9 @@ export function evaluateShow(inputs) {
     incident: inputs.incidentId ? (response ? response.score : 0) : 1,
   };
   const weights = { sound: D.W_SOUND, sightlines: D.W_SIGHT, amenities: D.W_AMENITY, flow: D.W_FLOW, incident: D.W_INCIDENT };
-  const satisfaction = Math.round(Object.keys(weights).reduce((s, k) => s + weights[k] * parts[k], 0));
+  const sharedSatisfaction = Math.round(Object.keys(weights).reduce((s, k) => s + weights[k] * parts[k], 0));
+  const zoneScores = zoneSales ? seatingSatisfaction(zoneSales, sharedSatisfaction) : null;
+  const satisfaction = zoneScores ? zoneScores.combined : sharedSatisfaction;
   const weakest = Object.keys(weights).reduce((worst, k) =>
     (weights[k] * (1 - parts[k]) > weights[worst] * (1 - parts[worst]) ? k : worst), 'sound');
 
@@ -579,6 +588,7 @@ export function evaluateShow(inputs) {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
     ...(ticketing ? { ticketing } : {}),
+    ...(zoneSales ? { seating: { ...zoneSales, scores: zoneScores, sharedSatisfaction } } : {}),
     ...(inputs.equipment ? { equipment: inputs.equipment } : {}),
     sponsor, broadcast, seated, seatPrice, doorRush, services: live, ...(food ? { food, foodIncome } : {}),
     ...(inputs.facilities ? { facilities: inputs.facilities, sanitation: live?.sanitation || null, preferenceBonus } : {}),
@@ -586,14 +596,17 @@ export function evaluateShow(inputs) {
 }
 
 function showInputs(state, venueStats, withIncident) {
-  const roll = rollShow(state.seed, state.booking.artistId), equipment = equipmentPlanFor(state), ticketing = ticketingPlanFor(state);
+  const night = state.show?.night || 1;
+  const drawSeed = state.show?.run && night > 1 ? (state.seed ^ night) >>> 0 : state.seed;
+  const roll = rollShow(drawSeed, state.booking.artistId), equipment = equipmentPlanFor(state), ticketing = ticketingPlanFor(state), seating = seatingPlanFor(state);
   return {
     venue: venueStats,
     ...(equipment ? { equipment } : {}),
     ...(ticketing ? { ticketing } : {}),
+    ...(seating ? { seating } : {}),
     ...(state.booking.research ? { research: researchEffectsFor(state) } : {}),
     deal: state.booking.deal,
-    price: state.promotion.price,
+    price: seating?.lawnPrice ?? state.promotion.price,
     ads: state.promotion.ads,
     // The show was sold with the reputation the venue had when the doors opened;
     // settlement changes the reputation, so a replayed sheet must not use the new one.
@@ -602,7 +615,7 @@ function showInputs(state, venueStats, withIncident) {
     ask: state.booking.terms ? state.booking.terms.ask : undefined,
     drawMult: state.booking.terms ? state.booking.terms.drawMult : undefined,
     artistId: state.booking.artistId,
-    seatPrice: state.promotion.seatPrice,
+    seatPrice: seating?.seatPrice ?? state.promotion.seatPrice,
     broadcast: !!(venueStats && venueStats.broadcast),
     incidentId: withIncident && state.show ? state.show.incidentId : null,
     responseId: withIncident && state.show ? state.show.responseId : null,
@@ -619,6 +632,8 @@ export function upfrontFor(state) {
 
 // The Promote screen's attendance range. The draw itself stays hidden.
 export function forecast(state) {
+  const seating = seatingForecastFor(state);
+  if (seating) return { low: seating.low.attendance, high: seating.high.attendance, capacity: seating.low.capacity };
   const artist = artistFor(state.booking.artistId);
   const v = evaluateVenue(state.venue);
   const at = (draw) => {
@@ -704,6 +719,22 @@ function savedRunCancellation(raw) {
     const q = heldRunQuote(raw.terms, raw.completed);
     return q.remaining ? { runCancellation: { terms: q.terms, completed: q.completed } } : {};
   } catch { return {}; }
+}
+
+export function seatingPlanFor(state) {
+  if (state.venue.id !== 'amphitheater') return null;
+  return state.show ? state.show.seating || null : state.booking.seating || null;
+}
+export function seatingForecastFor(state) {
+  const terms = seatingPlanFor(state);
+  if (!terms) return null;
+  const artist = artistFor(state.booking.artistId), venue = evaluateVenue(state.venue), share = presaleSplit(0, buzz(state.promotion.ads), venue.capacity).share;
+  const at = draw => seatingSales(terms, {
+    potential: demand({ draw: draw * (state.booking.terms?.drawMult || 1), price: artist.fairPrice, fairPrice: artist.fairPrice, ads: state.promotion.ads, venueRep: state.reputation.venue }),
+    capacity: venue.capacity, seats: venue.seats, lawnPrice: terms.lawnPrice ?? state.promotion.price,
+    seatPrice: terms.seatPrice ?? state.promotion.seatPrice, fairPrice: artist.fairPrice, presaleShare: share,
+  });
+  return { low: at(artist.drawMin), high: at(artist.drawMax) };
 }
 
 export function heldRunFor(state) {
@@ -1019,6 +1050,10 @@ function applyActionCore(state, action) {
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (action.seatingPolicy !== undefined) {
+        if (action.seatingPolicy !== 1 || spec.id !== 'amphitheater') return fail(state, 'That booking cannot use separate seat sales');
+        s.booking.seating = seatingTerms({ version: 1 });
+      }
       if (action.runPolicy !== undefined) {
         if (action.runPolicy !== 1 || spec.id !== 'amphitheater' || s.booking.nights < 2) return fail(state, 'That booking cannot use a held-run policy');
         s.booking.run = heldRunTerms({ version: 1, nights: s.booking.nights, ask: terms.ask });
@@ -1035,6 +1070,8 @@ function applyActionCore(state, action) {
       if (!D.VENUES[id]) return fail(state, 'Unknown room');
       if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
       if (s.venue.id !== id) {
+        delete s.booking.seating;
+        delete s.seatingNotice;
         delete s.booking.run;
         delete s.runNotice;
         delete s.promotion.ticketing;
@@ -1155,6 +1192,7 @@ function applyActionCore(state, action) {
       const incidentId = incidentFor(s.seed, s.booking.artistId, s.venue, s.forcedIncident, 1);
       s.show = { incidentId, responseId: null, venueRep: s.reputation.venue, night: 1, repHold: 0, relHold: 0 };
       if (equipment) s.show.equipment = equipment.terms;
+      if (s.booking.seating) s.show.seating = seatingContract({ ...s.booking.seating, lawnPrice: s.promotion.price, seatPrice: s.promotion.seatPrice });
       if (s.booking.run) s.show.run = heldRunTerms(s.booking.run);
       if (s.venue.id === 'club' && s.promotion.ticketing) s.show.ticketing = ticketingTerms(s.promotion.ticketing);
       const v = evaluateVenue(s.venue);
@@ -1265,6 +1303,7 @@ function applyActionCore(state, action) {
           repHold,
           relHold,
           ...(s.show.equipment ? { equipment: clone(s.show.equipment) } : {}),
+          ...(s.show.seating ? { seating: clone(s.show.seating) } : {}),
           ...(s.show.run ? { run: clone(s.show.run) } : {}),
         };
         s.phase = 'show';
@@ -1448,6 +1487,13 @@ export function normalizeState(raw, fallbackSeed = 1) {
   const room = venueSpec(s.venue);
   if (s.booking.deal === 'sponsor' && !room.sponsor) s.booking.deal = null;
   s.booking.nights = room.nights.includes(booking.nights) ? booking.nights : 1;
+  if (booking.seating !== undefined) {
+    try {
+      if (room.id !== 'amphitheater') throw new TypeError('Wrong seating room');
+      s.booking.seating = seatingTerms(booking.seating);
+    } catch { s.seatingNotice = 'Invalid seat sales booking removed; cash was preserved'; }
+  }
+  if (typeof raw.seatingNotice === 'string' && raw.seatingNotice) s.seatingNotice ||= 'Earlier seat sales recovery preserved cash; original terms may be incomplete';
   if (booking.run !== undefined) {
     try {
       const terms = heldRunTerms(booking.run);
@@ -1528,6 +1574,14 @@ export function normalizeState(raw, fallbackSeed = 1) {
       repHold: intOr(raw.show.repHold, 0),
       relHold: intOr(raw.show.relHold, 0),
     };
+    if (raw.show.seating !== undefined) {
+      try {
+        if (room.id !== 'amphitheater') throw new TypeError('Wrong seating room');
+        const terms = seatingContract(raw.show.seating);
+        if ([terms.lawnPrice, terms.seatPrice].some(price => price < D.PRICE_MIN || price > room.priceMax)) throw new TypeError('Invalid locked price');
+        s.show.seating = terms;
+      } catch { s.seatingNotice = 'Invalid paid seat sales terms removed; cash and signed history were preserved'; }
+    }
     if (raw.show.run !== undefined) {
       try {
         if (room.id !== 'amphitheater') throw new TypeError('Wrong held-run room');
