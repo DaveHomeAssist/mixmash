@@ -682,3 +682,11 @@ FOH-U01a implements the scoped desktop minimap. Source projection checks cover a
 
 - PR103 booking rules passed CI37214732478, merged8d715b07fb21a9110049194d34d44b022996d87a at16:16:49Z; Pages built16:17:14Z.26 hosted runtime files match. Six Chromium/WebKit Festival journeys plus trusted-headline/same-act/no-side recovery cases pass. Hosted offline sponsorPrice90,5702admissions split5407/295,455533net and1455533cash match the signed receipt/journal. Actual phone receipt inspected.
 - Amphitheater profile source remains c538daa; this follow-up updates release evidence only. Its own CI/Pages/hosted acceptance and remaining venue work are still open.
+
+## 2026-10-04 — Overview comparison and combined integration
+
+Twelve full native overview windows at clean ca1f1a7 pass independent source/raw/fixture digests, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1: visible 59.44–59.98 Hz, hidden 59.51–59.98 Hz, zero intervals over50ms. Each mode has three fixed/three actual pointer-pan repeats with10s warmup/30s measurement. All preserve6000 total attendance,1267 displayed arrivals and180 representatives. Visible moving windows repaint; fixed and hidden windows reuse the image. Sequential descriptive results overlap; no causal improvement, running-Lot KI-14 closure, phone/low-power or human acceptance inferred.
+
+Full player, Festival and 3D navigation/toggle regressions passed before integration. Combined source now includes delivered Festival booking conditions and pending PR104 Shell sound/sightlines, preserving both the newer rules checks and desktop/phone3D journeys. Combined checks, current-head CI and hosted acceptance remain pending. The native report remains tied to its original source.
+
+Combined source verification passes407 repository tests, build, asset validation, generated docs and unchanged simulator. All four overview journeys pass after the rules integration; remaining player/venue checks are running before delivery.

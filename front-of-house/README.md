@@ -107,3 +107,5 @@ On the Lot, use connected portable units or place one Facility trailer (T). In P
 Each guest makes one two-minute visit after their bar/food stop. Waiting expires after eight minutes. After twelve uses a stall waits for three minutes of cleaning; one cleaner handles one stall at a time. Purple samples show waiting/in-use guests. Facilities in Services shows visits, dirty stalls and cleaning progress; the same receipt opens from settlement Costs. Missed visits reduce restroom amenities without removing attendees or refunding tickets.
 
 Facilities → Artist offers Sodium Arcade an optional quiet changing area, separate from guest stalls. Accepting needs a connected powered trailer and cleaner. Fulfillment adds up to two relationship points, with no artist-pay change; declining has no penalty. All terms lock at doors. Old shows without the trial retain their previous rules.
+
+Native overview measurements: [`performance/2026-10-04-navigation-native.json`](performance/2026-10-04-navigation-native.json) records all twelve frozen-source full-client visible/hidden windows; interpretation and limitations are in [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).

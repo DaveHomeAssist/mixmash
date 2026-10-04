@@ -243,7 +243,7 @@ Settlement includes both production budgets, total artist pay and a link to deta
 
 ## 2026-10-04 navigation implementation
 
-Step7 now has a locally verified Split Acre desktop implementation. The overview follows arbitrary3D yaw and clips the actual visible ground at low pitch; it includes the fixed side-stage annex in3D. Classic uses its yard and discrete view turns. Pointer/keyboard pan preserves zoom and saves, and measured HUD gaps keep primary controls clear. Fit, phones and compact windows without room hide the map. Delivery, integrated frame-budget evidence and physical/human acceptance remain open; the existing full-HUD performance issue is not closed by geometry or browser checks.
+Step7 now has a locally verified Split Acre desktop implementation. The overview follows arbitrary3D yaw and clips the actual visible ground at low pitch; it includes the fixed side-stage annex in3D. Classic uses its yard and discrete view turns. Pointer/keyboard pan preserves zoom and saves, and measured HUD gaps keep primary controls clear. Fit, phones and compact windows without room hide the map. Twelve frozen-source native full-client overview windows are recorded in PERFORMANCE.md. Delivery and physical/human acceptance remain open; the existing full-HUD performance issue is not closed by geometry or browser checks.
 
 ### Festival sponsor and headline conditions
 

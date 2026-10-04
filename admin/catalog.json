@@ -1890,6 +1890,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-navigation-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native overview comparison",
+      "description": "Twelve full-client native Chrome visible/hidden site overview windows with frozen source, raw timing and fixture replay audits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-navigation-native.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/performance/2026-10-04-shadow.json",
       "project": "front-of-house",
       "category": "evidence",
