@@ -1,5 +1,17 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Resolution delivery verified
+
+- PR78 passed CI 37203818090 and merged at 36bbbf3. Pages built at 13:13:51Z; all eight checked live files match the tested source.
+- Hosted checks pass for actual desktop/phone/ultrawide backing sizes, CSS-coordinate picking, density event and redraw paths, context recovery and disposal. The complete DPR2 application passes gestures, inspection, fallback, viewport fit, reload and identical classic/3D settlement.
+- Physical monitor transitions, human readability, low-power hardware and declared CI timing limits remain open. The available-host measurement is retained at its frozen 5532852 source. Parallel sanitation records remain intact and keep their separate pending delivery gates.
+
+## 2026-10-04: Floor delivery and full high-density diagnostic
+
+- PR74 passed CI37203293180, mergedba43ea5, and Pages built13:00:45Z. Eight live runtime files match; exact hosted Chromium/WebKit cached/direct pixels and lifecycle plus six full vendor journeys pass. GitHub marks PR73 merged through the included evidence ancestry.
+- Eighteen requested-DPR2 Metal windows at frozen clean5532852 are valid. Actual desktop/phone/ultrawide backings and all source/fixture/raw/report hashes verify; cadence59.20–60.00Hz, no intervals over50ms. Full HUD, physical devices and GPU completion remain separate lanes.
+- Added explicit public reproduction flags, verified in six short harness windows after the full measurement. Preserved the parallel sanitation record from PR79 without claiming its pending CI or hosted gates complete.
+
 ## 2026-10-04: 3D backing resolution verified locally
 
 - Applied the existing HUD density rule to the 3D backend; density changes rearm a disposable media listener and redraw detects changes when a browser omits the event. Explicit DPR1 benchmark controls remain fixed. Service worker v39.
@@ -441,3 +453,5 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 ### 2026-10-04 sanitation delivery correction
 
 PR79 CI run37204614730 passed the original28 checks, four live-service journeys, eight crowd/movement journeys and six food journeys, then caught a 13px vertical overflow in the phone settlement Costs page. Compact settlement now flattens inactive column wrappers on phones as well as short desktops, removing empty grid tracks without hiding content or reducing controls. The facilities smoke now visits every settlement tab before signing. Integrated delivered resolution PR78 (36bbbf3) and reserved cache v40; source models and resolution behavior are both preserved. Required CI and production sanitation acceptance remain pending.
+
+- Sanitation full CI37205244572 passed at81a0cc7 on2026-10-04 13:38:27Z. Concurrent merged performance evidence bc5ed37 required documentation reconciliation before delivery; both evidence histories are preserved. Runtime files are unchanged by this merge. Current-head CI and production acceptance remain pending.

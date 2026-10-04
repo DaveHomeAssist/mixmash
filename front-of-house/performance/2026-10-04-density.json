@@ -1,0 +1,1364 @@
+{
+  "title": "Front of House high-density renderer diagnostics",
+  "startedAt": "2026-10-04T12:56:42.574Z",
+  "finishedAt": "2026-10-04T13:09:03.825Z",
+  "source": {
+    "commit": "5532852dc66c50606c1e76ff74c4ea89dba12574",
+    "dirty": false,
+    "sha256": {
+      "package-lock.json": "596f61a2c0224f51bd6eb256e33ffe6f61c581ceb55eabe38002a1275c165628",
+      "front-of-house/lot-assets.json": "05d4eeaf3cc28e7e7ecc32fa1a20614c2aeccb440e14dfd23e3a7a4f2bbcb262",
+      "front-of-house/engine.mjs": "9b0b24a825e6debfd1b5fc3f126d6cbd3731aa37267113e123b4ae7ff89404ae",
+      "front-of-house/data.mjs": "22a0091c8a01477aa0d5fba6574e2c961df4fbda70afe1869577220eefda2495",
+      "front-of-house/lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
+      "front-of-house/lot-models.mjs": "1bb68e8c2bdfef4c459e51e5998e8cd9da0a8dfb1c124608007e5fc5633caea0",
+      "front-of-house/lot-renderer.mjs": "82cbc0b94b83960db4240a269c0c0696e0c951f416f337a78f07e1f16c7b56da",
+      "front-of-house/lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
+      "front-of-house/tools/performance-stats.mjs": "d633beceeb4fb5f0c06a76746f9468f0ef9f17487e95df04f82e9a4c561c92bd",
+      "test/front-of-house-performance.mjs": "a85b4d3af103fbf95d0f1423f941c2696579fd180993653ee149c2b5d6437725",
+      "privateHighDensityHarness": "4d84ab30b8d90cadc10655a44225d8678e94f7a08f0e09b5a187e24b31cfc775"
+    }
+  },
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "kernel": "27.0.0",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "cpuCount": 10,
+    "memoryBytes": 17179869184,
+    "osVersion": "27.0.1",
+    "osBuild": "26A434",
+    "power": "Now drawing from 'AC Power'",
+    "lowPower": [
+      "lowpowermode         0",
+      "lowpowermode         0"
+    ],
+    "displayRefresh": "unknown",
+    "thermal": "unknown",
+    "otherHostLoad": "uncontrolled; load averages recorded per run"
+  },
+  "browser": "149.0.7827.55",
+  "protocol": {
+    "layer": "isolated renderer; excludes full game and HUD",
+    "variation": "private harness copy: requested DPR2; viewports 1920x1080, 375x812, 5120x1440; absolute local imports and source hashing; all camera/timing/fixture logic unchanged",
+    "warmupMs": 10000,
+    "measurementMs": 30000,
+    "repeats": 3,
+    "requestedDpr": 2,
+    "headless": true,
+    "requestedBackend": "metal",
+    "launchArgs": [
+      "--use-angle=metal"
+    ],
+    "reducedMotion": "no-preference",
+    "shadows": "1024 PCFSoft",
+    "antialias": true,
+    "adaptiveQuality": false,
+    "gpuTimestampMs": "unavailable",
+    "acceptance": "descriptive only; no device or statistical pass limits inferred"
+  },
+  "fixtureSha256": {
+    "empty": "f890242c03ef8aeda9bee1b2f4ccf58f645fd77547bd0cdaa17ec1e1333a3ec0",
+    "crowd": "cac5d4e9792ef0c0e34783e225cc26d9ded9f769335e564a0a515185dc4b6e0c"
+  },
+  "privateReportSha256": "42cdb564e93448a939ec15622e8baacbf52934271c7c4d5752724bccdf0474e6",
+  "runs": [
+    {
+      "id": "1920x1080-empty-1",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30018.300000000003,
+      "cadenceHz": 59.99673532478522,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30018.3,
+        "meanMs": 16.667573570238755,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.799999999999272,
+        "above16_7": 872,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 579.8999999957159,
+        "meanMs": 0.3219877845617523,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.6000000005587935,
+        "maxMs": 1.199999999254942,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "c2a140f427faf159882b449539fba802f01d3f0b65a6a5372ab7f90ddb449c03",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 2880,
+          "height": 1620
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2408,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        8.9423828125,
+        7.00146484375,
+        7.6796875
+      ],
+      "loadAfter": [
+        13.38330078125,
+        8.44140625,
+        8.17822265625
+      ],
+      "errors": []
+    },
+    {
+      "id": "1920x1080-empty-2",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30014.4,
+      "cadenceHz": 60.0045311583773,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30014.400000000005,
+        "meanMs": 16.665408106607444,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.700000000000728,
+        "above16_7": 819,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 468.8000000072643,
+        "meanMs": 0.260299833429908,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.40000000037252903,
+        "p99Ms": 0.5,
+        "maxMs": 0.599999999627471,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "91717e107d38f9c0f7ce74d6974dc3f11ed317cd8a3853d8088009aa14774597",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 2880,
+          "height": 1620
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        13.38330078125,
+        8.44140625,
+        8.17822265625
+      ],
+      "loadAfter": [
+        9.97119140625,
+        8.267578125,
+        8.130859375
+      ],
+      "errors": []
+    },
+    {
+      "id": "1920x1080-empty-3",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30016.5,
+      "cadenceHz": 60.00033315010078,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30016.5,
+        "meanMs": 16.66657412548584,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.69999999999891,
+        "maxMs": 18.700000000000728,
+        "above16_7": 844,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 552.7000000150874,
+        "meanMs": 0.30688506386179204,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.6000000005587935,
+        "maxMs": 0.8999999994412065,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "c969f9e81ed060203f2f3e3dd8074fe0b9cb56d6f605527496391530651d9e7e",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 2880,
+          "height": 1620
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        9.97119140625,
+        8.267578125,
+        8.130859375
+      ],
+      "loadAfter": [
+        11.01806640625,
+        8.53271484375,
+        8.2216796875
+      ],
+      "errors": []
+    },
+    {
+      "id": "1920x1080-crowd-1",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30001.600000000002,
+      "cadenceHz": 59.996800170657565,
+      "frame": {
+        "count": 1800,
+        "elapsedMs": 30001.600000000002,
+        "meanMs": 16.667555555555555,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.69999999999891,
+        "maxMs": 18.700000000004366,
+        "above16_7": 868,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1800,
+        "elapsedMs": 2857.399999978952,
+        "meanMs": 1.5874444444327511,
+        "p50Ms": 1.599999999627471,
+        "p95Ms": 2.2000000001862645,
+        "p99Ms": 2.400000000372529,
+        "maxMs": 5.599999999627471,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "c0d8277a8bc189161d44473f8a9820e834e2aa854ddb4456d39e555b00b93f29",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 2880,
+          "height": 1620
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2405,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        11.01806640625,
+        8.53271484375,
+        8.2216796875
+      ],
+      "loadAfter": [
+        16.81982421875,
+        10.8037109375,
+        9.0986328125
+      ],
+      "errors": []
+    },
+    {
+      "id": "1920x1080-crowd-2",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30016.4,
+      "cadenceHz": 60.00053304193707,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30016.400000000005,
+        "meanMs": 16.666518600777348,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.700000000000728,
+        "maxMs": 18.700000000004366,
+        "above16_7": 834,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 3128.499999982305,
+        "meanMs": 1.737090505265022,
+        "p50Ms": 1.7000000001862645,
+        "p95Ms": 2.599999999627471,
+        "p99Ms": 3,
+        "maxMs": 3.400000000372529,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "f79cd39fa6bf8706b160dc316d6b40659c9e28cfd88fc5fdfef3d8e977f3dfbe",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 2880,
+          "height": 1620
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2405,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        16.81982421875,
+        10.8037109375,
+        9.0986328125
+      ],
+      "loadAfter": [
+        12.79736328125,
+        10.439453125,
+        9.0380859375
+      ],
+      "errors": []
+    },
+    {
+      "id": "1920x1080-crowd-3",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30000.7,
+      "cadenceHz": 59.9986000326659,
+      "frame": {
+        "count": 1800,
+        "elapsedMs": 30000.7,
+        "meanMs": 16.667055555555557,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.599999999998545,
+        "p99Ms": 18.69999999999709,
+        "maxMs": 18.700000000004366,
+        "above16_7": 845,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1800,
+        "elapsedMs": 2699.600000004284,
+        "meanMs": 1.4997777777801578,
+        "p50Ms": 1.5,
+        "p95Ms": 2.199999999254942,
+        "p99Ms": 2.400000000372529,
+        "maxMs": 4.599999999627471,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "0e1455b0693724e68c27306922ad33384d3716633621c855eee3b1e9c86ed996",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 2880,
+          "height": 1620
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2405,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        12.79736328125,
+        10.439453125,
+        9.0380859375
+      ],
+      "loadAfter": [
+        10.576171875,
+        10.125,
+        8.98388671875
+      ],
+      "errors": []
+    },
+    {
+      "id": "375x812-empty-1",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.6,
+      "cadenceHz": 60.00213222457655,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.6,
+        "meanMs": 16.666074403109384,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.69999999999709,
+        "maxMs": 18.700000000000728,
+        "above16_7": 859,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 497.4000000040978,
+        "meanMs": 0.2761799000578,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.599999999627471,
+        "maxMs": 1.2000000001862645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "66a3d5d6361ca172db16032e5bc4f4eb446e07092bc6f848bfcacb5225439e38",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 2,
+        "backing": {
+          "width": 750,
+          "height": 1624
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2408,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        10.576171875,
+        10.125,
+        8.98388671875
+      ],
+      "loadAfter": [
+        10.1416015625,
+        10.07421875,
+        9.01708984375
+      ],
+      "errors": []
+    },
+    {
+      "id": "375x812-empty-2",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30016.5,
+      "cadenceHz": 60.00033315010078,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30016.5,
+        "meanMs": 16.66657412548584,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000000728,
+        "above16_7": 853,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 401.3999999985099,
+        "meanMs": 0.22287617989922814,
+        "p50Ms": 0.20000000018626451,
+        "p95Ms": 0.40000000037252903,
+        "p99Ms": 0.5,
+        "maxMs": 0.7000000001862645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "a3cc8a2e4ede117c5a33b08794d60298218d7e33cd76be660a097b5974b55b5b",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 2,
+        "backing": {
+          "width": 750,
+          "height": 1624
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        10.1416015625,
+        10.07421875,
+        9.01708984375
+      ],
+      "loadAfter": [
+        14.64111328125,
+        11.203125,
+        9.47509765625
+      ],
+      "errors": []
+    },
+    {
+      "id": "375x812-empty-3",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30016.7,
+      "cadenceHz": 59.9999333704238,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30016.7,
+        "meanMs": 16.66668517490283,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000000728,
+        "above16_7": 834,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 478.09999999869615,
+        "meanMs": 0.2654636313152116,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.599999999627471,
+        "maxMs": 1,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "6c1d032a7268331cfb6d733c1716efa976adc06d943868b5fa7678dad0d34aa6",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 2,
+        "backing": {
+          "width": 750,
+          "height": 1624
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        14.64111328125,
+        11.203125,
+        9.47509765625
+      ],
+      "loadAfter": [
+        14.10205078125,
+        11.50341796875,
+        9.66357421875
+      ],
+      "errors": []
+    },
+    {
+      "id": "375x812-crowd-1",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30018.4,
+      "cadenceHz": 59.996535458252275,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30018.399999999998,
+        "meanMs": 16.66762909494725,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.60000000000582,
+        "maxMs": 19.599999999998545,
+        "above16_7": 858,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 2884.0000000065193,
+        "meanMs": 1.6013325930075066,
+        "p50Ms": 1.599999999627471,
+        "p95Ms": 2.2000000001862645,
+        "p99Ms": 2.5,
+        "maxMs": 5.7999999998137355,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "702d4492111b3e40ff09789c05c395925f6905b64fedd2bf9bfb11806e34662a",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 2,
+        "backing": {
+          "width": 750,
+          "height": 1624
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2405,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        14.10205078125,
+        11.50341796875,
+        9.66357421875
+      ],
+      "loadAfter": [
+        14.21533203125,
+        11.87255859375,
+        9.88330078125
+      ],
+      "errors": []
+    },
+    {
+      "id": "375x812-crowd-2",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30001.700000000004,
+      "cadenceHz": 59.996600192655755,
+      "frame": {
+        "count": 1800,
+        "elapsedMs": 30001.7,
+        "meanMs": 16.66761111111111,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.60000000000582,
+        "maxMs": 18.700000000004366,
+        "above16_7": 842,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1800,
+        "elapsedMs": 2467.500000002794,
+        "meanMs": 1.3708333333348854,
+        "p50Ms": 1.2999999998137355,
+        "p95Ms": 1.8999999994412065,
+        "p99Ms": 2.1000000005587935,
+        "maxMs": 2.5,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "56148d36a92e206b1f2b1de21ad3f9a2526a667e3d2360334742f15aa3e43bba",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 2,
+        "backing": {
+          "width": 750,
+          "height": 1624
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2405,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        14.21533203125,
+        11.87255859375,
+        9.88330078125
+      ],
+      "loadAfter": [
+        15.82861328125,
+        12.6630859375,
+        10.2685546875
+      ],
+      "errors": []
+    },
+    {
+      "id": "375x812-crowd-3",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30014.9,
+      "cadenceHz": 60.003531579315606,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30014.9,
+        "meanMs": 16.665685730149917,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000000728,
+        "above16_7": 847,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 2635.6999999927357,
+        "meanMs": 1.463464741806072,
+        "p50Ms": 1.400000000372529,
+        "p95Ms": 2,
+        "p99Ms": 2.2999999998137355,
+        "maxMs": 2.599999999627471,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "9a4347305f96d212332808f46cb2fc929ab00a2f461a366bca3746feb2dbb34a",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 2,
+        "backing": {
+          "width": 750,
+          "height": 1624
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2408,
+        "shadowUpdates": 2406,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        15.82861328125,
+        12.6630859375,
+        10.2685546875
+      ],
+      "loadAfter": [
+        17.96044921875,
+        13.58642578125,
+        10.7138671875
+      ],
+      "errors": []
+    },
+    {
+      "id": "5120x1440-empty-1",
+      "viewport": {
+        "width": 5120,
+        "height": 1440
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30001.399999999998,
+      "cadenceHz": 59.99720013066058,
+      "frame": {
+        "count": 1800,
+        "elapsedMs": 30001.399999999998,
+        "meanMs": 16.667444444444442,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.60000000000582,
+        "maxMs": 19,
+        "above16_7": 874,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1800,
+        "elapsedMs": 570.6000000089407,
+        "meanMs": 0.31700000000496703,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.7000000001862645,
+        "maxMs": 1.7999999998137355,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "89d76d78d8b3edb53846a8e814240265c3465e6665cc2ef894adff973c1eef9b",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 7680,
+          "height": 2160
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        17.96044921875,
+        13.58642578125,
+        10.7138671875
+      ],
+      "loadAfter": [
+        21.537109375,
+        15.07666015625,
+        11.404296875
+      ],
+      "errors": []
+    },
+    {
+      "id": "5120x1440-empty-2",
+      "viewport": {
+        "width": 5120,
+        "height": 1440
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30016.399999999998,
+      "cadenceHz": 60.00053304193708,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30016.399999999998,
+        "meanMs": 16.666518600777344,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000002183,
+        "maxMs": 18.700000000000728,
+        "above16_7": 863,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 586.0999999940395,
+        "meanMs": 0.3254303164875289,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.6000000005587935,
+        "maxMs": 0.7999999998137355,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "95e7e1d681fdd7cea8150336486b92536fa920f2b8373270304547ffa2b44784",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 7680,
+          "height": 2160
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        21.537109375,
+        15.07666015625,
+        11.404296875
+      ],
+      "loadAfter": [
+        20.1416015625,
+        15.6962890625,
+        11.80859375
+      ],
+      "errors": []
+    },
+    {
+      "id": "5120x1440-empty-3",
+      "viewport": {
+        "width": 5120,
+        "height": 1440
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30016.5,
+      "cadenceHz": 60.000333150100765,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30016.500000000004,
+        "meanMs": 16.666574125485845,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 18.600000000000364,
+        "maxMs": 18.700000000004366,
+        "above16_7": 822,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 493.7000000067055,
+        "meanMs": 0.2741254858449226,
+        "p50Ms": 0.2999999998137355,
+        "p95Ms": 0.5,
+        "p99Ms": 0.5,
+        "maxMs": 0.8000000007450581,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "cd6e5ed623b929e5f73ce76635527ec36f7550b253df64a94e585a3ba9229072",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 7680,
+          "height": 2160
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2407,
+        "shadowUpdates": 2,
+        "calls": 2,
+        "triangles": 2
+      },
+      "loadBefore": [
+        20.1416015625,
+        15.6962890625,
+        11.80859375
+      ],
+      "loadAfter": [
+        17.0517578125,
+        15.41650390625,
+        11.880859375
+      ],
+      "errors": []
+    },
+    {
+      "id": "5120x1440-crowd-1",
+      "viewport": {
+        "width": 5120,
+        "height": 1440
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30016.500000000004,
+      "cadenceHz": 59.30071793846717,
+      "frame": {
+        "count": 1780,
+        "elapsedMs": 30016.500000000004,
+        "meanMs": 16.863202247191012,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 18.5,
+        "p99Ms": 32.20000000000073,
+        "maxMs": 35.20000000000073,
+        "above16_7": 865,
+        "above33_3": 13,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1780,
+        "elapsedMs": 3973.9999999776483,
+        "meanMs": 2.2325842696503644,
+        "p50Ms": 2.2000000001862645,
+        "p95Ms": 3,
+        "p99Ms": 3.3999999994412065,
+        "maxMs": 3.699999999254942,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "bda4c3267db876f0cd01d99488e7caabe23e7dabf019d06392020c4c443c44a1",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 7680,
+          "height": 2160
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2387,
+        "shadowUpdates": 2385,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        17.0517578125,
+        15.41650390625,
+        11.880859375
+      ],
+      "loadAfter": [
+        30.04345703125,
+        18.2783203125,
+        13.07080078125
+      ],
+      "errors": []
+    },
+    {
+      "id": "5120x1440-crowd-2",
+      "viewport": {
+        "width": 5120,
+        "height": 1440
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.699999999997,
+      "cadenceHz": 59.36893025983069,
+      "frame": {
+        "count": 1782,
+        "elapsedMs": 30015.7,
+        "meanMs": 16.843827160493827,
+        "p50Ms": 16.69999999999891,
+        "p95Ms": 18.5,
+        "p99Ms": 32,
+        "maxMs": 35.099999999998545,
+        "above16_7": 889,
+        "above33_3": 10,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1782,
+        "elapsedMs": 4228.500000000931,
+        "meanMs": 2.3728956228961455,
+        "p50Ms": 2.2999999998137355,
+        "p95Ms": 3,
+        "p99Ms": 3.2999999998137355,
+        "maxMs": 4.1000000005587935,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "330265c9e2e18bbc19047adb79b5a72769d6cc3849ef1ca426eb4772650d1f2c",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 7680,
+          "height": 2160
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2388,
+        "shadowUpdates": 2386,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        30.04345703125,
+        18.2783203125,
+        13.07080078125
+      ],
+      "loadAfter": [
+        32.68798828125,
+        20.62109375,
+        14.1787109375
+      ],
+      "errors": []
+    },
+    {
+      "id": "5120x1440-crowd-3",
+      "viewport": {
+        "width": 5120,
+        "height": 1440
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30018.300000000003,
+      "cadenceHz": 59.19722302728668,
+      "frame": {
+        "count": 1777,
+        "elapsedMs": 30018.300000000003,
+        "meanMs": 16.89268429938098,
+        "p50Ms": 16.700000000000728,
+        "p95Ms": 18.5,
+        "p99Ms": 33.20000000000073,
+        "maxMs": 35.099999999998545,
+        "above16_7": 893,
+        "above33_3": 7,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1777,
+        "elapsedMs": 4025.7000000011176,
+        "meanMs": 2.265447383230792,
+        "p50Ms": 2.2000000001862645,
+        "p95Ms": 3,
+        "p99Ms": 3.300000000745058,
+        "maxMs": 4.2999999998137355,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "7750f6471b966b93998b91e67cd9d71270a5966f349763016e55c32d2dc139a9",
+      "environment": {
+        "browserDpr": 2,
+        "effectiveDpr": 1.5,
+        "backing": {
+          "width": 7680,
+          "height": 2160
+        },
+        "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)",
+        "graphics": "Apple hardware via Metal; headless"
+      },
+      "work": {
+        "renderedFrames": 2383,
+        "shadowUpdates": 2381,
+        "calls": 165,
+        "triangles": 290610
+      },
+      "loadBefore": [
+        32.68798828125,
+        20.62109375,
+        14.1787109375
+      ],
+      "loadAfter": [
+        25.92724609375,
+        20.51806640625,
+        14.47021484375
+      ],
+      "errors": []
+    }
+  ]
+}
