@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "c43dff4 · foundation deployed; Lot backend in development 2026-10-04",
+  "head": "a4042d7 · foundation and Select deployed; 3D integration tested 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation phone fix merged and live-verified. Select controls await delivery; isolated 3D backend passes local camera and WebGL lifecycle checks but game integration, realistic art and later phases remain incomplete.",
+  "statusReason": "Phone foundation and safe Select controls are merged and live-verified. The 3D preview integration passes local gesture, recovery and full-settlement parity tests; scene completion, realistic art, performance and later phases remain active.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,8 +19,8 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Connect the Lot backend to the game with safe gestures and Canvas 2D recovery",
-    "why": "The isolated backend now draws source-owned dimensional props and passes camera/lifecycle checks; player input, full scene parity and deterministic game integration are the next required proof.",
+    "title": "Complete Lot scene parity and realistic sample before performance acceptance",
+    "why": "The adapter and game input now work together with a recoverable 3D preview. Perimeter/incident/animation presentation, calibrated views and convincing realistic subjects still need implementation and review.",
     "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
     "effort": "L",
     "owner": "either",
@@ -439,7 +439,7 @@
           {
             "id": "FOH-V01a",
             "scope": "Select, inspect, Escape and safe removal (FB-07)",
-            "status": "implemented",
+            "status": "deployed",
             "evidence": [
               {
                 "stage": "test",
@@ -447,6 +447,13 @@
                 "result": "pass",
                 "checkedAt": "2026-10-04T10:10:32.229Z",
                 "summary": "28 full game checks, keyboard/mouse/touch Select, safe default, modal precedence, single and bulk undo, restored focus, reload and HUD containment."
+              },
+              {
+                "stage": "deployment",
+                "locator": "https://github.com/DaveHomeAssist/mixmash/commit/a4042d70e984ea8d5e035c9a507846f3470d9756",
+                "result": "pass",
+                "checkedAt": "2026-10-04T10:28:25.111Z",
+                "summary": "PR61 CI passed; Pages build1259218204 built; four deployed runtime files match 7f62b3e; live phone Select default, Clear cancel/confirm, Undo and containment passed without browser errors."
               }
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/61"
@@ -462,14 +469,21 @@
                 "result": "pass",
                 "checkedAt": "2026-10-04T10:18:39.662Z",
                 "summary": "Isolated backend: arbitrary-yaw ground picking, sample depth picks, eight camera/light captures, phone framing, real context loss/restoration and 20 disposal cycles. Not game integration or final art acceptance."
+              },
+              {
+                "stage": "test",
+                "locator": "test/front-of-house-3d-smoke.mjs",
+                "result": "pass",
+                "checkedAt": "2026-10-04T10:28:25.114Z",
+                "summary": "Actual client: safe orbit/pinch/cancel, one-tap placement/Undo, touch inspection, accessible controls, context and module fallback, desktop/phone/ultrawide fit, mid-show reload and identical complete settlement/state in both renderers."
               }
             ],
             "remaining": [
-              "Game facade, input and accessible camera controls",
-              "Complete scene parity and failure/retry switching",
-              "Same-save deterministic settlement comparison",
-              "Realistic sample, physical scale and human/device acceptance"
-            ]
+              "Perimeter, incident and animation scene parity",
+              "Calibrated FOH/Stage views and realistic sample",
+              "Performance, physical-device and human visual acceptance"
+            ],
+            "backendPR": "https://github.com/DaveHomeAssist/mixmash/pull/63"
           }
         ]
       },

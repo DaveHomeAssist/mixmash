@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House 3D preview integration:** Camera menu enables the Lot backend, with safe orbit/pinch/placement gestures, keyboard-accessible presets and automatic classic-view recovery. Save and full settlement parity are checked in both renderers. Classic remains the default while scene/art acceptance is incomplete. Service worker v30.
+
 - **Front of House Lot renderer backend:** pinned self-hosted Three.js, continuous camera projection/picking, source-authored dimensional samples and context/resource lifecycle checks. This isolated backend is not yet connected to the game; final realistic art and integration remain pending.
 
 - **Front of House safe Build tools:** Select is the default and opens object inspection by pointer, touch or Enter. Escape closes a dialog/menu before cancelling placement. Single removal uses Undo, and Clear asks once with an object count. Selection stays out of saves, focus returns predictably, and the tools fit desktop/phone layouts. Service worker v29.

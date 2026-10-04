@@ -638,3 +638,11 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+
+/* The input canvas retains keyboard/pointer ownership while the 3D layer presents the Lot. */
+.lot-webgl { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.lot-webgl[hidden] { display: none; }
+#board.board-3d-input { opacity: 0; touch-action: none; }
+.board-wrap:has(#board.board-3d-input:focus-visible) .lot-webgl { box-shadow: inset 0 0 0 3px var(--yellow); }
+.lot-camera-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+body[data-phase='done'] .lot-webgl { filter: brightness(0.55) saturate(0.8); }

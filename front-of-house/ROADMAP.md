@@ -27,7 +27,7 @@ Dave authorized continuing execution until no Front of House phases remain. Code
 
 Imported M4/M5 wish lists, Challenge/Endless and the broader eight-branch research proposal are not additional release phases. The scoped briefs and explicit remaining tier requirements above define this execution; do not turn an unbounded future idea list into a completion claim. Preserve deliberate exclusions and record a new scoped decision before expansion. Missing human or physical-device evidence cannot be replaced with automated results.
 
-FOH-F01 is merged and live-verified in [PR60](https://github.com/DaveHomeAssist/mixmash/pull/60). FOH-V01a Select controls are locally verified in [PR61](https://github.com/DaveHomeAssist/mixmash/pull/61), awaiting delivery. FOH-V01b has an [isolated backend](docs/LOT_BACKEND.md); it still needs game integration, complete scene parity, realistic art and the named acceptance evidence.
+FOH-F01 is merged and live-verified in [PR60](https://github.com/DaveHomeAssist/mixmash/pull/60). FOH-V01a Select controls are merged and live-verified in [PR61](https://github.com/DaveHomeAssist/mixmash/pull/61). FOH-V01b has an [isolated backend](docs/LOT_BACKEND.md); the 3D preview integration is locally verified; complete scene parity, realistic art and the named acceptance evidence remain required.
 
 ## Shipped
 
