@@ -753,7 +753,8 @@
               "All28 legacy checks, four live control journeys, eight crowd/movement journeys and six vendor journeys pass on the batching source; no gameplay or quality changes.",
               "After integration with cf74906/193c54c:315 tests/build/docs/simulation, deferred-render lifecycle, actual DPR1\u21922\u21921 display moves and complete3D gestures/recovery/reload/settlement parity pass. Generated reference/balance files unchanged; cache version44 prepared.",
               "PR92 CI37208943333 rejected a stale renderer digest in the generated Lot manifest. Regenerated only that digest; asset and vendor checks pass. Integrated equipment career116a743 passes324 tests/build/docs/simulation. Frozen5f47c4a measurement retains original bytes and independently correct renderer hash; manifest metadata correction is recorded in PERFORMANCE.md. Cache v44r1 prevents collision with concurrent v44 work. Replacement CI and hosted verification pending.",
-              "Reconciled equipment controls4600649, preserving current gameplay records and fixtures.324 tests/build/asset checks pass; required current-head CI and hosted checks pending."
+              "Reconciled equipment controls4600649, preserving current gameplay records and fixtures.324 tests/build/asset checks pass; required current-head CI and hosted checks pending.",
+              "Current performance PR92 sourcec5654aa passed CI37210591670. Later mechanics conflicts are resolved in combined Club PR96 source7a111c2; that integration requires its own CI and hosted proof. Sustained full-HUD60fps remains unproven."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/92"
           }
@@ -1136,13 +1137,15 @@
           {
             "id": "FOH-V02r2",
             "scope": "Loam Shell source-owned technical shell and seating/lawn guides",
-            "status": "implemented-local-verification",
+            "status": "verified-awaiting-delivery",
             "evidence": [
               "Existing28\u00d718 amphitheater and medium house PA. Cutaway shell stays behind build floor; illustrative seating/lawn guides are pick-through and reserve no tiles. Engine seating, pricing, held nights and saved outcomes unchanged.",
               "Two geometry/camera tests pass. Desktop/phone/ultrawide four-view, yaw37/135, guide placement, room changes, context recovery and containment pass. Four desktop/phone classic/3D journeys produce exactly identical two-night rain-show receipts and saved states with400 seated guests and remaining lawn attendance.",
               "First phone harness omitted the existing Actions tab before Lock layout; corrected to follow visible navigation. Required repository checks, native timing, CI and delivery remain pending; no final art or physical/human acceptance claimed.",
               "341 repository tests, build, assets, generated docs and unchanged balance simulation pass; all seven performance evaluator/reporting tests pass. Club, Lot backend, coalescing/lifecycle and complete3D application regressions pass.",
-              "Integrated held-run source7a111c2 passes353 repository tests/build/assets/docs and unchanged balance simulation. Held-run smoke now adds actual3D desktop/phone continuation and cancellation journeys; the full integrated player suite is running before native measurement and delivery."
+              "Integrated held-run source7a111c2 passes353 repository tests/build/assets/docs and unchanged balance simulation. Held-run smoke now adds actual3D desktop/phone continuation and cancellation journeys; the full integrated player suite is running before native measurement and delivery.",
+              "Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
+              "Full integrated player suite passes:28 legacy checks plus live/crowd/food/sanitation/research/equipment/ticketing journeys, eight held-run journeys including actual3D continuation/cancellation, then Shell desktop/phone/ultrawide recovery and four exact two-night classic/3D comparisons. Source47f680e was frozen and clean before native timing."
             ]
           }
         ]

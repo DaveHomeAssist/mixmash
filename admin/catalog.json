@@ -1882,6 +1882,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-04-shell-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Shell native renderer measurements",
+      "description": "Six full native visible Chrome empty/crowd/rain windows on frozen Loam Shell source, with quality, timing and source/raw digests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-shell-native.json",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/hud/hud-build.jpg",
       "project": "front-of-house",
       "category": "art",

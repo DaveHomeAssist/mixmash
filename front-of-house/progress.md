@@ -2,7 +2,9 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Loam Shell technical scene
 
-Held-run source7a111c2 integrated:353 tests/build/assets/docs and unchanged simulation pass. The held-run browser suite adds actual3D desktop/phone continuation/cancellation; full player verification is running before native measurements.
+Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.
+
+Held-run source7a111c2 integrated:353 tests/build/assets/docs and unchanged simulation pass. The held-run browser suite adds actual3D desktop/phone continuation/cancellation; all integrated player checks pass, including eight held-run journeys and the repeated Shell two-night suite. Native evidence below retains the clean frozen revision.
 
 FOH-V02r2 adds a source-owned cutaway shell, house PA and pick-through seating/lawn guides to the existing28×18 room. No new collision, pricing, capacity or save fields. Two geometry/camera tests and desktop/phone/ultrawide camera, placement, switching, recovery and fit checks pass. Four classic/3D desktop/phone rain-show journeys retain identical two-night receipts,400-seat allocation and final state. The initial phone harness missed the existing Actions tab; corrected navigation passes. 341 repository tests/build/assets/docs/unchanged simulation and seven performance tests pass. Club/Lot backend/coalescing/full3D regressions pass. Native performance and delivery remain pending. Technical scenery is not final art/human acceptance.
 
