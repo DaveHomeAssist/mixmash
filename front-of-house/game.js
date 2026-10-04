@@ -624,11 +624,6 @@ function promotePanel() {
       </div>
       <div class="col">
         <dl class="stats" id="promo-stats" data-tab="Forecast"></dl>
-        ${spec.id === 'lot' ? `<div data-tab="Live services">
-          <label class="live-optin"><input id="live-services" type="checkbox" data-input="services" ${(state.promotion.liveServices ?? liveServicesPilot) ? 'checked' : ''} ${evaluateVenue(state.venue).bars || (state.promotion.liveServices ?? liveServicesPilot) ? '' : 'disabled'} /> Live services trial</label>
-          <p class="hint">Run arrivals and bar queues minute by minute. Move one bar worker to admission and back. Real service, lost demand and refunds change this show's settlement. Requires a bar.</p>
-          <p class="hint">${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p>
-        </div>` : ''}
         <figure data-tab="Presales">
           <svg id="presale" class="chart" viewBox="0 0 280 96" role="img" aria-labelledby="presale-cap"></svg>
           <figcaption id="presale-cap"></figcaption>
@@ -637,12 +632,15 @@ function promotePanel() {
     </div>
     <div class="actions">
       <button type="button" data-act="back">Back to the build</button>
+      ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open the doors</button>
     </div>`;
 }
 
 function updatePromote() {
   const p = state.promotion;
+  const settings = $('#live-settings');
+  if (settings) settings.textContent = `Live services: ${(p.liveServices ?? liveServicesPilot) ? 'On' : 'Off'}`;
   const a = artistFor(state.booking.artistId);
   const price = $('#price');
   if (document.activeElement !== price) price.value = String(p.price);
@@ -1529,8 +1527,13 @@ function onAct(e) {
     if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${label(type).toLowerCase()}.`);
   } else if (a === 'back') act({ type: 'back' });
   else if (a === 'confirm-build') act({ type: 'confirmBuild' });
-  else if (a === 'confirm-promo') { const services = !!$('#live-services')?.checked; act({ type: 'confirmPromotion', services, pilot: lotNightSlice && !services }); }
+  else if (a === 'confirm-promo') { const services = state.venue.id === 'lot' && (state.promotion.liveServices ?? liveServicesPilot); act({ type: 'confirmPromotion', services, pilot: lotNightSlice && !services }); }
   else if (a === 'skip') skipToIncident();
+  else if (a === 'live-settings' && state.phase === 'promote') {
+    openWindow('live-settings', 'Live services trial', `<label class="live-optin"><input id="live-services" type="checkbox" data-input="services" ${(state.promotion.liveServices ?? liveServicesPilot) ? 'checked' : ''} /> Run live arrivals and bar queues</label>
+      <p>Move one bar worker to admission and back. Served demand, lost sales and ticket refunds change this show's settlement. Requires a bar.</p>
+      <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p>`, target, { foot: '<button data-win="close">Done</button>' });
+  }
   else if (a === 'live-worker') act({ type: 'assignLiveWorker', station: target.dataset.station });
   else if (a === 'live-play' && ui.play?.live) { stopPlayback(); ui.play.paused = !ui.play.paused; ui.play.last = performance.now(); updateLiveServices(); if (!ui.play.paused) loop(); }
   else if (a === 'live-step') stepLive(state.show.services.minute + 5);
@@ -1554,6 +1557,8 @@ el.panel.addEventListener('input', (e) => {
   else if (t.dataset.input === 'seat') act({ type: 'setPromotion', seatPrice: Number(t.value) }, { quiet: true });
   else if (t.dataset.input === 'ad') act({ type: 'setPromotion', ads: { [t.dataset.channel]: Number(t.value) } }, { quiet: true });
 });
+
+el.win.addEventListener('change', e => { if (e.target.dataset.input === 'services') act({ type: 'setPromotion', services: e.target.checked }, { quiet: true }); });
 
 el.panel.addEventListener('change', (e) => {
   const t = e.target;

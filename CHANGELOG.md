@@ -6,7 +6,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 - **Front of House live Lot pilot:** Promote opt-in enables real arrival/bar queues, temporary staffing, a saved minute clock, prospective incident effects and reconciled service receipts. Desktop/phone controls pause at incidents, preserve transfers on reload and settle once. Existing unselected shows retain their rules. Service worker v30.
 
-- **Front of House service model prerequisite:** added a deterministic aggregate admission/bar engine with finite queues, worker travel, refunds and replayable checkpoints, plus quiet/surge/busy-bar fixtures. It is not yet enabled in the game; existing economy and saves remain unchanged.
+- **Front of House service model prerequisite:** added a deterministic aggregate admission/bar engine with finite queues, worker travel, refunds and replayable checkpoints, plus quiet/surge/busy-bar fixtures. The optional live pilot uses this core; unselected careers retain their existing economy and saves.
 
 - **Front of House Lot renderer backend:** pinned self-hosted Three.js, continuous camera projection/picking, source-authored dimensional samples and context/resource lifecycle checks. This isolated backend is not yet connected to the game; final realistic art and integration remain pending.
 

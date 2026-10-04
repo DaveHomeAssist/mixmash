@@ -124,7 +124,7 @@ The small doors staffing experiment in [FUTURE.md](FUTURE.md#lot-live-show-exper
 
 `services.mjs` has a separate version 1 checkpoint for its deterministic tests and future adapter: `{version, spec, minute, commands}`. `spec` contains the run ID, finite arrival cohorts, integer service rates, travel/patience/closing minutes and whole-dollar ticket/bar values; commands contain ordered `{minute, station}` reassignment records. `loadServices` validates bounds and replays the initial state to recover cohorts, worker travel, residual demand, queue age, totals and causal events. Serialized derived money/queues are ignored. There are no random draws in this model. A checkpoint is at most 240 arrival rows, 240 worker commands, 240 minutes and 6,000 total guests.
 
-This checkpoint is **not yet part of a career save**. Schema 2 and its existing pilot normalization remain unchanged. FOH-O01b must persist this checkpoint in the show, reconcile live outcomes with artist terms and issue a stable once-only career settlement transaction. Calling a service summary never credits career cash. The module's closing boundary and tests prove a service ledger, not career integration or a complete live-show feature.
+The standalone prerequisite originally kept this checkpoint outside career saves. FOH-O01b now persists it as an optional show field, as specified below. Calling a service summary never credits career cash; the existing phase-guarded signing action owns that mutation. The model alone does not establish player-facing or renderer acceptance.
 
 ## Live pilot integration (FOH-O01b)
 

@@ -180,7 +180,7 @@ Update this file in the same change as any new screen, window, tab, control or e
 
 ## Live Lot services trial (FOH-O01b)
 
-Promote gains a Live services tab on phones and an opt-in checkbox on the Lot. It explains the effect on settlement, the required bar, the known arrival pattern and paused starting clock. It is saved with the promotion and show; the existing doors snapshot remains a separate experiment.
+Promote gains a Live services settings button on the Lot, showing On/Off. Its window contains the opt-in checkbox. It explains the effect on settlement, the required bar, the known arrival pattern and paused starting clock. It is saved with the promotion and show; the existing doors snapshot remains a separate experiment.
 
 Show keeps the corner HUD. Services displays admission/bar queue counts, oldest waits, current processing rates, current-rate wait estimates, actual bar service/loss and held receipts. Controls provides the worker's current station or travel ETA, Help admission / Return to bar, Play/Pause, +5 min, Next event / Close show and a 1×/4×/12× clock selector. Touch controls are at least 44px high. Worker buttons disable during travel or at the current station. Clock controls disable at an unanswered incident; the Problem tab receives focus. After responding, the clock remains paused and focus returns to Play. Reload restores logical time, queues and travel, with playback paused.
 

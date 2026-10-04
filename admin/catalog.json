@@ -2349,7 +2349,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "services.mjs",
-      "description": "Deterministic aggregate admission/bar service model. Experimental engine core; the live game keeps its existing doors model until integration is verified.",
+      "description": "Deterministic aggregate admission/bar service model for the optional live Lot pilot. Unselected careers retain their existing show and doors-snapshot rules.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
       "open": null
     },

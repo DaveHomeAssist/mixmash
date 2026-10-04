@@ -953,3 +953,16 @@ test('live pilot: actual Lot policies favor bar staffing for steady arrivals and
   assert.equal(surgeMove.attendance, 110);
   assert.ok(surgeMove.services.barLost > surgeStay.services.barLost, 'admission improvement still has a real bar cost');
 });
+
+test('live pilot: guarantee and door careers finish at starting cash plus actual net', () => {
+  for (const deal of ['guarantee', 'door']) {
+    let s = run(builtGame(170, deal), [{ type: 'confirmPromotion', services: true }, { type: 'advanceLive', minute: 240 }]);
+    s = answerLive(s);
+    s = run(s, [{ type: 'advanceLive', minute: 240 }]);
+    const result = settlementFor(s);
+    const done = run(s, [{ type: 'acceptSettlement' }]);
+    assert.equal(done.cash, D.START_CASH + result.net, deal);
+    assert.equal(normalizeState(done).cash, done.cash, deal + ' reload');
+    assert.equal(result.services.prepaidCash + result.services.walkupCash - result.services.refunds, result.ticketGross);
+  }
+});

@@ -1,5 +1,5 @@
-// Deterministic aggregate admission/bar service model. Experimental engine core;
-// the live game keeps its existing doors model until integration is verified.
+// Deterministic aggregate admission/bar service model for the optional live Lot pilot.
+// Unselected careers retain their existing show and doors-snapshot rules.
 const VERSION = 1;
 const copy = (value) => structuredClone(value);
 const integer = (value, name, min = 0, max = 6000) => {

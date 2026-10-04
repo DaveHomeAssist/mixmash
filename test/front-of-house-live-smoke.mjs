@@ -45,12 +45,14 @@ try {
         await tab(page, 'Actions');
         await page.locator('[data-act="starter"]').click();
         await page.locator('[data-act="confirm-build"]').click();
-        await tab(page, 'Live services');
+        await page.locator('[data-act="live-settings"]').click();
         await page.locator('#live-services').check();
+        await page.locator('#win [data-win="close"]').first().click();
         await page.reload();
         await page.waitForFunction(() => window.__frontOfHouse);
-        await tab(page, 'Live services');
+        await page.locator('[data-act="live-settings"]').click();
         assert.equal(await page.locator('#live-services').isChecked(), true);
+        await page.locator('#win [data-win="close"]').first().click();
         await fit(page);
         await page.locator('[data-act="confirm-promo"]').click();
         assert.equal((await text(page)).services.minute, 0);
