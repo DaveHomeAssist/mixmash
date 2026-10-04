@@ -96,6 +96,14 @@ After the incident response, Close show ends admission and bar service. Play/Pau
 
 ### Food vendor trial
 
-On the Lot, place one Food stall in Build (key 9). In Promote, enable Live services and open Food to select Standard or Premium. The stall needs a clear route to the main floor. Its staff, power, stock and wages are vendor supplied; the promoter receives 25% of actual sales. Terms lock when doors open.
+On the Lot, place one Food stall in Build (key 9). In Promote, enable Live services and open Facilities → Food to select Standard or Premium. The stall needs a clear route to the main floor. Its staff, power, stock and wages are vendor supplied; the promoter receives 25% of actual sales. Terms lock when doors open.
 
 Standard sells $8 meals, stocks 80 and serves 2/minute; Premium sells $12 meals, stocks 160 and serves 4/minute. Guests share limited spending money with the bar, some decline higher prices, and food requests expire after six minutes. Green samples show the food queue. Open Food from Services for current demand/stock and the vendor ledger, or from settlement Revenue for the final receipt. Only house income enters career cash. Existing shows without a food contract keep their old finances.
+
+### Sanitation trial
+
+On the Lot, use connected portable units or place one Facility trailer (T). In Promote, enable Live services, then open Facilities → Sanitation. The trailer rents for $240 and adds three guest stalls when its $60 utility package is enabled; a dedicated cleaner costs $80. The quoted costs are paid once before doors and are production deductions under a door deal. Portable rentals remain separate and require no utilities or research. The trailer occupies3×2 tiles and draws1,500W.
+
+Each guest makes one two-minute visit after their bar/food stop. Waiting expires after eight minutes. After twelve uses a stall waits for three minutes of cleaning; one cleaner handles one stall at a time. Purple samples show waiting/in-use guests. Facilities in Services shows visits, dirty stalls and cleaning progress; the same receipt opens from settlement Costs. Missed visits reduce restroom amenities without removing attendees or refunding tickets.
+
+Facilities → Artist offers Sodium Arcade an optional quiet changing area, separate from guest stalls. Accepting needs a connected powered trailer and cleaner. Fulfillment adds up to two relationship points, with no artist-pay change; declining has no penalty. All terms lock at doors. Old shows without the trial retain their previous rules.

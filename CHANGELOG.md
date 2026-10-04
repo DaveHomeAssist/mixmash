@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House measurement evidence:** published all CI calibration and native desktop/display repeats with source and raw digests; isolated reproduction commands preserve failures and clean up failed launches. No runtime or device-acceptance claim is implied.
+
 - **Front of House food vendor:** optional placed Lot stall, locked pre-doors contracts, finite shared guest budgets/stock, green food queues and separate vendor/house receipts. Only the house share enters settlement; artist pay and old shows retain their rules. Source-owned stall geometry and offline cache v37.
 
 - **Front of House normal departure:** new live Lot shows check connected access before payment, continue the saved clock through visible guest exits and unlock settlement only after the audience clears. Inside counts remain separate from attendance and receipts. Older live shows retain their closing rules. Service worker v35.

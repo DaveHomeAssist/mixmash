@@ -9,9 +9,15 @@ export function guestTimeline(events) {
   let gateHead = 0, barHead = 0, floorHead = 0;
   const identities = new Map();
   const move = (guest, zone, event) => {
-    if (guest) guest.history.push({ zone, minute: event.minute, eventId: event.id, cause: event.cause, ...(event.entity === 'food' ? { service: 'food' } : {}), ...(event.result?.portal !== undefined ? { portal: event.result.portal } : {}) });
+    if (guest) guest.history.push({ zone, minute: event.minute, eventId: event.id, cause: event.cause, ...(['food', 'sanitation'].includes(event.entity) ? { service: event.entity } : {}), ...(event.result?.portal !== undefined ? { portal: event.result.portal } : {}) });
   };
   for (const event of events) {
+    if (event.entity === 'sanitation') {
+      const guest = identities.get(event.guestId);
+      if (event.cause === 'request') move(guest, 'sanitation', event);
+      else if (['visit-complete', 'access', 'patience', 'closed'].includes(event.cause)) move(guest, 'floor', event);
+      continue;
+    }
     if (event.entity === 'food') {
       const guest = identities.get(event.guestId);
       if (event.cause === 'request') move(guest, 'food', event);
@@ -93,16 +99,16 @@ const away = (p, layout, distance = 1) => layout.edge?.axis === 'x'
 
 export function guestFrame(layout, services, zoneProjection) {
   const guests = guestTimeline(services.events), minute = services.minute;
-  const zones = ['gate', 'bar', ...(services.food ? ['food'] : []), 'floor'];
+  const zones = ['gate', 'bar', ...(services.food ? ['food'] : []), ...(services.sanitation ? ['sanitation'] : []), 'floor'];
   const groups = (at) => Object.fromEntries(zones.map(zone => [zone, guests.filter(g => atMinute(g, at)?.zone === zone)]));
   const current = groups(minute), previous = groups(minute - 1);
-  if (current.gate.length !== services.gate.waiting || current.bar.length !== services.bar.waiting || current.bar.length + (current.food?.length || 0) + current.floor.length !== (services.inside ?? services.admitted) || (current.food?.length || 0) !== (services.food?.totals.waiting || 0)) {
+  if (current.gate.length !== services.gate.waiting || current.bar.length !== services.bar.waiting || current.bar.length + (current.food?.length || 0) + (current.sanitation?.length || 0) + current.floor.length !== (services.inside ?? services.admitted) || (current.food?.length || 0) !== (services.food?.totals.waiting || 0) || (current.sanitation?.length || 0) !== ((services.sanitation?.totals.waiting || 0) + (services.sanitation?.totals.using || 0))) {
     throw new Error('Guest events disagree with service counts');
   }
   const departed = guests.filter(g => { const h = g.history.at(-1); return (h.zone === 'leaving' || h.zone === 'departed') && h.minute === minute; });
   const leavingSlots = Math.min(12, departed.length);
-  const previousInside = previous.bar.length + (previous.food?.length || 0) + previous.floor.length;
-  const old = zoneProjection(layout, { ...services, admitted: previousInside, inside: previousInside, ...(services.food ? { food: { totals: { waiting: previous.food.length } } } : {}), gate: { waiting: previous.gate.length }, bar: { waiting: previous.bar.length } }, services.minute, 180);
+  const previousInside = previous.bar.length + (previous.food?.length || 0) + (previous.sanitation?.length || 0) + previous.floor.length;
+  const old = zoneProjection(layout, { ...services, admitted: previousInside, inside: previousInside, ...(services.food ? { food: { totals: { waiting: previous.food.length } } } : {}), ...(services.sanitation ? { sanitation: { totals: { waiting: previous.sanitation.length, using: 0 } } } : {}), gate: { waiting: previous.gate.length }, bar: { waiting: previous.bar.length } }, services.minute, 180);
   const next = zoneProjection(layout, services, services.minute, 180 - leavingSlots);
   function bind(projection, zoneGuests) {
     const positions = new Map();
@@ -134,7 +140,7 @@ export function guestFrame(layout, services, zoneProjection) {
     const before = prior.get(guest.id);
     const oldZone = atMinute(guest, minute - 1)?.zone;
     // A newly selected sample uses its earlier zone anchor; no hidden agent state is saved.
-    const start = before || (oldZone === 'bar' ? layout.bar : oldZone === 'food' ? layout.food : oldZone === 'floor' ? (portal ? layout.free[0] : target) : away(layout.outsideGate || target, layout));
+    const start = before || (oldZone === 'bar' ? layout.bar : oldZone === 'food' ? layout.food : oldZone === 'sanitation' ? layout.sanitation : oldZone === 'floor' ? (portal ? layout.free[0] : target) : away(layout.outsideGate || target, layout));
     if (portal) {
       const interior = gridRoute(layout, start, portal.route.at(-1));
       if (!interior) { unavailable++; return { ...target, route: [target], events: history.map(h => h.eventId), routeUnavailable: true }; }
@@ -144,7 +150,8 @@ export function guestFrame(layout, services, zoneProjection) {
     for (const h of history) {
       if (h.zone === 'bar' && layout.gate && layout.bar) waypoints.push(layout.gate, layout.bar);
       else if (h.zone === 'food' && layout.food) waypoints.push(layout.food);
-      else if (h.zone === 'floor' && layout.bar) waypoints.push(h.service === 'food' && layout.food ? layout.food : layout.bar);
+      else if (h.zone === 'sanitation' && layout.sanitation) waypoints.push(layout.sanitation);
+      else if (h.zone === 'floor' && layout.bar) waypoints.push(h.service && layout[h.service] ? layout[h.service] : layout.bar);
     }
     waypoints.push(target);
     const route = [];
