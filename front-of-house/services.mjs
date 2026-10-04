@@ -11,12 +11,12 @@ const count = (queue) => queue.reduce((total, cohort) => total + cohort.count, 0
 function specification(raw) {
   if (!raw || typeof raw !== 'object' || typeof raw.id !== 'string' || !/^[a-zA-Z0-9_]{1,64}$/.test(raw.id)) throw new TypeError('Invalid service run ID');
   const spec = { id: raw.id };
-  for (const [name, fallback, min, max] of [
-    ['closeAt', 12, 1, 240], ['gateRate', 2, 0, 6000], ['barRate', 0, 0, 6000],
-    ['workerRate', 2, 1, 6000], ['travelMinutes', 2, 1, 60],
-    ['gatePatience', 3, 1, 240], ['barPatience', 6, 1, 240],
-    ['ticketPrice', 20, 0, 10000], ['barNet', 5, 0, 10000],
-  ]) spec[name] = integer(raw[name] === undefined ? fallback : raw[name], name, min, max);
+  for (const [name, min, max] of [
+    ['closeAt', 1, 240], ['gateRate', 0, 6000], ['barRate', 0, 6000],
+    ['workerRate', 1, 6000], ['travelMinutes', 1, 60],
+    ['gatePatience', 1, 240], ['barPatience', 1, 240],
+    ['ticketPrice', 0, 10000], ['barNet', 0, 10000],
+  ]) spec[name] = integer(raw[name], name, min, max);
   if (!Array.isArray(raw.arrivals) || raw.arrivals.length > 240) throw new TypeError('Invalid arrivals');
   spec.arrivals = raw.arrivals.map((row) => {
     if (!row || typeof row !== 'object') throw new TypeError('Invalid arrival cohort');

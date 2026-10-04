@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServices, advanceServices, assignServiceWorker, serviceSummary, saveServices, loadServices } from './services.mjs';
 
-const spec = (arrivals, extra = {}) => ({ id: 'fixture', arrivals, ...extra });
+const spec = (arrivals, extra = {}) => ({ id: 'fixture', closeAt: 12, gateRate: 2, barRate: 0, workerRate: 2, travelMinutes: 2, gatePatience: 3, barPatience: 6, ticketPrice: 20, barNet: 5, arrivals, ...extra });
 const move = (s, station) => {
   const result = assignServiceWorker(s, station);
   assert.equal(result.error, null);
