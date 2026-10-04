@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "f7da804 base · 3D backing resolution tested locally",
+  "head": "36bbbf3 delivered · 18 density windows at5532852 · sanitation CI",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Floor-cache PR74 remains in delivery. The next resolution slice passes browser backing/lifecycle and full-game DPR2 settlement checks locally; CI and hosted resolution proof remain pending.",
+  "statusReason": "Floor cache and 3D backing resolution are merged, Pages-built and hosted-verified. All18 high-density Metal windows at frozen5532852 are valid. Parallel sanitation remains in its own CI/production workflow; physical-device acceptance and later phases remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -17,11 +17,13 @@
     "PR #47: split-view controls and sprite occlusion fixes.",
     "PR #48: research design and CT-DEC-13, still Proposed.",
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay.",
-    "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
+    "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained.",
+    "PR74: classic floor cache and complete full-HUD/shadow evidence merged and hosted-verified; parallel food controls preserved.",
+    "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
   ],
   "nextStep": {
-    "title": "Deliver the floor cache and 3D resolution rule",
-    "why": "Both performance slices are implemented and locally checked. Complete their required CI, production delivery and hosted verification while preserving parallel guest operations.",
+    "title": "Deliver sanitation; continue performance limits and remaining phases",
+    "why": "The floor cache and resolution slices are delivered. Preserve the parallel sanitation work while continuing measured CI limits, low-power evidence, research, ownership, venue and release phases.",
     "doneWhen": "Static floor caching preserves exact pixels, sightline occlusion and hit testing across room/layout/camera/resize changes; measure the same full-HUD fixtures before and after at declared pixel ratio. Continue the remaining guest operations, research, ownership, venue and release phases.",
     "effort": "L",
     "owner": "either",
@@ -606,40 +608,66 @@
             "result": "pass",
             "checkedAt": "2026-10-04T12:54:51.909199+00:00",
             "summary": "Actual backing allocation, threshold and CSS-coordinate picks; browser density emulation plus explicitly dispatched media event, redraw fallback, context restore and listener disposal. Full application DPR2 settlement parity also passes. Local proof only."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/74",
+            "result": "pass",
+            "checkedAt": "2026-10-04T13:13:15.642898+00:00",
+            "summary": "CI37203293180, mergeba43ea5, Pages built13:00:45Z; eight live runtime files match, exact hosted Chromium/WebKit cache parity and six complete vendor journeys pass."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-density.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T13:13:15.642898+00:00",
+            "summary": "All18 requested-DPR2 Metal windows at clean5532852 valid; cadence59.20–60.00Hz, no intervals over50ms. Private harness/source/fixture/raw digests verified. Separate from full HUD and physical-device acceptance."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/78",
+            "result": "pass",
+            "checkedAt": "2026-10-04T13:16:11.385219+00:00",
+            "summary": "CI37203818090, merge36bbbf3, Pages built13:13:51Z; eight deployed sources match, hosted resolution/lifecycle and full DPR2 client settlement parity pass."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Classic floor cache CI/merge/hosted delivery; full-HUD comparison complete at 2a00f7a",
-          "High-DPI/native/low-power measurement, declared CI limits and adaptive quality",
-          "Physical device and human acceptance"
+          "Declared CI timing limits, adaptive policy and supported low-power hardware evidence",
+          "Physical monitor/device and human acceptance"
         ],
         "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
         "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI.",
         "slices": [
           {
             "id": "FOH-P01c",
-            "status": "tested-awaiting-delivery",
+            "status": "verified-delivered",
             "scope": "Classic floor cache and full HUD comparison",
             "evidence": [
               "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
               "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
               "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending.",
               "All 12 corrected full-HUD windows at 2a00f7a are valid: actual flow-version-1 show, 10s warmup, 30s sampling, three repeats, fixed camera and verified continuous pan, direct and cached floors. Raw/source/fixture hashes retained. Cadence and cache counters do not certify physical displays or a frame-rate gain.",
-              "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
+              "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending.",
+              "PR74 CI37203293180 passed and mergedba43ea5; Pages built13:00:45Z. Eight deployed runtime files match. Hosted Chromium/WebKit exact cache pixels and lifecycle pass, plus all six full food placement/settings/queue/reload/signed-income journeys. PR73 evidence is included and GitHub marks it merged through this delivery."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74",
+            "mergeCommit": "ba43ea563b7318daf59ff631a0817ba63c33dd6f"
           },
           {
             "id": "FOH-P01d",
-            "status": "tested-awaiting-delivery",
+            "status": "verified-delivered",
             "scope": "3D backing resolution and browser density lifecycle",
             "evidence": [
               "At requested DPR2: 1920x1080 allocates 2880x1620; 375x812 allocates 750x1624. Threshold, 5120x1440 ultrawide, explicit DPR1 and invalid overrides pass actual canvas/WebGL buffer checks.",
               "CSS-coordinate tile/object picking, real context loss/restore, one rearmed density listener and disposal pass. Chromium density emulation omits some media events; explicit event dispatch tests the listener and redraw detection covers the omitted-event path. No physical monitor acceptance inferred.",
               "Complete DPR2 application gestures, inspection, viewport fit, fallback/recovery, reload and classic/3D settlement parity pass. Existing backend camera/scene/shadow/reduced-motion and 20 disposal cycles pass.",
-              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending."
-            ]
+              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending.",
+              "Eighteen full requested-DPR2 Metal windows at5532852 pass with actual desktop/phone/ultrawide backings. Source/fixture/raw/report hashes verified. Cadence59.20–60.00Hz, no intervals over50ms; not physical-display or GPU-completion proof. The later public reproduction flags pass six short validation windows separately.",
+              "PR78 CI37203818090 passed, merged36bbbf3; Pages built13:13:51Z. Eight live files match. Hosted actual backing, picking, density event/fallback, context recovery and disposal pass, followed by complete DPR2 application gestures, fallback, reload and classic/3D settlement parity."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/78",
+            "mergeCommit": "36bbbf3977cfdb035f86d3268d246ab92726d25d"
           }
         ]
       },
@@ -743,13 +771,14 @@
           {
             "id": "FOH-O02b",
             "scope": "Pre-doors access explanation, saved departure clock, player controls and rendered normal exits",
-            "status": "merged-pages-built",
+            "status": "verified-delivered",
             "evidence": [
               "New client-opened live shows require connected admission, bar and exit access before payment, then retain Play/Pause/speed/step controls for normal departure before settlement. Older live saves keep historical closing.",
               "265 repository tests and build pass. Four Chromium/WebKit desktop/phone control journeys and four renderer/viewport zone plus four controlled movement journeys pass, including normal exit movement, frozen outcomes and reload/cash parity. Required CI and deployed proof remain pending.",
               "Two full 3D departure/settlement journeys and warmed offline reload at departure minute2 pass. The supplied action client opens a new flow-version-1 show and reaches minute5; screenshots inspected. An initial offline attempt found a stopped preview server; retry on a verified new server passes.",
-              "CI 37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending.",
-              "PR71 CI 37201292853 passed and merged at 719e0f5. The a04b4a1 Pages release containing it is built. Hosted player acceptance is recorded separately."
+              "CI37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending.",
+              "Final CI37201292853 passed; PR71 merged719e0f5. Production Pages and behavior verification are running.",
+              "PR71 CI37201292853 passed, merged719e0f5; Pages built12:29:34Z. Fourteen production files match; four Chromium/WebKit plus two 3D production control/departure/settlement journeys pass."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71",
             "mergeCommit": "719e0f5b174c59b0ce8388a4de44467df26ff203"
@@ -757,19 +786,21 @@
           {
             "id": "FOH-O02c",
             "scope": "Finite food demand, budget, stock and vendor terms",
-            "status": "in-progress",
+            "status": "verified-delivered",
             "evidence": [
               "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet.",
-              "Playable vendor integration: all276 tests and build, six Chromium/WebKit/classic/3D full journeys and all28 legacy checks pass. Warmed offline minute15 preserves a three-person food queue,70 remaining meals,$80 vendor gross,$20 house share and cash. Required CI/hosted gates pending."
+              "Playable vendor integration: all276 tests and build, six Chromium/WebKit/classic/3D full journeys and all28 legacy checks pass. Warmed offline minute15 preserves a three-person food queue,70 remaining meals,$80 vendor gross,$20 house share and cash. Required CI/hosted gates pending.",
+              "Actual Lot policy evidence: seed1 with bar staffing favors standard house income102 vs51; seed3 with temporary admission staffing favors premium81 vs76. Attendance is conserved within each pair. Engineering proof, not final human balance acceptance."
             ],
             "slices": [
               {
                 "id": "FOH-O02c1",
                 "scope": "Finite food replay and vendor accounting core",
-                "status": "merged-pages-built",
+                "status": "verified-delivered",
                 "evidence": [
                   "Seven tests cover budgets, guest identity, demand, stock, access, expiry, closing, replay and useful quiet/surge choices.",
-                  "PR72 CI 37201342806 passed and the a04b4a1 Pages release is built. This is a pure food model; the separate player integration remains pending."
+                  "All272 repository tests and build pass; required CI and hosted proof pending.",
+                  "PR72 CI37201342806 passed, merged a04b4a1; Pages built12:31:48Z. Fifteen live files match; hosted core reproduces quiet24/12 and surge160/480 house-income pairs. Core alone has no playable vendor UI."
                 ],
                 "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72",
                 "mergeCommit": "a04b4a18ce0ed3062a246215cbcd6487ebff4220"
@@ -777,22 +808,61 @@
               {
                 "id": "FOH-O02c2",
                 "scope": "Placed vendor, locked player settings, saved terms, projection and career ledgers",
-                "status": "merged",
+                "status": "verified-delivered",
                 "evidence": [
                   "Placed Lot stall, locked settings, finite food replay, both-renderer queue projection and separate vendor/house ledgers implemented. Four engine integration tests and all276 repository tests/build pass; browser and delivery checks remain in progress.",
-                  "PR75 CI 37202280052 passed and merged ffcd59f. Hosted behavior and the subsequent floor-cache integration are separate checks."
+                  "PR75 passed full CI37202280052 and merged ffcd59f. Pages built12:41:40Z; eighteen runtime files match. Six production Chromium/WebKit/classic/3D desktop/phone journeys and warmed offline food queue/stock/cash reload pass."
                 ],
                 "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75",
                 "mergeCommit": "ffcd59fa7f5af1d4567b77a58a58a420abf2990a"
               }
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75",
+            "mergeCommit": "ffcd59fa7f5af1d4567b77a58a58a420abf2990a"
           },
           {
             "id": "FOH-O02d",
             "scope": "Sanitation service and one negotiated artist preference",
-            "status": "pending",
-            "evidence": []
+            "status": "in-progress",
+            "evidence": [
+              "Sanitation replay core implemented; seven targeted tests pass. Portable/trailer access, utilities, stall uses, one exclusive cleaner, food-first visits and closing are modeled; client, costs, satisfaction and negotiated artist preference remain pending.",
+              "Sanitation contract integration: 288 repository tests and build pass. Costs, locked saves, visit-based amenities and optional changing-area relationship outcome are implemented; player controls and production acceptance remain pending."
+            ],
+            "slices": [
+              {
+                "id": "FOH-O02d1",
+                "scope": "Finite sanitation and servicing core",
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Seven tests cover minute-by-minute conservation, no simultaneous food/sanitation queue, cleaning time/exclusivity, access/utilities, reload, closing and6000 guests.",
+                  "All283 repository tests and build pass; required CI and hosted core proof remain pending.",
+                  "CI37203133927 passed on d3cd396. Merged current gh-pages ba43ea5 into the branch, preserving newer operations acceptance and performance/floor-cache evidence; required CI must pass the reconciled head before delivery."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"
+              },
+              {
+                "id": "FOH-O02d2",
+                "scope": "Sanitation contract, costs, satisfaction and artist preference",
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Five integration tests cover prepayment refusal, locked quote and malformed saves, both artist deals and one-time signing, optional preference, food ordering and in-progress cleaning reload.",
+                  "All288 repository tests and build pass. Source-owned trailer geometry and classic fallback included; required CI and hosted model evidence pending."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/77"
+              },
+              {
+                "id": "FOH-O02d3",
+                "scope": "Playable facilities controls, servicing readouts and guest presentation",
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Facilities pages, explicit preference, live/settlement receipts and shared sanitation guest projection implemented. All289 repository tests and build pass.",
+                  "Seven local complete player journeys cover Chromium classic/3D desktop/phone, WebKit classic desktop/phone and short dark desktop. Supplied action client places/enables the package and reaches minute5. Warmed offline cleaning at minute27 survives reload and completes at30 with cash/projection preserved.",
+                  "Final local verification:289 npm tests/build,28 legacy checks, six food journeys and seven sanitation journeys pass, including T/keyboard page switching and short dark desktop. Final supplied action replay reaches enabled minute5. Required CI and production delivery remain pending."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
+              }
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
           }
         ]
       },
