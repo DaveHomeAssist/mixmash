@@ -140,4 +140,4 @@ The messages shown when an action is refused are listed by action in [CATALOG.md
 
 ## 4. Not covered here
 
-Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 180 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 200 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

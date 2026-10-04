@@ -2210,6 +2210,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-services.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-services.mjs",
+      "description": "Behavioral fixtures for the aggregate live-service prerequisite.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-services.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test/fixtures/save-v1.json",
       "project": "front-of-house",
       "category": "tests",
@@ -2237,6 +2247,16 @@
       "title": "front-of-house-3d-smoke.mjs",
       "description": "Full application integration: safe gestures, renderer recovery and identical saved-show outcomes.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-3d-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-live-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-live-smoke.mjs",
+      "description": "Live service pilot browser acceptance: controls, clock, reload, receipts and responsive tabs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-live-smoke.mjs",
       "open": null
     },
     {
@@ -2427,6 +2447,16 @@
       "title": "lot-renderer.mjs",
       "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/services.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "services.mjs",
+      "description": "Deterministic aggregate admission/bar service model for the optional live Lot pilot. Unselected careers retain their existing show and doors-snapshot rules.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
       "open": null
     },
     {

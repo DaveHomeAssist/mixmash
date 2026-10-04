@@ -579,6 +579,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .win-foot { flex-wrap: wrap; gap: 8px 12px; }
   .win-foot .tip { flex-basis: 100%; order: 3; }
   .win .meta-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .win .ledger th, .win .ledger td { padding: 3px 8px; }
 
   /* Tabs (docs/HUD.md decision 12): one group at a time, so nothing scrolls. */
   .tabbar { display: flex; gap: 4px; flex: none; order: 1; }
@@ -639,6 +640,16 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
 
+/* Live services use compact rows so queues and cash fit the phone peek sheet. */
+.live-readouts { display: grid; gap: 4px; margin: 0; }
+.live-readouts div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 8px; padding: 3px 0; border-bottom: 1px solid var(--border); }
+.live-readouts dt, .live-readouts dd { font-size: 0.8rem; margin: 0; }
+.live-readouts dt { color: var(--text-muted); }
+.live-readouts dd { font-family: var(--font-mono); font-weight: 700; }
+
+.live-optin { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.live-controls label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.live-controls select { min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--panel-alt); border: 1px solid var(--border-strong); border-radius: 6px; }
 /* The input canvas retains keyboard/pointer ownership while the 3D layer presents the Lot. */
 .lot-webgl { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
 .lot-webgl[hidden] { display: none; }

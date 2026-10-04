@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "eda0754 · Lot scene deployed; 18 hardware diagnostic runs 2026-10-04",
+  "head": "3698c0a · Live service pilot merged; hardware baseline delivery 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation, Select and the explicit 3D Lot preview are deployed and live-verified. All 18 Apple M4 Metal renderer measurements completed at DPR 1. Full HUD/high-DPI/low-power evidence, rendering optimization, final art and later phases remain incomplete.",
+  "statusReason": "Foundation, Select and the 3D Lot preview are deployed and live-verified. The live service pilot is merged; its hosted acceptance is being verified. All 18 Apple M4 Metal renderer measurements completed at DPR 1. Representative queues, full HUD/high-DPI/low-power evidence, rendering optimization and later phases remain incomplete.",
   "activity30d": {
-    "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
+    "headline": "Four-room playable with optional 3D Lot and live service pilots; further operations and release acceptance remain in progress."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -20,8 +20,8 @@
     "PR64 and PR65: explicit Lot preview and authored scene candidate deployed; hosted backend/game behavior and full settlement parity verified."
   ],
   "nextStep": {
-    "title": "Optimize rendering cost and implement aggregate live operations",
-    "why": "Available-host renderer evidence and live input/save parity are recorded. Rendering cost and fixed-step service fixtures can advance while final art and device/human acceptance remain separate.",
+    "title": "Verify live service delivery and connect representative queues",
+    "why": "PR62 supplies the authoritative service model, clock, staffing, saves and settlement. Preserve that implementation; extend its actual outcomes into representative movement while continuing performance work.",
     "doneWhen": "Rendering optimization is compared at declared quality with preserved engine/input parity; quiet, arrival-surge and busy-bar operations fixtures conserve guests, staff time and money through reload and speed changes. Physical-device and human acceptance remain separately tracked.",
     "effort": "L",
     "owner": "either",
@@ -227,7 +227,8 @@
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
     "The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice.",
-    "2026-10-04: PR64/65 supersede earlier adapter-not-implemented status. The available-host Metal baseline is renderer-only evidence; performance, final art and later phases are not complete."
+    "2026-10-04: PR64/65 supersede earlier adapter-not-implemented status. The available-host Metal baseline is renderer-only evidence; performance, final art and later phases are not complete.",
+    "2026-10-04: PR62 merged at 3698c0a while the performance branch was in delivery. Reconciled both test suites and project evidence; the separate unshipped operations model was superseded to retain one service authority."
   ],
   "links": [
     {
@@ -571,8 +572,39 @@
           "FOH-V01"
         ],
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "Experimental live service core and player controls implemented; PR62 final delivery checks pending."
+        ],
+        "slices": [
+          {
+            "id": "FOH-O01a",
+            "scope": "Deterministic admission/bar service core independent of renderer",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "12 service core tests cover conservation, transfers, replay, bounded checkpoints and prospective incident effects.",
+              "Core is connected to the optional Lot pilot; unselected shows retain existing rules."
+            ]
+          },
+          {
+            "id": "FOH-O01b",
+            "scope": "Opt-in live Lot controls, fixed clock, incident-aware replay, career settlement and saved staffing",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "61 engine/service tests and 246 repository tests pass; 28 legacy browser checks and four desktop/phone Chromium/WebKit live journeys pass; offline transfer/reload preserves cash",
+              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)",
+              "Combined local 3D/live desktop and phone journeys pass. Linux CI found 5px phone Costs overflow; mobile ledger padding fixed, final CI rerun required."
+            ]
+          },
+          {
+            "id": "FOH-O01c",
+            "scope": "Representative admission/bar movement integrated with the accepted renderer",
+            "status": "pending",
+            "evidence": [
+              "Live pilot draws the correct admitted count; distinct queue movement is still unimplemented"
+            ]
+          }
+        ]
       },
       {
         "id": "FOH-O02",

@@ -568,7 +568,7 @@ export function createBoard(canvas) {
     let remaining = Math.min(scene.crowd, 1600);
     for (let i = 0; i < tiles.length && remaining > 0; i += 1) {
       const t = tiles[i];
-      const here = Math.min(cap, remaining);
+      const here = Math.min(scene.services ? Math.floor((i + 1) * cap) - Math.floor(i * cap) : cap, remaining);
       remaining -= here;
       for (let k = 0; k < here; k += 1) {
         const jx = ((t.x * 7 + t.y * 13 + k * 5) % 10) / 14 + 0.15;

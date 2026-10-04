@@ -119,3 +119,17 @@ The small doors staffing experiment in [FUTURE.md](FUTURE.md#lot-live-show-exper
 - [ ] A tampered or invalid save code is rejected, or normalized without crashing
 - [ ] Every fixture migrates to the current version
 - [ ] Same seed and same choices give the same settlement after reload
+
+## Experimental service checkpoint (FOH-O01a)
+
+`services.mjs` has a separate version 1 checkpoint for its deterministic tests and future adapter: `{version, spec, minute, commands}`. `spec` contains the run ID, finite arrival cohorts, integer service rates, travel/patience/closing minutes and whole-dollar ticket/bar values; commands contain ordered `{minute, station}` reassignment records. `loadServices` validates bounds and replays the initial state to recover cohorts, worker travel, residual demand, queue age, totals and causal events. Serialized derived money/queues are ignored. There are no random draws in this model. A checkpoint is at most 240 arrival rows, 240 worker commands, 240 minutes and 6,000 total guests.
+
+The standalone prerequisite originally kept this checkpoint outside career saves. FOH-O01b now persists it as an optional show field, as specified below. Calling a service summary never credits career cash; the existing phase-guarded signing action owns that mutation. The model alone does not establish player-facing or renderer acceptance.
+
+## Live pilot integration (FOH-O01b)
+
+Schema 2 now accepts an optional `promotion.liveServices` boolean and `show.services` checkpoint. Old saves omit both and keep the old rules. The checkpoint still uses service version 1; ordered worker commands may now be joined by one `{kind:"response", minute, response}` command. Its derived schedule tracks cancelled future walk-ups and prospective gate capacity. The original specification remains immutable; missing `gateWorkerRate` in an older model checkpoint derives from that checkpoint's worker rate, not a new balance default.
+
+Career normalization re-derives prices, populations and rates from the booked show and replays only validated commands. A response's ID and multipliers come from the stored, validated incident choice rather than trusting checkpoint parameters. The incident, service close and phase prerequisites prevent early settlement. The normal phase transition still prevents a signed show from paying twice. A corrupt checkpoint recovers the service timeline while retaining career cash and already-paid response costs, marks `serviceRecovered`, and visibly reports recovery; a previously signed show remains signed. This recovery is not claimed to reconstruct invalid or missing staffing choices.
+
+**Downgrade boundary:** older clients do not understand the live checkpoint or its prospective incident effects. After a career opts in, use a forward fix; do not roll it back to a client that strips this field. Preserve the existing storage namespace and cash/history. The pilot's ledger is held income until signing, so reload/clock ticks cannot credit it to available cash.
