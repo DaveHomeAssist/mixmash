@@ -841,7 +841,7 @@ test('controls: no binding takes a key the browser or the system owns', () => {
 test('controls: modifiers left out match either way, and named ones must agree', () => {
   const key = (k, mods = {}) => ({ key: k, ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, ...mods });
   assert.ok(matches('rotate', key('r')) && matches('rotate', key('R', { shiftKey: true })));
-  assert.ok(matches('pick-tool', key('3')) && !matches('pick-tool', key('3', { ctrlKey: true })) && !matches('pick-tool', key('9')));
+  assert.ok(matches('pick-tool', key('3')) && !matches('pick-tool', key('3', { ctrlKey: true })) && matches('pick-tool', key('9')) && !matches('pick-tool', key('0')));
   assert.ok(matches('undo', key('z', { ctrlKey: true })) && matches('undo', key('z', { metaKey: true })));
   assert.ok(!matches('undo', key('z')) && !matches('undo', key('Z', { ctrlKey: true, shiftKey: true })));
   assert.ok(matches('redo', key('Z', { ctrlKey: true, shiftKey: true })) && matches('redo', key('z', { metaKey: true, shiftKey: true })));

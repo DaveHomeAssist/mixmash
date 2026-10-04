@@ -75,6 +75,7 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `pa-m` | $450 |
 | `lights` | $175 |
 | `bar` | $100 + 2 staff |
+| `food` | Vendor supplies staff and power |
 | `restroom` | $60 |
 | `gate` | 1 door staff |
 | `exit` | free |
@@ -91,6 +92,7 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `restroom` | Restroom |
 | `gate` | Gate |
 | `exit` | Exit |
+| `food` | Food |
 
 ### `FACING`: Rotation directions (Build)
 
@@ -112,6 +114,7 @@ Names the engine, the board and the settlement sheet all use. Act names and genr
 | Object | `pa-m` | PA (medium) |
 | Object | `lights` | Light tower |
 | Object | `bar` | Bar |
+| Object | `food` | Food stall |
 | Object | `restroom` | Restroom unit |
 | Object | `gate` | Entry gate |
 | Object | `exit` | Exit |
@@ -140,4 +143,4 @@ The messages shown when an action is refused are listed by action in [CATALOG.md
 
 ## 4. Not covered here
 
-Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 200 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 210 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

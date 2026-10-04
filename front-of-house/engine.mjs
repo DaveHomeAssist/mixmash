@@ -7,6 +7,7 @@
 
 import * as D from './data.mjs';
 import * as Services from './services.mjs';
+import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
 
 export const ENGINE_VERSION = 1;
@@ -288,6 +289,7 @@ export function validateLayout(objects, venue) {
     if (!isObj(raw)) return reject('Not an object');
     const t = D.OBJECT_TYPES[raw.type];
     if (!t) return reject(`Unknown object type "${raw.type}"`);
+    if (t.lotOnly && spec.id !== 'lot') return reject(`${t.label} is available only on the Lot`);
     const obj = { type: raw.type, x: t.kit ? 0 : raw.x, y: t.kit ? 0 : raw.y, rot: t.kit ? 0 : raw.rot };
     if (!t.kit) {
       if (!isInt(obj.x) || !isInt(obj.y) || !isInt(obj.rot) || obj.rot < 0 || obj.rot > 3) {
@@ -547,7 +549,8 @@ export function evaluateShow(inputs) {
   const artistPay = paidUpFront ? guarantee : Math.round(D.DOOR_SPLIT * Math.max(0, ticketGross - costs.total));
   const sponsor = inputs.deal === 'sponsor' ? D.SPONSOR_PAY : 0;
   const broadcast = inputs.broadcast ? attendance * D.BROADCAST_PER_HEAD : 0;
-  const net = ticketGross + bar + sponsor + broadcast - costs.total - artistPay;
+  const food = live?.food || null, foodIncome = food?.totals.houseIncome || 0;
+  const net = ticketGross + bar + foodIncome + sponsor + broadcast - costs.total - artistPay;
   const result = net >= 0 && satisfaction >= D.PASS_SATISFACTION ? 'pass' : 'retry';
 
   const upfront = costs.total - costs.incident + (paidUpFront ? guarantee : 0) - sponsor;
@@ -559,7 +562,7 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
-    sponsor, broadcast, seated, seatPrice, doorRush, services: live,
+    sponsor, broadcast, seated, seatPrice, doorRush, services: live, ...(food ? { food, foodIncome } : {}),
   };
 }
 
@@ -704,7 +707,8 @@ export function liveAccessFor(state) {
   const access = lotAccess(state.venue.objects, venueSpec(state.venue).grid);
   const floor = new Set(access.floorCells.map(p => key(p.x, p.y)));
   const bars = state.venue.objects.filter(o => o.type === 'bar' && footprint(o).some(([x, y]) => [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => floor.has(key(x + dx, y + dy)))));
-  return { ...access, bars, usableBars: bars.length };
+  const vendors = state.venue.objects.filter(o => o.type === 'food' && footprint(o).some(([x, y]) => [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => floor.has(key(x + dx, y + dy)))));
+  return { ...access, bars, usableBars: bars.length, vendors, usableVendors: vendors.length };
 }
 
 export function liveServicesFor(state, { events = false } = {}) {
@@ -714,7 +718,9 @@ export function liveServicesFor(state, { events = false } = {}) {
   const access = liveAccessFor(state), exits = access.portals.filter(p => p.type === 'exit' && p.usable);
   const departure = advanceDeparture(createDeparture(summary.admitted, exits.length), summary.closed ? state.show.flow.minute : 0);
   const flow = departureSummary(departure);
-  const history = events ? [...run.events] : null;
+  const vendor = state.show.food ? concessionsFor(state.show.services, foodTerms(state.show.food.plan, access.usableVendors === 1)) : null;
+  const food = vendor ? { terms: vendor.terms, stock: vendor.stock, totals: vendor.totals, ...(events ? { events: vendor.events } : {}) } : null;
+  const history = events ? [...run.events, ...(vendor?.events || [])].sort((a, b) => a.minute - b.minute) : null;
   if (history) for (const event of departureEvents(departure)) {
     let remaining = event.result.count;
     exits.forEach((_, i) => {
@@ -723,7 +729,7 @@ export function liveServicesFor(state, { events = false } = {}) {
         cause: 'normal-departure', result: { count, portal: i } });
     });
   }
-  return { ...summary, minute: summary.minute + departure.minute, serviceClosed: summary.closed,
+  return { ...summary, ...(food ? { food } : {}), minute: summary.minute + departure.minute, serviceClosed: summary.closed,
     closed: summary.closed && flow.complete, inside: flow.remaining, departed: flow.departed,
     departure: { ...flow, active: summary.closed, ...(events ? { portals: exits, access } : {}) },
     ...(events ? { events: history } : {}) };
@@ -745,7 +751,7 @@ export function settlementPayout(result, deal) {
   if (!result) return 0;
   // Sponsor money arrives before doors (it reduces upfront). Counting it again here
   // would pay the same check twice. Broadcast and the second stage arrive at settlement.
-  return result.ticketGross + result.bar + (result.broadcast || 0)
+  return result.ticketGross + result.bar + (result.foodIncome || 0) + (result.broadcast || 0)
     + (result.secondCash || 0) - (deal === 'door' ? result.artistPay : 0);
 }
 
@@ -872,6 +878,10 @@ export function applyAction(state, action) {
         if (typeof action.services !== 'boolean' || (action.services && s.venue.id !== 'lot')) return fail(state, 'Choose live services only for the Lot');
         s.promotion.liveServices = action.services;
       }
+      if (action.foodPlan !== undefined) {
+        if (s.venue.id !== 'lot' || (action.foodPlan !== null && !Object.hasOwn(FOOD_PLANS, action.foodPlan))) return fail(state, 'Choose a valid Lot food plan');
+        s.promotion.foodPlan = action.foodPlan;
+      }
       if (spec.seats && action.seatPrice !== undefined) {
         if (!isInt(action.seatPrice) || action.seatPrice < D.PRICE_MIN || action.seatPrice > priceMax) {
           return fail(state, `Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax}`);
@@ -892,6 +902,7 @@ export function applyAction(state, action) {
         const access = liveAccessFor(s);
         if (!access.usableGates || !access.usableExits || !access.usableBars) return fail(state, 'Connect admission, a bar and an exit to the main audience floor before opening doors');
       }
+      if (s.promotion.foodPlan && (!useServices || action.flow !== 1 || liveAccessFor(s).usableVendors !== 1)) return fail(state, 'Food needs live services and one connected stall before doors');
       const upfront = upfrontFor(s);
       if (s.mode !== 'sandbox' && upfront > s.cash) return fail(state, `This show needs $${upfront} before doors, but you have $${s.cash}`);
       s.cash -= upfront;
@@ -902,6 +913,7 @@ export function applyAction(state, action) {
       if (action.pilot === true && s.venue.id === 'lot' && v.bars > 0 && v.gates > 0) s.show.pilotCrew = null;
       if (useServices || s.promotion.liveServices !== undefined) s.promotion.liveServices = useServices;
       if (action.flow === 1) s.show.flow = { version: 1, minute: 0 };
+      if (s.promotion.foodPlan) s.show.food = { version: 1, plan: s.promotion.foodPlan };
       if (useServices) s.show.services = Services.saveServices(Services.createServices(liveServiceSpec(s)));
       s.phase = 'show';
       return { state: s, error: null };
@@ -1154,6 +1166,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
   for (const c of D.AD_CHANNELS) s.promotion.ads[c] = clamp(intOr(ads[c], 0), 0, D.AD_MAX_PER_CHANNEL);
   s.promotion.confirmed = promo.confirmed === true;
   if (room.id === 'lot' && typeof promo.liveServices === 'boolean') s.promotion.liveServices = promo.liveServices;
+  if (room.id === 'lot' && (promo.foodPlan === null || Object.hasOwn(FOOD_PLANS, promo.foodPlan))) s.promotion.foodPlan = promo.foodPlan;
   if (room.seats) s.promotion.seatPrice = clamp(intOr(promo.seatPrice, s.promotion.price + 10), D.PRICE_MIN, room.priceMax || D.PRICE_MAX);
 
   const rep = isObj(raw.reputation) ? raw.reputation : {};
@@ -1222,6 +1235,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
         run = Services.advanceServices(run, D.LIVE_SERVICES.closeAt);
       }
       s.show.services = Services.saveServices(run);
+    }
+    if (raw.show.food !== undefined) {
+      if (s.show.flow && raw.show.food?.version === 1 && Object.hasOwn(FOOD_PLANS, raw.show.food.plan)) s.show.food = { version: 1, plan: raw.show.food.plan };
+      else s.show.serviceRecovered = true;
     }
     if (s.show.flow) {
       const saved = raw.show.flow?.version === 1 ? raw.show.flow.minute : null, summary = liveServicesFor(s);

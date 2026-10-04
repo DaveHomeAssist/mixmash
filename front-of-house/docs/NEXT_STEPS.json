@@ -8,7 +8,7 @@
   "head": "6976dec · live operations delivered; departure integration under verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live service controls, queues, staffing and recorded guest movement are delivered. The departure/access core is delivered; player controls, saved exit progress and normal exit animation are implemented locally. Food, sanitation, research, ownership, venue and release work remain.",
+  "statusReason": "Live services and recorded guest movement are delivered. Normal departure and the finite food vendor are implemented and in delivery verification. Sanitation, research, ownership, venues and release evidence remain.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,8 +19,8 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Deliver playable departure, then implement food and sanitation",
-    "why": "Live operations and the access/departure core are deployed. The integrated normal-departure controls and animation are being verified before finite vendor and sanitation systems.",
+    "title": "Deliver normal departure and food, then implement sanitation",
+    "why": "The departure and food slices have local control, save, ledger and renderer evidence; finish CI and hosted verification, then continue sanitation and the remaining phases.",
     "doneWhen": "Ship FOH-O02b through CI and live verification, then complete FOH-O02c/d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -659,7 +659,8 @@
             "scope": "Finite food demand, budget, stock and vendor terms",
             "status": "in-progress",
             "evidence": [
-              "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet."
+              "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet.",
+              "Playable vendor integration: all276 tests and build, six Chromium/WebKit/classic/3D full journeys and all28 legacy checks pass. Warmed offline minute15 preserves a three-person food queue,70 remaining meals,$80 vendor gross,$20 house share and cash. Required CI/hosted gates pending."
             ],
             "slices": [
               {
@@ -667,16 +668,21 @@
                 "scope": "Finite food replay and vendor accounting core",
                 "status": "implemented-local-verification",
                 "evidence": [
-                  "Seven tests cover budgets, guest identity, demand, stock, access, expiry, closing, replay and useful quiet/surge choices."
-                ]
+                  "Seven tests cover budgets, guest identity, demand, stock, access, expiry, closing, replay and useful quiet/surge choices.",
+                  "All272 repository tests and build pass; required CI and hosted proof pending."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
               },
               {
                 "id": "FOH-O02c2",
                 "scope": "Placed vendor, locked player settings, saved terms, projection and career ledgers",
-                "status": "pending",
-                "evidence": []
+                "status": "implemented-local-verification",
+                "evidence": [
+                  "Placed Lot stall, locked settings, finite food replay, both-renderer queue projection and separate vendor/house ledgers implemented. Four engine integration tests and all276 repository tests/build pass; browser and delivery checks remain in progress."
+                ]
               }
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
           },
           {
             "id": "FOH-O02d",
