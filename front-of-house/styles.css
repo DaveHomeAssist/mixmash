@@ -425,7 +425,7 @@ summary { cursor: pointer; min-height: 32px; font-family: var(--font-mono); font
 
 .slider label { display: flex; justify-content: space-between; font-size: 0.9rem; }
 .slider output { font-family: var(--font-mono); font-weight: 700; color: var(--cyan); }
-.slider input[type='range'] { width: 100%; min-height: 36px; accent-color: var(--cyan); }
+.slider input[type='range'] { width: 100%; margin-inline: 0; min-height: 36px; accent-color: var(--cyan); }
 
 .chart { width: 100%; height: auto; background: var(--panel-alt); border: 1px solid var(--border); border-radius: var(--radius); }
 figure { margin: 0; }
@@ -558,6 +558,8 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
     background: var(--sheet); border-top: 1px solid var(--border-strong); border-radius: 14px 14px 0 0;
   }
   .plate, .at-sheet,
+  body[data-phase='book'] .at-sheet,
+  body[data-phase='promote'] .at-sheet,
   body[data-phase='settle'] .at-sheet,
   body[data-phase='done'] .at-sheet {
     position: static; width: auto; max-height: none; overflow: visible;

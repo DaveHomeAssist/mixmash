@@ -115,6 +115,34 @@ const measureHud = (page) => page.evaluate(([W, H]) => {
   return { share: (lot / (innerWidth * innerHeight)) * 100, cover: (covered / lot) * 100, plates: plates.length, bad };
 }, [GRID.w, GRID.h]);
 
+// Root overflow can stay zero while a phase sheet clips its controls inside the panel.
+async function checkPhoneSheet(page, phase) {
+  const previous = page.viewportSize();
+  for (const [width, height] of [[360, 780], [375, 812], [390, 844]]) {
+    await resizeTo(page, width, height);
+    const tabs = page.locator('#panel .tabbar [role="tab"]');
+    for (let i = 0; i < Math.max(1, await tabs.count()); i += 1) {
+      if (await tabs.count()) await tabs.nth(i).click();
+      const fit = await page.evaluate(() => {
+        const panel = document.querySelector('#panel'), sheet = panel.querySelector('.at-sheet');
+        const rect = sheet.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, width: innerWidth,
+          overflow: panel.scrollWidth - panel.clientWidth,
+          sheetOverflow: sheet.scrollWidth - sheet.clientWidth,
+          clippedControls: [...sheet.querySelectorAll('button, input, select')]
+            .filter(e => e.getClientRects().length).filter(e => {
+              const r = e.getBoundingClientRect();return r.left < 0 || r.right > innerWidth + 1;
+            }).map(e => e.textContent || e.getAttribute('aria-label') || e.type) };
+      });
+      assert.ok(fit.left >= 0 && fit.right <= width + 1 && fit.overflow <= 1 && fit.sheetOverflow <= 1,
+        phase + ' sheet at ' + width + ': ' + JSON.stringify(fit));
+      assert.deepEqual(fit.clippedControls, [], phase + ': all controls reachable at ' + width);
+    }
+    if (await tabs.count()) await tabs.first().click();
+  }
+  await resizeTo(page, previous.width, previous.height);
+}
+
 async function checkNoScroll(page, phase) {
   const back = page.viewportSize();
   for (const [width, height] of DESKTOP) {
@@ -668,6 +696,7 @@ try {
     return { left: r.left, bottom: r.bottom, scrolls: p.scrollHeight > p.clientHeight };
   });
   assert.ok(sheetBox.left === 0 && Math.abs(sheetBox.bottom - 844) < 1 && !sheetBox.scrolls, `the phase panel is a bottom sheet that doesn't scroll (${JSON.stringify(sheetBox)})`);
+  await checkPhoneSheet(page4, 'Book');
   await page4.screenshot({ path: join(output, 'phone.png') });
   ok('fits a 390px phone with no page scroll, the board on top and the panel in a bottom sheet');
 
@@ -701,6 +730,7 @@ try {
   await page7.locator('#panel .tabbar [role="tab"]', { hasText: 'Actions' }).click();
   await page7.click('[data-act="confirm-build"]');
   await tabsFit('Promote');
+  await checkPhoneSheet(page7, 'Promote');
   await page7.click('[data-act="confirm-promo"]');
   await page7.waitForSelector('[data-act="respond"]');
   assert.equal(await page7.getAttribute('#panel .tabbar [aria-selected="true"]', 'data-tab-name'), 'Problem', 'the incident brings its tab forward');

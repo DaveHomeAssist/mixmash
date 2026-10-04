@@ -6,7 +6,26 @@ The phases from the first document to the last career tier. Each phase ships as 
 
 ## Current planning choices
 
-The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The expansion sequence is accepted in [CT-DEC-14](docs/DECISIONS.md#ct-dec-14-expansion-sequence): 3D Lot prototype first, then live operations. D3–D5 are also accepted A in CT-DEC-15 through CT-DEC-17. D2 B (more realistic 3D) is accepted in CT-DEC-18. D6–D11 and detailed implementation specifications remain open; earlier shipped milestones and release gates retain their status.
+The [decision packet](docs/DECISION_PACKET.md) separates shipped controls from remaining choices. [Feature briefs](docs/FEATURE_BRIEFS.md) scope the continuous camera, dimensional venues, crowd services, live staffing, ownership, research, Select mode and deferred minimap. The expansion sequence is accepted in [CT-DEC-14](docs/DECISIONS.md#ct-dec-14-expansion-sequence): 3D Lot prototype first, then live operations. D3–D5 are also accepted A in CT-DEC-15 through CT-DEC-17. D2 B (more realistic 3D) is accepted in CT-DEC-18. D6–D11 are settled A under CT-DEC-19. Dave subsequently authorized execution of every remaining phase; the table below is the active execution sequence. Earlier shipped milestones retain their evidence and release gates.
+
+## Active phase execution, 2026-10-04
+
+Dave authorized continuing execution until no Front of House phases remain. Codex owns routine decisions under CT-DEC-19; do not reopen D1–D11. This sequence reconciles the existing briefs, remaining original-tier work and release criteria. Historical shipped sections below remain source history. Implementation, delivery and human/device acceptance are separate states in [NEXT_STEPS.json](docs/NEXT_STEPS.json).
+
+| ID | Phase / scope | Source | Depends on | Completion check |
+| --- | --- | --- | --- | --- |
+| FOH-F01 | Foundation: Phone Book/Promote containment | MXS-06 | None | All visible tabs and controls fit at 360, 375 and 390 CSS px; desktop layout and full show smoke remain valid. |
+| FOH-V01 | Lot renderer: Continuous 3D Lot, realistic sample, Select and safe removal | FB-01, FB-07 | FOH-F01 | Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately. |
+| FOH-P01 | Performance: Cached/adaptive rendering and stable measurement | HUD step 6, CT-DEC-17 | FOH-V01 | Deterministic CI scenes and documented measured limits; available hardware measurements and unavailable device evidence reported separately. |
+| FOH-O01 | Live operations: Aggregate services, staffing and representative crowd | FB-03, FB-04 | FOH-V01 | Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting. |
+| FOH-O02 | Guest operations: Food vendor, sanitation, admission and normal departure | FB-09, FB-10, FB-11 | FOH-O01 | Finite budgets/stock, serviced stalls, negotiated artist preference and conserved guest flow with no capacity inflation. |
+| FOH-R01 | Research: Three-project Lot research pilot | FB-06, D6 A | FOH-O01 | Patch standards, Service training and Admission lanes have deterministic cost/progress/save rules and useful paired outcomes. |
+| FOH-E01 | Ownership: Owned equipment family and reconciled career ledger | FB-05, D7 A | FOH-O01 | Purchase/rent/deploy/sell policy conserves cash and inventory through reload, cancellation and settlement. |
+| FOH-V02 | Venues: Distinct rooms and remaining tier mechanics | FB-02, original phases 5–7, KI-11 | FOH-P01, FOH-O02, FOH-E01 | Club, shell and festival scenes, ticketing, held-night cancellation and stage/night accounting have tier-specific tests and playable careers. |
+| FOH-U01 | Navigation: Large-site navigation and minimap disposition | FB-08, HUD step 7 | FOH-V02 | Evaluate zoomed Split Acre navigation; implement minimap if needed or record evidence-backed deferral, without claiming unbuilt work shipped. |
+| FOH-L01 | Release: Acceptance evidence, manual and public promotion | RELEASE.md, D8–D11 A | FOH-V02, FOH-R01, FOH-U01 | Provenance, recovery, career, art/camera and device evidence meet release checks; promotion only after those gates are satisfied. |
+
+Imported M4/M5 wish lists, Challenge/Endless and the broader eight-branch research proposal are not additional release phases. The scoped briefs and explicit remaining tier requirements above define this execution; do not turn an unbounded future idea list into a completion claim. Preserve deliberate exclusions and record a new scoped decision before expansion. Missing human or physical-device evidence cannot be replaced with automated results.
 
 ## Shipped
 
