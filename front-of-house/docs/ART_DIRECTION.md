@@ -9,6 +9,45 @@
 
 **Updated 2026-10-04:** Dave accepted D2 B, more realistic 3D, in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction). This supersedes the pixel-sheet direction for the new renderer while preserving the existing game and this specification as historical reference. [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence) keeps the Lot first; CT-DEC-15 keeps aggregate crowd services and CT-DEC-17 keeps the accepted performance model. Use [FB-01 and FB-02](FEATURE_BRIEFS.md) for a realistic Lot sample and renderer contract before asset expansion. Do not treat technical placeholders or archive screenshots as final art approval. D8 library disposition remains open; no existing art is deleted by this decision.
 
+## Realistic Lot sample specification
+
+**Proposed sample under accepted CT-DEC-18, 2026-10-04.** This is a specification for one reviewable Oak St. Lot sample, not commissioned art or a shipped replacement. The [renderer contract](RENDER_CONTRACT.md) owns logical transforms and the [performance procedure](FEATURE_BRIEFS.md#performance-and-delivery-contract) owns measurement. Historical pixel-sheet sections below continue to describe the existing renderer only.
+
+### One bounded sample
+
+Use the production `STARTER_LAYOUT` as the placement reference. Author only the five subjects below; keep remaining boundary/exit/lighting context as clearly labeled technical placeholders. The representative guest is presentation only under CT-DEC-15. Do not import the prototype's vendor, queue, sanitation or economic constants. No logos, branded equipment or photographic textures without verified rights.
+
+| Subject | Logical anchor and scale checks | Realistic material/detail target |
+| --- | --- | --- |
+| Stage | `(9,0)`, rot 0, 6 × 3 cells; test all four facings and front edge. Compare deck, rail/steps and guest proportions; record physical dimensions as provisional until calibrated | Supported deck with believable thickness, joints, black skirt and restrained wear; recognizable structure and safe-looking access silhouette. No implied structural certification |
+| PA | `pa-m` at `(8,0)`, 1 × 1 cell, adjacent to stage; one engine rental remains one pickable object even if composed of multiple meshes | Coherent cabinet proportions, grille, rigging/support and connectors visible at close range; dark textured cabinet distinct from glossy hardware. Do not add a second logical PA or coverage bonus |
+| Bar | `(1,8)`, 2 × 1 cells; counter height versus guest, service-facing side and unobstructed pick target | Practical counter, body panels, believable roughness and restrained scuffs; readable service silhouette from Wide. No new vendor economy |
+| Restroom | Representative unit `(20,12)`, 1 × 1 cell; door/guest clearance, base contact and neighbor overlap tests | Molded plastic, door seam, handle, ventilation and legible generic symbol; appropriate roughness, no glossy toy finish. Additional existing units may instance this sample |
+| Guest | One reference figure on a confirmed clear floor cell; center/feet at ground; explicitly record test position and height | Convincing anatomy and proportions, separate clothing/shoes/hair materials, ordinary inclusive presentation. Idle and walk/queue pose review; restrained movement and static reduced-motion pose. No individually saved AI |
+
+Preserve footprint containment and pick geometry even when visual details overhang; record each overhang explicitly. Do not squeeze a reference model to a cell by arbitrary non-uniform scaling. The existing source's 2 m tile comment and archive dimensions need reconciliation, as described in the render contract. No accepted metre conversion or eye height is asserted here. Review stage/PA/guest and bar/restroom/guest side by side with a neutral scale reference and a table of measured dimensions, units, authoring scale, logical footprint and unresolved discrepancies.
+
+### Review views and lighting
+
+Freeze sample revision, asset digests, camera transforms, exposure/tone mapping, output dimensions, effective pixel ratio and lighting parameters for all eight combinations below. Save lossless captures and a short orbit recording as private review evidence until all redistribution rights are known. Use the actual renderer with HUD/selection context; a beauty render from another tool does not prove in-game quality.
+
+| View | Daylight review | Show-lighting review |
+| --- | --- | --- |
+| Wide | Fit the entire Lot inside the HUD clear rectangle; check immediate stage/PA/bar/restroom recognition, silhouette separation, asphalt scale and visual hierarchy | Retain guest routes, exits and equipment readability under the show rig; check shadows and beams do not conceal selection/status |
+| FOH | Calibrated operator eye position, facing the stage, unobstructed by tent roof; record position and height | PA/stage/performer composition, useful contrast and realistic light falloff; no compulsory camera motion |
+| Stage | From the deck toward guests/services; show deck edge and one guest close enough for anatomy/material review | Check skin/clothing response, beam intersections and dark-material separation; no clipped white hotspots hiding detail |
+| Plan | True top view, fixed heading; overlay authoritative footprints and stage facing | Confirm lighting changes do not obscure layout, pick targets or footprint boundaries |
+
+Daylight uses a neutral key/sky fill, consistent shadows and exposure; show lighting uses the sample rig with declared colors, intensities and shadow settings. These are review conditions, not real-world photometric predictions. Include a neutral material swatch/contact sheet: asphalt, painted steel, aluminium, fabric, cabinet grille, molded plastic, skin and clothing. Check consistent texel density, roughness, normal direction, shadow acne, transparent sorting, clipping, LOD changes and ground contact at management and close views. Recheck yaw 37°/135°, zoom extremes, both orbit pitch bounds and reduced motion. Keep legible selection/focus/status cues in light and dark UI themes.
+
+### Separate approval records
+
+**Technical placeholder acceptance:** correct occupied cells/facing/picking; save and settlement parity; controls/lifecycle/fallback; reproducible performance evidence. Boxes and simplified figures may pass this gate. They do not pass realistic art acceptance.
+
+**Dave's visual acceptance:** an explicit dated answer tied to the exact sample revision and asset digests, covering all five subjects, all eight view/light combinations, management/close-scale consistency, operator-eye FOH, a short orbit/animation review and reduced motion. Record requested changes and rejected views; silence, archive screenshots, test passes and this specification are not acceptance. Include author/tool/source/license and modification history for every mesh/material/texture/animation, retained license notices and permission for distribution. Unknown rights block that asset's inclusion. No purchases or commissions are authorized by this document.
+
+**Device acceptance:** separately run the declared supported-device matrix and accepted targets after the realistic sample exists. Neither placeholder speed nor the software-rendered preflight diagnostics can approve final-art performance. Current status: sample not produced; physical calibration, rights, supported roster/statistical thresholds and Dave's visual acceptance pending.
+
 ## 1. Visual pillars
 
 1. **Golden-era tycoon tactility.** In the spirit of RollerCoaster Tycoon 2, SimCity 3000 and Theme Hospital: readable silhouettes and identifiable miniature objects on an isometric grid. Everything on the lot feels physical: road cases with latches, cable ramps with yellow stripes, generators with exhaust vents.
