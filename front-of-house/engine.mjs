@@ -713,6 +713,21 @@ export function ticketingPlanFor(state) {
   return state.show ? state.show.ticketing || null : state.promotion.ticketing || null;
 }
 
+// Public forecast inputs only: changing the hidden show seed cannot change this quote.
+export function ticketingForecastFor(state) {
+  if (state.venue.id !== 'club') return null;
+  const artist = artistFor(state.booking.artistId), venue = evaluateVenue(state.venue);
+  const terms = ticketingPlanFor(state) || { version: 1, plan: 'direct' };
+  const at = draw => {
+    const dem = demand({ draw: draw * (state.booking.terms?.drawMult || 1), price: state.promotion.price,
+      fairPrice: artist.fairPrice, ads: state.promotion.ads, venueRep: state.reputation.venue });
+    const base = presaleSplit(dem, buzz(state.promotion.ads), venue.capacity);
+    const split = ticketingSplit(terms, { demand: dem, baseShare: base.share, capacity: venue.capacity });
+    return ticketingReceipt(terms, { presale: split.presale, price: state.promotion.price });
+  };
+  return { low: at(artist.drawMin), high: at(artist.drawMax) };
+}
+
 export function equipmentFor(state) {
   return state.equipment ? Ownership.loadOwnership(state.equipment) : null;
 }

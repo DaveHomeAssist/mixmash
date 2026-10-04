@@ -2688,6 +2688,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-ticketing-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-ticketing-smoke.mjs",
+      "description": "Controlled banked Club access; every ticketing and following show action uses player controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-ticketing-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/sim/paired.mjs",
       "project": "front-of-house",
       "category": "tooling",
