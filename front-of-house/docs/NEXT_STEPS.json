@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "a04b4a1 · departure delivered; playable food and sanitation underway",
+  "head": "ffcd59f · normal departure and food delivered; sanitation underway",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live services and recorded guest movement are delivered. Normal departure and the finite food vendor are implemented and in delivery verification. Sanitation, research, ownership, venues and release evidence remain.",
+  "statusReason": "Live services, recorded guest movement, normal departure and the finite food vendor are delivered. The sanitation core passes local verification and is in CI. Playable sanitation, research, ownership, venues and release evidence remain.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,9 +19,9 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Deliver normal departure and food, then implement sanitation",
-    "why": "The departure and food slices have local control, save, ledger and renderer evidence; finish CI and hosted verification, then continue sanitation and the remaining phases.",
-    "doneWhen": "Ship FOH-O02b through CI and live verification, then complete FOH-O02c/d and the remaining research, ownership, venue, navigation and release phases.",
+    "title": "Deliver sanitation and its artist preference, then research",
+    "why": "Departure and food have CI, Pages, source parity, production player and offline evidence. The sanitation core is implemented; connect facilities, costs, satisfaction and the optional artist preference next.",
+    "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -686,10 +686,11 @@
           {
             "id": "FOH-O02c",
             "scope": "Finite food demand, budget, stock and vendor terms",
-            "status": "in-progress",
+            "status": "verified-delivered",
             "evidence": [
               "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet.",
-              "Playable vendor integration: all276 tests and build, six Chromium/WebKit/classic/3D full journeys and all28 legacy checks pass. Warmed offline minute15 preserves a three-person food queue,70 remaining meals,$80 vendor gross,$20 house share and cash. Required CI/hosted gates pending."
+              "Playable vendor integration: all276 tests and build, six Chromium/WebKit/classic/3D full journeys and all28 legacy checks pass. Warmed offline minute15 preserves a three-person food queue,70 remaining meals,$80 vendor gross,$20 house share and cash. Required CI/hosted gates pending.",
+              "Actual Lot policy evidence: seed1 with bar staffing favors standard house income102 vs51; seed3 with temporary admission staffing favors premium81 vs76. Attendance is conserved within each pair. Engineering proof, not final human balance acceptance."
             ],
             "slices": [
               {
@@ -707,14 +708,17 @@
               {
                 "id": "FOH-O02c2",
                 "scope": "Placed vendor, locked player settings, saved terms, projection and career ledgers",
-                "status": "implemented-local-verification",
+                "status": "verified-delivered",
                 "evidence": [
-                  "Placed Lot stall, locked settings, finite food replay, both-renderer queue projection and separate vendor/house ledgers implemented. Four engine integration tests and all276 repository tests/build pass; browser and delivery checks remain in progress."
+                  "Placed Lot stall, locked settings, finite food replay, both-renderer queue projection and separate vendor/house ledgers implemented. Four engine integration tests and all276 repository tests/build pass; browser and delivery checks remain in progress.",
+                  "PR75 passed full CI37202280052 and merged ffcd59f. Pages built12:41:40Z; eighteen runtime files match. Six production Chromium/WebKit/classic/3D desktop/phone journeys and warmed offline food queue/stock/cash reload pass."
                 ],
-                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75"
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75",
+                "mergeCommit": "ffcd59fa7f5af1d4567b77a58a58a420abf2990a"
               }
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/75",
+            "mergeCommit": "ffcd59fa7f5af1d4567b77a58a58a420abf2990a"
           },
           {
             "id": "FOH-O02d",
@@ -729,8 +733,10 @@
                 "scope": "Finite sanitation and servicing core",
                 "status": "implemented-local-verification",
                 "evidence": [
-                  "Seven tests cover minute-by-minute conservation, no simultaneous food/sanitation queue, cleaning time/exclusivity, access/utilities, reload, closing and6000 guests."
-                ]
+                  "Seven tests cover minute-by-minute conservation, no simultaneous food/sanitation queue, cleaning time/exclusivity, access/utilities, reload, closing and6000 guests.",
+                  "All283 repository tests and build pass; required CI and hosted core proof remain pending."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"
               },
               {
                 "id": "FOH-O02d2",
@@ -738,7 +744,8 @@
                 "status": "pending",
                 "evidence": []
               }
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"
           }
         ]
       },
