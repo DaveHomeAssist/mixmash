@@ -107,4 +107,33 @@ FOH-P01d applies the existing HUD section 6 rule to the optional 3D backend: cla
 
 `npm run smoke:front-of-house-resolution` checks actual canvas and WebGL buffer dimensions, threshold boundaries, phone/desktop/ultrawide resize, explicit DPR1, invalid overrides, CSS-coordinate tile/object picking, context restoration and disposal. Browser density changes rearm one media listener; an actual render also detects changed density. Chromium CDP updates density/media matches without reliably delivering the media event, so the test separately uses real density emulation with redraw detection and explicit media-event dispatch. This is not a physical monitor transition test. The complete application test uses requested DPR2, asserts the desktop backing size and compares classic/3D settlement after controls, recovery and reload.
 
-Earlier DPR1 renderer measurements and the classic full-HUD comparison retain their original source, quality and timing attribution. These new correctness checks are not a fresh performance baseline, supported-device qualification or human readability acceptance. Geometry, shadow quality, service/engine rules and saves remain unchanged. Production CI and hosted verification are separate delivery gates.
+Earlier DPR1 renderer measurements and the classic full-HUD comparison retain their original source, quality and timing attribution. These new correctness checks are not a fresh performance baseline, supported-device qualification or human readability acceptance. Geometry, shadow quality, service/engine rules and saves remain unchanged. PR78 passed CI 37203818090 and merged at `36bbbf3977cfdb035f86d3268d246ab92726d25d`; Pages built 2026-10-04T13:13:51Z. Eight deployed source files match. Hosted resolution/lifecycle and complete DPR2 client gesture/reload/settlement checks pass. Physical display acceptance remains separate.
+
+## Completed high-density Metal diagnostic
+
+All 18 windows at frozen clean source `5532852dc66c50606c1e76ff74c4ea89dba12574` are valid. [Every repeated result](../performance/2026-10-04-density.json) retains source, fixture, original-report and raw-sample digests. Same available Mac16,12 / Apple M4 / 16 GiB / macOS 27.0.1 (26A434), Chromium 149.0.7827.55 with verified Apple Metal rendering, requested DPR2. Effective density is 1.5 at 1920×1080 and 5120×1440, and 2 at 375×812; actual backings are 2880×1620, 7680×2160 and 750×1624 respectively.
+
+This is the isolated renderer with unchanged empty/150-guest fixtures, camera path, 10s warm-up, 30s sampling, three repeats and 1024 PCFSoft shadows. The private harness copy changes the original procedure only to requested DPR2, these three viewports and local import/source-hash locations; its exact digest is retained. The public harness now exposes the same settings as `npm run perf:front-of-house -- --gpu=metal --dpr=2 --large-viewports`. That reproduction interface was added after measurement; the measured source and private harness remain attributed separately. `--quick` only validates the harness.
+
+| Window | Effective DPR | Cadence (Hz) | RAF p95 / p99 / max (ms) | CPU submission p95 (ms) | Intervals >50 ms |
+| --- | --- | --- | --- | --- | --- |
+| 1920x1080-empty-1 | 1.5 | 60.00 | 18.60 / 18.70 / 18.80 | 0.50 | 0 |
+| 1920x1080-empty-2 | 1.5 | 60.00 | 18.60 / 18.70 / 18.70 | 0.40 | 0 |
+| 1920x1080-empty-3 | 1.5 | 60.00 | 18.60 / 18.70 / 18.70 | 0.50 | 0 |
+| 1920x1080-crowd-1 | 1.5 | 60.00 | 18.60 / 18.70 / 18.70 | 2.20 | 0 |
+| 1920x1080-crowd-2 | 1.5 | 60.00 | 18.60 / 18.70 / 18.70 | 2.60 | 0 |
+| 1920x1080-crowd-3 | 1.5 | 60.00 | 18.60 / 18.70 / 18.70 | 2.20 | 0 |
+| 375x812-empty-1 | 2 | 60.00 | 18.50 / 18.70 / 18.70 | 0.50 | 0 |
+| 375x812-empty-2 | 2 | 60.00 | 18.50 / 18.60 / 18.70 | 0.40 | 0 |
+| 375x812-empty-3 | 2 | 60.00 | 18.50 / 18.60 / 18.70 | 0.50 | 0 |
+| 375x812-crowd-1 | 2 | 60.00 | 18.50 / 18.60 / 19.60 | 2.20 | 0 |
+| 375x812-crowd-2 | 2 | 60.00 | 18.50 / 18.60 / 18.70 | 1.90 | 0 |
+| 375x812-crowd-3 | 2 | 60.00 | 18.50 / 18.60 / 18.70 | 2.00 | 0 |
+| 5120x1440-empty-1 | 1.5 | 60.00 | 18.50 / 18.60 / 19.00 | 0.50 | 0 |
+| 5120x1440-empty-2 | 1.5 | 60.00 | 18.50 / 18.60 / 18.70 | 0.50 | 0 |
+| 5120x1440-empty-3 | 1.5 | 60.00 | 18.50 / 18.60 / 18.70 | 0.50 | 0 |
+| 5120x1440-crowd-1 | 1.5 | 59.30 | 18.50 / 32.20 / 35.20 | 3.00 | 0 |
+| 5120x1440-crowd-2 | 1.5 | 59.37 | 18.50 / 32.00 / 35.10 | 3.00 | 0 |
+| 5120x1440-crowd-3 | 1.5 | 59.20 | 18.50 / 33.20 / 35.10 | 3.00 | 0 |
+
+Cadence ranges 59.20–60.00 Hz; no interval exceeds 50 ms. The populated ultrawide repeats are about 59.2–59.4 Hz and are retained without rounding away their deviation. RAF cadence is scheduling evidence, not completed GPU frames, physical display smoothness or a performance guarantee. CPU submission excludes GPU completion. Other host load remains uncontrolled and recorded; no other local tests/builds/browser checks from this task ran during timing. Full-HUD evidence remains the separate classic comparison; low-power hardware, thermal/battery behavior, physical monitor transitions, human readability and declared CI timing limits remain open.

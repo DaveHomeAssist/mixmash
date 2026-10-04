@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "c33615a base \u00b7 ownership core locally verified",
+  "head": "4d1113e base \u00b7 integrated guest operations and development release",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Sanitation and playable research are in required release checks. The one-family ownership authority is implemented and targeted tests pass; career ledger/deployment and later phases remain.",
+  "statusReason": "Sanitation, playable development and the inventory prerequisite are combined in PR85 with delivered performance evidence preserved. Local309 tests and browser/offline checks pass; current-head CI and production acceptance remain pending.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -17,11 +17,13 @@
     "PR #47: split-view controls and sprite occlusion fixes.",
     "PR #48: research design and CT-DEC-13, still Proposed.",
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay.",
-    "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
+    "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained.",
+    "PR74: classic floor cache and complete full-HUD/shadow evidence merged and hosted-verified; parallel food controls preserved.",
+    "PR78: documented 3D resolution rule and density lifecycle deployed, with hosted backing/picking/recovery and complete settlement parity verified."
   ],
   "nextStep": {
-    "title": "Deliver sanitation and integrate the research pilot",
-    "why": "Sanitation is in final CI with source-preserved performance work. Research now has tested commands, progress and separate development accounting; connect career actions and booking-frozen effects next.",
+    "title": "Deliver guest operations and development, then equipment accounting",
+    "why": "The implemented slices are combined for one current-head release check. Continue the bounded career cash journal and owned-PA deployment after production verification.",
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -606,40 +608,66 @@
             "result": "pass",
             "checkedAt": "2026-10-04T12:54:51.909199+00:00",
             "summary": "Actual backing allocation, threshold and CSS-coordinate picks; browser density emulation plus explicitly dispatched media event, redraw fallback, context restore and listener disposal. Full application DPR2 settlement parity also passes. Local proof only."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/74",
+            "result": "pass",
+            "checkedAt": "2026-10-04T13:13:15.642898+00:00",
+            "summary": "CI37203293180, mergeba43ea5, Pages built13:00:45Z; eight live runtime files match, exact hosted Chromium/WebKit cache parity and six complete vendor journeys pass."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-density.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T13:13:15.642898+00:00",
+            "summary": "All18 requested-DPR2 Metal windows at clean5532852 valid; cadence59.20\u201360.00Hz, no intervals over50ms. Private harness/source/fixture/raw digests verified. Separate from full HUD and physical-device acceptance."
+          },
+          {
+            "stage": "deployment",
+            "locator": "https://github.com/DaveHomeAssist/mixmash/pull/78",
+            "result": "pass",
+            "checkedAt": "2026-10-04T13:16:11.385219+00:00",
+            "summary": "CI37203818090, merge36bbbf3, Pages built13:13:51Z; eight deployed sources match, hosted resolution/lifecycle and full DPR2 client settlement parity pass."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Classic floor cache CI/merge/hosted delivery; full-HUD comparison complete at 2a00f7a",
-          "High-DPI/native/low-power measurement, declared CI limits and adaptive quality",
-          "Physical device and human acceptance"
+          "Declared CI timing limits, adaptive policy and supported low-power hardware evidence",
+          "Physical monitor/device and human acceptance"
         ],
         "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
         "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI.",
         "slices": [
           {
             "id": "FOH-P01c",
-            "status": "tested-awaiting-delivery",
+            "status": "verified-delivered",
             "scope": "Classic floor cache and full HUD comparison",
             "evidence": [
               "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
               "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
               "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending.",
               "All 12 corrected full-HUD windows at 2a00f7a are valid: actual flow-version-1 show, 10s warmup, 30s sampling, three repeats, fixed camera and verified continuous pan, direct and cached floors. Raw/source/fixture hashes retained. Cadence and cache counters do not certify physical displays or a frame-rate gain.",
-              "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
+              "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending.",
+              "PR74 CI37203293180 passed and mergedba43ea5; Pages built13:00:45Z. Eight deployed runtime files match. Hosted Chromium/WebKit exact cache pixels and lifecycle pass, plus all six full food placement/settings/queue/reload/signed-income journeys. PR73 evidence is included and GitHub marks it merged through this delivery."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74",
+            "mergeCommit": "ba43ea563b7318daf59ff631a0817ba63c33dd6f"
           },
           {
             "id": "FOH-P01d",
-            "status": "tested-awaiting-delivery",
+            "status": "verified-delivered",
             "scope": "3D backing resolution and browser density lifecycle",
             "evidence": [
               "At requested DPR2: 1920x1080 allocates 2880x1620; 375x812 allocates 750x1624. Threshold, 5120x1440 ultrawide, explicit DPR1 and invalid overrides pass actual canvas/WebGL buffer checks.",
               "CSS-coordinate tile/object picking, real context loss/restore, one rearmed density listener and disposal pass. Chromium density emulation omits some media events; explicit event dispatch tests the listener and redraw detection covers the omitted-event path. No physical monitor acceptance inferred.",
               "Complete DPR2 application gestures, inspection, viewport fit, fallback/recovery, reload and classic/3D settlement parity pass. Existing backend camera/scene/shadow/reduced-motion and 20 disposal cycles pass.",
-              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending."
-            ]
+              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending.",
+              "Eighteen full requested-DPR2 Metal windows at5532852 pass with actual desktop/phone/ultrawide backings. Source/fixture/raw/report hashes verified. Cadence59.20\u201360.00Hz, no intervals over50ms; not physical-display or GPU-completion proof. The later public reproduction flags pass six short validation windows separately.",
+              "PR78 CI37203818090 passed, merged36bbbf3; Pages built13:13:51Z. Eight live files match. Hosted actual backing, picking, density event/fallback, context recovery and disposal pass, followed by complete DPR2 application gestures, fallback, reload and classic/3D settlement parity."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/78",
+            "mergeCommit": "36bbbf3977cfdb035f86d3268d246ab92726d25d"
           }
         ]
       },
@@ -726,7 +754,8 @@
         "doneWhen": "Finite budgets/stock, serviced stalls, negotiated artist preference and conserved guest flow with no capacity inflation.",
         "status": "in-progress",
         "evidence": [
-          "PR79 failed Linux phone settlement overflow, corrected and all seven all-tab journeys pass locally. Combined289 tests/build and backing resolution check pass. Head81a0cc7 is in required CI37205244572."
+          "PR79 failed Linux phone settlement overflow, corrected and all seven all-tab journeys pass locally. Combined289 tests/build and backing resolution check pass. Head81a0cc7 is in required CI37205244572.",
+          "Full CI37205244572 passed at81a0cc7 on2026-10-04 13:38:27Z. Concurrent performance-evidence merge bc5ed37 required reconciliation; both histories are retained. PR85 now combines the completed runtime slices and inventory prerequisite for current-head CI and production proof."
         ],
         "slices": [
           {
@@ -839,7 +868,8 @@
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
           }
-        ]
+        ],
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
       },
       {
         "id": "FOH-R01",
@@ -855,7 +885,8 @@
           "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
           "Career adapter locally verified: separate cash deltas, actual signed-night experience, frozen booking prefix, three bounded benefits and conservative save recovery. All303 repository tests and build pass. No player research controls yet.",
           "Development controls now expose four contained pages, exact costs/refunds, eligibility, learned versus booked knowledge and separate ledger. Seven local player journeys pass across Chromium/WebKit, classic/3D, phone and short dark desktop; offline start-state reload and pause/resume/cancel preserve cash and progress.",
-          "Controlled actual Lot pairs: seed3 with worker at bar admits85/102 and serves84/102 without/with learned service/admission benefits; net114/562. Quiet seed1 has no gain. Worker-at-gate seed3 keeps115 admissions but bar sales fall23/22, net201/195. Research is situational, does not eliminate staffing tradeoffs, and these Sandbox fixtures do not subtract career research purchases."
+          "Controlled actual Lot pairs: seed3 with worker at bar admits85/102 and serves84/102 without/with learned service/admission benefits; net114/562. Quiet seed1 has no gain. Worker-at-gate seed3 keeps115 admissions but bar sales fall23/22, net201/195. Research is situational, does not eliminate staffing tradeoffs, and these Sandbox fixtures do not subtract career research purchases.",
+          "Additional actual touchscreen-tap checks pass on375\u00d7812 dark Chromium3D and WebKit classic, with44px controls and an exact120 cancellation refund. Browser emulation is not physical-device acceptance."
         ],
         "slices": [
           {
@@ -879,7 +910,8 @@
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/84"
           }
-        ]
+        ],
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
       },
       {
         "id": "FOH-E01",
@@ -910,7 +942,8 @@
             "status": "pending",
             "evidence": []
           }
-        ]
+        ],
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/85"
       },
       {
         "id": "FOH-V02",
