@@ -1,6 +1,6 @@
 # Front of House: Research and Upgrade Dynamics
 
-**Status:** Proposed design, 2026-10-03. Documentation only; no research system is implemented. Recorded in [CT-DEC-13](DECISIONS.md#ct-dec-13-research-and-upgrade-progression). The current [rules](RULES.md), [save format](SAVE_FORMAT.md) and career unlocks remain authoritative for the playable game.
+**Status:** Broad catalogue proposed, 2026-10-03; the three-project pilot was accepted under CT-DEC-19. Its deterministic replay authority and tests are now implemented; career integration, player controls and production acceptance remain pending. Recorded in [CT-DEC-13](DECISIONS.md#ct-dec-13-research-and-upgrade-progression). The current [rules](RULES.md), [save format](SAVE_FORMAT.md) and career unlocks remain authoritative for the playable game.
 
 ## 1. The player fantasy
 

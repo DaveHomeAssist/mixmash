@@ -360,3 +360,10 @@ export const BALANCE_TARGETS = {
 
 // Optional Lot sanitation contract; promoter costs, charged once before doors.
 export const SANITATION_COSTS = Object.freeze({ trailer: 240, cleaner: 80, utilities: 60, preferenceRelationship: 2 });
+
+// Optional development pilot; knowledge never grants free equipment or show spending.
+export const RESEARCH_PROJECTS = Object.freeze({
+  patch: Object.freeze({ label: 'Patch standards', department: 'production', cost: 120, experience: 0, nights: 1 }),
+  service: Object.freeze({ label: 'Service training', department: 'guestServices', cost: 180, experience: 1, nights: 2 }),
+  admission: Object.freeze({ label: 'Admission lanes', department: 'admissions', cost: 180, experience: 1, nights: 2 }),
+});

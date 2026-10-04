@@ -2268,6 +2268,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-research.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-research.mjs",
+      "description": "Development costs, eligible nights, one slot, refunds and untrusted checkpoint replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-research.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-sanitation-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2605,6 +2615,16 @@
       "title": "lot-renderer.mjs",
       "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/research.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "research.mjs",
+      "description": "Three-project development authority: replayable progress and separate cash deltas.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/research.mjs",
       "open": null
     },
     {

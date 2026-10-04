@@ -8,7 +8,7 @@
   "head": "87ea09c · playable sanitation integrated; CI and live verification pending",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Departure and food are verified in production. Sanitation contracts, controls, renderer guests and offline replay pass local verification; required CI and production delivery remain pending. Research, ownership, venues, navigation and release evidence remain.",
+  "statusReason": "Playable sanitation passes local controls, renderer, offline and floor-cache integration checks; required CI/live delivery is pending in PR79. The three-project research core passes targeted tests; career/UI integration and later phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -20,8 +20,8 @@
     "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
   ],
   "nextStep": {
-    "title": "Deliver sanitation and its artist preference, then research",
-    "why": "The full sanitation slice is implemented with explicit costs, an optional artist preference and finite visits. Finish CI and hosted acceptance, then implement the accepted three-project research pilot.",
+    "title": "Deliver sanitation and integrate the research pilot",
+    "why": "Sanitation is in final CI with source-preserved performance work. Research now has tested commands, progress and separate development accounting; connect career actions and booking-frozen effects next.",
     "doneWhen": "Complete FOH-O02d and the remaining research, ownership, venue, navigation and release phases.",
     "effort": "L",
     "owner": "either",
@@ -599,6 +599,13 @@
             "result": "recorded",
             "checkedAt": "2026-10-04T12:42:29.283Z",
             "summary": "All 12 corrected full-HUD comparison windows valid on 2a00f7a. Requested DPR 2, effective 1.5. Fixed camera reuses the floor; the verified pan path rebuilds it. The earlier unsupported-zoom attempt is retained separately as an invalid comparison."
+          },
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-resolution-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T12:54:51.909199+00:00",
+            "summary": "Actual backing allocation, threshold and CSS-coordinate picks; browser density emulation plus explicitly dispatched media event, redraw fallback, context restore and listener disposal. Full application DPR2 settlement parity also passes. Local proof only."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
@@ -622,6 +629,17 @@
               "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
+          },
+          {
+            "id": "FOH-P01d",
+            "status": "tested-awaiting-delivery",
+            "scope": "3D backing resolution and browser density lifecycle",
+            "evidence": [
+              "At requested DPR2: 1920x1080 allocates 2880x1620; 375x812 allocates 750x1624. Threshold, 5120x1440 ultrawide, explicit DPR1 and invalid overrides pass actual canvas/WebGL buffer checks.",
+              "CSS-coordinate tile/object picking, real context loss/restore, one rearmed density listener and disposal pass. Chromium density emulation omits some media events; explicit event dispatch tests the listener and redraw detection covers the omitted-event path. No physical monitor acceptance inferred.",
+              "Complete DPR2 application gestures, inspection, viewport fit, fallback/recovery, reload and classic/3D settlement parity pass. Existing backend camera/scene/shadow/reduced-motion and 20 disposal cycles pass.",
+              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending."
+            ]
           }
         ]
       },
@@ -811,7 +829,8 @@
                 "evidence": [
                   "Facilities pages, explicit preference, live/settlement receipts and shared sanitation guest projection implemented. All289 repository tests and build pass.",
                   "Seven local complete player journeys cover Chromium classic/3D desktop/phone, WebKit classic desktop/phone and short dark desktop. Supplied action client places/enables the package and reaches minute5. Warmed offline cleaning at minute27 survives reload and completes at30 with cash/projection preserved.",
-                  "Final local verification:289 npm tests/build,28 legacy checks, six food journeys and seven sanitation journeys pass, including T/keyboard page switching and short dark desktop. Final supplied action replay reaches enabled minute5. Required CI and production delivery remain pending."
+                  "Final local verification:289 npm tests/build,28 legacy checks, six food journeys and seven sanitation journeys pass, including T/keyboard page switching and short dark desktop. Final supplied action replay reaches enabled minute5. Required CI and production delivery remain pending.",
+                  "Reconciled head f5408fc passes289 npm tests/build, both Chromium/WebKit floor-cache pixel/invalidation checks and all seven sanitation player journeys. Actual Lot policy pairs at seeds1/3/6 show servicing improves completed visits while costing cash; the larger package can turn a profitable show into a loss. CI37204614730 remains pending."
                 ],
                 "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
               }
@@ -829,8 +848,27 @@
           "FOH-O01"
         ],
         "doneWhen": "Patch standards, Service training and Admission lanes have deterministic cost/progress/save rules and useful paired outcomes.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet."
+        ],
+        "slices": [
+          {
+            "id": "FOH-R01a",
+            "scope": "Deterministic research commands, progress and development ledger",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
+              "All296 npm tests, build and generated documentation pass. Required CI and hosted core proof remain pending; career/UI effects are not implemented by this prerequisite."
+            ]
+          },
+          {
+            "id": "FOH-R01b",
+            "scope": "Career spending, booking snapshots, measurable effects and player controls",
+            "status": "pending",
+            "evidence": []
+          }
+        ]
       },
       {
         "id": "FOH-E01",
