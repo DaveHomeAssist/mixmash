@@ -2,7 +2,8 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-6';
+export const MODEL_REVISION = 'lot-sample-7';
+export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
   guestHeightMetres: 1.8, operatorEyeMetres: 1.66, stageDeckMetres: 1.1,
@@ -147,7 +148,7 @@ export function createLotModels() {
   }
   function room(venue) {
     const group = new T.Group();
-    if (!['club', 'amphitheater'].includes(venue.id)) return group;
+    if (!['club', 'amphitheater', 'festival'].includes(venue.id)) return group;
     const { w, h } = venue.grid;
     const fixed = (id, size, position, color, metal = 0) => {
       const mesh = part(group, size, position, color, metal, 'box', id);
@@ -162,7 +163,7 @@ export function createLotModels() {
         fixed(`club-pillar-${x}-${y}`, [1, 3, 1], [x + 0.5, 1.5, y + 0.5], 0x676b70);
         fixed(`club-pillar-base-${x}-${y}`, [1, 0.15, 1], [x + 0.5, 0.075, y + 0.5], 0x363b42);
       }
-    } else {
+    } else if (venue.id === 'amphitheater') {
       // A cutaway acoustic-shell profile keeps the ground and plan view visible.
       const heights = [2, 2.5, 2.9, 3.2, 3.4, 3.2, 2.9, 2.5, 2];
       heights.forEach((height, i) => fixed(`shell-panel-${i}`, [0.98, height, 0.18], [w / 2 + i - 4, height / 2, -0.1], i % 2 ? 0xb9b29f : 0x9d988b));
@@ -172,6 +173,25 @@ export function createLotModels() {
         const guide = fixed(`shell-seat-guide-${side}-${row}`, [7.5, 0.008, 0.22], [x, 0.004, 5 + row * 0.8], 0x858678);
         guide.userData.pickThrough = true; guide.castShadow = false;
       }
+    }
+    if (venue.id === 'festival') {
+      const a = FESTIVAL_SCENE.annex, stage = FESTIVAL_SCENE.stage, cx = stage.x + stage.w / 2;
+      const apron = fixed('festival-side-apron', [a.w, 0.016, a.h], [a.x + a.w / 2, -0.012, a.y + a.h / 2], 0x665e4b);
+      apron.userData.pickThrough = true; apron.castShadow = false;
+      fixed('festival-side-deck', [stage.w, 0.13, stage.h], [cx, 0.485, stage.y + stage.h / 2], COLORS.steel);
+      fixed('festival-side-skirt', [stage.w, 0.42, 0.05], [cx, 0.21, stage.y + stage.h], COLORS.fabric);
+      for (const x of [stage.x + 0.1, stage.x + stage.w - 0.1]) {
+        fixed(`festival-side-support-${x}`, [0.12, 2.8, 0.12], [x, 1.4, stage.y + 0.1], COLORS.aluminium, 0.7);
+        for (let box = 0; box < 3; box++) fixed(`festival-side-pa-${x}-${box}`, [0.55, 0.2, 0.4], [x, 1.8 + box * 0.22, stage.y + 0.5], 0x171b20);
+      }
+      fixed('festival-side-header', [stage.w, 0.15, 0.12], [cx, 2.85, stage.y + 0.1], COLORS.aluminium, 0.7);
+      fixed('festival-side-backdrop', [stage.w - 0.3, 2.15, 0.04], [cx, 1.65, stage.y + 0.04], 0x365c63);
+      // Permanent work and pathway marks do not enlarge the editable grid or permit.
+      for (let y = 4; y < a.h; y += 2) {
+        const path = fixed(`festival-side-path-${y}`, [0.7, 0.008, 0.12], [a.x + 0.7, 0.004, y], 0xb9ad86);
+        path.userData.pickThrough = true; path.castShadow = false;
+      }
+      for (let x = 1; x < w; x += 4) fixed(`festival-back-banner-${x}`, [2.2, 0.7, 0.08], [x + 1.1, 1.7, -0.1], x % 8 === 1 ? 0x406f7a : 0x8a654c);
     }
     if (venue.housePa === 'M') {
       fixed(`${venue.id}-house-pa-suspension`, [w - 2, 0.12, 0.12], [w / 2, 2.95, 1.5], COLORS.steel, 0.6);

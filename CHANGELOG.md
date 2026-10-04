@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: Split Acre technical 3D preview adds a fixed side-stage annex, keyboard-accessible Side stage camera and a shared 180-person representative limit. Stage audience uses versioned accounting when present; legacy unknown allocation stays explicit. The editable yard remains 40 × 24.
+
 - Front of House: Loam Shell technical3D preview adds a source-owned cutaway and pick-through seating/lawn guides, preserving existing prices, capacity, held nights and saves.
 
 - **Front of House Club preview:** source-owned Fathom Hall cutaway, four pillar cells and the existing house PA; room-sized camera/grid/crowd, opaque-scene picking and safe renderer switching. New placement refuses fixed pillars while legacy saves retain their layout and accounting. Noninteractive board status messages no longer intercept touch. Technical preview; final art review remains open.

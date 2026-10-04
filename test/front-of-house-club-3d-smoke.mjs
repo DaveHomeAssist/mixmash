@@ -52,7 +52,7 @@ try {
     // Switch back and forth after the module is already cached: no stale loading promise or duplicate canvas.
     for (const room of ['lot', 'club', 'festival', 'club', 'lot', 'club']) {
       await load(p, fixture(room, false));
-      await p.waitForFunction(room => room === 'festival' ? !__frontOfHouse.rendererStatus().active : __frontOfHouse.rendererStatus().active && __frontOfHouse.board().venue === room, room);
+      await p.waitForFunction(room => __frontOfHouse.rendererStatus().active && __frontOfHouse.board().venue === room, room);
       assert.ok(await p.locator('.lot-webgl').count() <= 1); assert.equal((await state(p)).venue.id, room);
     }
     await load(p, original); await p.waitForFunction(() => __frontOfHouse.board().venue === 'club');

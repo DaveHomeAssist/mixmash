@@ -68,6 +68,16 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Acceptance and risks:** Verify all four camera presets, yaw37/135 and extreme room tiles at desktop/phone/ultrawide dimensions; existing prop footprints and editing remain authoritative. Compare the same seeded seated/lawn show, rain response and held-run settlement through classic and3D, including reload/context recovery. Test decorative guides cannot steal clicks. Keep Lot and Club regressions and manifests current. Technical preview only: final architecture/art, physical calibration, device support and human acceptance remain separate. Split Acre and minimap remain later slices.
 
+### FOH-V02r3: Split Acre technical scene
+
+**Problem and outcome:** The Festival books a second act but its preview still uses the generic classic yard. Give both stages a legible source-owned technical scene while preserving the existing 40×24 editable grid and simulation authority.
+
+**Scene and flow:** Keep the main editable yard at its existing coordinates. Add a fixed, nonbuildable side-stage annex to its east, within a 52×24 presentation extent. The annex is an authored management-view convention, not additional permit capacity or physical calibration. Fit/Plan include both areas; an accessible Side stage camera control focuses the fixed deck. Fixed scenery occludes picks, while ground outside the 40×24 build grid never yields an editable tile. The roof remains absent for legibility.
+
+**Audience and data:** Use the existing show-preview stage-accounting result when available to place representatives in the main and side areas, conserving a total limit of180 models. Never recompute admissions, demand, money or artist terms in the renderer. Unmarked older shows lack a conserved stage allocation: keep their known main crowd and label side attendance unavailable in renderer diagnostics instead of inventing a count. Booking identity may still light the existing stage representation without creating lighting capacity. No new save fields, build restrictions, dependencies, purchased assets or altered pricing.
+
+**Acceptance:** Confirm 40×24 ground picking and 52×24 camera fit at yaw37/135, all camera views, mouse/touch/keyboard access to the side stage, cleanup and fallback across all four venues. Verify known audience totals and the180-model cap, no placement in the annex, exact classic/3D settlement and reload for versioned stage accounts and legacy saves, context recovery, responsive containment and measured native performance. Use actual stage-accounting fixtures after their separately owned integration is delivered. Final art/calibration/human acceptance and the large-site minimap disposition remain distinct gates.
+
 ## FB-03 Crowd service behavior
 
 **Decision:** D3 A accepted in [CT-DEC-15](DECISIONS.md#ct-dec-15-crowd-model). Service rates, timing and balance remain to be specified.

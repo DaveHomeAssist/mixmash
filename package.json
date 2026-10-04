@@ -41,7 +41,8 @@
     "smoke:front-of-house-batching": "node test/front-of-house-batching-smoke.mjs",
     "perf:front-of-house-native-hud": "node test/front-of-house-native-hud-performance.mjs",
     "smoke:front-of-house-club": "node test/front-of-house-club-3d-smoke.mjs",
-    "smoke:front-of-house-shell": "node test/front-of-house-shell-3d-smoke.mjs"
+    "smoke:front-of-house-shell": "node test/front-of-house-shell-3d-smoke.mjs",
+    "smoke:front-of-house-festival": "node test/front-of-house-festival-3d-smoke.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

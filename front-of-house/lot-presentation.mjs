@@ -8,6 +8,18 @@ const PALETTES = {
   skin: [0xb98c71, 0x704b3b, 0xe0b99c, 0x98664d], clothing: [0x627e8b, 0x80545b, 0x8a8862, 0x384c68, 0xa8b6ba],
   trousers: [0x303c48, 0x4b4945], shoes: [0x252827], hair: [0x28221d, 0x6e5742, 0xa3937d, 0x302e2c],
 };
+// Split only decorative samples; admission and stage allocation remain engine-owned.
+export function stageRepresentatives(crowd, allocation) {
+  const displayed = Number.isSafeInteger(crowd) && crowd > 0 ? crowd : 0;
+  const known = allocation && Number.isSafeInteger(allocation.main) && allocation.main >= 0 && Number.isSafeInteger(allocation.second) && allocation.second >= 0 && Number.isSafeInteger(allocation.main + allocation.second);
+  const total = known ? allocation.main + allocation.second : displayed;
+  const visible = known ? Math.min(displayed, total) : displayed;
+  const side = known && total ? Math.round(visible * allocation.second / total) : 0, main = visible - side;
+  const limit = Math.min(MAX_GUESTS, visible), sideSamples = visible ? Math.min(side, Math.round(limit * side / visible)) : 0;
+  return { known: !!known, main: known ? allocation.main : displayed, second: known ? allocation.second : null,
+    displayed: { main, second: side }, representatives: { main: limit - sideSamples, second: sideSamples } };
+}
+
 export function createLotPresentation(models, { width = 24, depth = 16, pillars = [], indoor = false } = {}) {
   const group = new T.Group(), ownedGeometry = new Set(), ownedMaterial = new Set();
   const gridPoints = [];
@@ -72,7 +84,7 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
       if (!occupied(x, y)) positions.push([x, y]);
     }
   }
-  function update(input, objects, heights, motion) {
+  function update(input, objects, heights, motion, limit = MAX_GUESTS) {
     if (disposed) return;
     const key = JSON.stringify(objects);
     if (key !== layoutKey) { rebuildFence(objects); rebuildPositions(objects); layoutKey = key; }
@@ -80,9 +92,9 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
     const service = input.serviceCrowd;
     serviceWorker = !!service?.worker;
     const actors = service ? [...service.actors, ...(service.worker ? [service.worker] : [])] : null;
-    const nextActorKey = `${key}:${requested}:${JSON.stringify([input.services?.minute, input.services?.worker, service?.totals, service?.actors.length])}`;
+    const nextActorKey = `${key}:${requested}:${limit}:${JSON.stringify([input.services?.minute, input.services?.worker, service?.totals, service?.actors.length])}`;
     if (nextActorKey !== actorKey) {
-      crowdCount = actors ? actors.length : Math.min(MAX_GUESTS, requested, positions.length);
+      crowdCount = actors ? actors.length : Math.min(MAX_GUESTS, Math.max(0, Math.floor(limit)), requested, positions.length);
       for (const batch of batches) {
         batch.mesh.count = crowdCount; batch.mesh.visible = crowdCount > 0;
         const palette = PALETTES[batch.surface] || PALETTES.clothing;

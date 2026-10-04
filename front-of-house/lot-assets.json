@@ -1,5 +1,5 @@
 {
-  "revision": "lot-sample-6",
+  "revision": "lot-sample-7",
   "provenance": {
     "author": "Codex for Front of House",
     "source": "Procedural geometry and materials in lot-models.mjs",
@@ -29,10 +29,10 @@
     "restroomHeightMetres": 2.3
   },
   "sources": {
-    "lot-models.mjs": "c3fd3e0c951fd5c736ac7230a54607b5364fcfc18349e0622037c1ec61fb1b63",
+    "lot-models.mjs": "8d9d8929658b95e856731fc61f86ff52ee27155d062639a11c655b256ed29758",
     "lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
-    "lot-presentation.mjs": "2e8a7129b98bcbc641c68facd6697a5c956b37d78593f7c3d3a0f8823fa3c6ad",
-    "lot-renderer.mjs": "e6a6ac42e03b599239bba4271ed0e365f3383f2835ddebe8cc9c970b59ee56e6",
+    "lot-presentation.mjs": "5fdf3765438ab91cb41d6a1f6d2367f4e1a9e5a224ab0c926fcac296159a616e",
+    "lot-renderer.mjs": "6605725bb31662f5e8eeab497834ba5ce0eb579e4eba6b87f3fcf9a72c4746d5",
     "service-crowd.mjs": "cadce68373a76b0284d42717ae6dec557673caa191aba9e668356a3b584427eb",
     "service-guests.mjs": "b66e9f09ce01b53c3c70b013bf913ec3c41294013059890ab85bc78793a2249f",
     "guest-flow.mjs": "5fb4a6775ccab8e5461d282d3d26917c8ad4fc69e83059bf9af7cf720650a1c8"
@@ -60,9 +60,9 @@
       },
       "meshCount": 24,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "6edb32034052999d1cacd3d0dd96954cc41531b707935fa2341e5ab3894d49cb"
+      "contentDigest": "cf1880db573a44523f58ea5b7d0365de7f3e4504b39f7c10fec709eae7302a87"
     },
     {
       "id": "pa-s",
@@ -86,9 +86,9 @@
       },
       "meshCount": 11,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "db0180011ee28c3c8a679814dc6af2d10590d77a817a2593fac4cb730a805702"
+      "contentDigest": "b40ab643906abada8c6d9b854fd90cd2dbe49adb84ed533bc9f21b885f3d5fca"
     },
     {
       "id": "pa-m",
@@ -112,9 +112,9 @@
       },
       "meshCount": 35,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "094fa1ec8db83908409577c4d93d9e83be014dcf4641b3692512b59b56af3a4c"
+      "contentDigest": "c7c8c0c7434d88bfa9bbde728a7f81b5d997d5c05a62470ea3eac665989b0c46"
     },
     {
       "id": "lights",
@@ -138,9 +138,9 @@
       },
       "meshCount": 6,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "81b84d972bb8026e641e3c233997686d01d2788357c4578f7522d2948fffc8dc"
+      "contentDigest": "76156137f2449e94bf5f0f54c73d3b88b4ca381b6ecba4ce5f8ae0e7031c0960"
     },
     {
       "id": "bar",
@@ -164,9 +164,9 @@
       },
       "meshCount": 8,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "90bed7d79ece421863bb5b0b049a529845680a5ba781aee79198a41583c3652a"
+      "contentDigest": "374400de481d13fa549b04686ff6763f9ce90a60e994dd292712bde34fe374c3"
     },
     {
       "id": "food",
@@ -190,9 +190,9 @@
       },
       "meshCount": 9,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "743de0d6aebf8a4df8046355c415650e49fff9c5e6fa6759a1e82991ce51eba4"
+      "contentDigest": "224c7f0d04a316c2c43c4f7b406adfd432e227c16a4665386e4c80c12ff9ffc6"
     },
     {
       "id": "trailer",
@@ -216,9 +216,9 @@
       },
       "meshCount": 18,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "f2275251128409ddf62b7b1e4339de6374e0b8cc9b4cf7f91817f52fb78a880e"
+      "contentDigest": "d4637d9f2b8ba58165bf60478283d1a21dcbd7d25aaa556d6e1e9e085cd061e0"
     },
     {
       "id": "restroom",
@@ -242,9 +242,9 @@
       },
       "meshCount": 14,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "053af40bbecc2c2845baeff20c6ec0cfc4f4d37c947d6aaec4e903c2bfe11310"
+      "contentDigest": "b2c38ad0f6e0df733510c71f5fdf632c7c84a81d4d2b15753e3898b32b2baa76"
     },
     {
       "id": "gate",
@@ -268,9 +268,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "f071499ff0d106bff7f6505f26834c9bbcd77ea89ef003470f057893bc30a5b6"
+      "contentDigest": "3a3d98d6fee561d420e2b7f784bfbd483edbd8a3f661572ee4c44aaed631dc2b"
     },
     {
       "id": "exit",
@@ -294,9 +294,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "e3ae7c9be7db9265feeb4c29a3c90504124d4e15ad6525e28b96e911c9476096"
+      "contentDigest": "4b12a10d16bbc6c6b5a684c31d8d51f42b7fbfc08fb64fc781c20fee65b870fb"
     },
     {
       "id": "guest",
@@ -317,9 +317,9 @@
       },
       "meshCount": 16,
       "pickProxy": "not selectable; representative decoration",
-      "materialRevision": "lot-sample-6",
+      "materialRevision": "lot-sample-7",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "6aecd2baff2ae1b754b7315147f6393313d000b5dff8373edaf4611205d81612"
+      "contentDigest": "718cae0563160b5b7b212a173ab5485f68e124af26503268239b225c440a0cb1"
     }
   ],
   "rooms": [
@@ -349,6 +349,7 @@
         ]
       ],
       "seats": 0,
+      "presentationExtent": null,
       "collision": "Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints",
       "pickProxy": "Opaque fixed meshes occlude placed objects; permanent scenery is not removable",
       "parts": [
@@ -801,7 +802,7 @@
           }
         }
       ],
-      "contentDigest": "1eb81544ef6189732600127620e8f1fda57d1b84f1ad6d78ff07b9a3765a23d8"
+      "contentDigest": "d07e8d4307411d2b03d55920f22f1e0ac3d6f6bf93b88e0b5bee214e67b2b981"
     },
     {
       "id": "amphitheater",
@@ -812,6 +813,7 @@
       "housePa": "M",
       "pillars": [],
       "seats": 400,
+      "presentationExtent": null,
       "collision": "Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints",
       "pickProxy": "Opaque fixed meshes occlude placed objects; permanent scenery is not removable",
       "parts": [
@@ -1456,7 +1458,774 @@
           }
         }
       ],
-      "contentDigest": "140a02c01fb23dc7178b26c57b7dee75b605cead6483c8a1e47e9e633f1e9ecd"
+      "contentDigest": "db71d42088c779494b5aa486dd1bebf38079a367ac5d6cd1d7a966803313d02b"
+    },
+    {
+      "id": "festival",
+      "grid": {
+        "w": 40,
+        "h": 24
+      },
+      "housePa": "M",
+      "pillars": [],
+      "seats": 0,
+      "presentationExtent": {
+        "width": 52,
+        "depth": 24,
+        "annex": {
+          "x": 40,
+          "y": 0,
+          "w": 12,
+          "h": 16
+        },
+        "stage": {
+          "x": 43,
+          "y": 1,
+          "w": 6,
+          "h": 3
+        }
+      },
+      "collision": "Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints",
+      "pickProxy": "Opaque fixed meshes occlude placed objects; permanent scenery is not removable",
+      "parts": [
+        {
+          "id": "festival-side-apron",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40,
+              -0.02,
+              0
+            ],
+            "max": [
+              52,
+              -0.004,
+              16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-deck",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43,
+              0.42,
+              1
+            ],
+            "max": [
+              49,
+              0.55,
+              4
+            ]
+          }
+        },
+        {
+          "id": "festival-side-skirt",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43,
+              0,
+              3.975
+            ],
+            "max": [
+              49,
+              0.42,
+              4.025
+            ]
+          }
+        },
+        {
+          "id": "festival-side-support-43.1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43.04,
+              0,
+              1.04
+            ],
+            "max": [
+              43.16,
+              2.8,
+              1.16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-43.1-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              42.825,
+              1.7,
+              1.3
+            ],
+            "max": [
+              43.375,
+              1.9,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-43.1-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              42.825,
+              1.92,
+              1.3
+            ],
+            "max": [
+              43.375,
+              2.12,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-43.1-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              42.825,
+              2.14,
+              1.3
+            ],
+            "max": [
+              43.375,
+              2.34,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-support-48.9",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.84,
+              0,
+              1.04
+            ],
+            "max": [
+              48.96,
+              2.8,
+              1.16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-48.9-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.625,
+              1.7,
+              1.3
+            ],
+            "max": [
+              49.175,
+              1.9,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-48.9-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.625,
+              1.92,
+              1.3
+            ],
+            "max": [
+              49.175,
+              2.12,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-pa-48.9-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              48.625,
+              2.14,
+              1.3
+            ],
+            "max": [
+              49.175,
+              2.34,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-side-header",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43,
+              2.775,
+              1.04
+            ],
+            "max": [
+              49,
+              2.925,
+              1.16
+            ]
+          }
+        },
+        {
+          "id": "festival-side-backdrop",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              43.15,
+              0.575,
+              1.02
+            ],
+            "max": [
+              48.85,
+              2.725,
+              1.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-4",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              3.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              4.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-6",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              5.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              6.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-8",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              7.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              8.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-10",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              9.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              10.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-12",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              11.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              12.06
+            ]
+          }
+        },
+        {
+          "id": "festival-side-path-14",
+          "pickThrough": true,
+          "visualBounds": {
+            "min": [
+              40.35,
+              0,
+              13.94
+            ],
+            "max": [
+              41.05,
+              0.008,
+              14.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              1,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              3.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-5",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              5,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              7.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-9",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              9,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              11.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-13",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              13,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              15.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-17",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              17,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              19.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-21",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              21,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              23.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-25",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              25,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              27.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-29",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              29,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              31.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-33",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              33,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              35.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-back-banner-37",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              37,
+              1.35,
+              -0.14
+            ],
+            "max": [
+              39.2,
+              2.05,
+              -0.06
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-suspension",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              1,
+              2.89,
+              1.44
+            ],
+            "max": [
+              39,
+              3.01,
+              1.56
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              15.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-left-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              15.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              15.765,
+              2.87,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.11,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.29,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-0",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.13,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.27,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.31,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.49,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-1",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.33,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.47,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.51,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.69,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-2",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.53,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.67,
+              1.7155
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.2,
+              2.71,
+              1.3
+            ],
+            "max": [
+              24.8,
+              2.89,
+              1.7
+            ]
+          }
+        },
+        {
+          "id": "festival-house-pa-grille-right-3",
+          "pickThrough": false,
+          "visualBounds": {
+            "min": [
+              24.235,
+              2.73,
+              1.7005
+            ],
+            "max": [
+              24.765,
+              2.87,
+              1.7155
+            ]
+          }
+        }
+      ],
+      "contentDigest": "452c4878e60a28b2a0c3a9e6a85414889950dd9cb15f76c61097c7d76abafc57"
     }
   ],
   "acceptance": {

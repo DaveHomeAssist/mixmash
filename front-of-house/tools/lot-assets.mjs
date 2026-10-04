@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { Box3 } from '../vendor/three/three.module.min.js';
-import { createLotModels, MODEL_REVISION, MODEL_METADATA, AUTHORING_REFERENCE } from '../lot-models.mjs';
+import { createLotModels, MODEL_REVISION, MODEL_METADATA, AUTHORING_REFERENCE, FESTIVAL_SCENE } from '../lot-models.mjs';
 import { OBJECT_TYPES, VENUES } from '../data.mjs';
 const root = new URL('../', import.meta.url), hash = b => createHash('sha256').update(b).digest('hex');
 const sources = {};
@@ -21,10 +21,11 @@ for (const type of [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].
     materialRevision: MODEL_REVISION, lod: 'fixed source detail; guests instanced',
     contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], three: '0.184.0', type, footprint: spec ? [spec.w, spec.h] : null })) });
 }
-const rooms = ['club', 'amphitheater'].map(id => {
+const rooms = ['club', 'amphitheater', 'festival'].map(id => {
   const venue = VENUES[id], room = models.room(venue);
   return { id, grid: venue.grid, housePa: venue.housePa, pillars: venue.pillars,
   seats: venue.seats,
+  presentationExtent: id === 'festival' ? FESTIVAL_SCENE : null,
   collision: 'Existing engine pillars only; fixed scenery and illustrative seating guides add no simulation constraints',
   pickProxy: 'Opaque fixed meshes occlude placed objects; permanent scenery is not removable',
   parts: room.children.map(mesh => {

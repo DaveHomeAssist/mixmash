@@ -666,6 +666,10 @@
         {
           "name": "npm run smoke:front-of-house-shell",
           "description": "node test/front-of-house-shell-3d-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-festival",
+          "description": "node test/front-of-house-festival-3d-smoke.mjs"
         }
       ]
     }
@@ -2582,6 +2586,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-festival-3d-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "Split Acre 3D journeys",
+      "description": "Both-stage camera and placement boundaries, shared representative crowd, context recovery and complete legacy/versioned classic/3D settlement parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-festival-3d-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-floor-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2937,7 +2951,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "lot-renderer.mjs",
-      "description": "Lot, Club and amphitheater preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
+      "description": "Lot, Club, amphitheater and Festival preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
       "open": null
     },

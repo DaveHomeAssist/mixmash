@@ -7,7 +7,7 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
   let backend = null, layer = null, lastScene = null, clear = null, loading = null, destroyed = false;
   let serviceLayout = null, serviceLayoutKey = '';
   let reason = '', active = false, createRenderer = null, loadAttempt = 0, backendVenue = null;
-  const supported = floor => ['lot', 'club', 'amphitheater'].includes(floor);
+  const supported = floor => ['lot', 'club', 'amphitheater', 'festival'].includes(floor);
   function sync() {
     active = !!(enabled && backend?.status().state === 'ready' && supported(lastScene?.floor) && backendVenue === lastScene.floor);
     canvas.classList.toggle('board-3d-input', active);

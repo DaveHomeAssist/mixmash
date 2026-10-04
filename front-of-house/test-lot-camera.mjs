@@ -2,8 +2,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLotCamera } from './lot-camera.mjs';
-import { createLotModels } from './lot-models.mjs';
-import { createLotPresentation } from './lot-presentation.mjs';
+import { createLotModels, FESTIVAL_SCENE } from './lot-models.mjs';
+import { createLotPresentation, stageRepresentatives } from './lot-presentation.mjs';
 import { VENUES } from './data.mjs';
 import { footprint } from './engine.mjs';
 import { Vector3, Box3, Matrix4 } from './vendor/three/three.module.min.js';
@@ -161,4 +161,44 @@ test('Loam Shell keeps illustrative seating guides pick-through and its shell ou
   }
   assert.equal(room.children.filter(m => /^amphitheater-house-pa-(left|right)-/.test(m.name)).length, 8);
   models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
+});
+
+
+test('Festival presentation fits both areas without changing its authored main grid', () => {
+  const camera = createLotCamera({ width: FESTIVAL_SCENE.width, depth: FESTIVAL_SCENE.depth });
+  for (const [w, h] of [[1440, 900], [375, 812], [2560, 720]]) {
+    camera.resize({ x: 0, y: 0, w, h }, { x: w * 0.1, y: h * 0.1, w: w * 0.8, h: h * 0.5 });
+    for (const yaw of [37, 135]) {
+      camera.setCamera({ yaw, pitch: 48, zoom: 1, x: 26, y: 12 });
+      for (const x of [0, 52]) for (const y of [0, 24]) for (const z of [0, 3.5]) assert.equal(camera.project(x, y, z).clear, true);
+    }
+  }
+  assert.deepEqual(VENUES.festival.grid, { w: 40, h: 24 });
+  const models = createLotModels(), room = models.room(VENUES.festival);
+  const deck = new Box3().setFromObject(room.children.find(m => m.name === 'festival-side-deck'));
+  assert.equal(deck.min.x, FESTIVAL_SCENE.stage.x); assert.equal(deck.max.x, FESTIVAL_SCENE.stage.x + FESTIVAL_SCENE.stage.w);
+  assert.ok(deck.min.x >= VENUES.festival.grid.w && deck.max.x <= FESTIVAL_SCENE.width);
+  models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
+});
+
+test('Festival decorative allocation conserves displayed attendance and the global model limit', () => {
+  for (const [main, second] of [[5500, 500], [0, 500], [1, 1], [1, 500], [500, 1], [0, 0]]) {
+    for (const fraction of [0, 0.1, 0.5, 1]) {
+      const crowd = Math.round((main + second) * fraction), input = { main, second }, r = stageRepresentatives(crowd, input);
+      assert.deepEqual(input, { main, second }); assert.equal(r.known, true);
+      assert.equal(r.displayed.main + r.displayed.second, crowd);
+      assert.equal(r.representatives.main + r.representatives.second, Math.min(180, crowd));
+      assert.ok(r.representatives.main <= r.displayed.main && r.representatives.second <= r.displayed.second);
+    }
+  }
+  for (const invalid of [null, {}, { main: -1, second: 2 }, { main: 2.5, second: 2 }]) {
+    const r = stageRepresentatives(900, invalid); assert.equal(r.known, false); assert.equal(r.second, null);
+    assert.deepEqual(r.displayed, { main: 900, second: 0 }); assert.deepEqual(r.representatives, { main: 180, second: 0 });
+  }
+  const models = createLotModels(), main = createLotPresentation(models, { width: 40, depth: 24 }), side = createLotPresentation(models, { width: 12, depth: 16, indoor: true });
+  const split = stageRepresentatives(6000, { main: 5500, second: 500 });
+  main.update({ crowd: split.displayed.main }, [], [], false, split.representatives.main);
+  side.update({ crowd: split.displayed.second }, [{ type: 'stage', x: 3, y: 1, rot: 0 }], [], false, split.representatives.second);
+  assert.equal(main.info().representativeGuests + side.info().representativeGuests, 180);
+  main.dispose(); side.dispose(); models.dispose();
 });

@@ -1480,7 +1480,7 @@ function updateRendererStatus(status) {
 function openCamera(opener) {
   openWindow('camera', 'Camera', `<p id="renderer-status" class="lede" aria-live="polite"></p>
     <div class="row"><button type="button" data-act="renderer-toggle">Try 3D preview</button><button type="button" data-act="renderer-retry">Retry 3D</button></div>
-    <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}</div>
+    <div class="lot-camera-controls" role="group" aria-label="3D camera presets">${['wide', 'foh', 'stage', 'plan'].map(p => `<button type="button" data-camera-preset="${p}">${p === 'foh' ? 'FOH' : p[0].toUpperCase() + p.slice(1)}</button>`).join('')}${state.venue.id === 'festival' ? '<button type="button" data-camera-preset="side">Side stage</button>' : ''}</div>
     <div class="lot-camera-controls" role="group" aria-label="Orbit camera"><button type="button" data-camera-orbit="left">Orbit left</button><button type="button" data-camera-orbit="right">Orbit right</button><button type="button" data-camera-orbit="up">Look down</button><button type="button" data-camera-orbit="down">Look forward</button></div>
     <button type="button" data-act="camera-mode" aria-pressed="${!!ui.cameraMode}">Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}</button>
     <p class="hint">Select: tap to inspect, drag to orbit. Two fingers pan and pinch. FOH and Stage use provisional authored eye heights.</p>`, el.menuBtn);
@@ -1508,6 +1508,17 @@ function crowdNow() {
   return 0;
 }
 
+let stageAudienceSource = null, stageAudienceSnapshot = null;
+function stageAudienceForScene() {
+  if (state.venue.id !== 'festival' || !state.show) return null;
+  if (stageAudienceSource !== state) {
+    const sales = (settlementFor(state) || showPreview(state))?.stageAccounts?.sales;
+    stageAudienceSnapshot = sales ? { main: sales.main.attendance, second: sales.second.attendance } : null;
+    stageAudienceSource = state;
+  }
+  return stageAudienceSnapshot;
+}
+
 function draw() {
   const services = state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
   const night = ['show', 'settle', 'done'].includes(state.phase);
@@ -1524,6 +1535,7 @@ function draw() {
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
+    ...(state.venue.id === 'festival' ? { stageAudience: night ? stageAudienceForScene() : null, secondaryStage: { booked: !!state.booking.secondId, artist: state.booking.secondId ? artistFor(state.booking.secondId).name : null } } : {}),
     serviceProgress: state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(1, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 1,
     serviceMinute: services ? services.minute + (state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(0.999, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 0) : 0,
     services,

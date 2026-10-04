@@ -47,7 +47,7 @@ try {
     await p.keyboard.press('Escape');
     for (const room of ['club', 'amphitheater', 'lot', 'amphitheater', 'festival', 'amphitheater']) {
       await load(p, fixture(room, false));
-      await p.waitForFunction(room => room === 'festival' ? !__frontOfHouse.rendererStatus().active : __frontOfHouse.rendererStatus().active && __frontOfHouse.board().venue === room, room);
+      await p.waitForFunction(room => __frontOfHouse.rendererStatus().active && __frontOfHouse.board().venue === room, room);
       assert.ok(await p.locator('.lot-webgl').count() <= 1); assert.equal((await state(p)).venue.id, room);
     }
     await load(p, original); await ready(p);
