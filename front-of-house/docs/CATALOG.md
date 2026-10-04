@@ -31,7 +31,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `remove` | Remove the object at a list index | `index` | build | stays | 1 |
 | `confirmBuild` | Lock the layout once the venue is ready | — | build | promote | 1 |
 | `setPromotion` | Set ticket price, ad spend and (with seats) seat price | `price`, `ads`, `services`, `seatPrice` | promote | stays | 5 |
-| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot` | promote | show | 2 |
+| `confirmPromotion` | Pay what is due before doors and open them; rolls the incident | `services`, `pilot`, `flow` | promote | show | 5 |
 | `chooseDoorCrew` | Opt-in doors trial only: put the spare worker on the bar or the gate | `choice` | show | stays | 2 |
 | `advanceLive` | Live pilot: advance whole game minutes, pausing at the unanswered incident | `minute` | show | settle | 2 |
 | `assignLiveWorker` | Live pilot: transfer the worker between admission and bar | `station` | show | stays | 2 |
@@ -81,11 +81,14 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `setPromotion` | Choose live services only for the Lot |
 | `setPromotion` | Seat price must be a whole number from ${D.PRICE_MIN} to ${priceMax} |
 | `confirmPromotion` | Live services needs the Lot and a bar, without the doors snapshot |
+| `confirmPromotion` | Unknown live flow version |
+| `confirmPromotion` | Normal departure requires live services |
+| `confirmPromotion` | Connect admission, a bar and an exit to the main audience floor before opening doors |
 | `confirmPromotion` | This show needs $${upfront} before doors, but you have $${s.cash} |
 | `chooseDoorCrew` | There is no doors choice to make |
 | `chooseDoorCrew` | Choose bar service or admission |
 | `advanceLive` | Live services is not enabled for this show |
-| `advanceLive` | Choose a future whole show minute within closing time |
+| `advanceLive` | Choose a future whole minute within this show’s timeline |
 | `assignLiveWorker` | Live services is not enabled for this show |
 | `assignLiveWorker` | *The live service model refusal, including in-transit, already assigned or closed service* |
 | `respond` | Choose where the doors crew works first |
