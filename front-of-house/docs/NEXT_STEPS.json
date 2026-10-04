@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "ffcd59f integrated · 12 measured HUD windows at 2a00f7a",
+  "head": "f7da804 base · 3D backing resolution tested locally",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Classic floor caching has 12 valid full-HUD windows at frozen 2a00f7a. The later food-control delivery is preserved at ffcd59f and receives separate integration checks. Runtime CI and hosted cache delivery remain in PR74; sanitation and later phases continue.",
+  "statusReason": "Floor-cache PR74 remains in delivery. The next resolution slice passes browser backing/lifecycle and full-game DPR2 settlement checks locally; CI and hosted resolution proof remain pending.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -20,8 +20,8 @@
     "PR67: unchanged-shadow reuse deployed and hosted-verified; complete original and integrated Metal renderer diagnostics retained."
   ],
   "nextStep": {
-    "title": "Deliver the floor cache, then verify 3D backing resolution",
-    "why": "Deliver the cache and retained measurement evidence after reconciling food controls. The measurements remain attributed to 2a00f7a; verify the merged integration separately, then continue the 3D resolution cap and remaining phases.",
+    "title": "Deliver the floor cache and 3D resolution rule",
+    "why": "Both performance slices are implemented and locally checked. Complete their required CI, production delivery and hosted verification while preserving parallel guest operations.",
     "doneWhen": "Static floor caching preserves exact pixels, sightline occlusion and hit testing across room/layout/camera/resize changes; measure the same full-HUD fixtures before and after at declared pixel ratio. Continue the remaining guest operations, research, ownership, venue and release phases.",
     "effort": "L",
     "owner": "either",
@@ -599,6 +599,13 @@
             "result": "recorded",
             "checkedAt": "2026-10-04T12:42:29.283Z",
             "summary": "All 12 corrected full-HUD comparison windows valid on 2a00f7a. Requested DPR 2, effective 1.5. Fixed camera reuses the floor; the verified pan path rebuilds it. The earlier unsupported-zoom attempt is retained separately as an invalid comparison."
+          },
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-resolution-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T12:54:51.909199+00:00",
+            "summary": "Actual backing allocation, threshold and CSS-coordinate picks; browser density emulation plus explicitly dispatched media event, redraw fallback, context restore and listener disposal. Full application DPR2 settlement parity also passes. Local proof only."
           }
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
@@ -622,6 +629,17 @@
               "After preserving food controls at ffcd59f: 276 tests, build, exact cross-browser pixels including the stall, four short HUD windows and six full vendor browser journeys pass. Full measurements retain source 2a00f7a; current CI/hosted delivery remain pending."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/74"
+          },
+          {
+            "id": "FOH-P01d",
+            "status": "tested-awaiting-delivery",
+            "scope": "3D backing resolution and browser density lifecycle",
+            "evidence": [
+              "At requested DPR2: 1920x1080 allocates 2880x1620; 375x812 allocates 750x1624. Threshold, 5120x1440 ultrawide, explicit DPR1 and invalid overrides pass actual canvas/WebGL buffer checks.",
+              "CSS-coordinate tile/object picking, real context loss/restore, one rearmed density listener and disposal pass. Chromium density emulation omits some media events; explicit event dispatch tests the listener and redraw detection covers the omitted-event path. No physical monitor acceptance inferred.",
+              "Complete DPR2 application gestures, inspection, viewport fit, fallback/recovery, reload and classic/3D settlement parity pass. Existing backend camera/scene/shadow/reduced-motion and 20 disposal cycles pass.",
+              "276 repository tests, build and manifest validation pass. Required CI, deployment and hosted resolution verification remain pending."
+            ]
           }
         ]
       },

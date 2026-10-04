@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: 3D backing resolution verified locally
+
+- Applied the existing HUD density rule to the 3D backend; density changes rearm a disposable media listener and redraw detects changes when a browser omits the event. Explicit DPR1 benchmark controls remain fixed. Service worker v39.
+- Actual backing/buffer sizes, threshold/ultrawide/phone resize, CSS-coordinate picking, density emulation, explicitly dispatched media events, context recovery and disposal pass. Full DPR2 application gestures, reload and identical settlement pass; the existing backend rail including 20 disposal cycles passes.
+- 276 repository tests, build and manifest checks pass. These are local correctness checks; CI/deployment/hosted proof and physical monitor/device readability remain separate. The 12 full-HUD and 36 Metal renderer windows keep their earlier frozen sources.
+
 ## 2026-10-04: Preserve food-control delivery with floor evidence
 
 - Reconciled PR75 food controls at ffcd59f without changing its simulation or accounting. Retained all 12 measured windows at their frozen 2a00f7a source and added food-stall layout coverage to the cache parity check. Service worker v38.

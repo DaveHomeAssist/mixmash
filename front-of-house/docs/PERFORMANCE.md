@@ -100,3 +100,11 @@ RAF cadence measures callback scheduling, not completed GPU frames or display sm
 Camera-change counters include the initial sampling callback; frame intervals begin at the following callback. This one-callback difference does not replace the continuous-motion validity check.
 
 The 2a00f7a comparison predates the food-control merge ffcd59f. Later integration preserves the cache and is tested separately, including a placed food stall in pixel/picking parity. The original measurements are not relabeled as a later source revision.
+
+## 3D backing resolution rule
+
+FOH-P01d applies the existing HUD section 6 rule to the optional 3D backend: clamp density to 1–2, then limit it to 1.5 if CSS width × height × clamped density² exceeds 6,000,000. A 1920×1080 canvas at requested DPR2 now allocates 2880×1620; a 375×812 canvas retains 750×1624. This reduces large-screen rendering resolution intentionally. It is not a strict six-megapixel ceiling: 5120×1440 at effective1.5 still allocates 7680×2160.
+
+`npm run smoke:front-of-house-resolution` checks actual canvas and WebGL buffer dimensions, threshold boundaries, phone/desktop/ultrawide resize, explicit DPR1, invalid overrides, CSS-coordinate tile/object picking, context restoration and disposal. Browser density changes rearm one media listener; an actual render also detects changed density. Chromium CDP updates density/media matches without reliably delivering the media event, so the test separately uses real density emulation with redraw detection and explicit media-event dispatch. This is not a physical monitor transition test. The complete application test uses requested DPR2, asserts the desktop backing size and compares classic/3D settlement after controls, recovery and reload.
+
+Earlier DPR1 renderer measurements and the classic full-HUD comparison retain their original source, quality and timing attribution. These new correctness checks are not a fresh performance baseline, supported-device qualification or human readability acceptance. Geometry, shadow quality, service/engine rules and saves remain unchanged. Production CI and hosted verification are separate delivery gates.
