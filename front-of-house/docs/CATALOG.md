@@ -29,7 +29,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `assignEquipment` | Assign an owned small PA in Build or return to rental; freezes at doors | `assetId` | build | stays | 3 |
 | `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
 | `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
-| `chooseDeal` | Book an act on a deal; optional seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `nights`, `secondId`, `seatingPolicy`, `runPolicy` | book | build | 7 |
+| `chooseDeal` | Book an act on a deal; optional seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `nights`, `secondId`, `stagePolicy`, `seatingPolicy`, `runPolicy` | book | build | 9 |
 | `chooseVenue` | Switch room before booking; each room keeps its own layout | `venueId` | book | stays | 2 |
 | `place` | Place one object, checked against R-18 | `object` | build | stays | 2 |
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
@@ -88,6 +88,8 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `chooseDeal` | That act is not on offer for this show |
 | `chooseDeal` | ${a.name} only plays for a guarantee |
 | `chooseDeal` | ${a.name} will only play for a guarantee after the last door deal |
+| `chooseDeal` | Choose a distinct side act eligible for a door deal |
+| `chooseDeal` | Stage accounting needs a Festival booking with two distinct acts |
 | `chooseDeal` | That booking cannot use separate seat sales |
 | `chooseDeal` | That booking cannot use a held-run policy |
 | `chooseVenue` | Unknown room |
