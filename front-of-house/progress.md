@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Integrate departure and food core for cache verification
+
+- Preserved production PR71 departure controls and PR72 finite-food core at a04b4a1, including their saved timelines, tests and model metadata. Reconciled project records with the original/integrated shadow reports and floor-cache work. Service worker v37.
+- PR73 documentation CI passed, but concurrent project-record changes prevented its merge. Its complete evidence is retained in the integrated PR74 branch; required CI and delivery will use the reconciled revision.
+- Integrated validation: 272 repository tests, build, eight service/departure journeys and full application settlement parity pass.
+- Corrected full-HUD camera measurement uses the actual middle-drag event handler and requires motion in the timed window. All four short validation windows pass; the original unsupported-zoom attempt is retained as an invalid comparison.
+
 ## 2026-10-04: Classic floor cache and full HUD harness
 
 - Added one-image classic floor caching with explicit layout/view/sprite/overlay invalidation, original post-prop sightline placement, direct fallback and backing disposal. Dynamic guests, lighting, incidents and selection remain live. No rules, saves or economy change.
@@ -360,3 +367,22 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - PR66 delivered at fc93b98 after full CI37198084252; Pages built at 11:31:17Z, eleven runtime files match and eight production control/queue journeys pass. PR68's event-derived movement passes 255 tests, six motion/zone journeys, six full control/settlement journeys, action-client input and warmed offline reload locally. Its separate CI/merge/deployed gates remain pending.
 
 - Core validation: 261 repository tests, build, manifest verification and legacy simulation pass; generated balance/docs remain unchanged. Initial repository checks caught the missing admin entries and test description; regeneration plus a source description resolved both, and the final full suite passes.
+
+
+## 2026-10-04: FOH-O02b playable normal departure
+
+- New client-opened live Lot shows check connected admission, bars and exits before charging. A versioned additive flow marker preserves older live checkpoints. Service closes at minute 240; the existing controls then drain the admitted population through connected exits before settlement. Current inside counts stay distinct from cumulative signed attendance and receipts.
+- Presentation placement stays on the main connected audience floor. Recorded departure events route representative guests through their actual exits; pause/reduced motion and reload use committed outcomes. Staffing controls and incident-location controls hide after service closes, fixing a phone overflow caught by the new browser sequence.
+- Local evidence: 265 repository tests, build, four Chromium/WebKit control/settlement journeys and eight zone/motion journeys pass. Normal-departure screenshots were inspected in 3D and on the phone. Full 3D/offline/action-client checks and delivery are tracked separately.
+- PR68 delivered at 1059e22 after CI37198897404; Pages built, twelve files match, and eight production control/zone journeys pass. PR70 core delivered at 6976dec after CI37199319876; thirteen live files match and the hosted departure module verifies three exits and conserved 75/75 backlog at minute 5. FOH-O01 is engineering-delivered; final human/device acceptance remains a release gate.
+
+- Final local evidence: two full 3D departure journeys, warmed offline reload at departure minute 2, and the supplied action client also pass; screenshots inspected. The first offline attempt received connection refused from the stopped preview server; a new verified listener and rerun pass. Preserved the concurrent PR67 performance record when refreshing the scoped project projection.
+
+- CI37200726884 failed in the legacy wind-down signing test: the natural clock reached the incident before the unconditional Skip click. The test now accepts either route to that same incident while retaining signing assertions; all 28 legacy checks pass locally. Expanded departure controls coverage also passes in four Chromium/WebKit and two full 3D journeys, exercising actual 1× Play/Pause and resumed 12× completion. Required CI on the corrected head remains pending.
+
+## 2026-10-04: FOH-O02c1 finite concessions core
+
+- Added engine-side FIFO identity reconstruction, discretionary budgets shared with bar purchases, one-way bar-abandonment alternatives, price acceptance, finite vendor stock, staffing throughput, access refusal, queue expiry and closing. Standard/premium contracts separate gross sales, promoter share and vendor inventory/wage profit. No career or UI integration is enabled by this core.
+- Seven targeted tests pass: every-minute conservation, exact source identity, quiet/surge policy differences, stockout/access/patience/closing, checkpoint/batching/transfer replay, unadmitted guests, malformed input and the6000-guest bound. Full repository and delivery verification follow.
+
+- All 272 repository tests and build pass; generated game documentation remains unchanged. Quiet24-guest and surge960-guest fixtures favor different house-income choices. These core fixtures do not constitute playable or final balance acceptance.

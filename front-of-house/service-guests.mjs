@@ -5,10 +5,10 @@ const outside = (p, grid) => p.x < 0 || p.y < 0 || p.x >= grid.w || p.y >= grid.
 const same = (a, b) => a.x === b.x && a.y === b.y;
 
 export function guestTimeline(events) {
-  const guests = [], gate = [], bar = [];
-  let gateHead = 0, barHead = 0;
+  const guests = [], gate = [], bar = [], floor = [];
+  let gateHead = 0, barHead = 0, floorHead = 0;
   const move = (guest, zone, event) => {
-    if (guest) guest.history.push({ zone, minute: event.minute, eventId: event.id, cause: event.cause });
+    if (guest) guest.history.push({ zone, minute: event.minute, eventId: event.id, cause: event.cause, ...(event.result?.portal !== undefined ? { portal: event.result.portal } : {}) });
   };
   for (const event of events) {
     const n = event.result?.count;
@@ -22,9 +22,15 @@ export function guestTimeline(events) {
     } else if (event.cause === 'admission') {
       for (let i = 0; i < n; i++) { const guest = gate[gateHead++]; move(guest, 'bar', event); if (guest) bar.push(guest); }
     } else if (event.cause === 'service' && event.entity === 'bar') {
-      for (let i = 0; i < n; i++) move(bar[barHead++], 'floor', event);
+      for (let i = 0; i < n; i++) { const guest = bar[barHead++]; move(guest, 'floor', event); if (guest) floor.push(guest); }
     } else if (event.action === 'expire') {
-      for (let i = 0; i < n; i++) move(event.entity === 'gate' ? gate[gateHead++] : bar[barHead++], event.entity === 'gate' ? 'leaving' : 'floor', event);
+      for (let i = 0; i < n; i++) {
+        const guest = event.entity === 'gate' ? gate[gateHead++] : bar[barHead++];
+        move(guest, event.entity === 'gate' ? 'leaving' : 'floor', event);
+        if (guest && event.entity === 'bar') floor.push(guest);
+      }
+    } else if (event.cause === 'normal-departure') {
+      for (let i = 0; i < n; i++) move(floor[floorHead++], 'departed', event);
     }
   }
   return guests;
@@ -82,12 +88,12 @@ export function guestFrame(layout, services, zoneProjection) {
   const guests = guestTimeline(services.events), minute = services.minute;
   const groups = (at) => Object.fromEntries(['gate', 'bar', 'floor'].map(zone => [zone, guests.filter(g => atMinute(g, at)?.zone === zone)]));
   const current = groups(minute), previous = groups(minute - 1);
-  if (current.gate.length !== services.gate.waiting || current.bar.length !== services.bar.waiting || current.bar.length + current.floor.length !== services.admitted) {
+  if (current.gate.length !== services.gate.waiting || current.bar.length !== services.bar.waiting || current.bar.length + current.floor.length !== (services.inside ?? services.admitted)) {
     throw new Error('Guest events disagree with service counts');
   }
-  const departed = guests.filter(g => { const h = g.history.at(-1); return h.zone === 'leaving' && h.minute === minute; });
+  const departed = guests.filter(g => { const h = g.history.at(-1); return (h.zone === 'leaving' || h.zone === 'departed') && h.minute === minute; });
   const leavingSlots = Math.min(12, departed.length);
-  const old = zoneProjection(layout, { ...services, admitted: previous.bar.length + previous.floor.length, gate: { waiting: previous.gate.length }, bar: { waiting: previous.bar.length } }, services.minute, 180);
+  const old = zoneProjection(layout, { ...services, admitted: previous.bar.length + previous.floor.length, inside: previous.bar.length + previous.floor.length, gate: { waiting: previous.gate.length }, bar: { waiting: previous.bar.length } }, services.minute, 180);
   const next = zoneProjection(layout, services, services.minute, 180 - leavingSlots);
   function bind(projection, zoneGuests) {
     const positions = new Map();
@@ -99,16 +105,32 @@ export function guestFrame(layout, services, zoneProjection) {
   }
   const prior = bind(old, previous), chosen = bind(next, current);
   for (let i = 0; i < leavingSlots; i++) {
-    const guest = departed[Math.floor(i * departed.length / leavingSlots)], before = prior.get(guest.id) || layout.outsideGate;
-    if (before) chosen.set(guest.id, { ...away(before, layout), id: guest.id, guest, zone: 'leaving' });
+    const guest = departed[Math.floor(i * departed.length / leavingSlots)], last = guest.history.at(-1);
+    if (last.zone === 'departed') {
+      const portal = services.departure?.portals[last.portal];
+      if (portal) {
+        const entry = { x: portal.x + 0.5, y: portal.y + 0.5 };
+        const end = portal.y === 0 ? { ...entry, y: -1 } : portal.y === layout.grid.h - 1 ? { ...entry, y: layout.grid.h + 1 }
+          : portal.x === 0 ? { ...entry, x: -1 } : { ...entry, x: layout.grid.w + 1 };
+        chosen.set(guest.id, { ...end, id: guest.id, guest, zone: 'departing', portal });
+      }
+    } else {
+      const before = prior.get(guest.id) || layout.outsideGate;
+      if (before) chosen.set(guest.id, { ...away(before, layout), id: guest.id, guest, zone: 'leaving' });
+    }
   }
   let unavailable = 0;
   const actors = [...chosen.values()].map(actor => {
-    const { guest, ...target } = actor, history = guest.history.filter(h => h.minute === minute);
+    const { guest, portal, ...target } = actor, history = guest.history.filter(h => h.minute === minute);
     const before = prior.get(guest.id);
     const oldZone = atMinute(guest, minute - 1)?.zone;
     // A newly selected sample uses its earlier zone anchor; no hidden agent state is saved.
-    const start = before || (oldZone === 'bar' ? layout.bar : oldZone === 'floor' ? target : away(layout.outsideGate || target, layout));
+    const start = before || (oldZone === 'bar' ? layout.bar : oldZone === 'floor' ? (portal ? layout.free[0] : target) : away(layout.outsideGate || target, layout));
+    if (portal) {
+      const interior = gridRoute(layout, start, portal.route.at(-1));
+      if (!interior) { unavailable++; return { ...target, route: [target], events: history.map(h => h.eventId), routeUnavailable: true }; }
+      return { ...target, route: [...interior, { x: portal.x + 0.5, y: portal.y + 0.5 }, target], events: history.map(h => h.eventId), routeUnavailable: false };
+    }
     const waypoints = [start];
     for (const h of history) {
       if (h.zone === 'bar' && layout.gate && layout.bar) waypoints.push(layout.gate, layout.bar);

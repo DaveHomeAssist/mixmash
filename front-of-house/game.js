@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
-  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan,
+  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { LOOK } from './board.js';
@@ -725,8 +725,8 @@ function liveServicesPanel() {
     </div>
     <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
     <div class="plate at-bl status-plate" data-tab="Services">
-      <h3>Service pressure</h3><dl class="live-readouts" id="live-queues"></dl>
-      <p class="hint">Wait estimates use current staffing; new arrivals can change them.</p>
+      <h3 id="live-heading">Service pressure</h3><dl class="live-readouts" id="live-queues"></dl>
+      <p class="hint" id="live-hint">Wait estimates use current staffing; new arrivals can change them.</p>
       <p class="hint" id="live-money"></p>
     </div>
     <div class="plate at-br actions-plate live-controls" data-tab="Controls">
@@ -734,7 +734,7 @@ function liveServicesPanel() {
       <div class="row"><button data-act="live-worker" data-station="gate">Help admission</button><button data-act="live-worker" data-station="bar">Return to bar</button></div>
       <div class="row"><button data-act="live-play" id="live-play">Play</button><button data-act="live-step">+5 min</button><button data-act="live-next">Next event</button></div>
       <label>Clock speed <select id="live-speed" data-input="live-speed"><option value="1">1×</option><option value="4">4×</option><option value="12">12×</option></select></label>
-      <p class="hint"><span id="crowd-now">0</span> admitted · samples ≤180.</p>
+      <p class="hint"><span id="crowd-now">0</span> <span id="crowd-label">admitted</span> · samples ≤180.</p>
       <button data-act="locate-incident" id="locate-incident" hidden>Locate equipment</button>
     </div>`;
 }
@@ -745,20 +745,26 @@ function updateLiveServices() {
   if (!r || !play) return;
   play.p = r.minute / D.LIVE_SERVICES.closeAt;
   $('#clock').textContent = clock(play.p);
-  $('#show-status').textContent = `${play.paused ? 'Paused' : 'Running'} · ${r.admitted} admitted · ${r.abandoned} left the queue`;
+  $('#show-status').textContent = r.departure?.active ? `${play.paused ? 'Paused' : 'Running'} · ${r.inside} inside · ${r.departed} departed` : `${play.paused ? 'Paused' : 'Running'} · ${r.admitted} admitted · ${r.abandoned} left the queue`;
   const row = (name, v) => `<div><dt>${name}</dt><dd>${v}</dd></div>`;
   const queue = q => `${q.waiting} queued · oldest ${q.oldestWait}m`;
   const wait = q => q.estimatedMinutes === null ? 'unavailable' : q.estimatedMinutes + 'm';
   $('#live-queues').innerHTML = row('Admission', queue(r.gate)) + row('Bar', queue(r.bar)) + row('Rate per minute', `Gate ${r.gate.rate} · Bar ${r.bar.rate}`) + row('Wait estimate', `Gate ${wait(r.gate)} · Bar ${wait(r.bar)}`) + row('Bar requests', `${r.barServed} served · ${r.barLost} lost`);
+  $('#live-heading').textContent = r.departure?.active ? 'Normal departure' : 'Service pressure';
+  $('#live-hint').textContent = r.departure?.active ? 'Service is closed. Guests leave through connected exits; receipts are unchanged.' : 'Wait estimates use current staffing; new arrivals can change them.';
+  if (r.departure?.active) $('#live-queues').innerHTML = row('Still inside', r.inside) + row('Departed', r.departed) + row('Usable exits', r.departure.exits) + row('Per minute', r.departure.rate) + row('Time remaining', r.departure.blocked ? 'Route blocked' : `${r.departure.duration - r.departure.minute}m`);
   $('#live-money').textContent = `Held ticket receipts ${money(r.ticketCash)} (refunds ${money(r.refunds)}) · Bar ${money(r.barCash)}. Paid to the career at settlement.`;
-  $('#live-worker').textContent = r.worker.destination ? `Travelling to ${r.worker.destination === 'gate' ? 'admission' : 'the bar'} · ${r.worker.arrivesAt - r.minute}m left. No service in transit.` : `Worker at ${r.worker.station === 'gate' ? 'admission' : 'the bar'} · transfer takes ${D.LIVE_SERVICES.travelMinutes}m.`;
-  for (const b of el.panel.querySelectorAll('[data-act="live-worker"]')) b.disabled = !!r.worker.destination || b.dataset.station === r.worker.station;
+  $('#live-worker').textContent = r.departure?.active ? 'Service staff are finished. Connected exits set the departure rate.' : r.worker.destination ? `Travelling to ${r.worker.destination === 'gate' ? 'admission' : 'the bar'} · ${r.worker.arrivesAt - r.minute}m left. No service in transit.` : `Worker at ${r.worker.station === 'gate' ? 'admission' : 'the bar'} · transfer takes ${D.LIVE_SERVICES.travelMinutes}m.`;
+  for (const b of el.panel.querySelectorAll('[data-act="live-worker"]')) b.disabled = r.serviceClosed || !!r.worker.destination || b.dataset.station === r.worker.station;
+  $('[data-act="live-worker"]').parentElement.hidden = !!r.serviceClosed;
+  if (r.departure?.active) $('#locate-incident').hidden = true;
   const waiting = !state.show.responseId && r.minute >= liveIncidentMinute(state);
   $('#live-play').textContent = play.paused ? 'Play' : 'Pause';
-  $('[data-act="live-next"]').textContent = state.show.responseId ? 'Close show' : 'Next event';
+  $('[data-act="live-next"]').textContent = r.departure?.active ? 'Finish departure' : state.show.responseId ? 'Close show' : 'Next event';
   for (const b of el.panel.querySelectorAll('[data-act="live-play"], [data-act="live-step"], [data-act="live-next"]')) b.disabled = waiting;
   $('#live-speed').value = String(play.speed);
-  $('#crowd-now').textContent = r.admitted;
+  $('#crowd-now').textContent = r.inside ?? r.admitted;
+  $('#crowd-label').textContent = r.departure ? 'inside' : 'admitted';
   if (state.show.serviceRecovered) say('Recovered an invalid service timeline. Paid costs and career cash were retained.', 'error');
   if (waiting && $('#incident-box').hidden) { play.paused = false; reachIncident(); }
 }
@@ -766,7 +772,7 @@ function updateLiveServices() {
 function stepLive(minute) {
   const play = ui.play;
   if (!play?.live || state.phase !== 'show') return;
-  act({ type: 'advanceLive', minute: Math.min(D.LIVE_SERVICES.closeAt, minute) }, { quiet: true });
+  act({ type: 'advanceLive', minute: Math.min(liveEndMinute(state), minute) }, { quiet: true });
   if (state.phase === 'show' && !state.show.responseId && ui.services.minute >= liveIncidentMinute(state)) {
     play.paused = true;
     $('#live-play').textContent = 'Play';
@@ -843,7 +849,7 @@ function loop() {
     if (play.live) {
       if (state.phase === 'show' && !play.paused) {
         const now = performance.now(), minutes = Math.floor((now - play.last) * play.speed / 1000);
-        if (minutes > 0) { play.last += minutes * 1000 / play.speed; stepLive(state.show.services.minute + minutes); }
+        if (minutes > 0) { play.last += minutes * 1000 / play.speed; stepLive(ui.services.minute + minutes); }
       }
       draw();
       if (state.phase === 'show' && !play.paused) loop();
@@ -1234,8 +1240,9 @@ function openCamera(opener) {
 }
 
 function crowdNow() {
+  if (state.show?.flow && state.phase !== 'show') return liveServicesFor(state)?.inside || 0;
   if (state.phase === 'show') {
-    if (state.show.services) return ui.services?.admitted || 0;
+    if (state.show.services) return ui.services?.inside ?? ui.services?.admitted ?? 0;
     const play = ui.play;
     if (!play) return 0;
     return Math.round(play.preview * Math.min(1, play.p / 0.45));
@@ -1632,17 +1639,18 @@ function onAct(e) {
     if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${label(type).toLowerCase()}.`);
   } else if (a === 'back') act({ type: 'back' });
   else if (a === 'confirm-build') act({ type: 'confirmBuild' });
-  else if (a === 'confirm-promo') { const services = state.venue.id === 'lot' && (state.promotion.liveServices ?? liveServicesPilot); act({ type: 'confirmPromotion', services, pilot: lotNightSlice && !services }); }
+  else if (a === 'confirm-promo') { const services = state.venue.id === 'lot' && (state.promotion.liveServices ?? liveServicesPilot); act({ type: 'confirmPromotion', services, ...(services ? { flow: 1 } : {}), pilot: lotNightSlice && !services }); }
   else if (a === 'skip') skipToIncident();
   else if (a === 'live-settings' && state.phase === 'promote') {
+    const access = liveAccessFor(state), placed = evaluateVenue(state.venue);
     openWindow('live-settings', 'Live services trial', `<label class="live-optin"><input id="live-services" type="checkbox" data-input="services" ${(state.promotion.liveServices ?? liveServicesPilot) ? 'checked' : ''} /> Run live arrivals and bar queues</label>
-      <p>Move one bar worker to admission and back. Served demand, lost sales and ticket refunds change this show's settlement. Requires a bar.</p>
+      <p>Move one bar worker to admission and back. Served demand, lost sales and ticket refunds change this show's settlement. Requires a bar.</p><p>Connected gates ${access.usableGates}/${placed.gates} · exits ${access.usableExits}/${placed.exits} · bars ${access.usableBars}/${placed.bars}. Keep a path to the main floor. After service closes, finish guest departure before settlement.</p>
       <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p><p>Blue: admission queue. Gold: bar queue. Orange: worker. Grey: departing admission guests. Up to 180 guest samples illustrate the totals; bar customers are already admitted.</p>`, target, { foot: '<button data-win="close">Done</button>' });
   }
   else if (a === 'live-worker') act({ type: 'assignLiveWorker', station: target.dataset.station });
   else if (a === 'live-play' && ui.play?.live) { stopPlayback(); ui.play.paused = !ui.play.paused; ui.play.last = performance.now(); updateLiveServices(); if (!ui.play.paused) loop(); }
-  else if (a === 'live-step') stepLive(state.show.services.minute + 5);
-  else if (a === 'live-next') stepLive(state.show.responseId ? D.LIVE_SERVICES.closeAt : liveIncidentMinute(state));
+  else if (a === 'live-step') stepLive(ui.services.minute + 5);
+  else if (a === 'live-next') stepLive(ui.services.departure?.active ? liveEndMinute(state) : state.show.responseId ? D.LIVE_SERVICES.closeAt : liveIncidentMinute(state));
   else if (a === 'choose-crew') chooseDoorCrew(target.dataset.choice);
   else if (a === 'respond') respond(target.dataset.response);
   else if (a === 'accept') act({ type: 'acceptSettlement', at: new Date().toISOString() });

@@ -2208,6 +2208,16 @@
       "open": "/front-of-house/sprites/stage.png"
     },
     {
+      "path": "front-of-house/test-concessions.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-concessions.mjs",
+      "description": "Vendor replay, finite consumer budgets and separate provider/house accounting.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-concessions.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-engine.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2415,6 +2425,16 @@
       "title": "board.js",
       "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the stand-in sprites in ./sprites once all of them…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/concessions.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "concessions.mjs",
+      "description": "Finite vendor demand and money reconstructed from authoritative service replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/concessions.mjs",
       "open": null
     },
     {

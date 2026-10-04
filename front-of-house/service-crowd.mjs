@@ -3,13 +3,13 @@
 import { OBJECT_TYPES, LIVE_SERVICES } from './data.mjs';
 import { guestFrame, alongGuestRoute } from './service-guests.mjs';
 
-export const SERVICE_COLORS = { gate: '#58b8da', bar: '#e8b84a', worker: '#ff875f', leaving: '#b7c0ca' };
+export const SERVICE_COLORS = { gate: '#58b8da', bar: '#e8b84a', worker: '#ff875f', leaving: '#b7c0ca', departing: '#b7c0ca' };
 const key = (p) => `${p.x},${p.y}`;
 const center = (p) => ({ x: p.x + 0.5, y: p.y + 0.5 });
 const distance = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 const count = n => Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
 
-export function createServiceLayout(objects, grid = { w: 24, h: 16 }) {
+export function createServiceLayout(objects, grid = { w: 24, h: 16 }, access = null) {
   const occupied = new Set();
   for (const o of objects) {
     const spec = OBJECT_TYPES[o.type];
@@ -17,10 +17,11 @@ export function createServiceLayout(objects, grid = { w: 24, h: 16 }) {
     const w = o.rot % 2 ? spec.h : spec.w, h = o.rot % 2 ? spec.w : spec.h;
     for (let y = o.y; y < o.y + h; y++) for (let x = o.x; x < o.x + w; x++) occupied.add(key({ x, y }));
   }
+  const accessible = access ? new Set(access.floorCells.map(key)) : null;
   const free = [];
-  for (let y = 0; y < grid.h; y++) for (let x = 0; x < grid.w; x++) if (!occupied.has(key({ x, y }))) free.push({ x, y });
+  for (let y = 0; y < grid.h; y++) for (let x = 0; x < grid.w; x++) if (!occupied.has(key({ x, y })) && (!accessible || accessible.has(key({ x, y })))) free.push({ x, y });
   const near = target => [...free].sort((a, b) => distance(a, target) - distance(b, target) || a.y - b.y || a.x - b.x);
-  const gate = objects.find(o => o.type === 'gate'), bar = objects.find(o => o.type === 'bar');
+  const gate = access ? access.portals.find(o => o.type === 'gate' && o.usable) : objects.find(o => o.type === 'gate'), bar = access ? access.bars[0] : objects.find(o => o.type === 'bar');
   const gateCell = gate && near(gate)[0], barCell = bar && near(bar)[0];
   const stage = objects.find(o => o.type === 'stage') || { x: grid.w / 2, y: 0 };
   const reserved = new Set([barCell, gateCell].filter(Boolean).map(key));
@@ -64,7 +65,7 @@ function samples(totals, limit) {
 }
 
 function zoneProjection(layout, services, visualMinute = services.minute, limit = 180) {
-  const admitted = count(services.admitted), bar = Math.min(admitted, count(services.bar?.waiting));
+  const admitted = count(services.inside ?? services.admitted), bar = Math.min(admitted, count(services.bar?.waiting));
   const totals = { gate: count(services.gate?.waiting), bar, floor: admitted - bar };
   const wanted = samples(totals, limit), actors = [], used = new Set();
   for (let i = 0; i < Math.min(wanted.bar, layout.barCells.length); i++) {
@@ -86,6 +87,7 @@ function zoneProjection(layout, services, visualMinute = services.minute, limit 
       worker = { x: a.x + (b.x - a.x) * (position - i), y: a.y + (b.y - a.y) * (position - i) };
     } else worker = layout[services.worker.destination === 'gate' ? 'bar' : 'gate'];
   } else worker = layout[services.worker?.station];
+  if (services.departure?.active) worker = null;
   const shown = Object.fromEntries(Object.keys(totals).map(zone => [zone, actors.filter(a => a.zone === zone).length]));
   return { actors, worker: worker ? { ...worker, id: 'worker', zone: 'worker' } : null, totals, shown,
     representative: Object.keys(totals).some(zone => totals[zone] !== shown[zone]), diagnostic: layout.diagnostic };
@@ -101,8 +103,8 @@ export function projectServiceCrowd(layout, services, visualMinute = services.mi
     frames.set(services, cached);
   }
   const frame = cached.frame, fraction = Math.max(0, Math.min(1, progress));
-  const actors = frame.actors.filter(a => a.zone !== 'leaving' || fraction < 1).map(({ route, ...actor }) => ({ ...actor, ...alongGuestRoute(route, fraction) }));
+  const actors = frame.actors.filter(a => !['leaving', 'departing'].includes(a.zone) || fraction < 1).map(({ route, ...actor }) => ({ ...actor, ...alongGuestRoute(route, fraction) }));
   return { ...base, actors, shown: frame.shown, representative: frame.representative,
     diagnostic: base.diagnostic || (frame.unavailable ? 'Some guest routes are unavailable; service counts are unchanged.' : null),
-    transitions: { minute: services.minute, progress: fraction, recordedDepartures: frame.leaving, departingSamples: actors.filter(a => a.zone === 'leaving').length, unavailable: frame.unavailable } };
+    transitions: { minute: services.minute, progress: fraction, recordedDepartures: frame.leaving, departingSamples: actors.filter(a => a.zone === 'leaving' || a.zone === 'departing').length, unavailable: frame.unavailable } };
 }

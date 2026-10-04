@@ -240,3 +240,12 @@ CT-DEC-20 enables this experiment only when selected on Promote (or opened with 
 - Pilot satisfaction substitutes actual bar service for the old bar-capacity estimate and actual admissions/arrivals for the old entrance estimate. Other satisfaction components are unchanged. Incident effects never retrospectively erase a served guest or receipt.
 
 Actual Lot paired fixtures at $20 and $300 ads: seed 1, worker stays at bar, earns $831 versus $819 for an immediate transfer returned at minute 6 (same 129 admitted, two lost bar sales). Seed 3's surge earns −$186 with 85 admitted when the worker stays at the bar versus $230 with 110 admitted after the same transfer/return, despite 40 lost bar requests. These are deterministic experimental fixtures, not a claim of universal optimal play or accepted career balance. The legacy Lot balance baseline remains unchanged when the pilot is disabled.
+
+
+### R-LIVE-02 — Modeled access and normal departure
+
+Client-opened live Lot shows record flow version 1. The largest connected free-floor region is the audience area, with row-major tie breaking. Admission gates, bars and exits must connect to it; doors refuse before any charge if one service type has no connected provider. Only connected gates/bars contribute service throughput. Permit, density and placed-exit occupancy limits remain the existing R-02 authority.
+
+Service closes at minute 240 with the existing queue expiry/refund rules. Admitted guests then depart at `GUEST_FLOW.exitRate` per usable exit per whole game minute. Inside plus departed equals cumulative admitted attendance; departure neither earns nor refunds cash. Play/Pause, speed and +5 minutes continue the same logical clock. Close show reaches service closing, while Finish departure reaches the last departure minute. Settlement remains unavailable until all admitted guests have left. Geometry remains locked throughout the show.
+
+The engine reconstructs counts, routes and departure events; only the flow version and elapsed departure minute are saved. Older live shows without the marker retain their historical closing behavior. This is normal game flow, not an emergency evacuation prediction or a grant of additional occupancy.

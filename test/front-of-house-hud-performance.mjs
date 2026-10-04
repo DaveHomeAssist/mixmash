@@ -17,7 +17,7 @@ await mkdir(output, { recursive: true });
 assert.equal((await readdir(output)).length, 0, 'Preserve previous measurements: output must be empty');
 const hash = data => createHash('sha256').update(data).digest('hex');
 const command = (name, args) => { try { return execFileSync(name, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return 'unknown'; } };
-const actions = [{ type: 'chooseDeal', deal: 'door', artistId: 'sodium-arcade' }, { type: 'setLayout', objects: STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 }, services: true }, { type: 'confirmPromotion' }, { type: 'advanceLive', minute: 25 }];
+const actions = [{ type: 'chooseDeal', deal: 'door', artistId: 'sodium-arcade' }, { type: 'setLayout', objects: STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 }, services: true }, { type: 'confirmPromotion', flow: 1 }, { type: 'advanceLive', minute: 25 }];
 const state = actions.reduce((s, a) => { const r = applyAction(s, a); assert.equal(r.error, null); return r.state; }, createGame(170));
 assert.ok(liveIncidentMinute(state) > 70, 'Fixture must remain running through warmup and measurement');
 const fixture = JSON.stringify({ actions, state }), saveCode = Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state })).toString('base64');

@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Classic floor cache locally verified; full HUD comparison prepared",
+  "head": "a04b4a1 integrated · classic floor comparison under verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Classic floor caching passes exact pixel and picking checks in both browser engines, plus actual-client settlement parity. Full HUD repeated measurements, CI and delivery are next; remaining operations and later phases continue.",
+  "statusReason": "Departure controls and the finite food core are merged with successful CI and a built Pages release. Classic floor caching and the corrected full-HUD camera comparison are under verification; food integration, sanitation and later phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -601,7 +601,7 @@
             "evidence": [
               "Exact cached/direct pixels and picking diagnostics pass in Chromium and WebKit; original interleaved sightline layers retained.",
               "Actual-client classic/3D complete settlement parity, gesture/reload/fallback checks pass.",
-              "Four quick full-HUD harness windows passed; 12 full repeated windows, CI, merge and hosted verification pending."
+              "The first full-HUD attempt was stopped: unsupported continuous zoom values invalidated moving-camera coverage. The corrected middle-drag trial checks actual coordinate changes; full repeated measurement and delivery remain pending."
             ]
           }
         ]
@@ -615,9 +615,10 @@
           "FOH-V01"
         ],
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
-        "status": "in-progress",
+        "status": "verified-delivered",
         "evidence": [
-          "PR62 merged at 3698c0a after full required CI; Pages build1259285752 built, eight runtime files match, four Chromium/WebKit and two 3D production journeys pass."
+          "PR62 merged at 3698c0a after full required CI; Pages build1259285752 built, eight runtime files match, four Chromium/WebKit and two 3D production journeys pass.",
+          "PR68 merged 1059e22 after CI37198897404; Pages built, twelve source files match, four production control/settlement and four production zone journeys pass. Controlled rendered motion also passes for the merged source."
         ],
         "slices": [
           {
@@ -705,20 +706,43 @@
           {
             "id": "FOH-O02b",
             "scope": "Pre-doors access explanation, saved departure clock, player controls and rendered normal exits",
-            "status": "implemented-local-verification",
+            "status": "merged-pages-built",
             "evidence": [
               "New client-opened live shows require connected admission, bar and exit access before payment, then retain Play/Pause/speed/step controls for normal departure before settlement. Older live saves keep historical closing.",
               "265 repository tests and build pass. Four Chromium/WebKit desktop/phone control journeys and four renderer/viewport zone plus four controlled movement journeys pass, including normal exit movement, frozen outcomes and reload/cash parity. Required CI and deployed proof remain pending.",
               "Two full 3D departure/settlement journeys and warmed offline reload at departure minute2 pass. The supplied action client opens a new flow-version-1 show and reaches minute5; screenshots inspected. An initial offline attempt found a stopped preview server; retry on a verified new server passes.",
-              "CI 37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending."
+              "CI 37200726884 failed in the legacy wind-down test because the natural clock had already hidden Skip. The timing guard preserves incident/signing assertions; all28 legacy checks pass locally. Expanded normal-departure Play/Pause at1x and resumed12x tests pass in four Chromium/WebKit and two full3D journeys. New required CI remains pending.",
+              "PR71 CI 37201292853 passed and merged at 719e0f5. The a04b4a1 Pages release containing it is built. Hosted player acceptance is recorded separately."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71",
+            "mergeCommit": "719e0f5b174c59b0ce8388a4de44467df26ff203"
           },
           {
             "id": "FOH-O02c",
             "scope": "Finite food demand, budget, stock and vendor terms",
-            "status": "pending",
-            "evidence": []
+            "status": "in-progress",
+            "evidence": [
+              "Pure concessions model implemented with seven targeted tests passing. No client, object, saved career terms or settlement integration yet."
+            ],
+            "slices": [
+              {
+                "id": "FOH-O02c1",
+                "scope": "Finite food replay and vendor accounting core",
+                "status": "merged-pages-built",
+                "evidence": [
+                  "Seven tests cover budgets, guest identity, demand, stock, access, expiry, closing, replay and useful quiet/surge choices.",
+                  "PR72 CI 37201342806 passed and the a04b4a1 Pages release is built. This is a pure food model; the separate player integration remains pending."
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/72",
+                "mergeCommit": "a04b4a18ce0ed3062a246215cbcd6487ebff4220"
+              },
+              {
+                "id": "FOH-O02c2",
+                "scope": "Placed vendor, locked player settings, saved terms, projection and career ledgers",
+                "status": "pending",
+                "evidence": []
+              }
+            ]
           },
           {
             "id": "FOH-O02d",

@@ -86,3 +86,10 @@ This follows the MarsScape split in `mars/`:
 ## Publication note
 
 This repository is public, and `gh-pages` is served as it is (`.nojekyll`), so everything here can be read at `mixmash.games/front-of-house/...`. The game page is live but `noindex`, with no hub card and no sitemap entry; those ship once Dave signs off the first playable. The service worker precaches the page shell for offline play.
+
+
+### Live Lot departure trial
+
+In Promote, open Live services and enable arrivals/queues. The settings show connected gates, bars and exits; a disconnected provider needs a clear path to the main audience floor. Doors refuse before charging if a required provider is unavailable. Menu → Camera enables the optional 3D Lot view.
+
+After the incident response, Close show ends admission and bar service. Play/Pause, clock speed and +5 min then control normal departure; Finish departure advances to the last exit. The readout separates guests still inside from those departed. Settlement unlocks when the site clears, retaining cumulative attendance and the same receipts. Reload starts paused at the saved point. Older live shows imported without the new flow marker keep their original closing behavior.

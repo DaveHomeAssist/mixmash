@@ -648,6 +648,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 .live-readouts dd { font-family: var(--font-mono); font-weight: 700; }
 
 .live-optin { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.live-controls .row[hidden] { display: none; }
 .live-controls label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .live-controls select { min-height: 44px; padding: 6px 10px; font: inherit; color: var(--text); background: var(--panel-alt); border: 1px solid var(--border-strong); border-radius: 6px; }
 /* The input canvas retains keyboard/pointer ownership while the 3D layer presents the Lot. */
