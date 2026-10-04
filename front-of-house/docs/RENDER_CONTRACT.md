@@ -100,3 +100,7 @@ These are **required future cases, not passed results**. Current automated engin
 | Performance and art | Frozen scenes and repeated measurements; realistic five-item sample | [Performance procedure](FEATURE_BRIEFS.md#performance-and-delivery-contract) plus [sample acceptance](ART_DIRECTION.md#realistic-lot-sample-specification). Diagnostic host results do not approve devices or art |
 
 No engine, data, save, renderer, control or CI implementation accompanies this contract. Before shipping the adapter, implement its tests and retain the current board until technical parity, supported-device measurements and Dave's camera/art acceptance are separately recorded.
+
+### Live service presentation extension
+
+The application supplies optional `services` (the derived aggregate summary) and `serviceMinute` (cosmetic fractional minute while playing). The board adapter caches a layout from objects/grid and derives `serviceCrowd`: guest actors with zone/position IDs, one worker, exact zone totals, shown sample counts, a representative flag and a missing-route diagnostic. The classic and 3D renderers consume the same projection. No actor, route or display timestamp is persisted or returned to the rules engine. Bar waiting is inside admitted attendance; the gate queue is outside. At most 180 guests and one worker are drawn, with an outside sample cap of 40. Reduced motion and pause use the whole saved minute. Normal departure is not modeled by this extension.

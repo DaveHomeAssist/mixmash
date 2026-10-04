@@ -8,7 +8,7 @@
   "head": "1e4d34b · 3D preview merged; live service pilot delivery 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Live Lot service pilot implemented and under delivery verification. Clock, staffing, queues, incident effects and career settlement have tests; representative queue movement and remaining renderer/operations phases stay open.",
+  "statusReason": "Live Lot service pilot and representative service zones are implemented. PR62 delivery and the crowd slice are under verification; later operations, research, ownership, venue and release gates remain open.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -19,9 +19,9 @@
     "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Measure and optimize the Lot renderer, then develop the live operations slice",
-    "why": "Technical input/save parity and the candidate scene are tested. Reproducible frame-time evidence and operations fixtures can now advance while final art and physical acceptance remain explicitly open.",
-    "doneWhen": "A separately scoped Lot implementation proves engine/save/picking/input/fallback parity and presents the five-subject eight-view sample; supported devices and statistical limits are declared, measured and accepted.",
+    "title": "Deliver live service pilot and representative crowd, then guest operations",
+    "why": "The service engine and UI now have queue, staffing, receipt and save coverage. The shared crowd projection makes those counts visible; food, sanitation and normal departure remain separate work.",
+    "doneWhen": "Service and crowd slices pass final CI, merge, Pages/live checks and board parity; FOH-O02 starts from a scoped guest-operations brief.",
     "effort": "L",
     "owner": "either",
     "blockedBy": "No outstanding D1–D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
@@ -558,9 +558,10 @@
           {
             "id": "FOH-O01c",
             "scope": "Representative admission/bar movement integrated with the accepted renderer",
-            "status": "pending",
+            "status": "implemented-local-verification",
             "evidence": [
-              "Live pilot draws the correct admitted count; distinct queue movement is still unimplemented"
+              "Shared classic/3D projection conserves admitted/bar totals, caps guest samples at 180 and outside markers at 40, and follows a saved worker transfer around equipment.",
+              "Three pure tests and four renderer/viewport browser journeys pass, including paused reload and camera invariance; full delivery gates pending."
             ]
           }
         ]
