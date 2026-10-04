@@ -24,6 +24,8 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 
 | Action | What it does | Fields | Allowed in | Moves to | Refusals |
 | --- | --- | --- | --- | --- | --- |
+| `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
+| `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
 | `chooseDeal` | Book an act on a deal; the deal and terms are fixed here | `deal`, `artistId`, `nights`, `secondId` | book | build | 5 |
 | `chooseVenue` | Switch room before booking; each room keeps its own layout | `venueId` | book | stays | 2 |
 | `place` | Place one object, checked against R-18 | `object` | build | stays | 2 |
@@ -45,14 +47,14 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 
 Each action sent from a reference game in each phase (seed 42, door deal, the suggested layout, $20, no ads, the incident answered with `wait`). → names the phase it moves to, ✓ means accepted without a phase change, ✗ means refused with one of the messages in section 4.
 
-| From | `chooseDeal` | `chooseVenue` | `place` | `setLayout` | `remove` | `confirmBuild` | `setPromotion` | `confirmPromotion` | `chooseDoorCrew` | `advanceLive` | `assignLiveWorker` | `respond` | `acceptSettlement` | `back` | `nextShow` | `retry` |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| book | → build | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
-| build | ✗ | ✗ | ✓ | ✓ | ✓ | → promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | ✗ | ✗ |
-| promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | → show | ✗ | ✗ | ✗ | ✗ | ✗ | → build | ✗ | ✗ |
-| show | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → settle | ✗ | ✗ | ✗ | ✗ |
-| settle | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → done | ✗ | ✗ | ✗ |
-| done | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | → book |
+| From | `enableResearch` | `research` | `chooseDeal` | `chooseVenue` | `place` | `setLayout` | `remove` | `confirmBuild` | `setPromotion` | `confirmPromotion` | `chooseDoorCrew` | `advanceLive` | `assignLiveWorker` | `respond` | `acceptSettlement` | `back` | `nextShow` | `retry` |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| book | ✗ | ✗ | → build | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| build | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | ✓ | → promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | ✗ | ✗ |
+| promote | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ | → show | ✗ | ✗ | ✗ | ✗ | ✗ | → build | ✗ | ✗ |
+| show | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → settle | ✗ | ✗ | ✗ | ✗ |
+| settle | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → done | ✗ | ✗ | ✗ |
+| done | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | → book | → book |
 
 `chooseDoorCrew` is refused here because the reference show is not in the opt-in doors trial (`?night-slice=1`).
 
@@ -62,6 +64,13 @@ What the engine says when it refuses an action, as written in the source (`${…
 
 | Action | Message |
 | --- | --- |
+| `enableResearch` | Development is available between bookings |
+| `enableResearch` | Development is already enabled |
+| `enableResearch` | Settle your first show before enabling development |
+| `research` | Development is available between bookings |
+| `research` | Enable development first |
+| `research` | Choose a development project action |
+| `research` | *The live service model refusal, including in-transit, already assigned or closed service* |
 | `chooseDeal` | Choose a guarantee or a door deal |
 | `chooseDeal` | This room does not take a sponsor |
 | `chooseDeal` | That act is not on offer for this show |
