@@ -2132,6 +2132,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-services.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-services.mjs",
+      "description": "Behavioral fixtures for the aggregate live-service prerequisite.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-services.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test/fixtures/save-v1.json",
       "project": "front-of-house",
       "category": "tests",
@@ -2249,6 +2259,16 @@
       "title": "game.js",
       "description": "Front of House browser client: the five phase panels, the board, playback and saves.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/game.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/services.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "services.mjs",
+      "description": "Deterministic aggregate admission/bar service model. Experimental engine core; the live game keeps its existing doors model until integration is verified.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
       "open": null
     },
     {

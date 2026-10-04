@@ -258,3 +258,10 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - Recorded [CT-DEC-13](docs/DECISIONS.md#ct-dec-13-research-and-upgrade-progression) as Proposed and linked the design from the GDD, future plan, roadmap and README. Corrected the GDD header's claim that every logged decision was accepted.
 - Proposed a first Lot experiment with Patch standards, Service training and Admission lanes. No research mechanic, economy, balance, save or renderer changes are implemented in this documentation update.
 - Delivery checks and deployment evidence are recorded on the associated pull request. Human acceptance of the design and existing public-launch gates remain open.
+
+## 2026-10-04: FOH-O01a deterministic services prerequisite
+
+- Added an independent, experimental admission/bar engine: finite prepaid/walk-up cohorts, FIFO patience, a travelling worker, stable causal events and replayable checkpoints. This engine-only prerequisite can progress while the renderer develops; the live game and old optional doors experiment are unchanged.
+- Hand-calculated fixtures: quiet bar staffing earns $100 versus $80 with the worker absent; surge transfer/return admits 10 versus 6 and earns $240 versus $150; busy-bar transfer loses eight sales ($40). Numbers are test-fixture choices, not a silent production retune.
+- Ten targeted tests cover counts/cash conservation, refunds, closing, no dual duty, immutable inputs, transfer refusal/return, frame-batching independence, reload during travel/backlog and malformed checkpoints. Full repository/build/simulation and required delivery checks are recorded with the phase PR.
+- FOH-O01 remains incomplete: controls, authoritative game clock, career save/settlement adapter, forecasts and representative crowd are FOH-O01b. Human playtesting and device proof remain separate.

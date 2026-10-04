@@ -86,3 +86,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## 2026-04-02 — Initial GitHub Pages site
 - First publish of the site (single game, pre-studio-hub).
+
+### Front of House service model prerequisite — 2026-10-04
+
+- Added a deterministic aggregate admission/bar engine with finite queues, worker travel, refunds and replayable checkpoints, plus quiet/surge/busy-bar fixtures. It is not yet enabled in the game; existing economy and saves remain unchanged.

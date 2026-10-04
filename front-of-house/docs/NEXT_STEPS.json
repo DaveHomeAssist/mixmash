@@ -8,7 +8,7 @@
   "head": "4aeb533 · phase execution baseline reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Foundation phone fix and Select/inspection controls implemented and locally verified; delivery proceeds through their phase PRs. The realistic Lot adapter and later operations/research/ownership/venue/release phases remain active work.",
+  "statusReason": "Foundation and Select delivery in progress; deterministic services core implemented and tested independently while the Lot renderer develops. Player integration and later phases remain active.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -470,8 +470,27 @@
           "FOH-V01"
         ],
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "services.mjs is an experimental pure engine prerequisite; existing game remains unchanged"
+        ],
+        "slices": [
+          {
+            "id": "FOH-O01a",
+            "scope": "Deterministic admission/bar service core independent of renderer",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "10 service tests: quiet/surge/busy bar, counts/cash, transfer, replay, bounded checkpoints",
+              "Existing game integration and representative crowd remain FOH-O01b"
+            ]
+          },
+          {
+            "id": "FOH-O01b",
+            "scope": "Integrate authoritative live clock, controls, save and settlement; crowd visualization follows renderer parity",
+            "status": "pending",
+            "evidence": []
+          }
+        ]
       },
       {
         "id": "FOH-O02",
