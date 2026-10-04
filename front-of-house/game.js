@@ -8,7 +8,7 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
@@ -201,6 +201,7 @@ function render() {
 }
 
 function renderTop() {
+  $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
   el.cash.textContent = money(state.cash);
   el.rep.textContent = `${state.reputation.venue}/100`;
@@ -640,6 +641,7 @@ function promotePanel() {
     <div class="actions">
       <button type="button" data-act="back">Back to Build</button>
       ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
+      ${spec.id === 'club' ? '<button type="button" data-act="ticketing-open" id="ticketing-settings">Ticketing: Direct</button>' : ''}
       ${spec.id === 'lot' ? '<button type="button" data-act="food-settings" id="food-settings">Facilities</button>' : ''}
       <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open doors</button>
     </div>`;
@@ -649,6 +651,8 @@ function updatePromote() {
   const p = state.promotion;
   const settings = $('#live-settings');
   if (settings) settings.textContent = `Live services: ${(p.liveServices ?? liveServicesPilot) ? 'On' : 'Off'}`;
+  const ticketingSettings = $('#ticketing-settings');
+  if (ticketingSettings) ticketingSettings.textContent = `Ticketing: ${ticketingPlanFor(state)?.plan === 'platform' ? 'Platform' : 'Direct'}`;
   const foodSettings = $('#food-settings');
   if (foodSettings) foodSettings.textContent = 'Facilities';
   const a = artistFor(state.booking.artistId);
@@ -684,6 +688,8 @@ function updatePromote() {
     const dem = demand({ draw, price: p.price, fairPrice: a.fairPrice, ads: p.ads, venueRep: state.reputation.venue });
     return presaleSplit(dem, buzz(p.ads), f.capacity).presale;
   });
+  const ticketingQuote = ticketingForecastFor(state);
+  if (ticketingQuote) { totals[0] = ticketingQuote.low.presale; totals[1] = ticketingQuote.high.presale; }
   const maxY = Math.max(1, f.capacity);
   const bars = [];
   for (let d = 1; d <= 14; d += 1) {
@@ -1119,13 +1125,14 @@ function sheetParts(r, { signed: done }) {
         <thead><tr><th scope="col">Source</th><th scope="col">Units</th><th scope="col" class="num">Total</th></tr></thead>
         <tbody>
           <tr><td>Tickets (presale and gate)</td><td>${r.seated ? `${r.seated} seats × ${money(r.seatPrice)}, ${r.attendance - r.seated} lawn × ${money(state.promotion.price)}` : `${r.attendance} × ${money(state.promotion.price)}`}</td><td class="num pos">${money(r.ticketGross)}</td></tr>
+          ${r.ticketing ? `<tr><td><button class="receipt-link" data-act="ticketing-open">Ticket collection</button></td><td>${r.ticketing.terms.plan === 'platform' ? '4% of presales' : 'Direct'}</td><td class="num neg">${money(-r.ticketing.fee)}</td></tr>` : ''}
           <tr><td>Bar</td><td>${r.services ? `${r.services.barServed} served · ${r.services.barLost} lost` : `${r.attendance} guests`}</td><td class="num pos">${money(r.bar)}</td></tr>
           ${r.sponsor ? `<tr><td>Sponsor</td><td>Site deal</td><td class="num pos">${money(r.sponsor)}</td></tr>` : ''}
           ${r.broadcast ? `<tr><td>Broadcast</td><td>${r.attendance} viewers</td><td class="num pos">${money(r.broadcast)}</td></tr>` : ''}
           ${r.second ? `<tr><td>${esc(r.second.name)} (second stage)</td><td>${r.second.attendance} people</td><td class="num pos">${money(r.second.cash)}</td></tr>` : ''}
           ${r.food ? `<tr><td><button class="receipt-link" data-act="food-receipt">Food</button></td><td>25% house share</td><td class="num pos">${money(r.foodIncome)}</td></tr>` : '<tr class="faint"><td>Merch</td><td>No merch tent yet</td><td class="num">$0</td></tr>'}
         </tbody>
-        <tfoot><tr><td colspan="2">Total revenue</td><td class="num pos">${money(r.ticketGross + r.bar + (r.foodIncome || 0) + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0))}</td></tr></tfoot>
+        <tfoot><tr><td colspan="2">${r.ticketing ? 'After collection' : 'Total revenue'}</td><td class="num pos">${money(r.ticketGross + r.bar + (r.foodIncome || 0) + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0) - (r.ticketing?.fee || 0))}</td></tr></tfoot>
       </table>
     </div>`;
   const costs = `
@@ -1162,7 +1169,7 @@ function sheetParts(r, { signed: done }) {
   return {
     body: `${head}
       <div class="sheet-cols">
-        ${r.services ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
+        ${r.services || r.ticketing ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
         <div class="sheet-col" data-tab="Costs">${costs}</div>
         <div class="sheet-col">${payouts}${crowd}</div>
       </div>`,
@@ -1304,6 +1311,29 @@ function openDevelopment(opener) {
     ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
 }
 
+function openTicketing(opener) {
+  if (state.venue.id !== 'club') return;
+  const terms = ticketingPlanFor(state) || { version: 1, plan: 'direct' };
+  const editable = state.phase === 'promote', quote = ticketingForecastFor(state), result = settlementFor(state);
+  const receipt = result?.ticketing, field = (label,value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  const receiptBody = receipt ? `<dl class="live-readouts">${field('Presale tickets',receipt.presale)}${field('Presale gross',money(receipt.gross))}${field('Collection fee',money(receipt.fee))}${field('Presales after collection',money(receipt.remitted))}${field('All ticket cash after collection',money(result.ticketGross-receipt.fee))}</dl>
+    <p>Fee withheld once at signing. Excluded from artist production deductions and opening cash.</p>`
+    : `<p>${result ? 'No optional ticketing contract was recorded for this show. Original direct-sale rules apply.' : 'The actual receipt is available after the show. Forecasts are not guaranteed sales.'}</p>`;
+  openWindow('ticketing', 'Club ticketing', `<p class="development-summary">${terms.plan === 'platform' ? 'Ticket platform · 4% of presales' : 'Direct · no collection fee'}</p>
+    <section data-tab="Plan" data-always-tabs><h3>Choose how to sell</h3>
+      ${state.ticketingNotice ? `<p role="status">${esc(state.ticketingNotice)}</p>` : ''}
+      <p>Direct keeps the usual presale share, free. Platform raises it by 20 percentage points, up to 90%.</p>
+      <p>Platform retains 4% of presale gross, rounded once per show. Demand and capacity do not increase.</p>
+      <div class="actions capital-actions"><button data-act="ticketing-plan" data-plan="direct" aria-pressed="${terms.plan==='direct'}" ${editable&&terms.plan!=='direct'?'':'disabled'}>Use Direct</button><button data-act="ticketing-plan" data-plan="platform" aria-pressed="${terms.plan==='platform'}" ${editable&&terms.plan!=='platform'?'':'disabled'}>Use Platform</button></div>
+      <p class="hint">${editable ? 'Changing this choice costs nothing now. Doors lock it for this show.' : 'Change the plan in Promote, before doors. This show keeps its agreed terms.'}</p></section>
+    <section data-tab="Forecast" data-always-tabs><h3>Before incidents</h3>
+      ${editable ? `<dl class="live-readouts">${field('Presale tickets',`${quote.low.presale} to ${quote.high.presale}`)}${field('Collection fee',`${money(quote.low.fee)} to ${money(quote.high.fee)}`)}${field('Presales after collection',`${money(quote.low.remitted)} to ${money(quote.high.remitted)}`)}</dl>
+      <p>Range uses the act's published draw, booked terms, ads and available capacity. It cannot predict the night's incident.</p>` : '<p>Forecasts are shown in Promote. Open Receipt for the completed show.</p>'}
+      <p class="hint">Direct earns more when the extra presale protection is unused. Platform can help when later walk-ups are lost.</p></section>
+    <section data-tab="Receipt" data-always-tabs><h3>Ticket collection</h3>${receiptBody}
+      ${result ? '<button data-act="food-back">Back to settlement</button>' : ''}</section>`, opener);
+}
+
 const CASH_LABELS = { acquisition: 'Equipment purchases', disposal: 'Equipment sales', development: 'Development', developmentRefund: 'Development refunds', showOpening: 'Show opening', incident: 'Incident responses', settlement: 'Settlements' };
 function cashReference(entry) {
   if (entry.reference.startsWith('show_')) {
@@ -1316,17 +1346,17 @@ function cashReference(entry) {
 }
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
-function paginateEquipment(step = 0) {
-  if (win.kind !== 'equipment' || innerHeight > 560) return;
+function paginateCompactWindow(step = 0) {
+  if (!['equipment', 'ticketing'].includes(win.kind) || innerHeight > 560) return;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
-  if (!panel._equipmentAtoms) {
+  if (!panel._compactAtoms) {
     for (const list of [...panel.children].filter(e => e.matches('dl,ol'))) {
       const parts = [...list.children].map(child => { const part = list.cloneNode(false); part.append(child); return part; });
       list.replaceWith(...parts);
     }
-    panel._equipmentAtoms = [...panel.children].filter(e => !e.matches('.tabbar, .development-summary'));
+    panel._compactAtoms = [...panel.children].filter(e => !e.matches('.tabbar, .development-summary'));
   }
-  const atoms = panel._equipmentAtoms;
+  const atoms = panel._compactAtoms;
   atoms.forEach(e => { e.hidden = false; });
   const bottom = el.winBody.getBoundingClientRect().bottom - parseFloat(getComputedStyle(el.winBody).paddingBottom);
   const height = bottom - (panel === el.winBody ? el.winBody.getBoundingClientRect().top + parseFloat(getComputedStyle(el.winBody).paddingTop) : panel.getBoundingClientRect().top);
@@ -1336,9 +1366,9 @@ function paginateEquipment(step = 0) {
     if (used && used + size > height) { pages.push([]); used = 0; }
     pages.at(-1).push(atom); used += size;
   }
-  panel._equipmentPage = Math.min(pages.length - 1, Math.max(0, (panel._equipmentPage || 0) + step));
-  atoms.forEach(e => { e.hidden = !pages[panel._equipmentPage].includes(e); });
-  el.winFoot.innerHTML = `<button data-act="equipment-part" data-step="-1" ${panel._equipmentPage ? '' : 'disabled'}>Back</button><span>Part ${panel._equipmentPage+1} / ${pages.length}</span><button data-act="equipment-part" data-step="1" ${panel._equipmentPage+1<pages.length ? '' : 'disabled'}>More</button>`;
+  panel._compactPage = Math.min(pages.length - 1, Math.max(0, (panel._compactPage || 0) + step));
+  atoms.forEach(e => { e.hidden = !pages[panel._compactPage].includes(e); });
+  el.winFoot.innerHTML = `<button data-act="window-part" data-step="-1" ${panel._compactPage ? '' : 'disabled'}>Back</button><span>Part ${panel._compactPage+1} / ${pages.length}</span><button data-act="window-part" data-step="1" ${panel._compactPage+1<pages.length ? '' : 'disabled'}>More</button>`;
 }
 
 function openEquipment(opener) {
@@ -1756,8 +1786,13 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'ticketing-open') { openTicketing(target); return; }
+  if (a === 'ticketing-plan') {
+    if (act({ type: 'setPromotion', ticketing: { version: 1, plan: target.dataset.plan } })) { openTicketing($('#ticketing-settings')); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); }
+    return;
+  }
   if (a === 'equipment-open') { equipmentPage = 0; openEquipment(target); return; }
-  if (a === 'equipment-part') { paginateEquipment(Number(target.dataset.step)); const button = el.winFoot.querySelector(`[data-step="${target.dataset.step}"]`); (button.disabled ? el.winFoot.querySelector('button:not(:disabled)') : button)?.focus(); return; }
+  if (a === 'window-part') { paginateCompactWindow(Number(target.dataset.step)); const button = el.winFoot.querySelector(`[data-step="${target.dataset.step}"]`); (button.disabled ? el.winFoot.querySelector('button:not(:disabled)') : button)?.focus(); return; }
   if (a === 'equipment-page') { equipmentPage += Number(target.dataset.step); openEquipment(el.menuBtn); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); return; }
   if (['equipment-enable', 'equipment-capital', 'equipment-assign'].includes(a)) {
     const action = a === 'equipment-enable' ? { type: 'enableEquipment' }
@@ -2010,7 +2045,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && win.kind === 'equipment') paginateEquipment();
+  if (root === el.winBody && ['equipment', 'ticketing'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2027,7 +2062,11 @@ phoneQuery.addEventListener('change', () => {
 // Close button or a click outside closes it, and focus goes back to what opened it.
 
 const win = { kind: null, opener: null };
-window.addEventListener('resize', () => { if (!el.win.hidden && win.kind === 'equipment') openEquipment(win.opener); });
+window.addEventListener('resize', () => {
+  if (el.win.hidden) return;
+  if (win.kind === 'equipment') openEquipment(win.opener);
+  if (win.kind === 'ticketing') openTicketing(win.opener);
+});
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
 function openWindow(kind, title, html, opener, { foot = '', wide = false, scrolls = false } = {}) {
@@ -2037,7 +2076,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (kind === 'equipment' && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'ticketing'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -2045,7 +2084,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
   syncTabs(el.winBody, `win:${kind}`);
-  if (kind === 'equipment') paginateEquipment();
+  if (['equipment', 'ticketing'].includes(kind)) paginateCompactWindow();
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2227,6 +2266,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    ticketing: state.venue.id === 'club' ? { terms: ticketingPlanFor(state), forecast: state.phase === 'promote' ? ticketingForecastFor(state) : null, receipt: r?.ticketing || null, notice: state.ticketingNotice || null } : null,
     equipment: state.equipment ? { assets: equipmentFor(state).assets, deployment: equipmentPlanFor(state), journal: careerLedgerFor(state), notice: state.equipmentNotice || null } : null,
     development: state.research ? { ...researchFor(state), booked: researchEffectsFor(state).learned } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,

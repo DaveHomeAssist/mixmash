@@ -219,3 +219,7 @@ The smoke rail measures each of these and fails when one slips.
 - Show night meets the frame budget in section 6.
 
 The minimap (step 7) has its own done line, above.
+
+## Club ticketing pilot
+
+Club Promote and Menu open a contained Plan/Forecast/Receipt window. Direct costs nothing; Platform adds20 percentage points to the presale share up to90% and retains4% of presale gross. Selecting a plan does not charge cash. Doors lock the choice. Forecast uses public act draw bounds, booked draw multiplier, ads, reputation and capacity; the actual receipt appears only after the show. Settlement displays collection separately from production deductions. Short windows share Equipment's explicit content pager; neither dialog uses ordinary form scrolling.

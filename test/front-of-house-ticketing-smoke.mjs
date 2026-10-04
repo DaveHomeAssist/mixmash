@@ -1,0 +1,39 @@
+// Controlled banked Club access; every ticketing and following show action uses player controls.
+import assert from 'node:assert/strict';import {mkdtemp} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {chromium,webkit} from 'playwright';import {startStaticServer,launchOptions,trackPageFailures} from './static-server.mjs';
+import * as E from '../front-of-house/engine.mjs';import * as D from '../front-of-house/data.mjs';
+const server=await startStaticServer(),url=process.env.FRONT_OF_HOUSE_BASE_URL||`${server.origin}/front-of-house/`,output=await mkdtemp(join(tmpdir(),'foh-ticketing-'));
+const act=(s,a)=>{const r=E.applyAction(s,a);assert.equal(r.error,null);return r.state;};
+let initial=[{type:'chooseDeal',deal:'door'},{type:'setLayout',objects:D.STARTER_LAYOUT},{type:'confirmBuild'},{type:'confirmPromotion'}].reduce(act,E.createGame(3));
+initial=act(initial,{type:'respond',responseId:D.INCIDENTS[initial.show.incidentId].responses[0].id});initial=act(initial,{type:'acceptSettlement'});initial.cash=100000;initial.unlocks.club=true;
+initial=act(initial,{type:'enableEquipment'});initial=act(initial,{type:'nextShow'});initial=act(initial,{type:'chooseVenue',venueId:'club'});
+const code=Buffer.from(JSON.stringify({ns:D.SAVE_NAMESPACE,v:D.SCHEMA_VERSION,savedAt:0,state:initial})).toString('base64');
+const state=p=>p.evaluate(()=>__frontOfHouse.state()),view=p=>p.evaluate(()=>JSON.parse(render_game_to_text()));
+const close=p=>p.locator('#win [data-win="close"]').first().click();
+const tab=async(p,name)=>{const t=p.locator(`#panel [data-tab-name="${name}"]:visible`);if(await t.count())await t.click();};
+async function fit(p){const bad=await p.evaluate(()=>[document.documentElement,...document.querySelectorAll('#win:not([hidden]) .win-body, #win:not([hidden]) button')].filter(e=>e.getClientRects().length).filter(e=>{const r=e.getBoundingClientRect();return e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1||r.right>innerWidth+1||r.bottom>innerHeight+1;}).map(e=>({text:e.textContent.slice(0,90),size:[e.scrollHeight,e.clientHeight,e.scrollWidth,e.clientWidth]})));if(bad.length)await p.screenshot({path:join(output,'overflow.png')});assert.deepEqual(bad,[]);}
+async function pages(p){for(const name of ['Plan','Forecast','Receipt']){await p.locator(`#win [data-tab-name="${name}"]`).click();let part=0;for(;part<30;part++){await fit(p);const more=p.locator('#win-foot [data-step="1"]');if(!await more.count()||!await more.isEnabled())break;await more.click();}assert.ok(part<30);}}
+try{for(const [name,launcher]of Object.entries({chromium,webkit})){
+ const browser=await launcher.launch(name==='chromium'?launchOptions():{});
+ try{for(const [width,height,deal,fallback]of name==='chromium'?[[1440,900,'door',false],[375,812,'door',false],[1024,700,'guarantee',false],[1440,900,'guarantee',true]]:[[1440,900,'guarantee',false],[375,812,'door',false]]){
+  const context=await browser.newContext({viewport:{width,height},hasTouch:width===375,reducedMotion:'reduce',serviceWorkers:'block'}),page=await context.newPage();if(width===1024)await page.addInitScript(()=>localStorage.setItem('front_of_house_theme','dark'));
+  const errors=trackPageFailures(page,new URL(url).origin);await page.goto(url+(fallback?'?renderer=3d':''));await page.waitForFunction(()=>window.__frontOfHouse);await page.evaluate(c=>__frontOfHouse.importCode(c),code);if(fallback){await page.waitForFunction(()=>__frontOfHouse.rendererStatus().reason==='This room uses the classic view.');assert.equal((await page.evaluate(()=>__frontOfHouse.rendererStatus())).active,false);}
+  await page.locator(`[data-deal="${deal}"]:not([disabled]):visible`).first().click();await tab(page,'Actions');await page.locator('[data-act="starter"]').click();await page.locator('[data-act="confirm-build"]').click();
+  const before=(await state(page)).cash;await page.locator('#ticketing-settings').click();await pages(page);await page.locator('#win [data-tab-name="Plan"]').click();await page.locator('[data-plan="platform"]').click();assert.equal((await state(page)).cash,before);const quote=(await view(page)).ticketing.forecast;assert.ok(quote.low.fee>0);
+  await page.locator('[data-plan="direct"]').click();assert.equal((await view(page)).ticketing.forecast.low.fee,0);await page.locator('[data-plan="platform"]').click();
+  await page.locator('#win [data-tab-name="Forecast"]').click();await fit(page);await page.screenshot({path:join(output,`${name}-${width}-${deal}-${fallback}-forecast.png`)});
+  await page.reload();await page.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(page)).promotion.ticketing.plan,'platform');assert.deepEqual((await view(page)).ticketing.forecast,quote);assert.equal((await state(page)).cash,before);
+  await tab(page,'Presales');assert.match(await page.locator('#presale-cap').textContent(),new RegExp(`${quote.low.presale} tickets`));
+  await page.locator('#confirm-promo').click();await page.locator('#menu-btn').click();await page.locator('#ticketing-menu').click();assert.equal(await page.locator('[data-act="ticketing-plan"]:enabled').count(),0);await pages(page);await close(page);
+  await tab(page,'Problem');await page.locator('[data-act="respond"]:not([disabled]):visible').first().click();await page.waitForSelector('[data-act="accept"]');
+  const ended=await state(page),receipt=E.settlementFor(ended);assert.ok(receipt.ticketing.fee>0);
+  if(await page.locator('#win [data-tab-name="Revenue"]').count())await page.locator('#win [data-tab-name="Revenue"]').click();await fit(page);await page.locator('#win [data-act="ticketing-open"]').click();await page.locator('#win [data-tab-name="Receipt"]').click();await fit(page);
+  assert.equal((await view(page)).ticketing.receipt.fee,receipt.ticketing.fee);assert.match(await page.locator('#win-body').innerText(),/Fee withheld once/);await page.screenshot({path:join(output,`${name}-${width}-${deal}-${fallback}-receipt.png`)});
+  await page.locator('[data-act="food-back"]').click();await page.locator('[data-act="accept"]').click();const signed=await state(page);assert.equal(signed.cash,ended.cash+E.settlementPayout(receipt,deal));assert.equal(E.careerLedgerFor(signed).balance,signed.cash);
+  await page.locator('[data-act="last-sheet"]').click();if(await page.locator('#win [data-tab-name="Revenue"]').count())await page.locator('#win [data-tab-name="Revenue"]').click();await page.locator('#win [data-act="ticketing-open"]').click();await page.locator('#win [data-tab-name="Receipt"]').click();assert.equal((await view(page)).ticketing.receipt.fee,receipt.ticketing.fee);await close(page);
+  if(name==='chromium'&&width===1440&&!fallback){for(const theme of ['light','dark']){if(theme==='dark'){await page.locator('#menu-btn').click();await page.locator('#theme-toggle').click();await page.locator('#menu-close').click();}await page.locator('#menu-btn').click();await page.locator('#ticketing-menu').click();for(const [w,h]of [[1440,900],[375,812],[844,390],[320,256],[3840,1080]]){await page.setViewportSize({width:w,height:h});await pages(page);}await close(page);await page.setViewportSize({width,height});}}
+  await page.reload();await page.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(page)).cash,signed.cash);assert.equal((await view(page)).ticketing.receipt.fee,receipt.ticketing.fee);
+  await page.locator('[data-act="next"]').click();assert.equal((await state(page)).promotion.ticketing,undefined);assert.deepEqual(errors,[]);await context.close();console.log(`  ok ticketing ${name} ${width} ${deal} ${fallback?'3D request with Club fallback':'classic'}: choice, public forecast, frozen receipt, cash and next show`);
+ }}finally{await browser.close();}
+}}finally{await server.close();}
+console.log(`Ticketing: six complete player journeys passed. Screenshots: ${output}`);
