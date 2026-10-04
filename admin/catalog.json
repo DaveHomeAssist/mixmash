@@ -2232,6 +2232,16 @@
       "open": "/front-of-house/sprites/stage.png"
     },
     {
+      "path": "front-of-house/test-career-ledger.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-career-ledger.mjs",
+      "description": "Cash journal conservation, bounded history, retry identity and hostile checkpoint tests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-career-ledger.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-concessions.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2549,6 +2559,16 @@
       "title": "board.js",
       "description": "Front of House isometric board. Draws the lot, the placed objects, the sightline cone, the build cursor and the show-night crowd and lighting on one canvas. Props use the stand-in sprites in ./sprites once all of them…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/board.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/career-ledger.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "career-ledger.mjs",
+      "description": "Bounded itemized career cash journal with exact archived totals and monotonic event identity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/career-ledger.mjs",
       "open": null
     },
     {
