@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v25';
+const VERSION = 'v26';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -68,6 +68,7 @@ const PRECACHE = [
   './front-of-house/board.js',
   './front-of-house/engine.mjs',
   './front-of-house/data.mjs',
+  './front-of-house/controls.mjs',
   // The Front of House sprites (about 920 KB) are not precached: like other large
   // binaries they are cached on first use, so only players of that game fetch them.
 ];

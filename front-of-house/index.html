@@ -21,6 +21,7 @@
   <link rel="modulepreload" href="./data.mjs" />
   <link rel="modulepreload" href="./engine.mjs" />
   <link rel="modulepreload" href="./board.js" />
+  <link rel="modulepreload" href="./controls.mjs" />
   <link rel="stylesheet" href="./styles.css" />
   <script src="/src/kit/pwa.js" defer></script>
 </head>
@@ -56,7 +57,7 @@
   <main class="layout">
     <section class="board-wrap" aria-labelledby="board-title">
       <h2 id="board-title" class="sr-only">The lot</h2>
-      <canvas id="board" tabindex="0" aria-label="Venue board" aria-describedby="board-help board-status"></canvas>
+      <canvas id="board" tabindex="0" aria-label="Venue board" aria-describedby="board-help board-keys-any board-keys-build board-status"></canvas>
       <p id="board-status" class="board-status" aria-live="polite"></p>
     </section>
 
@@ -101,7 +102,28 @@
     </section>
     <section class="menu-keys" aria-labelledby="keys-title">
       <h2 id="keys-title">Keys and mouse</h2>
-      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. Q turns the view in quarter steps. The mouse wheel or plus and minus zoom, 0 shows the whole lot, and Shift with the arrow keys or a middle-button drag moves a zoomed view (outside Build a plain drag does too). The props stay painted for the original camera. In Build, 1 to 8 pick an object; click a tile, or focus the board and use the arrow keys, Enter to place, R to rotate, B to bulldoze and Delete to remove. ? opens this menu.</p>
+      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. The mouse wheel zooms, and a middle-button drag moves a zoomed view (outside Build a plain drag does too). The props stay painted for the original camera. In Build, click a tile to place the chosen object, or focus the board and use the keys below.</p>
+      <h3 class="eyebrow keys-head">Anywhere</h3>
+      <dl class="keys" id="board-keys-any">
+        <div data-binding="turn-view"><dt>Q</dt><dd>Turn the view a quarter</dd></div>
+        <div data-binding="zoom-in"><dt>+</dt><dd>Zoom in</dd></div>
+        <div data-binding="zoom-out"><dt>−</dt><dd>Zoom out</dd></div>
+        <div data-binding="zoom-fit"><dt>0</dt><dd>Show the whole lot</dd></div>
+        <div data-binding="pan"><dt>Shift + arrows</dt><dd>Move a zoomed view</dd></div>
+        <div data-binding="close"><dt>Esc</dt><dd>Close a window or this menu</dd></div>
+        <div data-binding="menu"><dt>?</dt><dd>Open or close this menu</dd></div>
+      </dl>
+      <h3 class="eyebrow keys-head">In Build</h3>
+      <dl class="keys" id="board-keys-build">
+        <div data-binding="move-cursor"><dt>Arrows</dt><dd>Move the build cursor</dd></div>
+        <div data-binding="place"><dt>Enter or Space</dt><dd>Place the chosen object</dd></div>
+        <div data-binding="remove"><dt>Delete</dt><dd>Remove the object under the cursor</dd></div>
+        <div data-binding="rotate"><dt>R</dt><dd>Rotate the next object</dd></div>
+        <div data-binding="bulldoze"><dt>B</dt><dd>Bulldozer on or off</dd></div>
+        <div data-binding="pick-tool"><dt>1 to 8</dt><dd>Pick an object, in the order of the tiles</dd></div>
+        <div data-binding="undo"><dt>Ctrl+Z or ⌘Z</dt><dd>Undo the last change to the layout</dd></div>
+        <div data-binding="redo"><dt>Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z</dt><dd>Redo a change you undid</dd></div>
+      </dl>
     </section>
     <details id="save-menu" class="savebar">
       <summary>Save and load</summary>

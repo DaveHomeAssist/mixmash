@@ -60,8 +60,8 @@ Windows (Deals, Lot details, Last settlement, Show history) and the menu open ov
 | --- | --- |
 | Purpose | Lay out the room until it passes R-18 |
 | Arrives from | Book; Back from Promote |
-| Shows | Full board with sightlines on. Top left: phase card and message. Top right: capacity, power bar, clear view, blocked tiles, staff, costs so far, the readiness line, Fence, Sightlines and Details. Bottom left: tools 1 to 8 with sprites and costs, Bulldoze, Rotate. Bottom right: Suggested layout, Clear, Back, **Lock the layout** |
-| Controls → engine | Click or Enter on a tile → `place`. Bulldoze or Delete → `remove`. Fence → `place` or `remove` the fence kit. Suggested layout → `setLayout` with the room's starter. Clear → `setLayout` with nothing. Details → Lot details window (remove any object by name). Lock the layout → `confirmBuild` (refused with the missing items until ready) |
+| Shows | Full board with sightlines on. Top left: phase card and message. Top right: capacity, power bar, clear view, blocked tiles, staff, costs so far, the readiness line, Fence, Sightlines and Details. Bottom left: tools 1 to 8 with sprites and costs, Bulldoze, Rotate, Undo, Redo. Bottom right: Suggested layout, Clear, Back, **Lock the layout** |
+| Controls → engine | Click or Enter on a tile → `place`. Bulldoze or Delete → `remove`. Fence → `place` or `remove` the fence kit. Suggested layout → `setLayout` with the room's starter. Clear → `setLayout` with nothing. Details → Lot details window (remove any object by name). Undo or Redo → `setLayout` with the layout from before or after the last change (a bulldozer drag is one change; the list is kept in memory only and clears when the phase changes or a game is started or loaded). Lock the layout → `confirmBuild` (refused with the missing items until ready) |
 | Phone | Peek sheet with tabs Lot, Tools, Actions |
 | Leaves to | Promote, or Book |
 
@@ -162,11 +162,15 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | Delete or Backspace | Board, Build | Removes at the cursor |
 | R | Board, Build | Rotates the next object |
 | B | Board, Build | Bulldoze on or off |
+| Ctrl+Z or ⌘Z | Build, outside a text field | Undoes the last change to the layout |
+| Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z | Build, outside a text field | Redoes a change that was undone |
 | Q | Board | Turns the view a quarter |
 | + / − / 0 | Board | Zoom in, out, fit |
 | Shift + arrows | Board, zoomed | Pans |
 | Mouse wheel | Board | Zooms |
 | Middle drag (any drag outside Build) | Board, zoomed | Pans |
+
+Every key above comes from one table, `front-of-house/controls.mjs`, which both key handlers in `game.js` read. The menu's key list must match it word for word, and `test-engine.mjs` fails on two bindings that one key press could trigger together, or on a key the browser owns (Tab, F1 to F12, Ctrl or Cmd with W, T, N or L).
 
 ## 8. Keeping this current
 

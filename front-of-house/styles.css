@@ -215,7 +215,7 @@ body[data-phase='done'] #board { filter: brightness(0.55) saturate(0.8); }
 .count { font-family: var(--font-mono); color: var(--cyan); }
 
 /* Build: the tools, two rows of five tiles with their keys. */
-.tiles { display: grid; grid-template-columns: repeat(5, 58px); gap: 4px; }
+.tiles { display: grid; grid-template-columns: repeat(6, 58px); gap: 4px; }
 .tile {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 2px;
   height: 56px; min-height: 0; padding: 4px 2px 3px; margin: 0; cursor: pointer;
@@ -337,6 +337,12 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 .menu h2 { margin: 0 0 6px; font-size: 1rem; }
 .menu-close { margin-left: auto; }
 .board-help { margin: 0; color: var(--text-muted); font-size: 0.85rem; }
+/* The key list (controls.mjs keeps it and the handlers in step). */
+.keys-head { margin: 10px 0 4px; }
+.keys { display: grid; gap: 3px; margin: 0; font-size: 0.85rem; }
+.keys > div { display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: 10px; }
+.keys dt { font-family: var(--font-mono); font-weight: 700; }
+.keys dd { margin: 0; color: var(--text-muted); }
 a.button { display: inline-flex; align-items: center; text-decoration: none; }
 .lede { color: var(--text-muted); }
 .notice { color: var(--text-muted); }
@@ -564,7 +570,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   }
   .camera-row button { width: 44px; padding: 0; }
   .wide-only { display: none; }
-  .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .tiles { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
   .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .win-layer { padding: calc(var(--strip-h) + 4px) 4px 4px; }

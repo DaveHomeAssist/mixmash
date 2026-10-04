@@ -290,6 +290,50 @@ try {
   assert.equal(await page2.evaluate(() => document.activeElement.id), 'details-btn', 'focus returns to Details');
   ok('keys 1 to 8 pick a tool, and the Details window removes a placed object by name');
 
+  // Undo and redo (front-of-house/controls.mjs): the keys and the buttons step through layout
+  // changes, a bulldozer drag is one step, and locking the layout clears both lists.
+  const layoutNow = () => page2.evaluate(() => window.__frontOfHouse.state().venue.objects);
+  const undoneOne = await layoutNow();
+  const starterCopy = STARTER_LAYOUT.map((o) => ({ ...o }));
+  await page2.keyboard.press('Control+z');
+  assert.deepEqual(await layoutNow(), starterCopy, 'Ctrl+Z puts back the object the window removed');
+  await page2.keyboard.press('Control+Shift+Z');
+  assert.deepEqual(await layoutNow(), undoneOne, 'Ctrl+Shift+Z removes it again');
+  await page2.keyboard.press('Meta+z');
+  assert.deepEqual(await layoutNow(), starterCopy, 'Cmd+Z undoes too');
+  await page2.keyboard.press('Control+y');
+  assert.deepEqual(await layoutNow(), undoneOne, 'Ctrl+Y redoes');
+  await page2.click('#undo-btn');
+  assert.deepEqual(await layoutNow(), starterCopy, 'the Undo button undoes');
+  assert.equal(await page2.isEnabled('#redo-btn'), true, 'Redo is ready after an undo');
+  await page2.click('#redo-btn');
+  assert.deepEqual(await layoutNow(), undoneOne, 'the Redo button redoes');
+  assert.equal(await page2.isDisabled('#redo-btn'), true, 'Redo has nothing left');
+  await page2.click('#undo-btn');
+  const beforeSweep = await layoutNow();
+  await page2.focus('#board');
+  await page2.keyboard.press('b');
+  const tileAt2 = (x, y) => page2.evaluate(([tx, ty]) => window.__frontOfHouse.boardClientOf(tx, ty), [x, y]);
+  const sweepFrom = await tileAt2(20.5, 12.5);
+  const sweepTo = await tileAt2(22.5, 12.5);
+  await page2.mouse.move(sweepFrom.x, sweepFrom.y);
+  await page2.mouse.down();
+  await page2.mouse.move(sweepTo.x, sweepTo.y, { steps: 24 });
+  await page2.mouse.up();
+  await page2.waitForTimeout(20);
+  const sweptLayout = await layoutNow();
+  assert.ok(beforeSweep.length - sweptLayout.length >= 2, `the drag bulldozed ${beforeSweep.length - sweptLayout.length} objects`);
+  await page2.keyboard.press('Control+z');
+  assert.deepEqual(await layoutNow(), beforeSweep, 'one undo puts back everything one drag removed');
+  await page2.keyboard.press('b');
+  await page2.click('[data-act="confirm-build"]');
+  assert.equal((await game(page2)).phase, 'promote');
+  await page2.click('[data-act="back"]');
+  assert.equal((await game(page2)).phase, 'build');
+  assert.equal(await page2.isDisabled('#undo-btn'), true, 'locking the layout clears Undo');
+  assert.equal(await page2.isDisabled('#redo-btn'), true, 'locking the layout clears Redo');
+  ok('undo and redo step through layout changes by key and button, a bulldozer drag is one step, and locking clears them');
+
   // Signing inside the three-second wind-down after the incident still leaves
   // the board on the signed crowd. Seed 1 rains, so the crowd the board shows
   // before the incident differs from the one that is signed.
