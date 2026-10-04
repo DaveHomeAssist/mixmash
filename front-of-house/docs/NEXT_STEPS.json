@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "6ed7b7c measured · CI and native evidence verified",
+  "head": "76900b4 base · paired regression gate implemented",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "CI calibration and real native/display evidence verified; public summaries and reproduction tools await their own delivery. Parallel sanitation/research/ownership remain separately tracked.",
+  "statusReason": "PR87 evidence delivery is in CI. Paired CI regression evaluator and full-protocol slowdown proof are implemented; actual run acceptance remains pending. Parallel gameplay records preserved.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -711,6 +711,18 @@
               "Actual full-client DPR1→2→1 moves preserve fixed1000×613 CSS size, exact state and yaw37/135 picking. Public reproduction commands pass; native command quick windows remain distinct from the frozen full measurement.",
               "Default headless quick mode and deliberate missing-browser cleanup are checked separately. Public summary/tool CI and deployment pending.",
               "Final local validation:276 repository tests, build, generated docs, balance simulation and three reporting tests pass; generated balance/docs unchanged. Six default headless short windows and deliberate missing-browser retained-failure cleanup pass; catalog317 files."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/87"
+          },
+          {
+            "id": "FOH-P01g",
+            "scope": "Same-runner measured renderer regression gate and real CPU fault proof",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Pinned6ed7b7c paired full18-window measurements; identical rendered fixtures/browser/runner/quality required, raw/source/fixture hashes and recalculated statistics checked.",
+              "Initial limits: median frame mean/p95 max25% or8ms increase; median CPU p95 max50% or1ms. Four evaluator and three reporting tests pass, including invalid evidence and strict numeric boundaries. Actual calibration18-window audit passes.",
+              "20ms diagnostic injection remains confined to the isolated harness. Full live candidate acceptance and numeric rejection of an actual full fault run remain pending.",
+              "276 repository tests/build and seven evaluator/reporting tests pass. Six short actual Metal fault windows are valid and record CPU p95 approximately20.2–20.7ms; this proves injection operation only, not full CI budget acceptance."
             ]
           }
         ]

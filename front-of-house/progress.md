@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Paired performance gate implemented
+
+- Added pinned-baseline/current comparisons on the same Ubuntu24.04 runner, with complete18-window protocols, raw/source/fixture audit and median frame/CPU limits. Existing correctness checks remain unchanged; timing runs for relevant changes or manual dispatch.
+- Four new evaluator tests cover complete/invalid evidence, median/boundary behavior, incomparable environments/quality and diagnostic fault semantics. All seven reporting/evaluator tests pass. The validator also audits the actual18-window calibration artifact.
+- A20ms isolated CPU fault provides a measured negative control; short local fault checks validate the harness only. Full live paired/fault execution, CI and delivery remain pending.
+
+
 ## 2026-10-04: CI calibration and native display evidence
 
 - PR81 and PR82 passed required CI, merged and reached Pages; measurement/procedure files match their tested source. Full CI run37205343575 passed, with all18 source/fixture/raw hashes and recomputed statistics verified. Software crowd cadence1.91–3.06Hz remains distinct from device targets.

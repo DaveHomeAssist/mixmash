@@ -12,7 +12,8 @@ import { createGame, applyAction, showPreview, venueSpec, sightlineTiles } from 
 import { STARTER_LAYOUT, FLOOR_DENSITY } from '../front-of-house/data.mjs';
 
 const args = process.argv.slice(2), quick = args.includes('--quick'), gpu = args.includes('--gpu=metal') ? 'metal' : args.includes('--gpu=default') ? 'default' : 'software';
-for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
+for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
+const faultCpuMs = args.includes('--fault-cpu=20') ? 20 : 0;
 const nativeChrome = args.includes('--native-chrome');
 if (nativeChrome && (args.includes('--dpr=2') || args.includes('--large-viewports'))) throw new Error('Native Chrome uses the actual display density and available desktop size');
 const requestedDpr = args.includes('--dpr=2') ? 2 : 1;
@@ -46,6 +47,7 @@ const report = {
   protocol: { layer: 'isolated renderer; excludes full game and HUD', warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, requestedDpr: nativeChrome ? 'native' : requestedDpr, viewports, headless: !nativeChrome, requestedBackend: gpu, launchArgs: options.args || [], reducedMotion: 'no-preference', shadows: '1024 PCFSoft', antialias: true, adaptiveQuality: false, gpuTimestampMs: 'unavailable', acceptance: 'descriptive only; no device or statistical pass limits inferred' },
   fixtureSha256: {}, runs: [], errors: [],
 };
+report.protocol.faultCpuMs = faultCpuMs;
 for (const [name, value] of Object.entries(fixtures)) { const bytes = JSON.stringify(value); report.fixtureSha256[name] = hash(bytes); await writeFile(join(output, `${name}-fixture.json`), bytes); }
 const save = () => writeFile(join(output, 'report.json'), JSON.stringify(report, null, 2));
 await save();
@@ -80,14 +82,18 @@ try {
       record.coldLoadMs = performance.now() - coldStart;
       // Screenshots and diagnostics are outside the warm-up / timed sample window.
       await page.screenshot({ path: join(output, `${id}.png`) });
-      const raw = await withDeadline(page.evaluate(async ({ warmupMs, measurementMs, headless }) => {
+      const raw = await withDeadline(page.evaluate(async ({ warmupMs, measurementMs, headless, faultCpuMs }) => {
         const violations = [], tasks = [], frames = [], submissions = [], before = JSON.stringify(input);
         const invalid = event => violations.push({ type: event.type, at: performance.now() });
         document.addEventListener('visibilitychange', invalid); window.addEventListener('resize', invalid); if (!headless) window.addEventListener('blur', invalid); canvas.addEventListener('webglcontextlost', invalid);
         let observer = null;
         const longTasksSupported = PerformanceObserver.supportedEntryTypes.includes('longtask');
         if (longTasksSupported) { observer = new PerformanceObserver(list => tasks.push(...list.getEntries().map(e => ({ start: e.startTime, duration: e.duration })))); observer.observe({ type: 'longtask' }); }
-        const update = seconds => { backend.pause(); backend.setCamera(cameraAt(seconds)); backend.draw({ ...input, t: seconds }); backend.resume(); };
+        const update = seconds => {
+          backend.pause(); backend.setCamera(cameraAt(seconds)); backend.draw({ ...input, t: seconds }); backend.resume();
+          // Explicit diagnostic fault, confined to this isolated harness; included in measured CPU work.
+          if (faultCpuMs) { const until = performance.now() + faultCpuMs; while (performance.now() < until) {} }
+        };
         const warmStart = performance.now();
         await new Promise(resolve => { function warm(t) { update(((t - warmStart) / 1000) % 30); if (t - warmStart >= warmupMs) resolve(); else requestAnimationFrame(warm); } requestAnimationFrame(warm); });
         backend.setCamera(cameraAt(0));

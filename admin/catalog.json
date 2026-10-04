@@ -2426,6 +2426,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-performance-gate.test.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-performance-gate.test.mjs",
+      "description": "Budget and evidence rejection tests: synthetic timing is evaluator coverage, never measured acceptance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-performance-gate.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-performance.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2713,6 +2723,16 @@
       "title": "lot-assets.mjs",
       "description": "Generate/check the source-owned Lot sample manifest with measured bounds and source digests.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/lot-assets.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/tools/performance-gate.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "performance-gate.mjs",
+      "description": "Paired CI regression limits; these are change-detection tolerances, not device frame-rate targets.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/performance-gate.mjs",
       "open": null
     },
     {
