@@ -2176,6 +2176,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-guest-flow.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-guest-flow.mjs",
+      "description": "Lot connectivity and finite normal departure conservation, replay and validation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-guest-flow.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-lot-camera.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2373,6 +2383,16 @@
       "title": "game.js",
       "description": "Front of House browser client: the five phase panels, the board, playback and saves.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/game.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/guest-flow.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "guest-flow.mjs",
+      "description": "Pure game access and normal-departure model. Occupancy and receipts belong to the engine.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/guest-flow.mjs",
       "open": null
     },
     {
