@@ -289,3 +289,5 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 - The live board now respects integer admitted counts. Distinct queue movement and 3D integration remain FOH-O01c; physical-device/human readability and balance acceptance remain unverified.
 
 - Final pre-integration validation: 246 repository tests, build, unchanged legacy simulation, 28 legacy browser checks and four live Chromium/WebKit desktop/phone journeys pass. Warmed offline reload preserves a travelling worker and cash. The game action client also reaches live minute 5 using its coordinate input payload. The Promote option now opens a settings window so short desktop and phone layouts fit. Combined 3D preview validation follows the merge reconciliation.
+
+- Linux CI exposed 5px vertical overflow in the phone Costs tab, despite all four macOS live journeys passing. Mobile ledger cell padding now leaves space for the different font metrics without reducing text size or changing the no-scroll assertion. The failed run is retained on PR62; final CI must pass.

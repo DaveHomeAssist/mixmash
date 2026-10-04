@@ -579,6 +579,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .win-foot { flex-wrap: wrap; gap: 8px 12px; }
   .win-foot .tip { flex-basis: 100%; order: 3; }
   .win .meta-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .win .ledger th, .win .ledger td { padding: 3px 8px; }
 
   /* Tabs (docs/HUD.md decision 12): one group at a time, so nothing scrolls. */
   .tabbar { display: flex; gap: 4px; flex: none; order: 1; }

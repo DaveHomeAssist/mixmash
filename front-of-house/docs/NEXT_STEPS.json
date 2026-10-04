@@ -510,7 +510,7 @@
         "doneWhen": "Quiet/surge/busy-bar choices, deterministic speed/reload, finite conserved demand and one-time settlement accounting.",
         "status": "in-progress",
         "evidence": [
-          "services.mjs is an experimental pure engine prerequisite; existing game remains unchanged"
+          "Experimental live service core and player controls implemented; PR62 final delivery checks pending."
         ],
         "slices": [
           {
@@ -518,9 +518,8 @@
             "scope": "Deterministic admission/bar service core independent of renderer",
             "status": "implemented-local-verification",
             "evidence": [
-              "10 service tests: quiet/surge/busy bar, counts/cash, transfer, replay, bounded checkpoints",
-              "Existing game integration and representative crowd remain FOH-O01b",
-              "PR #62: 235 tests, 28 browser checks and Chromium/WebKit model parity; final merge reconciliation is being verified."
+              "12 service core tests cover conservation, transfers, replay, bounded checkpoints and prospective incident effects.",
+              "Core is connected to the optional Lot pilot; unselected shows retain existing rules."
             ]
           },
           {
@@ -529,7 +528,8 @@
             "status": "implemented-local-verification",
             "evidence": [
               "61 engine/service tests and 246 repository tests pass; 28 legacy browser checks and four desktop/phone Chromium/WebKit live journeys pass; offline transfer/reload preserves cash",
-              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)"
+              "Real Lot policy fixtures: seed 1 favors bar ($831 vs $819); seed 3 favors temporary admission ($230 vs -$186)",
+              "Combined local 3D/live desktop and phone journeys pass. Linux CI found 5px phone Costs overflow; mobile ledger padding fixed, final CI rerun required."
             ]
           },
           {
