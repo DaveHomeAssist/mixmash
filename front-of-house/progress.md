@@ -3,6 +3,8 @@ Original prompt: Create the starter documentation for the Concert Tycoon game co
 
 ## 2026-10-04: Realistic 3D Lot preflight
 
+Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmash/pull/58).
+
 - Verified production baseline [`522f3f2`](https://github.com/DaveHomeAssist/mixmash/commit/522f3f2f49de6dcf74fa22fa51b900684dd54360), its successful Pages build and byte parity of the four deployed runtime modules. Delivery changes only this game's documentation and the public admin catalog.
 - Expanded [prototype review](docs/PROTOTYPE_REVIEW.md): archive digest/CRC/path checks; eight declared dependency hashes matched; fresh isolated Chromium contexts exercised orbit, zoom, four presets, resize and reduced motion with verified module replay and blocked external fonts. No archive source or images were published. Observed Spin under reduced motion, missing camera bounds, elevated FOH and tilted Plan; lifecycle/disposal and source-rights gaps remain.
 - Added the [renderer contract](docs/RENDER_CONTRACT.md), tracing the existing scene and board operations to source and labeling new adapter, picking, camera, input, recovery and parity behavior as proposed. No persisted object IDs exist; physical scale calibration remains explicit and pending.

@@ -241,6 +241,10 @@
     {
       "label": "Renderer contract",
       "url": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/RENDER_CONTRACT.md"
+    },
+    {
+      "label": "Preflight delivery and CI",
+      "url": "https://github.com/DaveHomeAssist/mixmash/pull/58"
     }
   ],
   "kickoffPrompt": "Read the Front of House decision packet and feature briefs in the active MixMash checkout. Reconcile current source with NEXT_STEPS.json. Record any explicit answers Dave has provided, leaving unanswered choices open. Fix ordinary defects only within authorized scope, and implement only the selected feature milestone. Verify the applicable checks and delivery evidence, then refresh the project record and the existing workspace Next Steps Board. Preserve unrelated work and current release gates.",
@@ -290,7 +294,8 @@
       "balanceSimulation": "all verdicts pass; no BALANCE_BASELINE drift",
       "adminIndex": "273 tracked files; catalog diff limited to Front of House",
       "privacyAndLinks": "passed; no archive files/images or private paths added"
-    }
+    },
+    "preflightPR": "https://github.com/DaveHomeAssist/mixmash/pull/58"
   },
   "decisionState": {
     "D1": {
