@@ -2,7 +2,7 @@
 import { createBoard } from './board.js';
 import { createServiceLayout, projectServiceCrowd } from './service-crowd.mjs';
 
-export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {} } = {}) {
+export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {}, onView = () => {} } = {}) {
   const fallback = createBoard(canvas);
   let backend = null, layer = null, lastScene = null, clear = null, loading = null, destroyed = false;
   let serviceLayout = null, serviceLayoutKey = '';
@@ -37,14 +37,14 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
         backend = createRenderer(layer, { venue: backendVenue, deferRendering: true, onStatus: s => {
           if (destroyed) return;
           reason = s.state === 'lost' || s.state === 'failed' ? '3D is unavailable. Your show is unchanged in the classic view.' : '';
-          sync();
+          sync(); onView();
         } });
         backend.setClear(clear);
         if (supported(lastScene?.floor) && backendVenue === lastScene.floor) backend.draw(lastScene);
       } catch {
         backend?.destroy(); backend = null; layer?.remove(); layer = null;
         reason = '3D could not start. Your show is unchanged in the classic view.';
-      } finally { loading = null; sync(); }
+      } finally { loading = null; sync(); onView(); }
     });
     sync(); return loading;
   }
@@ -61,21 +61,21 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
     sync();
     if (enabled && (!backend || backendVenue !== scene.floor) && supported(scene.floor) && !loading && !reason) void initialize();
   }
-  function resize() { fallback.resize(); backend?.resize(); }
+  function resize() { fallback.resize(); backend?.resize(); onView(); }
   function destroy() {
     if (destroyed) return;
     destroyed = true; backend?.destroy(); fallback.destroy(); layer?.remove(); canvas.classList.remove('board-3d-input'); active = false;
   }
   const api = { draw, resize, destroy, status,
     pickAt: (x, y) => active ? backend.pickAt(x, y) : { object: fallback.objectAt(x, y), blocked: false },
-    setEnabled: (value) => { enabled = !!value; reason = ''; sync(); if (enabled && (!backend || backendVenue !== lastScene?.floor || backend.status().state === 'failed')) return initialize(); if (active && lastScene) backend.draw(lastScene); return Promise.resolve(); },
+    setEnabled: (value) => { enabled = !!value; reason = ''; sync(); onView(); if (enabled && (!backend || backendVenue !== lastScene?.floor || backend.status().state === 'failed')) return initialize(); if (active && lastScene) backend.draw(lastScene); return Promise.resolve(); },
     retry: () => { enabled = true; reason = ''; return initialize(); },
     setClear: (rect) => { clear = rect; fallback.setClear(rect); backend?.setClear(rect); },
     info: () => ({ ...current().info(), renderer: active ? 'three-webgl' : 'canvas-2d', adapter: status(), serviceCrowd: lastScene?.serviceCrowd || null }),
-    setCamera: (value) => active ? backend.setCamera(value) : null,
-    preset: (name) => active ? backend.preset(name) : false,
+    setCamera: (value) => { const result = active ? backend.setCamera(value) : null; onView(); return result; },
+    preset: (name) => { const result = active ? backend.preset(name) : false; onView(); return result; },
     placeOf: (x, y) => active ? { renderer: 'three-webgl', ground: backend.clientOf(x, y) } : fallback.placeOf(x, y),
   };
-  for (const name of ['tileAt', 'objectAt', 'zoomTo', 'zoomBy', 'camera', 'clientOf', 'panBy', 'follow', 'centerOn', 'turnView']) api[name] = (...args) => current()[name](...args);
+  for (const name of ['navigation', 'panTo', 'tileAt', 'objectAt', 'zoomTo', 'zoomBy', 'camera', 'clientOf', 'panBy', 'follow', 'centerOn', 'turnView']) api[name] = (...args) => { const result = current()[name](...args); if (['zoomTo', 'zoomBy', 'panBy', 'panTo', 'follow', 'centerOn', 'turnView'].includes(name)) onView(); return result; };
   return api;
 }

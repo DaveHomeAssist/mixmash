@@ -239,3 +239,8 @@ Festival Book discloses one site ticket and both stage budgets. Stage bill opens
 Promote and Menu reopen Stage accounts. Main/Side use public draw bounds before doors and source-derived actual receipts after response. Site combines the single ticket gross, shared income, all production/site costs and both artist payments. Cash explicitly reconciles opening outflow, response already paid, signing income and final balance; a signed reopen uses recorded historical cash. Rules disclose the aggregate audience allocation and shared site-quality model. Compact windows page content; every field remains reachable without ordinary form scrolling.
 
 Settlement includes both production budgets, total artist pay and a link to detailed accounts. A side-stage ticket is never added as extra revenue. The main door basis uses its own stage; side pay is withheld once at signing. The Promote ticket estimate now uses the same independent seating or Festival gross as its detail window, and the Festival presale chart uses the same published forecast. Version50 refreshes the player controls. Physical-device and final scene acceptance remain separate.
+
+
+## 2026-10-04 navigation implementation
+
+Step7 now has a locally verified Split Acre desktop implementation. The overview follows arbitrary3D yaw and clips the actual visible ground at low pitch; it includes the fixed side-stage annex in3D. Classic uses its yard and discrete view turns. Pointer/keyboard pan preserves zoom and saves, and measured HUD gaps keep primary controls clear. Fit, phones and compact windows without room hide the map. Delivery, integrated frame-budget evidence and physical/human acceptance remain open; the existing full-HUD performance issue is not closed by geometry or browser checks.

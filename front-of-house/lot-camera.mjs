@@ -1,7 +1,8 @@
 // Logical-unit perspective camera. Presentation only: never reads or writes a save.
+import { clipGround } from './site-map-geometry.mjs';
 import { OBJECT_TYPES } from './data.mjs';
 import { AUTHORING_REFERENCE } from './lot-models.mjs';
-import { PerspectiveCamera, Vector2, Vector3, Raycaster, Plane } from './vendor/three/three.module.min.js';
+import { PerspectiveCamera, Vector2, Vector3, Raycaster, Plane, Matrix4 } from './vendor/three/three.module.min.js';
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 const finite = (n, fallback) => Number.isFinite(n) ? n : fallback;
@@ -143,11 +144,20 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
     apply(); return true;
   }
   function info() { return { ...state, authoredEye: authoredEye ? structuredClone(authoredEye) : null, zooms: [...LOT_ZOOMS], distance, safe: { ...safe }, viewport: { ...rect } }; }
+  function navigation() {
+    const m = new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).elements;
+    const component = row => p => m[row] * p.x + m[8 + row] * p.y + m[12 + row];
+    const x = component(0), y = component(1), z = component(2), w = component(3);
+    const left = 2 * safe.x / rect.w - 1, right = 2 * (safe.x + safe.w) / rect.w - 1;
+    const top = 1 - 2 * safe.y / rect.h, bottom = 1 - 2 * (safe.y + safe.h) / rect.h;
+    return { width, depth, rotation: state.yaw, footprint: clipGround(width, depth, [p => x(p) - left * w(p), p => right * w(p) - x(p), p => y(p) - bottom * w(p), p => top * w(p) - y(p), p => z(p) + w(p), p => w(p) - z(p), p => w(p) - 1e-8]) };
+  }
+  function panTo(x, y) { state.x = clamp(finite(x, state.x), 0, width); state.y = clamp(finite(y, state.y), 0, depth); apply(); }
   function setStage(object) {
     if (!object) return;
     const rot = object.rot || 0, spec = OBJECT_TYPES.stage, w = rot % 2 ? spec.h : spec.w, h = rot % 2 ? spec.w : spec.h;
     stage = { x: object.x + w / 2, y: object.y + h / 2, rot, w, h }; apply();
   }
   apply();
-  return { setStage, camera, resize, setCamera, preset, project, ray, groundAt, tileAt, zoomTo, panBy, info };
+  return { setStage, navigation, panTo, camera, resize, setCamera, preset, project, ray, groundAt, tileAt, zoomTo, panBy, info };
 }

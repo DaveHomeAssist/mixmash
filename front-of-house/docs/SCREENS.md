@@ -202,3 +202,8 @@ The existing seat/lawn price and held-night controls retain their behavior. The3
 ### Split Acre preview
 
 The Camera window adds a keyboard-accessible Side stage preset for Split Acre. Wide and Plan fit both stages in the 52 × 24 presentation extent; the editable main yard remains 40 × 24. Taps outside that yard never place equipment. The fixed annex is provisional scenery, not extra capacity or calibrated physical dimensions. New versioned shows distribute representative guests using the actual stage accounts, with at most180 samples across the whole site. Legacy unknown side allocation remains explicit. Cameras, graphics recovery and room changes never change cash, attendance or saved state.
+
+
+### Zoomed site overview
+
+Split Acre shows a small desktop overview above Fit zoom. The blocks rotate with the view; a white outline shows the visible ground and a white dot marks the camera target. The3D overview includes the fixed annex; the classic overview uses the existing yard. Click or drag a valid map location to pan without placing equipment or changing zoom. Arrow keys pan, Enter centres, Home returns to Fit, and Escape returns focus to the board. The map hides at Fit, on phones and when a compact window has no safe HUD gap. Crowd tint is illustrative; stage accounts remain the numeric authority. Camera state is not saved.

@@ -153,6 +153,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     draw, resize, pickAt, objectAt: (x, y) => pickAt(x, y).object, destroy,
     setClear: (value) => { clear = value; resize(); },
     camera: () => camera.info(),
+    navigation: () => ({ ...camera.navigation(), fixed: festival ? [{ ...FESTIVAL_SCENE.annex, kind: 'ground' }, { ...FESTIVAL_SCENE.stage, kind: 'stage' }] : [] }),
+    panTo: (x, y) => { camera.panTo(x, y); render(); },
     setCamera: (value) => { const c = camera.setCamera(value); render(); return c; },
     preset: (name) => { if (name === 'side' && festival) { camera.setCamera({ x: 46, y: 7, zoom: 2, yaw: 0, pitch: 48 }); render(); return true; } const ok = camera.preset(name); render(); return ok; },
     clientOf: (x, y, z = 0) => camera.project(x, y, z),

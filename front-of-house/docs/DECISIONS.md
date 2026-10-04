@@ -518,3 +518,12 @@ Extend the explicit preview one room at a time from existing venue metadata. Fat
 Browser verification exposed a pre-existing inconsistency: pillar tiles reduced usable floor and blocked sightlines but new equipment could overlap them. Reject such new placement/replacement commands and use the same rule for the ghost. Preserve normalization, existing layouts and historical evaluation to avoid silently removing gear or changing older show outcomes. A legacy conflict can be removed normally; unrelated safe edits remain possible. No save fields or schema changes.
 
 Loam Shell extends this policy in FOH-V02r2: its cutaway shell stays behind the build area, and seating/lawn floor guides are expressly illustrative and pick-through. The engine's400 aggregate seats do not imply a newly calibrated physical seating plan. No build restriction, capacity or save change is introduced.
+
+
+## CT-DEC-23 Zoomed site overview
+
+- Date: 2026-10-04
+- Status: Implemented under Dave's autonomous execution direction and CT-DEC-19; delivery and performance/device acceptance remain separately verified.
+- Scope: FB-08 and HUD step7 for Split Acre.
+
+Zoomed side-stage and arbitrary-yaw views remove much of the main yard from view, so retain the planned desktop overview. Derive the visible ground from the active renderer: clip the perspective frustum to the site plane and floor regions, rather than showing a misleading rectangle at low pitch. The map rotates with the view, has pointer and keyboard pan controls, preserves zoom and carries no saved state. Fit and phone layouts hide it; compact windows hide it when no unobstructed HUD margin fits. Other venues keep their current navigation. No gameplay, physical scale or final art policy changes.

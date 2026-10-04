@@ -202,3 +202,35 @@ test('Festival decorative allocation conserves displayed attendance and the glob
   assert.equal(main.info().representativeGuests + side.info().representativeGuests, 180);
   main.dispose(); side.dispose(); models.dispose();
 });
+
+test('overview rotation round trips and fits every site edge', async () => {
+  const { overviewTransform, clipGround } = await import('./site-map-geometry.mjs');
+  for (const rotation of [0, 37, 45, 90, 135, 270, 359]) {
+    const map = overviewTransform(52, 24, rotation);
+    for (const [x, y] of [[0, 0], [52, 24], [0, 24], [52, 0], [46, 10], [20, 12]]) {
+      const q = map.project(x, y), p = map.inverse(q.x, q.y);
+      assert.ok(q.x >= 5.99 && q.x <= 174.01 && q.y >= 5.99 && q.y <= 104.01);
+      assert.ok(Math.abs(p.x - x) < 1e-10 && Math.abs(p.y - y) < 1e-10);
+    }
+  }
+  const polygon = clipGround(10, 10, [p => p.x - 2, p => 5 - p.x, p => p.y - 3, p => 5 - p.y]);
+  assert.equal(polygon.length, 4); assert.deepEqual(new Set(polygon.map(p => `${p.x},${p.y}`)), new Set(['2,3', '5,3', '5,5', '2,5']));
+  assert.deepEqual(clipGround(10, 10, [p => p.x - 11]), []);
+});
+
+test('perspective overview clips the actual safe ground at low pitch and preserves camera pose while panning', () => {
+  const camera = createLotCamera({ width: 52, depth: 24 });
+  camera.resize({ x: 7, y: 11, w: 1440, h: 900 }, { x: 50, y: 90, w: 1050, h: 690 });
+  const check = () => {
+    const n = camera.navigation(); assert.ok(n.footprint.length >= 3);
+    for (const p of n.footprint) {
+      assert.ok(p.x >= -1e-7 && p.y >= -1e-7 && p.x <= 52 + 1e-7 && p.y <= 24 + 1e-7);
+      const q = camera.project(p.x, p.y); assert.ok(q.x >= 57 - 1e-5 && q.x <= 1107 + 1e-5 && q.y >= 101 - 1e-5 && q.y <= 791 + 1e-5, JSON.stringify({ p, q, c: camera.info() }));
+    }
+  };
+  for (const yaw of [0, 37, 135, 359]) for (const pitch of [15, 48, 85]) for (const zoom of [1, 1.5, 2, 3]) { camera.setCamera({ yaw, pitch, zoom, x: 26, y: 12 }); check(); }
+  for (const preset of ['plan', 'foh', 'stage']) {
+    camera.preset(preset); camera.zoomTo(2); const before = camera.info(); camera.panTo(29, 13); const after = camera.info();
+    for (const key of ['zoom', 'yaw', 'pitch', 'preset']) assert.equal(after[key], before[key]); check();
+  }
+});

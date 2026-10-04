@@ -14,6 +14,7 @@ import { heldRunQuote } from './held-run.mjs';
 import { OWNERSHIP_COMMAND_LIMIT } from './ownership.mjs';
 import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
+import { createSiteMap } from './site-map.mjs';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
 
@@ -1524,10 +1525,13 @@ function historyHtml() {
 
 let rendererStatusKey = '';
 const classicBoardHelp = $('#board-help').textContent;
+let mapRefreshQueued = false;
 const board = createBoardAdapter(el.canvas, {
+  onView: () => { if (!mapRefreshQueued) { mapRefreshQueued = true; queueMicrotask(() => { mapRefreshQueued = false; siteMap.refresh(); }); } },
   enabled: new URLSearchParams(location.search).get('renderer') === '3d',
   onStatus: updateRendererStatus,
 });
+const siteMap = createSiteMap($('#site-map'), board, draw);
 
 function updateRendererStatus(status) {
   const note = $('#renderer-status');
@@ -1624,6 +1628,7 @@ function draw() {
   }
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
   board.draw(scene);
+  siteMap.update(scene);
   const worker = $('#live-worker');
   if (worker) worker.title = board.info().serviceCrowd?.diagnostic || '';
   updateZoomButtons();
@@ -1657,6 +1662,7 @@ function layoutBoard() {
   root.setProperty('--board-bottom', `${bottom}px`);
   root.setProperty('--clear-cx', `${Math.round(clear.x + clear.w / 2)}px`);
   root.setProperty('--clear-w', `${Math.round(clear.w)}px`);
+  siteMap.layout();
   const key = [width, height, clear.x, clear.y, clear.w, clear.h].join();
   if (key === laidOut) return;
   laidOut = key;
@@ -2414,6 +2420,7 @@ window.__frontOfHouse = {
   buildTools: () => ({ tool: ui.tool, selection: ui.selection, undo: history.undo.length, redo: history.redo.length }),
   board: () => board.info(),
   rendererStatus: () => board.status(),
+  siteMap: () => siteMap.info(),
   rendererRetry: () => board.retry(),
   boardCamera: (value) => value ? board.setCamera(value) : board.camera(),
   boardPreset: (name) => board.preset(name),

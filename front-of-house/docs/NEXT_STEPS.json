@@ -1188,8 +1188,12 @@
           "FOH-V02"
         ],
         "doneWhen": "Evaluate zoomed Split Acre navigation; implement minimap if needed or record evidence-backed deferral, without claiming unbuilt work shipped.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "FOH-U01a implements the already scoped Split Acre desktop overview. It rotates with the view and clips the actual safe ground footprint, including the3D annex, with pointer/keyboard pan and no saved camera state. Fit/phone/compact hiding and measured HUD gaps preserve primary controls.",
+          "All392 repository tests, build, generated docs and unchanged simulator pass. Four classic/3D desktop complete-show journeys verify geometry/pan, zoom preservation, placement isolation, keyboard focus, off-map drags, resize, recovery, reload and exact settlement/state parity. Initial admin description and asynchronous-backend harness issues were corrected. Renderer-toggle/full player regression, current-head CI, hosted delivery and integrated performance/device acceptance remain open.",
+          "Actual Camera-window classic/3D toggles also preserve the correct overview extent and save; all four navigation journeys pass again. Full player regression and delivery remain in progress."
+        ]
       },
       {
         "id": "FOH-L01",

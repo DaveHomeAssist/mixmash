@@ -58,6 +58,11 @@
     <section class="board-wrap" aria-labelledby="board-title">
       <h2 id="board-title" class="sr-only">The lot</h2>
       <canvas id="board" tabindex="0" aria-label="Venue board" aria-describedby="board-help board-keys-any board-keys-build board-status"></canvas>
+      <aside id="site-map" class="site-map" hidden aria-label="Site overview">
+        <strong>Site overview</strong>
+        <canvas tabindex="0" role="group" aria-label="Site overview controls" aria-describedby="site-map-help"></canvas>
+        <span id="site-map-help" class="sr-only">Click or drag to move the camera. Arrow keys pan, Enter centres the site, Home fits the site, Escape returns to the board.</span>
+      </aside>
       <p id="board-status" class="board-status" aria-live="polite"></p>
     </section>
 

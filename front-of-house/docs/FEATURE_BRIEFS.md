@@ -180,6 +180,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Dependencies / risks:** Existing deferred decision remains in force. Start only when larger-site play demonstrates need after FB-01. **Relative effort:** medium. **Expansion:** none without a concrete navigation problem.
 
+### FOH-U01a — Zoomed Split Acre overview
+
+**Need and decision:** The verified side-stage preset puts the annex in view while most of the main yard leaves the phone/desktop camera. At zoom2/3, arbitrary pan and yaw remove the site boundary from view. Implement the already scoped desktop overview; retain Fit and camera presets on phones. This is an autonomous implementation decision within CT-DEC-19 and FB-08, not a new simulation feature.
+
+**Scope:** A small overview appears only for zoomed Split Acre on desktop. It rotates with the renderer's view, shows current layout blocks and a bounded crowd tint, and outlines the actual visible ground polygon. The perspective outline comes from ground-plane/frustum clipping, including low pitches and authored eye views; it is not an invented rectangle. The 3D map includes the fixed annex, while classic uses its existing yard. Click or drag pans without placing, changing zoom, advancing time or saving camera state. Arrow/Home keys and existing board controls remain available. Locate the map in a free HUD margin, never over primary controls; hide when a compact window has no safe slot. No independent animation loop.
+
+**Acceptance:** Check classic view turns and3D yaw37/135, pitch15/85/Plan, zoom1/1.5/2/3, both stage areas, off-map drags, keyboard focus, resize, theme, renderer recovery and room changes. Verify projected footprint bounds, exact pan targets, unchanged state/receipts and no overlap at desktop sizes; hidden at Fit and on phones. Measure redraw reuse and the integrated rendering cost separately from native full-HUD60fps and human/device acceptance. No source/archive art or new dependencies.
+
 ## Performance and delivery contract
 
 D5 A is accepted in [CT-DEC-17](DECISIONS.md#ct-dec-17-performance-acceptance): stable CI regression scenes plus **60fps desktop / 30fps low-power** device targets. The supported device/browser roster, percentile pass limits, tolerated stalls and relative regression alert remain **pending acceptance**. The previously suggested 20% alert and p95 ≤16.7/33.3 ms translations are proposals only; this procedure does not approve them or replace an existing CI gate. No workflow or runtime code changes accompany this preflight.

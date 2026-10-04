@@ -670,6 +670,10 @@
         {
           "name": "npm run smoke:front-of-house-festival",
           "description": "node test/front-of-house-festival-3d-smoke.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-navigation",
+          "description": "node test/front-of-house-navigation-smoke.mjs"
         }
       ]
     }
@@ -2716,6 +2720,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-navigation-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "Site overview journeys",
+      "description": "Actual classic/3D overview navigation, keyboard, placement isolation, resize, recovery and saved-state checks.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-navigation-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-performance-gate.test.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3093,6 +3107,26 @@
       "title": "services.mjs",
       "description": "Deterministic aggregate admission/bar service model for the optional live Lot pilot. Unselected careers retain their existing show and doors-snapshot rules.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/site-map-geometry.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "Site overview geometry",
+      "description": "Pure ground-plane clipping and reversible rotated overview projection.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/site-map-geometry.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/site-map.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "Site overview controls",
+      "description": "Desktop zoomed Festival overview with actual ground footprint, pointer and keyboard panning, safe HUD placement and cached redraws.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/site-map.mjs",
       "open": null
     },
     {
