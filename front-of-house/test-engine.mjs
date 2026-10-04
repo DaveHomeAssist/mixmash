@@ -9,6 +9,7 @@ import {
   presaleSplit, priceFactor, rollShow, incidentAtFor, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
+import { BINDINGS, binding, clashes, matches, reservedKeys } from './controls.mjs';
 
 // Runs a list of actions and fails the test on the first engine error.
 function run(state, actions) {
@@ -817,3 +818,52 @@ test('sandbox removes the cash gate, and the wet lot forces rain', () => {
   assert.equal(show.show.incidentId, 'rain');
 });
 
+// Key bindings (controls.mjs): the table both key handlers in game.js read.
+
+test('controls: no two key bindings can fire on the same key press', () => {
+  assert.deepEqual(clashes(), []);
+  const copy = { ...binding('rotate'), id: 'rotate-again' };
+  assert.deepEqual(clashes([...BINDINGS, copy]), ['rotate and rotate-again share "r", "R"'], 'a duplicate row is caught');
+  const shifted = { ...binding('move-cursor'), id: 'move-again', overrides: [] };
+  assert.equal(clashes([binding('pan'), shifted]).length, 1, 'Shift with an arrow is caught unless one binding overrides the other');
+});
+
+test('controls: no binding takes a key the browser or the system owns', () => {
+  assert.deepEqual(reservedKeys(), []);
+  const bad = [
+    { id: 'tab', combos: [{ keys: ['Tab'] }] },
+    { id: 'help', combos: [{ keys: ['F1'] }] },
+    { id: 'close-tab', combos: [{ keys: ['w'], meta: true }] },
+  ];
+  assert.deepEqual(reservedKeys(bad), ['tab uses Tab', 'help uses F1', 'close-tab uses w']);
+});
+
+test('controls: modifiers left out match either way, and named ones must agree', () => {
+  const key = (k, mods = {}) => ({ key: k, ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, ...mods });
+  assert.ok(matches('rotate', key('r')) && matches('rotate', key('R', { shiftKey: true })));
+  assert.ok(matches('pick-tool', key('3')) && !matches('pick-tool', key('3', { ctrlKey: true })) && !matches('pick-tool', key('9')));
+  assert.ok(matches('undo', key('z', { ctrlKey: true })) && matches('undo', key('z', { metaKey: true })));
+  assert.ok(!matches('undo', key('z')) && !matches('undo', key('Z', { ctrlKey: true, shiftKey: true })));
+  assert.ok(matches('redo', key('Z', { ctrlKey: true, shiftKey: true })) && matches('redo', key('z', { metaKey: true, shiftKey: true })));
+  assert.ok(matches('redo', key('y', { ctrlKey: true })) && !matches('redo', key('y', { metaKey: true })));
+  assert.ok(matches('pan', key('ArrowLeft', { shiftKey: true })) && !matches('pan', key('ArrowLeft')));
+});
+
+test('controls: the menu lists every binding exactly as the table names it', async () => {
+  const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+  const listed = [...html.matchAll(/<div data-binding="([^"]+)"><dt>([^<]*)<\/dt><dd>([^<]*)<\/dd><\/div>/g)]
+    .map(([, id, keys, label]) => ({ id, keys, label }));
+  assert.deepEqual(listed, BINDINGS.filter((b) => b.phases === 'all').concat(BINDINGS.filter((b) => b.phases !== 'all'))
+    .map((b) => ({ id: b.id, keys: b.keysLabel, label: b.label })));
+});
+
+test('undo: setLayout with an earlier copy restores the layout exactly, fence kit included', () => {
+  const s = run(createGame(5), [{ type: 'chooseDeal', deal: 'door' }, { type: 'setLayout', objects: D.STARTER_LAYOUT }]);
+  assert.ok(s.venue.objects.some((o) => o.type === 'fence'), 'the suggested layout has the fence kit');
+  const before = s.venue.objects.map((o) => ({ ...o }));
+  const changed = run(s, [{ type: 'remove', index: 0 }, { type: 'remove', index: 0 }]);
+  assert.notDeepEqual(changed.venue.objects, before);
+  const restored = run(changed, [{ type: 'setLayout', objects: before }]);
+  assert.deepEqual(restored.venue.objects, before);
+  assert.deepEqual(evaluateVenue(restored.venue), evaluateVenue(s.venue));
+});

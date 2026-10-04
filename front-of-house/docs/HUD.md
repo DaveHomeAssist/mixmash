@@ -92,6 +92,7 @@ Composites made for this spec: the board underneath is a real capture of the ful
 Notes:
 
 - **Tools get number keys 1 to 8**, in palette order. They are new; every other key stays (arrows, Enter, R, B, Q, Delete).
+- **Undo and Redo** (2026-10-03) are tiles after Rotate, with Ctrl+Z or ⌘Z and Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z. The tool grid went from five columns to six so they fit without a new row: a new row in the actions corner covered 2.55 to 3.04% of the lot at 1024 × 700, and the grid measured 1.40% against the 2% limit.
 - **Placed objects** moved into a Details window opened from the Build readouts (step 3), so keyboard users can still remove an object by name without a scrolling panel.
 - **The view turn** moves into the camera group. Its status line ("View quarter 1 of 4") becomes a short toast under the top strip, still `aria-live`.
 
@@ -146,7 +147,7 @@ Step 6 remains the next implementation phase: establish the 1920 × 1080 frame-t
 - **One controls landmark.** The phase panels stay inside `#panel` ("Controls") in reading order (phase card, tools or status, actions) and are placed with CSS. The skip link, `focusHeading()` and the smoke selectors keep working.
 - **Backplates.** Every panel sits on a near-opaque backplate (about 86% of the desk colour), so small text keeps 4.5:1 over any part of the board. The contrast check in the smoke rail covers the HUD's text.
 - **Live regions stay as they are:** `#msg`, the feed and the board status are polite. The meters are not live; their changes are announced through the message line when they matter.
-- **Keys** are listed in a help panel from the menu (`?`), which replaces the board's help paragraph.
+- **Keys** are listed in a help panel from the menu (`?`), which replaces the board's help paragraph. Since 2026-10-03 the list is one row per binding in `controls.mjs`, the table both key handlers read, and a test fails if the two differ.
 - **Reduced motion:** sheets appear without sliding, and camera moves jump instead of easing.
 
 ## 8. Narrow screens and phones (under 680 px)

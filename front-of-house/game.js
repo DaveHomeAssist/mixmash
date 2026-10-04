@@ -11,6 +11,7 @@ import {
   settlementPayout, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
 import { createBoard, LOOK } from './board.js';
+import { binding, matches } from './controls.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
@@ -104,12 +105,59 @@ function say(text, kind = 'info') {
   msg.textContent = text;
 }
 
+// Build undo and redo: a copy of the layout before each change, kept in memory only, so a
+// reload or leaving Build starts with none. Undo applies the copy through the engine's own
+// setLayout, which checks it like any other layout. A bulldozer drag is one step.
+const HISTORY_LIMIT = 50;
+const LAYOUT_ACTIONS = ['place', 'remove', 'setLayout'];
+const history = { undo: [], redo: [], restoring: false, drag: null };
+const copyLayout = (objects) => objects.map((o) => ({ ...o }));
+
+function resetHistory() {
+  history.undo = [];
+  history.redo = [];
+  history.drag = null;
+}
+
+function recordLayout(objects) {
+  if (history.drag && history.drag.recorded) return;
+  history.undo.push(copyLayout(objects));
+  if (history.undo.length > HISTORY_LIMIT) history.undo.shift();
+  history.redo = [];
+  if (history.drag) history.drag.recorded = true;
+}
+
+function stepHistory(from, to, done, none) {
+  if (state.phase !== 'build') return;
+  if (!from.length) { say(none); return; }
+  const current = copyLayout(state.venue.objects);
+  const pressed = document.activeElement;
+  history.restoring = true;
+  const ok = act({ type: 'setLayout', objects: from[from.length - 1] }, { quiet: true });
+  history.restoring = false;
+  if (!ok) return;
+  from.pop();
+  to.push(current);
+  say(done);
+  updateBuild();
+  // A button that just emptied its list is disabled; keep keyboard focus on its partner.
+  if (pressed && pressed.disabled && (pressed.id === 'undo-btn' || pressed.id === 'redo-btn')) {
+    const partner = $(pressed.id === 'undo-btn' ? '#redo-btn' : '#undo-btn');
+    if (partner && !partner.disabled) partner.focus();
+  }
+}
+const undoLayout = () => stepHistory(history.undo, history.redo, 'Undid the last change to the layout.', 'Nothing to undo.');
+const redoLayout = () => stepHistory(history.redo, history.undo, 'Redid the change to the layout.', 'Nothing to redo.');
+
 function act(action, { quiet = false } = {}) {
+  const before = state;
   const { state: next, error } = applyAction(state, action);
   if (error) {
     say(error, 'error');
     return false;
   }
+  if (next.phase !== before.phase) resetHistory();
+  else if (before.phase === 'build' && !history.restoring && LAYOUT_ACTIONS.includes(action.type)) recordLayout(before.venue.objects);
   state = next;
   persist();
   if (!quiet) say('');
@@ -323,12 +371,18 @@ function buildPanel() {
     </div>
     <div class="plate at-bl tools-plate" role="group" aria-label="Object to place" data-tab="Tools">
       <div class="tiles">${tiles}
-        <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key B">
-          <span class="tile-key" aria-hidden="true">B</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Bulldoze</span>
+        <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key ${binding('bulldoze').keysLabel}">
+          <span class="tile-key" aria-hidden="true">${binding('bulldoze').keysLabel}</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Bulldoze</span>
         </button>
-        <button type="button" class="tile" data-act="rotate" title="Rotate · key R">
-          <span class="tile-key" aria-hidden="true">R</span><span class="tile-glyph" id="rot-glyph" aria-hidden="true">${ARROWS[ui.rot]}</span><span class="tile-name" aria-hidden="true">Rotate</span>
+        <button type="button" class="tile" data-act="rotate" title="Rotate · key ${binding('rotate').keysLabel}">
+          <span class="tile-key" aria-hidden="true">${binding('rotate').keysLabel}</span><span class="tile-glyph" id="rot-glyph" aria-hidden="true">${ARROWS[ui.rot]}</span><span class="tile-name" aria-hidden="true">Rotate</span>
           <span class="sr-only">Rotate, <span id="rot-label"></span></span>
+        </button>
+        <button type="button" class="tile" data-act="undo" id="undo-btn" title="Undo · ${binding('undo').keysLabel}" disabled>
+          <span class="tile-glyph" aria-hidden="true">↶</span><span class="tile-name">Undo</span>
+        </button>
+        <button type="button" class="tile" data-act="redo" id="redo-btn" title="Redo · ${binding('redo').keysLabel}" disabled>
+          <span class="tile-glyph" aria-hidden="true">↷</span><span class="tile-name">Redo</span>
         </button>
       </div>
     </div>
@@ -386,6 +440,8 @@ function updateBuild() {
   fenceBtn.setAttribute('aria-label', fence ? 'Remove the fence kit' : `Add the fence kit, ${money(D.FENCE_KIT)}`);
   fenceBtn.setAttribute('aria-pressed', fence ? 'true' : 'false');
   $('#confirm-build').disabled = !v.ready;
+  $('#undo-btn').disabled = !history.undo.length;
+  $('#redo-btn').disabled = !history.redo.length;
   const dozing = ui.tool === 'bulldoze';
   const doze = $('#doze-btn');
   doze.classList.toggle('on', dozing);
@@ -1162,11 +1218,14 @@ el.canvas.addEventListener('pointerdown', (e) => {
   }
   if (state.phase !== 'build' || ui.tool !== 'bulldoze' || e.button !== 0) return;
   ui.dozing = true;
+  history.drag = { recorded: false };
   try { el.canvas.setPointerCapture(e.pointerId); } catch { /* the drag still works inside the canvas */ }
   doze(targetAt(e));
 });
-el.canvas.addEventListener('pointerup', () => { ui.dozing = false; ui.pan = null; });
-el.canvas.addEventListener('pointercancel', () => { ui.dozing = false; ui.pan = null; });
+// The drag's undo step stays open through the click that follows pointerup in the same task.
+const endDrag = () => { ui.dozing = false; ui.pan = null; setTimeout(() => { history.drag = null; }, 0); };
+el.canvas.addEventListener('pointerup', endDrag);
+el.canvas.addEventListener('pointercancel', endDrag);
 // A middle-button press would start the browser's autoscroll instead of a pan.
 el.canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
 el.canvas.addEventListener('pointermove', (e) => {
@@ -1210,25 +1269,27 @@ el.canvas.addEventListener('wheel', (e) => {
 }, { passive: false });
 el.canvas.addEventListener('focus', () => { ui.focused = true; draw(); });
 el.canvas.addEventListener('blur', () => { ui.focused = false; draw(); });
+// Keys on the board come from the binding table (controls.mjs); the conditions that are not
+// about the key itself (zoomed, the phase) stay here.
 el.canvas.addEventListener('keydown', (e) => {
-  if (e.key === 'q' || e.key === 'Q') {
+  if (matches('turn-view', e)) {
     e.preventDefault();
     const step = board.turnView();
     el.boardStatus.textContent = `View quarter ${step + 1} of 4. Props keep the original painted side.`;
     return;
   }
-  if (e.key === '=' || e.key === '+') { e.preventDefault(); zoomStep(1); return; }
-  if (e.key === '-' || e.key === '_') { e.preventDefault(); zoomStep(-1); return; }
-  if (e.key === '0') { e.preventDefault(); zoomStep(-board.camera().zooms.length); return; }
+  if (matches('zoom-in', e)) { e.preventDefault(); zoomStep(1); return; }
+  if (matches('zoom-out', e)) { e.preventDefault(); zoomStep(-1); return; }
+  if (matches('zoom-fit', e)) { e.preventDefault(); zoomStep(-board.camera().zooms.length); return; }
   const pans = { ArrowUp: [0, 1], ArrowDown: [0, -1], ArrowLeft: [1, 0], ArrowRight: [-1, 0] };
-  if (e.shiftKey && pans[e.key] && board.camera().zoom !== 1) {
+  if (matches('pan', e) && board.camera().zoom !== 1) {
     e.preventDefault();
     if (board.panBy(pans[e.key][0] * 80, pans[e.key][1] * 80)) el.boardStatus.textContent = 'Moved the view.';
     return;
   }
   if (state.phase !== 'build') return;
   const moves = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
-  if (moves[e.key]) {
+  if (matches('move-cursor', e)) {
     e.preventDefault();
     const g = state.venue.grid;
     ui.cursor = {
@@ -1239,18 +1300,18 @@ el.canvas.addEventListener('keydown', (e) => {
     board.follow(ui.cursor.x, ui.cursor.y);
     el.boardStatus.textContent = describeTile(ui.cursor);
     draw();
-  } else if (e.key === 'Enter' || e.key === ' ') {
+  } else if (matches('place', e)) {
     e.preventDefault();
     placeAt(ui.cursor);
     el.boardStatus.textContent = describeTile(ui.cursor);
-  } else if (e.key === 'Delete' || e.key === 'Backspace') {
+  } else if (matches('remove', e)) {
     e.preventDefault();
     removeAt(ui.cursor);
     el.boardStatus.textContent = describeTile(ui.cursor);
-  } else if (e.key === 'r' || e.key === 'R') {
+  } else if (matches('rotate', e)) {
     e.preventDefault();
     rotate();
-  } else if (e.key === 'b' || e.key === 'B') {
+  } else if (matches('bulldoze', e)) {
     e.preventDefault();
     toggleBulldoze();
   }
@@ -1301,6 +1362,7 @@ function onAct(e) {
     }
     resetModeButtons();
     state = mode === 'career' ? createGame(state.seed) : createGame(state.seed, { mode, scenario: 'wet-lot' });
+    resetHistory();
     ui.mounted = null;
     persist();
     render();
@@ -1314,6 +1376,8 @@ function onAct(e) {
   else if (a === 'last-sheet') openSettlement(target, { signed: true });
   else if (a === 'history') openWindow('history', `Show history (${state.history.length})`, historyHtml(), target, { scrolls: true });
   else if (a === 'bulldoze') toggleBulldoze();
+  else if (a === 'undo') undoLayout();
+  else if (a === 'redo') redoLayout();
   else if (a === 'fence') {
     const i = state.venue.objects.findIndex((o) => o.type === 'fence');
     if (i >= 0) act({ type: 'remove', index: i });
@@ -1534,9 +1598,11 @@ el.menu.addEventListener('click', onAct);
 $('#mode-note').textContent = `Career climbs from the ${D.VENUES.lot.name}. Sandbox opens every room with ${money(D.SANDBOX_CASH)}. Wet lot: rain is coming, the suggested layout is set, and you have ${money(D.SCENARIO_CASH)}.`;
 $('#menu-close').addEventListener('click', () => setMenu(false));
 const typing = (target) => !!target.closest('textarea, select, input:not([type="radio"]):not([type="checkbox"]):not([type="button"])');
+// Keys anywhere on the page come from the binding table (controls.mjs). An open window takes
+// only Escape and its own Tab loop.
 document.addEventListener('keydown', (e) => {
   if (!el.win.hidden) {
-    if (e.key === 'Escape') { e.preventDefault(); closeWindow(); return; }
+    if (matches('close', e)) { e.preventDefault(); closeWindow(); return; }
     if (e.key === 'Tab') {
       const stops = [...el.win.querySelectorAll('button:not([disabled]), [href], input:not([disabled])')];
       const first = stops[0];
@@ -1546,11 +1612,18 @@ document.addEventListener('keydown', (e) => {
     }
     return;
   }
-  if (e.key === 'Escape' && !el.menu.hidden) { e.preventDefault(); setMenu(false); return; }
-  if (e.key === '?' && !e.target.closest('input, textarea, select')) { e.preventDefault(); setMenu(el.menu.hidden); return; }
-  if (state.phase === 'build' && el.menu.hidden && /^[1-8]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey && !typing(e.target)) {
+  if (matches('close', e) && !el.menu.hidden) { e.preventDefault(); setMenu(false); return; }
+  if (matches('menu', e) && !e.target.closest('input, textarea, select')) { e.preventDefault(); setMenu(el.menu.hidden); return; }
+  if (state.phase !== 'build' || !el.menu.hidden || typing(e.target)) return;
+  if (matches('pick-tool', e)) {
     e.preventDefault();
     pickTool(PLACEABLE[Number(e.key) - 1]);
+  } else if (matches('undo', e)) {
+    e.preventDefault();
+    undoLayout();
+  } else if (matches('redo', e)) {
+    e.preventDefault();
+    redoLayout();
   }
 });
 document.addEventListener('pointerdown', (e) => {
@@ -1595,6 +1668,7 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
     ui.confirmNew = false;
     target.textContent = 'Start a new game';
     state = createGame(freshSeed());
+    resetHistory();
     persist();
     stopPlayback();
     ui.play = null;
@@ -1616,6 +1690,7 @@ function importCode(code) {
     return false;
   }
   state = normalizeState(migrateSave(parsed.state), freshSeed());
+  resetHistory();
   persist();
   stopPlayback();
   ui.play = null;

@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- **Front of House key table and Build undo:** every key binding lives in `front-of-house/controls.mjs`, which both key handlers read; the menu lists one row per binding, and the engine tests fail on clashing bindings, browser-owned keys or a menu list that differs from the table. Build gains Undo and Redo tiles with Ctrl+Z or ⌘Z and Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z; a bulldozer drag is one step, and the list is kept in memory only. No existing key changed; saves and balance are unchanged. Service worker v23.
+
 - **Front of House research design:** proposed development tree across production, bars, sanitation, vendors, admissions, security and venues, with prerequisites, research timing, deployment costs, specialization and acceptance gates. Added `front-of-house/docs/RESEARCH.md` and CT-DEC-13; connected the GDD, feature plan, roadmap and document index. Documentation only: existing gameplay, saves, balance and launch gates are unchanged.
 
 - **Front of House split view and occlusion:** Build status controls fit inside their card at narrow widths, and the header gives meters a second row in split view. Only PAs hidden by the stage receive the equipment show-through effect; restrooms behind a bar no longer appear painted over its counter. Service worker v22. The HUD document records the requested 360° camera direction; continuous orbit is not implemented in this fix.
