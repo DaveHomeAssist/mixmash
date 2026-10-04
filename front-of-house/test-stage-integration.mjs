@@ -139,3 +139,89 @@ test('soured side acts disappear from eligible choices while changing venues rem
   assert.deepEqual(E.stageOpenersFor(s), []); refuse(s, { type: 'chooseSideAct', artistId: 'hollow-census' }, /eligible/);
   s = act(s, { type: 'chooseVenue', venueId: 'club' }); assert.equal(s.venue.id, 'club');
 });
+
+function constrained(deal = 'sponsor') {
+  let s = act(E.createGame(8, { mode: 'sandbox' }), { type: 'enableEquipment' });
+  s = act(s, { type: 'chooseVenue', venueId: 'festival' });
+  s = act(s, { type: 'chooseDeal', deal, artistId: E.offersFor(s)[0], secondId: 'hollow-census', stagePolicy: 1, festivalPolicy: 1 });
+  return act(act(s, { type: 'setLayout', objects: D.FEST_STARTER }), { type: 'confirmBuild' });
+}
+test('Festival offers require +20 for earlier-tier headliners without inflating their draw', () => {
+  const base = act(E.createGame(8, { mode: 'sandbox' }), { type: 'chooseVenue', venueId: 'festival' });
+  for (let seed = 1; seed <= 60; seed++) assert.deepEqual(new Set(E.offersFor({ ...base, seed })), new Set(D.FEST_HEADLINERS));
+  for (const id of [...D.ROSTER, ...D.CLUB_ROSTER, ...D.AMP_ROSTER]) {
+    const seen = new Set();
+    for (const rel of [19, 20, 21]) for (let seed = 1; seed <= 60; seed++) {
+      const s = { ...base, seed, reputation: { ...base.reputation, artists: { [id]: rel } } }, offers = E.offersFor(s);
+      assert.deepEqual(E.offersFor(s), offers);
+      if (rel === 19) assert.equal(offers.includes(id), false);
+      else if (offers.includes(id)) {
+        seen.add(rel);
+        const side = E.stageOpenersFor(s).find(side => side !== id);
+        const booked = act(s, { type: 'chooseDeal', artistId: id, secondId: side, deal: 'guarantee', stagePolicy: 1, festivalPolicy: 1 });
+        assert.equal(booked.booking.terms.drawMult, E.termsFor(id, rel).drawMult);
+        const fallen = E.normalizeState({ ...booked, reputation: { ...booked.reputation, artists: { [id]: -100 } } });
+        assert.deepEqual(fallen.booking, booked.booking, 'accepted booking survives a later relationship change');
+        if (E.stageOpenersFor(s).includes(id)) refuse(s, { type: 'chooseDeal', artistId: id, secondId: id, deal: 'guarantee', stagePolicy: 1, festivalPolicy: 1 }, /distinct/);
+      }
+    }
+    assert.deepEqual(seen, new Set([20, 21]), id);
+  }
+});
+test('new sponsor contracts fix tickets, allow ads, freeze at doors and pay once', () => {
+  let s = constrained(), fixed = D.ARTISTS[s.booking.artistId].fairPrice;
+  assert.deepEqual(E.festivalPolicyFor(s), { version: 1, sponsorPrice: fixed });
+  assert.equal(s.promotion.price, fixed); refuse(s, { type: 'setPromotion', price: fixed + 1 }, /sponsor contract/);
+  s = act(s, { type: 'setPromotion', ads: { [D.AD_CHANNELS[0]]: 100 } });
+  const restored = E.normalizeState({ ...s, promotion: { ...s.promotion, price: fixed + 1 } });
+  assert.equal(restored.promotion.price, fixed); assert.equal(restored.cash, s.cash); assert.match(restored.stagesNotice, /Restored/);
+  refuse({ ...s, promotion: { ...s.promotion, price: fixed + 1 } }, { type: 'confirmPromotion' }, /sponsor ticket/);
+  const opened = open(s); assert.deepEqual(opened.show.festival, s.booking.festival);
+  const changed = structuredClone(opened); changed.promotion.price = fixed + 1;
+  assert.deepEqual(E.settlementFor(finish(E.normalizeState(changed))), E.settlementFor(finish(opened)));
+  const ended = finish(opened), r = E.settlementFor(ended), done = sign(ended);
+  assert.equal(r.sponsor, D.SPONSOR_PAY); assert.equal(done.cash, s.cash + r.net);
+  assert.deepEqual(E.settlementFor(E.normalizeState(done)), r); refuse(done, { type: 'acceptSettlement' }, /settle/);
+  assert.equal(act(done, { type: 'nextShow' }).booking.festival, undefined);
+});
+test('unmarked sponsors and new guarantee contracts retain adjustable prices', () => {
+  for (const s of [build('sponsor'), build('sponsor', false), constrained('guarantee')]) {
+    const changed = act(s, { type: 'setPromotion', price: 119 });
+    assert.equal(E.normalizeState(changed).promotion.price, 119); assert.equal(open(changed).show.stages?.price ?? changed.promotion.price, 119);
+  }
+  let s = act(act(constrained(), { type: 'back' }), { type: 'back' });
+  s = act(s, { type: 'chooseSideAct', artistId: 'salt-ledger' }); assert.equal(s.booking.festival, undefined);
+  s = act(s, { type: 'chooseDeal', deal: 'guarantee', artistId: E.offersFor(s)[0], secondId: 'salt-ledger', stagePolicy: 1 });
+  assert.equal(s.booking.festival, undefined);
+});
+test('invalid Festival policy is rejected or recovered without rewriting paid money', () => {
+  const fresh = act(E.createGame(8, { mode: 'sandbox' }), { type: 'chooseVenue', venueId: 'festival' });
+  refuse(fresh, { type: 'chooseDeal', deal: 'sponsor', festivalPolicy: 1 }, /needs stage/);
+  refuse(fresh, { type: 'chooseDeal', deal: 'sponsor', secondId: 'hollow-census', stagePolicy: 1, festivalPolicy: 2 }, /Unknown/);
+  const done = sign(finish(open(constrained())));
+  for (const festival of [{ version: 2 }, { version: 1 }, { version: 1, sponsorPrice: -1 }]) {
+    const loaded = E.normalizeState({ ...done, show: { ...done.show, festival } });
+    assert.equal(loaded.show.festival, undefined); assert.equal(loaded.cash, done.cash); assert.deepEqual(loaded.history, done.history);
+    assert.deepEqual(E.settlementFor(loaded), E.settlementFor(done)); assert.match(loaded.stagesNotice, /paid Festival condition/);
+  }
+});
+test('trusted main offers use the same next-day affordability pool with a distinct side act', () => {
+  const done = sign(finish(open(constrained())));
+  for (const id of [...D.ROSTER, ...D.CLUB_ROSTER, ...D.AMP_ROSTER]) done.reputation.artists[id] = 20;
+  for (let seed = 1; seed <= 60; seed++) {
+    const prior = { ...done, seed }, fresh = act(prior, { type: 'nextShow' });
+    const costs = E.offersFor(fresh).map(artistId => {
+      let s = act(fresh, { type: 'chooseDeal', artistId, secondId: E.stageOpenersFor(fresh).find(id => id !== artistId), deal: 'sponsor', stagePolicy: 1, festivalPolicy: 1 });
+      s = act(s, { type: 'setLayout', objects: D.VENUES.festival.cheapest }); return E.upfrontFor(s);
+    });
+    assert.equal(E.nextShowCost(prior), Math.min(...costs));
+  }
+});
+test('no willing side act allows a free return to venue selection even without Festival cash', () => {
+  const done = sign(finish(open(constrained())));
+  for (const id of E.stageOpenersFor(done)) done.reputation.artists[id] = -100;
+  const poor = E.normalizeState({ ...done, mode: 'career', cash: 0, cashJournal: undefined });
+  assert.ok(E.nextShowCost(poor) > poor.cash); assert.deepEqual(E.stageOpenersFor(poor), []);
+  const fresh = act(poor, { type: 'nextShow' }); assert.equal(fresh.phase, 'book'); assert.equal(fresh.cash, 0); assert.deepEqual(fresh.history, poor.history);
+  assert.equal(act(fresh, { type: 'chooseVenue', venueId: 'lot' }).venue.id, 'lot');
+});

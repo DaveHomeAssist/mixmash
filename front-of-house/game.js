@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, stageOpenersFor, stagePlanFor, stageForecastFor,
+  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
@@ -301,7 +301,7 @@ function bookPanel() {
     const opener = spec.secondStage ? (eligible.includes(state.booking.secondId) ? state.booking.secondId : eligible[0]) : null;
     const extra = opener ? ` data-second="${opener}"` : '';
     const deal = (kind, title, cost, note, disabled = false) => `
-      <button type="button" class="choice" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled || (spec.secondStage && !opener) ? 'disabled' : ''}${extra}>
+      <button type="button" class="choice" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled || (spec.secondStage && (!opener || opener === id)) ? 'disabled' : ''}${extra}>
         <span class="choice-head"><strong>${title}</strong> <span class="cost">${cost}</span></span>
         ${note ? `<span class="choice-text">${note}</span>` : ''}
       </button>`;
@@ -312,10 +312,10 @@ function bookPanel() {
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
       <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
-      ${opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
+      ${opener === id ? '<p class="lede">Selected for side stage. Choose another side act first.</p>' : opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
       ${deal('door', 'Door deal', `${Math.round(D.DOOR_SPLIT * 100)}% of the net`, !t.doorOk ? doorNote : teach ? `Cheaper on a slow night, but they expect ${money(t.ask)}.` : '', !t.doorOk)}
-      ${spec.sponsor ? deal('sponsor', 'Sponsor', `+${money(D.SPONSOR_PAY)}`, teach ? 'Paid up front; the ticket stays at the usual price.' : '') : ''}
+      ${spec.sponsor ? deal('sponsor', 'Sponsor', `+${money(D.SPONSOR_PAY)}`, `Tickets fixed at ${money(a.fairPrice)}.`) : ''}
     </section>`;
   }).join('');
   return `
@@ -611,6 +611,7 @@ function describeTile(tile) {
 
 function promotePanel() {
   const spec = venueSpec(state.venue);
+  const sponsorPrice = festivalPolicyFor(state)?.sponsorPrice;
   const priceMax = spec.priceMax || D.PRICE_MAX;
   const sliders = D.AD_CHANNELS.map((c) => `
     <div class="slider">
@@ -626,13 +627,13 @@ function promotePanel() {
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <h2>Promote the show</h2>
-    <p class="lede">Set the price and the ads. The forecast shows the likely range.</p>
+    <p class="lede">${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="cols">
       <div class="col" data-tab="Price and ads">
         <div class="slider">
-          <label for="price">${spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
-          <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" />
+          <label for="price">${sponsorPrice !== undefined ? 'Sponsor ticket price' : spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
+          <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" ${sponsorPrice !== undefined ? 'disabled' : ''} />
         </div>
         ${seats}
         <fieldset><legend>Ad spend</legend>${sliders}</fieldset>
@@ -1263,14 +1264,17 @@ function donePanel() {
   const r = settlementFor(state);
   const pass = last && last.result === 'pass';
   const p = careerProgress(state);
-  const next = p.canAffordAShow
+  const needsVenue = state.venue.id === 'festival' && !stageOpenersFor(state).length;
+  const next = needsVenue
+    ? '<button type="button" class="primary" data-act="next">Choose another venue</button>'
+    : p.canAffordAShow
     ? '<button type="button" class="primary" data-act="next">Book the next show</button>'
     : `<button type="button" class="primary" disabled>Book the next show</button>`;
   const result = last ? `Show ${last.showId}${last.night > 1 ? ` night ${last.night}` : ''}: ${last.deal === 'door' ? 'door deal' : last.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${last.attendance} people · net ${money(last.net)} · ${last.result === 'pass' ? 'pass' : 'retry'}` : '';
   return `
     <h2>${pass ? `A good night at ${esc(venueSpec(state.venue).name)}` : 'A rough night'}</h2>
     <p id="msg" class="message" aria-live="polite"></p>
-    <p class="lede">${pass
+    <p class="lede">${needsVenue ? 'No side act accepts a door deal. Return to booking and choose another venue; cash and history carry over.' : pass
       ? 'The show made money and kept the crowd happy. Cash, reputation and every relationship carry into the next show.'
       : p.canAffordAShow
         ? 'The night lost money or left the crowd unhappy. The career goes on: cash, reputation and relationships carry over.'
@@ -1331,6 +1335,7 @@ function openDevelopment(opener) {
 
 function openStages(opener) {
   const terms = stagePlanFor(state), editable = state.phase === 'book' && state.venue.id === 'festival';
+  const policy = festivalPolicyFor(state);
   const eligible = stageOpenersFor(state), selected = eligible.includes(state.booking.secondId) ? state.booking.secondId : eligible[0];
   const result = settlementFor(state), receipt = result?.stageAccounts, quote = terms && state.phase === 'promote' ? stageForecastFor(state) : null;
   const field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
@@ -1339,6 +1344,7 @@ function openStages(opener) {
     <button data-act="stage-select">Use this act</button><p>Selection is free. Book the main act next.</p><p>The side act gets 70% of its eligible ticket balance.</p>`
     : '<p>No side act accepts a door deal.</p><p>Choose another venue to rebuild relationships.</p>'
     : terms ? `<p>Main: ${esc(artistFor(state.booking.artistId).name)}</p><p>Side: ${esc(artistFor(state.booking.secondId).name)}</p><p>Both acts are fixed for this booking.</p>` : '<p>Original stage rules apply to this saved show.</p>'}
+    ${editable ? `<p>Earlier-tier headliners need relationship +${D.FEST_HEADLINE_RELATIONSHIP}.</p>` : policy?.sponsorPrice !== undefined ? `<p>Sponsor tickets stay at ${money(policy.sponsorPrice)}.</p>` : ''}
     ${state.stagesNotice ? `<p role="status">${esc(state.stagesNotice)}</p>` : ''}</section>`;
   const stages = [['main','Main',state.booking.artistId],['second','Side',state.booking.secondId]].map(([id, label, artistId]) => {
     const a = receipt?.[id], range = quote?.[id];
@@ -1925,7 +1931,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2383,7 +2389,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
-    stages: state.venue.id === 'festival' ? { terms: stagePlanFor(state), eligibleOpeners: state.phase === 'book' ? stageOpenersFor(state) : null, forecast: state.phase === 'promote' ? stageForecastFor(state) : null, receipt: r?.stageAccounts || null, notice: state.stagesNotice || null } : null,
+    stages: state.venue.id === 'festival' ? { terms: stagePlanFor(state), bookingPolicy: festivalPolicyFor(state), eligibleOpeners: state.phase === 'book' ? stageOpenersFor(state) : null, forecast: state.phase === 'promote' ? stageForecastFor(state) : null, receipt: r?.stageAccounts || null, notice: state.stagesNotice || null } : null,
     seating: seatingPlanFor(state) ? { terms: seatingPlanFor(state), forecast: state.phase === 'promote' ? seatingForecastFor(state) : null, receipt: r?.seating || null, notice: state.seatingNotice || null } : null,
     heldRun: held ? { terms: held.terms, feeEach: held.feeEach, completedNights: state.show ? state.show.night - (['settle', 'done'].includes(state.phase) ? 0 : 1) : 0, cancellationAfterCurrentNight: state.show ? { remaining: held.remaining, penalty: held.penalty } : null, cancelled: state.show?.cancelled === true, notice: state.runNotice || null } : null,
     ticketing: state.venue.id === 'club' ? { terms: ticketingPlanFor(state), forecast: state.phase === 'promote' ? ticketingForecastFor(state) : null, receipt: r?.ticketing || null, notice: state.ticketingNotice || null } : null,

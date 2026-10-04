@@ -220,3 +220,9 @@ The site history row records combined attendance, net and total pay for both art
 ### Festival side-act selection
 
 `chooseSideAct` is a Book-only Festival command. It stores the eligible prior-tier `booking.secondId` without payment and clears previously unconfirmed side terms/stage policy. `chooseDeal` then freezes the quoted side ask/draw multiplier and selects version1 stage accounting for new player bookings. A current signed show's bill cannot be edited. Changing venues and new-show initialization retain their existing reset behavior. Imported legacy Festival shows remain unmarked and use their original settlement.
+
+### Optional Festival booking conditions (version1)
+
+`chooseDeal.festivalPolicy:1` requires Festival stage accounts and stores `booking.festival:{version:1}`; a sponsored booking additionally stores `sponsorPrice`, the main act's usual ticket price. Doors copy the policy into `show.festival`. This separate marker leaves existing `stagePolicy:1` sponsor saves price-adjustable. New native headliner offers use Paper Voltage and North Kettle; earlier-tier acts require relationship +20. Normalization never rechecks that gate against an already accepted booking.
+
+Before doors, a valid marked sponsor policy restores a conflicting imported promotion price with feedback and no cash mutation. Paid shows use frozen stage sales and the frozen booking condition; later promotion edits do not change receipts. Invalid optional conditions are removed with a recovery notice while paid cash and signed history remain intact. Derived imported money is not trusted. Side reselection, venue changes and a new show clear the unconfirmed condition. Loading and returning to venue selection never pay sponsorship again.
