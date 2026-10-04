@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "1a9f074 base \u00b7 playable development locally verified",
+  "head": "c33615a base \u00b7 ownership core locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Sanitation correction has passed required gameplay checks and is finishing CI. Playable research now passes303 tests and seven player journeys plus offline cash/progress checks. Production research acceptance and later phases remain.",
+  "statusReason": "Sanitation and playable research are in required release checks. The one-family ownership authority is implemented and targeted tests pass; career ledger/deployment and later phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -874,9 +874,10 @@
             "status": "implemented-local-verification",
             "evidence": [
               "FOH-R01b1 career engine implemented and verified by seven integration tests. FOH-R01b2 player controls and browser acceptance remain pending.",
-              "Career adapter PR83 corrected required generated action notes/payloads in1a9f074 after CI37205386621 identified the omissions. Player controls pass seven journeys; required combined CI and hosted proof remain pending."
+              "Career adapter PR83 corrected required generated action notes/payloads in1a9f074 after CI37205386621 identified the omissions. Player controls pass seven journeys; required combined CI and hosted proof remain pending.",
+              "Playable controls committed in c33615a (PR84);303 tests/build/generated docs, seven complete development journeys,28 legacy checks and offline progress/refund checks pass locally. CI and production remain pending."
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/83"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/84"
           }
         ]
       },
@@ -889,8 +890,27 @@
           "FOH-O01"
         ],
         "doneWhen": "Purchase/rent/deploy/sell policy conserves cash and inventory through reload, cancellation and settlement.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [
+          "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet."
+        ],
+        "slices": [
+          {
+            "id": "FOH-E01a",
+            "scope": "Small PA inventory and capital command authority",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "FOH-E01a pure small-PA inventory authority implemented: purchase1200, sale600, one owned unit, stable identity, exact capital deltas, idempotent commands and strict checkpoint replay. Six targeted tests pass. No career rental waiver, buying UI or general cash ledger yet.",
+              "All309 repository tests, build and generated documentation pass. Required delivery/hosted core checks and all career ownership integration remain pending."
+            ]
+          },
+          {
+            "id": "FOH-E01b",
+            "scope": "Career cash journal, frozen deployment and player equipment controls",
+            "status": "pending",
+            "evidence": []
+          }
+        ]
       },
       {
         "id": "FOH-V02",

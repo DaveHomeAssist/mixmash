@@ -462,3 +462,9 @@ The menu and completed-show surface open Development: Patch, Service, Admission 
 All303 tests and build pass. PR83 CI caught missing generated action notes/payloads, corrected in1a9f074; generated reference now passes. Controlled Sandbox pairs retain staffing tradeoffs: quiet seed1 gains nothing; surge seed3 with the worker at bar improves admissions85→102 and service84→102, net114→562 before career development expenditure. With the worker at the gate, admission remains115 and bar sales23→22, net201→195. No blanket profit guarantee or hardware/human acceptance is claimed. Required CI, hosted research journeys and phase closeout remain pending.
 
 - Development closeout checks:28 existing viewport/player checks also pass, including ultrawide and all phone controls. The supplied coordinate action client successfully enables free Sandbox knowledge and opens all development pages; its separate first-show attempt stopped at departure, so that artifact is not claimed as career proof. The seven selector-driven actual player journeys establish career spending and progression. Phone development and action-client canvas screenshots were inspected.
+
+### 2026-10-04 ownership authority
+
+FOH-E01a implements one small-PA asset family as a pure prerequisite. Six targeted tests pass: affordability/one-unit limit, transaction idempotency, sale/rebuy identity and money conservation, strict replay/import, malformed commands and bounded capital history. Buy1200/sale600 and a proposed later20/night operating charge are explicit game values. No ownership is inferred from layouts, no rental is yet waived and no general career cash ledger or equipment controls are claimed.
+
+- Ownership core: all309 repository tests, build and generated documentation pass. Required CI and hosted core proof remain pending.

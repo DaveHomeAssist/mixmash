@@ -370,3 +370,8 @@ export const RESEARCH_PROJECTS = Object.freeze({
 
 // Bounded benefits apply only to learned projects frozen at booking.
 export const RESEARCH_EFFECTS = Object.freeze({ patchScore: 0.15, barWorkerRate: 1, gateRate: 1 });
+
+// One-family ownership pilot. Acquisition is capital; operation is a later show cost.
+export const OWNED_EQUIPMENT = Object.freeze({
+  'small-pa': Object.freeze({ label: 'Small PA', objectType: 'pa-s', purchase: 1200, resale: 600, operation: 20 }),
+});
