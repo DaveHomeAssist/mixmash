@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: 3D backing resolution verified locally
+
+- Applied the existing HUD density rule to the 3D backend; density changes rearm a disposable media listener and redraw detects changes when a browser omits the event. Explicit DPR1 benchmark controls remain fixed. Service worker v39.
+- Actual backing/buffer sizes, threshold/ultrawide/phone resize, CSS-coordinate picking, density emulation, explicitly dispatched media events, context recovery and disposal pass. Full DPR2 application gestures, reload and identical settlement pass; the existing backend rail including 20 disposal cycles passes.
+- 276 repository tests, build and manifest checks pass. These are local correctness checks; CI/deployment/hosted proof and physical monitor/device readability remain separate. The 12 full-HUD and 36 Metal renderer windows keep their earlier frozen sources.
+
 ## 2026-10-04: Preserve food-control delivery with floor evidence
 
 - Reconciled PR75 food controls at ffcd59f without changing its simulation or accounting. Retained all 12 measured windows at their frozen 2a00f7a source and added food-stall layout coverage to the cache parity check. Service worker v38.
@@ -444,3 +450,7 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 ### 2026-10-04 research career adapter
 
 FOH-R01b1 now connects the pilot to career cash, signed-night department experience and versioned booking prefixes. Seven integration checks cover actual outcomes, frozen held nights, separate development cash, paid Patch response, finite live capacity, legacy recovery and full-history signing. All303 npm tests and build pass. Development costs remain outside show/artist costs; old careers are unchanged until opt-in. Player research controls, required delivery and production proof remain open.
+
+### 2026-10-04 sanitation delivery correction
+
+PR79 CI run37204614730 passed the original28 checks, four live-service journeys, eight crowd/movement journeys and six food journeys, then caught a 13px vertical overflow in the phone settlement Costs page. Compact settlement now flattens inactive column wrappers on phones as well as short desktops, removing empty grid tracks without hiding content or reducing controls. The facilities smoke now visits every settlement tab before signing. Integrated delivered resolution PR78 (36bbbf3) and reserved cache v40; source models and resolution behavior are both preserved. Required CI and production sanitation acceptance remain pending.

@@ -88,6 +88,9 @@ try {
         assert.ok(receipt.foodIncome > 0); assert.equal(ended.phase, 'settle');
         assert.equal(receipt.costs.facilities,380); assert.equal(receipt.preferenceBonus,2); assert.ok(receipt.sanitation.totals.cleanings>0);
         assert.equal(receipt.sanitation.totals.served + receipt.sanitation.totals.lost,receipt.attendance);
+        for (const name of await page.locator('#win [role="tab"]:visible').allTextContents()) {
+          await page.locator('#win [role="tab"]').filter({ hasText: new RegExp(`^${name}$`) }).click(); await fit(page);
+        }
         if (await page.locator('#win [data-tab-name="Costs"]:visible').count()) await page.locator('#win [data-tab-name="Costs"]:visible').click();
         await fit(page); await page.locator('#win [data-act="sanitation-receipt"]').click(); await fit(page);
         await page.locator('[data-act="food-back"]').click();

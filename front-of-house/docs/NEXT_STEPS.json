@@ -725,7 +725,9 @@
         ],
         "doneWhen": "Finite budgets/stock, serviced stalls, negotiated artist preference and conserved guest flow with no capacity inflation.",
         "status": "in-progress",
-        "evidence": [],
+        "evidence": [
+          "PR79 failed Linux phone settlement overflow, corrected and all seven all-tab journeys pass locally. Combined289 tests/build and backing resolution check pass. Head81a0cc7 is in required CI37205244572."
+        ],
         "slices": [
           {
             "id": "FOH-O02a",

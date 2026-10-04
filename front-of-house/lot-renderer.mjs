@@ -5,9 +5,8 @@ import { createLotModels, MODEL_REVISION, MODEL_METADATA } from './lot-models.mj
 import { createLotPresentation } from './lot-presentation.mjs';
 import { OBJECT_TYPES } from './data.mjs';
 
-export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = globalThis.devicePixelRatio || 1, reducedMotion = null } = {}) {
+export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null } = {}) {
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
-  renderer.setPixelRatio(Math.min(2, Math.max(1, pixelRatio)));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
@@ -26,9 +25,11 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', paused = false, disposed = false;
   let objects = [], pickables = [], objectHeights = [];
   let shadowKey = '', shadowUpdates = 0, renderedFrames = 0;
+  let requestedDpr = 1, densityMedia = null;
   const ownedOverlayMaterials = new Map();
 
   function report(next, detail = '') { state = next; reason = detail; onStatus({ state, reason }); }
+  function density() { const value = pixelRatio ?? globalThis.devicePixelRatio; return Number.isFinite(value) && value > 0 ? value : 1; }
   function bounds() { const r = canvas.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }
   function overlayMaterial(color, opacity) {
     const key = `${color}:${opacity}`;
@@ -56,6 +57,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   }
   function render() {
     if (disposed || paused || state !== 'ready' || globalThis.document?.hidden) return;
+    // Some browser density changes update media matches without delivering a change event.
+    if (pixelRatio === null && density() !== requestedDpr) { resize(); return; }
     try {
       const updateShadow = renderer.shadowMap.needsUpdate;
       renderer.render(world, camera.camera); renderedFrames++;
@@ -92,8 +95,23 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   }
   function resize() {
     if (disposed) return;
-    const r = bounds(); renderer.setSize(Math.max(1, r.w), Math.max(1, r.h), false); camera.resize(r, clear); render();
+    const r = bounds(), width = Math.max(1, r.w), height = Math.max(1, r.h);
+    const changed = requestedDpr !== density(); requestedDpr = density();
+    let dpr = Math.min(2, Math.max(1, requestedDpr));
+    if (width * height * dpr * dpr > 6000000) dpr = Math.min(dpr, 1.5);
+    if (renderer.getPixelRatio() !== dpr) renderer.setPixelRatio(dpr);
+    renderer.setSize(width, height, false); camera.resize(r, clear);
+    if (changed) watchDensity();
+    render();
   }
+  function watchDensity() {
+    densityMedia?.removeEventListener('change', densityChanged);
+    if (disposed || pixelRatio !== null) return;
+    const dpr = globalThis.devicePixelRatio;
+    densityMedia = globalThis.matchMedia?.(`(resolution: ${Number.isFinite(dpr) && dpr > 0 ? dpr : 1}dppx)`);
+    densityMedia?.addEventListener('change', densityChanged);
+  }
+  function densityChanged() { if (disposed) return; watchDensity(); resize(); }
   function objectAt(x, y) {
     if (disposed || state !== 'ready') return null;
     world.updateMatrixWorld(true);
@@ -112,10 +130,10 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     if (disposed) return;
     disposed = true;
     canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored); globalThis.document?.removeEventListener('visibilitychange', visibility);
-    media?.removeEventListener('change', motionChanged); presentation.dispose();
+    media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose();
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
-  resize();
+  resize(); watchDensity();
   return {
     draw, resize, objectAt, destroy,
     setClear: (value) => { clear = value; resize(); },
@@ -138,6 +156,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates }),
+    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates }),
   };
 }
