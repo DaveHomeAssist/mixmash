@@ -690,11 +690,11 @@ body[data-phase='promote'] .actions button { padding-inline: 8px; }
 }
 
 /* Development pages share one contained space at all viewport sizes. */
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .tabbar [aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .tab-off { display: none !important; }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) [data-tab] > p { margin: 8px 0; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .tabbar [aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .tab-off { display: none !important; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) [data-tab] > p { margin: 8px 0; }
 .development-summary { margin: 0; font-family: var(--font-mono); font-size: 0.85rem; }
 body[data-phase='done'] .row.tight { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px; font-size: 0.75rem; }
@@ -703,23 +703,25 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 .equipment-events li { padding: 6px 0; border-bottom: 1px solid var(--border); }
 .equipment-events small { display: block; overflow-wrap: anywhere; }
 
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) [hidden] { display: none !important; }
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) button { min-height: 44px; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) [hidden] { display: none !important; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) button { min-height: 44px; }
 @media (max-height: 560px) {
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) { padding: 4px; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win { height: 100%; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win-head { padding: 0 6px; flex: none; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win-body { flex: 1; min-height: 0; padding: 4px 8px; gap: 4px; overflow: hidden; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win-body > [data-tab] { flex: none; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win-body p { font-size: 0.85rem; line-height: 1.3; margin: 4px 0; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win-foot { flex: none; justify-content: space-between; padding: 0 6px; gap: 4px; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .win-foot span { font-size: 0.8rem; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .live-readouts div { padding: 2px 0; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) { padding: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win { height: 100%; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win-head { padding: 0 6px; flex: none; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win-body { flex: 1; min-height: 0; padding: 4px 8px; gap: 4px; overflow: hidden; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win-body > [data-tab] { flex: none; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win-body p { font-size: 0.85rem; line-height: 1.3; margin: 4px 0; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win-foot { flex: none; justify-content: space-between; padding: 0 6px; gap: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .win-foot span { font-size: 0.8rem; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .live-readouts div { padding: 2px 0; }
 }
 @media (max-height: 560px) {
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) [data-tab="Deploy"] .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) [data-tab="Deploy"] .actions button { min-width: 0; padding: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) [data-tab="Deploy"] .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) [data-tab="Deploy"] .actions button { min-width: 0; padding: 4px; }
 }
 
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .capital-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"]) .capital-actions button { min-width: 0; padding-inline: 4px; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .capital-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"]) .capital-actions button { min-width: 0; padding-inline: 4px; }
+.stage-choice { display: flex; flex-direction: column; gap: 6px; }
+.stage-choice select { width: 100%; min-height: 44px; padding: 8px; font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--border-strong); border-radius: var(--radius); }
