@@ -174,6 +174,10 @@
       "why": "Eleven scoped proposals, acceptance and exclusions"
     },
     {
+      "path": "front-of-house/docs/PERFORMANCE.md",
+      "why": "Reproducible renderer harness, all hardware host runs and remaining performance acceptance"
+    },
+    {
       "path": "front-of-house/docs/NEXT_STEPS.json",
       "why": "Public-safe project snapshot for the private workspace board"
     },
@@ -199,6 +203,7 @@
     }
   ],
   "verify": [
+    "npm run perf:front-of-house -- --gpu=metal",
     "npm test",
     "npm run vercel-build",
     "npm run docs:front-of-house",
@@ -519,8 +524,30 @@
             "result": "pass",
             "checkedAt": "2026-10-04T10:42:14.147Z",
             "summary": "Instanced representative population keeps draw calls unchanged from 10 to 180 visible representatives; this structural test does not certify frame-time targets."
+          },
+          {
+            "stage": "measurement",
+            "locator": "front-of-house/performance/2026-10-04-metal.json",
+            "result": "recorded",
+            "checkedAt": "2026-10-04T11:08:33.684Z",
+            "summary": "All 18 renderer-only windows valid on Apple M4 Metal at DPR 1: two frozen scenes, three viewports, three repeats, 10s warm-up and 30s sampling. No statistical or device acceptance inferred."
+          },
+          {
+            "stage": "test",
+            "locator": "test/front-of-house-lot-smoke.mjs",
+            "result": "pass",
+            "checkedAt": "2026-10-04T11:31:31.206Z",
+            "summary": "Static camera/light frames reuse directional shadows; layout and guest transforms refresh them, pause retains invalidation, reduced motion stays static and real context restoration matches the prior image. No quality reduction or device acceptance."
           }
-        ]
+        ],
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
+        "remaining": [
+          "Final combined CI, merge and hosted shadow verification",
+          "Full HUD/high-DPI/native/low-power measurement and adaptive-quality policy",
+          "Physical device and human acceptance"
+        ],
+        "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
+        "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI."
       },
       {
         "id": "FOH-O01",

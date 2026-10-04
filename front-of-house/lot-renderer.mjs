@@ -9,6 +9,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(2, Math.max(1, pixelRatio)));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+  renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
   const camera = createLotCamera(), models = createLotModels(), world = new T.Scene();
   const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models);
@@ -24,6 +25,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   world.add(floor, props, presentation.group, overlays, sky, sun, sun.target, stageLight);
   let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', paused = false, disposed = false;
   let objects = [], pickables = [], objectHeights = [];
+  let shadowKey = '', shadowUpdates = 0, renderedFrames = 0;
   const ownedOverlayMaterials = new Map();
 
   function report(next, detail = '') { state = next; reason = detail; onStatus({ state, reason }); }
@@ -54,7 +56,11 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
   }
   function render() {
     if (disposed || paused || state !== 'ready' || globalThis.document?.hidden) return;
-    try { renderer.render(world, camera.camera); } catch (error) { report('failed', error.message); }
+    try {
+      const updateShadow = renderer.shadowMap.needsUpdate;
+      renderer.render(world, camera.camera); renderedFrames++;
+      if (updateShadow) shadowUpdates++;
+    } catch (error) { report('failed', error.message); }
   }
   function draw(input) {
     if (disposed) return;
@@ -63,6 +69,10 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     const key = JSON.stringify(input.objects || []);
     if (key !== layoutKey) { rebuildObjects(input.objects || []); layoutKey = key; }
     presentation.update(input, objects, objectHeights, motion);
+    // Track the actual instance buffers, including a lone worker and paused queue changes.
+    const casters = presentation.group.children.filter(mesh => mesh.isInstancedMesh && mesh.castShadow);
+    const nextShadow = JSON.stringify([key, ...casters.map(mesh => [mesh.count, mesh.count ? mesh.instanceMatrix.version : 0])]);
+    if (nextShadow !== shadowKey) { renderer.shadowMap.needsUpdate = true; shadowKey = nextShadow; }
     const nextOverlay = JSON.stringify([key, input.showClear, [...(input.clearSet || [])], [...(input.blockedSet || [])], input.cursor, input.cursorColor, input.selection, input.ghost]);
     if (nextOverlay !== overlayKey) {
       clearOverlays();
@@ -92,7 +102,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     return hit ? { ...objects[hit.object.userData.objectIndex] } : null;
   }
   function contextLost(event) { event.preventDefault(); report('lost', 'WebGL context lost; retain the current game and use the fallback board.'); }
-  function contextRestored() { if (disposed) return; report('ready'); resize(); if (lastScene) draw(lastScene); }
+  function contextRestored() { if (disposed) return; renderer.shadowMap.needsUpdate = true; report('ready'); resize(); if (lastScene) draw(lastScene); }
   function visibility() { if (!globalThis.document?.hidden) render(); }
   function motionChanged() { if (reducedMotion === null) { motion = !media?.matches; if (lastScene) draw(lastScene); } }
   media?.addEventListener('change', motionChanged);
@@ -128,6 +138,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = gl
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }),
+    info: () => ({ renderer: 'three-webgl', revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests, presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates }),
   };
 }
