@@ -690,3 +690,9 @@ Twelve full native overview windows at clean ca1f1a7 pass independent source/raw
 Full player, Festival and 3D navigation/toggle regressions passed before integration. Combined source now includes delivered Festival booking conditions and pending PR104 Shell sound/sightlines, preserving both the newer rules checks and desktop/phone3D journeys. Combined checks, current-head CI and hosted acceptance remain pending. The native report remains tied to its original source.
 
 Combined source verification passes407 repository tests, build, asset validation, generated docs and unchanged simulator. All four overview journeys pass after the rules integration; remaining player/venue checks are running before delivery.
+
+## 2026-10-04 — Camera fit reuse
+
+FOH-P01j retains the most recent unzoomed fit distance while panning or zooming. The key includes venue extent, angle, viewport, HUD safe area and lens; authored eye cameras retain their existing path. Camera fit reuse preserves3852 exact prior-source pose/matrix/projection/picking/overview comparisons across all rooms, three viewports, yaw/pitch/zoom/pan, four presets and lens changes. All16 camera tests pass, including repeated invalidation versus a freshly fitted camera. Five alternating Node CPU repetitions of20000 pans: baseline1870.64–2362.12ms, candidate84.80–119.53ms on Apple M4/Node22.22.1. This is helper CPU evidence only; full native game/HUD timing and delivery remain pending.
+
+Camera fit source passes408 repository tests, build, asset validation, generated documentation and unchanged simulator. Browser and native comparison remain separate gates.

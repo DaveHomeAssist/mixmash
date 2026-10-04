@@ -234,3 +234,31 @@ test('perspective overview clips the actual safe ground at low pitch and preserv
     for (const key of ['zoom', 'yaw', 'pitch', 'preset']) assert.equal(after[key], before[key]); check();
   }
 });
+
+
+test('reused camera fit stays equal to a fresh fit after lens, view and safe-area changes', () => {
+  for (const [width, depth] of [[24, 16], [22, 14], [28, 18], [52, 24]]) {
+    const used = createLotCamera({ width, depth });
+    for (const yaw of [37, 135]) for (const pitch of [15, 48, 85]) for (const zoom of [1, 2, 3]) {
+      const bounds = { x: 7, y: 11, w: yaw === 37 ? 1440 : 375, h: 812 };
+      const safe = { x: 30, y: pitch, w: bounds.w - 80, h: 520 - pitch };
+      const target = { yaw, pitch, zoom, x: width * 0.6, y: depth * 0.4 };
+      const fresh = createLotCamera({ width, depth });
+      for (const c of [used, fresh]) {
+        Object.assign(c.camera, { fov: zoom === 2 ? 50 : 42, filmOffset: zoom === 3 ? 2 : 0, near: 0.05, far: 900 });
+        c.resize(bounds, safe); c.setCamera(target);
+      }
+      for (const c of [used, fresh]) { c.panBy(5, -7); c.panTo(width * 0.7, depth * 0.3); c.zoomTo(1.5, bounds.w * 0.6, 330); }
+      assert.deepEqual(used.info(), fresh.info());
+      assert.deepEqual(used.camera.matrixWorld.elements, fresh.camera.matrixWorld.elements);
+      assert.deepEqual(used.camera.projectionMatrix.elements, fresh.camera.projectionMatrix.elements);
+      assert.deepEqual(used.navigation(), fresh.navigation());
+      const pt = used.project(width * 0.7, depth * 0.3);
+      assert.deepEqual(used.groundAt(pt.x, pt.y), fresh.groundAt(pt.x, pt.y));
+    }
+    for (const preset of ['plan', 'foh', 'stage', 'wide']) {
+      used.preset(preset); const before = used.info(); used.panTo(width / 2, depth / 2);
+      assert.deepEqual(used.info(), before);
+    }
+  }
+});

@@ -17,6 +17,7 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
   let rect = { x: 0, y: 0, w: 1, h: 1 };
   let safe = { x: 0, y: 0, w: 1, h: 1 };
   let distance = 40;
+  let fitted = null;
   let stage = { x: 12, y: 1.5, rot: 0, w: 6, h: 3 };
   let authoredEye = null;
 
@@ -67,19 +68,24 @@ export function createLotCamera({ width = 24, depth = 16 } = {}) {
     if (state.preset === 'foh' || state.preset === 'stage') { pose(1); distance = camera.position.distanceTo(new Vector3(...authoredEye.target)); return; }
     // Fit the whole logical volume, including tall props, then apply bounded zoom.
     // Fit uses the actual safe rectangle at the current yaw and pitch, not a fixed aspect guess.
-    const x = state.x, y = state.y;
-    state.x = width / 2; state.y = depth / 2;
-    const fits = (d) => {
-      pose(d);
-      return [0, width].every(a => [0, depth].every(b => [0, 3.5].every(h => {
-        const p = project(a, b, h);
-        return p.visible && p.x >= rect.x + safe.x + safe.w * 0.04 && p.x <= rect.x + safe.x + safe.w * 0.96 && p.y >= rect.y + safe.y + safe.h * 0.04 && p.y <= rect.y + safe.y + safe.h * 0.96;
-      })));
-    };
-    let lo = 4, hi = 500;
-    for (let i = 0; i < 24; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
-    distance = hi / state.zoom;
-    state.x = x; state.y = y;
+    // Pan and zoom do not change the centered volume fit. Keep its projection inputs explicit.
+    const fitKey = [width, depth, state.yaw, state.pitch, rect.x, rect.y, rect.w, rect.h, safe.x, safe.y, safe.w, safe.h, camera.fov, camera.near, camera.far, camera.filmGauge, camera.filmOffset].join(',');
+    if (fitted?.key !== fitKey) {
+      const x = state.x, y = state.y;
+      state.x = width / 2; state.y = depth / 2;
+      const fits = (d) => {
+        pose(d);
+        return [0, width].every(a => [0, depth].every(b => [0, 3.5].every(h => {
+          const p = project(a, b, h);
+          return p.visible && p.x >= rect.x + safe.x + safe.w * 0.04 && p.x <= rect.x + safe.x + safe.w * 0.96 && p.y >= rect.y + safe.y + safe.h * 0.04 && p.y <= rect.y + safe.y + safe.h * 0.96;
+        })));
+      };
+      let lo = 4, hi = 500;
+      for (let i = 0; i < 24; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
+      state.x = x; state.y = y;
+      fitted = { key: fitKey, distance: hi };
+    }
+    distance = fitted.distance / state.zoom;
     pose(distance);
   }
 

@@ -782,6 +782,15 @@
               "Current performance PR92 sourcec5654aa passed CI37210591670. Later mechanics conflicts are resolved in combined Club PR96 source7a111c2; that integration requires its own CI and hosted proof. Sustained full-HUD60fps remains unproven."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/92"
+          },
+          {
+            "id": "FOH-P01j",
+            "scope": "Reuse centered camera volume fit across pan and zoom without visual or simulation changes",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Camera fit reuse preserves3852 exact prior-source pose/matrix/projection/picking/overview comparisons across all rooms, three viewports, yaw/pitch/zoom/pan, four presets and lens changes. All16 camera tests pass, including repeated invalidation versus a freshly fitted camera. Five alternating Node CPU repetitions of20000 pans: baseline1870.64\u20132362.12ms, candidate84.80\u2013119.53ms on Apple M4/Node22.22.1. This is helper CPU evidence only; full native game/HUD timing and delivery remain pending.",
+              "All408 repository tests, build, source-owned asset digests, generated documentation and unchanged simulator pass. Actual browser regression and isolated native baseline/candidate comparisons are pending."
+            ]
           }
         ]
       },

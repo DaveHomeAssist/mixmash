@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: reuse unchanged camera volume fit for pan and zoom, preserving projection, picking, presets and saved outcomes.
+
 - Front of House: zoomed Split Acre gets a desktop site overview with a perspective-correct ground outline, rotated layout blocks and pointer/keyboard panning. It preserves zoom and saves, avoids HUD controls, and hides at Fit or on phones.
 
 - Front of House: Split Acre technical 3D preview adds a fixed side-stage annex, keyboard-accessible Side stage camera and a shared 180-person representative limit. Stage audience uses versioned accounting when present; legacy unknown allocation stays explicit. The editable yard remains 40 × 24.

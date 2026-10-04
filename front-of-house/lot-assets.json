@@ -30,7 +30,7 @@
   },
   "sources": {
     "lot-models.mjs": "8d9d8929658b95e856731fc61f86ff52ee27155d062639a11c655b256ed29758",
-    "lot-camera.mjs": "ce52a060e8a1a2c42a177b2c858eba1b8feee31b652631d6eadf2e4c77353e7e",
+    "lot-camera.mjs": "acb439336f7d19fd7e356ec2cc34a4fa233b3fcbff31a9aaab7172f42d6eb13a",
     "site-map-geometry.mjs": "496d0f9695ab7939e8228039dbf8e98ebd5be8a403ea7f8280215d444bd1aa3a",
     "lot-presentation.mjs": "5fdf3765438ab91cb41d6a1f6d2367f4e1a9e5a224ab0c926fcac296159a616e",
     "lot-renderer.mjs": "1a2f919af6c88d399134d91b3216e63f3e5f5259a836e8540ea59298f0bbbba7",
