@@ -560,3 +560,8 @@ Twelve new core/adapter tests and all359 repository tests/build/docs pass. The f
 ### 2026-10-04 held-night cancellation hosted acceptance
 
 PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. All24 checked deployed runtime files match. Six hosted Chromium/WebKit player journeys plus alternate full-hold and controlled-debt branches pass, including both themes/five-size compact paging, signed history and reload. Hosted offline cancellation records two unplayed nights,4000 fee and1018940 cash exactly equal to the journal. This is a fresh offline fixture with its own booked ask, not a comparison to the earlier local6000-fee fixture. Cancellation is delivered; seating PR97 and stage accounting remain separate work.
+
+## 2026-10-04: Seating Linux layout correction
+
+- PR97 CI37211585196 caught a three-pixel Amphitheater Promote overflow at1024x700 despite the passing Mac browser rail. Shortened the repeated zone explanation; the Seats and lawn window retains the complete demand/value rules.
+- All28 legacy browser checks, six Chromium/WebKit seating journeys and build/generated docs pass again. Fresh Linux CI is pending. Source, hosted acceptance and physical/human evidence remain separate.

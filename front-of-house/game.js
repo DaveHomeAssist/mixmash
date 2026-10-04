@@ -619,7 +619,7 @@ function promotePanel() {
       <label for="seat-price">Seat price <output id="seat-out" for="seat-price"></output></label>
       <input type="range" id="seat-price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="seat" />
     </div>
-    <p class="lede">${seatingPlanFor(state) ? 'Seats and lawn sell separately. Each price changes its own demand.' : `${spec.seats} seats sell first, then the lawn at the lawn price.`}</p>` : '';
+    <p class="lede">${seatingPlanFor(state) ? 'Each zone sells independently.' : `${spec.seats} seats sell first, then the lawn at the lawn price.`}</p>` : '';
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <h2>Promote the show</h2>
