@@ -733,3 +733,7 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 @media (max-width: 420px) and (max-height: 560px) {
   #win[data-kind="stages"] .development-summary { display: none; }
 }
+
+#win [data-act="cost-page"][aria-pressed="true"] {
+  border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.08);
+}

@@ -59,3 +59,23 @@ export function roomSightlines(profile, { grid, occupied, stage, obstacles }) {
   }
   return { clear, blocked };
 }
+
+// Delay coverage is a union of open floor cells beyond the included system's
+// nearest-floor allocation. It is a game supply model, not acoustic prediction.
+export function delayCoverage({ grid, occupied, front, towers, baseCapacity, density, capacity, range }) {
+  if (!Number.isInteger(grid?.w) || !Number.isInteger(grid?.h) || grid.w < 1 || grid.h < 1 || grid.w * grid.h > 10000
+    || !(occupied instanceof Set) || !Array.isArray(front) || front.length !== 2 || !front.every(Number.isFinite)
+    || !Array.isArray(towers) || towers.length > 2 || !towers.every(t => Number.isInteger(t.x) && Number.isInteger(t.y) && t.x >= 0 && t.y >= 0 && t.x < grid.w && t.y < grid.h)
+    || ![baseCapacity, capacity].every(n => Number.isSafeInteger(n) && n >= 0)
+    || !Number.isFinite(density) || density <= 0 || !Number.isFinite(range) || range <= 0) throw new TypeError('Invalid delay coverage');
+  const cells = [];
+  for (let y = 0; y < grid.h; y++) for (let x = 0; x < grid.w; x++) {
+    const key = `${x},${y}`;
+    if (!occupied.has(key)) cells.push({ x, y, key, distance: (x + 0.5 - front[0]) ** 2 + (y + 0.5 - front[1]) ** 2 });
+  }
+  cells.sort((a, b) => a.distance - b.distance || a.y - b.y || a.x - b.x);
+  const base = new Set(cells.slice(0, Math.ceil(baseCapacity / density)).map(c => c.key));
+  const added = new Set(cells.filter(c => !base.has(c.key) && towers.some(t => (c.x - t.x) ** 2 + (c.y - t.y) ** 2 <= range ** 2)).map(c => c.key));
+  const extraCapacity = Math.min(Math.max(0, capacity - baseCapacity), Math.floor(added.size * density));
+  return { base, added, extraCapacity, soundCapacity: baseCapacity + extraCapacity };
+}

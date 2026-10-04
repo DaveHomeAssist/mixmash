@@ -138,3 +138,38 @@ test('Festival invalid optional profiles preserve paid money and signed history'
  for(const profile of [{version:2},{version:'1'},null,[]]){const loaded=E.normalizeState({...done,venue:{...done.venue,profile}});assert.equal(loaded.venue.profile,undefined);assert.equal(loaded.cash,done.cash);assert.deepEqual(loaded.history,done.history);assert.match(loaded.roomNotice,/paid cash and history/);}
  const loaded=E.normalizeState({...done,venue:{...done.venue,profile:{version:1,soundCapacity:1e9}}});assert.equal(E.evaluateVenue(loaded.venue).soundCapacity,3000);assert.deepEqual(E.settlementFor(loaded),E.settlementFor(done));
 });
+
+test('delay coverage uses exact radius, deterministic base allocation and a union without occupied cells',async()=>{
+ const {delayCoverage}=await import('./room-profile.mjs');
+ const input={grid:{w:5,h:3},occupied:new Set(['3,1']),front:[0.5,1.5],towers:[{x:3,y:1}],baseCapacity:1,density:1,capacity:20,range:1};
+ const r=delayCoverage(input);assert.deepEqual([...r.base],['0,1']);assert.deepEqual([...r.added].sort(),['2,1','3,0','3,2','4,1']);assert.equal(r.soundCapacity,5);
+ assert.deepEqual(delayCoverage({...input,towers:[...input.towers,...input.towers]}),r,'same coverage never stacks');
+ assert.equal(delayCoverage({...input,capacity:3}).soundCapacity,3);assert.equal(delayCoverage({...input,capacity:0}).soundCapacity,1,'base supply does not shrink when permitted attendance is smaller');
+ assert.equal(delayCoverage({...input,towers:[]}).soundCapacity,1);assert.equal(delayCoverage({...input,occupied:new Set(['0,1','1,0','1,1','1,2'])}).base.has('0,0'),true,'equal distances use row then column');
+ for(const patch of [{range:0},{density:0},{towers:[{x:5,y:0}]},{towers:[{x:0,y:0},{x:1,y:0},{x:2,y:0}]},{front:[NaN,0]},{baseCapacity:-1}])assert.throws(()=>delayCoverage({...input,...patch}),TypeError);
+});
+const delays=[{type:'delay',x:8,y:16,rot:0},{type:'delay',x:30,y:16,rot:0}];
+test('Festival towers obey geometry, power/count/room limits and only expand the house system',()=>{
+ const base=festival(),put=objects=>act(base,{type:'setLayout',objects:[...D.FEST_STARTER,...objects]}),s=put(delays),v=E.evaluateVenue(s.venue),old=E.evaluateVenue(base.venue);
+ assert.equal(v.delays,2);assert.equal(v.delayCost,1350);assert.equal(v.watts-old.watts,16000);assert.equal(v.openFloorTiles,old.openFloorTiles-2);assert.equal(v.capacity,old.capacity);assert.ok(v.soundCapacity>3000);assert.ok(v.soundCapacity<=v.capacity);assert.ok(v.delayTiles>0);assert.ok(v.blockedTiles>old.blockedTiles);
+ for(let rot=0;rot<4;rot++)assert.equal(E.evaluateVenue(put(delays.map(o=>({...o,rot}))).venue).soundCapacity,v.soundCapacity);
+ const portable=act(s,{type:'place',object:{type:'pa-s',x:15,y:0,rot:0}}),p=E.evaluateVenue(portable.venue);assert.equal(p.soundCapacity,100);assert.equal(p.delayTiles,0);assert.equal(p.delayActive,false);assert.equal(p.delayCost,1350);
+ const unmarked={...s.venue};delete unmarked.profile;const u=E.evaluateVenue(unmarked);assert.equal(u.delayActive,false);assert.equal(u.delayCost,1350);assert.equal(u.soundCapacity,undefined);
+ for(const id of ['lot','club','amphitheater'])assert.match(E.validateLayout(delays,{id}).problems[0].message,/only at the Festival/);
+ assert.match(E.applyAction(s,{type:'place',object:{type:'delay',x:10,y:17,rot:0}}).error,/Only 2/);
+ assert.match(E.applyAction(base,{type:'place',object:{type:'delay',x:40,y:0,rot:0}}).error,/does not fit/);
+ assert.match(E.applyAction(s,{type:'place',object:delays[0]}).error,/overlaps/);
+ const before=structuredClone(s);E.evaluateVenue(s.venue);assert.deepEqual(s,before);
+});
+test('delay production is charged once for all deals and survives paid reload with locked layouts',()=>{
+ for(const deal of ['guarantee','sponsor','door']){
+  const base=festival(true,deal),s=act(base,{type:'setLayout',objects:[...D.FEST_STARTER,...delays]});assert.equal(E.upfrontFor(s)-E.upfrontFor(base),1350);
+  const paid=open(s);assert.match(E.applyAction(paid,{type:'setLayout',objects:D.FEST_STARTER}).error,/Build|build/);
+  const ended=finish(paid),r=E.settlementFor(ended);assert.equal(r.costs.delays,1350);assert.equal(r.stageAccounts.main.production.delays,1350);assert.equal(r.stageAccounts.second.production.delays,undefined);
+  assert.equal(r.costs.total,E.settlementFor(finish(open(base))).costs.total+1350);assert.equal(r.stageAccounts.costs,r.costs.total);assert.equal(Object.entries(r.costs).filter(([k])=>k!=='total').reduce((sum,[,n])=>sum+n,0),r.costs.total);
+  const done=act(ended,{type:'acceptSettlement'});assert.equal(done.cash,s.cash+r.net);assert.equal(E.careerLedgerFor(done).balance,done.cash);
+  for(const state of [s,paid,ended,done])assert.deepEqual(E.settlementFor(E.normalizeState(state)),E.settlementFor(state));
+  let next=act(done,{type:'nextShow'});next=act(next,{type:'chooseVenue',venueId:'club'});next=E.normalizeState(next);next=act(next,{type:'chooseVenue',venueId:'festival'});assert.equal(next.venue.objects.filter(o=>o.type==='delay').length,2);assert.equal(next.venue.profile,undefined);
+  next=act(next,{type:'chooseDeal',artistId:E.offersFor(next)[0],secondId:'hollow-census',deal:'guarantee',stagePolicy:1,festivalPolicy:1,roomPolicy:1});assert.equal(E.evaluateVenue(next.venue).delayActive,true);
+ }
+});

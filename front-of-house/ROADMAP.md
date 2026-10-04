@@ -84,7 +84,7 @@ The table below is the original scope. The playable slice is the decision, not t
 
 Sandbox and the wet-lot scenario are in the same pass. Challenge and Endless are still after v1.
 
-Current execution (2026-10-04): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation and Festival stage/site receipts plus sponsor/headliner rules are delivered. Amphitheater sound/slope rules are in release verification; Festival room sound/sightline rules follow. These rule profiles do not complete dimensional venue scenes. Tier-specific full career simulator verdicts remain open; the existing Lot baseline is unchanged. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
+Current execution (2026-10-04): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation and Festival stage/site receipts plus sponsor/headliner rules are delivered. Amphitheater sound/slope rules are delivered with hosted acceptance; Festival room sound/sightline rules are in CI, with spatial delay coverage under implementation. These rule profiles do not complete dimensional venue scenes. Tier-specific full career simulator verdicts remain open; the existing Lot baseline is unchanged. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
 
 ## HUD layout (CT-DEC-12)
 

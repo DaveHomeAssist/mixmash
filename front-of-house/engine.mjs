@@ -14,7 +14,7 @@ import { festivalTerms, festivalSales, festivalSettlement } from './stage-accoun
 import { seatingTerms, seatingContract, seatingSales, seatingSatisfaction } from './seating.mjs';
 import { heldRunTerms, heldRunQuote } from './held-run.mjs';
 import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
-import { roomProfileFor, roomProfileTerms, roomSightlines } from './room-profile.mjs';
+import { roomProfileFor, roomProfileTerms, roomSightlines, delayCoverage } from './room-profile.mjs';
 import { sanitationFor, SANITATION } from './sanitation.mjs';
 import { FOOD_PLANS, foodTerms, concessionsFor } from './concessions.mjs';
 import { lotAccess, createDeparture, advanceDeparture, departureSummary, departureEvents } from './guest-flow.mjs';
@@ -314,6 +314,7 @@ export function validateLayout(objects, venue) {
     if (!isObj(raw)) return reject('Not an object');
     const t = D.OBJECT_TYPES[raw.type];
     if (!t) return reject(`Unknown object type "${raw.type}"`);
+    if (t.festivalOnly && spec.id !== 'festival') return reject(`${t.label} is available only at the Festival`);
     if (t.lotOnly && spec.id !== 'lot') return reject(`${t.label} is available only on the Lot`);
     const obj = { type: raw.type, x: t.kit ? 0 : raw.x, y: t.kit ? 0 : raw.y, rot: t.kit ? 0 : raw.rot };
     if (!t.kit) {
@@ -459,6 +460,19 @@ export function evaluateVenue(venue) {
   stats.capacity = Math.min(spec.permit, Math.floor(density * stats.openFloorTiles), exitCap);
   stats.capacityLimit = stats.capacity === spec.permit ? 'permit'
     : stats.capacity === exitCap ? 'exits' : 'floor';
+  if (count('delay')) {
+    stats.delays = count('delay');
+    stats.delayCost = stats.delays * (D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator);
+    stats.delayTiles = 0;
+    const stage = accepted.find(o => o.type === 'stage');
+    stats.delayActive = !!(profile?.venueId === 'festival' && stats.housePa && stage);
+    if (stats.delayActive) {
+      const coverage = delayCoverage({ grid: spec.grid, occupied, front: stageGeometry(stage).front,
+        towers: accepted.filter(o => o.type === 'delay'), baseCapacity: profile.soundCapacity,
+        density, capacity: stats.capacity, range: D.FESTIVAL_DELAYS.range });
+      stats.delayTiles = coverage.added.size; stats.soundCapacity = coverage.soundCapacity;
+    }
+  }
   stats.staff = staffFor(stats);
   const missing = [];
   if (!stats.stage) missing.push('Place the stage');
@@ -589,6 +603,7 @@ export function evaluateShow(inputs) {
     ads: adSpend,
     incident: response ? response.cost : 0,
   };
+  if (v.delayCost) costs.delays = v.delayCost;
   if (inputs.facilities) costs.facilities = inputs.facilities.cost;
   if (inputs.equipment) costs.equipmentOperation = inputs.equipment.cost;
   costs.total = Object.values(costs).reduce((a, b) => a + b, 0);
@@ -754,6 +769,7 @@ function stageShowFor(state, withIncident) {
   const accounts = festivalSettlement(terms, {
     audience,
     rig: { paTier: v.paTier || null, housePa: v.housePa, lights: !!v.lights,
+      ...(v.delays ? { delays: v.delays } : {}),
       ...(inputs.equipment ? { equipmentOperation: inputs.equipment.cost } : {}) },
     siteCosts: { rental: c.lot, permit: c.permit, fence: c.fence, staff: c.staff, bars: c.bars, restrooms: c.restrooms, ads: c.ads, incident: c.incident },
     mainDeal: state.booking.deal, mainAsk: state.booking.terms.ask, bar: main.bar, broadcast: !!v.broadcast,

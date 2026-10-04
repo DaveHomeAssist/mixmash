@@ -195,6 +195,7 @@ Each show has one incident (R-11). *Window* is when it can happen, as a share of
 | `stage` | Stage | 6 × 3 | — | With the lot | — | max 1 | yes |
 | `pa-s` | PA (small) | 1 × 1 | 3 kW | $200 | — | max 1, touches the stage | yes |
 | `pa-m` | PA (medium) | 1 × 1 | 6 kW | $450 | — | max 1, touches the stage | yes |
+| `delay` | Delay tower | 1 × 1 | 8 kW | $675 including operator | — | max 2, blocks sightlines | no |
 | `lights` | Light tower | 1 × 1 | 8 kW | $175 | — | max 1, blocks sightlines | yes |
 | `bar` | Bar | 2 × 1 | 1.5 kW | $100 | 2 bar | blocks sightlines | yes |
 | `food` | Food stall | 2 × 1 | — | Vendor funded | — | max 1, blocks sightlines | no |
