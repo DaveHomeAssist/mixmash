@@ -606,6 +606,18 @@
         {
           "name": "npm run admin:index",
           "description": "Regenerate admin/catalog.json. Run it after adding, removing or renaming any tracked file."
+        },
+        {
+          "name": "npm run vendor:front-of-house",
+          "description": "node front-of-house/tools/vendor-three.mjs"
+        },
+        {
+          "name": "npm run check:front-of-house-vendor",
+          "description": "node front-of-house/tools/vendor-three.mjs --check"
+        },
+        {
+          "name": "npm run smoke:front-of-house-lot",
+          "description": "node test/front-of-house-lot-smoke.mjs"
         }
       ]
     }
@@ -1487,7 +1499,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Front of House feature briefs",
-      "description": "Worked-test specification to write before implementation: Quiet arrivals, sharp arrival surge and busy-bar surge with explicit arrivals per game minute, service rates, travel time, patience/abandonment and refund…",
+      "description": "The first backend slice adds a self-hosted, pinned Three.js renderer module, a camera/picking contract and independently authored dimensional props.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/FEATURE_BRIEFS.md",
       "open": null
     },
@@ -1539,6 +1551,16 @@
       "title": "Front of House Known Issues",
       "description": "One list of what is wrong, weak or unrecorded, so it isn't scattered through session logs.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/KNOWN_ISSUES.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/LOT_BACKEND.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Lot renderer backend",
+      "description": "FOH-V01b technical component, 2026-10-04. This is an isolated renderer backend; the game does not import it yet. FB-01 and the renderer contract remain the target. Integration, gestures, fallback switching, complete…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/LOT_BACKEND.md",
       "open": null
     },
     {
@@ -2132,6 +2154,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-lot-camera.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-lot-camera.mjs",
+      "description": "Camera contract tests use the real Three.js projection matrices without a GPU.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-lot-camera.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test/fixtures/save-v1.json",
       "project": "front-of-house",
       "category": "tests",
@@ -2149,6 +2181,16 @@
       "title": "save-v2.json",
       "description": "Frozen schema version 2 save at the Lot scale, used by the engine tests.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test/fixtures/save-v2.json",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-lot-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-lot-smoke.mjs",
+      "description": "Browser proof for the isolated Lot backend; this does not claim game integration or final art acceptance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-lot-smoke.mjs",
       "open": null
     },
     {
@@ -2252,6 +2294,36 @@
       "open": null
     },
     {
+      "path": "front-of-house/lot-camera.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "lot-camera.mjs",
+      "description": "Logical-unit perspective camera. Presentation only: never reads or writes a save.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-camera.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/lot-models.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "lot-models.mjs",
+      "description": "Independently authored dimensional samples, not accepted final realistic art. All sizes are provisional logical tile units; no external models or textures.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-models.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/lot-renderer.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "lot-renderer.mjs",
+      "description": "Lot-only WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/sprites/manifest.mjs",
       "project": "front-of-house",
       "category": "source",
@@ -2279,6 +2351,46 @@
       "title": "docs.mjs",
       "description": "Front of House reference generator: writes docs/ASSETS.md, docs/CATALOG.md and docs/STRINGS.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/docs.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/tools/vendor-three.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "vendor-three.mjs",
+      "description": "Reproducibly copy the pinned Three.js browser modules and retain their MIT license. npm ci verifies the package tarball against package-lock.json before this runs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/vendor-three.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/vendor/three/LICENSE",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "TXT",
+      "title": "Three.js MIT license",
+      "description": "Retained upstream license for the pinned, locally served Three.js browser modules.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/vendor/three/LICENSE",
+      "open": null
+    },
+    {
+      "path": "front-of-house/vendor/three/three.core.min.js",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JS",
+      "title": "Three.js core 0.184.0",
+      "description": "Pinned upstream core module; vendor-three.mjs verifies exact npm package byte parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/vendor/three/three.core.min.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/vendor/three/three.module.min.js",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JS",
+      "title": "Three.js WebGL 0.184.0",
+      "description": "Pinned upstream WebGL browser module with a local core import; no CDN requests.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/vendor/three/three.module.min.js",
       "open": null
     },
     {
@@ -3297,7 +3409,7 @@
       "category": "ops",
       "kind": "JSON",
       "title": "package.json",
-      "description": "npm scripts for every unit test, smoke rail, art gate, simulator and this index; Playwright is the only dependency.",
+      "description": "npm scripts for every unit test, smoke rail, art gate, simulator and this index; Playwright runs browser tests; pinned Three.js supports the Lot renderer backend.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/package.json",
       "open": null
     },

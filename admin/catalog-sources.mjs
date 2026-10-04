@@ -237,6 +237,9 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/vendor/three/LICENSE': { title: 'Three.js MIT license', description: 'Retained upstream license for the pinned, locally served Three.js browser modules.' },
+  'front-of-house/vendor/three/three.core.min.js': { title: 'Three.js core 0.184.0', description: 'Pinned upstream core module; vendor-three.mjs verifies exact npm package byte parity.' },
+  'front-of-house/vendor/three/three.module.min.js': { title: 'Three.js WebGL 0.184.0', description: 'Pinned upstream WebGL browser module with a local core import; no CDN requests.' },
   'front-of-house/docs/NEXT_STEPS.json': { title: 'Front of House next steps', description: 'Public-safe project snapshot: open decisions, feature briefs, current evidence and remaining acceptance; consumed by the private workspace board.' },
   // Studio root and hosting
   '.github/workflows/ci.yml': { title: 'CI workflow', description: 'Unit tests, syntax checks, art and balance drift gates, the admin catalog check, then every Playwright rail. Runs on pull requests and on every push to gh-pages.' },
@@ -251,7 +254,7 @@ export const FILE_NOTES = {
   'manifest.webmanifest': { description: 'PWA manifest: name, icons, theme colours and start URL.' },
   'offline.html': { description: 'Offline fallback page the service worker serves when a navigation fails.' },
   'package-lock.json': { description: 'Locked dependency tree for npm ci.' },
-  'package.json': { description: 'npm scripts for every unit test, smoke rail, art gate, simulator and this index; Playwright is the only dependency.' },
+  'package.json': { description: 'npm scripts for every unit test, smoke rail, art gate, simulator and this index; Playwright runs browser tests; pinned Three.js supports the Lot renderer backend.' },
   'progress.md': { title: 'Studio progress log', description: 'Session log for hub-level work: the public roster and arena count correction, the landing polish and this admin index.' },
   'robots.txt': { description: 'Crawler rules and the sitemap pointer.' },
   'sitemap.xml': { description: 'Public URL list for search engines. The admin index and unlisted routes are deliberately absent.' },
