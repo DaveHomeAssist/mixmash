@@ -8,7 +8,7 @@
   "head": "3698c0a · live service pilot deployed and verified; crowd projection in PR66",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "The live Lot pilot is merged, deployed and verified in Chromium/WebKit and 3D. Shared queue groups and worker travel are implemented in PR66; animated guest transitions and subsequent phases remain open.",
+  "statusReason": "The live Lot pilot is merged, deployed and verified in Chromium/WebKit and 3D. PR66 queue samples and worker travel are in delivery; event-derived guest transitions are implemented locally. Subsequent phases remain open.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -574,9 +574,11 @@
           {
             "id": "FOH-O01d",
             "scope": "Animated representative guest transitions tied to service outcomes",
-            "status": "pending",
+            "status": "implemented-local-verification",
             "evidence": [
-              "Queue groups and worker travel are visible; individual sample movement between arrival, bar and floor, and admission-abandonment departures, are not implemented by PR66."
+              "Event-derived guest identities and obstacle-respecting paths animate admission, bar service, floor movement and recorded admission abandonment in both renderers.",
+              "No new saved state or transactions; pause/reduced motion use committed outcomes. Pure tests cover same-minute transitions, reload, batched clocks, missing paths and bounded 6000-guest demand. Required CI and deployed verification remain pending.",
+              "255 repository tests and build pass. Four client renderer/viewport journeys and two controlled motion journeys pass, proving visible travel, recorded departures, immutable event input and frozen reduced-motion outcomes."
             ],
             "doneWhen": "Derive bounded cosmetic transitions from recorded service outcomes, preserve exact zone/cash totals through camera/speed/reload, and verify reduced motion plus visible departures without introducing per-guest saved AI."
           }

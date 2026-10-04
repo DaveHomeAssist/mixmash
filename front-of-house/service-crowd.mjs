@@ -1,8 +1,9 @@
 // Presentation-only service zones shared by the classic and 3D Lot views.
 // Samples never supply attendance, service capacity, transactions or saved state.
 import { OBJECT_TYPES, LIVE_SERVICES } from './data.mjs';
+import { guestFrame, alongGuestRoute } from './service-guests.mjs';
 
-export const SERVICE_COLORS = { gate: '#58b8da', bar: '#e8b84a', worker: '#ff875f' };
+export const SERVICE_COLORS = { gate: '#58b8da', bar: '#e8b84a', worker: '#ff875f', leaving: '#b7c0ca' };
 const key = (p) => `${p.x},${p.y}`;
 const center = (p) => ({ x: p.x + 0.5, y: p.y + 0.5 });
 const distance = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -42,7 +43,9 @@ export function createServiceLayout(objects, grid = { w: 24, h: 16 }) {
     { distance: gate.x, axis: 'y', at: -0.25, normal: -1 },
     { distance: grid.w - 1 - gate.x, axis: 'y', at: grid.w + 0.25, normal: 1 },
   ].sort((a, b) => a.distance - b.distance)[0] : null;
-  return { floor, barCells, route, gate: gateCell ? center(gateCell) : null,
+  const entry = gate ? center(gate) : null;
+  const outsideGate = entry && edge ? (edge.axis === 'x' ? { x: entry.x, y: edge.at } : { x: edge.at, y: entry.y }) : null;
+  return { free: free.map(center), entry, outsideGate, floor, barCells, route, gate: gateCell ? center(gateCell) : null,
     bar: barCell ? center(barCell) : null, edge, grid: { ...grid },
     diagnostic: !gate || !bar ? 'A service location is missing.' : !route.length ? 'No visual worker route; service rules are unchanged.' : null };
 }
@@ -60,10 +63,10 @@ function samples(totals, limit) {
   return Object.fromEntries(Object.keys(totals).map((name, i) => [name, result[i]]));
 }
 
-export function projectServiceCrowd(layout, services, visualMinute = services.minute) {
+function zoneProjection(layout, services, visualMinute = services.minute, limit = 180) {
   const admitted = count(services.admitted), bar = Math.min(admitted, count(services.bar?.waiting));
   const totals = { gate: count(services.gate?.waiting), bar, floor: admitted - bar };
-  const wanted = samples(totals, 180), actors = [], used = new Set();
+  const wanted = samples(totals, limit), actors = [], used = new Set();
   for (let i = 0; i < Math.min(wanted.bar, layout.barCells.length); i++) {
     const p = layout.barCells[i]; used.add(key(p)); actors.push({ ...center(p), id: `bar:${i}`, zone: 'bar' });
   }
@@ -86,4 +89,20 @@ export function projectServiceCrowd(layout, services, visualMinute = services.mi
   const shown = Object.fromEntries(Object.keys(totals).map(zone => [zone, actors.filter(a => a.zone === zone).length]));
   return { actors, worker: worker ? { ...worker, id: 'worker', zone: 'worker' } : null, totals, shown,
     representative: Object.keys(totals).some(zone => totals[zone] !== shown[zone]), diagnostic: layout.diagnostic };
+}
+
+const frames = new WeakMap();
+export function projectServiceCrowd(layout, services, visualMinute = services.minute, progress = 1) {
+  const base = zoneProjection(layout, services, visualMinute);
+  if (!services.events) return base;
+  let cached = frames.get(services);
+  if (!cached || cached.layout !== layout) {
+    cached = { layout, frame: guestFrame(layout, services, zoneProjection) };
+    frames.set(services, cached);
+  }
+  const frame = cached.frame, fraction = Math.max(0, Math.min(1, progress));
+  const actors = frame.actors.filter(a => a.zone !== 'leaving' || fraction < 1).map(({ route, ...actor }) => ({ ...actor, ...alongGuestRoute(route, fraction) }));
+  return { ...base, actors, shown: frame.shown, representative: frame.representative,
+    diagnostic: base.diagnostic || (frame.unavailable ? 'Some guest routes are unavailable; service counts are unchanged.' : null),
+    transitions: { minute: services.minute, progress: fraction, recordedDepartures: frame.leaving, departingSamples: actors.filter(a => a.zone === 'leaving').length, unavailable: frame.unavailable } };
 }

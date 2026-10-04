@@ -311,3 +311,12 @@ Delivery and mandatory checks: [PR #58](https://github.com/DaveHomeAssist/mixmas
 
 - PR62 delivery verified: merge `3698c0a`, full CI run37197151483 passed, Pages build1259285752 built and eight runtime files match. Four production Chromium/WebKit desktop/phone journeys and two production 3D journeys pass. The first production WebKit-phone run hit the old 12× manual-Pause timing assumption; the separated manual 1× / automatic 12× assertions pass and preserve both behaviors.
 - PR66 implements zone samples and worker travel. FB-03 still requires animated representative guest transitions and visible admission-abandonment departures; these remain explicit FOH-O01d work. Neither this projection nor static queue groups close the whole live-operations phase.
+
+
+## 2026-10-04: FOH-O01d recorded guest transitions
+
+- Reconstruct cosmetic FIFO guest identities from service events and animate representative samples through the actual gate, bar and free floor cells. Admission abandonment produces bounded grey departures; bar abandonment returns guests to the floor. No transactions, checkpoint fields or service formulas change.
+- Both renderers consume one projection. Paused/reduced-motion frames show the committed outcome, and reload reconstructs it. Missing visual routes retain endpoint samples with a diagnostic. Normal end-of-show departure remains FOH-O02.
+- Pure checks cover conservation, same-minute arrival/admission/sale, batched clocks, reload, obstacle paths and the 6,000-guest bound. Four real-client renderer/viewport journeys and controlled visible-motion checks are the browser acceptance rail; delivery evidence follows the PR.
+
+- Local evidence: 255 repository tests and build pass; four renderer/viewport client journeys and two controlled motion journeys pass. The initial isolated harness omitted canvas resize, causing a frame-comparison failure; explicit resize fixes the harness and both rendered motion/frozen-frame assertions now pass. Desktop motion and phone queue captures were inspected.

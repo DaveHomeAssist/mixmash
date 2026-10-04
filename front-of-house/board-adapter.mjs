@@ -53,7 +53,7 @@ export function createBoardAdapter(canvas, { enabled = false, onStatus = () => {
     if (scene.services) {
       const key = JSON.stringify([scene.objects, scene.grid]);
       if (key !== serviceLayoutKey) { serviceLayout = createServiceLayout(scene.objects, scene.grid); serviceLayoutKey = key; }
-      scene = { ...scene, serviceCrowd: projectServiceCrowd(serviceLayout, scene.services, scene.serviceMinute) };
+      scene = { ...scene, serviceCrowd: projectServiceCrowd(serviceLayout, scene.services, scene.serviceMinute, scene.serviceProgress) };
     }
     lastScene = scene;
     if (enabled && backend?.status().state === 'ready' && scene.floor === 'lot') backend.draw(scene);

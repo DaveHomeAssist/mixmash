@@ -697,9 +697,10 @@ function liveServiceSpec(state) {
       prepaid: split(preview.presale, i + 1), walkup: split(preview.attendance - preview.presale, i + 1) })) };
 }
 
-export function liveServicesFor(state) {
+export function liveServicesFor(state, { events = false } = {}) {
   if (!state.show?.services) return null;
-  return Services.serviceSummary(Services.loadServices(state.show.services));
+  const run = Services.loadServices(state.show.services);
+  return { ...Services.serviceSummary(run), ...(events ? { events: run.events } : {}) };
 }
 
 function serviceResponse(state, responseId) {

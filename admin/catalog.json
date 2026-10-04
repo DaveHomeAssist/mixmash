@@ -2436,6 +2436,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/service-guests.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "service-guests.mjs",
+      "description": "Cosmetic identities and paths reconstructed from authoritative service events. Nothing in this module changes a queue, a receipt or a saved checkpoint.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/service-guests.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/services.mjs",
       "project": "front-of-house",
       "category": "source",
