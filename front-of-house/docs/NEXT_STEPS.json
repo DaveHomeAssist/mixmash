@@ -8,7 +8,7 @@
   "head": "ab27c99 · source reviewed 2026-10-04",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Decision packet and eight feature briefs ready; choices remain open. Phone Book/Promote overflow still in source; controls and undo shipped in PR #49.",
+  "statusReason": "D1 accepted: 3D Lot first, then live operations. D2–D11 remain open. Phone sheet overflow remains in source; controls and undo shipped in PR #49.",
   "activity30d": {
     "headline": "Four-room playable; HUD and production docs; controls and undo merged. Continuous 3D and expanded operations remain proposed."
   },
@@ -16,11 +16,11 @@
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
     "PR #47: split-view controls and sprite occlusion fixes.",
     "PR #48: research design and CT-DEC-13, still Proposed.",
-    "2026-10-04: decision packet and eight scoped feature briefs authored; documentation is not gameplay."
+    "2026-10-04: decision packet and eleven scoped feature briefs authored; documentation is not gameplay."
   ],
   "nextStep": {
-    "title": "Choose the next expansion and its art treatment",
-    "why": "D1–D5 define the prototype scope. D6–D11 can wait for their dependent milestone. Ordinary defects do not need a vote.",
+    "title": "Choose art, crowd, Build behavior and performance for the 3D Lot",
+    "why": "D1 is settled. D2–D5 define the prototype contract; D6–D11 can wait for their dependent milestone.",
     "doneWhen": "Dave answers with decision IDs and letters; accepted rulings are recorded separately from proposals.",
     "effort": "S",
     "owner": "dave",
@@ -84,7 +84,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Public release: provenance, career decisions and human acceptance",
-      "detail": "D8–D11 cover art retention, CT-DEC-10/11 and launch timing. Existing noindex/hub/sitemap gates remain. Screenshot prototype source and asset provenance are unverified.",
+      "detail": "D8–D11 cover art retention, CT-DEC-10/11 and launch timing. Existing noindex/hub/sitemap gates remain. Prototype source reviewed; runtime and asset provenance are unverified.",
       "files": [
         "front-of-house/docs/KNOWN_ISSUES.md",
         "front-of-house/docs/DECISIONS.md"
@@ -108,11 +108,11 @@
       "name": "Decision — 3D Lot and controls",
       "goal": "A bounded next feature with an accepted art and performance contract",
       "items": [
-        "Answer D1–D5.",
+        "D1 accepted; answer D2–D5.",
         "FB-01: orbit and presets; FB-07: Select mode if chosen.",
         "FB-02: dimensional venues follow Lot validation; FB-08 minimap stays deferred."
       ],
-      "gate": "Record actual answers; obtain prototype source; verify camera picking, input parity and declared device targets."
+      "gate": "Record remaining answers; validate the supplied prototype runtime; prove camera picking, input parity and declared device targets."
     },
     {
       "name": "Operations — live services and development",
@@ -136,7 +136,6 @@
     }
   ],
   "decisionsForDave": [
-    "D1 — Which expansion leads? Sets the first feature milestone, after routine defects: A) 3D Lot prototype → live operations → research. Addresses the requested view first; delays deeper gameplay slightly B) Live operations → 3D → research. Proves choices first; awkward view remains longer C) Research first. Earlier progression; service benefits are harder to validate Recommended: A. OPEN.",
     "D2 — What art supports orbit? Unlocks the renderer and asset contract: A) Stylized dimensional 3D, following the supplied venue references. Medium art scope; readable forms and free yaw B) More realistic 3D. High art, lighting and device cost; greater visual detail C) Illustrated directional sprites. More paintings and limited tilt; continuous movement can expose mismatched facings Recommended: A. OPEN.",
     "D3 — How deep should the crowd simulation go? Defines CPU, save and gameplay scope: A) Aggregate queues/services, animated representative people. Medium effort; visible behavior explains real totals B) Every attendee simulated and routed. High effort; individual stories, larger determinism/performance burden C) Decorative crowd only. Low effort; stronger atmosphere but no service explanation Recommended: A. OPEN.",
     "D4 — How should Select and deletion behave? Unlocks the remaining Build interaction change: A) Select tool; Escape cancels placement; single removal uses undo; bulk Clear asks once. Medium UI work; few interruptions B) Confirm every removal, including single objects. More interruption; fewer immediate mistakes C) Keep current tools and undo only. No new interaction scope; accidental placement remains possible Recommended: A. OPEN.",
@@ -155,7 +154,7 @@
     },
     {
       "path": "front-of-house/docs/FEATURE_BRIEFS.md",
-      "why": "Eight scoped proposals, acceptance and exclusions"
+      "why": "Eleven scoped proposals, acceptance and exclusions"
     },
     {
       "path": "front-of-house/docs/NEXT_STEPS.json",
@@ -168,6 +167,10 @@
     {
       "path": "front-of-house/docs/RESEARCH.md",
       "why": "Existing CT-DEC-13 detailed research proposal"
+    },
+    {
+      "path": "front-of-house/docs/PROTOTYPE_REVIEW.md",
+      "why": "Archive inventory, reusable 3D parts and concrete integration gaps; source inspection only"
     }
   ],
   "verify": [
@@ -180,9 +183,10 @@
   "context": [
     "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
     "Source baseline ab27c99. This planning update does not reproduce all audit findings or declare live performance acceptance.",
-    "Eight briefs are proposed scope, not implementation authorization. Update decisions only from Dave’s actual answers.",
-    "The 3D screenshot source has not been inspected. Do not copy unknown code or assume asset usage rights.",
-    "Refresh this project only; preserve unrelated project records, stable IDs and audit history."
+    "Eleven briefs are proposed scope, not implementation authorization. Update decisions only from Dave’s actual answers.",
+    "The supplied 3D archive has been statically reviewed: OrbitControls, venue builders, instanced crowds and separate service snapshots exist. Runtime, rights and engine parity remain unverified.",
+    "Refresh this project only; preserve unrelated project records, stable IDs and audit history.",
+    "2026-10-04: Dave selected D1 A. CT-DEC-14 accepts sequence only; no other recommended answer is implied."
   ],
   "links": [
     {
@@ -202,8 +206,8 @@
   "confidence": "medium",
   "unknowns": [
     "Physical-device and human career acceptance pending.",
-    "Prototype source and 3D asset provenance unverified.",
-    "Recommended decisions have not been selected."
+    "Prototype runtime, dependency integrity, 3D asset provenance and engine integration unverified.",
+    "D2–D11 recommendations remain unanswered."
   ],
   "evidence": {
     "checkedOn": "2026-10-04",
@@ -211,13 +215,17 @@
     "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
     "controlsCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37181521431",
     "humanAcceptance": "Pending",
-    "planningPR": "https://github.com/DaveHomeAssist/mixmash/pull/53"
+    "planningPR": "https://github.com/DaveHomeAssist/mixmash/pull/53",
+    "prototypeArchiveSha256": "e4e3e17d05ca343191d799a02d82f84a305a7ff8eb1b74405b0a96f6194c49a8",
+    "prototypeReview": "Static source inspection only; see PROTOTYPE_REVIEW.md"
   },
   "decisionState": {
     "D1": {
-      "status": "open",
+      "status": "accepted",
       "recommended": "A",
-      "selected": null
+      "selected": "A",
+      "decidedOn": "2026-10-04",
+      "answer": "3D Lot prototype first, then live operations"
     },
     "D2": {
       "status": "open",

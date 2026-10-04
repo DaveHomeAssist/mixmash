@@ -16,7 +16,7 @@
 
 **Acceptance:** Picking works at arbitrary yaw including 37°/135°, across zoom and pitch bounds; camera drag never places/deletes; world orientation survives save/reload and view changes; keyboard equivalents and reduced motion work; no page/panel overflow under the accepted HUD; functional parity and device performance pass. Compare the same saved show across renderers to identical settlement values.
 
-**Dependencies / risks:** D1, D2, D5; retrieve and review the screenshot prototype source and provenance before reuse. Occlusion, touch conflict, WebGL failure and device cost are the main risks. **Relative effort:** large. **Expansion:** other venues only after Lot parity and human camera acceptance.
+**Dependencies / risks:** D1, D2, D5; the supplied prototype source is now statically reviewed in [PROTOTYPE_REVIEW.md](PROTOTYPE_REVIEW.md); validate runtime, provenance and engine parity before reuse. Occlusion, touch conflict, WebGL failure and device cost are the main risks. **Relative effort:** large. **Expansion:** other venues only after Lot parity and human camera acceptance.
 
 ## FB-02 Distinct venue scenes
 
@@ -137,3 +137,57 @@
 D5 selects the acceptance model. For the recommended model, record hardware/browser, scene/save/seed, crowd size, resolution, device pixel ratio, warm-up, sample length and foreground state. Track p50/p95 frame time and stalls on the same CI runner class; review a runner change before resetting a baseline. Propose a 20% regression alert initially, then fix the accepted limit from repeated samples. A relative pass is not a real-device frame-rate pass. Proposed physical targets are p95 <=16.7ms on the declared desktop tier and <=33.3ms on the declared low-power tier; name and test the actual supported devices before claiming acceptance.
 
 Before any feature implementation, its accepted choices, exact rule/data changes and test scenarios must be ready. For each delivery: update the relevant brief and decisions; record tests, source revision, CI, deployment and human acceptance separately; refresh NEXT_STEPS.json and the workspace board. A docs deployment never marks a feature implemented. Existing release gates remain unchanged.
+
+## FB-09 Concessions and vendor operations
+
+**Source:** The supplied prototype includes food trucks/stalls, bar windows, prices, queue switching and a house share; see [source review](PROTOTYPE_REVIEW.md). These are proposed follow-on mechanics, not accepted numbers.
+
+**Problem / outcome:** Guests should encounter believable food/bar trade-offs while the promoter chooses capacity, pricing and commercial terms.
+
+**Player flow:** Place or contract one vendor → set staffed windows and a price band before doors → inspect served demand, waits and stock → compare vendor gross sales and promoter share at settlement.
+
+**First slice:** One food vendor beside the existing bar, after FB-04. Guests have finite demand and spending budgets. Switching queues preserves the guest/job; it never creates additional demand. Staffing, stock, access and operating hours constrain service. Lock commercial terms at the defined booking boundary.
+
+**Rules and saves:** Own demand and service events in the engine. Persist queues, stock, agreed share, staffed capacity and stable transactions. Distinguish hourly forecasts, actual sales, gross vendor revenue and promoter income. Avoid counting vendor costs against the artist contract unless explicitly included in accepted terms.
+
+**Out of scope:** Multiple vendor districts, dynamic negotiations, real-world tax/accounting and global price optimization.
+
+**Acceptance:** Customers cannot spend the same budget twice; queue switching conserves demand; stockouts stop sales; increasing price can reduce demand; provider and promoter ledgers reconcile after reload. At least two price/capacity choices are useful under different conditions.
+
+**Dependencies / risks:** FB-04, D3, finite guest budget rules. The prototype curve is illustrative. **Relative effort:** medium/large. **Expansion:** separate approval after live staffing works; no immediate implementation decision required.
+
+## FB-10 Sanitation and artist facilities
+
+**Source:** The prototype offers portable restrooms, trailers, permanent facilities and backstage options. Source inspection confirms those controls; their costs and rider conditions are proposals.
+
+**Problem / outcome:** Restroom demand and servicing should affect guest experience, while act requirements distinguish mandatory conditions from preferences.
+
+**Player flow:** Forecast guest demand → choose a supported facility package → assign servicing → inspect waits and condition → address an artist's stated backstage requirement before committing the show.
+
+**First slice:** Portable restrooms and one rental trailer package with explicit stalls, service time, cleaning/utility availability and queue demand. Baseline sanitary and accessible provision stays available without research. Add one clearly displayed negotiable artist preference; defer mandatory rider logic until its failure/cancellation policy is defined.
+
+**Rules and saves:** Persist facility condition, queue state, servicing assignments and accepted requirements. No generic mood bonus without a measured reason. Separate guest queue abandonment from leaving the show, ticket refunds and artist penalties; each needs its own rule and record. Permanent construction depends on FB-05.
+
+**Out of scope:** Regulatory compliance certification, medical simulation, detailed plumbing, every rider type and unlocking minimum safe provision through research.
+
+**Acceptance:** More stalls do not bypass missing access/utilities; cleaning consumes time and staff; no duplicate queue visits or unexplained departures; a declared artist preference has visible cost and outcome. Reload preserves condition, work in progress and booked terms.
+
+**Dependencies / risks:** FB-04 service model and FB-06 only for optional improvements. Prototype facility constants are unvalidated. **Relative effort:** medium/large. **Expansion:** detailed requirements and permanent works need their own decision when scheduled.
+
+## FB-11 Arrival and departure flow
+
+**Source:** The prototype draws entry/exit paths and estimates clearance from attendance and exit width. This is a design visualization, not verified crowd-safety engineering.
+
+**Problem / outcome:** Players should see arrivals become admitted guests and guests leave through usable routes, with congestion explained by the site's modeled constraints.
+
+**Player flow:** Inspect entrance/exit zones in Build → open doors → observe FB-04 queues → monitor normal departure after the set → review congestion and staffing decisions.
+
+**First slice:** One admission path and normal end-of-show departure for the Lot, using aggregate zones and representative animation. Existing occupancy and exit rules remain authoritative. Security checks can affect service time only after an explicit, bounded rule is specified; faster flow must never grant extra legal capacity.
+
+**Rules and saves:** Conserve people across outside, admitted, service, departure and departed states. Save backlog and blocked-route state. Model throughput separately from queue storage and occupancy. Do not treat a preview density knob or animated path length as attendance or safety proof.
+
+**Out of scope:** Emergency evacuation prediction, certification, individually routed crowds, transport scheduling and a replacement incident engine.
+
+**Acceptance:** No teleporting or double counting between zones; blocked modeled routes visibly reduce service; admission and exit controls cannot create capacity; alternate speed/reload produce identical counts. Compare quiet and surge conditions and retain existing engine limits.
+
+**Dependencies / risks:** FB-04, D3, usable geometry from FB-01. Real-world rates must not be presented as certified outcomes. **Relative effort:** medium. **Expansion:** multi-gate circulation only after the Lot model is understandable and tested.

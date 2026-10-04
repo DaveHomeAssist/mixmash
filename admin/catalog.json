@@ -1542,6 +1542,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/PROTOTYPE_REVIEW.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House 3D prototype source review",
+      "description": "Under accepted CT-DEC-14, start with a Lot renderer adapter and camera parity, not a simultaneous rewrite of the economy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/PROTOTYPE_REVIEW.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/RELEASE.md",
       "project": "front-of-house",
       "category": "docs",

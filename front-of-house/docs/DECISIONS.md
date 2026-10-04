@@ -374,3 +374,18 @@ The career currently unlocks rooms through show milestones. The GDD lists later 
 - CT-DEC-10 and CT-DEC-11 keep their existing statuses. Previously unlocked venues and current facilities are not retroactively research-gated.
 - The organizational research tree extends the earlier future-plan scope. It does not require an individual employee skill tree, new renderer or individually simulated crowd.
 - This documentation does not change code, tuning, schema, service-worker behavior or public-launch status. Values and human playtest acceptance remain open.
+
+## CT-DEC-14: Expansion sequence
+
+- Date: 2026-10-04
+- Status: Accepted (Dave selected D1 A: “3D Lot prototype first, then live operations”)
+- Owner: Dave Robertson
+- Affects: sequencing of [FB-01](FEATURE_BRIEFS.md#fb-01-continuous-orbit-and-camera-presets) and [FB-04](FEATURE_BRIEFS.md#fb-04-live-arrivals-and-temporary-staffing)
+
+### Decision
+
+Lead with a bounded 3D Oak St. Lot prototype, then the live arrivals and temporary staffing slice. Ordinary phone/layout defects remain independent work. This records milestone order, not approval of the renderer's art treatment, crowd model, performance thresholds, later research or ownership scope. Those remain open in [DECISION_PACKET.md](DECISION_PACKET.md). Existing saves, balance and public-release gates are unchanged.
+
+### Consequences
+
+The first prototype should prove camera movement, picking and engine parity before expanding to all venues. Gameplay-depth work follows that proof. Feature briefs are specifications for review, not claims of implementation or blanket execution authorization.

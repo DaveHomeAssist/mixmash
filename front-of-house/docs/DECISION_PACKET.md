@@ -1,6 +1,6 @@
 # Front of House decision packet
 
-**Reviewed:** 2026-10-04 against `ab27c99` (PR #49 merged). **Status:** Open choices; recommendations are not approvals. Owner: Dave. This packet summarizes choices; accepted rulings belong in [DECISIONS.md](DECISIONS.md), with the date and Dave's actual answer. Feature scope is in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md). Current next steps are exported in [NEXT_STEPS.json](NEXT_STEPS.json).
+**Reviewed:** 2026-10-04 against `ab27c99` (PR #49 merged). **Status:** D1 accepted; D2–D11 open. Recommendations are not approvals. Owner: Dave. This packet summarizes choices; accepted rulings belong in [DECISIONS.md](DECISIONS.md), with the date and Dave's actual answer. Feature scope is in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md). Current next steps are exported in [NEXT_STEPS.json](NEXT_STEPS.json).
 
 ## Already settled or not a product decision
 
@@ -9,7 +9,7 @@
 - Keyboard bindings, conflict checks and 50-step Build undo/redo shipped in [PR #49](https://github.com/DaveHomeAssist/mixmash/pull/49). Do not ask to build them again.
 - The phone Book/Promote width defect (MXS-06) needs a fix and regression check; it does not need a design vote. Its 580px rule still exists at this source revision. Live reproduction remains separate.
 - Asset provenance, save integrity, accurate labels, reachable controls and source-based status updates are ordinary completion requirements.
-- Supplied 3D screenshots are visual references. Their source, license, interaction behavior and engine integration have not been verified.
+- The supplied 3D archive is now statically inspected in [PROTOTYPE_REVIEW.md](PROTOTYPE_REVIEW.md). Orbit, venues and service previews exist in source; runtime behavior, usage rights and integration are not verified.
 
 ## Choose now: scope and interaction
 
@@ -36,9 +36,13 @@ These do not prevent documenting or fixing existing behavior.
 | D10 | CT-DEC-11 later rooms | **Keep implemented room behavior experimental while venue art and tier-specific tests develop** | Accept current behavior: grid Club, returnable Lot, house rigs, seated multi-night shell, two-stage grounds | Reopen room mechanics before art: specify fixed-room versus grid behavior and future stage scheduling first | **A / medium**. A keeps CT-DEC-11 Proposed; B does not claim later-tier balance acceptance. [FB-02](FEATURE_BRIEFS.md#fb-02-distinct-venue-scenes) |
 | D11 | When may the game be promoted publicly? | **Wait for the 3D Lot and live-operations pilot plus existing release gates** | Promote the current playable once existing provenance, design and human acceptance gates pass; label it early access | Keep it unlisted without a launch milestone for now | **A / medium**. More coherent first impression, later discovery. Neither answer is a release command or a playtest sign-off. [Release checklist](RELEASE.md) |
 
-## Recommended package, not yet selected
+## Recorded answers
 
-D1–D11: **A**. First prove the dimensional Lot and its controls, then put meaningful arrivals and crew trade-offs into that space. Research follows measurable service constraints; ownership follows explicit accounting. The minimap remains deferred under CT-DEC-12 and is not a new decision request.
+- **D1 = A, accepted 2026-10-04:** Dave selected “3D Lot prototype first, then live operations.” This settles sequence. Art, crowd implementation, performance thresholds and public release remain open; this answer is not a blanket instruction to implement all briefs. Recorded in [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence).
+
+## Remaining recommendations, not yet selected
+
+D1 is selected A. D2–D11 are recommended **A**, still Open. First prove the dimensional Lot and its controls, then put meaningful arrivals and crew trade-offs into that space. Research follows measurable service constraints; ownership follows explicit accounting. The minimap remains deferred under CT-DEC-12 and is not a new decision request.
 
 ## Recording an answer
 
