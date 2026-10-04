@@ -112,3 +112,7 @@ At most 12 recorded departing samples share the existing 180-guest budget. They 
 
 
 For flow-version-1 shows, event-bearing presentation summaries also include connected floor cells and usable exit routes. Sample placement is restricted to that modeled audience region. `inside` drives current bar/floor totals while `admitted` remains cumulative settlement attendance. Normal-departure events select FIFO floor guests, travel on free cells through their recorded exit, and vanish at the committed endpoint. At most 12 exit/abandonment samples share the 180-guest limit. Default numeric summaries omit route/cell data; none is persisted. Both renderers use the same projection.
+
+### Food projection
+
+Food demand and finance are engine-owned. Presentation consumes food request/outcome events with the same arrival-derived guest identity as bar service. Green food waiting is a subset of inside attendance; bar+food+floor equals inside. Each guest enters the normal-departure FIFO once after their bar outcome, and all food requests resolve by closing before departure begins. Camera/speed/reload never own stock or receipts. The source-owned stall is procedural in both backends; classic adds a FOOD label, and neither palette nor board requests an absent PNG. Lot sample 3 contains the stall alongside the existing samples.

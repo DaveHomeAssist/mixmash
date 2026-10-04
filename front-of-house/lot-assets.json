@@ -1,5 +1,5 @@
 {
-  "revision": "lot-sample-2",
+  "revision": "lot-sample-3",
   "provenance": {
     "author": "Codex for Front of House",
     "source": "Procedural geometry and materials in lot-models.mjs",
@@ -29,12 +29,12 @@
     "restroomHeightMetres": 2.3
   },
   "sources": {
-    "lot-models.mjs": "5c7377ac82bf53af22ef949f0abee7f7a2005bb9e2f9be447be1c5d3e6034486",
+    "lot-models.mjs": "1bb68e8c2bdfef4c459e51e5998e8cd9da0a8dfb1c124608007e5fc5633caea0",
     "lot-camera.mjs": "0d78fdab6aa799e9baa56d83ad80f6715c519e23281e54772ec82d0656671dd3",
     "lot-presentation.mjs": "7c0d478a32942cd2d25880a262f4d0abed77a54d04c39ab3a731782abf496e27",
     "lot-renderer.mjs": "13f8b854dabaa2f4c111dfb88bfc6675cc688b8a164011e69634bb4c95d4bf11",
-    "service-crowd.mjs": "993edabc82c5edc71d55874a9bacfc2a1b28a5c82bafb4c2f41afc72b21d7508",
-    "service-guests.mjs": "3009ede0073b1a22ac4ec192851c50eb22bdbf3c99f0669079b22ab8d3d83323",
+    "service-crowd.mjs": "72f7b58849b485f1c60fa7b23dc693c24a6e69a0414e08f04f41dd12afb61ccf",
+    "service-guests.mjs": "74bd16fc0912daf62fcfd4f4fbb2d016e36d2632d2b80be9b9b213cc3d166f41",
     "guest-flow.mjs": "5fb4a6775ccab8e5461d282d3d26917c8ad4fc69e83059bf9af7cf720650a1c8"
   },
   "assets": [
@@ -60,9 +60,9 @@
       },
       "meshCount": 24,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "63d90637943a3162a57a8e1586ea25ebe1b0547e13ad2c1c982ab6651805ac3a"
+      "contentDigest": "5ccbf53f9de2a2f32ebe6513cb50afbb59e9db3b1ff07a6b3b8e926d9d85dd85"
     },
     {
       "id": "pa-s",
@@ -86,9 +86,9 @@
       },
       "meshCount": 11,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "182b486efc4132c9904adc5f6da4457c97e74a3d607ccb41862f61a5c2e9a180"
+      "contentDigest": "09bb25d18c1d3caee7d4bc10fad58d4af6bbeb8199f8eb97a76afbc0e08c3bc5"
     },
     {
       "id": "pa-m",
@@ -112,9 +112,9 @@
       },
       "meshCount": 35,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "6cf907882bae12f4421d17d43c901a8d49e3ca89e2bbaf42418b8f76b2765966"
+      "contentDigest": "abdae8303886277ba85ee834c8c73e42fdfa856829b257df4325e3d7ab201fe4"
     },
     {
       "id": "lights",
@@ -138,9 +138,9 @@
       },
       "meshCount": 6,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "49913e405605ba7303082b7a61201f82f08c0863f6c5602b053ada983bf443bc"
+      "contentDigest": "b5a12a0ac25d12b4621254c3d2fecc3461f43e304b4b1e9e4f965e7aea50b0e4"
     },
     {
       "id": "bar",
@@ -164,9 +164,35 @@
       },
       "meshCount": 8,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "9df3b6da037c0472d8592342cf0bd6ff668238f989f04514ea94a30be094fbb8"
+      "contentDigest": "2f6a1e8ac06a9cdac5249e8081458227bbe581d81e8bb3fd2f00535754d76172"
+    },
+    {
+      "id": "food",
+      "logicalFootprint": [
+        2,
+        1
+      ],
+      "pivot": "footprint center at ground; guest feet at origin",
+      "forward": "+Z",
+      "visualBounds": {
+        "min": [
+          0,
+          0,
+          0.1
+        ],
+        "max": [
+          2,
+          1.11,
+          0.9
+        ]
+      },
+      "meshCount": 9,
+      "pickProxy": "opaque rendered mesh surfaces",
+      "materialRevision": "lot-sample-3",
+      "lod": "fixed source detail; guests instanced",
+      "contentDigest": "85790297e56ff361ec280edf31f7027d891f992f2c314dcd6f380e93072aa682"
     },
     {
       "id": "restroom",
@@ -190,9 +216,9 @@
       },
       "meshCount": 14,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "7d83ce07e7053f90dad75f1087da1a2de470735eccd3a1ad4d8097481e760053"
+      "contentDigest": "84927329673027f4907ff2498510411c6538ff6c079d5d8101e96ba62ad82b0c"
     },
     {
       "id": "gate",
@@ -216,9 +242,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "22f0cac792b757c6bb7d42bdb2d07889c8086c29873fde311084c34271f920d1"
+      "contentDigest": "8e82c56adcbb5f14a18b0431a50b033707bcd8f9e2624434b1753fc42084be78"
     },
     {
       "id": "exit",
@@ -242,9 +268,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "b580a0f5ec8ae3efd019a57fcdf57eca6e13b0019be974fdc21368aec4267b35"
+      "contentDigest": "112fb1b376e7df8efa1ee4205252ee936ccf712223c92e5250abc34e564e0dd7"
     },
     {
       "id": "guest",
@@ -265,9 +291,9 @@
       },
       "meshCount": 16,
       "pickProxy": "not selectable; representative decoration",
-      "materialRevision": "lot-sample-2",
+      "materialRevision": "lot-sample-3",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "0736b7014ecb1c9cce72a2f50ac0012d7e0dc38307dc5da5e4b17126448a8fc9"
+      "contentDigest": "15200c7d10c7d07418156442254b71f327a16183c94bd76621cebcdbc997068e"
     }
   ],
   "acceptance": {

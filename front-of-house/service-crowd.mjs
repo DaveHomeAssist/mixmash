@@ -3,7 +3,7 @@
 import { OBJECT_TYPES, LIVE_SERVICES } from './data.mjs';
 import { guestFrame, alongGuestRoute } from './service-guests.mjs';
 
-export const SERVICE_COLORS = { gate: '#58b8da', bar: '#e8b84a', worker: '#ff875f', leaving: '#b7c0ca', departing: '#b7c0ca' };
+export const SERVICE_COLORS = { gate: '#58b8da', bar: '#e8b84a', food: '#69c59d', worker: '#ff875f', leaving: '#b7c0ca', departing: '#b7c0ca' };
 const key = (p) => `${p.x},${p.y}`;
 const center = (p) => ({ x: p.x + 0.5, y: p.y + 0.5 });
 const distance = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -22,10 +22,12 @@ export function createServiceLayout(objects, grid = { w: 24, h: 16 }, access = n
   for (let y = 0; y < grid.h; y++) for (let x = 0; x < grid.w; x++) if (!occupied.has(key({ x, y })) && (!accessible || accessible.has(key({ x, y })))) free.push({ x, y });
   const near = target => [...free].sort((a, b) => distance(a, target) - distance(b, target) || a.y - b.y || a.x - b.x);
   const gate = access ? access.portals.find(o => o.type === 'gate' && o.usable) : objects.find(o => o.type === 'gate'), bar = access ? access.bars[0] : objects.find(o => o.type === 'bar');
-  const gateCell = gate && near(gate)[0], barCell = bar && near(bar)[0];
+  const food = access ? access.vendors?.[0] : objects.find(o => o.type === 'food');
+  const gateCell = gate && near(gate)[0], barCell = bar && near(bar)[0], foodCell = food && near(food)[0];
   const stage = objects.find(o => o.type === 'stage') || { x: grid.w / 2, y: 0 };
-  const reserved = new Set([barCell, gateCell].filter(Boolean).map(key));
+  const reserved = new Set([barCell, gateCell, foodCell].filter(Boolean).map(key));
   const floor = near(stage).filter(p => !reserved.has(key(p))), barCells = bar ? near(bar).filter(p => !reserved.has(key(p))) : [];
+  const foodCells = food ? near(food).filter(p => !reserved.has(key(p))) : [];
   const route = [];
   if (barCell && gateCell) {
     const previous = new Map([[key(barCell), null]]), queue = [barCell], open = new Set(free.map(key));
@@ -46,7 +48,7 @@ export function createServiceLayout(objects, grid = { w: 24, h: 16 }, access = n
   ].sort((a, b) => a.distance - b.distance)[0] : null;
   const entry = gate ? center(gate) : null;
   const outsideGate = entry && edge ? (edge.axis === 'x' ? { x: entry.x, y: edge.at } : { x: edge.at, y: entry.y }) : null;
-  return { free: free.map(center), entry, outsideGate, floor, barCells, route, gate: gateCell ? center(gateCell) : null,
+  return { free: free.map(center), entry, outsideGate, floor, barCells, foodCells, food: foodCell ? center(foodCell) : null, route, gate: gateCell ? center(gateCell) : null,
     bar: barCell ? center(barCell) : null, edge, grid: { ...grid },
     diagnostic: !gate || !bar ? 'A service location is missing.' : !route.length ? 'No visual worker route; service rules are unchanged.' : null };
 }
@@ -66,10 +68,15 @@ function samples(totals, limit) {
 
 function zoneProjection(layout, services, visualMinute = services.minute, limit = 180) {
   const admitted = count(services.inside ?? services.admitted), bar = Math.min(admitted, count(services.bar?.waiting));
-  const totals = { gate: count(services.gate?.waiting), bar, floor: admitted - bar };
+  const food = Math.min(admitted - bar, count(services.food?.totals.waiting));
+  const totals = { gate: count(services.gate?.waiting), bar, ...(services.food ? { food } : {}), floor: admitted - bar - food };
   const wanted = samples(totals, limit), actors = [], used = new Set();
   for (let i = 0; i < Math.min(wanted.bar, layout.barCells.length); i++) {
     const p = layout.barCells[i]; used.add(key(p)); actors.push({ ...center(p), id: `bar:${i}`, zone: 'bar' });
+  }
+  const foodCells = (layout.foodCells || []).filter(p => !used.has(key(p)));
+  for (let i = 0; i < Math.min(wanted.food || 0, foodCells.length); i++) {
+    const p = foodCells[i]; used.add(key(p)); actors.push({ ...center(p), id: `food:${i}`, zone: 'food' });
   }
   const floor = layout.floor.filter(p => !used.has(key(p)));
   for (let i = 0; i < Math.min(wanted.floor, floor.length); i++) actors.push({ ...center(floor[i]), id: `floor:${i}`, zone: 'floor' });

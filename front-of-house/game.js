@@ -19,7 +19,7 @@ const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
-const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit'];
+const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
 const AD_LABELS = { flyers: 'Flyers and posters', social: 'Social ads', radio: 'Local radio' };
@@ -333,13 +333,14 @@ const COSTS = {
   'pa-m': money(D.PA_RENTAL.M),
   lights: money(D.LIGHTS_RENTAL),
   bar: `${money(D.BAR_SETUP)} + ${D.BAR_STAFF_PER_BAR} staff`,
+  food: 'Vendor supplies staff and power',
   restroom: money(D.RESTROOM_UNIT),
   gate: `${D.DOOR_STAFF_PER_GATE} door staff`,
   exit: 'free',
 };
 
 // Short names for the tool tiles; the full label, size and cost are read out with each.
-const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Restroom', gate: 'Gate', exit: 'Exit' };
+const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Restroom', gate: 'Gate', exit: 'Exit', food: 'Food' };
 // The rotation as an arrow on screen, in FACING order.
 const ARROWS = ['↙', '↖', '↗', '↘'];
 
@@ -355,10 +356,11 @@ function buildPanel() {
   const where = spec.id === 'lot' ? 'lot' : 'room';
   const tiles = PLACEABLE.map((type, i) => {
     const t = D.OBJECT_TYPES[type];
+    if (t.lotOnly && spec.id !== 'lot') return '';
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${i + 1}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${i + 1}</span>
-        <img src="./sprites/${type}.png" alt="" decoding="async" />
+        ${type === 'food' ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
         <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${i + 1}</span>
       </label>`;
@@ -632,9 +634,10 @@ function promotePanel() {
       </div>
     </div>
     <div class="actions">
-      <button type="button" data-act="back">Back to the build</button>
+      <button type="button" data-act="back">Back to Build</button>
       ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
-      <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open the doors</button>
+      ${spec.id === 'lot' ? '<button type="button" data-act="food-settings" id="food-settings">Food: Off</button>' : ''}
+      <button type="button" class="primary" data-act="confirm-promo" id="confirm-promo">Open doors</button>
     </div>`;
 }
 
@@ -642,6 +645,8 @@ function updatePromote() {
   const p = state.promotion;
   const settings = $('#live-settings');
   if (settings) settings.textContent = `Live services: ${(p.liveServices ?? liveServicesPilot) ? 'On' : 'Off'}`;
+  const foodSettings = $('#food-settings');
+  if (foodSettings) foodSettings.textContent = `Food: ${p.foodPlan || 'Off'}`;
   const a = artistFor(state.booking.artistId);
   const price = $('#price');
   if (document.activeElement !== price) price.value = String(p.price);
@@ -716,6 +721,16 @@ function showPanel() {
     </div>`;
 }
 
+function foodDetails(food) {
+  const t = food.totals;
+  return `<dl class="live-readouts"><div><dt>Plan / stock left</dt><dd>${esc(food.terms.plan)} / ${food.stock}</dd></div>
+    <div><dt>Food requests</dt><dd>${t.requested}</dd></div><div><dt>Waiting / served / lost</dt><dd>${t.waiting} / ${t.served} / ${t.lost}</dd></div>
+    <div><dt>Price / budget declined</dt><dd>${t.declinedPrice} / ${t.declinedBudget}</dd></div>
+    <div><dt>Vendor gross sales</dt><dd>${money(t.vendorGross)}</dd></div><div><dt>House income (25%)</dt><dd>${money(t.houseIncome)}</dd></div>
+    <div><dt>Vendor stock / wages</dt><dd>${money(t.inventoryCost)} / ${money(t.wages)}</dd></div><div><dt>Vendor profit</dt><dd>${money(t.vendorProfit)}</dd></div></dl>
+    <p class="hint">Only the house share reaches career cash, once at settlement. Green guests are waiting for food. Six-minute patience; stock and closing limit sales.</p>`;
+}
+
 function liveServicesPanel() {
   return `
     <div class="plate at-tl card-plate">
@@ -725,7 +740,7 @@ function liveServicesPanel() {
     </div>
     <div class="plate at-tr incident-plate" id="incident-box" data-tab="Problem" hidden></div>
     <div class="plate at-bl status-plate" data-tab="Services">
-      <h3 id="live-heading">Service pressure</h3><dl class="live-readouts" id="live-queues"></dl>
+      <div class="food-heading"><h3 id="live-heading">Service pressure</h3>${state.show.food ? '<button type="button" data-act="food-receipt">Food</button>' : ''}</div><dl class="live-readouts" id="live-queues"></dl>
       <p class="hint" id="live-hint">Wait estimates use current staffing; new arrivals can change them.</p>
       <p class="hint" id="live-money"></p>
     </div>
@@ -743,6 +758,8 @@ function updateLiveServices() {
   ui.services = liveServicesFor(state, { events: true });
   const r = ui.services, play = ui.play;
   if (!r || !play) return;
+  $('#live-hint').hidden = !!r.food;
+  if (win.kind === 'food-receipt' && r.food) el.winBody.innerHTML = foodDetails(r.food);
   play.p = r.minute / D.LIVE_SERVICES.closeAt;
   $('#clock').textContent = clock(play.p);
   $('#show-status').textContent = r.departure?.active ? `${play.paused ? 'Paused' : 'Running'} · ${r.inside} inside · ${r.departed} departed` : `${play.paused ? 'Paused' : 'Running'} · ${r.admitted} admitted · ${r.abandoned} left the queue`;
@@ -1061,9 +1078,9 @@ function sheetParts(r, { signed: done }) {
           ${r.sponsor ? `<tr><td>Sponsor</td><td>Site deal</td><td class="num pos">${money(r.sponsor)}</td></tr>` : ''}
           ${r.broadcast ? `<tr><td>Broadcast</td><td>${r.attendance} viewers</td><td class="num pos">${money(r.broadcast)}</td></tr>` : ''}
           ${r.second ? `<tr><td>${esc(r.second.name)} (second stage)</td><td>${r.second.attendance} people</td><td class="num pos">${money(r.second.cash)}</td></tr>` : ''}
-          <tr class="faint"><td>Merch</td><td>No merch tent yet</td><td class="num">$0</td></tr>
+          ${r.food ? `<tr><td><button class="receipt-link" data-act="food-receipt">Food</button></td><td>25% house share</td><td class="num pos">${money(r.foodIncome)}</td></tr>` : '<tr class="faint"><td>Merch</td><td>No merch tent yet</td><td class="num">$0</td></tr>'}
         </tbody>
-        <tfoot><tr><td colspan="2">Total revenue</td><td class="num pos">${money(r.ticketGross + r.bar + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0))}</td></tr></tfoot>
+        <tfoot><tr><td colspan="2">Total revenue</td><td class="num pos">${money(r.ticketGross + r.bar + (r.foodIncome || 0) + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0))}</td></tr></tfoot>
       </table>
     </div>`;
   const costs = `
@@ -1647,6 +1664,16 @@ function onAct(e) {
       <p>Move one bar worker to admission and back. Served demand, lost sales and ticket refunds change this show's settlement. Requires a bar.</p><p>Connected gates ${access.usableGates}/${placed.gates} · exits ${access.usableExits}/${placed.exits} · bars ${access.usableBars}/${placed.bars}. Keep a path to the main floor. After service closes, finish guest departure before settlement.</p>
       <p>${liveArrivalPlan(state).label} over ${liveArrivalPlan(state).minutes} minutes. The clock starts paused; your choice is saved with this show.</p><p>Blue: admission queue. Gold: bar queue. Orange: worker. Grey: departing admission guests. Up to 180 guest samples illustrate the totals; bar customers are already admitted.</p>`, target, { foot: '<button data-win="close">Done</button>' });
   }
+  else if (a === 'food-settings' && state.phase === 'promote') {
+    const access = liveAccessFor(state);
+    openWindow('food-settings', 'Food vendor', `<label>Contract <select id="food-plan" data-input="food-plan"><option value="">Off</option><option value="standard">Standard · $8 meals</option><option value="premium">Premium · $12 meals</option></select></label><p>Standard: 80 meals, one window, 2 meals/min. Premium: 160 meals, two windows, 4 meals/min.</p><p>House receives 25% of sales. The vendor pays stock and wages; artist pay is unchanged. Guests have limited budgets and some decline higher prices.</p><p>Place one Food stall and enable live services. Connected stalls: ${access.usableVendors}. Terms lock when doors open.</p>`, target, { foot: '<button data-win="close">Done</button>' });
+    $('#food-plan').value = state.promotion.foodPlan || '';
+  }
+  else if (a === 'food-receipt') {
+    const food = liveServicesFor(state)?.food;
+    if (food) openWindow('food-receipt', 'Food vendor', foodDetails(food), target, { foot: state.phase === 'settle' || state.phase === 'done' ? '<button data-act="food-back">Back to settlement</button>' : '<button data-win="close">Done</button>' });
+  }
+  else if (a === 'food-back') openSettlement($('#open-settlement'), { signed: state.phase === 'done' });
   else if (a === 'live-worker') act({ type: 'assignLiveWorker', station: target.dataset.station });
   else if (a === 'live-play' && ui.play?.live) { stopPlayback(); ui.play.paused = !ui.play.paused; ui.play.last = performance.now(); updateLiveServices(); if (!ui.play.paused) loop(); }
   else if (a === 'live-step') stepLive(ui.services.minute + 5);
@@ -1671,7 +1698,10 @@ el.panel.addEventListener('input', (e) => {
   else if (t.dataset.input === 'ad') act({ type: 'setPromotion', ads: { [t.dataset.channel]: Number(t.value) } }, { quiet: true });
 });
 
-el.win.addEventListener('change', e => { if (e.target.dataset.input === 'services') act({ type: 'setPromotion', services: e.target.checked }, { quiet: true }); });
+el.win.addEventListener('change', e => {
+  if (e.target.dataset.input === 'services') act({ type: 'setPromotion', services: e.target.checked }, { quiet: true });
+  else if (e.target.dataset.input === 'food-plan') act({ type: 'setPromotion', foodPlan: e.target.value || null }, { quiet: true });
+});
 
 el.panel.addEventListener('change', (e) => {
   const t = e.target;
@@ -1868,7 +1898,7 @@ document.addEventListener('keydown', (e) => {
   if (!el.win.hidden) {
     if (matches('close', e)) { e.preventDefault(); closeWindow(); return; }
     if (e.key === 'Tab') {
-      const stops = [...el.win.querySelectorAll('button:not([disabled]), [href], input:not([disabled])')];
+      const stops = [...el.win.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled])')];
       const first = stops[0];
       const last = stops[stops.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
@@ -1882,7 +1912,8 @@ document.addEventListener('keydown', (e) => {
   if (matches('close', e)) { e.preventDefault(); selectTool(); return; }
   if (matches('pick-tool', e)) {
     e.preventDefault();
-    pickTool(PLACEABLE[Number(e.key) - 1]);
+    const tool = PLACEABLE[Number(e.key) - 1];
+    if (!D.OBJECT_TYPES[tool].lotOnly || state.venue.id === 'lot') pickTool(tool);
   } else if (matches('undo', e)) {
     e.preventDefault();
     undoLayout();

@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-2';
+export const MODEL_REVISION = 'lot-sample-3';
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
   guestHeightMetres: 1.8, operatorEyeMetres: 1.66, stageDeckMetres: 1.1,
@@ -81,6 +81,13 @@ export function createLotModels() {
       for (const x of [-w / 2 + 0.14, 0, w / 2 - 0.14]) b([0.035, 0.5, 0.57], [x, 0.25, 0], COLORS.aluminium, 0.65);
       b([w - 0.3, 0.025, 0.025], [0, 0.14, 0.34], COLORS.aluminium, 0.7);
       for (const x of [-0.38, 0.1]) b([0.12, 0.09, 0.12], [x, 0.595, -0.12], 0xa6b5b2, 0.4, 'cylinder');
+    } else if (object.type === 'food') {
+      b([w - 0.14, 0.5, 0.55], [0, 0.25, 0], 0x32785e);
+      b([w, 0.05, 0.65], [0, 0.525, 0.05], COLORS.aluminium, 0.4);
+      for (const x of [-w / 2 + 0.06, w / 2 - 0.06]) b([0.045, 1.1, 0.045], [x, 0.55, -0.22], COLORS.steel);
+      b([w, 0.06, 0.8], [0, 1.08, 0], 0x5faf92);
+      for (const x of [-0.5, 0, 0.5]) b([0.22, 0.025, 0.23], [x, 0.565, 0.08], 0xe5d8b6);
+      b([0.5, 0.2, 0.02], [0, 0.85, -0.22], 0xe5d8b6);
     } else if (object.type === 'restroom') {
       b([0.57, 1.04, 0.62], [0, 0.55, 0], COLORS.plastic);
       b([0.61, 0.08, 0.66], [0, 1.11, 0], COLORS.trim);
