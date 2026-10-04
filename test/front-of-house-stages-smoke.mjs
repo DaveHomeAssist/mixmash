@@ -11,10 +11,11 @@ async function pages(p){for(const name of ['Bill','Main','Side','Site','Cash','R
 const close=p=>p.locator('#win [data-win="close"]').click();
 try{for(const[name,launcher]of Object.entries({chromium,webkit})){
  const browser=await launcher.launch(name==='chromium'?launchOptions():{});
- try{for(const[width,height,deal]of [[1440,900,'guarantee'],[375,812,'sponsor'],[1024,700,'guarantee']]){
+ try{for(const[width,height,deal,three=false]of [[1440,900,'guarantee'],[375,812,'sponsor'],[1024,700,'guarantee'],...(name==='chromium'?[[1440,900,'guarantee',true],[375,812,'sponsor',true]]:[])]){
   const context=await browser.newContext({viewport:{width,height},hasTouch:width===375,reducedMotion:'reduce',serviceWorkers:'block'}),p=await context.newPage();if(width===1024)await p.addInitScript(()=>localStorage.setItem('front_of_house_theme','dark'));
-  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url);await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
+  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url+(three?'?renderer=3d':''));await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
   for(const sel of ['#menu-btn','#menu [data-mode="sandbox"]','#menu-btn','[data-act="equipment-open"]','[data-act="equipment-enable"]','#win [data-win="close"]','[data-venue="festival"]'])await p.locator(sel).first().click();
+  if(three)await p.waitForFunction(()=>__frontOfHouse.rendererStatus().active&&__frontOfHouse.board().venue==='festival');
   await fit(p,'#panel');assert.match(await p.locator('#panel').innerText(),/One site ticket/);await p.locator('#stage-bill').click();await fit(p);assert.equal(await p.locator('#stage-side-select').inputValue(),'hollow-census');
   const before=(await state(p)).cash;await p.locator('#stage-side-select').selectOption('salt-ledger');await p.locator('[data-act="stage-select"]').click();assert.equal((await state(p)).cash,before);await pages(p);await close(p);await p.reload();await p.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(p)).booking.secondId,'salt-ledger');
   await p.locator(`[data-deal="${deal}"]:not([disabled]):visible`).first().click();assert.equal((await state(p)).booking.stages.version,1);assert.equal((await state(p)).booking.secondId,'salt-ledger');
@@ -27,6 +28,6 @@ try{for(const[name,launcher]of Object.entries({chromium,webkit})){
   await p.locator('#win [data-act="accept"]').click();const done=await state(p);assert.equal(done.cash,before+r.net);assert.equal(E.careerLedgerFor(done).balance,done.cash);assert.equal(done.history.at(-1).artistPay,r.artistTotal);
   await p.reload();await p.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(p)).cash,done.cash);await p.locator('#menu-btn').click();await p.locator('#stages-menu').click();await pages(p);
   for(const theme of ['light','dark']){await p.evaluate(t=>{document.documentElement.dataset.theme=t;},theme);for(const size of [{width:375,height:812},{width:1280,height:600},{width:320,height:256},{width:1024,height:700},{width:2560,height:720}]){await p.setViewportSize(size);await pages(p);}}
-  await p.setViewportSize({width,height});await close(p);await p.locator('[data-act="next"]:visible').first().click();assert.equal((await state(p)).booking.stages,undefined);assert.equal((await state(p)).show,null);assert.deepEqual(errors,[]);console.log(`  ok stages ${name} ${width} ${deal}: chosen bill, public forecast, stage/site cash, signing and reload`);await context.close();
+  await p.setViewportSize({width,height});await close(p);await p.locator('[data-act="next"]:visible').first().click();assert.equal((await state(p)).booking.stages,undefined);assert.equal((await state(p)).show,null);assert.deepEqual(errors,[]);console.log(`  ok stages ${name} ${width} ${three?'3D':'classic'} ${deal}: chosen bill, public forecast, stage/site cash, signing and reload`);await context.close();
  }}finally{await browser.close();}
-}console.log(`Stages: six complete player journeys passed. Screenshots: ${output}`);}finally{await server.close();}
+}console.log(`Stages: eight complete player journeys passed. Screenshots: ${output}`);}finally{await server.close();}

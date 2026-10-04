@@ -12,10 +12,10 @@ import { createGame, applyAction, showPreview, venueSpec, sightlineTiles } from 
 import { STARTER_LAYOUT, FLOOR_DENSITY, VENUES } from '../front-of-house/data.mjs';
 
 const args = process.argv.slice(2), quick = args.includes('--quick'), gpu = args.includes('--gpu=metal') ? 'metal' : args.includes('--gpu=default') ? 'default' : 'software';
-for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20', '--venue=club', '--venue=amphitheater'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
-const venue = args.includes('--venue=amphitheater') ? 'amphitheater' : args.includes('--venue=club') ? 'club' : 'lot';
-if (args.includes('--venue=amphitheater') && args.includes('--venue=club')) throw new Error('Choose one diagnostic room');
-const initial = () => createGame(venue === 'amphitheater' ? 3 : 170, venue !== 'lot' ? { mode: 'sandbox' } : {});
+for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20', '--venue=club', '--venue=amphitheater', '--venue=festival'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
+const venue = args.includes('--venue=festival') ? 'festival' : args.includes('--venue=amphitheater') ? 'amphitheater' : args.includes('--venue=club') ? 'club' : 'lot';
+if (args.filter(arg => arg.startsWith('--venue=')).length > 1) throw new Error('Choose one diagnostic room');
+const initial = () => createGame(venue === 'festival' ? 8 : venue === 'amphitheater' ? 3 : 170, venue !== 'lot' ? { mode: 'sandbox' } : {});
 const faultCpuMs = args.includes('--fault-cpu=20') ? 20 : 0;
 const nativeChrome = args.includes('--native-chrome');
 if (nativeChrome && (args.includes('--dpr=2') || args.includes('--large-viewports'))) throw new Error('Native Chrome uses the actual display density and available desktop size');
@@ -26,20 +26,21 @@ await mkdir(output, { recursive: true });
 if ((await readdir(output)).length) throw new Error('Output directory must be empty; choose a new directory to preserve previous attempts');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const command = (name, args) => { try { return execFileSync(name, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return 'unknown'; } };
-const actions = [...(venue !== 'lot' ? [{ type: 'chooseVenue', venueId: venue }] : []), { type: 'chooseDeal', deal: 'door', artistId: venue !== 'lot' ? VENUES[venue].defaultArtist : 'sodium-arcade' }];
+const actions = [...(venue !== 'lot' ? [{ type: 'chooseVenue', venueId: venue }] : []), { type: 'chooseDeal', deal: venue === 'festival' ? 'guarantee' : 'door', artistId: venue === 'festival' ? 'paper-voltage' : venue !== 'lot' ? VENUES[venue].defaultArtist : 'sodium-arcade', ...(venue === 'festival' ? { secondId: 'hollow-census', stagePolicy: 1 } : {}) }];
 const step = (s, a) => { const r = applyAction(s, a); assert.equal(r.error, null); return r.state; };
 const empty = actions.reduce(step, initial());
 const showActions = [...actions, { type: 'setLayout', objects: venue !== 'lot' ? VENUES[venue].starter : STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 } }, { type: 'confirmPromotion' }];
 const crowded = showActions.reduce(step, initial());
 function fixture(state, actions) {
   const spec = venueSpec(state.venue), sight = sightlineTiles(state.venue), night = state.phase === 'show';
-  return { state, actions, scene: { objects: state.venue.objects, grid: state.venue.grid, floor: state.venue.id, pillars: spec.pillars, density: spec.density || FLOOR_DENSITY, clearSet: [...sight.clear], blockedSet: [...sight.blocked], showClear: false, cursor: null, ghost: null, selection: null, crowd: night ? showPreview(state).attendance : 0, incident: night ? state.show.incidentId : null, night, lightTower: state.venue.objects.some(o => o.type === 'lights'), t: 0 } };
+  const sales = night && venue === 'festival' ? showPreview(state).stageAccounts.sales : null;
+  return { state, actions, scene: { ...(venue === 'festival' ? { secondaryStage: { booked: !!state.booking.secondId, artist: 'Hollow Census' }, stageAudience: sales ? { main: sales.main.attendance, second: sales.second.attendance } : null } : {}), objects: state.venue.objects, grid: state.venue.grid, floor: state.venue.id, pillars: spec.pillars, density: spec.density || FLOOR_DENSITY, clearSet: [...sight.clear], blockedSet: [...sight.blocked], showClear: false, cursor: null, ghost: null, selection: null, crowd: night ? showPreview(state).attendance : 0, incident: night ? state.show.incidentId : null, night, lightTower: state.venue.objects.some(o => o.type === 'lights'), t: 0 } };
 }
 const fixtures = { empty: fixture(empty, actions), crowd: fixture(crowded, showActions) };
-assert.equal(fixtures.crowd.scene.crowd, venue === 'amphitheater' ? 700 : venue === 'club' ? 360 : 150, 'Changed engine fixture requires explicit baseline review');
-assert.equal(fixtures.crowd.scene.incident, venue === 'amphitheater' ? 'rain' : 'pa-dropout');
+assert.equal(fixtures.crowd.scene.crowd, venue === 'festival' ? 6000 : venue === 'amphitheater' ? 700 : venue === 'club' ? 360 : 150, 'Changed engine fixture requires explicit baseline review');
+assert.equal(fixtures.crowd.scene.incident, venue === 'festival' ? 'gate-jam' : venue === 'amphitheater' ? 'rain' : 'pa-dropout');
 const sources = {};
-for (const path of ['package-lock.json', 'front-of-house/lot-assets.json', 'front-of-house/engine.mjs', 'front-of-house/data.mjs', 'front-of-house/lot-camera.mjs', 'front-of-house/lot-models.mjs', 'front-of-house/lot-renderer.mjs', 'front-of-house/lot-presentation.mjs', 'front-of-house/tools/performance-stats.mjs', 'test/front-of-house-performance.mjs']) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
+for (const path of ['package-lock.json', 'front-of-house/lot-assets.json', 'front-of-house/engine.mjs', 'front-of-house/data.mjs', 'front-of-house/lot-camera.mjs', 'front-of-house/lot-models.mjs', 'front-of-house/lot-renderer.mjs', 'front-of-house/lot-presentation.mjs', 'front-of-house/tools/performance-stats.mjs', 'test/front-of-house-performance.mjs', ...(venue === 'festival' ? ['front-of-house/stage-accounts.mjs'] : [])]) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
 const options = gpu === 'software' ? launchOptions() : { headless: true, args: gpu === 'metal' ? ['--use-angle=metal'] : [] };
 if (nativeChrome) Object.assign(options, { headless: false, channel: 'chrome' });
 const report = {

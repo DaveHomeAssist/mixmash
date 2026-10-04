@@ -648,3 +648,5 @@ PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. A
 ## 2026-10-04 — Split Acre scene implementation
 
 FOH-V02r3 adds a source-owned side-stage annex outside the existing editable yard. The 52 × 24 presentation extent is a provisional camera convention, not physical calibration or added capacity. Desktop, phone and ultrawide geometry, yaw picking, forbidden annex placement, keyboard Side stage camera, all-room switching and context recovery pass. Two new geometry/allocation tests pass. Complete accounting journeys, integrated source verification, performance and delivery remain pending. Classic remains default; final art and physical-device acceptance remain open.
+
+- Integrated delivered seating/stage core plus pending career/control branches for combined acceptance. All390 repository tests, build, generated docs and simulator verdicts pass. Three geometry sizes and eight full legacy/versioned classic/3D show, settlement and reload comparisons pass. The browser rail now also exercises actual seating and Festival booking/receipt controls in desktop/phone 3D. Native measurement, CI and hosted delivery remain pending.

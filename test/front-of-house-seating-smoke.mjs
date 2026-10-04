@@ -11,10 +11,11 @@ async function pages(p){for(const name of ['Seats','Lawn','Rules']){await p.loca
 const close=p=>p.locator('#win [data-win="close"]').click();
 try{for(const[name,launcher]of Object.entries({chromium,webkit})){
  const browser=await launcher.launch(name==='chromium'?launchOptions():{});
- try{for(const[width,height,deal,nights]of [[1440,900,'guarantee',2],[375,812,'door',1],[1024,700,'guarantee',1]]){
+ try{for(const[width,height,deal,nights,three=false]of [[1440,900,'guarantee',2],[375,812,'door',1],[1024,700,'guarantee',1],...(name==='chromium'?[[1440,900,'guarantee',2,true],[375,812,'door',1,true]]:[])]){
   const context=await browser.newContext({viewport:{width,height},hasTouch:width===375,reducedMotion:'reduce',serviceWorkers:'block'}),p=await context.newPage();if(width===1024)await p.addInitScript(()=>localStorage.setItem('front_of_house_theme','dark'));
-  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url);await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
+  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url+(three?'?renderer=3d':''));await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
   for(const sel of ['#menu-btn','#menu [data-mode="sandbox"]','[data-venue="amphitheater"]',`[data-nights="${nights}"]`])await p.locator(sel).first().click();
+  if(three)await p.waitForFunction(()=>__frontOfHouse.rendererStatus().active&&__frontOfHouse.board().venue==='amphitheater');
   await fit(p,'#panel');assert.match(await p.locator('#panel').innerText(),/Seats and lawn sell separately/);await p.locator(`[data-deal="${deal}"]:not([disabled]):visible`).first().click();
   await tab(p,'Actions');await p.locator('[data-act="starter"]').click();await p.locator('[data-act="confirm-build"]').click();const before=(await state(p)).cash,original=(await view(p)).seating.forecast;
   await tab(p,'Price and ads');await p.locator('#seat-price').press('End');
@@ -27,8 +28,8 @@ try{for(const[name,launcher]of Object.entries({chromium,webkit})){
   if(nights>1){await p.locator('#win [data-act="held-run-open"]').click();await p.locator('#win [data-tab-name="Cancel"]').click();await p.locator('[data-act="held-run-sign"][data-cancel="true"]').click();}else await p.locator('[data-act="accept"]').click();
   const done=await state(p);assert.equal(done.cash,ended.cash+E.settlementPayout(r,deal)-(nights>1?E.heldRunFor(ended).penalty:0));
   await p.reload();await p.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(p)).cash,done.cash);assert.deepEqual((await view(p)).seating.receipt,r.seating);
-  if(name==='chromium'&&width===1440){for(const theme of ['light','dark']){if(theme==='dark'){await p.locator('#menu-btn').click();await p.locator('#theme-toggle').click();await p.locator('#menu-close').click();}await p.locator('#menu-btn').click();await p.locator('#seating-menu').click();for(const[w,h]of [[1440,900],[375,812],[844,390],[320,256],[3840,1080]]){await p.setViewportSize({width:w,height:h});await pages(p);}await close(p);await p.setViewportSize({width,height});}}
-  await p.locator('[data-act="next"]').click();assert.equal((await state(p)).booking.seating,undefined);assert.deepEqual(errors,[]);await context.close();console.log(`  ok seating ${name} ${width} ${deal} ${nights} nights: prices, public forecast, frozen receipt and cash`);
+  if(name==='chromium'&&width===1440&&!three){for(const theme of ['light','dark']){if(theme==='dark'){await p.locator('#menu-btn').click();await p.locator('#theme-toggle').click();await p.locator('#menu-close').click();}await p.locator('#menu-btn').click();await p.locator('#seating-menu').click();for(const[w,h]of [[1440,900],[375,812],[844,390],[320,256],[3840,1080]]){await p.setViewportSize({width:w,height:h});await pages(p);}await close(p);await p.setViewportSize({width,height});}}
+  await p.locator('[data-act="next"]').click();assert.equal((await state(p)).booking.seating,undefined);assert.deepEqual(errors,[]);await context.close();console.log(`  ok seating ${name} ${width} ${three?'3D':'classic'} ${deal} ${nights} nights: prices, public forecast, frozen receipt and cash`);
  }}finally{await browser.close();}
 }}finally{await server.close();}
-console.log(`Seating: six complete player journeys passed. Screenshots: ${output}`);
+console.log(`Seating: eight complete player journeys passed. Screenshots: ${output}`);
