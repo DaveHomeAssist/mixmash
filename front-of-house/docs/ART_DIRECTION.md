@@ -5,6 +5,10 @@
 
 > **Before any sprite is commissioned**, write a render contract module (tile size, anchors, footprints, frame counts, timing, palette) and reconcile the open conflicts listed at the end of this document. MarsScape's DEC-79 is the reason: its art was planned against a renderer that had since changed.
 
+## Relationship to the 3D prototype
+
+**Reconciled 2026-10-04:** this remains the accepted historical art direction and the current sprite specification reference. [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence) accepts a 3D Lot prototype first; it does not approve a replacement art treatment. D2 and D8 in [DECISION_PACKET.md](DECISION_PACKET.md) cover orbit-compatible art and the existing library. Use [FB-01 and FB-02](FEATURE_BRIEFS.md) to scope the prototype and a renderer contract. Keep the existing specification until an explicit replacement decision is recorded; do not commission new directional sheets solely because the original roadmap lists them next.
+
 ## 1. Visual pillars
 
 1. **Golden-era tycoon tactility.** In the spirit of RollerCoaster Tycoon 2, SimCity 3000 and Theme Hospital: readable silhouettes and identifiable miniature objects on an isometric grid. Everything on the lot feels physical: road cases with latches, cable ramps with yellow stripes, generators with exhaust vents.

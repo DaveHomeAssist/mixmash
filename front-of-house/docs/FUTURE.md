@@ -2,7 +2,9 @@
 
 **Status:** The rooms in Phases 5 to 7, plus Sandbox and the wet-lot scenario, are in the tree as of 2026-10-01 ([CT-DEC-11](DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). The public-release gates below still stand: `noindex` stays, and there is no hub card, until Dave signs off the first playable. CT-DEC-10 is still Proposed. The Lot was retuned for 50 to 150 people in Phase 3. The phase text below predates the playable rooms and remains historical scope, not fresh implementation authority.
 
-This document owns the order of features after the Lot career. The design of each system stays in [`GDD.md`](GDD.md). The accepted choices stay in [`DECISIONS.md`](DECISIONS.md). What already shipped is in [`progress.md`](../progress.md).
+**Current sequence:** [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence), accepted 2026-10-04, places the 3D Lot prototype before live operations. The [decision packet](DECISION_PACKET.md) owns unresolved choices and the [feature briefs](FEATURE_BRIEFS.md) define proposed slices. The original build order below is superseded as scheduling guidance and retained as history. This notice changes neither accepted mechanics nor release gates.
+
+This document preserves the original expansion order and later-system proposals. The design of each system stays in [`GDD.md`](GDD.md). The accepted choices stay in [`DECISIONS.md`](DECISIONS.md). What already shipped is in [`progress.md`](../progress.md).
 
 ## Where the game is
 
@@ -154,9 +156,11 @@ Palette swatches in the Build panel can stay flat color until the style anchor. 
 
 On Dave's sign-off of the Lot, and not before: a hub card with a gameplay image and where it came from, a sitemap entry, and `noindex` removed. `docs/MANUAL.md` starts when the Lot loop stops moving. Until then the in-game tips are the manual.
 
-Touch layouts wait until after v1 ([CT-DEC-04](DECISIONS.md#ct-dec-04-platform)).
+Original platform scope deferred touch-first work until after v1 ([CT-DEC-04](DECISIONS.md#ct-dec-04-platform)). Phone tabs and touch sheet controls have since shipped under [CT-DEC-12](DECISIONS.md#ct-dec-12-hud-layout); physical-device acceptance remains outstanding. Do not read the original deferral as a claim that no phone layout exists.
 
 ## Build order
+
+**Historical, superseded for scheduling by [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence).** The numbered list records the 2026-10-01 plan; it is not the next implementation queue.
 
 1. The four gates in the table above.
 2. The two Club decisions (room, and whether the Lot stays).
@@ -173,7 +177,7 @@ Touch layouts wait until after v1 ([CT-DEC-04](DECISIONS.md#ct-dec-04-platform))
 | Question | Where it is answered |
 | --- | --- |
 | Is the Lot career the one Dave wants? | CT-DEC-10, still Proposed |
-| Fixed Club plan, or a grid? Lot stays bookable? | This file, Phase 5. Becomes a decision before code |
+| Fixed Club plan, or a grid? Lot stays bookable? | Grid Club and returnable Lot are implemented under CT-DEC-11, still Proposed. D10 in [DECISION_PACKET.md](DECISION_PACKET.md) asks whether to accept or reopen them |
 | Should the Lot's tower and medium PA pay for themselves? | Playtest, then `data.mjs` if the answer is yes |
 | Are the painted sprites the look, or a stand-in? | This file treats them as a stand-in. Say if that is wrong |
 | Pro-mode AV paperwork? | GDD open question 3. Unscheduled |
