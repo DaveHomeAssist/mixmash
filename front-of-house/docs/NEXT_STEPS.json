@@ -5,7 +5,7 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "ba43ea5 integrated · departure and food delivered; sanitation underway",
+  "head": "87ea09c · playable sanitation integrated; CI and live verification pending",
   "lastActivity": "2026-10-04",
   "status": "amber",
   "statusReason": "Departure and food are verified in production. Sanitation contracts, controls, renderer guests and offline replay pass local verification; required CI and production delivery remain pending. Research, ownership, venues, navigation and release evidence remain.",
@@ -812,10 +812,11 @@
                   "Facilities pages, explicit preference, live/settlement receipts and shared sanitation guest projection implemented. All289 repository tests and build pass.",
                   "Seven local complete player journeys cover Chromium classic/3D desktop/phone, WebKit classic desktop/phone and short dark desktop. Supplied action client places/enables the package and reaches minute5. Warmed offline cleaning at minute27 survives reload and completes at30 with cash/projection preserved.",
                   "Final local verification:289 npm tests/build,28 legacy checks, six food journeys and seven sanitation journeys pass, including T/keyboard page switching and short dark desktop. Final supplied action replay reaches enabled minute5. Required CI and production delivery remain pending."
-                ]
+                ],
+                "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
               }
             ],
-            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/76"
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/79"
           }
         ]
       },
