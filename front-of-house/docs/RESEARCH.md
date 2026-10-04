@@ -167,3 +167,7 @@ Documentation proposes these gates; it does not claim they have passed for a res
 7. **Player understanding:** after several nights, a player can explain what they unlocked, what it costs to deploy, why it helped or failed, and what they would develop next. Research should create anticipation without a compulsory menu ritual every night.
 
 Tune costs, durations and effects only after those comparisons. Keep the existing Lot baseline and doors experiment unchanged when research is disabled. Human playtesting, the broader career economy and public-launch approval remain separate gates.
+
+### Pilot controls (2026-10-04 implementation)
+
+The optional three-project pilot now has career authority and Development controls available from Menu or after a signed show. Enable it after the first settled show (immediately in Sandbox). Patch, Service, Admission and Ledger pages expose costs, eligible-night progress, pause/resume, exact unfinished-work refunds and cash. Knowledge is fixed when booking; held nights cannot gain new bonuses mid-run. The ledger is separate from artist and show costs. Existing careers remain unchanged until opt-in. Local engine, player and offline checks pass; required CI and production verification remain separate gates. The larger catalog above remains proposed.

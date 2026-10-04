@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "7f8a197 base \u00b7 research career adapter locally verified",
+  "head": "1a9f074 base \u00b7 playable development locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Sanitation PR79 correction passes local verification and is in required CI. Research core and career adapter pass303 tests; player controls, hosted acceptance and later phases remain.",
+  "statusReason": "Sanitation correction has passed required gameplay checks and is finishing CI. Playable research now passes303 tests and seven player journeys plus offline cash/progress checks. Production research acceptance and later phases remain.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -853,7 +853,9 @@
         "status": "in-progress",
         "evidence": [
           "Pure three-project research authority implemented. Seven targeted tests cover one slot, costs/refunds, eligible nights, deduplication, pause/resume, checkpoint validation and modes. No career/UI effect yet.",
-          "Career adapter locally verified: separate cash deltas, actual signed-night experience, frozen booking prefix, three bounded benefits and conservative save recovery. All303 repository tests and build pass. No player research controls yet."
+          "Career adapter locally verified: separate cash deltas, actual signed-night experience, frozen booking prefix, three bounded benefits and conservative save recovery. All303 repository tests and build pass. No player research controls yet.",
+          "Development controls now expose four contained pages, exact costs/refunds, eligibility, learned versus booked knowledge and separate ledger. Seven local player journeys pass across Chromium/WebKit, classic/3D, phone and short dark desktop; offline start-state reload and pause/resume/cancel preserve cash and progress.",
+          "Controlled actual Lot pairs: seed3 with worker at bar admits85/102 and serves84/102 without/with learned service/admission benefits; net114/562. Quiet seed1 has no gain. Worker-at-gate seed3 keeps115 admissions but bar sales fall23/22, net201/195. Research is situational, does not eliminate staffing tradeoffs, and these Sandbox fixtures do not subtract career research purchases."
         ],
         "slices": [
           {
@@ -869,10 +871,12 @@
           {
             "id": "FOH-R01b",
             "scope": "Career spending, booking snapshots, measurable effects and player controls",
-            "status": "in-progress",
+            "status": "implemented-local-verification",
             "evidence": [
-              "FOH-R01b1 career engine implemented and verified by seven integration tests. FOH-R01b2 player controls and browser acceptance remain pending."
-            ]
+              "FOH-R01b1 career engine implemented and verified by seven integration tests. FOH-R01b2 player controls and browser acceptance remain pending.",
+              "Career adapter PR83 corrected required generated action notes/payloads in1a9f074 after CI37205386621 identified the omissions. Player controls pass seven journeys; required combined CI and hosted proof remain pending."
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/83"
           }
         ]
       },

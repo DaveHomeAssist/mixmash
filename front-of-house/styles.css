@@ -688,3 +688,13 @@ body[data-phase='promote'] .actions button { padding-inline: 8px; }
   #win[data-kind="settlement"] .tab-off { display: none !important; }
   #win[data-kind="settlement"] .sheet-col:has(> [data-tab]) { display: contents; }
 }
+
+/* Development pages share one contained space at all viewport sizes. */
+#win[data-kind="development"] .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
+#win[data-kind="development"] .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; }
+#win[data-kind="development"] .tabbar [aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); }
+#win[data-kind="development"] .tab-off { display: none !important; }
+#win[data-kind="development"] [data-tab] > p { margin: 8px 0; }
+.development-summary { margin: 0; font-family: var(--font-mono); font-size: 0.85rem; }
+body[data-phase='done'] .row.tight { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px; font-size: 0.75rem; }

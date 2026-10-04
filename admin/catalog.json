@@ -2432,6 +2432,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-research-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-research-smoke.mjs",
+      "description": "Player development controls, real signed progress, cash and next-booking benefits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-research-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-resolution-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",

@@ -8,8 +8,9 @@ import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
-  settlementPayout, sanitationPlanFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
+  settlementPayout, sanitationPlanFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validateLayout, venueSpec,
 } from './engine.mjs';
+import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
@@ -994,6 +995,7 @@ function reachIncident() {
     if (r.walkupMult !== undefined) bits.push(`walk-ups ${Math.round(r.walkupMult * 100)}%`);
     if (r.flowMult !== undefined) bits.push(`entry flow ${Math.round(r.flowMult * 100)}%`);
     bits.unshift(RESPONSE_TEXT[id]?.[r.id] || 'Respond to the incident.');
+    if (id === 'pa-dropout' && r.id === 'backup-amp' && researchEffectsFor(state).patchScore) bits.push('Patch standards: 95% response');
     return bits.join(' · ');
   };
   const box = $('#incident-box');
@@ -1255,7 +1257,50 @@ function donePanel() {
     <div class="row tight">
       <button type="button" data-act="last-sheet" ${r ? '' : 'disabled'}>Last settlement</button>
       <button type="button" data-act="history">Show history (${state.history.length})</button>
+      <button type="button" data-act="development">Development</button>
     </div>`;
+}
+
+const DEPARTMENT_NAMES = { production: 'Production', guestServices: 'Guest services', admissions: 'Admissions', venueOperations: 'Venue operations' };
+const DEVELOPMENT_BENEFITS = {
+  patch: 'Backup amp response improves from 80% to 95%. Still needs a PA and the $100 response.',
+  service: 'The transferable worker serves one extra bar guest per minute while at the bar. Requires the live Lot clock.',
+  admission: 'Each connected gate admits one extra guest per minute. Requires the live Lot clock; capacity stays fixed.',
+};
+
+function openDevelopment(opener) {
+  const r = researchFor(state), editable = ['book', 'done'].includes(state.phase);
+  if (!r) {
+    const allowed = editable && (state.history.length > 0 || state.mode === 'sandbox');
+    openWindow('development', 'Development', `<p>Learn Patch standards, Service training and Admission lanes. One project at a time, advanced by eligible signed nights.</p>
+      <p>${state.mode === 'sandbox' ? 'Sandbox enables all three projects free.' : 'Starting pays from career cash. Experience is earned from future shows; past shows are not counted.'}</p>
+      <p>${allowed ? 'Enable between bookings, then choose a project. Development is optional.' : 'Settle your first show, then return here between bookings.'}</p>
+      <button data-act="research-enable" ${allowed ? '' : 'disabled'}>Enable development</button>`, opener);
+    return;
+  }
+  const frozen = researchEffectsFor(state).learned, full = r.commands.length >= RESEARCH_COMMAND_LIMIT;
+  const pages = Object.entries(D.RESEARCH_PROJECTS).map(([id,rule]) => {
+    const project = r.projects[id], xp = r.experience[rule.department], available = editable && !full;
+    const button = (kind,label,enabled) => `<button data-act="research-command" data-command="${kind}" data-project="${id}" ${available && enabled ? '' : 'disabled'}>${label}</button>`;
+    const actions = project.status === 'available' ? button('start',`Start · ${money(rule.cost)}`,!r.active && state.cash >= rule.cost)
+      : project.status === 'active' ? button('pause','Pause',true) + button('cancel',`Cancel · refund ${money(researchRefundFor(r,id))}`,true)
+      : project.status === 'paused' ? button('resume','Resume · free',!r.active) + button('cancel',`Cancel · refund ${money(researchRefundFor(r,id))}`,true) : '';
+    return `<section data-tab="${id === 'patch' ? 'Patch' : id === 'service' ? 'Service' : 'Admission'}" data-always-tabs>
+      <h3>${rule.label}</h3><p>${DEVELOPMENT_BENEFITS[id]}</p>
+      <dl class="live-readouts"><div><dt>Status</dt><dd>${project.status}</dd></div><div><dt>${DEPARTMENT_NAMES[rule.department]} experience</dt><dd>${xp} / ${rule.experience} required</dd></div>
+      <div><dt>Eligible nights</dt><dd>${project.progress} / ${rule.nights}</dd></div><div><dt>Cost</dt><dd>${money(rule.cost)}</dd></div></dl>
+      <p class="hint">${project.status === 'researched' ? frozen.includes(id) ? 'Included in this booking. Equipment and live-service requirements still apply.' : 'Learned. Included when you book your next show.' : `Progress requires a signed night with ${id === 'patch' ? 'an audience and PA' : id === 'service' ? 'actual live bar service' : 'actual live admission'}. Experience is cumulative, never spent.`}</p>
+      <div class="actions">${actions}</div>${project.status === 'available' && state.cash < rule.cost ? '<p>Not enough career cash.</p>' : ''}</section>`;
+  }).join('');
+  const night = researchNightFor(state), recorded = night && r.settledNights.includes(night.id);
+  const receipt = night ? `<p class="hint">${recorded ? 'Recorded for this night' : 'On signing this night'}: ${Object.entries(night.departments).filter(([,yes])=>yes).map(([id])=>DEPARTMENT_NAMES[id]+' +1').join(', ') || 'no eligible experience'}.</p>` : '';
+  const ledger = `<section data-tab="Ledger" data-always-tabs><h3>Development ledger</h3><dl class="live-readouts">
+    <div><dt>Paid for research</dt><dd>${money(r.spent)}</dd></div><div><dt>Cancellation refunds</dt><dd>${money(r.refunded)}</dd></div><div><dt>Net development cost</dt><dd>${money(r.spent-r.refunded)}</dd></div>
+    ${Object.entries(r.experience).map(([id,xp])=>`<div><dt>${DEPARTMENT_NAMES[id]} experience</dt><dd>${xp}</dd></div>`).join('')}</dl>
+    <p class="hint">Separate from show costs and artist deductions. Loading never pays or refunds again. Cancelling refunds only unfinished eligible nights.</p>${receipt}</section>`;
+  openWindow('development', 'Development', `<p class="development-summary">Cash ${money(state.cash)} · Active: ${r.active ? D.RESEARCH_PROJECTS[r.active].label : 'none'}</p>
+    ${state.researchNotice ? `<p role="status">${esc(state.researchNotice)}</p>` : ''}${full ? '<p>History is full. Shows can still settle; new development is unavailable.</p>' : ''}
+    ${!editable ? '<p class="hint">Booked knowledge is fixed. Change projects between bookings.</p>' : ''}${pages}${ledger}`, opener);
 }
 
 function historyHtml() {
@@ -1632,6 +1677,13 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'development') { openDevelopment(target); return; }
+  if (a === 'research-enable' || a === 'research-command') {
+    if (act(a === 'research-enable' ? {type:'enableResearch'} : {type:'research',command:{kind:target.dataset.command,project:target.dataset.project}})) {
+      openDevelopment(el.menuBtn); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus();
+    }
+    return;
+  }
   if (a === 'camera-open') { openCamera(target); return; }
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
@@ -2082,6 +2134,7 @@ window.render_game_to_text = () => {
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
+    development: state.research ? { ...researchFor(state), booked: researchEffectsFor(state).learned } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
   });
