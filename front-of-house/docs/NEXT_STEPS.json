@@ -645,7 +645,8 @@
               "New client-opened live shows require connected admission, bar and exit access before payment, then retain Play/Pause/speed/step controls for normal departure before settlement. Older live saves keep historical closing.",
               "265 repository tests and build pass. Four Chromium/WebKit desktop/phone control journeys and four renderer/viewport zone plus four controlled movement journeys pass, including normal exit movement, frozen outcomes and reload/cash parity. Required CI and deployed proof remain pending.",
               "Two full 3D departure/settlement journeys and warmed offline reload at departure minute2 pass. The supplied action client opens a new flow-version-1 show and reaches minute5; screenshots inspected. An initial offline attempt found a stopped preview server; retry on a verified new server passes."
-            ]
+            ],
+            "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/71"
           },
           {
             "id": "FOH-O02c",
