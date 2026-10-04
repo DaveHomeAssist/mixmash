@@ -600,6 +600,33 @@ Book quotes terms before choice; Menu and settlement expose Terms/Continue/Cance
 
 - PR93 ticketing adapter passed CI37208947770, mergedbc929d7 at14:43:22Z and Pages built14:43:44Z. Three hosted runtime files match. Hosted browser-engine both-deal signing/retry/reload verifies fee147 and exact journal cash1001458 door /1001615 guarantee. This is engine evidence; PR94 player controls remain in delivery.
 
+### 2026-10-04 Club ticketing hosted acceptance
+
+PR94 passed CI37209643148 and merged368edba at14:54:07Z; Pages built14:54:31Z. All23 checked hosted runtime files match. Six hosted Chromium/WebKit both-deal player journeys pass choice/public forecast/frozen terms/signing/signed reopen/reload/next defaults; both-theme five-size checks remain in the rail. Hosted offline choice, show, signing and reload preserve fee147 and1001615 cash equal to the journal. The phone receipt was inspected. A probe started before Pages finished saw the prior assets; the source and player checks were repeated after the built deployment and passed. Ticketing is delivered; held-run PR95 remains in delivery.
+
+### 2026-10-04 independent seat sales implementation
+
+FOH-V02b3–b5 add strict source policy, independent seat/lawn price response and presale/walkup caps, exact gross and separate value scores weighted by actual attendance. Doors freeze both prices; held nights, artist basis, one-time payout and journal remain exact. Imported derived counts are ignored; invalid source prices are rejected with cash-preserving feedback. The night-accounting review found that playback varied draw by night while settlement reused night1; marked runs now evaluate the same per-night seed in both. Legacy unmarked saves remain numerically unchanged.
+
+Twelve new core/adapter tests and all359 repository tests/build/docs pass. The first both-deal test used random-offer seeds whose acts both refuse door deals; eligible seeds2/3/5 correct that fixture without changing offers. Seats/Lawn/Rules pages expose public range forecasts and actual locked receipts, and the main forecast/chart use the same model. Initial six Chromium/WebKit journeys and offline signing/cancellation/journal proof pass (gross50000,400 seats/300 lawn, cancellation6000 and1025215 cash in the offline fixture). Short320x256 terms initially exceeded the content atom height by8px; shorter paragraphs fix it. An added Book disclosure pushed a disabled offer below a700px WebKit window; combining the disclosure with its ask fixes the held-run regression. Supplied action runner and actual full-page phone/desktop dialog screenshots inspected. Final both-price browser rerun and delivery remain in progress; slope geometry, separate stage accounts and room scenes are still open.
+
+- Final seating local evidence: both price sliders independently change only their zone forecast across all six Chromium/WebKit player journeys; frozen receipts, both deals, held cancellation and reload pass. Both-theme/five-size window checks and actual phone/desktop screenshots pass. The held-run regression passes six journeys plus full-hold/debt branches, and all28 legacy checks pass. All359 tests/build/generated docs pass. Supplied action runner confirms public zone counts/gross with unchanged cash; its canvas capture is not used as HUD proof. Offline zone receipt/cancellation/journal parity passes. Required CI and hosted seating acceptance remain open.
+
+### 2026-10-04 held-night cancellation hosted acceptance
+
+PR95 passed CI37210505399 and merged633f60a at15:01:20Z; Pages built15:02:12Z. All24 checked deployed runtime files match. Six hosted Chromium/WebKit player journeys plus alternate full-hold and controlled-debt branches pass, including both themes/five-size compact paging, signed history and reload. Hosted offline cancellation records two unplayed nights,4000 fee and1018940 cash exactly equal to the journal. This is a fresh offline fixture with its own booked ask, not a comparison to the earlier local6000-fee fixture. Cancellation is delivered; seating PR97 and stage accounting remain separate work.
+
+## 2026-10-04: Seating Linux layout correction
+
+- PR97 CI37211585196 caught a three-pixel Amphitheater Promote overflow at1024x700 despite the passing Mac browser rail. Shortened the repeated zone explanation; the Seats and lawn window retains the complete demand/value rules.
+- All28 legacy browser checks, six Chromium/WebKit seating journeys and build/generated docs pass again. Fresh Linux CI is pending. Source, hosted acceptance and physical/human evidence remain separate.
+
+## 2026-10-04: Festival stage accounting authority
+
+- Added a version1 pure model for one site admission, bounded stage audience allocation, distinct PA/lights/crew budgets and one shared site cost pool. Stage artist payouts, sponsorship, broadcast, opening cash and signing reconcile exactly. An exact integer ratio prevents a floating-point half-dollar payout error caught by the hand-calculated fixture.
+- Eleven new tests cover both main deals, sponsorship, admission/presale/capacity conservation, zero/free shows, production, odd/large allocations and strict input recovery. All370 repository tests and build/generated docs pass.
+- This is a core implementation only; no existing game math or saved career is switched yet. Career integration, player receipts, required CI and hosted proof remain separate.
+
 
 ## 2026-10-04 — Split Acre scene implementation
 

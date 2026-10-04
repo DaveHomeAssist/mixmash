@@ -2476,6 +2476,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-seating-integration.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-seating-integration.mjs",
+      "description": "Separate zone sales flow into one frozen nightly settlement and reconciled career cash.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-seating-integration.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-seating.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-seating.mjs",
+      "description": "Seats and lawn have conserved capacity, separate sales and weighted value satisfaction.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-seating.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-service-crowd.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2493,6 +2513,16 @@
       "title": "test-services.mjs",
       "description": "Behavioral fixtures for the aggregate live-service prerequisite.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-services.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-stage-accounts.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-stage-accounts.mjs",
+      "description": "Festival stages conserve site guests and reconcile production, artists and cash.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-stage-accounts.mjs",
       "open": null
     },
     {
@@ -2723,6 +2753,16 @@
       "title": "front-of-house-sanitation-smoke.mjs",
       "description": "Actual facilities placement, locked sanitation terms, visits, reload and signed production receipt.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-sanitation-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-seating-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-seating-smoke.mjs",
+      "description": "Independent seat/lawn prices, public forecasts and frozen receipts through real player controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-seating-smoke.mjs",
       "open": null
     },
     {
@@ -2986,6 +3026,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/seating.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "seating.mjs",
+      "description": "Versioned independent seat/lawn demand, whole-dollar receipts and value satisfaction.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/seating.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/service-crowd.mjs",
       "project": "front-of-house",
       "category": "source",
@@ -3023,6 +3073,16 @@
       "title": "manifest.mjs",
       "description": "Front of House asset register: what each image in sprites/ is, where it came from, and whether it is final. Hand-maintained.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sprites/manifest.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/stage-accounts.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "stage-accounts.mjs",
+      "description": "Versioned Festival admissions, stage production and shared-site cash accounting.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/stage-accounts.mjs",
       "open": null
     },
     {
