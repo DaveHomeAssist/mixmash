@@ -43,9 +43,11 @@ export function festivalProduction(raw, rig) {
   festivalTerms(raw);
   if (!object(rig) || ![null, 'S', 'M'].includes(rig.paTier)) throw new TypeError('Invalid Festival PA');
   const housePa = flag(rig.housePa, 'house PA'), lights = flag(rig.lights, 'lights');
-  const main = { pa: housePa || !rig.paTier ? 0 : PA_RENTAL[rig.paTier], lights: lights ? LIGHTS_RENTAL : 0, crew: 2 * STAFF_RATE };
+  const owned = rig.equipmentOperation !== undefined;
+  const main = { pa: owned || housePa || !rig.paTier ? 0 : PA_RENTAL[rig.paTier], lights: lights ? LIGHTS_RENTAL : 0, crew: 2 * STAFF_RATE,
+    ...(owned ? { equipmentOperation: whole(rig.equipmentOperation, 'equipment operation') } : {}) };
   const second = { pa: PA_RENTAL.M, lights: LIGHTS_RENTAL, crew: 2 * STAFF_RATE };
-  for (const stage of [main, second]) stage.total = stage.pa + stage.lights + stage.crew;
+  for (const stage of [main, second]) stage.total = Object.values(stage).reduce((sum, value) => sum + value, 0);
   return { main, second, total: main.total + second.total };
 }
 export function festivalSettlement(raw, input) {
