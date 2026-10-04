@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "a11a11d seating and e37ab28 core delivered; Festival controls in verification",
+  "head": "9d00503 adapter delivered; Festival booking policy in verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Seating and the Festival pure core are merged and hosted-verified. Playable Festival bill/receipt controls pass final journeys, visible cash assertions, six seating regressions,382 repository tests/build/docs and offline signing. Release checks remain; a seating headline estimate correction is included. Room scenes, remaining venue rules, navigation and release gates continue.",
+  "statusReason": "Festival accounting adapter is merged and hosted-verified. Playable accounts PR101 remains in release checks. New sponsor/headliner booking conditions pass388 tests, browser journeys and offline replay; their CI/hosted proof remains. Venue rules, distinct scenes, navigation and release gates continue.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -25,11 +25,12 @@
     "PR94: Club ticketing controls delivered at368edba,23 matching hosted files, six player journeys and offline signing/journal proof.",
     "PR95: held-night cancellation delivered at633f60a with24 matching hosted files, six player journeys plus full-hold/debt branches and offline cash/journal proof.",
     "PR97: independent seating merged a11a11d,25 matching hosted files, six seating and six held-run journeys plus full-hold/debt branches and offline cancellation/journal proof. Promote headline estimate correction follows with Festival controls.",
-    "PR98: pure Festival accounting merged e37ab28; hosted module/data hashes and hand-calculated stage/site receipt pass."
+    "PR98: pure Festival accounting merged e37ab28; hosted module/data hashes and hand-calculated stage/site receipt pass.",
+    "PR99: Festival career adapter merged9d00503; matching hosted source, both browser engine deal receipts and offline journal/reload proof."
   ],
   "nextStep": {
-    "title": "Deliver Festival controls, then complete venue rules and scenes",
-    "why": "Separate stage accounting is now visible through bill, forecast and receipt pages. Complete its release proof, then continue the remaining sponsor/headliner/venue constraints and source-owned scene work.",
+    "title": "Deliver Festival booking conditions, then finish venue rules and scenes",
+    "why": "Stage accounting and booking constraints are implemented in bounded slices. Complete their pending release evidence, then continue terrain, time-of-day, site infrastructure and career validation.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -381,7 +382,15 @@
       "artifactId": 11305185297,
       "validWindows": 18,
       "limits": "pending"
-    }
+    },
+    "festivalBookingPolicy": {
+      "baseRevision": "6bb709f6957cc234068aa7b8d79a5dde7710811f",
+      "checkedOn": "2026-10-04",
+      "localChecks": "Festival booking conditions implemented: new sponsor tickets fixed at the main usual price; earlier-tier headliners need relationship+20, with unchanged draw/ask scaling. Distinct-side controls and free venue recovery when no side act qualifies. Six new integration tests;388 repository tests/build/docs and unchanged Lot simulator baseline pass. Six Chromium/WebKit journeys plus trusted-headline/no-side cases, five-size/both-theme checks, six seating regressions, offline sponsor signing and supplied action runner pass.28 legacy browser checks pass. CI and hosted policy acceptance remain pending.",
+      "release": "Pending CI, merge and hosted acceptance",
+      "humanAndPhysicalAcceptance": "Not claimed"
+    },
+    "festivalAdapterRelease": "PR99 career adapter passed CI37212876178, merged9d0050327e3bd82db0c9081cad26296ad1f5b81b at15:46:33Z; Pages built15:47:02Z. Hosted engine/data/core/SW bytes match. Chromium/WebKit browser-engine guarantee/sponsor receipts, paid incidents, signing/reload and Chromium offline replay pass; player controls remain the separate PR101 release."
   },
   "decisionState": {
     "D1": {
@@ -1092,7 +1101,9 @@
         "doneWhen": "Club, shell and festival scenes, ticketing, held-night cancellation and stage/night accounting have tier-specific tests and playable careers.",
         "status": "in-progress",
         "evidence": [
-          "FOH-V02a pure ticketing terms/split/receipt implemented: optional20-point presale uplift,4% fee on presale gross, exact whole-dollar conservation and strict source validation. Five targeted tests and all329 repository tests/build/docs pass. No career or UI ticketing effect yet."
+          "FOH-V02a pure ticketing terms/split/receipt implemented: optional20-point presale uplift,4% fee on presale gross, exact whole-dollar conservation and strict source validation. Five targeted tests and all329 repository tests/build/docs pass. No career or UI ticketing effect yet.",
+          "PR99 career adapter passed CI37212876178, merged9d0050327e3bd82db0c9081cad26296ad1f5b81b at15:46:33Z; Pages built15:47:02Z. Hosted engine/data/core/SW bytes match. Chromium/WebKit browser-engine guarantee/sponsor receipts, paid incidents, signing/reload and Chromium offline replay pass; player controls remain the separate PR101 release.",
+          "Festival booking conditions implemented: new sponsor tickets fixed at the main usual price; earlier-tier headliners need relationship+20, with unchanged draw/ask scaling. Distinct-side controls and free venue recovery when no side act qualifies. Six new integration tests;388 repository tests/build/docs and unchanged Lot simulator baseline pass. Six Chromium/WebKit journeys plus trusted-headline/no-side cases, five-size/both-theme checks, six seating regressions, offline sponsor signing and supplied action runner pass.28 legacy browser checks pass. CI and hosted policy acceptance remain pending."
         ],
         "slices": [
           {
@@ -1125,7 +1136,9 @@
               "Festival adapter final local proof:379 repository tests/build/docs,28 legacy browser checks, Chromium/WebKit browser-engine guarantee/sponsor runs with paid incident, exact cash/journal and signed replay. Chromium warmed-shell/module offline repeats the same receipts. These are engine acceptance checks; full player controls and CI/hosted delivery remain pending.",
               "PR97 seating passed CI37211941185, merged a11a11d and Pages built15:30:54Z.25 hosted runtime files match; six seating plus six held-run journeys/full-hold/debt branches and offline50000gross/6000cancellation/1025340journalcash pass. Actual phone receipts inspected. Promote headline estimate correction is queued with Festival controls.",
               "PR98 core passed CI37212225285, merged e37ab28 and Pages built15:32:57Z. Hosted core/data bytes match and browser hand fixture reconciles100admissions,60/40stages,5653artistpay,1825opening,4447signing,2622net.",
-              "Playable Festival bill/receipt controls implemented: eligible side selection, new-booking disclosure, six contained pages, visible stage/site/artist/cash reconciliation, exact next opening minimum and public presales. Initial six Chromium/WebKit journeys plus both-theme/five-size checks,28legacy checks,382tests/build/docs, real offline signing and supplied action runner pass. Final visible money and six seating regressions also pass. CI and hosted acceptance remain pending."
+              "Playable Festival bill/receipt controls implemented: eligible side selection, new-booking disclosure, six contained pages, visible stage/site/artist/cash reconciliation, exact next opening minimum and public presales. Initial six Chromium/WebKit journeys plus both-theme/five-size checks,28legacy checks,382tests/build/docs, real offline signing and supplied action runner pass. Final visible money and six seating regressions also pass. CI and hosted acceptance remain pending.",
+              "PR99 career adapter passed CI37212876178, merged9d0050327e3bd82db0c9081cad26296ad1f5b81b at15:46:33Z; Pages built15:47:02Z. Hosted engine/data/core/SW bytes match. Chromium/WebKit browser-engine guarantee/sponsor receipts, paid incidents, signing/reload and Chromium offline replay pass; player controls remain the separate PR101 release.",
+              "Festival booking conditions implemented: new sponsor tickets fixed at the main usual price; earlier-tier headliners need relationship+20, with unchanged draw/ask scaling. Distinct-side controls and free venue recovery when no side act qualifies. Six new integration tests;388 repository tests/build/docs and unchanged Lot simulator baseline pass. Six Chromium/WebKit journeys plus trusted-headline/no-side cases, five-size/both-theme checks, six seating regressions, offline sponsor signing and supplied action runner pass.28 legacy browser checks pass. CI and hosted policy acceptance remain pending."
             ]
           },
           {

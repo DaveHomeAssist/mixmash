@@ -291,3 +291,9 @@ Incident responses are paid immediately by the existing response action. The sig
 ### Festival player booking and next opening
 
 New Festival player bookings explicitly select version1 accounts. The side-act list contains prior-tier acts that currently accept a door deal, ordered by largest published draw. Selecting a bill is free; booking freezes terms. The Done screen's next Festival minimum compares offered main deals including available sponsorship, then includes both dedicated production crews and the side PA/lights budget. The displayed minimum therefore matches an available sponsored booking at the cheapest valid Festival layout. This does not bypass later sponsor constraints or make a guarantee-only act accept a door split.
+
+### Festival booking conditions (version1)
+
+New player Festival bookings also select `festivalPolicy:1`. Paper Voltage and North Kettle are native headliners. Earlier-tier acts enter the deterministic two-offer pool only at relationship +20, using their existing ask and draw scaling. The next-show minimum uses that same pool and requires a distinct willing side act. A selected side act cannot also headline; Book disables that card until the player changes the side selection. Accepted bookings survive later relationship changes.
+
+A new sponsor booking fixes the one site ticket price at the main act's usual price. The existing $8,000 sponsorship is received once in the opening cash calculation; there is no extra payment at signing. Price edits conflicting with the contract and opening with a mismatched price are refused. Ads remain adjustable. Guarantee and door deals retain their price controls. Unmarked sponsor shows retain their previous rules. If no side act accepts a door contract, Done permits free return to venue selection even below the Festival minimum; the next show's actual opening cost is still enforced.

@@ -197,6 +197,8 @@ export const SCENARIO_CASH = 2600;
 export const CLUB_ROSTER = ['salt-ledger', 'pallet-chorus', 'tin-relay'];
 export const AMP_ROSTER = ['gutter-census', 'hollow-census', 'amber-turnout'];
 export const FEST_ROSTER = ['paper-voltage', 'north-kettle', 'gutter-census'];
+export const FEST_HEADLINERS = ['paper-voltage', 'north-kettle'];
+export const FEST_HEADLINE_RELATIONSHIP = 20;
 
 export const CLUB_GOAL = { sellouts: 1, venueRep: 70, cash: 18000, loyalAct: 15 };
 export const AMP_GOAL = { sellouts: 1, venueRep: 80, cash: 50000, loyalAct: 15 };
