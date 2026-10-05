@@ -4,6 +4,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: refine the authored guest face/hair and fabric, skin and metal surfaces without adding crowd batches or changing gameplay; reconcile delivered touring, career, performance and navigation records.
 - Front of House: representative 3D guests walk with restrained limb motion and rest while queued; reduced motion stays static, with unchanged routes, counts, geometry batches and settlement rules.
 - Front of House: record independent compact Deal Help containment and touch-target verification; align career replay with the included Club lighting layout.
 

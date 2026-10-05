@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Guest poses implemented; combined touring release in final CI",
+  "head": "Touring and guest poses delivered; sample surfaces under verification",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Combined touring release PR117 is pushed with final-head CI pending. Source-owned guest walking/queue poses now pass geometry and renderer checks; player regression and their separate delivery continue. Final art, provenance and physical/human acceptance remain open.",
+  "statusReason": "PR117/119 are merged with required CI and Pages delivery; hosted touring accounting, camera/navigation, compact help and guest journeys pass. Source-authored face/material refinement is in local verification. Final art, physical calibration, low-power and human acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -34,8 +34,8 @@
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected."
   ],
   "nextStep": {
-    "title": "Finish touring controls and stacked release acceptance",
-    "why": "Complete current final-source player/regression checks and CI, deliver the core/controls stack, and reconcile the complementary career suite and parallel scene work. Keep final art and physical/human evidence separate.",
+    "title": "Deliver sample surface refinement and finish acceptance reconciliation",
+    "why": "Verify and deliver the source-authored face, hair and material sample. Preserve final art/camera, physical-device and human career gates with concrete evidence gaps.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -141,7 +141,7 @@
       "name": "Foundation \u2014 routine fixes",
       "goal": "Readable phone sheets and accurate records",
       "items": [
-        "Fix MXS-06 after reproducing Book/Promote panel overflow.",
+        "MXS-06 is delivered; compact Deal Help regression is also resolved through PR119 and 100 hosted combinations.",
         "Retain shipped key table and undo; do not implement MXS-07 again.",
         "Keep prototype/source, CI, deployment and human acceptance evidence distinct."
       ],
@@ -152,8 +152,8 @@
       "goal": "A bounded realistic Lot prototype following accepted D1\u2013D5",
       "items": [
         "Preflight documented: source-traced renderer contract, realistic five-subject sample specification and repeatable diagnostic measurement procedure.",
-        "FB-01: implement Lot adapter, orbit/presets and parity; FB-07: accepted Select behavior and safe removal.",
-        "FB-02: other venues follow Lot validation; FB-08 minimap remains deferred."
+        "FB-01/FB-07 orbit, four presets, picking, Select, safe removal, parity and recovery are delivered; sample surface refinement is under verification.",
+        "Technical scenes for all four rooms and CT-DEC-23 site overview are delivered; final art and physical/human acceptance remain separate."
       ],
       "gate": "Verify asset/source reuse rights and physical scale; fix or reimplement prototype gaps; prove picking/input/engine/save/fallback parity; measure accepted device roster and obtain Dave\u2019s art/camera acceptance."
     },
@@ -163,7 +163,7 @@
       "items": [
         "FB-04: arrivals, queues, temporary staff, recovery and settlement.",
         "FB-03: representative crowd movement from real aggregate outcomes.",
-        "D6/FB-06 research follows services; D7/FB-05 ownership follows exact ledger rules."
+        "D6 three-project research and D7 ownership/ledger pilots are delivered with deterministic replay and accounting checks."
       ],
       "gate": "Quiet/surge/busy-bar fixtures; deterministic reload/speed; no double charges or double-staffing; human comprehension."
     },
@@ -299,10 +299,10 @@
   "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1\u2013D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
   "confidence": "medium",
   "unknowns": [
-    "Final realistic art and physical calibration remain unaccepted; the deployed Lot preview, service movement and shadow reuse have hosted automated proof.",
-    "Archive source and image redistribution rights, physical scale and operator-eye FOH calibration pending.",
-    "Supported device/browser roster, accepted statistical/stall limits and hardware-GPU/low-power measurements pending.",
-    "Physical touch/device, camera/art and human career acceptance pending."
+    "Final realistic art and physical scale/operator-eye calibration remain unaccepted.",
+    "Original supplied image authorship and redistribution rights are not established; source-authored 3D samples use no external imagery.",
+    "Supported phone/low-power devices and sustained full-HUD targets remain unqualified; measured CI limits and available native-host evidence exist.",
+    "Human camera, visual and career acceptance remain pending."
   ],
   "evidence": {
     "clubLighting": {
@@ -392,7 +392,7 @@
       "source": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
       "artifactId": 11305185297,
       "validWindows": 18,
-      "limits": "pending"
+      "limits": "Superseded calibration state: CT-DEC-21 paired regression policy implemented and verified by final CI37258873878."
     },
     "festivalBookingPolicy": {
       "baseRevision": "6bb709f6957cc234068aa7b8d79a5dde7710811f",
@@ -447,7 +447,10 @@
       "baseRevision": "c354f3be9ba5800e31d37577eea72066f4625c90",
       "localChecks": "Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending.",
       "integration": "Reuses the committed touch-click suppression from PR111 source65fc08e; peer branch and delay model work preserved. Full stack integration still follows."
-    }
+    },
+    "touringIntegratedRelease": "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly.",
+    "guestPoseRelease": "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass.",
+    "currentReviewedRelease": "bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd"
   },
   "decisionState": {
     "D1": {
@@ -577,14 +580,15 @@
           {
             "id": "FOH-F01r1",
             "scope": "Compact Deal Help containment with Festival Rider",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "doneWhen": "All five help tabs and their pages fit at320x256 and supported desktop/phone sizes, with both themes, Chromium/WebKit and44px touch targets; final-head CI and hosted checks pass.",
             "evidence": [
               "Touring source2b3248a failed mandatory stage smoke:165px of Deal Help content inside156px. Corrected parent33fc9f9 uses shorter complete statements with unchanged terms and repairs the phone meter row.",
               "Independent complete help-page checks pass100 combinations:five tabs, Chromium/WebKit, both themes and1440x900/375x812/320x256/375x390/2560x720. Every paged section, document/panel/button containment and44px touch target is checked. All production runtime, styles and cache version match parent33fc9f9 exactly.",
               "Verification uses automated local browser emulation; current Linux CI, final stage regression and hosted/physical/human acceptance remain separate.",
               "All eight existing stage-player journeys pass on parent33fc9f9, including both browsers, desktop/phone classic/3D, guarantees/sponsor deals, stage/site cash, signing/reload, all help pages, trusted headline, same-act guard and no-side venue recovery. Original Linux failure remains recorded; final-head CI and hosted proof are still required.",
-              "After integration with117head eb490ae, all100 independent help-page cases pass again. Production runtime, styles and service worker match the combined release exactly.432 repository tests/build/assets and6catalog checks pass; final-head CI and hosted proof remain pending."
+              "After integration with117head eb490ae, all100 independent help-page cases pass again. Production runtime, styles and service worker match the combined release exactly.432 repository tests/build/assets and6catalog checks pass; final-head CI and hosted proof remain pending.",
+              "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/118"
           }
@@ -669,13 +673,22 @@
           {
             "id": "FOH-V01c",
             "scope": "Source-owned representative walking and queue poses",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
-              "433 repository tests, build and generated assets/references pass. Seventeen camera/model checks include coherent hip/shoulder attachments, ground contact, representative-space containment, unchanged batch/count limits, input immutability and static reduced motion. Actual renderer moving pixels differ and reduced-motion frames are identical; actual day/night captures inspected. Full3D application gestures/recovery/fallback/reload and exact settlement parity pass. Final player regression, CI and hosted acceptance remain separate."
+              "433 repository tests, build and generated assets/references pass. Seventeen camera/model checks include coherent hip/shoulder attachments, ground contact, representative-space containment, unchanged batch/count limits, input immutability and static reduced motion. Actual renderer moving pixels differ and reduced-motion frames are identical; actual day/night captures inspected. Full3D application gestures/recovery/fallback/reload and exact settlement parity pass. Final player regression, CI and hosted acceptance remain separate.",
+              "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass."
             ],
             "remaining": [
               "Final player regression and exact-head CI/Pages/hosted acceptance",
               "Final visual review and physical-device performance"
+            ]
+          },
+          {
+            "id": "FOH-V01d",
+            "scope": "Source-authored guest face, hair and surface refinement",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "FOH-V01d brief and CT-DEC-29 define the bounded slice. Shared sculpted geometry, deterministic mipmapped facial/hair/fabric maps and distinct metal response preserve sixteen guest batches, palettes, poses and simulation. Close-view capture inspected; final regression, CI and hosted verification pending."
             ]
           }
         ]
@@ -689,7 +702,7 @@
           "FOH-V01"
         ],
         "doneWhen": "Deterministic CI scenes and documented measured limits; available hardware measurements and unavailable device evidence reported separately.",
-        "status": "in_progress",
+        "status": "technical-delivery-verified-acceptance-open",
         "evidence": [
           {
             "stage": "test",
@@ -765,8 +778,8 @@
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Declared CI timing limits, adaptive policy and supported low-power hardware evidence",
-          "Physical monitor/device and human acceptance"
+          "Supported phone/low-power qualification and sustained full-HUD performance acceptance.",
+          "Physical calibration and human acceptance; frozen native evidence does not qualify future sample revisions."
         ],
         "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
         "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI.",
@@ -804,12 +817,13 @@
           {
             "id": "FOH-P01e",
             "scope": "CI runner calibration and measured regression limits",
-            "status": "calibration-verified-limits-pending",
+            "status": "verified-delivered",
             "evidence": [
               "Explicit manual performance job prepared on Ubuntu24.04. Full standard18-window DPR1 SwiftShader protocol; runner image/run metadata allowlist and synthetic JSON artifact retention. Normal PR correctness gates unchanged.",
               "Workflow YAML parses; three reporting/deadline/camera tests pass. Actual dispatch, runner baseline, artifact retrieval and regression limits remain pending.",
               "Full run37205343575 at clean6ed7b7c succeeded;18 windows audited from downloaded artifact11305185297. Ubuntu24.04/AMD EPYC7763 four-core/Chromium149 SwiftShader. Every digest and recomputed statistic verifies. No speed limit claimed.",
-              "PR82 CI37205357305 passed; merged431cec0, Pages13:41:30Z, three deployed procedure/harness files match."
+              "PR82 CI37205357305 passed; merged431cec0, Pages13:41:30Z, three deployed procedure/harness files match.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/82",
             "mergeCommit": "431cec064f4219c09abbfd25e0557920df59ef5c"
@@ -817,31 +831,33 @@
           {
             "id": "FOH-P01f",
             "scope": "Native desktop and attached-display reproduction with sanitized evidence",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Six full visible native Chrome154/Metal windows at clean6ed7b7c:5120\u00d71286/DPR1,59.9764\u201359.9812Hz, zero intervals over50ms; complete private artifact audit.",
               "Actual full-client DPR1\u21922\u21921 moves preserve fixed1000\u00d7613 CSS size, exact state and yaw37/135 picking. Public reproduction commands pass; native command quick windows remain distinct from the frozen full measurement.",
               "Default headless quick mode and deliberate missing-browser cleanup are checked separately. Public summary/tool CI and deployment pending.",
               "Final local validation:276 repository tests, build, generated docs, balance simulation and three reporting tests pass; generated balance/docs unchanged. Six default headless short windows and deliberate missing-browser retained-failure cleanup pass; catalog317 files.",
-              "Original PR87 CI37206825027 passed. Reconciled delivered career baseline193c54c after a merge conflict, preserving both appended briefs and latest gameplay phase records. All315 tests/build/generated docs/simulation pass with no generated drift; actual display transition reproduction passes on the integrated source. Corrected-head CI pending."
+              "Original PR87 CI37206825027 passed. Reconciled delivered career baseline193c54c after a merge conflict, preserving both appended briefs and latest gameplay phase records. All315 tests/build/generated docs/simulation pass with no generated drift; actual display transition reproduction passes on the integrated source. Corrected-head CI pending.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-P01g",
             "scope": "Same-runner measured renderer regression gate and real CPU fault proof",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Pinned6ed7b7c paired full18-window measurements; identical rendered fixtures/browser/runner/quality required, raw/source/fixture hashes and recalculated statistics checked.",
               "Initial limits: median frame mean/p95 max25% or8ms increase; median CPU p95 max50% or1ms. Four evaluator and three reporting tests pass, including invalid evidence and strict numeric boundaries. Actual calibration18-window audit passes.",
               "20ms diagnostic injection remains confined to the isolated harness. Full live candidate acceptance and numeric rejection of an actual full fault run remain pending.",
               "276 repository tests/build and seven evaluator/reporting tests pass. Six short actual Metal fault windows are valid and record CPU p95 approximately20.2\u201320.7ms; this proves injection operation only, not full CI budget acceptance.",
-              "CI37207123068 passed all36 full windows at PR merge42c1e0f. Manual37207121746 passed its normal pair ataa5f6a3 and numerically rejected the real20ms CPU fault in all six scene/viewport groups. Independent audits verify all90 windows, source/raw/fixture digests, statistics and reported comparisons; CPU fault p95 medians20.9\u201327.4ms exceed declared1.3\u201310.35ms limits. Current-head delivery CI remains separate."
+              "CI37207123068 passed all36 full windows at PR merge42c1e0f. Manual37207121746 passed its normal pair ataa5f6a3 and numerically rejected the real20ms CPU fault in all six scene/viewport groups. Independent audits verify all90 windows, source/raw/fixture digests, statistics and reported comparisons; CPU fault p95 medians20.9\u201327.4ms exceed declared1.3\u201310.35ms limits. Current-head delivery CI remains separate.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-P01h",
             "scope": "Full native HUD measurement and application render coalescing",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Six valid full native3D/HUD windows at clean aa5f6a3:5120\u00d71286/DPR1,47.58\u201359.98Hz and three intervals over50ms; exact engine state at minute65 and all source/raw/fixture hashes verify.",
               "Camera movement and show-loop renders duplicate submission work. Application adapter opts into one deferred render per animation frame; standalone default and scene quality stay unchanged. Focused lifecycle, backend and resolution checks pass.",
@@ -852,20 +868,22 @@
               "After integration with cf74906/193c54c:315 tests/build/docs/simulation, deferred-render lifecycle, actual DPR1\u21922\u21921 display moves and complete3D gestures/recovery/reload/settlement parity pass. Generated reference/balance files unchanged; cache version44 prepared.",
               "PR92 CI37208943333 rejected a stale renderer digest in the generated Lot manifest. Regenerated only that digest; asset and vendor checks pass. Integrated equipment career116a743 passes324 tests/build/docs/simulation. Frozen5f47c4a measurement retains original bytes and independently correct renderer hash; manifest metadata correction is recorded in PERFORMANCE.md. Cache v44r1 prevents collision with concurrent v44 work. Replacement CI and hosted verification pending.",
               "Reconciled equipment controls4600649, preserving current gameplay records and fixtures.324 tests/build/asset checks pass; required current-head CI and hosted checks pending.",
-              "Current performance PR92 sourcec5654aa passed CI37210591670. Later mechanics conflicts are resolved in combined Club PR96 source7a111c2; that integration requires its own CI and hosted proof. Sustained full-HUD60fps remains unproven."
+              "Current performance PR92 sourcec5654aa passed CI37210591670. Later mechanics conflicts are resolved in combined Club PR96 source7a111c2; that integration requires its own CI and hosted proof. Sustained full-HUD60fps remains unproven.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ],
             "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/92"
           },
           {
             "id": "FOH-P01j",
             "scope": "Reuse centered camera volume fit across pan and zoom without visual or simulation changes",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Camera fit reuse preserves3852 exact prior-source pose/matrix/projection/picking/overview comparisons across all rooms, three viewports, yaw/pitch/zoom/pan, four presets and lens changes. All16 camera tests pass, including repeated invalidation versus a freshly fitted camera. Five alternating Node CPU repetitions of20000 pans: baseline1870.64\u20132362.12ms, candidate84.80\u2013119.53ms on Apple M4/Node22.22.1. This is helper CPU evidence only; full native game/HUD timing and delivery remain pending.",
               "All408 repository tests, build, source-owned asset digests, generated documentation and unchanged simulator pass. Actual browser regression and isolated native baseline/candidate comparisons are pending.",
               "Twelve native full-client running-Lot windows compare clean388d4c8 and3ce752c on Apple M4/Metal/Chrome154, actual5120\u00d71286/DPR1. Independent audit verifies all source/raw hashes, recreated fixtures, exact final-state replay and identical initial scene quality. Baseline57.57\u201359.98Hz with11 intervals over50ms; camera-fit reuse58.28\u201359.65Hz withnone. Only camera source and its generated asset digest differ. Shared-host ranges overlap; no causal frame-rate improvement, sustained60fps, low-power or human acceptance inferred. KI-14 remains open.",
               "Integrated PR107 headbacebdd passed test and renderer-regression checks in CI37242898789, merged eadaafe. Pages137db3a built; current hosted acceptance in progress.",
-              "Camera code is delivered through PR107 with passing final-head CI and Pages137db3a; current hosted overview/full-client and offline checks exercise it. The separate frozen native report is published by FOH-L01a; this does not close KI-14."
+              "Camera code is delivered through PR107 with passing final-head CI and Pages137db3a; current hosted overview/full-client and offline checks exercise it. The separate frozen native report is published by FOH-L01a; this does not close KI-14.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           }
         ]
@@ -1196,7 +1214,7 @@
           "FOH-E01"
         ],
         "doneWhen": "Club, shell and festival scenes, ticketing, held-night cancellation and stage/night accounting have tier-specific tests and playable careers.",
-        "status": "in-progress",
+        "status": "technical-delivery-verified-acceptance-open",
         "evidence": [
           "FOH-V02a pure ticketing terms/split/receipt implemented: optional20-point presale uplift,4% fee on presale gross, exact whole-dollar conservation and strict source validation. Five targeted tests and all329 repository tests/build/docs pass. No career or UI ticketing effect yet.",
           "PR99 career adapter passed CI37212876178, merged9d0050327e3bd82db0c9081cad26296ad1f5b81b at15:46:33Z; Pages built15:47:02Z. Hosted engine/data/core/SW bytes match. Chromium/WebKit browser-engine guarantee/sponsor receipts, paid incidents, signing/reload and Chromium offline replay pass; player controls remain the separate PR101 release.",
@@ -1213,14 +1231,15 @@
           {
             "id": "FOH-V02d",
             "scope": "Complete career feasibility and exact save/accounting verification",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Integrated parent5794977 and delivered curfew. Explicit outdoor curfew terms preserve30/30complete careers,515signed shows and30exact uninterrupted/every-action-reload pairs. Entire normalized saves and complete receipts/journals agree. Repeated current report is byte-identical;423repository tests/build/references and unchanged11Lot verdicts pass. Replacement final-head CI and stacked delivery remain required.",
               "Separate four-room simulator implemented against integrated source65fc08e, using normal3000 starting cash, earned unlocks, published booking information and a fixed strongest-affordable incident policy. Thirty uninterrupted/reload pairs pass:30/30careers complete,515signed shows, full receipt/state/journal parity, affordable charges and duplicate-signing refusal. Five generated verdicts and416 repository tests/build/references pass; the eleven Lot verdicts remain unchanged. Existing Lot balance baseline and all runtime rules are unchanged. CI and delivery remain pending; balance, human careers, art and physical acceptance stay open.",
               "Integrated committed delay preview52b9fdd and complete-career verification802b3c2 with touring controls2b3248a. Both career commands and CI report-drift gates are retained. The stricter replay now selects current Club room and Festival touring policies, includes both support fixtures and their1500 rental, and passes30 complete careers/515 signed shows/30 exact every-action reload pairs. Model revision10 retains delay/deck/coach geometry and all rotated footprint tests; cachev60 distinguishes the combined runtime. The player guide now explains touring controls and costs. Initial repository verification found only the stale generated catalog; it was regenerated before final checks. Combined CI, runtime browser and hosted proof remain pending.",
               "Combined model/client verification passes: Festival geometry at three sizes, eight exact classic/3D legacy/versioned settlement/reload comparisons, full3D gesture/inspection/fallback/recovery smoke and four site navigation journeys. The complete touring player regression and20 compact Deal terms combinations pass. Four remaining copy issues are corrected: explicit Act relationship labeling, neutral Show night heading, honest incident/room advice and a basic no-ad affordability estimate. The first longer Act trust label overflowed the strip by16px; Act plus tooltip/accessible name preserves meaning and all28 browser checks pass. No rule, timing, price or save changed; cachev61 identifies the final runtime. Required final-head CI and hosted integration acceptance remain pending.",
               "The combined117 career fixture had restored the redundant Club light tower, unlike the actual Suggested layout. The fixture now filters included house lights again while preserving Festival supportPolicy, VIP deck/buses, their1500 rental and two delays. Regenerated results pass30/30 complete careers,515 signed shows and30 exact every-action full-save/receipt/journal pairs.432 repository tests, build, asset checks and6catalog checks pass. No game rule or player runtime changes; final CI and hosted report parity remain pending. Duplicate FOH-V02d projection rows were consolidated with all historical evidence retained.",
-              "Coordinated PR118 source2498ae2 corrects the career fixture to omit redundant Club light towers, matching actual Suggested layout while retaining current Festival touring and delays. Integrated replay reproduces30/30careers,515signedshows and30exact full-save/receipt/journal pairs with no generated report drift. Guest model11/cache63 and all player runtime are preserved; final combined CI/hosted report proof remains pending."
+              "Coordinated PR118 source2498ae2 corrects the career fixture to omit redundant Club light towers, matching actual Suggested layout while retaining current Festival touring and delays. Integrated replay reproduces30/30careers,515signedshows and30exact full-save/receipt/journal pairs with no generated report drift. Guest model11/cache63 and all player runtime are preserved; final combined CI/hosted report proof remains pending.",
+              "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass."
             ]
           },
           {
@@ -1240,7 +1259,7 @@
           {
             "id": "FOH-V02b",
             "scope": "Held-night cancellation, seating and stage/night accounting",
-            "status": "in-progress",
+            "status": "verified-delivered",
             "evidence": [
               "Optional version1 held-run policy implemented: quoted25%-of-ask fee per unplayed night, frozen terms, explicit continue/cancel, exact journal/history/reputation and negative-cash recovery. Twelve core/adapter tests and347 repository tests/build/docs pass. Controls pass initial six Chromium/WebKit journeys, full-hold/debt branches and offline cancellation; final regression, CI and hosted acceptance remain pending. Seating/stage accounting remain separate work.",
               "Held-run cancellation controls final local verification:347 repository tests/build/docs, six complete Chromium/WebKit journeys plus full-hold and controlled-debt branches; both-theme five-size window checks, signed Show history fee/cash record, seven Equipment and six ticketing regressions,28 legacy checks and offline signing/cancellation. Supplied action runner verifies a fresh booking with zero completed nights and correct terms; actual full-page dialog screenshots inspected. Source/CI/Pages/hosted delivery remains pending; seating/stage accounting remains open.",
@@ -1263,21 +1282,23 @@
               "Festival room profile adds an included 3,000-person Main system, flat height-aware sightlines, portable replacement and source-backed Room controls. 401 repository tests, build/docs and unchanged Lot baseline pass. All three deal receipts preserve cash/journal/reload; 180 unmarked transitions and receipts match source8d715b0. Six Chromium/WebKit Festival journeys plus trusted-headline/no-side cases pass, including two-row phone tabs and compact paging in both themes. Six Amphitheater journeys, 28 legacy browser checks, actual offline Festival signing and the supplied action runner pass; full HUD and phone receipt images inspected. CI and hosted release proof remain pending.",
               "Festival delay towers implemented with spatial union coverage, two-tower limit, house-system activation, explicit portable/legacy inactivity and exact rental/operator production costs. 405 repository tests,28 targeted tests, build/docs, unchanged Lot simulator, six Chromium/WebKit Festival journeys plus edge cases, six seating journeys and28 legacy browser checks pass. Both themes/five sizes, actual pointer selection, inactive portable/legacy controls and Site/Production receipt totals pass. Warmed-cache offline two-tower signing/reload preserves6000 sound,467 extra tiles,1350 delay cost and1194656 journal cash. Supplied action runner and actual phone/desktop captures inspected. CI and hosted delivery remain pending.",
               "PR106 passed CI37218320926, merged2b128e10b60ad06c8db3b865c9f29a40825f8eb2 and Pages built2026-10-04T17:12:08Z. PR108 passed corrected CI37218906500, mergedf6532a2585d08e27416b4c023adc95b5f5c19d47 and Pages built17:25:44Z. Fresh combined-production acceptance at137db3a (Pages built2026-10-05T00:16:18Z):27 runtime files match, eight Festival and eight seating Chromium/WebKit journeys pass, including 3D player paths. Warmed-cache offline two-tower sponsor signing/reload preserves6000 sound capacity,467 extra tiles,1350 delay cost and1479282 journal cash. Actual hosted phone Delay receipt inspected.",
-              "Version1 curfew timing implemented under CT-DEC-24: end at seeded minute or five-minute paid extension, timed aggregate walk-ups/bar income, frozen held-night terms and readable Set time receipts.423 repository tests, seven dedicated accounting/recovery tests, build, assets/docs and unchanged Lot simulator pass. Eight Chromium/WebKit player journeys cover both outdoor rooms, deals/responses, normal/reduced playback, compact sizes/both themes and signed replay.960 unmarked transitions/120 receipts exactly match137db3a. Real offline appeal preserves148 played minutes,20 lost,400 response fee and1027752 journal cash. Supplied action client and actual full/phone screenshots inspected. Full browser regression, CI and hosted acceptance pending."
+              "Version1 curfew timing implemented under CT-DEC-24: end at seeded minute or five-minute paid extension, timed aggregate walk-ups/bar income, frozen held-night terms and readable Set time receipts.423 repository tests, seven dedicated accounting/recovery tests, build, assets/docs and unchanged Lot simulator pass. Eight Chromium/WebKit player journeys cover both outdoor rooms, deals/responses, normal/reduced playback, compact sizes/both themes and signed replay.960 unmarked transitions/120 receipts exactly match137db3a. Real offline appeal preserves148 played minutes,20 lost,400 response fee and1027752 journal cash. Supplied action client and actual full/phone screenshots inspected. Full browser regression, CI and hosted acceptance pending.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-V02c",
             "scope": "Distinct source-owned room scenes and tier simulator verdicts",
-            "status": "in-progress",
+            "status": "verified-delivered",
             "evidence": [
-              "Fathom Hall technical preview FOH-V02r1 is locally verified; remaining room scenes and tier verdicts remain open."
+              "Fathom Hall technical preview FOH-V02r1 is locally verified; remaining room scenes and tier verdicts remain open.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-V02r1",
             "scope": "Fathom Hall source-owned technical scene and fixed-scenery picking",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Existing20\u00d714 room, four pillar tiles and medium house PA; camera, grid and representative crowd follow real room bounds; classic remains the default.",
               "328 tests/build/vendor/generated-asset checks and balance simulation pass. Desktop/phone four-view and arbitrary-yaw checks, pillar refusal, room-switch cleanup, context recovery, reload and exact classic/3D settlement parity pass.",
@@ -1287,13 +1308,14 @@
               "Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance.",
               "Ticketing controls368edba integrated;339 tests/build/assets and unchanged balance simulation pass. All seven ticketing journeys pass including actual desktop/phone Club3D, and the Club room/recovery/exact-settlement suite passes again. Required CI, merge and hosted delivery remain pending.",
               "Held-run delivery633f60a integrated without changing frozen native measurements.351 tests/build/assets, six held-run journeys and Club room/recovery/parity smoke pass; generated docs and balance simulation pass unchanged. Replacement current-head CI and hosted delivery remain required.",
-              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
+              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-V02r2",
             "scope": "Loam Shell source-owned technical shell and seating/lawn guides",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Existing28\u00d718 amphitheater and medium house PA. Cutaway shell stays behind build floor; illustrative seating/lawn guides are pick-through and reserve no tiles. Engine seating, pricing, held nights and saved outcomes unchanged.",
               "Two geometry/camera tests pass. Desktop/phone/ultrawide four-view, yaw37/135, guide placement, room changes, context recovery and containment pass. Four desktop/phone classic/3D journeys produce exactly identical two-night rain-show receipts and saved states with400 seated guests and remaining lawn attendance.",
@@ -1302,26 +1324,28 @@
               "Integrated held-run source7a111c2 passes353 repository tests/build/assets/docs and unchanged balance simulation. Held-run smoke now adds actual3D desktop/phone continuation and cancellation journeys; the full integrated player suite is running before native measurement and delivery.",
               "Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
               "Full integrated player suite passes:28 legacy checks plus live/crowd/food/sanitation/research/equipment/ticketing journeys, eight held-run journeys including actual3D continuation/cancellation, then Shell desktop/phone/ultrawide recovery and four exact two-night classic/3D comparisons. Source47f680e was frozen and clean before native timing.",
-              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
+              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-V02r3",
             "scope": "Split Acre fixed side-stage scene and conserved representative audience",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Source-owned 52 \u00d7 24 presentation around the unchanged 40 \u00d7 24 build yard; fixed annex and accessible Side stage camera. Geometry checks pass at1440,375 and2560 CSS pixels, including both yaw angles, nonbuildable annex, all-room disposal and context recovery.",
               "Two allocation/geometry tests pass. Versioned stage accounting integration, complete player journeys, native timing and delivery remain pending. Legacy side allocation is explicitly unknown; classic remains default; final art and device acceptance remain open.",
               "Integrated seating/stage core, career and playable stage controls. All390 repository tests, build, generated docs and unchanged simulator verdicts pass. Full Festival browser acceptance passes three geometry sizes and eight exact classic/3D legacy/versioned settlement/reload comparisons. Actual 3D seating/stage control regressions and native measurement are being completed; CI and hosted delivery remain pending.",
               "Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9746\u201359.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
               "Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification.",
-              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
+              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-V02r4",
             "scope": "Source-owned Festival delay tower and persistent 3D touch inspection",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Four-unit mast and three-cabinet cluster replace generic gate geometry; all rotations stay inside one logical cell and the manifest separates Festival-only props. No engine/save/coverage/cost changes.",
               "The actual touch journey exposed a click retargeted onto a newly opened inspection backdrop. Document capture now consumes only the existing gesture click; fresh presses and keyboard activation remain independent. Actual persistent inspection, selected coordinates and new Close taps are tested.",
@@ -1330,30 +1354,33 @@
               "Complete local verification passes:28 core player checks; full3D gesture/inspection/recovery/fallback/reload/settlement;4 overview journeys; Festival geometry/touch checks at3 sizes and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Generated references and simulator remain unchanged. Source and browser proof are separate from current-head CI and hosted release.",
               "Integrated delivered curfew4dee773 and guidecf3865b, preserving both appended histories and the touch-capture fix. Cachev58r1 is distinct from curfewv56 and house-lightingv57. Earlier65fc08e complete local player suite passes; current integrated checks and replacement CI/hosted proof follow.",
               "Reconciled delivered355fe9d Club house lighting with existing Festival delay models and compatibility-click correction. Service worker uses uniquev58r2. Combined source/asset checks, final-head CI and actual hosted proof remain pending.",
-              "Combined355fe9d Club lighting and delay preview passes425repository tests, build, generated references/assets/catalog and11unchanged Lot verdicts. Integrated guide22f9a79 changes documentation only; engine/data/board/styles remain delivered355fe9d. Final-head CI and combined player/hosted acceptance remain pending."
+              "Combined355fe9d Club lighting and delay preview passes425repository tests, build, generated references/assets/catalog and11unchanged Lot verdicts. Integrated guide22f9a79 changes documentation only; engine/data/board/styles remain delivered355fe9d. Final-head CI and combined player/hosted acceptance remain pending.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           },
           {
             "id": "FOH-V02b14",
             "scope": "Versioned Festival VIP deck and bus compound core",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Version1 Festival touring-support core passes432 repository tests, five dedicated integration cases, build/docs/catalog/assets and unchanged Lot simulator. Both fixtures use normal placement, consume30 tiles and8kW, require readiness on marked bookings and add exactly1500 once to shared-site opening costs. All legal deal paths, stage/site/journal/signing/reload, malformed-marker recovery and960 unmarked transitions/120 receipts pass. Player controls and detailed models follow; core CI/Pages/hosted acceptance remains pending.",
-              "PR115 passed CI37253894483, mergedc14c6610 and Pages built02:34:47Z. Seven hosted files match; both browsers pass marked guarantee/sponsor and legacy core accounting/replay with1500/0 touring rental. Core delivered; player controls have their own release gate."
+              "PR115 passed CI37253894483, mergedc14c6610 and Pages built02:34:47Z. Seven hosted files match; both browsers pass marked guarantee/sponsor and legacy core accounting/replay with1500/0 touring rental. Core delivered; player controls have their own release gate.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ],
             "remaining": "Player booking/palette/receipt controls, detailed classic/3D models and hosted acceptance; rerun full careers after policy adoption."
           },
           {
             "id": "FOH-V02b15",
             "scope": "Festival touring booking, placement, receipts and source-authored models",
-            "status": "in-progress",
+            "status": "verified-delivered",
             "evidence": [
               "Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending.",
               "Expanded pre-booking checks found a squeezed Guarantee label and short WebKit window overflow. Two-row Deals tabs, sentence-sized paragraphs with unchanged terms, and a shorter Deal terms title fix both. All20 browser/theme/viewport combinations now pass every deal page, including320\u00d7256. Final full player regression and CI remain pending.",
               "Integrated committed delay preview52b9fdd and complete-career verification802b3c2 with touring controls2b3248a. Both career commands and CI report-drift gates are retained. The stricter replay now selects current Club room and Festival touring policies, includes both support fixtures and their1500 rental, and passes30 complete careers/515 signed shows/30 exact every-action reload pairs. Model revision10 retains delay/deck/coach geometry and all rotated footprint tests; cachev60 distinguishes the combined runtime. The player guide now explains touring controls and costs. Initial repository verification found only the stale generated catalog; it was regenerated before final checks. Combined CI, runtime browser and hosted proof remain pending.",
               "Combined model/client verification passes: Festival geometry at three sizes, eight exact classic/3D legacy/versioned settlement/reload comparisons, full3D gesture/inspection/fallback/recovery smoke and four site navigation journeys. The complete touring player regression and20 compact Deal terms combinations pass. Four remaining copy issues are corrected: explicit Act relationship labeling, neutral Show night heading, honest incident/room advice and a basic no-ad affordability estimate. The first longer Act trust label overflowed the strip by16px; Act plus tooltip/accessible name preserves meaning and all28 browser checks pass. No rule, timing, price or save changed; cachev61 identifies the final runtime. Required final-head CI and hosted integration acceptance remain pending.",
               "Linux CI37255270879 failed the320\u00d7256 Deals window by9px after five Chromium player journeys passed. Short complete statements retain all deal terms;20 local browser/theme/size combinations pass on the corrected source. Phone screenshot review also found the navigation inset clipping the meters; their second row now uses the full width, with explicit label/value bounds assertions. All28 player checks and20 actual Festival meter combinations pass; the rendered phone scene and all meters are visible. Final CI and hosted controls remain required.",
-              "CI37255270879 found9px of Linux compact Deals overflow. Short complete statements preserve every term and pass20 corrected local browser/theme/size combinations. The phone meter row now spans the available width, with label/value visibility asserted; combined-source28 player checks and20 meter combinations pass. Replacement CI is required; the failing run remains recorded."
+              "CI37255270879 found9px of Linux compact Deals overflow. Short complete statements preserve every term and pass20 corrected local browser/theme/size combinations. The phone meter row now spans the available width, with label/value visibility asserted; combined-source28 player checks and20 meter combinations pass. Replacement CI is required; the failing run remains recorded.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ],
             "remaining": "Final both-browser/full regression, CI, merge/Pages/hosted acceptance and complementary career replay on integrated source."
           }
@@ -1368,7 +1395,7 @@
           "FOH-V02"
         ],
         "doneWhen": "Evaluate zoomed Split Acre navigation; implement minimap if needed or record evidence-backed deferral, without claiming unbuilt work shipped.",
-        "status": "verified-awaiting-delivery",
+        "status": "verified-delivered",
         "evidence": [
           "FOH-U01a implements the already scoped Split Acre desktop overview. It rotates with the view and clips the actual safe ground footprint, including the3D annex, with pointer/keyboard pan and no saved camera state. Fit/phone/compact hiding and measured HUD gaps preserve primary controls.",
           "All392 repository tests, build, generated docs and unchanged simulator pass. Four classic/3D desktop complete-show journeys verify geometry/pan, zoom preservation, placement isolation, keyboard focus, off-map drags, resize, recovery, reload and exact settlement/state parity. Initial admin description and asynchronous-backend harness issues were corrected. Renderer-toggle/full player regression, current-head CI, hosted delivery and integrated performance/device acceptance remain open.",
@@ -1377,7 +1404,8 @@
           "Full player, Festival and 3D navigation/toggle regressions pass on the overview source. Current combined release also integrates PR103 booking conditions and PR104 Shell room profiles; combined checks, CI, merge and hosted acceptance remain pending.",
           "Combined source after PR103/104 integration passes407 repository tests, build, assets, generated documents and unchanged simulator; all four overview journeys also pass. Remaining player/venue checks are running before delivery.",
           "PR105 source388d4c8 passed CI37217879686 and is included in merged PR107. Integrated CI37242898789 and Pages137db3a pass; current hosted navigation and saved-show acceptance are in progress.",
-          "At137db3a, all four hosted overview journeys pass actual navigation, camera toggles, resize, recovery, reload and exact saved-show outcomes. Hosted warmed-cache 3D/classic/3D reloads and keyboard overview panning preserve saves; offline signing and reloading retain cash and journal1297350. Local source:416 tests/build/assets/docs/unchanged simulation pass. Club/standalone3D/resolution harnesses use local source; they are not hosted proof."
+          "At137db3a, all four hosted overview journeys pass actual navigation, camera toggles, resize, recovery, reload and exact saved-show outcomes. Hosted warmed-cache 3D/classic/3D reloads and keyboard overview panning preserve saves; offline signing and reloading retain cash and journal1297350. Local source:416 tests/build/assets/docs/unchanged simulation pass. Club/standalone3D/resolution harnesses use local source; they are not hosted proof.",
+          "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/105"
       },
@@ -1392,18 +1420,19 @@
           "FOH-U01"
         ],
         "doneWhen": "Provenance, recovery, career, art/camera and device evidence meet release checks; promotion only after those gates are satisfied.",
-        "status": "pending",
+        "status": "acceptance-open",
         "evidence": [],
         "slices": [
           {
             "id": "FOH-L01a",
             "scope": "Player guide and complete camera fit native evidence",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Source-checked player guide covers booking through settlement, current venue controls, delay behavior, optional 3D navigation, keyboard and save/offline recovery. Links resolve; publication and hosted acceptance pending.",
               "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate.",
               "Guide reconciled with delivered355fe9d Club house lighting: Room/Lighting pages, included lights, redundant suggested tower removal and portable PA replacement explained. Peer runtime preserved exactly; current integration checks and final-head CI/document deployment remain pending.",
-              "Combined guide/Club source passes all425 repository tests, build, asset integrity, generated references and eleven unchanged Lot simulator verdicts. Runtime files match delivered355fe9d exactly. Final-head CI and deployed manual/native-report readback remain pending."
+              "Combined guide/Club source passes all425 repository tests, build, asset integrity, generated references and eleven unchanged Lot simulator verdicts. Runtime files match delivered355fe9d exactly. Final-head CI and deployed manual/native-report readback remain pending.",
+              "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ]
           }
         ]
