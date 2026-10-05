@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: new Festival bookings require a placeable VIP deck and bus compound, with disclosed $1,500 shared rentals, normal footprint/power/view constraints, classic and 3D props, and contained Rider reports. Older unmarked bookings retain their rules. The earned tier career baseline now covers these requirements.
+
 - Front of House: outdoor curfew ends new booked sets at the seeded minute or five minutes later on appeal; attendance, bar income, playback and signed Set time receipts share the same rule. Legacy saves retain their prior math.
 
 - Front of House: reuse unchanged camera volume fit for pan and zoom, preserving projection, picking, presets and saved outcomes.

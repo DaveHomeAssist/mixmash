@@ -739,6 +739,7 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 /* Festival account pages keep two touch-sized rows on narrow screens. */
 @media (max-width: 420px) {
   #win[data-kind="stages"] .tabbar { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  #win[data-kind="deals"] .tabbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 420px) and (max-height: 560px) {
   #win[data-kind="stages"] .development-summary { display: none; }

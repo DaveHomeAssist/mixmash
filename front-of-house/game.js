@@ -271,10 +271,11 @@ const DEAL_HELP = {
 
 function dealHelpHtml() {
   const spec = venueSpec(state.venue), outdoor = ['amphitheater','festival'].includes(spec.id);
+  const paragraphs = text => `<p>${esc(text).replaceAll('. ', '.</p><p>')}</p>`;
   return `
-    <section ${outdoor ? 'data-tab="Guarantee" data-always-tabs' : ''}><h3>Pay the guarantee</h3><p>${DEAL_HELP.guarantee}</p></section>
-    <section ${outdoor ? 'data-tab="Door"' : ''}><h3>Offer a door deal</h3><p>${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.</p></section>
-    ${spec.sponsor ? `<section data-tab="Sponsor"><h3>Take a sponsor</h3><p>${DEAL_HELP.sponsor}</p></section>` : ''}
+    <section ${outdoor ? 'data-tab="Guarantee" data-always-tabs' : ''}><h3>Pay the guarantee</h3>${paragraphs(DEAL_HELP.guarantee)}</section>
+    <section ${outdoor ? 'data-tab="Door"' : ''}><h3>Offer a door deal</h3>${paragraphs(`${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.`)}</section>
+    ${spec.sponsor ? `<section data-tab="Sponsor"><h3>Take a sponsor</h3>${paragraphs(DEAL_HELP.sponsor)}</section>` : ''}
     ${spec.id === 'festival' ? `<section data-tab="Rider"><h3>Touring requirements</h3><p>Place one VIP deck and one bus compound before doors.</p><p>Deck: ${money(D.FESTIVAL_SUPPORT.vipDeck)}, 4×3 tiles, 2kW.</p><p>Buses: ${money(D.FESTIVAL_SUPPORT.busCompound)}, 6×3 tiles, 6kW.</p><p>Shared site rentals, paid once at opening.</p><p>No additional tickets or income bonus.</p></section>` : ''}
     ${['amphitheater','festival'].includes(spec.id) ? '<section data-tab="Curfew"><h3>Set time</h3><p>Doors 19:00. Set 20:12 to 23:00.</p><p>A noise curfew can end the set early.</p><p>End now for free, or pay $400 for five more minutes.</p><p>Closing early reduces walk-ups and bar income.</p><p>Presales and the quoted guarantee stay paid.</p></section>' : ''}`;
 }
@@ -2034,7 +2035,7 @@ function onAct(e) {
   else if (a === 'rotate') rotate();
   else if (a === 'locate-incident') locateIncident();
   else if (a === 'lot-details') openWindow('lot', 'Lot details', lotDetailsHtml(), target);
-  else if (a === 'deal-help') openWindow('deals', 'How the deals work', dealHelpHtml(), target);
+  else if (a === 'deal-help') openWindow('deals', 'Deal terms', dealHelpHtml(), target);
   else if (a === 'set-time') openWindow('set-time', 'Set time', setTimeHtml(setTimeFor(state)), target);
   else if (a === 'open-settlement') openSettlement(target);
   else if (a === 'last-sheet') openSettlement(target, { signed: true });
@@ -2262,7 +2263,7 @@ window.addEventListener('resize', () => {
   if (win.kind === 'seating') openSeating(win.opener);
   if (win.kind === 'stages') openStages(win.opener);
   if (win.kind === 'set-time') openWindow('set-time', 'Set time', setTimeHtml(setTimeFor(state)), win.opener);
-  if (win.kind === 'deals') openWindow('deals', 'How the deals work', dealHelpHtml(), win.opener);
+  if (win.kind === 'deals') openWindow('deals', 'Deal terms', dealHelpHtml(), win.opener);
 });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
