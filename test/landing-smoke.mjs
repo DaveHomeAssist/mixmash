@@ -98,6 +98,28 @@ try {
     assert.deepEqual(failures, []);
     results.push({ engine,width,height,passed:true }); console.log(`${engine} ${width}×${height} passed`); await context.close();
    }
+   // A direct detail link must return to its card even before catalog capacity was measured.
+   {
+    const context = await browser.newContext({ viewport: { width:375, height:500 }, serviceWorkers:'block' });
+    const page = await context.newPage();
+    await page.goto(new URL('#game-mars', origin).href);
+    await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
+    const panel = page.locator('#game-mars .detail-copy');
+    await panel.hover(); await page.mouse.wheel(0,600);
+    await page.waitForFunction(() => { const e = document.querySelector('#game-mars .detail-copy'); return e.scrollTop > 0 && e.scrollTop >= e.scrollHeight - e.clientHeight - 1; });
+    const scroll = await panel.evaluate(e => e.scrollTop);
+    await page.locator('#game-mars .back-link').click();
+    await page.waitForFunction(() => !document.getElementById('games').hidden);
+    assert.ok(await page.locator('#details-mars').isVisible(), 'direct-link return exposes originating card');
+    assert.equal(await page.locator(':focus').getAttribute('id'), 'details-mars');
+    await page.locator('#details-mars').click();
+    await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
+    assert.equal(await panel.evaluate(e => e.scrollTop), scroll, 'detail scroll restored after navigation');
+    await page.reload();
+    await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
+    assert.equal(await panel.evaluate(e => e.scrollTop), scroll, 'detail scroll restored after reload');
+    await fit(page, `${engine} direct detail`); await context.close();
+   }
    // No JavaScript retains complete links and native detail navigation.
    for (const disabled of ['scripts','storage']) {
     const context = await browser.newContext({ viewport: {width:375,height:812}, javaScriptEnabled: disabled !== 'scripts', serviceWorkers:'block' });

@@ -80,8 +80,12 @@ function showView(moveFocus = true) {
     link.setAttribute('aria-selected', String(selected)); link.tabIndex = selected ? 0 : -1;
   });
   if (currentView === 'games') {
-    if (lastDetail) pageIndex = Math.floor(cards.findIndex(card => card.dataset.game === lastDetail) / capacity);
+    // A direct detail visit has not measured the catalog yet. Resolve capacity first.
     fitCatalog();
+    if (lastDetail) {
+      pageIndex = Math.floor(cards.findIndex(card => card.dataset.game === lastDetail) / capacity);
+      fitCatalog();
+    }
     if (moveFocus && leaving.startsWith('game-')) document.getElementById(`details-${lastDetail}`)?.focus();
   } else {
     if (moveFocus) target.querySelector('h2')?.focus({ preventScroll: true });

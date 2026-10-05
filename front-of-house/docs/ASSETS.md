@@ -88,7 +88,7 @@ Added in `5b40552` for later tiers. Nothing draws these yet, and the service wor
 | Path | Kind | KB | Note |
 | --- | --- | --- | --- |
 | `../favicon.svg` | Icon | 0.3 | Shared MixMash Studio favicon |
-| `/manifest.webmanifest` | PWA manifest | 0.9 | Shared studio manifest |
+| `/manifest.webmanifest` | PWA manifest | 1.3 | Shared studio manifest |
 | `docs/hud/hud-build.jpg` | Mockup | 197.3 | HUD.md mockup, Build |
 | `docs/hud/hud-show.jpg` | Mockup | 125.2 | HUD.md mockup, Show |
 | `docs/hud/hud-settle.jpg` | Mockup | 120.3 | HUD.md mockup, Settle |
