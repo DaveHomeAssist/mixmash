@@ -21,7 +21,7 @@ worker until a game launches; existing worker clients retain offline access.
 
 ## Local verification
 
-- `npm test`: 436 passing tests after adding the homepage catalog integrity checks.
+- `npm test`: 437 passing tests, including homepage catalog checks and the integrated Front of House release.
 - `npm run smoke:catalog`: 35 passing catalog checks.
 - `SMOKE_GAMES=hub npm run smoke:mobile`: 36 passing checks across 12
   phone/tablet configurations, including 44px controls and bounded root layout.

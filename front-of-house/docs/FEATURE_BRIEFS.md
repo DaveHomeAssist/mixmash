@@ -42,6 +42,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Acceptance:** Inspect moving and waiting guests in the actual renderer; opposing limbs change while shoulder/hip attachments remain coherent, feet stay near ground and figures stay within their existing representative space. Reduced motion remains byte-stable across time. Batch counts and actor totals remain unchanged. Verify current service routes and full classic/3D settlement parity, asset digests, browser recovery and final-head CI. Final art and physical-device acceptance remain separate.
 
+### FOH-V01d guest face and surface refinement
+
+**Problem / outcome:** Close views still show blank guest heads and identical coarse grain across skin, fabric and metal. Give the existing authored sample readable facial proportions, hair detail and distinct surface response.
+
+**Smallest slice / flow:** Inspect the same representative guest and five-subject Lot sample in Wide, FOH, Stage and Plan, in daylight and show light. Sculpt the existing head and hair meshes and use deterministic source-authored face, hair and fabric maps. Keep the existing part batches, palettes, representative cap, limb poses and camera controls. Metals receive a smoother response than fabric; skin keeps subtle shading. No downloaded artwork, additional dependencies, gameplay, routes, saves, capacity or balance changes.
+
+**Risks / acceptance:** Facial UV orientation, texture aliasing, crowd cost and resource lifetime need direct checks. Verify front-facing landmarks, finite bounded geometry, constant crowd batches, palette variation, mipmapped textures and complete disposal. Inspect close and management views, retain reduced-motion and context-recovery checks, exact settlement parity and CI performance limits. This advances the realistic sample; physical calibration, supported devices and Dave's final visual acceptance remain separate evidence gates.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.

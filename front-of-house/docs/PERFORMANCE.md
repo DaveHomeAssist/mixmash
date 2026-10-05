@@ -252,3 +252,10 @@ The measurements predate the integrated sponsor and Shell profile rules; they qu
 Each source uses three fixed and three actual middle-drag repeats with10s warmup and30s measurement. Every show advances from minute25 to65 and matches engine replay exactly. This task ran no concurrent local tests, builds or browser checks during the native windows. Other shared-host load remains uncontrolled. These frozen measurements predate later Festival profile/delay integration; the current release has separate source, CI and hosted checks.
 
 A separate Node22.22.1 helper diagnostic on the same Apple M4 compared five alternating repetitions of20000 pans:1870.64–2362.12ms before,84.80–119.53ms after.3852 exact camera pose, matrix, projection, picking and overview comparisons passed. This isolates camera CPU work, not browser frame-rate or GPU improvement.
+
+
+## Refined sample full-client native measurement
+
+[All six full native windows](../performance/2026-10-05-sample-native.json) use clean source `b8bfe08fe110121c51dafb75eb8efda837e3353a`, including model12 faces, hair, material maps and walking/queue poses. Apple M4/Metal, Chrome154.0.8037.97, actual5120×1286 at DPR1; three fixed and three moving-camera repeats, each with10s warmup and30s measurement. Every running Lot advances from minute25 to65 and matches exact engine replay. Source, fixture and raw hashes and recomputed statistics pass the independent audit. All six remain visible/focused with no resize or context violations.
+
+Observed cadence is59.9439–59.9772Hz, with zero intervals over50ms. This is current evidence near the available display's60Hz cadence, not a promise of all-device sustained60fps, causal improvement over prior shared-host runs or human smoothness/readability acceptance. No other local tests, builds or browser checks from this task ran during the windows; other host load remains uncontrolled. The existing untracked dependency symlink was excluded only from measurement-process Git metadata; tracked source was unchanged. Physical low-power/phone qualification remains open.

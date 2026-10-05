@@ -1,5 +1,30 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+
+## 2026-10-05: Combined sample evidence delivery
+
+Preserved the concurrentbe34a18 correction to the delivered touring slice's remaining-evidence field and integrated native evidence32bc302 into the same PR120. Runtime remains byte-identical tob8bfe08, so the six native windows and review captures retain their original source attribution. The initial renderer regression job111609049469 passed in CI37261347354; final combined-head checks remain independently required. The old watch process was absent after interruption and was not treated as a running merge. This combined delivery avoids publishing runtime and its frozen native report in separate releases.
+
+
+## 2026-10-05: Sample review and native proof
+
+At frozenb8bfe08, all six full native running-Lot/HUD windows pass source/raw/fixture hashes, statistics and exact minute25→65 engine replay. Apple M4/Metal, Chrome154, actual5120×1286/DPR1;59.9439–59.9772Hz, no intervals over50ms, no focus/visibility/resize/context errors. No other local browser/build/test work from this task overlapped the windows. This supports the current available-host sample, not all-device or human qualification.
+
+Eight actual HUD/view/light captures and a67.4-second orbit/live-motion/reduced-motion recording freeze the candidate. All eight stills and neutral guest close views were inspected. Nearby guests can obscure eye-level FOH; simplified anatomy and provisional dimensions remain explicit. The private material swatches use actual source materials. Final art/physical/phone/human acceptance is not fabricated.
+
+The new report initially failed the catalog-description check after staging; explicit public-safe report metadata was added and the six catalog checks rerun. No acceptance check was relaxed.
+
+PR119's full hosted suite, moving versus static reduced-motion pixels and offline sponsor signing/reload are terminal passes: seed4278227298, touring1500 and cash/journal1437148. Superseded PR109/111/114 are closed after verifying implementation ancestry and preservation of the Club-light fixture correction; branches remain. PR120 CI37261347354 is still running. Its first watcher requested configured required checks, which this repository does not expose; the corrected watcher explicitly requires successful test and foh-regression jobs before merging the unchangedb8bfe08 head.
+
+
+## 2026-10-04: Authored face and material sample, delivery reconciliation
+
+FOH-V01d and CT-DEC-29 add a bounded shared head/jaw/nose and hairline, deterministic face/hair/fabric maps, and distinct skin/metal roughness. Guest palettes, sixteen instance batches, limb poses, actor routes, caps and all simulation/save rules are unchanged. Model12/cache64 identify this candidate. Eighteen camera/model tests and all434 repository tests pass, along with build, asset and documentation checks. Actual3D controls, viewport fit, fallback/recovery and complete settlement parity pass. Backend checks pass all eight review views, reduced motion, immutable input, constant instance counts and20 disposal cycles. Close front/side captures inspected; final CI and hosted sample delivery remain pending.
+
+Retained tooling failures: the first cache edit targeted a nonexistent subdirectory service worker, then corrected the existing root sw.js. An incorrect backend test filename failed to resolve; the registered smoke:front-of-house-lot command passes. The supplied action runner's own Playwright version has no installed browser; a private copy uses the repository's installed Playwright import, preserving its action logic. No dependency was installed and no test assertion or timeout was relaxed.
+
+PR117 passed CI37256822385, merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c and Pages built03:20:23Z.35 exact hosted files, the complete player suite, Festival geometry/eight exact settlement pairs, four navigation journeys and sixteen prop picks pass. Offline touring rent1500 and cash/journal1404274 match through reload/signing. PR119 passed CI37258873878, mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd and Pages built03:46:34Z. Its first byte check ran while Pages was building and found five stale files; the retained post-build retry matches all35. Independent hosted100 compact help cases and four crowd journeys pass; four controlled movement checks are explicitly local fixtures. Root's remaining hosted119 full-player, pose and offline checks continue separately. Technical phase labels now reflect delivery; final art, physical calibration, supported low-power devices and human career acceptance remain open.
+
 ## 2026-10-04 — Combined release fixture reconciliation
 
 The combined release retained the current touring requirements and player guide but reintroduced an extra Club light tower in the career fixture. The actual Suggested layout omits it when house lights are included. Restoring that filter and regenerating the report preserves 30 completed careers, 515 signed shows and 30 exact every-action save/reload pairs, with updated cash results. Festival deck/buses, their $1,500 opening rental and two delay towers remain included. All 432 repository tests, build, asset checks and six catalog checks pass; all 100 compact help-page cases pass again on the combined runtime. Duplicate FOH-V02d tracker rows were consolidated without losing historical evidence. Player runtime, styles and service worker remain identical to combined release eb490ae. Final CI and hosted report acceptance remain pending.
