@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "355fe9d Club house lighting merged; guide reconciled for delivery",
+  "head": "7908a67 tier report merged; guide preserved with delivered Club lighting",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Club house lighting and outdoor curfew are delivered. Guide now covers included Fathom Hall lighting and frozen older terms. Final guide CI and deployed document verification remain pending. Delay preview, complete-career report delivery, final art, supported-device and human acceptance remain open.",
+  "statusReason": "Club lighting, outdoor curfew and the100-seed tier baseline are delivered. Guide is reconciled without changing current runtime; final-head CI and deployed manual/native-report readback remain pending. Delay preview, strict full-save career report delivery, Festival touring support, final art, supported-device and human acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -304,6 +304,11 @@
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
+    "tierCareer": {
+      "baseRevision": "8c8e3c778a38501c40b456d32dcc3803e849c8bf",
+      "checkedOn": "2026-10-04",
+      "localChecks": "The100-seed matched ordinary-career cohort passes all declared automated thresholds:100/100 careful Club and Amphitheater progression,99/100 Festival completion and another settled Festival day for all99; careless Club progression69/100. Failed seeds are retained, including careful Festival seed10. Every reached Club cohort plays at least five shows. Actual one/two/three-night holds, cancellation copies, deferred reputation, cash/journal/signing and normalized receipt checks run throughout. This is current-mechanics regression proof; new Festival VIP/bus infrastructure must rerun it. No gameplay value or goal is retuned."
+    },
     "clubLighting": {
       "baseRevision": "12a501afddb219b2c7a00b1a4ae224f09a4e001d",
       "checkedOn": "2026-10-04",
@@ -1303,7 +1308,8 @@
               "Source-checked player guide covers booking through settlement, current venue controls, delay behavior, optional 3D navigation, keyboard and save/offline recovery. Links resolve; publication and hosted acceptance pending.",
               "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate.",
               "Guide reconciled with delivered355fe9d Club house lighting: Room/Lighting pages, included lights, redundant suggested tower removal and portable PA replacement explained. Peer runtime preserved exactly; current integration checks and final-head CI/document deployment remain pending.",
-              "Combined guide/Club source passes all425 repository tests, build, asset integrity, generated references and eleven unchanged Lot simulator verdicts. Runtime files match delivered355fe9d exactly. Final-head CI and deployed manual/native-report readback remain pending."
+              "Combined guide/Club source passes all425 repository tests, build, asset integrity, generated references and eleven unchanged Lot simulator verdicts. Runtime files match delivered355fe9d exactly. Final-head CI and deployed manual/native-report readback remain pending.",
+              "Integrated delivered peer1137908a67 tier simulator/report/CI gates without changing runtime. Preserved peer phase records and guide/native evidence. Previous integrated runtime passed425tests; new tier and catalog checks are run separately. Final-head CI and deployed manual/report readback remain pending."
             ]
           }
         ]
