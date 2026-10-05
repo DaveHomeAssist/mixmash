@@ -1655,7 +1655,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Lot sample candidate",
-      "description": "Revision lot-sample-12, 2026-10-04. The generated manifest records eleven base samples, three Festival props and three room assemblies, authoring provenance, measured visual bounds, logical footprints, opaque pick…",
+      "description": "Revision lot-sample-14, 2026-10-05. The generated manifest records eleven base samples, three Festival props and three room assemblies, authoring provenance, measured visual bounds, logical footprints, opaque pick…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/LOT_SAMPLE.md",
       "open": null
     },
@@ -4060,6 +4060,16 @@
       "open": "/src/hub/template.html"
     },
     {
+      "path": "assets/covers/README.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Canonical covers",
+      "description": "Landscape 3:2 key art for the homepage detail panels only. Lineup cards and the turntable stay on assets/previews, which are live gameplay captures.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/README.md",
+      "open": null
+    },
+    {
       "path": "assets/previews/README.md",
       "project": "studio",
       "category": "docs",
@@ -4188,6 +4198,66 @@
       "description": "Session log for hub-level work: the public roster and arena count correction, the landing polish and this admin index.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/progress.md",
       "open": null
+    },
+    {
+      "path": "assets/covers/empires.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "empires.jpg",
+      "description": "Canonical empires cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/empires.jpg",
+      "open": "/assets/covers/empires.jpg"
+    },
+    {
+      "path": "assets/covers/foh.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "foh.jpg",
+      "description": "Canonical foh cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/foh.jpg",
+      "open": "/assets/covers/foh.jpg"
+    },
+    {
+      "path": "assets/covers/garden.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "garden.jpg",
+      "description": "Canonical garden cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/garden.jpg",
+      "open": "/assets/covers/garden.jpg"
+    },
+    {
+      "path": "assets/covers/mars.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mars.jpg",
+      "description": "Canonical mars cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/mars.jpg",
+      "open": "/assets/covers/mars.jpg"
+    },
+    {
+      "path": "assets/covers/mixmash.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mixmash.jpg",
+      "description": "Canonical mixmash cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/mixmash.jpg",
+      "open": "/assets/covers/mixmash.jpg"
+    },
+    {
+      "path": "assets/covers/pitch.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "pitch.jpg",
+      "description": "Canonical pitch cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/pitch.jpg",
+      "open": "/assets/covers/pitch.jpg"
     },
     {
       "path": "assets/og-card.png",
