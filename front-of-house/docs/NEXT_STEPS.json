@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Club lighting deployed; Festival touring controls under verification",
+  "head": "Touring parent33fc9f9 independently verified for compact Deal Help",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Curfew PR110 is delivered and hosted-verified. Club lighting PR112 passed CI37252537214, merged355fe9d7a7c6da050979223cc0defd1bbd102df3 and Pages built02:13:26Z;Ten affected hosted files match. Seven hosted Chromium/WebKit player journeys pass, including actual desktop/phone3D Club play. Warmed-cache offline signing/reload preserves included house lights, zero light rental,1380 net and1001380 cash with exact journal and signed-receipt parity. PR113/115 remain in CI. Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending. Expanded pre-booking checks found a squeezed Guarantee label and short WebKit window overflow. Two-row Deals tabs, sentence-sized paragraphs with unchanged terms, and a shorter Deal terms title fix both. All20 browser/theme/viewport combinations now pass every deal page, including320\u00d7256. Final full player regression and CI remain pending. CI37255270879 found9px of Linux compact Deals overflow. Short complete statements preserve every term and pass20 corrected local browser/theme/size combinations. The phone meter row now spans the available width, with label/value visibility asserted; combined-source28 player checks and20 meter combinations pass. Replacement CI is required; the failing run remains recorded.",
+  "statusReason": "Festival support core is delivered. Corrected touring parent33fc9f9 passes100 independent complete help-page/browser/theme/viewport cases with44px touch targets and unchanged terms. Current Linux CI and hosted touring acceptance remain pending. Guide, delay preview and strict career reports retain separate delivery stacks; final art, supported-device and human acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -572,7 +572,21 @@
             "summary": "PR60 CI passed; Pages build1259205127 built; deployed CSS and service worker byte parity; live Book sheet fits 360/375/390px without page overflow or browser errors. Local full smoke separately covers Book and Promote tabs."
           }
         ],
-        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/60"
+        "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/60",
+        "slices": [
+          {
+            "id": "FOH-F01r1",
+            "scope": "Compact Deal Help containment with Festival Rider",
+            "status": "verified-awaiting-delivery",
+            "doneWhen": "All five help tabs and their pages fit at320x256 and supported desktop/phone sizes, with both themes, Chromium/WebKit and44px touch targets; final-head CI and hosted checks pass.",
+            "evidence": [
+              "Touring source2b3248a failed mandatory stage smoke:165px of Deal Help content inside156px. Corrected parent33fc9f9 uses shorter complete statements with unchanged terms and repairs the phone meter row.",
+              "Independent complete help-page checks pass100 combinations:five tabs, Chromium/WebKit, both themes and1440x900/375x812/320x256/375x390/2560x720. Every paged section, document/panel/button containment and44px touch target is checked. All production runtime, styles and cache version match parent33fc9f9 exactly.",
+              "Verification uses automated local browser emulation; current Linux CI, final stage regression and hosted/physical/human acceptance remain separate.",
+              "All eight existing stage-player journeys pass on parent33fc9f9, including both browsers, desktop/phone classic/3D, guarantees/sponsor deals, stage/site cash, signing/reload, all help pages, trusted headline, same-act guard and no-side venue recovery. Original Linux failure remains recorded; final-head CI and hosted proof are still required."
+            ]
+          }
+        ]
       },
       {
         "id": "FOH-V01",

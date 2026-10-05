@@ -1,5 +1,9 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04 — Independent compact Deal Help verification
+
+CI at source 2b3248a reported 165px of Deal Help content inside a 156px panel. Corrected parent 33fc9f9 preserves the terms with shorter statements and repairs phone meter placement. One hundred complete help-tab/browser/theme/viewport cases now pass at 1440x900, 375x812, 320x256, 375x390 and 2560x720, including all paged content, unclipped labels and 44px touch targets. All eight existing stage-player journeys also pass, including exact accounting and signing/reload. The verification branch uses the parent runtime unchanged. Final Linux CI and hosted acceptance remain pending; automated emulation does not establish physical-device or human acceptance.
+
 ## 2026-10-04: Touring compact CI correction
 
 Linux CI37255270879 found a9px overflow in the320×256 Deals window after the five full Chromium journeys passed. The explanations now use shorter complete statements with unchanged terms. Separately, actual3D phone screenshot review found the navigation inset clipping the meters; the second row now uses the full available width, and the phone smoke explicitly checks all three labels/values. No assertion or timeout was relaxed. Fresh local and CI checks are required before merge.

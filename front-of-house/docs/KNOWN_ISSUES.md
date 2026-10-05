@@ -24,6 +24,7 @@ One list of what is wrong, weak or unrecorded, so it isn't scattered through ses
 | KI-12 | Low | Release | Public release gates are open: Dave's playtest sign-off, CT-DEC-10 and CT-DEC-11 still Proposed, `noindex`, no hub card, no sitemap entry | [RELEASE.md](RELEASE.md); [DECISIONS.md](DECISIONS.md) | Dave |
 | KI-13 | Low | Copy | The Show card's heading stays "Doors are open" all night, so a PA dropout at 21:05 sits under it | `game.js` `showPanel`; screenshot after the R-11a fix | Let the heading follow the clock (doors, set, curfew) |
 | KI-14 | Medium | Performance | Full native3D/HUD repeats do not establish sustained60fps:55.91–59.84Hz after removing duplicate render submissions, with shared-host variation | [Complete repeated evidence](PERFORMANCE.md#full-native-hud-batching-comparison) | Keep exact source/quality attribution; profile the supported desktop/low-power matrix and retain human readability acceptance before release |
+| KI-15 | Medium | Layout | Compact Deal Help overflowed after adding the Festival Rider tab: CI measured 165px content inside a 156px panel. Corrected parent 33fc9f9 passes 100 independent local help-page checks with unclipped labels and 44px touch targets; Linux CI and hosted acceptance remain pending. | [Failed stage player check](https://github.com/DaveHomeAssist/mixmash/actions/runs/37255270879), [parent correction](https://github.com/DaveHomeAssist/mixmash/commit/33fc9f924f47442d69cc9d01159494d25b1397c5) | Require final-head CI and hosted checks before closing |
 
 ### KI-01: paired engine example
 
