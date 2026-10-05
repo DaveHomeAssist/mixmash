@@ -748,3 +748,29 @@ The elevated-speaker touch check reproduced a compatibility click retargeted ont
 Elevated-speaker touch selection, exact coordinates and fresh Close taps now pass at1440,375 and2560px with both camera yaws and both tower rotations. Context recovery and room switching preserve state. Full3D gesture/fallback/reload/settlement checks pass; remaining overview, core and Festival settlement journeys continue. Actual desktop/phone captures inspected; no human acceptance inferred.
 
 Final local delay correction checks pass:28 core player checks, full3D gesture/inspection/recovery/fallback/reload/settlement,4 overview journeys, three-size Festival elevated-speaker picking and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Integrated the documentation-only PR109 source, preserving both briefs and progress entries. Generated references and Lot balance output remain unchanged. CI and hosted correction verification follow; v57 avoids the concurrent curfew cache version.
+
+## 2026-10-04: Festival profiles and delay towers delivered
+
+- PR106 passed CI37218320926, merged2b128e10b60ad06c8db3b865c9f29a40825f8eb2 and Pages built2026-10-04T17:12:08Z. PR108 passed corrected CI37218906500, mergedf6532a2585d08e27416b4c023adc95b5f5c19d47 and Pages built17:25:44Z. Fresh combined-production acceptance at137db3a (Pages built2026-10-05T00:16:18Z):27 runtime files match, eight Festival and eight seating Chromium/WebKit journeys pass, including 3D player paths. Warmed-cache offline two-tower sponsor signing/reload preserves6000 sound capacity,467 extra tiles,1350 delay cost and1479282 journal cash. Actual hosted phone Delay receipt inspected.
+- The current source also contains the parallel Club/Shell/Festival scenes and desktop overview. Their source and rendering work is preserved; full tier simulator and final art/device acceptance remain distinct.
+
+## 2026-10-04: Outdoor curfew timing local acceptance
+
+- Version1 curfew timing implemented under CT-DEC-24: end at seeded minute or five-minute paid extension, timed aggregate walk-ups/bar income, frozen held-night terms and readable Set time receipts.423 repository tests, seven dedicated accounting/recovery tests, build, assets/docs and unchanged Lot simulator pass. Eight Chromium/WebKit player journeys cover both outdoor rooms, deals/responses, normal/reduced playback, compact sizes/both themes and signed replay.960 unmarked transitions/120 receipts exactly match137db3a. Real offline appeal preserves148 played minutes,20 lost,400 response fee and1027752 journal cash. Supplied action client and actual full/phone screenshots inspected. Full browser regression, CI and hosted acceptance pending.
+- Initial save tests used forced incidents in Sandbox, which normalization correctly re-derives. Fixtures now find natural seeded incidents, including all held nights, and replay checks pass. Initial compact Set time overflow exposed inherited scroll offset in window pagination; resetting scroll before measuring pages fixes it without dropping content. Full regression is running on this shared-window correction.
+
+## 2026-10-04 — Guide reconciliation with delivered curfew
+
+PR110 merged4dee773 and Pages built at02:00:26Z. Reconciled the guide/native evidence branch with that release, preserving all curfew source, four conflicting append-only documentation records and both phase histories. The guide now explains the existing Set time controls, free ending and$400five-minute appeal. Previous137db3a completed the full hosted player suite plus navigation/offline proof; source-specific physical/human and KI-14 gates stay open. Integrated repository checks and replacement final-head CI precede guide delivery.
+
+## 2026-10-04 — Delay correction reconciliation with delivered curfew
+
+Integrated guide sourcecf3865b and deployed curfew4dee773 into the delay/touch branch. Both appended briefs/progress histories are preserved; the document-capture fix coexists with the new curfew controls. Cachev58r1 distinguishes this source from curfewv56 and concurrent house-lightingv57. Earlier65fc08e completed the entire local player suite; new integrated source checks and actual Festival/modal/curfew journeys precede replacement CI and hosted proof. No independent rule or balance change is introduced by this correction.
+
+The integrated source passes423repository tests, build, asset validation, generated references and the unchanged11Lot verdicts. Festival selection/scene checks pass at1440,375and2560 with both tower rotations/camera yaws, followed by8exact legacy/versioned classic/3D show/reload comparisons. Dedicated curfew journeys are running; final-head CI and hosted correction proof remain required. An initial command used a nonexistent npm alias; invoking the existing curfew smoke file fixes the harness invocation without a product change.
+
+## 2026-10-04 — Career replay integration with curfew
+
+Integrated parent5794977, retaining the delivered curfew/guide and delay inspection correction. The strict career booking policy now explicitly selects current outdoor curfew terms as well as room profiles. Thirty full uninterrupted/reload pairs are being regenerated against this integrated source; earlier515show results remain source04d7408 evidence. No runtime formula or goal change. Final source verification, replacement CI and delivery follow.
+
+Final current-policy replay passes30/30careers and515signed shows, with30exact uninterrupted/every-action-reload pairs. Full normalized saves, receipts and journals match; a repeat is byte-identical.423repository tests, build, generated references/catalog and the unchanged11Lot verdicts pass. Runtime remains exactly parent5794977. CI, stacked merge and deployed report proof follow; broader100-seed peer tier/held-night evidence is preserved separately.

@@ -6,7 +6,7 @@ Engine 1 · schema 2 · seeds 1–30 · 3000 starting cash · 100-show limit
 
 ## Policy and limits
 
-Normal career actions only: no injected cash, unlocks, relationships, future draws or future incidents. Enable the existing Equipment ledger after the first signed show, without purchases; its opening balance preserves that first show. Advance to each earned room, compare affordable deals at published middle draw with a $400 response reserve, use usual ticket prices and $150 each social/radio promotion. The Lot compares suggested and budget layouts; other rooms use suggested layouts, with two Festival delays at (8,16)/(30,16). Outdoor profiles, separate Shell seating and Festival bill/sponsor policies are marked explicitly. Each booking is one night.
+Normal career actions only: no injected cash, unlocks, relationships, future draws or future incidents. Enable the existing Equipment ledger after the first signed show, without purchases; its opening balance preserves that first show. Advance to each earned room, compare affordable deals at published middle draw with a $400 response reserve, use usual ticket prices and $150 each social/radio promotion. The Lot compares suggested and budget layouts; other rooms use suggested layouts, with two Festival delays at (8,16)/(30,16). Outdoor room and curfew profiles, separate Shell seating and Festival bill/sponsor policies are marked explicitly. Each booking is one night.
 
 After the current incident is revealed, choose its strongest affordable response by authored incident score, breaking ties by lower cost. This fixed policy does not preview settlements or use the hidden draw. The Festival booking score uses the average public gross bounds less the opening quote; it is an approximate planning policy, not a net forecast. Every booking choice is checked against an alternative future seed while holding published offers fixed. Each career repeats with JSON save normalization after every applied action; full receipts, cash, journal, choices, history, relationships and unlocks must match.
 
@@ -16,36 +16,36 @@ These fixed seeds demonstrate automated feasibility and recovery. They do not ap
 
 | Seed | Lot shows | Club shows | Shell shows | Festival shows | Total | Final cash | Lowest cash | Complete |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 6 | 5 | 4 | 3 | 18 | 1490611 | 832 | Yes |
-| 2 | 8 | 3 | 4 | 3 | 18 | 1537481 | 845 | Yes |
-| 3 | 6 | 5 | 5 | 1 | 17 | 608608 | 845 | Yes |
-| 4 | 6 | 4 | 5 | 1 | 16 | 646976 | 845 | Yes |
-| 5 | 7 | 3 | 5 | 1 | 16 | 640271 | 1020 | Yes |
-| 6 | 10 | 3 | 3 | 3 | 19 | 1511767 | 845 | Yes |
-| 7 | 11 | 3 | 5 | 1 | 20 | 644150 | 845 | Yes |
-| 8 | 7 | 4 | 4 | 3 | 18 | 1492420 | 779 | Yes |
-| 9 | 10 | 5 | 3 | 3 | 21 | 1524459 | 1020 | Yes |
-| 10 | 8 | 5 | 3 | 3 | 19 | 1478674 | 1020 | Yes |
-| 11 | 7 | 5 | 5 | 1 | 18 | 655630 | 995 | Yes |
-| 12 | 7 | 4 | 3 | 2 | 16 | 991742 | 641 | Yes |
-| 13 | 7 | 3 | 5 | 1 | 16 | 639987 | 995 | Yes |
-| 14 | 7 | 3 | 3 | 3 | 16 | 1465426 | 995 | Yes |
-| 15 | 6 | 3 | 4 | 4 | 17 | 1525668 | 995 | Yes |
-| 16 | 6 | 4 | 3 | 2 | 15 | 1080490 | 832 | Yes |
-| 17 | 7 | 3 | 4 | 2 | 16 | 1102239 | 845 | Yes |
-| 18 | 7 | 3 | 5 | 1 | 16 | 639413 | 793 | Yes |
+| 1 | 6 | 5 | 4 | 3 | 18 | 1489855 | 832 | Yes |
+| 2 | 8 | 3 | 4 | 3 | 18 | 1536972 | 845 | Yes |
+| 3 | 6 | 5 | 5 | 1 | 17 | 606304 | 845 | Yes |
+| 4 | 6 | 4 | 5 | 1 | 16 | 646256 | 845 | Yes |
+| 5 | 7 | 3 | 5 | 1 | 16 | 640023 | 1020 | Yes |
+| 6 | 10 | 3 | 3 | 3 | 19 | 1511618 | 845 | Yes |
+| 7 | 11 | 3 | 5 | 1 | 20 | 643926 | 845 | Yes |
+| 8 | 7 | 4 | 4 | 3 | 18 | 1489507 | 779 | Yes |
+| 9 | 10 | 5 | 3 | 3 | 21 | 1523511 | 1020 | Yes |
+| 10 | 8 | 5 | 3 | 3 | 19 | 1478513 | 1020 | Yes |
+| 11 | 7 | 5 | 5 | 1 | 18 | 653540 | 995 | Yes |
+| 12 | 7 | 4 | 3 | 2 | 16 | 991158 | 641 | Yes |
+| 13 | 7 | 3 | 5 | 1 | 16 | 639602 | 995 | Yes |
+| 14 | 7 | 3 | 3 | 3 | 16 | 1462638 | 995 | Yes |
+| 15 | 6 | 3 | 4 | 4 | 17 | 1525508 | 995 | Yes |
+| 16 | 6 | 4 | 3 | 2 | 15 | 1080242 | 832 | Yes |
+| 17 | 7 | 3 | 4 | 2 | 16 | 1102103 | 845 | Yes |
+| 18 | 7 | 3 | 5 | 1 | 16 | 639189 | 793 | Yes |
 | 19 | 6 | 4 | 5 | 1 | 16 | 600179 | 388 | Yes |
-| 20 | 7 | 5 | 5 | 1 | 18 | 654954 | 995 | Yes |
-| 21 | 6 | 4 | 4 | 2 | 16 | 1105541 | 994 | Yes |
-| 22 | 6 | 3 | 3 | 2 | 14 | 1071372 | 845 | Yes |
-| 23 | 7 | 5 | 3 | 3 | 18 | 1519175 | 845 | Yes |
-| 24 | 9 | 3 | 3 | 3 | 18 | 1469477 | 909 | Yes |
-| 25 | 6 | 5 | 5 | 1 | 17 | 652490 | 1020 | Yes |
-| 26 | 6 | 5 | 3 | 3 | 17 | 1523196 | 875 | Yes |
-| 27 | 8 | 5 | 3 | 2 | 18 | 1090685 | 695 | Yes |
-| 28 | 8 | 5 | 3 | 2 | 18 | 1089557 | 1020 | Yes |
+| 20 | 7 | 5 | 5 | 1 | 18 | 654215 | 995 | Yes |
+| 21 | 6 | 4 | 4 | 2 | 16 | 1104751 | 994 | Yes |
+| 22 | 6 | 3 | 3 | 2 | 14 | 1070189 | 845 | Yes |
+| 23 | 7 | 5 | 3 | 3 | 18 | 1515514 | 845 | Yes |
+| 24 | 9 | 3 | 3 | 3 | 18 | 1469266 | 909 | Yes |
+| 25 | 6 | 5 | 5 | 1 | 17 | 652316 | 1020 | Yes |
+| 26 | 6 | 5 | 3 | 3 | 17 | 1523035 | 875 | Yes |
+| 27 | 8 | 5 | 3 | 2 | 18 | 1090461 | 695 | Yes |
+| 28 | 8 | 5 | 3 | 2 | 18 | 1086713 | 1020 | Yes |
 | 29 | 7 | 3 | 5 | 1 | 16 | 645040 | 662 | Yes |
-| 30 | 6 | 5 | 5 | 1 | 17 | 649756 | 1020 | Yes |
+| 30 | 6 | 5 | 5 | 1 | 17 | 649334 | 1020 | Yes |
 
 ## Tier evidence
 
