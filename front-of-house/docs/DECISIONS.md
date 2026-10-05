@@ -27,6 +27,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-21](#ct-dec-21-measured-ci-regression-policy) | Paired CI timing limits, retained full-client evidence and render batching | Accepted engineering policy |
 | [CT-DEC-22](#ct-dec-22-fixed-scenery-editing-and-legacy-compatibility) | Fixed scenery editing and legacy compatibility | Accepted engineering policy |
 | [CT-DEC-28](#ct-dec-28-representative-guest-poses) | Restrained walking and queue poses using existing representative actors | Accepted presentation policy |
+| [CT-DEC-29](#ct-dec-29-source-authored-sample-surfaces) | Source-authored guest faces and distinct surface response | Accepted presentation policy |
 
 ## CT-DEC-01: Core scope
 
@@ -560,3 +561,8 @@ Choose **A: placeable touring requirements** over B: fixed scenery or C: a new V
 **Status:** Accepted presentation decision by Codex under CT-DEC-19, 2026-10-04.
 
 Moving service representatives use a restrained opposing hip/shoulder gait; queued representatives use planted legs and relaxed arms. The pose consumes existing movement/zone/time only. Keep the same authored geometry, material instance batches, representative count, routes and all engine/save/accounting rules. Reduced motion keeps a static pose. This completes a bounded sample movement task; it does not establish final realistic-art, physical calibration or device-performance acceptance.
+
+
+## CT-DEC-29: Source-authored sample surfaces
+
+**Accepted 2026-10-04 by Codex under Dave's CT-DEC-19 delegated authority.** Advance the existing realistic Lot sample with bounded shared head/hair geometry and deterministic face, hair and fabric maps. Preserve guest batch counts, palettes, limb joints, representative limits, simulation and saves. Use smoother metal and distinct cloth/skin response. No downloaded assets or new dependencies are needed. This delivers a reviewable sample refinement under FOH-V01d; it does not substitute for physical calibration, device qualification or Dave's final art/camera acceptance.

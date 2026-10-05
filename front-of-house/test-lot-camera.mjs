@@ -303,3 +303,28 @@ test('representative gait keeps bodies grounded, waiting feet planted and reduce
   assert.equal(JSON.stringify(source), original, 'presentation never edits actor positions or counts');
   presentation.dispose(); models.dispose();
 });
+
+
+test('guest surfaces retain bounded instancing, readable forward face and owned mipmapped textures', () => {
+  const a = createLotModels(), b = createLotModels(), guest = a.guest(), again = b.guest();
+  assert.equal(guest.children.length, 16, 'surface detail does not add crowd batches');
+  const head = guest.children[2], face = head.material.map;
+  assert.equal(face.name, 'authored-face');
+  const pixel = (u, v) => face.image.data[(Math.round(v * 127) * 256 + Math.round(u * 255)) * 4];
+  assert.ok(pixel(0.198, 0.56) < 100, 'first eye faces +Z');
+  assert.ok(pixel(0.302, 0.56) < 100, 'second eye faces +Z');
+  assert.equal(pixel(0.75, 0.56), 255, 'no face on back of head');
+  assert.deepEqual(face.image.data, again.children[2].material.map.image.data, 'source-authored map is deterministic');
+  assert.equal(head.geometry.attributes.position.count, 425, 'bounded shared face geometry');
+  for (const part of guest.children) {
+    for (const value of part.geometry.attributes.position.array) assert.ok(Number.isFinite(value));
+    if (part.material.map) assert.equal(part.material.map.generateMipmaps, true);
+  }
+  assert.equal(a.counts().textures, 4, 'texture allocation is constant across crowd sizes');
+  const roughMetal = a.material(0xb0b8bd, 0.7).roughness;
+  assert.ok(roughMetal < guest.children[0].material.roughness, 'metal and cloth have distinct surface response');
+  const textures = new Set(guest.children.map(p => p.material.map).filter(Boolean));
+  let disposals = 0; for (const texture of textures) texture.addEventListener('dispose', () => disposals++);
+  a.dispose(); a.dispose(); assert.equal(disposals, textures.size, 'each shared texture disposed exactly once');
+  assert.deepEqual(a.counts(), { geometries: 0, materials: 0, textures: 0 }); b.dispose();
+});

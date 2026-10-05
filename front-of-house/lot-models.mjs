@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-11';
+export const MODEL_REVISION = 'lot-sample-12';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -25,7 +25,25 @@ export function createLotModels() {
     box: new T.BoxGeometry(1, 1, 1), sphere: new T.SphereGeometry(1, 16, 12),
     cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 12),
     torso: new T.CylinderGeometry(0.46, 0.38, 1, 12),
+    head: new T.SphereGeometry(1, 24, 16),
+    hair: new T.SphereGeometry(1, 16, 12),
   };
+  // Sculpt the shared head rather than adding draw calls for facial features.
+  const headPositions = shape.head.attributes.position;
+  for (let i = 0; i < headPositions.count; i++) {
+    const x = headPositions.getX(i), y = headPositions.getY(i), z = headPositions.getZ(i);
+    const jaw = y < 0 ? 1 + y * 0.18 : 1;
+    const nose = z > 0 ? 0.24 * Math.exp(-((x / 0.2) ** 2) - (((y + 0.1) / 0.27) ** 2)) : 0;
+    headPositions.setXYZ(i, x * jaw, y, z + nose);
+  }
+  shape.head.computeVertexNormals();
+  const hairPositions = shape.hair.attributes.position;
+  for (let i = 0; i < hairPositions.count; i++) {
+    const x = hairPositions.getX(i), y = hairPositions.getY(i), z = hairPositions.getZ(i);
+    // A higher front hairline and fuller back keep the face visible from FOH.
+    hairPositions.setXYZ(i, x, y < 0 && z > 0 ? y * 0.35 : y, z);
+  }
+  shape.hair.computeVertexNormals();
   Object.values(shape).forEach(g => geometries.add(g));
   const pixels = new Uint8Array(64 * 64 * 4);
   for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
@@ -37,9 +55,34 @@ export function createLotModels() {
   const grain = new T.DataTexture(pixels, 64, 64); grain.colorSpace = T.SRGBColorSpace;
   grain.minFilter = T.LinearMipmapLinearFilter; grain.magFilter = T.LinearFilter; grain.generateMipmaps = true;
   grain.wrapS = grain.wrapT = T.RepeatWrapping; grain.repeat.set(4, 4); grain.needsUpdate = true; textures.add(grain);
-  function material(color, metalness = 0, roughness = 0.8) {
-    const key = `${color}:${metalness}:${roughness}`;
-    if (!materials.has(key)) materials.set(key, new T.MeshStandardMaterial({ color, metalness, roughness, map: grain }));
+  function surfaceMap(kind) {
+    const width = 256, height = 128, data = new Uint8Array(width * height * 4);
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+      const u = x / (width - 1), v = y / (height - 1);
+      let shade = 255;
+      if (kind === 'cloth') shade = 234 + ((x + (y % 2) * 2) % 4 < 2 ? 9 : 0) + (y % 4 < 2 ? 7 : 0);
+      if (kind === 'hair') shade = 208 + Math.round(25 * (0.5 + 0.5 * Math.sin(x * 1.7 + Math.sin(y * 0.13))));
+      if (kind === 'face') {
+        // Sphere UV u=.25 faces +Z. Greyscale landmarks retain each skin palette.
+        for (const eye of [0.198, 0.302]) {
+          const dx = (u - eye) / 0.021, dy = (v - 0.56) / 0.021;
+          if (dx * dx + dy * dy < 1) shade = 180;
+          if (((u - eye) / 0.009) ** 2 + ((v - 0.56) / 0.018) ** 2 < 1) shade = 48;
+          if (Math.abs(u - eye) < 0.024 && Math.abs(v - 0.607) < 0.008) shade = 105;
+        }
+        if (((u - 0.25) / 0.034) ** 2 + ((v - 0.375) / 0.008) ** 2 < 1) shade = 145;
+      }
+      data.set([shade, shade, shade, 255], (y * width + x) * 4);
+    }
+    const texture = new T.DataTexture(data, width, height); texture.name = `authored-${kind}`;
+    texture.colorSpace = T.SRGBColorSpace; texture.minFilter = T.LinearMipmapLinearFilter;
+    texture.magFilter = T.LinearFilter; texture.generateMipmaps = true; texture.needsUpdate = true;
+    textures.add(texture); return texture;
+  }
+  const surfaceMaps = { cloth: surfaceMap('cloth'), hair: surfaceMap('hair'), face: surfaceMap('face') };
+  function material(color, metalness = 0, roughness = metalness > 0.5 ? 0.38 : 0.8, surface = 'grain') {
+    const key = `${color}:${metalness}:${roughness}:${surface}`;
+    if (!materials.has(key)) materials.set(key, new T.MeshStandardMaterial({ color, metalness, roughness, map: surface === 'skin' ? null : surfaceMaps[surface] || grain }));
     return materials.get(key);
   }
   function part(group, size, position, color, metal = 0, form = 'box', name = '') {
@@ -177,11 +220,16 @@ export function createLotModels() {
   }
   function guest() {
     const g = new T.Group();
-    const p = (size, pos, surface, form = 'cylinder') => part(g, size, pos, 0xffffff, 0, form, surface);
+    const p = (size, pos, surface, form = 'cylinder') => {
+      const mesh = part(g, size, pos, 0xffffff, 0, form, surface);
+      const finish = form === 'head' ? 'face' : surface === 'clothing' || surface === 'trousers' ? 'cloth' : surface;
+      mesh.material = material(0xffffff, 0, surface === 'skin' ? 0.62 : surface === 'hair' ? 0.72 : 0.9, finish);
+      return mesh;
+    };
     p([0.23, 0.29, 0.14], [0, 0.575, 0], 'clothing', 'torso');
     p([0.055, 0.05, 0.055], [0, 0.745, 0], 'skin');
-    p([0.057, 0.065, 0.052], [0, 0.835, 0], 'skin', 'sphere');
-    p([0.058, 0.026, 0.053], [0, 0.874, -0.005], 'hair', 'sphere');
+    p([0.057, 0.065, 0.052], [0, 0.835, 0], 'skin', 'head');
+    p([0.058, 0.026, 0.053], [0, 0.874, -0.005], 'hair', 'hair');
     const limb = (mesh, joint, side, pivot) => {
       mesh.userData.guestLimb = { joint, side, pivot };
       return mesh;
