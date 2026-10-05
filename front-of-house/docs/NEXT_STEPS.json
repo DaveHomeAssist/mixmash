@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Guest buffer reuse correction",
+  "head": "Guest anatomy technical delivery",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 AMD paired evidence passes, but finalbc89 Intel CI rejects ultrawide crowd CPU P95 8.8ms against8.55ms; general tests pass. Buffer reuse removes verified redundant camera/color writes. Dominic passes439 tests/build,20 camera tests,768 exact snapshots and targeted backend,3D,detail,DPR,Festival/reload checks. New final-source CI and hosted qualification remain required; human/device/provenance gates stay open.",
+  "statusReason": "Model15 anatomy and buffer reuse are merged, deployed and hosted-verified in PR122. Both required final-head CI jobs and independent36-window/18-metric raw audit pass; all42 hosted files match before/after full player, offline,3D,Festival,navigation and action/state checks on Dominic. Retain prior failures and unchanged limits. Current native/device targets, final human style/camera/career, physical calibration and original image provenance remain open.",
   "activity30d": {
-    "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
+    "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -31,11 +31,12 @@
     "PR103: fixed Festival sponsor prices and earned headliners delivered at8d715b0, with26 matching files, both-browser player/edge journeys and offline sponsor receipt/journal proof.",
     "PR104: Amphitheater sound/slope delivered at33bdc63 with27 matching hosted files, both-browser room/held journeys and offline signing/cancellation/journal proof.",
     "PR106/PR108: Festival room profile and spatial delays delivered; eight hosted Festival/eight seating journeys,27 source matches and exact offline tower costs/journal at137db3a.",
-    "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected."
+    "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.",
+    "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
   ],
   "nextStep": {
     "title": "Complete remaining art and release acceptance",
-    "why": "Model12 technical delivery and current name screening are recorded. Resolve final realistic art and physical scale, supported phone/low-power evidence, human Book-to-Done acceptance and original image provenance before full launch and search promotion.",
+    "why": "Model15 technical delivery is verified through PR122. Resolve final realistic art and physical scale, current supported native/phone/low-power evidence, human Book-to-Done acceptance and original image provenance before full launch and search promotion.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -75,7 +76,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Device qualification remains open",
-      "detail": "Measured CI limits are implemented under CT-DEC-21. Current model12 has six valid Apple M4 full-HUD windows at59.9439\u201359.9772Hz with no50ms stalls. Supported phone/low-power and human acceptance remain open.",
+      "detail": "Measured CI limits are implemented under CT-DEC-21; model15 final-source paired CI passes independently audited36windows/all18metrics. The six Apple M4 full-HUD windows at59.9439\u201359.9772Hz with no50ms stalls remain frozen model12 sourceb8bfe08 evidence. Current native/device, supported phone/low-power and human acceptance remain open.",
       "files": [
         "front-of-house/ROADMAP.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -152,7 +153,7 @@
       "goal": "A bounded realistic Lot prototype following accepted D1\u2013D5",
       "items": [
         "Preflight documented: source-traced renderer contract, realistic five-subject sample specification and repeatable diagnostic measurement procedure.",
-        "FB-01/FB-07 orbit, four presets, picking, Select, safe removal, parity and recovery are delivered; model12 face/material and walking/queue refinements are live through PR120. Final realistic-style acceptance remains open.",
+        "FB-01/FB-07 orbit, four presets, picking, Select, safe removal, parity and recovery are delivered; model15 guest anatomy, projected detail and buffer reuse are live and hosted-verified through PR122. Final realistic-style acceptance remains open.",
         "Technical scenes for all four rooms and CT-DEC-23 site overview are delivered; final art and physical/human acceptance remain separate."
       ],
       "gate": "Verify asset/source reuse rights and physical scale; fix or reimplement prototype gaps; prove picking/input/engine/save/fallback parity; measure accepted device roster and obtain Dave\u2019s art/camera acceptance."
@@ -272,7 +273,8 @@
     "2026-10-05: CI37278816549 general job failed cumulative homepage transfer1363823>500000; approved HOMEPAGE_BRIEF specifies initial load. First load422208 Chromium/423574 WebKit passes unchanged500000 limit. Corrected landing smoke records later journey bytes and checks cover decode;14 views plus fallback/history/theme/offline/save preservation pass on Dominic. Original artwork and runtime unchanged. Existing model15 renderer pair retained; final-source CI still required.",
     "2026-10-05: audited36-window AMD372788 pass andIntel372800 singleCPU rejection retained. Cache69 removes redundant unchanged camera matrices/colors and animation color writes; same geometry and appearance.20 camera tests and768 exact state snapshots pass onDominic. New paired qualification pending; no limits changed.",
     "Current buffer correction:439 repository tests/build, backend eight views/context/20disposals, actual3D gestures/fallback/reload/settlement, camera-onlydetail/shadow reuse, resolution/DPR and fullFestival venue/legacy/versioned replay checks pass onDominic. FOHshow screenshot inspected. Unchangedgeometry and768 exact presentation snapshots provide behavior-preservation evidence; paired CI still required.",
-    "CI37283959269 stopped at asset drift validation before performance measurement. Regenerated the presentation source digest onDominic and passed asset/reference checks; corrected final-source CI remains required. All prior runtime verification remains byte-identical."
+    "CI37283959269 stopped at asset drift validation before performance measurement. Regenerated the presentation source digest onDominic and passed asset/reference checks; corrected final-source CI remains required. All prior runtime verification remains byte-identical.",
+    "PR122 current-source CI, merge, Pages and full hosted delivery are verified. This supersedes earlier pending engineering statements only. Prior numerical failures and frozen model12 native evidence retain their scope; current human/device/calibration/provenance acceptance remains open."
   ],
   "links": [
     {
@@ -315,8 +317,8 @@
       "localChecks": "Club house lighting passes425 repository tests,40 final room/camera/catalog checks, build, asset/docs checks and unchanged Lot baseline. Seven Chromium/WebKit player journeys cover both deals, optional tower placement/undo, Room/Lighting pages, both themes, compact sizes, classic/3D, ticketing, signing and reload.960 unmarked transitions and120 receipts match12a501a. Offline signing preserves zero light rental and1001380 cash/journal balance. Actual classic/3D night, full HUD, phone and supplied action-client images inspected. CI and hosted release acceptance remain pending.",
       "release": "PR112 CI37252537214 passed; merged355fe9d7a7c6da050979223cc0defd1bbd102df3; Pages built2026-10-05T02:13:26Z. Ten affected hosted runtime files match; complete hosted journeys/offline proof still running."
     },
-    "checkedOn": "2026-10-04",
-    "sourceRevision": "f258625cddb476533bb52d5c3044d552344fb4ec",
+    "checkedOn": "2026-10-05",
+    "sourceRevision": "8e723edcce59318024eec25638a355e9fa7235d5",
     "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
     "controlsCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37181521431",
     "humanAcceptance": "Pending",
@@ -326,11 +328,11 @@
     "knowledgeReviewedRevision": "bcc773b07963ab17afebdd9678615a8c1155c43c",
     "knowledgeReviewedOn": "2026-10-04",
     "decisionReviewedRevision": "c9b64c280a69a80f4b1867b649212b297ae86417",
-    "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1259380379",
+    "productionPagesBuild": "https://api.github.com/repos/DaveHomeAssist/mixmash/pages/builds/1262525936",
     "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE Metal Apple M4 hardware",
     "rendererImplementation": "Explicit Lot preview, source-owned sample, service zones, guest transitions and unchanged-shadow reuse deployed; final art and device acceptance remain open",
-    "artAcceptance": "Pending exact sample review",
-    "deviceAcceptance": "Actual Mac native renderer and attached-display transitions verified; supported phone/low-power roster and human acceptance pending",
+    "artAcceptance": "Final model15 realistic style/camera review remains pending; automated images are not human sign-off.",
+    "deviceAcceptance": "Earlier Mac native renderer/display and model12 sample evidence retain their frozen-source attribution. Current model15 supported-device and phone/low-power qualification remain open; Dominic software browser checks do not establish native performance.",
     "preflightDelivery": "Documentation and diagnostics only; the linked PR owns CI/merge history, and Pages deployment is independently verified at delivery. This sourceRevision identifies reviewed production behavior, not a future renderer release.",
     "diagnosticMeasurements": {
       "runs": 18,
@@ -454,7 +456,7 @@
     },
     "touringIntegratedRelease": "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly.",
     "guestPoseRelease": "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass. Root full hosted player suite, moving/reduced-motion pixel checks and offline sponsor signing/reload pass. Seed4278227298, touring1500, cash/journal/signed receipt1437148. Earlier premature-build byte mismatch retained separately.",
-    "currentReviewedRelease": "51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf",
+    "currentReviewedRelease": "8e723edcce59318024eec25638a355e9fa7235d5",
     "sampleNative": {
       "source": "b8bfe08fe110121c51dafb75eb8efda837e3353a",
       "checkedOn": "2026-10-05",
@@ -487,6 +489,69 @@
       "names": 15,
       "record": "front-of-house/docs/WORLD.md",
       "scope": "All 11 current acts and 4 rooms; bounded returned evidence, related catalog matches retained, no universal uniqueness or legal clearance claim."
+    },
+    "guestAnatomyRelease": {
+      "checkedOn": "2026-10-05",
+      "pr": "https://github.com/DaveHomeAssist/mixmash/pull/122",
+      "head": "9ce8a9ef165075f1e60b393feb767f19ed4761bb",
+      "priorQualifiedHead": "e019f12dd219c8c90ac63efd8f423c2d32108566",
+      "merge": "8e723edcce59318024eec25638a355e9fa7235d5",
+      "ci": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37359157706",
+      "generalTestJob": 111929081559,
+      "rendererJob": 111929081940,
+      "artifactId": 11366478578,
+      "artifactName": "foh-pair-37359157706-1",
+      "artifactZipBytes": 108801,
+      "artifactZipSha256": "022b759d441f73463b562c6428bdde2ee2dc2ad51ff7e697f31b4c5414fe6404",
+      "independentAudit": {
+        "validWindows": 36,
+        "metrics": 18,
+        "allPass": true,
+        "sourceFixtureRawHashesVerified": true,
+        "statisticsRecomputed": true,
+        "baseline": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
+        "ciCpu": "AMD EPYC 7763 64-Core Processor",
+        "scope": "Unchanged-limit paired software renderer regression only; not native60fps, supported phone30fps or human acceptance."
+      },
+      "pagesBuiltAt": "2026-10-05T19:27:12Z",
+      "hosted": {
+        "status": "verified",
+        "runner": "Dominic",
+        "sourceBytesBefore": 42,
+        "qualification": "Software browser and emulated viewports only; no native-performance, physical-device, calibration, final-human or image-rights qualification.",
+        "finishedAt": "2026-10-05T20:12:07.158439+00:00",
+        "sourceBytesAfter": 42,
+        "sourceBeforeAfterIdentical": true,
+        "playerScripts": 12,
+        "threeApplication": "Gestures, inspection, accessible controls, context/module fallback, viewport fit, reload and complete settlement parity passed.",
+        "festival": "Three geometry viewports and eight classic/3D legacy/versioned settlement/reload comparisons passed.",
+        "navigationJourneys": 4,
+        "offline": {
+          "seed": 3786835978,
+          "touringCost": 1500,
+          "net": 225251,
+          "cash": 1225251,
+          "journalParity": true,
+          "signedReceiptParity": true,
+          "renderer3dActiveAfterOfflineSettlement": true
+        },
+        "offlineDelayCost": 1350,
+        "suppliedActionClient": "Two input bursts, actual screenshots and text state inspected; no captured error files.",
+        "controlledFixtureScope": "Four service/departure motion scenarios use local controlled fixtures; the four corresponding client journeys use the hosted URL."
+      },
+      "retainedFailures": [
+        "CI37271315330: six crowd frame metrics failed with36 valid windows.",
+        "CI37274607801: five crowd frame metrics failed with36 valid windows.",
+        "CI37280046410: Intel Xeon Platinum8370C ultrawide crowd CPU P95 8.8ms exceeded8.55ms;36 valid windows.",
+        "CI37283959269: source digest mismatch stopped the corrected candidate before measurement; e019f12 fixed manifest metadata without another runtime edit."
+      ],
+      "acceptance": "Final realistic style/camera, physical calibration, current native/device performance, human career and original image rights remain open.",
+      "postMergeCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37362776702",
+      "postMergeCIConclusion": "success",
+      "ciSyntheticMerge": "cc1dcb8153f46d93afdaabc298ab3ede7df15b29",
+      "sourceTree": "1f2d23e4fc6ac1366fb8986612420bbbefdd12db",
+      "finalHeadCIMergeAndDeliveredTreesIdentical": true,
+      "e019ToFinalHeadChanges": "Homepage catalog/style/script and landing smoke integration only; Front of House runtime, saves, formulas and measurement protocol unchanged."
     }
   },
   "decisionState": {
@@ -640,9 +705,10 @@
           "FOH-F01"
         ],
         "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
-        "status": "in_progress",
+        "status": "technical-delivery-verified-acceptance-open",
         "evidence": [
-          "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
+          "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
+          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
         ],
         "slices": [
           {
@@ -737,7 +803,7 @@
           {
             "id": "FOH-V01e",
             "scope": "Shared clothed guest anatomy refinement under CT-DEC-30",
-            "status": "distance-detail-correction-under-verification",
+            "status": "technical-delivery-verified-acceptance-open",
             "evidence": [
               "Source-owned torso, sleeves, forearm and trouser profiles; reference height, sixteen batches, four textures, original joint pivots, routes and simulation preserved. Initial close rendering inspected; further current-source validation and delivery required.",
               "435 repository tests, build, asset hashes, generated references and unchanged balance pass. Nineteen camera/model tests include coherent joint bounds, finite rendered normals, shared geometry, fixed height and bounded vertex cost. Backend eight views/context recovery/20 disposals and actual3D gestures/picking/fallback/reload/settlement parity pass. Moving pixels differ; reduced-motion pixels remain identical. Close view and all eight actual HUD day/show views inspected; full player regression, current native measurements and release proof still required.",
@@ -749,11 +815,11 @@
               "Model15 passes439 repository tests/build,20 geometry/camera checks, backend recovery/disposal, actual3D controls/reload/settlement parity, camera-only batching and DPR/resolution checks on Dominic. Mixed near/far counts, distinct colors and transforms pass.72px front/angled/side images have no unmatched silhouette beyond2px and were visually inspected; close full-detail and supplied action-client captures were inspected. Six short diagnostic windows are valid but do not qualify sustained performance. Festival/navigation and new full paired CI remain pending.",
               "The complete Festival geometry/interaction and eight classic/3D legacy/versioned settlement/reload cases pass on model15, including the offset second-stage crowd. All four site-navigation journeys pass. Original mixed-test setup failure was corrected to exercise actual near/far membership without changing thresholds. Required new final-head paired CI and hosted qualification remain open.",
               "Integrated homepage covers at62fd6e1 preserve the tested model15 runtime. Dominic repeats439 tests/build and validates assets, generated references and unchanged Lot baseline. Required cover-file catalog metadata is regenerated; final-head CI and hosted delivery remain pending.",
-              "Model15 audit372788 AMD passes all18metrics; final372800 Intel fails onlyultrawidecrowdCPUp95 8.8>8.55ms, generalchecks pass. Cache69 eliminates measured redundant bufferwrites;20camera tests and768 exact prior/corrected presentationstates pass onDominic. Full current-source qualification pending."
+              "Model15 audit372788 AMD passes all18metrics; final372800 Intel fails onlyultrawidecrowdCPUp95 8.8>8.55ms, generalchecks pass. Cache69 eliminates measured redundant bufferwrites;20camera tests and768 exact prior/corrected presentationstates pass onDominic. Full current-source qualification pending.",
+              "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
             ],
             "remaining": [
-              "Complete current buffer-reuse browser checks, unchanged-limit final-source paired CI and hosted delivery; retain all earlier valid results.",
-              "Final realistic style/camera acceptance, physical calibration and supported phone/low-power plus human career acceptance."
+              "Final realistic style/camera acceptance, physical calibration, current native/device and supported phone/low-power performance plus human career acceptance."
             ]
           }
         ]
@@ -840,7 +906,8 @@
             "summary": "CI37203818090, merge36bbbf3, Pages built13:13:51Z; eight deployed sources match, hosted resolution/lifecycle and full DPR2 client settlement parity pass."
           },
           "PR81 density evidence delivered after CI37205050774, mergebc5ed37 and Pages13:35:36Z; four files match. Native and CI measurements retain their own frozen source6ed7b7c.",
-          "Attempt1 on Intel Xeon Platinum 8573C:2560x720 empty CPU p95 2.0ms >1.7ms; crowd frame p95 1000ms >958.25ms. One diagnostic repeat on AMD EPYC 7763 passed all six groups. No source/protocol/limit changes; hardware causality is unproven. All 108 windows across initial, rejected and repeated pairs independently audited."
+          "Attempt1 on Intel Xeon Platinum 8573C:2560x720 empty CPU p95 2.0ms >1.7ms; crowd frame p95 1000ms >958.25ms. One diagnostic repeat on AMD EPYC 7763 passed all six groups. No source/protocol/limit changes; hardware causality is unproven. All 108 windows across initial, rejected and repeated pairs independently audited.",
+          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
@@ -1490,7 +1557,8 @@
         "status": "acceptance-open",
         "evidence": [
           "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
-          "2026-10-05 name screening covers all 11 current acts and 4 rooms in WORLD.md; retain related-name proximity and bounded-search limitations. Original 40 raster image origins/licences remain unrecorded; no public promotion or asset replacement acceptance inferred."
+          "2026-10-05 name screening covers all 11 current acts and 4 rooms in WORLD.md; retain related-name proximity and bounded-search limitations. Original 40 raster image origins/licences remain unrecorded; no public promotion or asset replacement acceptance inferred.",
+          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
         ],
         "slices": [
           {
