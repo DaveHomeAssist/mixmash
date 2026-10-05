@@ -1,5 +1,16 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04 — Guide aligned with delivered Club lighting
+
+Reconciled the guide delivery with355fe9d without changing its runtime. Documented included Fathom Hall lights, suggested-layout behavior, optional tower costs, portable PA replacement and preserved older booking terms. Source validation, final-head CI and deployed document readback are tracked separately.
+
+## 2026-10-04: Included Club lighting
+
+FOH-V02b12 and CT-DEC-25 add optional house lighting to new Club bookings. Suggested layout omits the hired tower; Room and Lighting pages disclose included250-person sound, pillar obstructions and optional$175/8kW tower. Existing tower layouts retain exact receipts and unmarked saves retain their rules. Two additional integration tests cover house/portable/owned rigs, no duplicate bonus, both deals/ticket plans, cash/journal/reload and malformed source recovery. Classic and3D show lighting now follows the included rig without requiring a placed tower. Club house lighting passes425 repository tests,40 final room/camera/catalog checks, build, asset/docs checks and unchanged Lot baseline. Seven Chromium/WebKit player journeys cover both deals, optional tower placement/undo, Room/Lighting pages, both themes, compact sizes, classic/3D, ticketing, signing and reload.960 unmarked transitions and120 receipts match12a501a. Offline signing preserves zero light rental and1001380 cash/journal balance. Actual classic/3D night, full HUD, phone and supplied action-client images inspected. CI and hosted release acceptance remain pending.
+
+Curfew full regression resumed at the screenshot timeout: the unchanged food-vendor rail now passes all six journeys, and sanitation passes all seven. Remaining rails and PR110 checks are running. This records the failed capture and successful retry without changing a gameplay assertion or test timeout.
+
+
 ## 2026-10-04: Loam Shell technical scene
 
 Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.

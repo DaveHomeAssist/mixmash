@@ -15,7 +15,7 @@ const finish=s=>act(s,{type:'respond',responseId:[...D.INCIDENTS[s.show.incident
 test('room profile source is strict, versioned and ignores derived imported coverage',()=>{
  assert.deepEqual(roomProfileTerms({version:1,soundCapacity:1e9},'amphitheater'),{version:1});
  for(const raw of [null,[],{version:0},{version:2}])assert.throws(()=>roomProfileTerms(raw,'amphitheater'),TypeError);
- for(const id of ['lot','club','missing','toString','__proto__'])assert.throws(()=>roomProfileTerms({version:1},id),TypeError);
+ for(const id of ['lot','missing','toString','__proto__'])assert.throws(()=>roomProfileTerms({version:1},id),TypeError);
  assert.equal(roomProfileFor({id:'amphitheater'}),null);assert.equal(roomProfileFor({id:'toString',profile:{version:1}}),null);
  assert.ok(Object.isFrozen(profile));assert.ok(Object.isFrozen(profile.obstacleHeights));
 });
@@ -171,5 +171,45 @@ test('delay production is charged once for all deals and survives paid reload wi
   for(const state of [s,paid,ended,done])assert.deepEqual(E.settlementFor(E.normalizeState(state)),E.settlementFor(state));
   let next=act(done,{type:'nextShow'});next=act(next,{type:'chooseVenue',venueId:'club'});next=E.normalizeState(next);next=act(next,{type:'chooseVenue',venueId:'festival'});assert.equal(next.venue.objects.filter(o=>o.type==='delay').length,2);assert.equal(next.venue.profile,undefined);
   next=act(next,{type:'chooseDeal',artistId:E.offersFor(next)[0],secondId:'hollow-census',deal:'guarantee',stagePolicy:1,festivalPolicy:1,roomPolicy:1});assert.equal(E.evaluateVenue(next.venue).delayActive,true);
+ }
+});
+
+function club(marked=true,deal='guarantee',lights=false){
+ let s=act(E.createGame(3,{mode:'sandbox'}),{type:'enableEquipment'});s=act(s,{type:'chooseVenue',venueId:'club'});
+ const artistId=E.offersFor(s).find(id=>E.termsFor(id,0).doorOk);
+ s=act(s,{type:'chooseDeal',artistId,deal,...(marked?{roomPolicy:1}:{})});
+ return act(s,{type:'setLayout',objects:D.CLUB_STARTER.filter(o=>lights||o.type!=='lights')});
+}
+test('Club house lights are included with no duplicate bonus or change to pillar sightlines',()=>{
+ const house=club(),tower=club(true,'guarantee',true),legacy=club(false),oldLit=club(false,'guarantee',true);
+ assert.deepEqual(roomProfileTerms({version:1,houseLights:false,soundCapacity:9999},'club'),{version:1});
+ for(const s of [house,tower]){
+  const v=E.evaluateVenue(s.venue),unmarked={...s.venue};delete unmarked.profile;
+  assert.equal(v.houseLights,true);assert.equal(v.lights,1);assert.equal(v.soundCapacity,250);assert.equal(v.capacity,360);
+  assert.deepEqual(E.sightlineTiles(s.venue),E.sightlineTiles(unmarked));
+ }
+ assert.equal(E.evaluateVenue(tower.venue).watts-E.evaluateVenue(house.venue).watts,8000);
+ assert.equal(E.upfrontFor(tower)-E.upfrontFor(house),175);assert.equal(E.upfrontFor(house),E.upfrontFor(legacy));
+ const lit=E.settlementFor(finish(open(house))),rented=E.settlementFor(finish(open(tower))),dark=E.settlementFor(finish(open(legacy)));
+ assert.equal(lit.costs.lights,0);assert.equal(rented.costs.lights,175);assert.equal(lit.parts.sound,rented.parts.sound);assert.equal(dark.parts.sound,lit.parts.sound*D.NO_LIGHTS_MULT);
+ assert.deepEqual(E.settlementFor(finish(open(oldLit))),rented,'marked layout with existing tower keeps exact original receipt');
+ for(const[type,tier]of [['pa-s','S'],['pa-m','M']]){
+  const s=act(house,{type:'place',object:{type,x:6,y:0,rot:0}}),v=E.evaluateVenue(s.venue);
+  assert.equal(v.housePa,false);assert.equal(v.houseLights,true);assert.equal(v.soundCapacity,D.PA_COVERAGE[tier]);assert.equal(E.upfrontFor(s)-E.upfrontFor(house),D.PA_RENTAL[tier]);
+ }
+ let owned=act(act(house,{type:'back'}),{type:'equipment',command:{id:'club_buy',kind:'buy',family:'small-pa'}});
+ owned=act(owned,{type:'chooseDeal',artistId:house.booking.artistId,deal:'guarantee',roomPolicy:1});
+ owned=act(owned,{type:'setLayout',objects:[...house.venue.objects,{type:'pa-s',x:6,y:0,rot:0}]});owned=act(owned,{type:'assignEquipment',assetId:'pa_1'});
+ const receipt=E.settlementFor(finish(open(owned)));assert.equal(receipt.costs.pa,0);assert.equal(receipt.costs.lights,0);assert.equal(receipt.costs.equipmentOperation,20);
+});
+test('Club lighting survives deals, ticket plans, paid replay and source recovery without rewriting cash',()=>{
+ for(const deal of ['guarantee','door'])for(const plan of ['direct','platform']){
+  const base=club(true,deal);let promo=act(base,{type:'confirmBuild'});promo=act(promo,{type:'setPromotion',ticketing:{version:1,plan}});
+  const paid=act(promo,{type:'confirmPromotion'}),ended=finish(paid),r=E.settlementFor(ended),done=act(ended,{type:'acceptSettlement'});
+  assert.equal(r.costs.lights,0);assert.equal(done.cash,base.cash+r.net);assert.equal(E.careerLedgerFor(done).balance,done.cash);
+  for(const s of [base,promo,paid,ended,done]){const loaded=E.normalizeState(s);assert.deepEqual(loaded.venue.profile,{version:1});assert.deepEqual(E.settlementFor(loaded),E.settlementFor(s));}
+  for(const profile of [null,[],{version:2}]){const loaded=E.normalizeState({...done,venue:{...done.venue,profile}});assert.equal(loaded.cash,done.cash);assert.deepEqual(loaded.history,done.history);assert.equal(loaded.venue.profile,undefined);assert.match(loaded.roomNotice,/paid cash and history/);}
+  const injected=E.normalizeState({...done,venue:{...done.venue,profile:{version:1,houseLights:false,soundCapacity:9999}}});assert.deepEqual(E.settlementFor(injected),r);
+  let next=act(done,{type:'nextShow'});next=act(next,{type:'chooseVenue',venueId:'lot'});assert.equal(next.venue.profile,undefined);next=act(E.normalizeState(next),{type:'chooseVenue',venueId:'club'});assert.deepEqual(next.venue.objects,base.venue.objects);assert.equal(next.venue.profile,undefined);
  }
 });

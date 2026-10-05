@@ -307,6 +307,11 @@ export const VENUE_ORDER = ['lot', 'club', 'amphitheater', 'festival'];
 
 // Authored logical heights, not calibrated venue dimensions. Applied only to marked rooms.
 export const ROOM_PROFILES = Object.freeze({
+  club: Object.freeze({
+    version: 1, venueId: 'club', label: 'House system', soundCapacity: PA_COVERAGE.M,
+    houseLights: true, legacySightlines: true,
+    lawnStart: 0, lawnEnd: 0, risePerTile: 0,
+  }),
   amphitheater: Object.freeze({
     version: 1, venueId: 'amphitheater', label: 'Shell system', soundCapacity: 700,
     lawnStart: 10, lawnEnd: 16, risePerTile: 0.18, sightDegrees: 120, sightRange: 40,

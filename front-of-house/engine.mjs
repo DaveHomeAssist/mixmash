@@ -390,7 +390,7 @@ function sightTileSets(objects, occupied, spec, profile = null) {
   const blocked = new Set();
   const stage = objects.find((o) => o.type === 'stage');
   if (!stage) return { clear, blocked };
-  if (profile) return roomSightlines(profile, {
+  if (profile && !profile.legacySightlines) return roomSightlines(profile, {
     grid: spec.grid, occupied, stage: stageGeometry(stage),
     obstacles: objects.filter(o => D.OBJECT_TYPES[o.type].blocksSight).map(o => ({ ...o, ...dims(o), height: profile.obstacleHeights[o.type] ?? 1.2 })),
   });
@@ -463,6 +463,11 @@ export function evaluateVenue(venue) {
   };
   const profile = roomProfileFor(venue);
   if (profile) stats.soundCapacity = placedPa ? D.PA_COVERAGE[stats.paTier] : profile.soundCapacity;
+  if (profile?.houseLights) {
+    stats.houseLights = true;
+    stats.rentedLights = count('lights');
+    stats.lights = 1;
+  }
   const sight = sightTileSets(accepted, occupied, spec, profile);
   stats.clearTiles = sight.clear.size;
   stats.blockedTiles = sight.blocked.size;
@@ -608,7 +613,7 @@ export function evaluateShow(inputs) {
     lot: typeof v.rental === 'number' ? v.rental : D.LOT_RENTAL,
     permit: typeof v.permitFee === 'number' ? v.permitFee : D.PERMIT,
     pa: inputs.equipment || v.housePa ? 0 : (v.paTier ? D.PA_RENTAL[v.paTier] : 0),
-    lights: v.lights ? D.LIGHTS_RENTAL : 0,
+    lights: (v.rentedLights ?? v.lights) ? D.LIGHTS_RENTAL : 0,
     bars: v.bars * D.BAR_SETUP,
     restrooms: v.restrooms * D.RESTROOM_UNIT,
     fence: D.FENCE_KIT,

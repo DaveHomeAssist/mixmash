@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House guide: document delivered Club house lighting and preserved older booking terms.
+
 - Front of House: add the player guide and complete audited native camera-fit comparison; preserve the open full-game performance and device acceptance gates.
 
 - Front of House: outdoor curfew ends new booked sets at the seeded minute or five minutes later on appeal; attendance, bar income, playback and signed Set time receipts share the same rule. Legacy saves retain their prior math.
