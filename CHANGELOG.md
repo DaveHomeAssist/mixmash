@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: reconcile the deployed model12 sample, complete live regression/offline proof, retained Intel performance rejection and AMD diagnostic pass, remaining acceptance gates and current act/room name screening.
+
 - Front of House: record six audited native full-HUD windows for the refined sample and reconcile its actual-game review and remaining device/human acceptance.
 - Front of House: refine the authored guest face/hair and fabric, skin and metal surfaces without adding crowd batches or changing gameplay; reconcile delivered touring, career, performance and navigation records.
 - Front of House: representative 3D guests walk with restrained limb motion and rest while queued; reduced motion stays static, with unchanged routes, counts, geometry batches and settlement rules.

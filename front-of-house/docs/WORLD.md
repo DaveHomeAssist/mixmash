@@ -65,3 +65,28 @@ A web search for each name in quotes, with "band", before it goes into the game.
 | 2026-10-01 | Fathom Hall | No venue by that name | Used (the Club) |
 | 2026-10-01 | Loam Shell | No venue by that name | Used (the Amphitheater) |
 | 2026-10-01 | Split Acre | No venue or act by that name | Used (the Festival Grounds) |
+
+
+## Current name screening, 2026-10-05
+
+Quoted-name searches paired with band or venue terms were reviewed for the eleven current acts and four rooms. These checks describe the returned evidence, not universal name uniqueness or legal clearance. Historical checks above remain unchanged.
+
+| Date | Name | Returned evidence | Disposition |
+| --- | --- | --- | --- |
+| 2026-10-05 | Gravel Hymnal | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Sodium Arcade | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Juniper Switchboard | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Salt Ledger | [Salt Ledger](https://music.amazon.com/albums/B0GXBSSTDG) is a single by D ZOOM LINE; accounting and book matches concern other domains. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Pallet Chorus | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Tin Relay | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Gutter Census | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Hollow Census | [Hollow Census](https://music.amazon.com/albums/B0GZ368TZH) is an album by Deadweight Crown. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Amber Turnout | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Paper Voltage | [Paper Voltage](https://music.amazon.com/albums/B0GQXRXGXJ) is a single by Megan Wilson. [Paper Voltage Dreamgsju](https://music.amazon.com/artists/B0GVDSFR2Z/paper-voltage-dreamgsju) is a related full artist name, differing from the fictional act. | Retain current fictional name; exact same-name act not established by this bounded check. Related-name proximity remains recorded for release review. |
+| 2026-10-05 | North Kettle | Returned matches concern kettle-corn vendors or Kettle Moraine places; no exact same-name act identified among relevant returned titles. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Oak St. Lot | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Fathom Hall | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Loam Shell | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+| 2026-10-05 | Split Acre | No exact same-name act or venue identified in the returned titles and links. | Retain current fictional name; exact same-name act not established by this bounded check. |
+
+Music classifications use indexed primary catalog entries. Direct catalog opens returned cache misses; no successful direct live-page fetch is claimed. Empty candidate lists do not prove absence outside this search. No runtime name, artist ID or save field changes follow from this refresh.

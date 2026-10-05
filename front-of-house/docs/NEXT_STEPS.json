@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Refined 3D sample with current native evidence",
+  "head": "Refined 3D sample deployed; acceptance gates remain",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model12 has434 passing local repository tests, exact3D gameplay/recovery checks, eight actual review views and six valid current native Mac windows near60Hz with no50ms stalls. PR120 owns integration and hosted delivery evidence. Final visual/physical calibration, supported low-power/phone and human career acceptance remain open.",
+  "statusReason": "PR120 is merged and live-verified at 51a8b96: 42 hosted files, complete browser player suite, motion/reduced-motion and 3D offline settlement checks pass. The original Intel performance rejection and unchanged-source AMD diagnostic pass are both retained. Final realistic art/physical calibration, supported phone/low-power and human career acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -34,12 +34,12 @@
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected."
   ],
   "nextStep": {
-    "title": "Complete release acceptance for the refined sample",
-    "why": "Use PR120 for current CI/Pages/hosted delivery. Retain exact-source sample review and native measurements; close final visual, physical scale, supported low-power/phone and human career evidence before promotion.",
+    "title": "Complete remaining art and release acceptance",
+    "why": "Model12 technical delivery and current name screening are recorded. Resolve final realistic art and physical scale, supported phone/low-power evidence, human Book-to-Done acceptance and original image provenance before public promotion.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
-    "blockedBy": "No outstanding D1\u2013D11 choices. Physical-device and human visual evidence remain separate acceptance work; archive content with unknown rights will not be copied."
+    "blockedBy": "D1\u2013D11 are settled. Final art/camera acceptance requires Dave; supported physical devices and original image provenance are not established by browser automation."
   },
   "findings": [
     {
@@ -152,7 +152,7 @@
       "goal": "A bounded realistic Lot prototype following accepted D1\u2013D5",
       "items": [
         "Preflight documented: source-traced renderer contract, realistic five-subject sample specification and repeatable diagnostic measurement procedure.",
-        "FB-01/FB-07 orbit, four presets, picking, Select, safe removal, parity and recovery are delivered; sample surface refinement is under verification.",
+        "FB-01/FB-07 orbit, four presets, picking, Select, safe removal, parity and recovery are delivered; model12 face/material and walking/queue refinements are live through PR120. Final realistic-style acceptance remains open.",
         "Technical scenes for all four rooms and CT-DEC-23 site overview are delivered; final art and physical/human acceptance remain separate."
       ],
       "gate": "Verify asset/source reuse rights and physical scale; fix or reimplement prototype gaps; prove picking/input/engine/save/fallback parity; measure accepted device roster and obtain Dave\u2019s art/camera acceptance."
@@ -450,7 +450,7 @@
     },
     "touringIntegratedRelease": "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly.",
     "guestPoseRelease": "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass. Root full hosted player suite, moving/reduced-motion pixel checks and offline sponsor signing/reload pass. Seed4278227298, touring1500, cash/journal/signed receipt1437148. Earlier premature-build byte mismatch retained separately.",
-    "currentReviewedRelease": "bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd",
+    "currentReviewedRelease": "51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf",
     "sampleNative": {
       "source": "b8bfe08fe110121c51dafb75eb8efda837e3353a",
       "checkedOn": "2026-10-05",
@@ -464,7 +464,26 @@
       "scope": "Apple M4/Metal native5120x1286 DPR1 running-Lot full HUD; exact source/raw/fixture hashes and engine-state replay. No phone/low-power or human acceptance."
     },
     "sampleReleasePR": "https://github.com/DaveHomeAssist/mixmash/pull/120",
-    "sampleInitialRegression": "Renderer regression job111609049469 in CI37261347354 passed forb8bfe08; combined final-head CI is tracked by PR120."
+    "sampleInitialRegression": "Renderer regression job111609049469 in CI37261347354 passed forb8bfe08; combined final-head CI is tracked by PR120.",
+    "sampleRelease": {
+      "checkedOn": "2026-10-05",
+      "merge": "51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf",
+      "pr": "https://github.com/DaveHomeAssist/mixmash/pull/120",
+      "ci": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37263372266",
+      "head": "bab8f0e4a1f19311d2d6df98e67bf4c43c32048e",
+      "generalTestJob": 111615017900,
+      "rendererRetryJob": 111622152804,
+      "pagesBuiltAt": "2026-10-05T05:28:24Z",
+      "hosted": "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
+      "retainedFailure": "Attempt1 on Intel Xeon Platinum 8573C:2560x720 empty CPU p95 2.0ms >1.7ms; crowd frame p95 1000ms >958.25ms. One diagnostic repeat on AMD EPYC 7763 passed all six groups. No source/protocol/limit changes; hardware causality is unproven. All 108 windows across initial, rejected and repeated pairs independently audited.",
+      "deviceAndHumanAcceptance": "Not established. Native sample evidence keeps frozen source b8bfe08 attribution; physical phone and human acceptance remain separate."
+    },
+    "currentNameScreening": {
+      "checkedOn": "2026-10-05",
+      "names": 15,
+      "record": "front-of-house/docs/WORLD.md",
+      "scope": "All 11 current acts and 4 rooms; bounded returned evidence, related catalog matches retained, no universal uniqueness or legal clearance claim."
+    }
   },
   "decisionState": {
     "D1": {
@@ -617,8 +636,10 @@
           "FOH-F01"
         ],
         "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
-        "status": "in_progress",
-        "evidence": [],
+        "status": "technical-delivery-verified-acceptance-open",
+        "evidence": [
+          "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
+        ],
         "slices": [
           {
             "id": "FOH-V01a",
@@ -645,7 +666,7 @@
           {
             "id": "FOH-V01b",
             "scope": "3D Lot adapter and five-subject realistic sample (FB-01)",
-            "status": "in_progress",
+            "status": "technical-delivery-verified-acceptance-open",
             "evidence": [
               {
                 "stage": "test",
@@ -674,12 +695,11 @@
                 "result": "pass",
                 "checkedAt": "2026-10-04T10:42:14.147Z",
                 "summary": "lot-sample-2 manifest records nine source-owned samples, measured bounds and source digests. 231 repository tests and backend/game smoke pass: authored heights/eyes, scene cues, constant instanced draw calls, reduced motion and full settlement parity."
-              }
+              },
+              "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
             ],
             "remaining": [
-              "Close-up realistic art refinement and walking/queue poses",
-              "Statistical performance and available-host measurements",
-              "Physical calibration, device and human visual acceptance"
+              "Further realistic art refinement and final style/camera review; physical scale/operator-eye calibration and supported-device acceptance. Current figures remain simplified sample candidates."
             ],
             "backendPR": "https://github.com/DaveHomeAssist/mixmash/pull/63",
             "integrationPR": "https://github.com/DaveHomeAssist/mixmash/pull/64"
@@ -690,20 +710,24 @@
             "status": "verified-delivered",
             "evidence": [
               "433 repository tests, build and generated assets/references pass. Seventeen camera/model checks include coherent hip/shoulder attachments, ground contact, representative-space containment, unchanged batch/count limits, input immutability and static reduced motion. Actual renderer moving pixels differ and reduced-motion frames are identical; actual day/night captures inspected. Full3D application gestures/recovery/fallback/reload and exact settlement parity pass. Final player regression, CI and hosted acceptance remain separate.",
-              "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass."
+              "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass.",
+              "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
             ],
             "remaining": [
-              "Final player regression and exact-head CI/Pages/hosted acceptance",
-              "Final visual review and physical-device performance"
+              "Final realistic-style and camera review, physical scale/operator-eye calibration and supported-device acceptance. Simplified sample figures are not final photorealistic art."
             ]
           },
           {
             "id": "FOH-V01d",
             "scope": "Source-authored guest face, hair and surface refinement",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "FOH-V01d brief and CT-DEC-29 define the bounded slice. Shared sculpted geometry, deterministic mipmapped facial/hair/fabric maps and distinct metal response preserve sixteen guest batches, palettes, poses and simulation. Close-view capture inspected; final regression, CI and hosted verification pending.",
-              "All434 repository tests,18 camera/model cases, actual3D full-show parity/recovery and eight-view/20-disposal checks pass. Actual game eight-view/light review and orbit recording retained privately. Six native full-HUD windows atb8bfe08 pass independent audit near60Hz with no50ms stalls. PR120 CI/hosted delivery pending."
+              "All434 repository tests,18 camera/model cases, actual3D full-show parity/recovery and eight-view/20-disposal checks pass. Actual game eight-view/light review and orbit recording retained privately. Six native full-HUD windows atb8bfe08 pass independent audit near60Hz with no50ms stalls. PR120 CI/hosted delivery pending.",
+              "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
+            ],
+            "remaining": [
+              "Final realistic-style and camera review, physical scale/operator-eye calibration and supported-device acceptance. Simplified sample figures are not final photorealistic art."
             ]
           }
         ]
@@ -789,12 +813,14 @@
             "checkedAt": "2026-10-04T13:16:11.385219+00:00",
             "summary": "CI37203818090, merge36bbbf3, Pages built13:13:51Z; eight deployed sources match, hosted resolution/lifecycle and full DPR2 client settlement parity pass."
           },
-          "PR81 density evidence delivered after CI37205050774, mergebc5ed37 and Pages13:35:36Z; four files match. Native and CI measurements retain their own frozen source6ed7b7c."
+          "PR81 density evidence delivered after CI37205050774, mergebc5ed37 and Pages13:35:36Z; four files match. Native and CI measurements retain their own frozen source6ed7b7c.",
+          "Attempt1 on Intel Xeon Platinum 8573C:2560x720 empty CPU p95 2.0ms >1.7ms; crowd frame p95 1000ms >958.25ms. One diagnostic repeat on AMD EPYC 7763 passed all six groups. No source/protocol/limit changes; hardware causality is unproven. All 108 windows across initial, rejected and repeated pairs independently audited."
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
           "Supported phone/low-power qualification and sustained full-HUD performance acceptance.",
-          "Physical calibration and human acceptance; frozen native evidence does not qualify future sample revisions."
+          "Physical calibration and human acceptance; frozen native evidence does not qualify future sample revisions.",
+          "Investigate cross-runner performance variability; the accepted diagnostic repeat does not erase the retained Intel rejection."
         ],
         "comparison": "Partial run at a6b1767: seven valid windows, eighth interrupted when the process stopped. Retained separately; not a completed 18-run optimized baseline.",
         "integration": "Shadow invalidation follows actual instance buffers; paused queues and a lone worker are covered. Existing game and service-crowd parity rails pass. Production departure core preserved; performance tests run separately in CI.",
@@ -1436,7 +1462,10 @@
         ],
         "doneWhen": "Provenance, recovery, career, art/camera and device evidence meet release checks; promotion only after those gates are satisfied.",
         "status": "acceptance-open",
-        "evidence": [],
+        "evidence": [
+          "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
+          "2026-10-05 name screening covers all 11 current acts and 4 rooms in WORLD.md; retain related-name proximity and bounded-search limitations. Original 40 raster image origins/licences remain unrecorded; no public promotion or asset replacement acceptance inferred."
+        ],
         "slices": [
           {
             "id": "FOH-L01a",

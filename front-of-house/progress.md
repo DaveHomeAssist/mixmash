@@ -1,6 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-05: Deployed sample and release evidence reconciliation
+
+PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md. Full suite coverage includes core controls, live services, food, sanitation, research, equipment, ticketing, held bookings, seating, Festival stages and curfew. The controlled crowd-motion subchecks use local fixtures; hosted client journeys are identified separately. Current name screening covers all fifteen act/room names and retains related catalog matches and search limitations. No runtime, economy or save changes accompany this record refresh. Final realistic-style, physical scale, phone/low-power, human career and legacy image provenance gates remain open.
+
+Earlier pending statements below are historical checkpoints superseded only where explicit later delivery evidence applies.
+
 ## 2026-10-05: Combined sample evidence delivery
 
 Preserved the concurrentbe34a18 correction to the delivered touring slice's remaining-evidence field and integrated native evidence32bc302 into the same PR120. Runtime remains byte-identical tob8bfe08, so the six native windows and review captures retain their original source attribution. The initial renderer regression job111609049469 passed in CI37261347354; final combined-head checks remain independently required. The old watch process was absent after interruption and was not treated as a running merge. This combined delivery avoids publishing runtime and its frozen native report in separate releases.
