@@ -16,6 +16,10 @@ Integrated committed delay preview52b9fdd and complete-career verification802b3c
 
 PR113 passed CI37253221986 and merged7908a67440d9958054554e686327362f3c4ce5e5 at02:24:41Z; Pages built02:25:05Z. Hosted tier report, simulator, test, README and catalog match the merged source. This report release does not establish human tier acceptance.
 
+## 2026-10-04: Touring compact CI correction
+
+Linux CI37255270879 found a9px overflow in the320×256 Deals window after the five full Chromium journeys passed. The explanations now use shorter complete statements with unchanged terms. Separately, actual3D phone screenshot review found the navigation inset clipping the meters; the second row now uses the full available width, and the phone smoke explicitly checks all three labels/values. No assertion or timeout was relaxed. Fresh local and CI checks are required before merge.
+
 ## 2026-10-04: Festival touring player verification
 
 Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending.
