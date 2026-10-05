@@ -28,6 +28,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-22](#ct-dec-22-fixed-scenery-editing-and-legacy-compatibility) | Fixed scenery editing and legacy compatibility | Accepted engineering policy |
 | [CT-DEC-28](#ct-dec-28-representative-guest-poses) | Restrained walking and queue poses using existing representative actors | Accepted presentation policy |
 | [CT-DEC-29](#ct-dec-29-source-authored-sample-surfaces) | Source-authored guest faces and distinct surface response | Accepted presentation policy |
+| [CT-DEC-30](#ct-dec-30-source-authored-guest-anatomy) | Shared clothed guest anatomy refinement | Accepted presentation policy |
 
 ## CT-DEC-01: Core scope
 
@@ -566,3 +567,8 @@ Moving service representatives use a restrained opposing hip/shoulder gait; queu
 ## CT-DEC-29: Source-authored sample surfaces
 
 **Accepted 2026-10-04 by Codex under Dave's CT-DEC-19 delegated authority.** Advance the existing realistic Lot sample with bounded shared head/hair geometry and deterministic face, hair and fabric maps. Preserve guest batch counts, palettes, limb joints, representative limits, simulation and saves. Use smoother metal and distinct cloth/skin response. No downloaded assets or new dependencies are needed. This delivers a reviewable sample refinement under FOH-V01d; it does not substitute for physical calibration, device qualification or Dave's final art/camera acceptance.
+
+
+## CT-DEC-30: Source-authored guest anatomy
+
+**Accepted 2026-10-05 by Codex under Dave's CT-DEC-19 delegated authority.** Refine the existing guest silhouette with shaped chest/waist/shoulders, rounded sleeve caps and tapered arms/legs. Keep sixteen shared part batches, all existing animation pivots, reference height, palette, ground contact and representative limits. Use source-owned indexed geometry with a bounded vertex budget; no new textures, imported art or dependencies. This addresses the concrete model12 close-view anatomy gap under FOH-V01e without changing routes, simulation or saves. Final realistic style, physical calibration and supported-device acceptance remain separate.

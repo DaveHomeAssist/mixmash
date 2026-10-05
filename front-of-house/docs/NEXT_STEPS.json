@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Refined 3D sample deployed; acceptance gates remain",
+  "head": "Guest anatomy refinement under verification",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "PR120 is merged and live-verified at 51a8b96: 42 hosted files, complete browser player suite, motion/reduced-motion and 3D offline settlement checks pass. The original Intel performance rejection and unchanged-source AMD diagnostic pass are both retained. Final realistic art/physical calibration, supported phone/low-power and human career acceptance remain open.",
+  "statusReason": "PR120 technical delivery is verified; model13 now addresses the observed barrel torso and straight limb silhouettes. Shared geometry, sixteen batches and original joints are preserved. Current-source browser/performance, CI and hosted proof remain required alongside final art, physical-device, human career and provenance gates.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -636,7 +636,7 @@
           "FOH-F01"
         ],
         "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
-        "status": "technical-delivery-verified-acceptance-open",
+        "status": "in_progress",
         "evidence": [
           "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
         ],
@@ -728,6 +728,19 @@
             ],
             "remaining": [
               "Final realistic-style and camera review, physical scale/operator-eye calibration and supported-device acceptance. Simplified sample figures are not final photorealistic art."
+            ]
+          },
+          {
+            "id": "FOH-V01e",
+            "scope": "Shared clothed guest anatomy refinement under CT-DEC-30",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Source-owned torso, sleeves, forearm and trouser profiles; reference height, sixteen batches, four textures, original joint pivots, routes and simulation preserved. Initial close rendering inspected; further current-source validation and delivery required.",
+              "435 repository tests, build, asset hashes, generated references and unchanged balance pass. Nineteen camera/model tests include coherent joint bounds, finite rendered normals, shared geometry, fixed height and bounded vertex cost. Backend eight views/context recovery/20 disposals and actual3D gestures/picking/fallback/reload/settlement parity pass. Moving pixels differ; reduced-motion pixels remain identical. Close view and all eight actual HUD day/show views inspected; full player regression, current native measurements and release proof still required."
+            ],
+            "remaining": [
+              "Current-source runtime, performance, CI and hosted verification.",
+              "Final realistic style, physical calibration, supported-device and human acceptance."
             ]
           }
         ]

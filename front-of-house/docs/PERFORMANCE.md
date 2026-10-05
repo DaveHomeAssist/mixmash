@@ -274,3 +274,8 @@ Observed cadence is59.9439–59.9772Hz, with zero intervals over50ms. This is cu
 All 108 raw windows were independently audited against source/fixture/raw digests, recomputed statistics and exact numeric comparisons. The tested synthetic merge `440419227bd6afc4f3fae9b02bf30a24f476b6a7` matches the PR candidate tree; measured runtime files match the original source. No source, protocol, quality or threshold changed for the retry. Hardware differs between runs, but that difference does not establish the cause of the rejection. Keep the failed result as an unresolved variability finding under KI-14. No further retry was used. The optional deliberate CPU-fault workflow was not selected on this PR; earlier fault evidence above is separate.
 
 Pages built the exact merge at 2026-10-05T05:28:24Z. All 42 hosted source files match before and after the complete player suite, pose/reduced-motion captures and 3D offline signing/reload. The six native Mac windows above retain their frozen `b8bfe08` attribution. Neither CI software-renderer comparisons nor native Mac cadence establishes supported phone, low-power or human acceptance.
+
+
+## Model13 geometry qualification
+
+The anatomy candidate changes shared torso and limb vertex geometry while retaining sixteen instance batches and four textures. The preceding model12 native report remains frozen evidence for its recorded source. Current-source browser lifecycle, full-client and paired CI checks are required; supported physical devices and final human acceptance remain open.

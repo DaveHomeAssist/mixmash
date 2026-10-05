@@ -50,6 +50,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Risks / acceptance:** Facial UV orientation, texture aliasing, crowd cost and resource lifetime need direct checks. Verify front-facing landmarks, finite bounded geometry, constant crowd batches, palette variation, mipmapped textures and complete disposal. Inspect close and management views, retain reduced-motion and context-recovery checks, exact settlement parity and CI performance limits. This advances the realistic sample; physical calibration, supported devices and Dave's final visual acceptance remain separate evidence gates.
 
+### FOH-V01e guest anatomy refinement
+
+**Problem / outcome:** The model12 close review shows a barrel torso, flat shoulder line, long exposed neck and straight tube limbs. The accepted sample calls for convincing anatomy. Shape a continuous shoulder/chest/waist silhouette, rounded sleeve cap and tapered limbs so the guest reads as a clothed person in management and close views.
+
+**Smallest slice / flow:** Refine shared source-owned geometry inside the existing sixteen guest batches. Preserve head height, ground contact, hip/shoulder pivots, representative footprint, palettes and animation timing. Review front/side, walking/queue and all four actual-game presets in day/show conditions. No new textures, dependencies, individual AI, routes, economy, save fields or physical calibration claims.
+
+**Risks / acceptance:** Check finite indexed geometry/normals, bounded total vertex cost, coherent joint attachment, stable bounds and resource disposal. Inspect shoulder/neck overlap and clothing silhouettes in actual rendered captures; preserve static reduced motion, representative counts, picking/recovery and classic/3D settlement parity. Run current-source regression and performance checks. Final art and supported physical-device acceptance remain separate from this technical refinement.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.

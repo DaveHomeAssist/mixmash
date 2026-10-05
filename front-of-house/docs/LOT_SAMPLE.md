@@ -1,6 +1,6 @@
 # Lot sample candidate
 
-Revision `lot-sample-12`, 2026-10-04. The [generated manifest](../lot-assets.json) records eleven base samples, three Festival props and three room assemblies, authoring provenance, measured visual bounds, logical footprints, opaque pick surfaces and SHA-256 content/source digests. This candidate advances the [realistic sample specification](ART_DIRECTION.md#realistic-lot-sample-specification); it is not final visual or physical acceptance.
+Revision `lot-sample-13`, 2026-10-05. The [generated manifest](../lot-assets.json) records eleven base samples, three Festival props and three room assemblies, authoring provenance, measured visual bounds, logical footprints, opaque pick surfaces and SHA-256 content/source digests. This candidate advances the [realistic sample specification](ART_DIRECTION.md#realistic-lot-sample-specification); it is not final visual or physical acceptance.
 
 ## One consistent authoring reference
 
@@ -30,3 +30,8 @@ All meshes, procedural face/hair/fabric maps, grain, materials and cosmetic moti
 Camera/model tests check occupied bounds and stage orientation for all four rotations, reference heights, stage-relative eye positions, arbitrary-yaw ground picks, HUD framing and bounded orbit. The backend browser test adds perimeter presence/openings, incident anchors, representative/attendance separation, constant draw calls across crowd counts, live reduced motion, all eight view/light captures, exact context-restoration pixels and 20 disposal cycles. The actual game test retains gesture, fallback, reload and full-settlement parity coverage.
 
 Close views now include a shaped jaw and nose, forward-facing eye/brow/mouth landmarks, a higher front hairline and source-authored hair/fabric detail. Metals use a smoother surface response than cloth; skin avoids the coarse equipment grain. The guest retains sixteen shared part batches. Four owned mipmapped textures are allocated once per model set. Walking and queue poses shipped in PR119. The figures remain simplified sample candidates; this refinement does not establish photorealism or final realistic-style acceptance. Measured CI regression limits are implemented under CT-DEC-21, with available native-host results documented in PERFORMANCE.md. Supported physical devices, sustained full-HUD targets and human visual/camera acceptance remain separate. Keep the classic view as the default until the full renderer gates pass.
+
+
+## Model13 anatomy candidate
+
+FOH-V01e refines the shared clothed torso with a waist, chest and sloping shoulder/collar line, rounds the sleeve caps and tapers forearms and trouser legs. The reference height and existing hip/shoulder pivots remain fixed. Sixteen part batches and four owned textures remain; geometry is shared across all representatives. This is a bounded silhouette refinement, not physical calibration or final realistic-art acceptance. Current-source browser, performance, CI and hosted evidence must qualify this revision separately from the retained model12 native report.

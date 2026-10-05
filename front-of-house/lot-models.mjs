@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-12';
+export const MODEL_REVISION = 'lot-sample-13';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -21,10 +21,29 @@ export const MODEL_METADATA = Object.freeze({
 const COLORS = { steel: 0x31363d, aluminium: 0xb0b8bd, fabric: 0x181b20, wood: 0x79654c, plastic: 0x456778, trim: 0xc5c9bf };
 export function createLotModels() {
   const geometries = new Set(), materials = new Map(), textures = new Set();
+  function profile(rings, radialSegments = 16, heightSegments = 8) {
+    const geometry = new T.CylinderGeometry(0.5, 0.5, 1, radialSegments, heightSegments);
+    const positions = geometry.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+      const y = positions.getY(i);
+      const upper = rings.findIndex(r => r[0] >= y);
+      const b = rings[Math.max(0, upper)], a = rings[Math.max(0, upper - 1)];
+      const t = b[0] === a[0] ? 0 : (y - a[0]) / (b[0] - a[0]);
+      const radius = a[1] + (b[1] - a[1]) * t;
+      positions.setXYZ(i, positions.getX(i) * radius * 2, y, positions.getZ(i) * radius * 2);
+    }
+    geometry.computeVertexNormals();
+    return geometry;
+  }
   const shape = {
     box: new T.BoxGeometry(1, 1, 1), sphere: new T.SphereGeometry(1, 16, 12),
     cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 12),
-    torso: new T.CylinderGeometry(0.46, 0.38, 1, 12),
+    // The collar rises inside the neck; outer shoulders slope into the sleeve caps.
+    torso: profile([[-0.5, 0.4], [-0.25, 0.36], [0.15, 0.46], [0.32, 0.5], [0.42, 0.31], [0.5, 0.12]], 24, 12),
+    sleeve: profile([[-0.5, 0.42], [-0.25, 0.46], [0.1, 0.5], [0.3, 0.43], [0.45, 0.25], [0.5, 0.08]]),
+    forearm: profile([[-0.5, 0.31], [-0.2, 0.4], [0.15, 0.49], [0.35, 0.5], [0.5, 0.43]]),
+    thigh: profile([[-0.5, 0.39], [-0.2, 0.44], [0.2, 0.5], [0.5, 0.48]]),
+    calf: profile([[-0.5, 0.34], [-0.1, 0.43], [0.2, 0.5], [0.5, 0.48]]),
     head: new T.SphereGeometry(1, 24, 16),
     hair: new T.SphereGeometry(1, 16, 12),
   };
@@ -226,7 +245,7 @@ export function createLotModels() {
       mesh.material = material(0xffffff, 0, surface === 'skin' ? 0.62 : surface === 'hair' ? 0.72 : 0.9, finish);
       return mesh;
     };
-    p([0.23, 0.29, 0.14], [0, 0.575, 0], 'clothing', 'torso');
+    p([0.27, 0.32, 0.17], [0, 0.59, 0], 'clothing', 'torso');
     p([0.055, 0.05, 0.055], [0, 0.745, 0], 'skin');
     p([0.057, 0.065, 0.052], [0, 0.835, 0], 'skin', 'head');
     p([0.058, 0.026, 0.053], [0, 0.874, -0.005], 'hair', 'hair');
@@ -236,15 +255,15 @@ export function createLotModels() {
     };
     for (const side of [-1, 1]) {
       const x = side * 0.057, pivot = [x, 0.43, 0];
-      limb(p([0.077, 0.2, 0.09], [x, 0.33, 0], 'trousers'), 'hip', side, pivot);
-      limb(p([0.063, 0.18, 0.073], [x, 0.14, 0], 'trousers'), 'hip', side, pivot);
+      limb(p([0.077, 0.2, 0.09], [x, 0.33, 0], 'trousers', 'thigh'), 'hip', side, pivot);
+      limb(p([0.063, 0.18, 0.073], [x, 0.14, 0], 'trousers', 'calf'), 'hip', side, pivot);
       limb(p([0.075, 0.046, 0.13], [x, 0.023, 0.025], 'shoes', 'box'), 'hip', side, pivot);
     }
     for (const side of [-1, 1]) {
       const pivot = [side * 0.135, 0.715, 0];
       const arm = mesh => limb(mesh, 'shoulder', side, pivot);
-      const sleeve = arm(p([0.074, 0.15, 0.074], [side * 0.135, 0.64, 0], 'clothing')); sleeve.rotation.z = side * 0.12;
-      arm(p([0.05, 0.19, 0.05], [side * 0.148, 0.475, 0.005], 'skin'));
+      const sleeve = arm(p([0.084, 0.16, 0.084], [side * 0.125, 0.645, 0], 'clothing', 'sleeve')); sleeve.rotation.z = side * 0.12;
+      arm(p([0.052, 0.19, 0.052], [side * 0.143, 0.475, 0.005], 'skin', 'forearm'));
       arm(p([0.026, 0.035, 0.022], [side * 0.148, 0.36, 0.008], 'skin', 'sphere'));
     }
     return g;

@@ -1,6 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-05: Source-owned guest anatomy refinement
+
+FOH-V01e/CT-DEC-30 addresses the inspected model12 barrel torso, flat shoulders and tube limbs with shared clothed profiles. Model13/cache65 retains sixteen part batches, four textures, original animation pivots, guest height, routes and simulation. Initial close captures inspected; source geometry/attachment/budget checks supplement existing pose and disposal checks. The first normal assertion included unused sphere seam/pole vertices; restricting it to indexed, rendered vertices preserves the actual surface invariant. 435 repository tests, build, asset verification, generated references and unchanged Lot balance pass. Nineteen camera/model tests, backend/context/disposal and actual3D controls/recovery/settlement parity pass. Close view and eight actual HUD/view/light captures inspected; moving/reduced-motion pixels pass. Full player regression, current native measurements, CI and hosted checks remain required. Model12 measurements retain their original source attribution.
+
+
 ## 2026-10-05: Deployed sample and release evidence reconciliation
 
 PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md. Full suite coverage includes core controls, live services, food, sanitation, research, equipment, ticketing, held bookings, seating, Festival stages and curfew. The controlled crowd-motion subchecks use local fixtures; hosted client journeys are identified separately. Current name screening covers all fifteen act/room names and retains related catalog matches and search limitations. No runtime, economy or save changes accompany this record refresh. Final realistic-style, physical scale, phone/low-power, human career and legacy image provenance gates remain open.

@@ -328,3 +328,37 @@ test('guest surfaces retain bounded instancing, readable forward face and owned 
   a.dispose(); a.dispose(); assert.equal(disposals, textures.size, 'each shared texture disposed exactly once');
   assert.deepEqual(a.counts(), { geometries: 0, materials: 0, textures: 0 }); b.dispose();
 });
+
+test('clothed anatomy stays connected, shared and inside the guest geometry budget', () => {
+  const models = createLotModels(), guest = models.guest(), copy = models.guest();
+  guest.updateMatrixWorld(true);
+  assert.equal(guest.children.length, 16);
+  let vertices = 0;
+  for (const [i, part] of guest.children.entries()) {
+    assert.equal(part.geometry, copy.children[i].geometry, 'crowd figures share geometry');
+    const { position, normal } = part.geometry.attributes;
+    vertices += position.count;
+    for (const index of part.geometry.index.array) assert.ok(index < position.count);
+    // Sphere seam/pole duplicates can be unreferenced; only drawn vertices need normals.
+    for (const j of new Set(part.geometry.index.array)) {
+      const length = Math.hypot(normal.getX(j), normal.getY(j), normal.getZ(j));
+      assert.ok(Number.isFinite(length) && Math.abs(length - 1) < 0.001, 'valid surface normals');
+    }
+  }
+  assert.ok(vertices < 4000, 'bounded per-figure geometry before instancing');
+  const bounds = i => new Box3().setFromObject(guest.children[i]);
+  assert.ok(bounds(0).intersectsBox(bounds(1)), 'neck enters the shirt collar');
+  for (const [sleeve, arm, hand] of [[10, 11, 12], [13, 14, 15]]) {
+    assert.ok(bounds(0).intersectsBox(bounds(sleeve)), 'sleeve joins shoulder');
+    assert.ok(bounds(sleeve).intersectsBox(bounds(arm)), 'forearm enters sleeve');
+    assert.ok(bounds(arm).intersectsBox(bounds(hand)), 'wrist meets hand');
+  }
+  const body = new Box3().setFromObject(guest);
+  assert.ok(body.min.y >= -0.001 && Math.abs(body.max.y - 0.9) < 0.005);
+  assert.ok(body.min.x > -0.2 && body.max.x < 0.2, 'existing representative width');
+  const owned = new Set(guest.children.map(part => part.geometry));
+  let disposed = 0;
+  for (const geometry of owned) geometry.addEventListener('dispose', () => disposed++);
+  models.dispose(); models.dispose();
+  assert.equal(disposed, owned.size, 'new shared profiles disposed exactly once');
+});
