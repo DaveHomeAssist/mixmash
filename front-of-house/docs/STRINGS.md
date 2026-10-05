@@ -11,9 +11,9 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 
 | Key | Text |
 | --- | --- |
-| `guarantee` | You pay the agreed amount before doors and keep every dollar after costs. The act is happy however the night goes. |
-| `door` | The act takes 70% of ticket money after show costs, paid at settlement. Cheaper on a slow night, but an act that expected its ask remembers a small payout. |
-| `sponsor` | A sponsor pays $8,000 up front and wants the ticket at the usual price. You still pay the act's ask, and broadcast pays on top if the grounds are big enough. |
+| `guarantee` | Pay the agreed amount before doors. Keep every dollar left after costs. The act is happy however the night goes. |
+| `door` | The act gets 70% of tickets after show costs. Pay at settlement. Cheaper on a slow night. An act that expected its ask remembers a small payout. |
+| `sponsor` | A sponsor pays $8,000 before doors. Tickets stay at the usual price. You still pay the act's ask. Broadcast adds income if the grounds are big enough. |
 
 ### `INCIDENT_TEXT`: Incident card text (Show)
 

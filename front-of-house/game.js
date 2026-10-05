@@ -264,9 +264,9 @@ function update() {
 // What each deal means. The Book sheet shows these under the deal buttons on the first show
 // only; after that they are one click away in the deals window (docs/HUD.md decision 10).
 const DEAL_HELP = {
-  guarantee: 'You pay the agreed amount before doors and keep every dollar after costs. The act is happy however the night goes.',
-  door: `The act takes ${Math.round(D.DOOR_SPLIT * 100)}% of ticket money after show costs, paid at settlement. Cheaper on a slow night, but an act that expected its ask remembers a small payout.`,
-  sponsor: `A sponsor pays ${money(D.SPONSOR_PAY)} up front and wants the ticket at the usual price. You still pay the act's ask, and broadcast pays on top if the grounds are big enough.`,
+  guarantee: 'Pay the agreed amount before doors. Keep every dollar left after costs. The act is happy however the night goes.',
+  door: `The act gets ${Math.round(D.DOOR_SPLIT * 100)}% of tickets after show costs. Pay at settlement. Cheaper on a slow night. An act that expected its ask remembers a small payout.`,
+  sponsor: `A sponsor pays ${money(D.SPONSOR_PAY)} before doors. Tickets stay at the usual price. You still pay the act's ask. Broadcast adds income if the grounds are big enough.`,
 };
 
 function dealHelpHtml() {
@@ -274,7 +274,7 @@ function dealHelpHtml() {
   const paragraphs = text => `<p>${esc(text).replaceAll('. ', '.</p><p>')}</p>`;
   return `
     <section ${outdoor ? 'data-tab="Guarantee" data-always-tabs' : ''}><h3>Pay the guarantee</h3>${paragraphs(DEAL_HELP.guarantee)}</section>
-    <section ${outdoor ? 'data-tab="Door"' : ''}><h3>Offer a door deal</h3>${paragraphs(`${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.`)}</section>
+    <section ${outdoor ? 'data-tab="Door"' : ''}><h3>Offer a door deal</h3>${paragraphs(`${DEAL_HELP.door} Some acts refuse door deals when trust is low. Some only play for a guarantee.`)}</section>
     ${spec.sponsor ? `<section data-tab="Sponsor"><h3>Take a sponsor</h3>${paragraphs(DEAL_HELP.sponsor)}</section>` : ''}
     ${spec.id === 'festival' ? `<section data-tab="Rider"><h3>Touring requirements</h3><p>Place one VIP deck and one bus compound before doors.</p><p>Deck: ${money(D.FESTIVAL_SUPPORT.vipDeck)}, 4×3 tiles, 2kW.</p><p>Buses: ${money(D.FESTIVAL_SUPPORT.busCompound)}, 6×3 tiles, 6kW.</p><p>Shared site rentals, paid once at opening.</p><p>No additional tickets or income bonus.</p></section>` : ''}
     ${['amphitheater','festival'].includes(spec.id) ? '<section data-tab="Curfew"><h3>Set time</h3><p>Doors 19:00. Set 20:12 to 23:00.</p><p>A noise curfew can end the set early.</p><p>End now for free, or pay $400 for five more minutes.</p><p>Closing early reduces walk-ups and bar income.</p><p>Presales and the quoted guarantee stay paid.</p></section>' : ''}`;

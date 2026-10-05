@@ -548,7 +548,8 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap;
   }
   .menu-btn { margin-left: auto; }
-  .meters { order: 4; flex-basis: 100%; justify-content: space-between; gap: 8px; }
+  /* The meters occupy their own row below the navigation pills. */
+  .meters { order: 4; margin-left: calc(8px - var(--nav-room)); flex-basis: calc(100% + var(--nav-room) - 8px); justify-content: space-between; gap: 8px; min-width: 0; }
   .meters div { flex-direction: row; align-items: baseline; gap: 6px; }
   .meters dd { font-size: 0.9rem; }
   .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; }

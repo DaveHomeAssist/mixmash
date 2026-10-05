@@ -1,5 +1,9 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Linux compact copy and phone meter correction
+
+Linux CI37255270879 failed the320×256 Deals window by9px after five Chromium player journeys passed. Short complete statements retain all deal terms;20 local browser/theme/size combinations pass on the corrected source. Phone screenshot review also found the navigation inset clipping the meters; their second row now uses the full width, with explicit label/value bounds assertions. All28 player checks and20 actual Festival meter combinations pass; the rendered phone scene and all meters are visible. Final CI and hosted controls remain required.
+
 ## 2026-10-04: Combined release verification and copy corrections
 
 Combined model/client verification passes: Festival geometry at three sizes, eight exact classic/3D legacy/versioned settlement/reload comparisons, full3D gesture/inspection/fallback/recovery smoke and four site navigation journeys. The complete touring player regression and20 compact Deal terms combinations pass. Four remaining copy issues are corrected: explicit Act relationship labeling, neutral Show night heading, honest incident/room advice and a basic no-ad affordability estimate. The first longer Act trust label overflowed the strip by16px; Act plus tooltip/accessible name preserves meaning and all28 browser checks pass. No rule, timing, price or save changed; cachev61 identifies the final runtime. Required final-head CI and hosted integration acceptance remain pending.
