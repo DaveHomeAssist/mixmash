@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Festival touring core and curfew delivery
+
+Version1 Festival touring-support core passes432 repository tests, five dedicated integration cases, build/docs/catalog/assets and unchanged Lot simulator. Both fixtures use normal placement, consume30 tiles and8kW, require readiness on marked bookings and add exactly1500 once to shared-site opening costs. All legal deal paths, stage/site/journal/signing/reload, malformed-marker recovery and960 unmarked transitions/120 receipts pass. Player controls and detailed models follow; core CI/Pages/hosted acceptance remains pending.
+
+PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.
+
+The supplied archive passed ZIP integrity/path checks:34 JPEGs,32 visually corresponding library props and two title images. Existing prepared PNGs are retained; no opaque/magenta originals or private source paths are published. CT-DEC-27 fixes the bounded gameplay choice before implementation. Generated reference validation initially rejected missing rental labels; source-derived labels were added and regeneration passed. Parallel PR114 adds complementary strict complete-career replay; its tracking evidence is preserved.
+
 ## 2026-10-04: Full tier career validation
 
 The100-seed matched ordinary-career cohort passes all declared automated thresholds:100/100 careful Club and Amphitheater progression,99/100 Festival completion and another settled Festival day for all99; careless Club progression69/100. Failed seeds are retained, including careful Festival seed10. Every reached Club cohort plays at least five shows. Actual one/two/three-night holds, cancellation copies, deferred reputation, cash/journal/signing and normalized receipt checks run throughout. This is current-mechanics regression proof; new Festival VIP/bus infrastructure must rerun it. No gameplay value or goal is retuned.

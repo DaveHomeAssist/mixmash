@@ -30,7 +30,7 @@ The client never changes state itself; it sends one of these to `applyAction(sta
 | `enableResearch` | Enable optional development after the first settled show; Sandbox starts learned | — | book, done (eligibility required) | stays | 3 |
 | `research` | Start, pause, resume or cancel a project between bookings; exact career cash delta | `command` | book, done (eligibility required) | stays | 4 |
 | `chooseSideAct` | Select an eligible Festival side act in Book without charging or freezing its contract | `artistId` | book | stays | 1 |
-| `chooseDeal` | Book an act on a deal; optional roomPolicy1 enables the shell rig and slope; festivalPolicy1 fixes sponsored Festival tickets; stagePolicy1 enables Festival accounts, seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `roomPolicy`, `nights`, `secondId`, `curfewPolicy`, `stagePolicy`, `festivalPolicy`, `seatingPolicy`, `runPolicy` | book | build | 13 |
+| `chooseDeal` | Book an act on a deal; optional roomPolicy1 enables the shell rig and slope; festivalPolicy1 fixes sponsored Festival tickets; stagePolicy1 enables Festival accounts, seatingPolicy1 splits seat/lawn sales, runPolicy1 freezes held-night cancellation terms | `deal`, `artistId`, `roomPolicy`, `supportPolicy`, `nights`, `secondId`, `curfewPolicy`, `stagePolicy`, `festivalPolicy`, `seatingPolicy`, `runPolicy` | book | build | 14 |
 | `chooseVenue` | Switch room before booking; each room keeps its own layout | `venueId` | book | stays | 2 |
 | `place` | Place one object, checked against R-18 | `object` | build | stays | 2 |
 | `setLayout` | Replace the whole layout (Suggested layout, Clear) | `objects` | build | stays | 2 |
@@ -91,6 +91,7 @@ What the engine says when it refuses an action, as written in the source (`${…
 | `chooseDeal` | ${a.name} only plays for a guarantee |
 | `chooseDeal` | ${a.name} will only play for a guarantee after the last door deal |
 | `chooseDeal` | Choose a supported room profile |
+| `chooseDeal` | Choose a supported Festival touring policy |
 | `chooseDeal` | Choose a supported outdoor curfew policy |
 | `chooseDeal` | Choose a distinct side act eligible for a door deal |
 | `chooseDeal` | Stage accounting needs a Festival booking with two distinct acts |
@@ -197,6 +198,8 @@ Each show has one incident (R-11). *Window* is when it can happen, as a share of
 | `pa-s` | PA (small) | 1 × 1 | 3 kW | $200 | — | max 1, touches the stage | yes |
 | `pa-m` | PA (medium) | 1 × 1 | 6 kW | $450 | — | max 1, touches the stage | yes |
 | `delay` | Delay tower | 1 × 1 | 8 kW | $675 including operator | — | max 2, blocks sightlines | no |
+| `vip-deck` | VIP deck | 4 × 3 | 2 kW | $600 | — | max 1, blocks sightlines | no |
+| `bus-compound` | Bus compound | 6 × 3 | 6 kW | $900 | — | max 1, blocks sightlines | no |
 | `lights` | Light tower | 1 × 1 | 8 kW | $175 | — | max 1, blocks sightlines | yes |
 | `bar` | Bar | 2 × 1 | 1.5 kW | $100 | 2 bar | blocks sightlines | yes |
 | `food` | Food stall | 2 × 1 | — | Vendor funded | — | max 1, blocks sightlines | no |

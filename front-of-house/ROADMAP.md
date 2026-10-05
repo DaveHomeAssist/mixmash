@@ -139,3 +139,10 @@ Next: HUD step 6, performance. Record frame times at 1920 × 1080, cache the sta
 ### 2026-10-04 execution checkpoint
 
 Festival profiles and spatial delays are delivered through PR106/PR108 and verified on combined production137db3a. Outdoor set timing CT-DEC-24 is implemented and locally verified; its release gates remain. Included Club lighting now passes local accounting, browser and offline acceptance; its CI/deployment proof follows. Continue Festival VIP/bus infrastructure, whole-tier simulator/career acceptance and remaining release gates. The current production source includes the parallel technical venue scenes and site overview; preserve and verify those instead of duplicating them.
+
+
+### Festival touring support checkpoint
+
+Version1 Festival touring-support core passes432 repository tests, five dedicated integration cases, build/docs/catalog/assets and unchanged Lot simulator. Both fixtures use normal placement, consume30 tiles and8kW, require readiness on marked bookings and add exactly1500 once to shared-site opening costs. All legal deal paths, stage/site/journal/signing/reload, malformed-marker recovery and960 unmarked transitions/120 receipts pass. Player controls and detailed models follow; core CI/Pages/hosted acceptance remains pending.
+
+PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.

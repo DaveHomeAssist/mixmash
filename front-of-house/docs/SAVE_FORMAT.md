@@ -244,3 +244,7 @@ A malformed optional marker is removed with `roomNotice`, retaining paid cash an
 ### Outdoor set timing (optional version1)
 
 New player Amphitheater/Festival bookings write `booking.curfew: {version:1}` and copy it to `show.curfew` at opening and each held night. Paid show terms take precedence; missing paid terms never fall back to the booking marker. End minute, played/lost minutes and multipliers derive from data, room, per-night seed and immutable response; imported derived fields are discarded. Unmarked saves retain earlier response math. Unsupported optional markers are removed with `curfewNotice`, while cash and signed history are preserved. The receipt exposes missing timing authority. No schema or namespace change.
+
+### Optional Festival touring support
+
+`venue.support = { version: 1 }` records the new Festival touring requirements. Only an explicit `chooseDeal.supportPolicy:1` adds it; old unmarked shows remain unchanged. The marker survives next-show/reload, and a room change clears it. `vip-deck` and `bus-compound` are ordinary grid objects with distinct maximum-one groups. Imported derived costs are ignored. Invalid optional markers are removed with a `supportNotice`; paid cash, cash journal and signed history are preserved. Cached layouts retain object geometry when changing rooms, but placement commands require marked Festival terms.

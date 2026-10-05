@@ -674,3 +674,19 @@ Use100 fixed starting seeds and declared careful/careless strategies. Both read 
 Before seeing the full cohort, retain the existing90% careful-reach target for each later-tier unlock/completion within declared limits (20 Club shows,12 Amphitheater holds,8 Festival days); require careless Club progression below100%, five carried Club shows and exact one/two/three-night receipts. These are automated regression acceptance thresholds, not human or final art approval. First run diagnoses failures; any gameplay retuning requires a separate documented decision and legacy boundary. Festival infrastructure still outstanding must be incorporated before claiming final Phase7 acceptance. No new dependencies, gameplay formula changes or public promotion in this validation slice.
 
 Tier cohort clarification: both later-tier strategies earn the Lot unlock with the same existing careful plan, then diverge at Club. The ten-seed diagnostic showed that carrying only survivors of careless Lot play selected unusually strong starting reputations. Matched, genuinely earned starts isolate later-tier choices without injecting money or unlocks; the original Lot report retains its own careless cohort. The declared thresholds and show limits are unchanged.
+
+### FOH-V02b14 — Festival touring support
+
+**Authority:** Autonomous phase execution, CT-DEC-19 and CT-DEC-27. Phase7 requires a VIP deck and bus compound using the established grid builder.
+
+**Player problem/outcome:** A two-stage touring site lacks visible hospitality and bus provision. New Festival bookings require one movable VIP deck and one bus compound; the player chooses where their footprint and sightline obstruction fit alongside audience services.
+
+**Flow/smallest slices:** Versioned engine terms, layout/readiness, exact shared-site costs and recovery first; then new-booking disclosure, palette, Suggested layout, Room/receipt pages and classic/3D models. The core alone is not player delivery.
+
+**Rules/data/save:** New optional `venue.support.version=1`, selected explicitly at booking. One4×3 deck draws2kW and rents for600; one6×3 bus compound draws6kW and rents for900. Both are required before doors only on marked bookings, consume normal floor area, and block views at authored logical heights. Costs are shared site costs, paid once at opening, allocated between stages using existing rules. No separate VIP sales, guest count, income multiplier or satisfaction bonus. Existing permit, artist, sponsor and broadcast rules remain. Values live in `data.mjs`; these are gameplay values, not venue engineering.
+
+**Compatibility:** Unmarked shows do not gain requirements, objects or costs; new objects require marked Festival terms. Paid cash/journals/history survive invalid optional-term recovery. Venue changes clear room-specific terms. Earlier Suggested layouts remain unchanged; the new control appends support only when marked.
+
+**Dependencies/risks:** Stage accounts and room profiles are already present; preserve side-stage and delay work. New fixtures reduce floor capacity and can obstruct views. Run earned full-tier cohorts after controls adopt the policy; retain failures and compare against the frozen earlier report. Supplied32-prop sheet and JPEG originals guide new models; prepared library PNGs already exist. Receipt similarity is not licensing or final human art approval.
+
+**Acceptance:** Bounds/overlap/rotation/limits/power and missing-fixture readiness; hand-calculated once-only costs for all legal deal paths; stage/site/opening/signing conservation and normalized paid replay; malformed terms without paid cash/history loss; exact unmarked replay. Follow-on controls require Chromium/WebKit placement/undo, both themes/compact sizes, classic/3D picking and identical receipts, offline signing, generated-asset checks, CI, Pages and hosted proof.

@@ -2424,6 +2424,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-festival-support.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-festival-support.mjs",
+      "description": "Versioned Festival touring requirements, shared-site receipts and save preservation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-festival-support.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-food-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
