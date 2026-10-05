@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Guest buffer reuse correction",
+  "head": "Guest anatomy delivered (PR122)",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 AMD paired evidence passes, but finalbc89 Intel CI rejects ultrawide crowd CPU P95 8.8ms against8.55ms; general tests pass. Buffer reuse removes verified redundant camera/color writes. Dominic passes439 tests/build,20 camera tests,768 exact snapshots and targeted backend,3D,detail,DPR,Festival/reload checks. New final-source CI and hosted qualification remain required; human/device/provenance gates stay open.",
+  "statusReason": "PR122 guest anatomy and buffer reuse merged as 8e723edcce59318024eec25638a355e9fa7235d5 after resolving its gh-pages conflict with PR124 in 9ce8a9e. PR CI 37359157706 passed test and foh-regression on 9ce8a9e; foh-performance was skipped. Merge push CI 37362776702 passed. Pages serves the merge: service worker v69 and all eight changed files match hosted bytes. This record does not re-qualify the earlier finalbc89 Intel ultrawide crowd CPU P95 rejection (8.8ms against 8.55ms). Final art, physical calibration, supported phone/low-power, human career and image provenance gates stay open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -31,7 +31,8 @@
     "PR103: fixed Festival sponsor prices and earned headliners delivered at8d715b0, with26 matching files, both-browser player/edge journeys and offline sponsor receipt/journal proof.",
     "PR104: Amphitheater sound/slope delivered at33bdc63 with27 matching hosted files, both-browser room/held journeys and offline signing/cancellation/journal proof.",
     "PR106/PR108: Festival room profile and spatial delays delivered; eight hosted Festival/eight seating journeys,27 source matches and exact offline tower costs/journal at137db3a.",
-    "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected."
+    "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.",
+    "PR122: guest anatomy with projected distance detail and guest buffer reuse. PR CI 37359157706 passed test and foh-regression on 9ce8a9e; merged 8e723edcce59318024eec25638a355e9fa7235d5; Pages serves service worker v69 and all eight changed files match hosted bytes. Merge push CI 37362776702 passed."
   ],
   "nextStep": {
     "title": "Complete remaining art and release acceptance",
@@ -487,6 +488,19 @@
       "names": 15,
       "record": "front-of-house/docs/WORLD.md",
       "scope": "All 11 current acts and 4 rooms; bounded returned evidence, related catalog matches retained, no universal uniqueness or legal clearance claim."
+    },
+    "guestAnatomyRelease": {
+      "checkedOn": "2026-10-05",
+      "pr": "https://github.com/DaveHomeAssist/mixmash/pull/122",
+      "conflictResolution": "9ce8a9ef165075f1e60b393feb767f19ed4761bb merged gh-pages after PR124; admin/catalog.json regenerated with npm run admin:index and both landing-smoke changes kept. Local npm test 439/439, hub:check and vercel-build passed.",
+      "prCi": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37359157706",
+      "prCiResult": "test and foh-regression passed; foh-performance skipped",
+      "merge": "8e723edcce59318024eec25638a355e9fa7235d5",
+      "pushCi": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37362776702",
+      "pushCiResult": "passed",
+      "hostedFiles": "8/8 changed files match: lot-assets.json, lot-models.mjs, lot-presentation.mjs, lot-renderer.mjs, progress.md, test-lot-camera.mjs, tools/lot-assets.mjs, sw.js",
+      "serviceWorker": "v69",
+      "scope": "Merge, CI and hosted-byte delivery only. No hosted player suite, visual review, device or performance re-qualification is claimed."
     }
   },
   "decisionState": {
@@ -642,7 +656,8 @@
         "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
         "status": "in_progress",
         "evidence": [
-          "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
+          "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
+          "PR122 guest anatomy merged 8e723edcce59318024eec25638a355e9fa7235d5; PR CI test and foh-regression passed on 9ce8a9e; Pages serves service worker v69 with eight matching changed files. Visual review, physical calibration and device acceptance remain separate."
         ],
         "slices": [
           {
