@@ -5,6 +5,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 ## [Unreleased]
 
 - Front of House: representative 3D guests walk with restrained limb motion and rest while queued; reduced motion stays static, with unchanged routes, counts, geometry batches and settlement rules.
+- Front of House: record independent compact Deal Help containment and touch-target verification; align career replay with the included Club lighting layout.
 
 - Front of House: clarify act trust, show status, room-aware production advice and the basic no-ad affordability estimate; no rule or save changes.
 

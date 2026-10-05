@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04 — Combined release fixture reconciliation
+
+The combined release retained the current touring requirements and player guide but reintroduced an extra Club light tower in the career fixture. The actual Suggested layout omits it when house lights are included. Restoring that filter and regenerating the report preserves 30 completed careers, 515 signed shows and 30 exact every-action save/reload pairs, with updated cash results. Festival deck/buses, their $1,500 opening rental and two delay towers remain included. All 432 repository tests, build, asset checks and six catalog checks pass; all 100 compact help-page cases pass again on the combined runtime. Duplicate FOH-V02d tracker rows were consolidated without losing historical evidence. Player runtime, styles and service worker remain identical to combined release eb490ae. Final CI and hosted report acceptance remain pending.
+
+## 2026-10-04 — Independent compact Deal Help verification
+
+CI at source 2b3248a reported 165px of Deal Help content inside a 156px panel. Corrected parent 33fc9f9 preserves the terms with shorter statements and repairs phone meter placement. One hundred complete help-tab/browser/theme/viewport cases now pass at 1440x900, 375x812, 320x256, 375x390 and 2560x720, including all paged content, unclipped labels and 44px touch targets. All eight existing stage-player journeys also pass, including exact accounting and signing/reload. The verification branch uses the parent runtime unchanged. Final Linux CI and hosted acceptance remain pending; automated emulation does not establish physical-device or human acceptance.
+
 ## 2026-10-04: Linux compact copy and phone meter correction
 
 Linux CI37255270879 failed the320×256 Deals window by9px after five Chromium player journeys passed. Short complete statements retain all deal terms;20 local browser/theme/size combinations pass on the corrected source. Phone screenshot review also found the navigation inset clipping the meters; their second row now uses the full width, with explicit label/value bounds assertions. All28 player checks and20 actual Festival meter combinations pass; the rendered phone scene and all meters are visible. Final CI and hosted controls remain required.
@@ -839,3 +847,9 @@ Scoped FOH-V01c/CT-DEC-28 before implementation. Model11 adds restrained opposin
 433 repository tests/build/generated assets/references pass. Dedicated geometry invariants verify attachments, ground contact, representative space, unchanged batches/counts and input immutability. Actual renderer walking frames differ, reduced-motion pixels match, and day/night captures were inspected. Full3D application gestures, inspection, recovery/fallback, resize, reload and complete settlement parity pass. A follow-up crowd invocation used a nonexistent filename; no game failure occurred, and the actual registered service-crowd rail passes all eight player/motion/departure journeys. Final player regression, CI/Pages and hosted acceptance remain pending.
 
 Reconciled the duplicated FOH-V02d career entry by preserving the union of all historical evidence under its existing stable ID. Broader art refinement and physical/human acceptance remain open.
+
+## 2026-10-04 — Coordinated career fixture integration
+
+Integrated PR118 source2498ae2 under Dave's explicit coordination request. Retained both appended changelog/progress records and all distinct compact-screen/career history; no duplicated phase IDs. The simulator now omits the redundant Club light tower exactly as Suggested layout does, while preserving Festival touring support and delay costs. Current replay reproduces30/30careers,515signedshows and30exact full-save/receipt/journal pairs with no report drift. Player runtime, model11/cache63 and the pose implementation are byte-identical tocf6aa46. Final combined CI and hosted acceptance remain pending.
+
+The first integrated full test repeat hit an unrelated Mars API startup deadline under concurrent host load (432pass/1fail); Mars source is unchanged. Its isolated five checks passed immediately, then the full repeat passed all433tests. Build and asset validation also pass. The failed log is retained; no timeout or assertion was changed.
