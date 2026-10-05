@@ -215,3 +215,7 @@ Outdoor Deals has Guarantee/Door/(Sponsor)/Curfew pages explaining the pre-booki
 ### Festival touring controls
 
 New Festival bookings disclose the combined touring rental, with a Rider page in Deals describing both fixtures, power and footprint. Build exposes VIP deck (V) and Buses (U), only on marked Festival bookings; Suggested layout includes both. Standard rotation, selection, removal and undo/redo apply. Missing fixtures prevent Lock layout. Room/Stage accounts include a Rider page with current counts and rentals. Settlement lists VIP deck and Bus compound as shared site costs; Site/Production cost pages preserve readable contained receipts. Legacy shows do not silently acquire fixtures or requirements.
+
+### Release wording correction (2026-10-04)
+
+The top-strip relationship is labeled Act, with an explicit relationship tooltip and accessible name. The non-live Show card uses Show night while its clock/status owns timing. Settlement advice describes response trade-offs and asks players to check room sound/lighting before hiring gear. The Done screen calls its affordability figure a basic no-ad estimate and discloses that kept rentals can cost more. Rules, prices, timers and saved results are unchanged.

@@ -42,11 +42,11 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 
 | Key | Text |
 | --- | --- |
-| `sound` | Sound and light scored lowest. Rent the medium PA for crowds over 100, and add the light tower. |
+| `sound` | Sound and light scored lowest. Check room coverage and lighting before renting extra gear. |
 | `sightlines` | Sightlines scored lowest. Keep bars, restrooms and the light tower out of the cone in front of the stage. |
 | `amenities` | Bars and restrooms scored lowest. Plan one bar for every 125 people and one restroom for every 40. |
 | `flow` | Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane. |
-| `incident` | The incident cost the most. A stronger response costs money up front but saves the night. |
+| `incident` | Incident handling scored lowest. Compare the response cost, crowd result and act payout. |
 
 ### `PART_LABELS`: Satisfaction part names (Settlement)
 

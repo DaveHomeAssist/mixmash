@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: clarify act trust, show status, room-aware production advice and the basic no-ad affordability estimate; no rule or save changes.
+
 - Front of House: new Festival bookings require a placeable VIP deck and bus compound, with disclosed $1,500 shared rentals, normal footprint/power/view constraints, classic and 3D props, and contained Rider reports. Older unmarked bookings retain their rules. The earned tier career baseline now covers these requirements.
 - Front of House: add complete career verification across earned Lot, Club, Shell and Festival unlocks, with public booking forecasts and exact receipt/journal/save replay checks. Runtime rules and the existing Lot balance targets are unchanged.
 

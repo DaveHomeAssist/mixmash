@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Combined release verification and copy corrections
+
+Combined model/client verification passes: Festival geometry at three sizes, eight exact classic/3D legacy/versioned settlement/reload comparisons, full3D gesture/inspection/fallback/recovery smoke and four site navigation journeys. The complete touring player regression and20 compact Deal terms combinations pass. Four remaining copy issues are corrected: explicit Act relationship labeling, neutral Show night heading, honest incident/room advice and a basic no-ad affordability estimate. The first longer Act trust label overflowed the strip by16px; Act plus tooltip/accessible name preserves meaning and all28 browser checks pass. No rule, timing, price or save changed; cachev61 identifies the final runtime. Required final-head CI and hosted integration acceptance remain pending.
+
+PR115 passed CI37253894483, mergedc14c661011fe7092d22df3ba2f8d6cf0de987639 at02:34:26Z and Pages built02:34:47Z. Seven hosted runtime/spec files match. Both Chromium and WebKit execute the hosted core through marked guarantee/sponsor and unmarked legacy bookings with exact1500/0 touring costs, stage allocations, cash/journal and signed normalization parity. Player-control publication is a separate gate.
+
 ## 2026-10-04: Touring release integration
 
 Integrated committed delay preview52b9fdd and complete-career verification802b3c2 with touring controls2b3248a. Both career commands and CI report-drift gates are retained. The stricter replay now selects current Club room and Festival touring policies, includes both support fixtures and their1500 rental, and passes30 complete careers/515 signed shows/30 exact every-action reload pairs. Model revision10 retains delay/deck/coach geometry and all rotated footprint tests; cachev60 distinguishes the combined runtime. The player guide now explains touring controls and costs. Initial repository verification found only the stale generated catalog; it was regenerated before final checks. Combined CI, runtime browser and hosted proof remain pending.
