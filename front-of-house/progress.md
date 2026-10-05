@@ -1,8 +1,28 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04 — Combined release fixture reconciliation
+
+The combined release retained the current touring requirements and player guide but reintroduced an extra Club light tower in the career fixture. The actual Suggested layout omits it when house lights are included. Restoring that filter and regenerating the report preserves 30 completed careers, 515 signed shows and 30 exact every-action save/reload pairs, with updated cash results. Festival deck/buses, their $1,500 opening rental and two delay towers remain included. All 432 repository tests, build, asset checks and six catalog checks pass; all 100 compact help-page cases pass again on the combined runtime. Duplicate FOH-V02d tracker rows were consolidated without losing historical evidence. Player runtime, styles and service worker remain identical to combined release eb490ae. Final CI and hosted report acceptance remain pending.
+
 ## 2026-10-04 — Independent compact Deal Help verification
 
 CI at source 2b3248a reported 165px of Deal Help content inside a 156px panel. Corrected parent 33fc9f9 preserves the terms with shorter statements and repairs phone meter placement. One hundred complete help-tab/browser/theme/viewport cases now pass at 1440x900, 375x812, 320x256, 375x390 and 2560x720, including all paged content, unclipped labels and 44px touch targets. All eight existing stage-player journeys also pass, including exact accounting and signing/reload. The verification branch uses the parent runtime unchanged. Final Linux CI and hosted acceptance remain pending; automated emulation does not establish physical-device or human acceptance.
+
+## 2026-10-04: Linux compact copy and phone meter correction
+
+Linux CI37255270879 failed the320×256 Deals window by9px after five Chromium player journeys passed. Short complete statements retain all deal terms;20 local browser/theme/size combinations pass on the corrected source. Phone screenshot review also found the navigation inset clipping the meters; their second row now uses the full width, with explicit label/value bounds assertions. All28 player checks and20 actual Festival meter combinations pass; the rendered phone scene and all meters are visible. Final CI and hosted controls remain required.
+
+## 2026-10-04: Combined release verification and copy corrections
+
+Combined model/client verification passes: Festival geometry at three sizes, eight exact classic/3D legacy/versioned settlement/reload comparisons, full3D gesture/inspection/fallback/recovery smoke and four site navigation journeys. The complete touring player regression and20 compact Deal terms combinations pass. Four remaining copy issues are corrected: explicit Act relationship labeling, neutral Show night heading, honest incident/room advice and a basic no-ad affordability estimate. The first longer Act trust label overflowed the strip by16px; Act plus tooltip/accessible name preserves meaning and all28 browser checks pass. No rule, timing, price or save changed; cachev61 identifies the final runtime. Required final-head CI and hosted integration acceptance remain pending.
+
+PR115 passed CI37253894483, mergedc14c661011fe7092d22df3ba2f8d6cf0de987639 at02:34:26Z and Pages built02:34:47Z. Seven hosted runtime/spec files match. Both Chromium and WebKit execute the hosted core through marked guarantee/sponsor and unmarked legacy bookings with exact1500/0 touring costs, stage allocations, cash/journal and signed normalization parity. Player-control publication is a separate gate.
+
+## 2026-10-04: Touring release integration
+
+Integrated committed delay preview52b9fdd and complete-career verification802b3c2 with touring controls2b3248a. Both career commands and CI report-drift gates are retained. The stricter replay now selects current Club room and Festival touring policies, includes both support fixtures and their1500 rental, and passes30 complete careers/515 signed shows/30 exact every-action reload pairs. Model revision10 retains delay/deck/coach geometry and all rotated footprint tests; cachev60 distinguishes the combined runtime. The player guide now explains touring controls and costs. Initial repository verification found only the stale generated catalog; it was regenerated before final checks. Combined CI, runtime browser and hosted proof remain pending.
+
+PR113 passed CI37253221986 and merged7908a67440d9958054554e686327362f3c4ce5e5 at02:24:41Z; Pages built02:25:05Z. Hosted tier report, simulator, test, README and catalog match the merged source. This report release does not establish human tier acceptance.
 
 ## 2026-10-04: Touring compact CI correction
 
@@ -31,12 +51,23 @@ The100-seed matched ordinary-career cohort passes all declared automated thresho
 The initial harness tried to enable the cash journal before the first show, and correctly hit the existing eligibility refusal. It now enables Equipment only after the first ordinary settlement. A10-seed diagnostic exposed survivor bias when the careless later-tier group also used careless Lot play; both later-tier groups now start from the same genuinely earned careful Lot career. Thresholds and show limits stayed fixed. Two new integration tests pass repeated full-career replay and matched-start control assertions. All427 repository tests, build, docs, generated catalog validation and the unchanged Lot baseline pass. The100-seed report was regenerated and all seven verdicts pass. Required CI and deployed report verification remain pending.
 
 
+## 2026-10-04 — Delay preview integrated with Club lighting
+
+Preserved delivered355fe9d house lighting and current Club terms while retaining the source-owned Festival delay masts, elevated speaker picking and touch inspection correction. Cachev58r2 distinguishes this combined runtime. Final combined checks and hosted acceptance remain separate.
+
+## 2026-10-04 — Guide aligned with delivered Club lighting
+
+Reconciled the guide delivery with355fe9d without changing its runtime. Documented included Fathom Hall lights, suggested-layout behavior, optional tower costs, portable PA replacement and preserved older booking terms. Source validation, final-head CI and deployed document readback are tracked separately.
+
 ## 2026-10-04: Included Club lighting
 
 FOH-V02b12 and CT-DEC-25 add optional house lighting to new Club bookings. Suggested layout omits the hired tower; Room and Lighting pages disclose included250-person sound, pillar obstructions and optional$175/8kW tower. Existing tower layouts retain exact receipts and unmarked saves retain their rules. Two additional integration tests cover house/portable/owned rigs, no duplicate bonus, both deals/ticket plans, cash/journal/reload and malformed source recovery. Classic and3D show lighting now follows the included rig without requiring a placed tower. Club house lighting passes425 repository tests,40 final room/camera/catalog checks, build, asset/docs checks and unchanged Lot baseline. Seven Chromium/WebKit player journeys cover both deals, optional tower placement/undo, Room/Lighting pages, both themes, compact sizes, classic/3D, ticketing, signing and reload.960 unmarked transitions and120 receipts match12a501a. Offline signing preserves zero light rental and1001380 cash/journal balance. Actual classic/3D night, full HUD, phone and supplied action-client images inspected. CI and hosted release acceptance remain pending.
 
 Curfew full regression resumed at the screenshot timeout: the unchanged food-vendor rail now passes all six journeys, and sanitation passes all seven. Remaining rails and PR110 checks are running. This records the failed capture and successful retry without changing a gameplay assertion or test timeout.
 
+## 2026-10-04: Complete career verification
+
+FOH-V02d adds a separate deterministic four-room career simulator and generated [CAREER_BASELINE.md](docs/CAREER_BASELINE.md). Normal starting cash and earned unlocks are preserved. Published ranges and quotes drive booking; strongest affordable incident responses do not preview hidden outcomes. Thirty fixed seeds compare uninterrupted careers with reload after every action, full receipts/journals/history/relationships, affordable charges and duplicate-signing refusal. Thirty careers complete with515 signed shows; all thirty uninterrupted/reload pairs and five verdicts pass. 416 repository tests, build, generated references and the unchanged eleven Lot simulator verdicts pass. CI and delivery remain pending. Existing Lot balance targets and production runtime are unchanged; human career and balance acceptance remain separate.
 
 ## 2026-10-04: Loam Shell technical scene
 
@@ -765,6 +796,24 @@ Camera fit source passes408 repository tests, build, asset validation, generated
 
 Merged gh-pages `f6532a2` (PR106 Festival profile, PR108 delay towers) into the PR87–PR107 camera-fit/overview stack. Six conflicts were resolved by keeping both sides: overview and Festival account styles, both brief sets, both progress records, delivered release evidence in NEXT_STEPS.json, and the stages smoke keeps the newer Room checks alongside the 3D journeys. The service worker cache moves to `v55`. Local checks on the merge: 416 repository tests, 7 performance tests, vendor/asset checks, build, unchanged Lot simulator, generated docs unchanged, and stages, navigation, Festival, Shell, Club and seating browser journeys. Current-head CI, Pages and hosted acceptance follow.
 
+## 2026-10-04 — Integrated release evidence and player guide
+
+PR107 headbacebdd passed CI37242898789 test and renderer regression gates and merged eadaafe. Pages137db3a built. All32 checked deployed runtime files match137db3a. Hosted core player checks28 and overview journeys4 pass; warmed-cache classic/3D reload, overview panning and signing preserve the exact save and cash/journal1297350. Remaining full-player and venue suites continue. The Club, standalone3D and resolution harnesses use local source even when the hosted URL environment variable is set; their results are local proof.
+
+Twelve native full-client running-Lot windows compare clean388d4c8 and3ce752c on Apple M4/Metal/Chrome154, actual5120×1286/DPR1. Independent audit verifies all source/raw hashes, recreated fixtures, exact final-state replay and identical initial scene quality. Baseline57.57–59.98Hz with11 intervals over50ms; camera-fit reuse58.28–59.65Hz withnone. Only camera source and its generated asset digest differ. Shared-host ranges overlap; no causal frame-rate improvement, sustained60fps, low-power or human acceptance inferred. KI-14 remains open.
+
+FOH-L01a adds a source-checked player guide, including the session-only preview toggle, explicit preview entry, venue controls and portable save backup. Earlier offline harness attempts incorrectly assumed persistent preview mode and an automatically enabled cash journal; corrected setup passes classic/3D reload, overview pan, signing and exact saved cash/journal recovery on the earlier overview source. The current hosted offline run independently passes these paths. Local416 tests, build, asset validation, generated references and unchanged simulator also pass.
+
+## 2026-10-04 — Delay preview and touch inspection
+
+FOH-V02r4 replaces the generic gate used for Festival delay towers with a source-owned mast and speaker cluster. Its one-cell bounds and four-unit logical height agree in all rotations; the manifest records Festival-only props separately. No coverage, costs, saves or engine rules change.
+
+The elevated-speaker touch check reproduced a compatibility click retargeted onto the dialog opened by pointerup. It could close the backdrop or reach a newly exposed control. Consuming that gesture click at document capture preserves the modal; the next pointer press resets suppression for normal controls. Removing explicit pointer release alone did not fix the retargeting and was discarded. Exact selected coordinates and fresh Close taps are checked at both camera yaws. Source checks pass416 tests, build, assets, generated references and unchanged simulator; browser verification and delivery continue. New tower hardware and final art acceptance remain separate.
+
+Elevated-speaker touch selection, exact coordinates and fresh Close taps now pass at1440,375 and2560px with both camera yaws and both tower rotations. Context recovery and room switching preserve state. Full3D gesture/fallback/reload/settlement checks pass; remaining overview, core and Festival settlement journeys continue. Actual desktop/phone captures inspected; no human acceptance inferred.
+
+Final local delay correction checks pass:28 core player checks, full3D gesture/inspection/recovery/fallback/reload/settlement,4 overview journeys, three-size Festival elevated-speaker picking and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Integrated the documentation-only PR109 source, preserving both briefs and progress entries. Generated references and Lot balance output remain unchanged. CI and hosted correction verification follow; v57 avoids the concurrent curfew cache version.
+
 ## 2026-10-04: Festival profiles and delay towers delivered
 
 - PR106 passed CI37218320926, merged2b128e10b60ad06c8db3b865c9f29a40825f8eb2 and Pages built2026-10-04T17:12:08Z. PR108 passed corrected CI37218906500, mergedf6532a2585d08e27416b4c023adc95b5f5c19d47 and Pages built17:25:44Z. Fresh combined-production acceptance at137db3a (Pages built2026-10-05T00:16:18Z):27 runtime files match, eight Festival and eight seating Chromium/WebKit journeys pass, including 3D player paths. Warmed-cache offline two-tower sponsor signing/reload preserves6000 sound capacity,467 extra tiles,1350 delay cost and1479282 journal cash. Actual hosted phone Delay receipt inspected.
@@ -774,3 +823,19 @@ Merged gh-pages `f6532a2` (PR106 Festival profile, PR108 delay towers) into the 
 
 - Version1 curfew timing implemented under CT-DEC-24: end at seeded minute or five-minute paid extension, timed aggregate walk-ups/bar income, frozen held-night terms and readable Set time receipts.423 repository tests, seven dedicated accounting/recovery tests, build, assets/docs and unchanged Lot simulator pass. Eight Chromium/WebKit player journeys cover both outdoor rooms, deals/responses, normal/reduced playback, compact sizes/both themes and signed replay.960 unmarked transitions/120 receipts exactly match137db3a. Real offline appeal preserves148 played minutes,20 lost,400 response fee and1027752 journal cash. Supplied action client and actual full/phone screenshots inspected. Full browser regression, CI and hosted acceptance pending.
 - Initial save tests used forced incidents in Sandbox, which normalization correctly re-derives. Fixtures now find natural seeded incidents, including all held nights, and replay checks pass. Initial compact Set time overflow exposed inherited scroll offset in window pagination; resetting scroll before measuring pages fixes it without dropping content. Full regression is running on this shared-window correction.
+
+## 2026-10-04 — Guide reconciliation with delivered curfew
+
+PR110 merged4dee773 and Pages built at02:00:26Z. Reconciled the guide/native evidence branch with that release, preserving all curfew source, four conflicting append-only documentation records and both phase histories. The guide now explains the existing Set time controls, free ending and$400five-minute appeal. Previous137db3a completed the full hosted player suite plus navigation/offline proof; source-specific physical/human and KI-14 gates stay open. Integrated repository checks and replacement final-head CI precede guide delivery.
+
+## 2026-10-04 — Delay correction reconciliation with delivered curfew
+
+Integrated guide sourcecf3865b and deployed curfew4dee773 into the delay/touch branch. Both appended briefs/progress histories are preserved; the document-capture fix coexists with the new curfew controls. Cachev58r1 distinguishes this source from curfewv56 and concurrent house-lightingv57. Earlier65fc08e completed the entire local player suite; new integrated source checks and actual Festival/modal/curfew journeys precede replacement CI and hosted proof. No independent rule or balance change is introduced by this correction.
+
+The integrated source passes423repository tests, build, asset validation, generated references and the unchanged11Lot verdicts. Festival selection/scene checks pass at1440,375and2560 with both tower rotations/camera yaws, followed by8exact legacy/versioned classic/3D show/reload comparisons. Dedicated curfew journeys are running; final-head CI and hosted correction proof remain required. An initial command used a nonexistent npm alias; invoking the existing curfew smoke file fixes the harness invocation without a product change.
+
+## 2026-10-04 — Career replay integration with curfew
+
+Integrated parent5794977, retaining the delivered curfew/guide and delay inspection correction. The strict career booking policy now explicitly selects current outdoor curfew terms as well as room profiles. Thirty full uninterrupted/reload pairs are being regenerated against this integrated source; earlier515show results remain source04d7408 evidence. No runtime formula or goal change. Final source verification, replacement CI and delivery follow.
+
+Final current-policy replay passes30/30careers and515signed shows, with30exact uninterrupted/every-action-reload pairs. Full normalized saves, receipts and journals match; a repeat is byte-identical.423repository tests, build, generated references/catalog and the unchanged11Lot verdicts pass. Runtime remains exactly parent5794977. CI, stacked merge and deployed report proof follow; broader100-seed peer tier/held-night evidence is preserved separately.

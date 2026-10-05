@@ -118,7 +118,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | Show history | Done | Every settled show, newest first | The only window allowed to scroll |
 | How the deals work | Book: Deals (ⓘ) | Guarantee, door deal, and sponsor in Split Acre | |
 | Lot details | Build: Details | Every placed object with a remove button | Keyboard route to removing by name |
-| Object inspection | Build: Select, then click/touch/Enter on an object | Name, coordinates, footprint, rental cost and Remove | Never places; removal uses existing Undo and returns focus to the canvas. Selection is transient and clears after layout/phase/load/history changes |
+| Object inspection | Build: Select, then click/touch/Enter on an object | Name, coordinates, footprint, rental cost and Remove | Never places; removal uses existing Undo and returns focus to the canvas. Selection is transient and clears after layout/phase/load/history changes. A 3D tap's following click is consumed even if the new dialog covers its position; a fresh tap operates the dialog normally |
 | Clear confirmation | Build: Clear | Object count, Cancel and Clear all objects | One confirmation, one undo step; cancel returns focus to Clear |
 | Menu | Menu button or ? | Dark controls, full screen, source link, New game (Career, Sandbox, Wet lot), keys help, Save and load | New game asks for a second press when a game is under way |
 
@@ -215,3 +215,7 @@ Outdoor Deals has Guarantee/Door/(Sponsor)/Curfew pages explaining the pre-booki
 ### Festival touring controls
 
 New Festival bookings disclose the combined touring rental, with a Rider page in Deals describing both fixtures, power and footprint. Build exposes VIP deck (V) and Buses (U), only on marked Festival bookings; Suggested layout includes both. Standard rotation, selection, removal and undo/redo apply. Missing fixtures prevent Lock layout. Room/Stage accounts include a Rider page with current counts and rentals. Settlement lists VIP deck and Bus compound as shared site costs; Site/Production cost pages preserve readable contained receipts. Legacy shows do not silently acquire fixtures or requirements.
+
+### Release wording correction (2026-10-04)
+
+The top-strip relationship is labeled Act, with an explicit relationship tooltip and accessible name. The non-live Show card uses Show night while its clock/status owns timing. Settlement advice describes response trade-offs and asks players to check room sound/lighting before hiring gear. The Done screen calls its affordability figure a basic no-ad estimate and discloses that kept rentals can cost more. Rules, prices, timers and saved results are unchanged.

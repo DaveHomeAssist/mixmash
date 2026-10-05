@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createLotCamera } from './lot-camera.mjs';
 import { createLotModels, FESTIVAL_SCENE } from './lot-models.mjs';
 import { createLotPresentation, stageRepresentatives } from './lot-presentation.mjs';
-import { VENUES } from './data.mjs';
+import { VENUES, ROOM_PROFILES } from './data.mjs';
 import { footprint } from './engine.mjs';
 import { Vector3, Box3, Matrix4 } from './vendor/three/three.module.min.js';
 
@@ -48,7 +48,7 @@ test('camera clamps bad values, Plan is stable, and zoom preserves its ground an
 
 test('sample orientation and occupied bounds agree with engine footprints in all rotations', () => {
   const models = createLotModels();
-  for (const type of ['stage', 'pa-m', 'bar', 'restroom', 'gate', 'vip-deck', 'bus-compound']) for (let rot = 0; rot < 4; rot++) {
+  for (const type of ['stage', 'pa-m', 'bar', 'restroom', 'gate', 'delay', 'vip-deck', 'bus-compound']) for (let rot = 0; rot < 4; rot++) {
     const object = { type, x: 4, y: 5, rot };
     const original = structuredClone(object), mesh = models.create(object); mesh.updateMatrixWorld(true);
     const box = new Box3().setFromObject(mesh), cells = footprint(object);
@@ -56,6 +56,7 @@ test('sample orientation and occupied bounds agree with engine footprints in all
     assert.ok(box.max.x <= Math.max(...cells.map(c => c[0])) + 1.001);
     assert.ok(box.min.z >= Math.min(...cells.map(c => c[1])) - 0.001);
     assert.ok(box.max.z <= Math.max(...cells.map(c => c[1])) + 1.001);
+    if (type === 'delay') assert.ok(Math.abs(box.max.y - ROOM_PROFILES.festival.obstacleHeights.delay) < 0.001, 'visible tower agrees with its logical sightline height');
     if (type === 'stage') {
       const forward = new Vector3(0, 0, 1).applyQuaternion(mesh.quaternion);
       const expected = [[0, 1], [-1, 0], [0, -1], [1, 0]][rot];

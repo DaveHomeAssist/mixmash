@@ -4,9 +4,18 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- Front of House: record independent compact Deal Help containment and touch-target verification.
+- Front of House: record independent compact Deal Help containment and touch-target verification; align career replay with the included Club lighting layout.
+
+- Front of House: clarify act trust, show status, room-aware production advice and the basic no-ad affordability estimate; no rule or save changes.
 
 - Front of House: new Festival bookings require a placeable VIP deck and bus compound, with disclosed $1,500 shared rentals, normal footprint/power/view constraints, classic and 3D props, and contained Rider reports. Older unmarked bookings retain their rules. The earned tier career baseline now covers these requirements.
+- Front of House: add complete career verification across earned Lot, Club, Shell and Festival unlocks, with public booking forecasts and exact receipt/journal/save replay checks. Runtime rules and the existing Lot balance targets are unchanged.
+
+- Front of House: the Festival delay tower has a source-owned 3D mast and speaker cluster instead of a generic gate. A 3D touch inspection stays open when the following click lands on its new dialog; fresh UI taps remain available. Footprints and accounting are unchanged.
+
+- Front of House guide: document delivered Club house lighting and preserved older booking terms.
+
+- Front of House: add the player guide and complete audited native camera-fit comparison; preserve the open full-game performance and device acceptance gates.
 
 - Front of House: outdoor curfew ends new booked sets at the seeded minute or five minutes later on appeal; attendance, bar income, playback and signed Set time receipts share the same rule. Legacy saves retain their prior math.
 

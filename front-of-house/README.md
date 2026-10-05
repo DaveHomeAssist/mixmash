@@ -13,6 +13,8 @@ The set follows the usual game-production paperwork: a design document (GDD), ru
 
 | File | Owns | Status |
 | --- | --- | --- |
+| [`docs/MANUAL.md`](docs/MANUAL.md) | Player guide to shows, venue controls, cameras and save recovery | Source-checked against the integrated release; engineering verification remains separate from human acceptance |
+| [`docs/CAREER_BASELINE.md`](docs/CAREER_BASELINE.md) | Generated full career feasibility, per-tier results and exact save/accounting comparisons | Fixed seed engineering checks; balance and human acceptance remain separate |
 | [`docs/DECISION_PACKET.md`](docs/DECISION_PACKET.md) | Multiple-choice product decisions and recommendations | D1 and D3–D11 accepted A; D2 accepted B; D6–D11 selected by Codex under delegated authority |
 | [`docs/FEATURE_BRIEFS.md`](docs/FEATURE_BRIEFS.md) | Eleven bounded feature proposals, dependencies and acceptance | Proposed slices; sequence, realistic 3D target, crowd model, Select behavior and performance approach accepted separately |
 | [`docs/NEXT_STEPS.json`](docs/NEXT_STEPS.json) | Evidence-dated project projection for the workspace board | Current projection; does not grant implementation approval |
@@ -46,7 +48,6 @@ The set follows the usual game-production paperwork: a design document (GDD), ru
 
 | File | Starts when |
 | --- | --- |
-| `docs/MANUAL.md` | The first playable loop is stable. Until then, the in-game tutorial is the manual. |
 | Renderer expansion | The [Lot adapter](docs/LOT_BACKEND.md) is implemented; additional venues follow the bounded Lot validation and their own acceptance evidence. |
 
 ## Source-of-truth rules

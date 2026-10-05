@@ -44,11 +44,11 @@ const RESPONSE_TEXT = {
   curfew: { obey: 'Set ends early', appeal: 'Finish the song' },
 };
 const TIPS = {
-  sound: `Sound and light scored lowest. Rent the medium PA for crowds over ${D.PA_COVERAGE.S}, and add the light tower.`,
+  sound: 'Sound and light scored lowest. Check room coverage and lighting before renting extra gear.',
   sightlines: 'Sightlines scored lowest. Keep bars, restrooms and the light tower out of the cone in front of the stage.',
   amenities: `Bars and restrooms scored lowest. Plan one bar for every ${D.BAR_RATIO} people and one restroom for every ${D.RESTROOM_RATIO}.`,
   flow: 'Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane.',
-  incident: 'The incident cost the most. A stronger response costs money up front but saves the night.',
+  incident: 'Incident handling scored lowest. Compare the response cost, crowd result and act payout.',
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -742,7 +742,7 @@ function showPanel() {
   return `
     <div class="plate at-tl card-plate">
       <p class="eyebrow">Show night · ${esc(venueSpec(state.venue).name)}</p>
-      <h2>Doors are open</h2>
+      <h2>Show night</h2>
       <p class="timecode" id="clock" aria-label="Show clock">19:00</p>
       <p class="show-status" id="show-status"></p>
       <p id="msg" class="message" aria-live="polite"></p>
@@ -1307,7 +1307,7 @@ function donePanel() {
       ? 'The show made money and kept the crowd happy. Cash, reputation and every relationship carry into the next show.'
       : p.canAffordAShow
         ? 'The night lost money or left the crowd unhappy. The career goes on: cash, reputation and relationships carry over.'
-        : `The acts on offer next need at least ${money(p.nextShowCost)} before doors, and you have ${money(state.cash)}. Start over to try again.`}</p>
+        : `Basic next show, no ads: ${money(p.nextShowCost)}. Cash: ${money(state.cash)}. Kept rentals can cost more. Start over to try again.`}</p>
     <div class="actions">
       <button type="button" data-act="retry">Start over</button>${next}
     </div>
