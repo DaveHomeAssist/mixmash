@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Retained crowd regression and contour correction
+
+Integrated412bb00 passed438 tests/build and the complete independent Dominic player suite. CI37271315330 general checks pass, but the full paired renderer gate rejects mean/p95 crowd-frame intervals at all three viewports. Independent raw/source/fixture/statistics audit validates all36 windows. No blind retry or threshold change: PR122 remains unmerged.
+
+Model14/cache67 uses the exact authored contour rings instead of uniform height subdivisions and shares each cap's center vertex. Radial detail, closed surfaces, smooth texture seams, guest reference height, sixteen part batches, textures, animation and simulation remain intact. Tightened geometry budget and contour-preservation checks precede new remote visual/runtime validation and final paired CI. Short exploratory diagnostics are not qualification. Dominic passes438 tests/build,19 camera/model checks, eight backend views/context recovery/20 disposals and actual3D controls/fallback/reload/settlement parity on the correction. Supplied action-client captures and the full-figure close view were inspected, with no visible holes; block-shaped shoes and simplified anatomy remain explicit. The figure now has2348 vertices,16 parts and4 textures. Full paired CI is still required.
+
+
 ## 2026-10-05: Homepage release integration
 
 Integrated delivered records3aaaa81 and the concurrent homepage release without changing guest geometry, engine or saves. Preserved both CT-DEC-30 and the homepage visibility sign-off. Homepage assets and offline precache remain intact; cache66 distinguishes the anatomy candidate from the homepage's cache65. Earlier435-test and remote browser evidence retains source1ef69b8 attribution; combined-head CI and hosted acceptance follow.

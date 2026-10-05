@@ -279,3 +279,16 @@ Pages built the exact merge at 2026-10-05T05:28:24Z. All 42 hosted source files 
 ## Model13 geometry qualification
 
 The anatomy candidate changes shared torso and limb vertex geometry while retaining sixteen instance batches and four textures. The preceding model12 native report remains frozen evidence for its recorded source. Current-source browser lifecycle, full-client and paired CI checks are required; supported physical devices and final human acceptance remain open.
+
+
+## Model13 crowd regression retained — 2026-10-05
+
+PR122 source412bb00, CI37271315330 attempt1, failed the unchanged paired gate on AMD EPYC9V74. Independent audit validates all36 windows, source/fixture/raw hashes and recomputed statistics. Empty scenes and CPU submission metrics pass; crowd mean and p95 frame intervals fail at all three sizes. These are software-renderer change limits, not device frame-rate targets. General CI and the complete independent Dominic player suite pass; they do not override this rejection.
+
+| Crowd viewport | Mean baseline / candidate / limit ms | p95 baseline / candidate / limit ms |
+| --- | --- | --- |
+|1440×900|350.955 /641.464 /438.693|633.3 /1199.9 /791.625|
+|375×812|237.392 /486.810 /296.740|466.6 /983.3 /583.25|
+|2560×720|334.617 /617.661 /418.271|649.9 /1183.2 /812.375|
+
+Model14 replaces redundant uniform longitudinal subdivisions with the exact authored contour rings and indexed cap centers, retaining radial resolution, closed surfaces, clothing maps, instance counts and motion. Its performance remains unqualified until new full paired measurements pass. Short remote before/after diagnostics are exploratory only; no threshold or test timeout is relaxed.

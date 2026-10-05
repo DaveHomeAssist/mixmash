@@ -345,7 +345,11 @@ test('clothed anatomy stays connected, shared and inside the guest geometry budg
       assert.ok(Number.isFinite(length) && Math.abs(length - 1) < 0.001, 'valid surface normals');
     }
   }
-  assert.ok(vertices < 4000, 'bounded per-figure geometry before instancing');
+  assert.ok(vertices < 2500, 'contour rings keep per-figure geometry below the rejected dense candidate');
+  const torso = guest.children[0].geometry.attributes.position;
+  for (const y of [-0.5, -0.25, 0.15, 0.32, 0.42, 0.5]) {
+    assert.ok(Array.from({ length: torso.count }, (_, i) => torso.getY(i)).some(v => Math.abs(v - y) < 0.00001), 'authored shoulder and collar contours retained');
+  }
   const bounds = i => new Box3().setFromObject(guest.children[i]);
   assert.ok(bounds(0).intersectsBox(bounds(1)), 'neck enters the shirt collar');
   for (const [sleeve, arm, hand] of [[10, 11, 12], [13, 14, 15]]) {

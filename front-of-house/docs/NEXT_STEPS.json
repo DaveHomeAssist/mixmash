@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Guest anatomy refinement under verification",
+  "head": "Guest profile performance correction",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model13 source and complete local player regression pass. Native Mac attempts were invalidated by window resize; further browser and sustained validation moves to Dominic. Current CI and hosted delivery remain required; physical-device, final art, human career and provenance gates remain open.",
+  "statusReason": "Model13 passed integrated438 tests/build and complete player journeys on Dominic, but valid paired CI rejected crowd frame mean/p95 at all three sizes. Model14 removes redundant profile subdivisions while preserving authored contours and radial resolution; new geometry, visual and full paired qualification are required. Final physical, human and provenance gates remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -733,15 +733,17 @@
           {
             "id": "FOH-V01e",
             "scope": "Shared clothed guest anatomy refinement under CT-DEC-30",
-            "status": "implemented-local-verification",
+            "status": "performance-correction-under-verification",
             "evidence": [
               "Source-owned torso, sleeves, forearm and trouser profiles; reference height, sixteen batches, four textures, original joint pivots, routes and simulation preserved. Initial close rendering inspected; further current-source validation and delivery required.",
               "435 repository tests, build, asset hashes, generated references and unchanged balance pass. Nineteen camera/model tests include coherent joint bounds, finite rendered normals, shared geometry, fixed height and bounded vertex cost. Backend eight views/context recovery/20 disposals and actual3D gestures/picking/fallback/reload/settlement parity pass. Moving pixels differ; reduced-motion pixels remain identical. Close view and all eight actual HUD day/show views inspected; full player regression, current native measurements and release proof still required.",
               "The complete twelve-script player regression passed at823db8f. Two full Mac native attempts were invalidated by window resizing and retained; neither qualifies model13 performance. A bounded window-settling setup check passed its fixed sample before the next browser page closed. Further browser and sustained validation moves to Dominic under the runner preference; Linux/software results remain separate from Mac/device acceptance.",
-              "Dominic isolated Linux runner passed all435 repository tests, build, syntax and seven performance statistics/evaluator tests with existing Playwright1.61.1 dependencies matching the lockfile. Browser checks continue remotely; no local headed browser runs follow the runner directive."
+              "Dominic isolated Linux runner passed all435 repository tests, build, syntax and seven performance statistics/evaluator tests with existing Playwright1.61.1 dependencies matching the lockfile. Browser checks continue remotely; no local headed browser runs follow the runner directive.",
+              "Integrated412bb00 passes438 tests/build, full twelve-script player regression and actual3D parity checks on Dominic. CI37271315330 general checks pass, but independently audited36-window paired software evidence fails six crowd-frame metrics across all three sizes; original failure retained. Model14 uses authored contour rings directly with unchanged radial resolution and indexed caps; replacement qualification pending.",
+              "Model14 contour correction passes438 repository tests/build,19 geometry/camera checks, backend views/recovery/disposal and actual3D controls/reload/settlement parity on Dominic.2348 vertices,16 parts and4 textures; authored height rings retained. Supplied action-client and close captures inspected. New full paired CI remains required; short diagnostics do not qualify performance."
             ],
             "remaining": [
-              "Dominic performance and final CI/hosted verification; model13 native Mac measurement remains incomplete.",
+              "Model14 geometry/visual verification, new full paired CI and hosted delivery; native and physical-device evidence remain separately unqualified.",
               "Final realistic style, physical calibration, supported-device and human acceptance."
             ]
           }

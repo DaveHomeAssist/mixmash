@@ -1,6 +1,6 @@
 # Lot sample candidate
 
-Revision `lot-sample-13`, 2026-10-05. The [generated manifest](../lot-assets.json) records eleven base samples, three Festival props and three room assemblies, authoring provenance, measured visual bounds, logical footprints, opaque pick surfaces and SHA-256 content/source digests. This candidate advances the [realistic sample specification](ART_DIRECTION.md#realistic-lot-sample-specification); it is not final visual or physical acceptance.
+Revision `lot-sample-14`, 2026-10-05. The [generated manifest](../lot-assets.json) records eleven base samples, three Festival props and three room assemblies, authoring provenance, measured visual bounds, logical footprints, opaque pick surfaces and SHA-256 content/source digests. This candidate advances the [realistic sample specification](ART_DIRECTION.md#realistic-lot-sample-specification); it is not final visual or physical acceptance.
 
 ## One consistent authoring reference
 
@@ -35,3 +35,5 @@ Close views now include a shaped jaw and nose, forward-facing eye/brow/mouth lan
 ## Model13 anatomy candidate
 
 FOH-V01e refines the shared clothed torso with a waist, chest and sloping shoulder/collar line, rounds the sleeve caps and tapers forearms and trouser legs. The reference height and existing hip/shoulder pivots remain fixed. Sixteen part batches and four owned textures remain; geometry is shared across all representatives. This is a bounded silhouette refinement, not physical calibration or final realistic-art acceptance. Current-source browser, performance, CI and hosted evidence must qualify this revision separately from the retained model12 native report.
+
+Model14 retains the authored anatomy contours and radial detail while indexing the contour rings directly. Model13 failed paired crowd timing; model14 qualification remains pending in PERFORMANCE.md.

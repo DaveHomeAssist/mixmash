@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-13';
+export const MODEL_REVISION = 'lot-sample-14';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -21,25 +21,51 @@ export const MODEL_METADATA = Object.freeze({
 const COLORS = { steel: 0x31363d, aluminium: 0xb0b8bd, fabric: 0x181b20, wood: 0x79654c, plastic: 0x456778, trim: 0xc5c9bf };
 export function createLotModels() {
   const geometries = new Set(), materials = new Map(), textures = new Set();
-  function profile(rings, radialSegments = 16, heightSegments = 8) {
-    const geometry = new T.CylinderGeometry(0.5, 0.5, 1, radialSegments, heightSegments);
-    const positions = geometry.attributes.position;
-    for (let i = 0; i < positions.count; i++) {
-      const y = positions.getY(i);
-      const upper = rings.findIndex(r => r[0] >= y);
-      const b = rings[Math.max(0, upper)], a = rings[Math.max(0, upper - 1)];
-      const t = b[0] === a[0] ? 0 : (y - a[0]) / (b[0] - a[0]);
-      const radius = a[1] + (b[1] - a[1]) * t;
-      positions.setXYZ(i, positions.getX(i) * radius * 2, y, positions.getZ(i) * radius * 2);
+  function profile(rings, radialSegments = 16) {
+    // Use the authored contour rings directly; uniform height subdivisions add
+    // redundant triangles while missing the actual shoulder and sleeve peaks.
+    const positions = [], uvs = [], indices = [], ordered = [...rings].reverse();
+    for (const [y, radius] of ordered) for (let i = 0; i <= radialSegments; i++) {
+      const angle = i / radialSegments * Math.PI * 2;
+      positions.push(Math.sin(angle) * radius, y, Math.cos(angle) * radius);
+      uvs.push(i / radialSegments, y + 0.5);
     }
-    geometry.computeVertexNormals();
+    const row = radialSegments + 1;
+    for (let j = 0; j < ordered.length - 1; j++) for (let i = 0; i < radialSegments; i++) {
+      const a = j * row + i, b = a + row;
+      indices.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+    for (const [ring, top] of [[ordered[0], true], [ordered.at(-1), false]]) {
+      const [y, radius] = ring, center = positions.length / 3;
+      positions.push(0, y, 0); uvs.push(0.5, 0.5);
+      for (let i = 0; i <= radialSegments; i++) {
+        const angle = i / radialSegments * Math.PI * 2;
+        positions.push(Math.sin(angle) * radius, y, Math.cos(angle) * radius);
+        uvs.push(Math.sin(angle) * 0.5 + 0.5, Math.cos(angle) * 0.5 + 0.5);
+        if (i < radialSegments) {
+          const a = center + i + 1, b = a + 1;
+          indices.push(center, top ? a : b, top ? b : a);
+        }
+      }
+    }
+    const geometry = new T.BufferGeometry();
+    geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new T.Float32BufferAttribute(uvs, 2));
+    geometry.setIndex(indices); geometry.computeVertexNormals();
+    // Share the smooth seam normal while retaining the texture seam's UVs.
+    const normals = geometry.attributes.normal;
+    for (let j = 0; j < ordered.length; j++) {
+      const a = j * row, b = a + radialSegments;
+      const n = new T.Vector3().fromBufferAttribute(normals, a).add(new T.Vector3().fromBufferAttribute(normals, b)).normalize();
+      normals.setXYZ(a, n.x, n.y, n.z); normals.setXYZ(b, n.x, n.y, n.z);
+    }
     return geometry;
   }
   const shape = {
     box: new T.BoxGeometry(1, 1, 1), sphere: new T.SphereGeometry(1, 16, 12),
     cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 12),
     // The collar rises inside the neck; outer shoulders slope into the sleeve caps.
-    torso: profile([[-0.5, 0.4], [-0.25, 0.36], [0.15, 0.46], [0.32, 0.5], [0.42, 0.31], [0.5, 0.12]], 24, 12),
+    torso: profile([[-0.5, 0.4], [-0.25, 0.36], [0.15, 0.46], [0.32, 0.5], [0.42, 0.31], [0.5, 0.12]], 24),
     sleeve: profile([[-0.5, 0.42], [-0.25, 0.46], [0.1, 0.5], [0.3, 0.43], [0.45, 0.25], [0.5, 0.08]]),
     forearm: profile([[-0.5, 0.31], [-0.2, 0.4], [0.15, 0.49], [0.35, 0.5], [0.5, 0.43]]),
     thigh: profile([[-0.5, 0.39], [-0.2, 0.44], [0.2, 0.5], [0.5, 0.48]]),

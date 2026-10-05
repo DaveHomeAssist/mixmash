@@ -52,6 +52,9 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 ### FOH-V01e guest anatomy refinement
 
+**Performance correction, 2026-10-05:** Model13's valid paired CI rejects crowd frame timing at all three sizes. Use the same authored profile contours directly, eliminate redundant height rows and cap-center duplicates, retain radial resolution and smooth texture seams, and lower the per-figure vertex budget below2500. Preserve all16 parts, palettes, textures, animation pivots and physical reference. Require geometry/joint/normal checks, actual close review, controls/parity and a new unchanged-limit full CI pair before delivery.
+
+
 **Problem / outcome:** The model12 close review shows a barrel torso, flat shoulder line, long exposed neck and straight tube limbs. The accepted sample calls for convincing anatomy. Shape a continuous shoulder/chest/waist silhouette, rounded sleeve cap and tapered limbs so the guest reads as a clothed person in management and close views.
 
 **Smallest slice / flow:** Refine shared source-owned geometry inside the existing sixteen guest batches. Preserve head height, ground contact, hip/shoulder pivots, representative footprint, palettes and animation timing. Review front/side, walking/queue and all four actual-game presets in day/show conditions. No new textures, dependencies, individual AI, routes, economy, save fields or physical calibration claims.
