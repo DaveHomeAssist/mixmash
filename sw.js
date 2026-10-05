@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v65';
+const VERSION = 'v66';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -25,6 +25,12 @@ const PRECACHE = [
   './assets/previews/mars.jpg',
   './assets/previews/garden.jpg',
   './assets/previews/empires.jpg',
+  './assets/covers/mixmash.jpg',
+  './assets/covers/foh.jpg',
+  './assets/covers/pitch.jpg',
+  './assets/covers/mars.jpg',
+  './assets/covers/garden.jpg',
+  './assets/covers/empires.jpg',
   './404.html',
   './offline.html',
   './favicon.svg',
