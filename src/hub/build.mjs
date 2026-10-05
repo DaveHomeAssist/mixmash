@@ -27,3 +27,16 @@ if (process.argv.includes('--check')) {
   if (await readFile(destination, 'utf8') !== html) throw new Error('Homepage catalog drift. Run npm run hub:build.');
   console.log('Homepage matches catalog and template.');
 } else { await writeFile(destination, html); console.log(`Generated ${fileURLToPath(destination)} with ${playableGames.length} playable games.`); }
+
+// Preserve installation identity while keeping public metadata aligned with the catalog.
+const manifestURL = new URL('manifest.webmanifest', root);
+const manifestSource = await readFile(manifestURL, 'utf8');
+const manifest = JSON.parse(manifestSource);
+manifest.description = studio.description;
+manifest.background_color = '#f5f1e7';
+manifest.theme_color = '#f5f1e7';
+manifest.shortcuts = playableGames.map(game => ({ name: game.name, url: game.route, description: game.genre }));
+const manifestOutput = JSON.stringify(manifest, null, 2) + '\n';
+if (process.argv.includes('--check')) {
+  if (manifestSource !== manifestOutput) throw new Error('Installed app metadata drift. Run npm run hub:build.');
+} else await writeFile(manifestURL, manifestOutput);

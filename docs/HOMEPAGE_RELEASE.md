@@ -8,7 +8,7 @@ GitHub Pages deployment and [live homepage](https://mixmash.games/).
 ## Implemented
 
 Six directly playable entries, including Front of House as Early playable;
-one catalog generates the HTML. Festival tickets use genuine gameplay captures,
+one catalog generates the HTML and installed-app metadata. Festival tickets use genuine gameplay captures,
 with the same lineup in the social card. Game details document players,
 controls and saving from [game-specific evidence](HOMEPAGE_EVIDENCE.md).
 Light default, remembered dark choice, Games/Studio navigation, bounded layouts,
