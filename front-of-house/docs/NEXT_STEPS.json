@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Camera-fit and overview stack (PR87–PR107) integrated with merged Festival profile (PR106) and delay towers (PR108)",
+  "head": "137db3a integrated release verified; native camera evidence and player guide prepared",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Delay placement, spatial coverage, production charges, receipts and offline saves pass local checks; Amphitheater sound/slope is hosted-verified. The camera-fit and overview stack passed its repository tests and frozen-source native overview audits before integration; combined-head CI, Pages and hosted verification follow. Infrastructure, dimensional scenes, full careers and human/physical acceptance remain open.",
+  "statusReason": "PR107 passed CI37242898789 and merged eadaafe; Pages137db3a built and32 runtime files match. Hosted core player, overview navigation and offline signing/reload checks pass. Remaining full hosted suites and guide/evidence delivery continue; KI-14, final art, physical/human acceptance and remaining venue/career scope stay open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -803,10 +803,13 @@
           {
             "id": "FOH-P01j",
             "scope": "Reuse centered camera volume fit across pan and zoom without visual or simulation changes",
-            "status": "implemented-local-verification",
+            "status": "verified-delivered",
             "evidence": [
               "Camera fit reuse preserves3852 exact prior-source pose/matrix/projection/picking/overview comparisons across all rooms, three viewports, yaw/pitch/zoom/pan, four presets and lens changes. All16 camera tests pass, including repeated invalidation versus a freshly fitted camera. Five alternating Node CPU repetitions of20000 pans: baseline1870.64\u20132362.12ms, candidate84.80\u2013119.53ms on Apple M4/Node22.22.1. This is helper CPU evidence only; full native game/HUD timing and delivery remain pending.",
-              "All408 repository tests, build, source-owned asset digests, generated documentation and unchanged simulator pass. Actual browser regression and isolated native baseline/candidate comparisons are pending."
+              "All408 repository tests, build, source-owned asset digests, generated documentation and unchanged simulator pass. Actual browser regression and isolated native baseline/candidate comparisons are pending.",
+              "Twelve native full-client running-Lot windows compare clean388d4c8 and3ce752c on Apple M4/Metal/Chrome154, actual5120×1286/DPR1. Independent audit verifies all source/raw hashes, recreated fixtures, exact final-state replay and identical initial scene quality. Baseline57.57–59.98Hz with11 intervals over50ms; camera-fit reuse58.28–59.65Hz withnone. Only camera source and its generated asset digest differ. Shared-host ranges overlap; no causal frame-rate improvement, sustained60fps, low-power or human acceptance inferred. KI-14 remains open.",
+              "Integrated PR107 headbacebdd passed test and renderer-regression checks in CI37242898789, merged eadaafe. Pages137db3a built; current hosted acceptance in progress.",
+              "Camera code is delivered through PR107 with passing final-head CI and Pages137db3a; current hosted overview/full-client and offline checks exercise it. The separate frozen native report is published by FOH-L01a; this does not close KI-14."
             ]
           }
         ]
@@ -1203,7 +1206,7 @@
           {
             "id": "FOH-V02r1",
             "scope": "Fathom Hall source-owned technical scene and fixed-scenery picking",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Existing20\u00d714 room, four pillar tiles and medium house PA; camera, grid and representative crowd follow real room bounds; classic remains the default.",
               "328 tests/build/vendor/generated-asset checks and balance simulation pass. Desktop/phone four-view and arbitrary-yaw checks, pillar refusal, room-switch cleanup, context recovery, reload and exact classic/3D settlement parity pass.",
@@ -1212,13 +1215,14 @@
               "Integrated333 tests/build/assets pass. Complete legacy/live/crowd/food/sanitation/research/equipment journeys and Club desktop/phone switching/recovery/parity pass.",
               "Six full native Club renderer windows at clean5330eb3 pass independent source/fixture/raw digest and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9788Hz, 0 intervals over50ms. Existing360-person fixture/180 representatives, fixed scenery and quality unchanged across three empty/three crowd repeats. Renderer-only evidence excludes HUD and human/low-power acceptance.",
               "Ticketing controls368edba integrated;339 tests/build/assets and unchanged balance simulation pass. All seven ticketing journeys pass including actual desktop/phone Club3D, and the Club room/recovery/exact-settlement suite passes again. Required CI, merge and hosted delivery remain pending.",
-              "Held-run delivery633f60a integrated without changing frozen native measurements.351 tests/build/assets, six held-run journeys and Club room/recovery/parity smoke pass; generated docs and balance simulation pass unchanged. Replacement current-head CI and hosted delivery remain required."
+              "Held-run delivery633f60a integrated without changing frozen native measurements.351 tests/build/assets, six held-run journeys and Club room/recovery/parity smoke pass; generated docs and balance simulation pass unchanged. Replacement current-head CI and hosted delivery remain required.",
+              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
             ]
           },
           {
             "id": "FOH-V02r2",
             "scope": "Loam Shell source-owned technical shell and seating/lawn guides",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Existing28\u00d718 amphitheater and medium house PA. Cutaway shell stays behind build floor; illustrative seating/lawn guides are pick-through and reserve no tiles. Engine seating, pricing, held nights and saved outcomes unchanged.",
               "Two geometry/camera tests pass. Desktop/phone/ultrawide four-view, yaw37/135, guide placement, room changes, context recovery and containment pass. Four desktop/phone classic/3D journeys produce exactly identical two-night rain-show receipts and saved states with400 seated guests and remaining lawn attendance.",
@@ -1226,30 +1230,33 @@
               "341 repository tests, build, assets, generated docs and unchanged balance simulation pass; all seven performance evaluator/reporting tests pass. Club, Lot backend, coalescing/lifecycle and complete3D application regressions pass.",
               "Integrated held-run source7a111c2 passes353 repository tests/build/assets/docs and unchanged balance simulation. Held-run smoke now adds actual3D desktop/phone continuation and cancellation journeys; the full integrated player suite is running before native measurement and delivery.",
               "Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9734\u201359.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
-              "Full integrated player suite passes:28 legacy checks plus live/crowd/food/sanitation/research/equipment/ticketing journeys, eight held-run journeys including actual3D continuation/cancellation, then Shell desktop/phone/ultrawide recovery and four exact two-night classic/3D comparisons. Source47f680e was frozen and clean before native timing."
+              "Full integrated player suite passes:28 legacy checks plus live/crowd/food/sanitation/research/equipment/ticketing journeys, eight held-run journeys including actual3D continuation/cancellation, then Shell desktop/phone/ultrawide recovery and four exact two-night classic/3D comparisons. Source47f680e was frozen and clean before native timing.",
+              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
             ]
           },
           {
             "id": "FOH-V02r3",
             "scope": "Split Acre fixed side-stage scene and conserved representative audience",
-            "status": "verified-awaiting-delivery",
+            "status": "verified-delivered",
             "evidence": [
               "Source-owned 52 \u00d7 24 presentation around the unchanged 40 \u00d7 24 build yard; fixed annex and accessible Side stage camera. Geometry checks pass at1440,375 and2560 CSS pixels, including both yaw angles, nonbuildable annex, all-room disposal and context recovery.",
               "Two allocation/geometry tests pass. Versioned stage accounting integration, complete player journeys, native timing and delivery remain pending. Legacy side allocation is explicitly unknown; classic remains default; final art and device acceptance remain open.",
               "Integrated seating/stage core, career and playable stage controls. All390 repository tests, build, generated docs and unchanged simulator verdicts pass. Full Festival browser acceptance passes three geometry sizes and eight exact classic/3D legacy/versioned settlement/reload comparisons. Actual 3D seating/stage control regressions and native measurement are being completed; CI and hosted delivery remain pending.",
               "Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9746\u201359.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
-              "Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification."
+              "Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification.",
+              "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
             ]
           },
           {
             "id": "FOH-V02r4",
             "scope": "Source-owned Festival delay tower and persistent 3D touch inspection",
-            "status": "implemented-local-verification",
+            "status": "verified-awaiting-delivery",
             "evidence": [
               "Four-unit mast and three-cabinet cluster replace generic gate geometry; all rotations stay inside one logical cell and the manifest separates Festival-only props. No engine/save/coverage/cost changes.",
               "The actual touch journey exposed a click retargeted onto a newly opened inspection backdrop. Document capture now consumes only the existing gesture click; fresh presses and keyboard activation remain independent. Actual persistent inspection, selected coordinates and new Close taps are tested.",
               "416 repository tests,16 camera/model checks, build/assets/generated references and unchanged simulator pass. Full browser verification, final-head CI and delivery remain in progress; new model hardware/final art acceptance is not inferred from earlier native reports.",
-              "Actual elevated-speaker touch inspection and subsequent Close taps pass at1440,375 and2560px with both camera yaws and both tower rotations; context loss/restoration and room switching preserve state. Full3D client gestures/fallback/reload/settlement pass. Desktop/phone captures inspected. Remaining overview/core/Festival settlement checks continue before release."
+              "Actual elevated-speaker touch inspection and subsequent Close taps pass at1440,375 and2560px with both camera yaws and both tower rotations; context loss/restoration and room switching preserve state. Full3D client gestures/fallback/reload/settlement pass. Desktop/phone captures inspected. Remaining overview/core/Festival settlement checks continue before release.",
+              "Complete local verification passes:28 core player checks; full3D gesture/inspection/recovery/fallback/reload/settlement;4 overview journeys; Festival geometry/touch checks at3 sizes and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Generated references and simulator remain unchanged. Source and browser proof are separate from current-head CI and hosted release."
             ]
           }
         ]
@@ -1263,14 +1270,16 @@
           "FOH-V02"
         ],
         "doneWhen": "Evaluate zoomed Split Acre navigation; implement minimap if needed or record evidence-backed deferral, without claiming unbuilt work shipped.",
-        "status": "verified-awaiting-delivery",
+        "status": "verified-delivered",
         "evidence": [
           "FOH-U01a implements the already scoped Split Acre desktop overview. It rotates with the view and clips the actual safe ground footprint, including the3D annex, with pointer/keyboard pan and no saved camera state. Fit/phone/compact hiding and measured HUD gaps preserve primary controls.",
           "All392 repository tests, build, generated docs and unchanged simulator pass. Four classic/3D desktop complete-show journeys verify geometry/pan, zoom preservation, placement isolation, keyboard focus, off-map drags, resize, recovery, reload and exact settlement/state parity. Initial admin description and asynchronous-backend harness issues were corrected. Renderer-toggle/full player regression, current-head CI, hosted delivery and integrated performance/device acceptance remain open.",
           "Actual Camera-window classic/3D toggles also preserve the correct overview extent and save; all four navigation journeys pass again. Full player regression and delivery remain in progress.",
           "Twelve full native overview windows at clean ca1f1a7 pass independent source/raw/fixture digests, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1: visible 59.44\u201359.98 Hz, hidden 59.51\u201359.98 Hz, zero intervals over50ms. Each mode has three fixed/three actual pointer-pan repeats with10s warmup/30s measurement. All preserve6000 total attendance,1267 displayed arrivals and180 representatives. Visible moving windows repaint; fixed and hidden windows reuse the image. Sequential descriptive results overlap; no causal improvement, running-Lot KI-14 closure, phone/low-power or human acceptance inferred.",
           "Full player, Festival and 3D navigation/toggle regressions pass on the overview source. Current combined release also integrates PR103 booking conditions and PR104 Shell room profiles; combined checks, CI, merge and hosted acceptance remain pending.",
-          "Combined source after PR103/104 integration passes407 repository tests, build, assets, generated documents and unchanged simulator; all four overview journeys also pass. Remaining player/venue checks are running before delivery."
+          "Combined source after PR103/104 integration passes407 repository tests, build, assets, generated documents and unchanged simulator; all four overview journeys also pass. Remaining player/venue checks are running before delivery.",
+          "PR105 source388d4c8 passed CI37217879686 and is included in merged PR107. Integrated CI37242898789 and Pages137db3a pass; current hosted navigation and saved-show acceptance are in progress.",
+          "At137db3a, all four hosted overview journeys pass actual navigation, camera toggles, resize, recovery, reload and exact saved-show outcomes. Hosted warmed-cache 3D/classic/3D reloads and keyboard overview panning preserve saves; offline signing and reloading retain cash and journal1297350. Local source:416 tests/build/assets/docs/unchanged simulation pass. Club/standalone3D/resolution harnesses use local source; they are not hosted proof."
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/105"
       },
@@ -1285,8 +1294,19 @@
           "FOH-U01"
         ],
         "doneWhen": "Provenance, recovery, career, art/camera and device evidence meet release checks; promotion only after those gates are satisfied.",
-        "status": "pending",
-        "evidence": []
+        "status": "in-progress",
+        "evidence": [],
+        "slices": [
+          {
+            "id": "FOH-L01a",
+            "scope": "Player guide and complete camera fit native evidence",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Source-checked player guide covers booking through settlement, current venue controls, delay behavior, optional 3D navigation, keyboard and save/offline recovery. Links resolve; publication and hosted acceptance pending.",
+              "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate."
+            ]
+          }
+        ]
       }
     ]
   }

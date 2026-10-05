@@ -6,6 +6,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 - Front of House: the Festival delay tower has a source-owned 3D mast and speaker cluster instead of a generic gate. A 3D touch inspection stays open when the following click lands on its new dialog; fresh UI taps remain available. Footprints and accounting are unchanged.
 
+- Front of House: add the player guide and complete audited native camera-fit comparison; preserve the open full-game performance and device acceptance gates.
+
 - Front of House: reuse unchanged camera volume fit for pan and zoom, preserving projection, picking, presets and saved outcomes.
 
 - Front of House: zoomed Split Acre gets a desktop site overview with a perspective-correct ground outline, rotated layout blocks and pointer/keyboard panning. It preserves zoom and saves, avoids HUD controls, and hides at Fit or on phones.
