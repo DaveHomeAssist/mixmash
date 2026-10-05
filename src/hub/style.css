@@ -139,6 +139,20 @@ h2,h3 {
   font-weight:500;
   display:block
 }
+@supports(background-clip:text) {
+  :root[data-theme=dark] .wordmark {
+    background:linear-gradient(135deg,#ff2d6b 0%,#b429f9 50%,#00f0ff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent
+  }
+}
+@media(forced-colors:active) {
+  :root[data-theme=dark] .wordmark {
+    background:none;
+    color:CanvasText
+  }
+}
 .monogram {
   background:var(--ink);
   color:var(--paper);
@@ -646,15 +660,28 @@ body:has(.view:not(#games):target) .hero {
     transform:translateY(-2px)
   }
 }
+/* Give the headline more presence within the existing desktop introduction space. */
+@media(min-width:1101px) and (min-height:651px) {
+  .hero {
+    height:108px;
+    padding-block:8px
+  }
+  .hero h1 {
+    font-size:clamp(42px,4.1vw,72px)
+  }
+}
+@media(min-width:2200px) and (min-height:651px) {
+  .hero {
+    height:143px;
+    padding-block:14px
+  }
+  .hero h1 {
+    font-size:88px
+  }
+}
 @media(min-width:2200px) {
   .site-shell {
     padding-inline:48px
-  }
-  .hero {
-    padding-block:28px
-  }
-  .hero h1 {
-    font-size:68px
   }
   .hero-copy {
     font-size:19px

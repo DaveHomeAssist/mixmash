@@ -13,6 +13,8 @@ with the same lineup in the social card. Game details document players,
 controls and saving from [game-specific evidence](HOMEPAGE_EVIDENCE.md).
 Light default, remembered dark choice, Games/Studio navigation, bounded layouts,
 short-screen pagination, a useful ultrawide preview and Pick for me are included.
+The dark-mode wordmark restores the studio gradient. Larger desktop headlines
+use the existing introduction space, preserving the six-card layout.
 Native links and detail navigation work without JavaScript. New homepage storage
 is namespaced and never writes game save keys. First visits defer the game
 worker until a game launches; existing worker clients retain offline access.
