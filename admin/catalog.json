@@ -1634,6 +1634,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/MANUAL.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House player guide",
+      "description": "Run a concert, settle its money, and build a career from Oak St. Lot to Split Acre. This guide covers the existing playable controls. The 3D view is an optional preview.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/MANUAL.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/PERFORMANCE.md",
       "project": "front-of-house",
       "category": "docs",
@@ -1801,6 +1811,16 @@
       "title": "Batched native 3D HUD measurements",
       "description": "Six full native client repeats after render coalescing, with unchanged game-state replay, scene quality and retained timing variation.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-batched-hud.json",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performance/2026-10-04-camera-fit-native.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Native camera fit comparison",
+      "description": "Twelve full-client native Chrome running-show windows with frozen-source quality, timing and exact engine replay audits.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-camera-fit-native.json",
       "open": null
     },
     {

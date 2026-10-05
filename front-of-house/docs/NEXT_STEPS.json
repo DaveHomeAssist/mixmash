@@ -305,11 +305,6 @@
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
-    "tierCareer": {
-      "baseRevision": "8c8e3c778a38501c40b456d32dcc3803e849c8bf",
-      "checkedOn": "2026-10-04",
-      "localChecks": "The100-seed matched ordinary-career cohort passes all declared automated thresholds:100/100 careful Club and Amphitheater progression,99/100 Festival completion and another settled Festival day for all99; careless Club progression69/100. Failed seeds are retained, including careful Festival seed10. Every reached Club cohort plays at least five shows. Actual one/two/three-night holds, cancellation copies, deferred reputation, cash/journal/signing and normalized receipt checks run throughout. This is current-mechanics regression proof; new Festival VIP/bus infrastructure must rerun it. No gameplay value or goal is retuned."
-    },
     "clubLighting": {
       "baseRevision": "12a501afddb219b2c7a00b1a4ae224f09a4e001d",
       "checkedOn": "2026-10-04",
@@ -437,6 +432,11 @@
       "localChecks": "Version1 curfew timing implemented under CT-DEC-24: end at seeded minute or five-minute paid extension, timed aggregate walk-ups/bar income, frozen held-night terms and readable Set time receipts.423 repository tests, seven dedicated accounting/recovery tests, build, assets/docs and unchanged Lot simulator pass. Eight Chromium/WebKit player journeys cover both outdoor rooms, deals/responses, normal/reduced playback, compact sizes/both themes and signed replay.960 unmarked transitions/120 receipts exactly match137db3a. Real offline appeal preserves148 played minutes,20 lost,400 response fee and1027752 journal cash. Supplied action client and actual full/phone screenshots inspected. Full browser regression, CI and hosted acceptance pending.",
       "release": "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.",
       "scope": "Aggregate outdoor set clock; physical/human acceptance not claimed."
+    },
+    "tierCareer": {
+      "baseRevision": "8c8e3c778a38501c40b456d32dcc3803e849c8bf",
+      "checkedOn": "2026-10-04",
+      "localChecks": "The100-seed matched ordinary-career cohort passes all declared automated thresholds:100/100 careful Club and Amphitheater progression,99/100 Festival completion and another settled Festival day for all99; careless Club progression69/100. Failed seeds are retained, including careful Festival seed10. Every reached Club cohort plays at least five shows. Actual one/two/three-night holds, cancellation copies, deferred reputation, cash/journal/signing and normalized receipt checks run throughout. This is current-mechanics regression proof; new Festival VIP/bus infrastructure must rerun it. No gameplay value or goal is retuned."
     },
     "festivalSupport": {
       "baseRevision": "39c6910dbcbb81220256d6fd44914867bb016b07",
@@ -1294,7 +1294,10 @@
               "The actual touch journey exposed a click retargeted onto a newly opened inspection backdrop. Document capture now consumes only the existing gesture click; fresh presses and keyboard activation remain independent. Actual persistent inspection, selected coordinates and new Close taps are tested.",
               "416 repository tests,16 camera/model checks, build/assets/generated references and unchanged simulator pass. Full browser verification, final-head CI and delivery remain in progress; new model hardware/final art acceptance is not inferred from earlier native reports.",
               "Actual elevated-speaker touch inspection and subsequent Close taps pass at1440,375 and2560px with both camera yaws and both tower rotations; context loss/restoration and room switching preserve state. Full3D client gestures/fallback/reload/settlement pass. Desktop/phone captures inspected. Remaining overview/core/Festival settlement checks continue before release.",
-              "Complete local verification passes:28 core player checks; full3D gesture/inspection/recovery/fallback/reload/settlement;4 overview journeys; Festival geometry/touch checks at3 sizes and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Generated references and simulator remain unchanged. Source and browser proof are separate from current-head CI and hosted release."
+              "Complete local verification passes:28 core player checks; full3D gesture/inspection/recovery/fallback/reload/settlement;4 overview journeys; Festival geometry/touch checks at3 sizes and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Generated references and simulator remain unchanged. Source and browser proof are separate from current-head CI and hosted release.",
+              "Integrated delivered curfew4dee773 and guidecf3865b, preserving both appended histories and the touch-capture fix. Cachev58r1 is distinct from curfewv56 and house-lightingv57. Earlier65fc08e complete local player suite passes; current integrated checks and replacement CI/hosted proof follow.",
+              "Reconciled delivered355fe9d Club house lighting with existing Festival delay models and compatibility-click correction. Service worker uses uniquev58r2. Combined source/asset checks, final-head CI and actual hosted proof remain pending.",
+              "Combined355fe9d Club lighting and delay preview passes425repository tests, build, generated references/assets/catalog and11unchanged Lot verdicts. Integrated guide22f9a79 changes documentation only; engine/data/board/styles remain delivered355fe9d. Final-head CI and combined player/hosted acceptance remain pending."
             ]
           },
           {
@@ -1360,7 +1363,9 @@
             "status": "implemented-local-verification",
             "evidence": [
               "Source-checked player guide covers booking through settlement, current venue controls, delay behavior, optional 3D navigation, keyboard and save/offline recovery. Links resolve; publication and hosted acceptance pending.",
-              "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate."
+              "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate.",
+              "Guide reconciled with delivered355fe9d Club house lighting: Room/Lighting pages, included lights, redundant suggested tower removal and portable PA replacement explained. Peer runtime preserved exactly; current integration checks and final-head CI/document deployment remain pending.",
+              "Combined guide/Club source passes all425 repository tests, build, asset integrity, generated references and eleven unchanged Lot simulator verdicts. Runtime files match delivered355fe9d exactly. Final-head CI and deployed manual/native-report readback remain pending."
             ]
           }
         ]

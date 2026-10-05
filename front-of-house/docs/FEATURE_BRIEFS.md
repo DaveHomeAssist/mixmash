@@ -647,6 +647,16 @@ Build adds an accessible Delay tool (D), code-owned provisional tower geometry a
 
 Acceptance: hand-checked coverage edges, deterministic base allocation, overlap union, occupied-cell exclusion, capacity cap, rotations, portable disablement and unchanged zero-tower fixtures; invalid counts/placements/other rooms; exact opening/main-production/site-net/journal reconciliation for guarantee/sponsor/door, paid reload and frozen layouts; actual tool/placement/undo, readable inactive state, two themes/desktop/phone/compact pages and offline receipt parity. Document code-art origin and provisional status. VIP deck, bus compound, source-owned venue scenes and full career simulation remain the next work.
 
+### FOH-L01a — Player guide and acceptance evidence
+
+The stable playable loop now has enough verified controls for a concise player guide. Document booking through signing, room-specific controls, representative crowds, optional preview navigation, save export/import and warmed-cache offline limits against current source and observed journeys. Publish the complete frozen native camera comparison and retain its limitations. This slice adds no runtime, save or simulation behavior. Acceptance requires accurate labels and links, a current-source review, generated references/catalog parity and normal repository delivery; human art/device acceptance and public promotion remain separate.
+
+### FOH-V02r4 — Delay tower preview correction
+
+The Festival Delay tool currently appears as a generic gate in the optional 3D preview. Add an independently authored mast and speaker cluster within the existing one-cell footprint, matching the four-logical-unit obstacle height. Record it separately from Lot-only samples in the asset manifest. Preserve placement, rotation, selection, undo, saves, coverage and charges. Acceptance: measured rotated bounds, picking the elevated speaker instead of the floor behind it, desktop/phone views, context recovery and unchanged saved-show settlement. This is technical geometry; physical scale and final art acceptance remain separate.
+
+The picking journey also reproduces a touch click retargeted onto the inspection dialog opened during pointerup. Its backdrop can close it immediately, or the click can reach a newly exposed control. Consume that gesture's compatibility click at document capture; a new pointer press resets suppression before ordinary UI interaction. Verify a persistent inspection window, exact selected coordinates, a working subsequent Close tap and unchanged placement/orbit gestures. Keyboard activation remains independent.
+
 ## FOH-V02b11 — an outdoor curfew actually ends the set
 
 The present curfew changes a response multiplier but playback and every receipt still end at23:00. Under CT-DEC-19, new Amphitheater and Festival player bookings use optional version1 curfew terms. Keep the learned incident choice: End the set is free and ends at the incident minute; Appeal and finish the song costs the existing$400 and permits five more minutes, never past23:00. Doors remain19:00 and the act starts20:12. Each held night derives its own incident minute from its existing seed. Other incidents end at23:00.

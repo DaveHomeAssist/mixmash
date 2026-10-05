@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-9';
+export const MODEL_REVISION = 'lot-sample-10';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -76,6 +76,20 @@ export function createLotModels() {
         b([0.012, 0.1, 0.1], [0.232, y + 0.1, 0], COLORS.aluminium, 0.6);
       }
       b([0.11, 0.09, 0.02], [0, 0.22, -0.27], COLORS.aluminium, 0.6);
+    } else if (object.type === 'delay') {
+      // One logical tower, including its support and speakers, stays inside one cell.
+      b([0.9, 0.12, 0.9], [0, 0.06, 0], COLORS.steel, 0.3);
+      for (const x of [-0.14, 0.14]) for (const z of [-0.14, 0.14]) {
+        b([0.045, 3.72, 0.045], [x, 1.98, z], COLORS.aluminium, 0.7, 'cylinder');
+      }
+      for (const y of [0.5, 1.2, 1.9, 2.6, 3.3, 3.8]) {
+        b([0.32, 0.035, 0.32], [0, y, 0], COLORS.aluminium, 0.7);
+      }
+      for (const y of [3.1, 3.47, 3.84]) {
+        b([0.58, 0.32, 0.4], [0, y, 0.09], COLORS.fabric);
+        b([0.51, 0.26, 0.018], [0, y, 0.3], 0x39424a, 0.25);
+        for (const offset of [-0.075, 0, 0.075]) b([0.47, 0.012, 0.01], [0, y + offset, 0.315], 0x101419);
+      }
     } else if (object.type === 'bar') {
       b([w - 0.18, 0.48, 0.56], [0, 0.24, 0], COLORS.wood);
       b([w, 0.05, 0.7], [0, 0.525, 0], COLORS.steel, 0.2);

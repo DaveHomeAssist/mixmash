@@ -6,6 +6,12 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 - Front of House: new Festival bookings require a placeable VIP deck and bus compound, with disclosed $1,500 shared rentals, normal footprint/power/view constraints, classic and 3D props, and contained Rider reports. Older unmarked bookings retain their rules. The earned tier career baseline now covers these requirements.
 
+- Front of House: the Festival delay tower has a source-owned 3D mast and speaker cluster instead of a generic gate. A 3D touch inspection stays open when the following click lands on its new dialog; fresh UI taps remain available. Footprints and accounting are unchanged.
+
+- Front of House guide: document delivered Club house lighting and preserved older booking terms.
+
+- Front of House: add the player guide and complete audited native camera-fit comparison; preserve the open full-game performance and device acceptance gates.
+
 - Front of House: outdoor curfew ends new booked sets at the seeded minute or five minutes later on appeal; attendance, bar income, playback and signed Set time receipts share the same rule. Legacy saves retain their prior math.
 
 - Front of House: reuse unchanged camera volume fit for pan and zoom, preserving projection, picking, presets and saved outcomes.

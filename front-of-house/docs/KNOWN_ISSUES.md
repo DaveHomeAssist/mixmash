@@ -23,7 +23,7 @@ One list of what is wrong, weak or unrecorded, so it isn't scattered through ses
 | KI-11 | Low | Scope | Not built with the rooms: a ticketing platform, a hillside model, cancelling a held night, simulator verdicts for the Club and later, and four venue art looks | `progress.md` TODO; [FUTURE.md](FUTURE.md) | On the roadmap per tier |
 | KI-12 | Low | Release | Public release gates are open: Dave's playtest sign-off, CT-DEC-10 and CT-DEC-11 still Proposed, `noindex`, no hub card, no sitemap entry | [RELEASE.md](RELEASE.md); [DECISIONS.md](DECISIONS.md) | Dave |
 | KI-13 | Low | Copy | The Show card's heading stays "Doors are open" all night, so a PA dropout at 21:05 sits under it | `game.js` `showPanel`; screenshot after the R-11a fix | Let the heading follow the clock (doors, set, curfew) |
-| KI-14 | Medium | Performance | Full native3D/HUD repeats do not establish sustained60fps:55.91–59.84Hz after removing duplicate render submissions, with shared-host variation | [Complete repeated evidence](PERFORMANCE.md#full-native-hud-batching-comparison) | Keep exact source/quality attribution; profile the supported desktop/low-power matrix and retain human readability acceptance before release |
+| KI-14 | Medium | Performance | Full native3D/HUD repeats do not establish sustained60fps:58.28–59.65Hz after camera fit reuse, with shared-host variation | [Complete repeated evidence](PERFORMANCE.md#native-camera-fit-comparison) | Keep exact source/quality attribution; profile the supported desktop/low-power matrix and retain human readability acceptance before release |
 
 ### KI-01: paired engine example
 
