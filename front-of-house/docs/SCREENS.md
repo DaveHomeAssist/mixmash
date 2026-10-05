@@ -207,3 +207,7 @@ The Camera window adds a keyboard-accessible Side stage preset for Split Acre. W
 ### Zoomed site overview
 
 Split Acre shows a small desktop overview above Fit zoom. The blocks rotate with the view; a white outline shows the visible ground and a white dot marks the camera target. The3D overview includes the fixed annex; the classic overview uses the existing yard. Click or drag a valid map location to pan without placing equipment or changing zoom. Arrow keys pan, Enter centres, Home returns to Fit, and Escape returns focus to the board. The map hides at Fit, on phones and when a compact window has no safe HUD gap. Crowd tint is illustrative; stage accounts remain the numeric authority. Camera state is not saved.
+
+### Outdoor Set time receipt
+
+Outdoor Deals has Guarantee/Door/(Sponsor)/Curfew pages explaining the pre-booking rule. Actual curfew choices quote their end time and existing fee. The settlement header's SET ENDED time opens a contained Set time window: start, actual end, played/lost minutes, demand/bar rules and Back to settlement. It works in signed history and after reload. Unsupported saved terms display a cash-preserving recovery notice instead of an invented time. Reduced motion and normal wind-down end at the same authoritative minute.

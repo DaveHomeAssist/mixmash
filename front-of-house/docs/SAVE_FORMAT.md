@@ -240,3 +240,7 @@ A malformed optional marker is removed with `roomNotice`, retaining paid cash an
 ### Festival delay layout entries
 
 `type:'delay'` uses the existing whole-number x/y/rotation layout shape. It is Festival-only, capped at two1×1 footprints and8kW each, with ordinary overlap/bounds/power validation. No coverage, cost or operator count is accepted from a save. Valid Festival room profiles derive union coverage; absent/recovered profiles and portable PA derive no delay benefit. The paid-layout lock remains authoritative. Cached Festival layouts retain towers across room selection/reload; a new player Festival booking selects its room policy before Build. Paid cash and history remain the recovery authority when optional source is damaged.
+
+### Outdoor set timing (optional version1)
+
+New player Amphitheater/Festival bookings write `booking.curfew: {version:1}` and copy it to `show.curfew` at opening and each held night. Paid show terms take precedence; missing paid terms never fall back to the booking marker. End minute, played/lost minutes and multipliers derive from data, room, per-night seed and immutable response; imported derived fields are discarded. Unmarked saves retain earlier response math. Unsupported optional markers are removed with `curfewNotice`, while cash and signed history are preserved. The receipt exposes missing timing authority. No schema or namespace change.
