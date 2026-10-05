@@ -726,3 +726,11 @@ Camera fit source passes408 repository tests, build, asset validation, generated
 ## 2026-10-04 — Stack integration with delivered Festival work
 
 Merged gh-pages `f6532a2` (PR106 Festival profile, PR108 delay towers) into the PR87–PR107 camera-fit/overview stack. Six conflicts were resolved by keeping both sides: overview and Festival account styles, both brief sets, both progress records, delivered release evidence in NEXT_STEPS.json, and the stages smoke keeps the newer Room checks alongside the 3D journeys. The service worker cache moves to `v55`. Local checks on the merge: 416 repository tests, 7 performance tests, vendor/asset checks, build, unchanged Lot simulator, generated docs unchanged, and stages, navigation, Festival, Shell, Club and seating browser journeys. Current-head CI, Pages and hosted acceptance follow.
+
+## 2026-10-04 — Delay preview and touch inspection
+
+FOH-V02r4 replaces the generic gate used for Festival delay towers with a source-owned mast and speaker cluster. Its one-cell bounds and four-unit logical height agree in all rotations; the manifest records Festival-only props separately. No coverage, costs, saves or engine rules change.
+
+The elevated-speaker touch check reproduced a compatibility click retargeted onto the dialog opened by pointerup. It could close the backdrop or reach a newly exposed control. Consuming that gesture click at document capture preserves the modal; the next pointer press resets suppression for normal controls. Removing explicit pointer release alone did not fix the retargeting and was discarded. Exact selected coordinates and fresh Close taps are checked at both camera yaws. Source checks pass416 tests, build, assets, generated references and unchanged simulator; browser verification and delivery continue. New tower hardware and final art acceptance remain separate.
+
+Elevated-speaker touch selection, exact coordinates and fresh Close taps now pass at1440,375 and2560px with both camera yaws and both tower rotations. Context recovery and room switching preserve state. Full3D gesture/fallback/reload/settlement checks pass; remaining overview, core and Festival settlement journeys continue. Actual desktop/phone captures inspected; no human acceptance inferred.

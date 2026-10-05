@@ -118,7 +118,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | Show history | Done | Every settled show, newest first | The only window allowed to scroll |
 | How the deals work | Book: Deals (ⓘ) | Guarantee, door deal, and sponsor in Split Acre | |
 | Lot details | Build: Details | Every placed object with a remove button | Keyboard route to removing by name |
-| Object inspection | Build: Select, then click/touch/Enter on an object | Name, coordinates, footprint, rental cost and Remove | Never places; removal uses existing Undo and returns focus to the canvas. Selection is transient and clears after layout/phase/load/history changes |
+| Object inspection | Build: Select, then click/touch/Enter on an object | Name, coordinates, footprint, rental cost and Remove | Never places; removal uses existing Undo and returns focus to the canvas. Selection is transient and clears after layout/phase/load/history changes. A 3D tap's following click is consumed even if the new dialog covers its position; a fresh tap operates the dialog normally |
 | Clear confirmation | Build: Clear | Object count, Cancel and Clear all objects | One confirmation, one undo step; cancel returns focus to Clear |
 | Menu | Menu button or ? | Dark controls, full screen, source link, New game (Career, Sandbox, Wet lot), keys help, Save and load | New game asks for a second press when a game is under way |
 

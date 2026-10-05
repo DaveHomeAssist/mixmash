@@ -1240,6 +1240,17 @@
               "Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9746\u201359.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
               "Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification."
             ]
+          },
+          {
+            "id": "FOH-V02r4",
+            "scope": "Source-owned Festival delay tower and persistent 3D touch inspection",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "Four-unit mast and three-cabinet cluster replace generic gate geometry; all rotations stay inside one logical cell and the manifest separates Festival-only props. No engine/save/coverage/cost changes.",
+              "The actual touch journey exposed a click retargeted onto a newly opened inspection backdrop. Document capture now consumes only the existing gesture click; fresh presses and keyboard activation remain independent. Actual persistent inspection, selected coordinates and new Close taps are tested.",
+              "416 repository tests,16 camera/model checks, build/assets/generated references and unchanged simulator pass. Full browser verification, final-head CI and delivery remain in progress; new model hardware/final art acceptance is not inferred from earlier native reports.",
+              "Actual elevated-speaker touch inspection and subsequent Close taps pass at1440,375 and2560px with both camera yaws and both tower rotations; context loss/restoration and room switching preserve state. Full3D client gestures/fallback/reload/settlement pass. Desktop/phone captures inspected. Remaining overview/core/Festival settlement checks continue before release."
+            ]
           }
         ]
       },

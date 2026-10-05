@@ -199,3 +199,5 @@ The concept images (two sprite-sheet specs, the asset sheet, the build-phase moc
 ### Festival delay technical prop (2026-10-04)
 
 The delay tower introduced with FOH-V02b10 is independently authored in `board.js` as a thin, four-logical-unit code-drawn enclosure over its1×1 footprint. Palette glyph and geometry use no image or external asset. Source and runtime use are the repository code under the repository's existing terms. It is a provisional technical representation for placement/picking/occlusion and has no physical calibration or final visual acceptance. The unused legacy delay-tower library image remains unused.
+
+FOH-V02r4 gives the optional 3D preview its own source-authored four-unit mast, base and three-cabinet speaker cluster in `lot-models.mjs`. All rotations stay inside the existing one-cell footprint, and the complete tower is one selectable object. The manifest records this Festival-only prop under `venueAssets`, separately from the Lot samples. Procedural geometry and materials use no external image. The dimensions express the existing logical obstacle height, not a calibrated physical tower.

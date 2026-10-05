@@ -20,6 +20,7 @@ function fixture(policy = false, venue = 'festival', build = true) {
     step({ type: 'chooseDeal', deal: 'guarantee', artistId: E.offersFor(s)[0], secondId: 'hollow-census', ...(policy ? { stagePolicy: 1 } : {}) });
     if (policy) assert.equal(s.booking.stages?.version, 1, 'Versioned stage authority must be integrated; geometry-only mode is not full acceptance');
     step({ type: 'setLayout', objects: D.VENUES[venue].starter });
+    if (venue === 'festival') for (const [x, rot] of [[8, 0], [30, 1]]) step({ type: 'place', object: { type: 'delay', x, y: 16, rot } });
   }
   return s;
 }
@@ -44,6 +45,20 @@ try {
       assert.equal(await p.evaluate(preset => __frontOfHouse.boardPreset(preset), preset), true); await fit(p);
       assert.deepEqual(await state(p), original); await p.screenshot({ path: join(output, `${width}-${preset}.png`) });
     }
+    await p.locator('#board').focus(); await p.keyboard.press('Escape');
+    for (const yaw of [37, 135]) for (const x of [8, 30]) {
+      await p.evaluate(yaw => __frontOfHouse.boardCamera({ yaw, pitch: 48, zoom: 1, x: 26, y: 12 }), yaw);
+      const speaker = await p.evaluate(x => __frontOfHouse.boardClientOf(x + 0.5, 16.5, 3.47), x);
+      assert.equal(speaker.clear, true);
+      await p.touchscreen.tap(speaker.x, speaker.y);
+      assert.equal(await p.locator('#win').isVisible(), true, 'inspection remains open after the touch click');
+      assert.equal(await p.locator('#win-title').innerText(), 'Delay tower', 'elevated speaker selects its tower instead of the ground behind it');
+      assert.match(await p.locator('#win').innerText(), new RegExp(`Tile ${x}, 16`));
+      await p.locator('#win [data-win="close"]').last().tap();
+      assert.equal(await p.locator('#win').isVisible(), false, 'a new touch can close inspection normally');
+      assert.deepEqual(await state(p), original);
+    }
+    await p.screenshot({ path: join(output, `${width}-delays.png`) });
     await p.evaluate(() => __frontOfHouse.boardPreset('plan')); await p.keyboard.press('5');
     const outside = await p.evaluate(() => __frontOfHouse.boardClientOf(46, 10)); await p.touchscreen.tap(outside.x, outside.y); assert.deepEqual(await state(p), original, 'fixed annex never becomes editable land'); await p.keyboard.press('Escape');
     await p.locator('#menu-btn').click(); await p.locator('[data-act="camera-open"]').click();

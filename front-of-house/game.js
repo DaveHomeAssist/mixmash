@@ -1741,6 +1741,14 @@ function updateZoomButtons() {
 const lotPointers = new Map();
 let lotGesture = null;
 let swallowLotClick = false;
+// A touch click can target a dialog opened by pointerup, outside the canvas.
+// Consume that gesture's click; a new press must still work on any UI control.
+document.addEventListener('pointerdown', () => { swallowLotClick = false; }, true);
+document.addEventListener('click', (event) => {
+  if (!swallowLotClick || event.detail === 0) return;
+  swallowLotClick = false;
+  event.preventDefault(); event.stopImmediatePropagation();
+}, true);
 function cancelLotGesture() {
   lotPointers.clear(); lotGesture = null; ui.dozing = false; ui.pan = null; history.drag = null;
 }
