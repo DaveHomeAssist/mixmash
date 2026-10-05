@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "355fe9d Club lighting delivered; Festival delay preview reconciled",
+  "head": "355fe9d Club lighting delivered; guide and delay preview integrated",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Delivered Club house lighting and outdoor curfew are preserved. Festival delay models and touch inspection correction are reconciled; final source checks, CI and corrected hosted acceptance remain pending. Guide and full-career reports, final art, supported-device and human acceptance remain open.",
+  "statusReason": "Club lighting and outdoor curfew are preserved. Guide and Festival delay preview pass source checks; current CI and corrected hosted delivery remain pending. Complete-career report delivery, final art, supported-device and human acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -1271,7 +1271,8 @@
               "416 repository tests,16 camera/model checks, build/assets/generated references and unchanged simulator pass. Full browser verification, final-head CI and delivery remain in progress; new model hardware/final art acceptance is not inferred from earlier native reports.",
               "Actual elevated-speaker touch inspection and subsequent Close taps pass at1440,375 and2560px with both camera yaws and both tower rotations; context loss/restoration and room switching preserve state. Full3D client gestures/fallback/reload/settlement pass. Desktop/phone captures inspected. Remaining overview/core/Festival settlement checks continue before release.",
               "Complete local verification passes:28 core player checks; full3D gesture/inspection/recovery/fallback/reload/settlement;4 overview journeys; Festival geometry/touch checks at3 sizes and8 exact legacy/versioned classic/3D settlement/reload comparisons with two towers. Generated references and simulator remain unchanged. Source and browser proof are separate from current-head CI and hosted release.",
-              "Reconciled delivered355fe9d Club house lighting with existing Festival delay models and compatibility-click correction. Service worker uses uniquev58r2. Combined source/asset checks, final-head CI and actual hosted proof remain pending."
+              "Reconciled delivered355fe9d Club house lighting with existing Festival delay models and compatibility-click correction. Service worker uses uniquev58r2. Combined source/asset checks, final-head CI and actual hosted proof remain pending.",
+              "Combined355fe9d Club lighting and delay preview passes425repository tests, build, generated references/assets/catalog and11unchanged Lot verdicts. Integrated guide22f9a79 changes documentation only; engine/data/board/styles remain delivered355fe9d. Final-head CI and combined player/hosted acceptance remain pending."
             ]
           }
         ]
@@ -1318,7 +1319,9 @@
             "status": "implemented-local-verification",
             "evidence": [
               "Source-checked player guide covers booking through settlement, current venue controls, delay behavior, optional 3D navigation, keyboard and save/offline recovery. Links resolve; publication and hosted acceptance pending.",
-              "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate."
+              "416 repository tests, build, asset validation, generated references and unchanged simulator pass. Report matches the independently audited twelve-window record and contains no private paths. Core hosted player checks28, overview journeys4 and exact offline signing/reload pass at137db3a; remaining suites and document delivery are separate.",
+              "Guide reconciled with delivered355fe9d Club house lighting: Room/Lighting pages, included lights, redundant suggested tower removal and portable PA replacement explained. Peer runtime preserved exactly; current integration checks and final-head CI/document deployment remain pending.",
+              "Combined guide/Club source passes all425 repository tests, build, asset integrity, generated references and eleven unchanged Lot simulator verdicts. Runtime files match delivered355fe9d exactly. Final-head CI and deployed manual/native-report readback remain pending."
             ]
           }
         ]
