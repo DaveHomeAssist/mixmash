@@ -206,7 +206,7 @@ function render() {
 function renderTop() {
   $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
   $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice || state.venue.objects.some(o => o.type === 'delay'));
-  $('#seating-menu').textContent = state.venue.id === 'festival' ? 'Sound and views' : 'Seats and lawn';
+  $('#seating-menu').textContent = state.venue.id !== 'amphitheater' ? 'Sound and views' : 'Seats and lawn';
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
@@ -314,7 +314,7 @@ function bookPanel() {
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
-      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : spec.id === 'festival' ? ' Main system included: 3,000 people.' : ''}</p>
+      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : spec.id === 'festival' ? ' Main system included: 3,000 people.' : spec.id === 'club' ? ' House PA and lights included.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
       ${opener === id ? '<p class="lede">Selected for side stage. Choose another side act first.</p>' : opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
@@ -1396,11 +1396,12 @@ function roomProfileHtml() {
   const profile = roomProfileFor(state.venue);
   const v = evaluateVenue(state.venue), field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
   if (!profile) return v.delays ? `<section data-tab="Room" data-always-tabs><h3>Original room rules</h3><dl class="live-readouts">${field('Delay towers',v.delays)}${field('Delay deployment',money(v.delayCost))}</dl><p>Delays need the Festival room profile.</p><p>Rental and operators still cost money.</p><p>New bookings include the profile.</p></section>` : '';
-  return `<section data-tab="Room" data-always-tabs><h3>${state.venue.id === 'festival' ? 'Festival sound and views' : 'Shell sound and slope'}</h3><dl class="live-readouts">
+  return `<section data-tab="Room" data-always-tabs><h3>${state.venue.id === 'festival' ? 'Festival sound and views' : profile.houseLights ? 'House sound and lights' : 'Shell sound and slope'}</h3><dl class="live-readouts">
     ${field('System', v.housePa ? profile.label : 'Portable PA')}${field('Sound capacity', `${v.soundCapacity} people`)}
     ${field('Room capacity', `${v.capacity} people`)}${field('Clear-view tiles', v.clearTiles)}${field('Blocked-view tiles', v.blockedTiles)}</dl>
-    <p>The house system is included in rent. A placed PA replaces it.</p><p>Lights are still needed for full sound-and-light quality.</p>
-    ${state.venue.id === 'festival' ? '<p>Flat ground; raised main stage. Tall objects block views.</p><p>Main rig covers half the permit. Shared site quality.</p>' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>
+    <p>The house system is included in rent. A placed PA replaces it.</p>${profile.houseLights ? '<p>House lights are included. Pillars still block views.</p>' : '<p>Lights are still needed for full sound-and-light quality.</p>'}
+    ${state.venue.id === 'festival' ? '<p>Flat ground; raised main stage. Tall objects block views.</p><p>Main rig covers half the permit. Shared site quality.</p>' : profile.houseLights ? '' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>
+    ${profile.houseLights ? `<section data-tab="Lighting" data-always-tabs><h3>Included house lights</h3><dl class="live-readouts">${field('House lighting', 'Included')}${field('Extra towers', v.rentedLights)}${field('Extra rental', money(v.rentedLights ? D.LIGHTS_RENTAL : 0))}</dl><p>An optional tower costs ${money(D.LIGHTS_RENTAL)} and draws 8kW.</p><p>It adds no extra quality bonus.</p><p>The 60kW budget covers placed equipment.</p></section>` : ''}
     ${state.venue.id === 'festival' ? `<section data-tab="Delay" data-always-tabs><h3>Delay coverage</h3><dl class="live-readouts">${field('Delay towers',v.delays || 0)}${field('Extra covered tiles',v.delayTiles || 0)}${field('Delay deployment',money(v.delayCost || 0))}</dl><p>Place up to two towers in Build.</p><p>Each costs ${money(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)}, operator included.</p><p>Overlaps count once.</p><p>Extra supply stops at room capacity.</p><p>${v.delays && !v.delayActive ? 'Inactive: use the house PA and room profile.' : 'Uses the house PA and room profile.'}</p></section>` : ''}`;
 }
 
@@ -1654,6 +1655,7 @@ function draw() {
     incident: night && state.show && (!state.show.services || state.show.services.minute >= liveIncidentMinute(state)) ? state.show.incidentId : null,
     night,
     lightTower: state.venue.objects.some((o) => o.type === 'lights'),
+    houseLights: !!roomProfileFor(state.venue)?.houseLights,
     t: night && !reduceMotion && ui.raf && (!ui.play?.live || !ui.play.paused) ? performance.now() / 1000 : 0,
   };
   if (state.phase === 'settle' || state.phase === 'done') {
@@ -1995,7 +1997,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2040,7 +2042,7 @@ function onAct(e) {
     if (i >= 0) act({ type: 'remove', index: i });
     else act({ type: 'place', object: { type: 'fence', x: 0, y: 0, rot: 0 } });
   } else if (a === 'starter') {
-    if (act({ type: 'setLayout', objects: venueSpec(state.venue).starter }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
+    if (act({ type: 'setLayout', objects: venueSpec(state.venue).starter.filter(o => !roomProfileFor(state.venue)?.houseLights || o.type !== 'lights') }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
   } else if (a === 'clear-lot') {
     if (!state.venue.objects.length) { say('The lot is already clear.'); return; }
     openWindow('clear', 'Clear the layout?', '<p>Remove all ' + state.venue.objects.length + ' placed objects? Undo can restore this layout while you remain in Build.</p>', target,
@@ -2452,7 +2454,7 @@ window.render_game_to_text = () => {
     career: (({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }) =>
       ({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }))(careerProgress(state)),
     venue: { objects: state.venue.objects.length, capacity: v.capacity, ready: v.ready, missing: v.missing },
-    room: roomProfileFor(state.venue) || v.delays ? { version: state.venue.profile?.version ?? null, house: v.housePa, soundCapacity: v.soundCapacity ?? D.PA_COVERAGE[v.paTier] ?? 0, ...(v.delays ? { delays: v.delays, delayTiles: v.delayTiles, delayCost: v.delayCost, delayActive: v.delayActive } : {}), clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
+    room: roomProfileFor(state.venue) || v.delays ? { version: state.venue.profile?.version ?? null, house: v.housePa, ...(v.houseLights ? { houseLights: true, rentedLights: v.rentedLights } : {}), soundCapacity: v.soundCapacity ?? D.PA_COVERAGE[v.paTier] ?? 0, ...(v.delays ? { delays: v.delays, delayTiles: v.delayTiles, delayCost: v.delayCost, delayActive: v.delayActive } : {}), clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
     promotion: state.promotion,
     show: state.show,
     setTime: setTimeFor(state),

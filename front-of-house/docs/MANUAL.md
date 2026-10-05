@@ -52,13 +52,17 @@ Focus the overview with Tab. Arrow keys pan, Enter or Space centers the site, Ho
 | Venue | Useful controls |
 | --- | --- |
 | Oak St. Lot | Start with the layout and incident loop. Optional live operations make admission, bar queues and a transferable worker visible. |
-| Fathom Hall | **Ticketing** compares direct and outsourced presales. Check the fee and frozen receipt as well as advance sales. |
+| Fathom Hall | **Ticketing** compares direct and outsourced presales. **Sound and views → Room/Lighting** explains the included house sound and lights for new bookings. Check frozen terms and receipts. |
 | Loam Shell | **Seats and lawn** separates prices, forecasts and receipts. Its Room page explains the included shell system and sloped sightlines for new marked bookings. A placed portable PA replaces house coverage and can reduce it. |
 | Split Acre | Choose the side act through **Stage bill** before accepting the main deal. **Stage accounts** separates Main, Side, Site and Cash. Guests buy one site ticket; side-stage attendance is not extra ticket revenue. |
 
 **Sound and views** reports the Festival house system and calculated viewing areas for new bookings. The **Delay** tool adds coverage beyond the main system where a placed tower reaches open floor. Overlapping areas count once, and a placed portable PA disables the delay benefit. Check the Delay page for coverage and recurring rental/operator costs before opening.
 
 An act cannot play both Festival stages in one booking. Earlier-tier headliners need the relationship shown in the bill. If no side act accepts a door deal, choose another venue rather than opening a second contract.
+
+### Included Club lights
+
+New Fathom Hall bookings include house lights in the room rent. Suggested layout omits an unnecessary lighting tower. An extra tower still costs rental money and uses power; it adds no lighting quality bonus. Pillars still block views, and a placed portable PA replaces house sound coverage. Older unmarked bookings keep their original lighting terms.
 
 ### Outdoor curfew
 

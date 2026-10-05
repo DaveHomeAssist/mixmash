@@ -656,7 +656,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       front[1] + perp[1] * (along + sway) + facing[1] * out,
     ];
     const rig = (along, height) => [front[0] + perp[0] * along - facing[0] * 0.4, front[1] + perp[1] * along - facing[1] * 0.4, height];
-    const lit = scene.lightTower;
+    const lit = scene.lightTower || scene.houseLights;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     const parScale = lit ? 1 : 0.7;
@@ -670,7 +670,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       const drawnTower = drawn.find((d) => d.o === tower);
       const z = drawnTower ? zAbove(tower, drawnTower.r.y + drawnTower.r.h * PROPS.lights.sprite.lamp) : LOOK.lights.height;
       stats.washSource = z;
-      beam([tower.x + 0.5, tower.y + 0.5, z], at(Math.cos(t * 0.4) * 2, 4), FIXTURES.wash);
+      beam(tower ? [tower.x + 0.5, tower.y + 0.5, z] : rig(0, z), at(Math.cos(t * 0.4) * 2, 4), FIXTURES.wash);
     }
     ctx.restore();
   }
