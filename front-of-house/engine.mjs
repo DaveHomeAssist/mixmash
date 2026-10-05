@@ -12,6 +12,7 @@ import * as Ownership from './ownership.mjs';
 import * as Journal from './career-ledger.mjs';
 import { festivalTerms, festivalSales, festivalSettlement } from './stage-accounts.mjs';
 import { seatingTerms, seatingContract, seatingSales, seatingSatisfaction } from './seating.mjs';
+import { curfewTerms, setTiming } from './curfew.mjs';
 import { heldRunTerms, heldRunQuote } from './held-run.mjs';
 import { ticketingTerms, ticketingSplit, ticketingReceipt } from './ticketing.mjs';
 import { roomProfileFor, roomProfileTerms, roomSightlines, delayCoverage } from './room-profile.mjs';
@@ -556,6 +557,7 @@ export function evaluateShow(inputs) {
   const baseResponse = inputs.incidentId ? findResponse(inputs.incidentId, inputs.responseId) : null;
   const response = baseResponse && inputs.incidentId === 'pa-dropout' && inputs.responseId === 'backup-amp' && inputs.research?.patchScore
     ? { ...baseResponse, score: Math.min(1, baseResponse.score + inputs.research.patchScore) } : baseResponse;
+  const walkupMult = inputs.setTime?.curtailed ? inputs.setTime.walkupMult : response?.walkupMult ?? 1;
   const pf = priceFactor(inputs.price, artist.fairPrice);
   const bz = buzz(inputs.ads);
   const ask = isInt(inputs.ask) && inputs.ask > 0 ? inputs.ask : artist.ask;
@@ -567,11 +569,11 @@ export function evaluateShow(inputs) {
   const zoneSales = inputs.seating ? seatingSales(inputs.seating, {
     potential: demand({ draw: inputs.draw * drawMult, price: artist.fairPrice, fairPrice: artist.fairPrice, ads: inputs.ads, venueRep: inputs.venueRep }),
     capacity: v.capacity, seats: v.seats, lawnPrice: inputs.price, seatPrice: inputs.seatPrice,
-    fairPrice: artist.fairPrice, presaleShare: baseline.share, walkupMult: response?.walkupMult ?? 1,
+    fairPrice: artist.fairPrice, presaleShare: baseline.share, walkupMult,
   }) : null;
   if (zoneSales) { dem = zoneSales.demand; presale = zoneSales.presale; walkup = zoneSales.walkupDemand; }
   if (inputs.stageSales) { dem = inputs.stageSales.demand; presale = inputs.stageSales.presale; walkup = dem - presale; }
-  const walkupAfterIncident = inputs.stageSales ? inputs.stageSales.walkup : zoneSales ? zoneSales.walkup : Math.round(walkup * (response && response.walkupMult !== undefined ? response.walkupMult : 1));
+  const walkupAfterIncident = inputs.stageSales ? inputs.stageSales.walkup : zoneSales ? zoneSales.walkup : Math.round(walkup * walkupMult);
   const plannedAttendance = Math.max(0, Math.min(v.capacity, presale + walkupAfterIncident));
   const doorRush = doorRushPilot(v, plannedAttendance, presale, inputs.pilotCrew);
   const live = inputs.services || null;
@@ -600,7 +602,7 @@ export function evaluateShow(inputs) {
   // R-10, R-13, R-14, R-15
   const served = Math.min(attendance, doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO);
   const bar = live ? live.barCash : Math.round(D.BAR_NET_PER_HEAD * (satisfaction / 100)
-    * (served + (attendance - served) * D.BAR_SHORTFALL));
+    * (served + (attendance - served) * D.BAR_SHORTFALL) * (inputs.setTime?.barMult ?? 1));
   const adSpend = D.AD_CHANNELS.reduce((s, c) => s + ((inputs.ads && inputs.ads[c]) || 0), 0);
   const costs = {
     lot: typeof v.rental === 'number' ? v.rental : D.LOT_RENTAL,
@@ -638,6 +640,7 @@ export function evaluateShow(inputs) {
   return {
     priceFactor: pf, buzz: bz, demand: dem, presaleShare: share, presale, walkup, walkupAfterIncident, attendance,
     parts, satisfaction, weakest, ticketGross, bar, costs, upfront, artistPay, net, result, repDelta, relDelta,
+    ...(inputs.setTime ? { setTime: inputs.setTime } : {}),
     ...(ticketing ? { ticketing } : {}),
     ...(zoneSales ? { seating: { ...zoneSales, scores: zoneScores, sharedSatisfaction } } : {}),
     ...(inputs.equipment ? { equipment: inputs.equipment } : {}),
@@ -646,12 +649,24 @@ export function evaluateShow(inputs) {
   };
 }
 
+// Paid terms are authoritative; a damaged paid marker cannot fall back to booking terms.
+export function setTimeFor(state, responseId = state.show?.responseId ?? null) {
+  const raw = state.show ? state.show.curfew : state.booking?.curfew;
+  if (!raw) return null;
+  try { curfewTerms(raw, state.venue.id); } catch { return null; }
+  const night = state.show?.night || 1;
+  const roll = rollShow(night > 1 ? (state.seed ^ night) >>> 0 : state.seed, state.booking.artistId);
+  return setTiming({ incidentId: state.show?.incidentId ?? null, responseId,
+    incidentAt: state.show ? incidentAtFor(state.show.incidentId, roll.timing) : 1 });
+}
+
 function showInputs(state, venueStats, withIncident) {
   const night = state.show?.night || 1;
   const drawSeed = state.show?.run && night > 1 ? (state.seed ^ night) >>> 0 : state.seed;
   const roll = rollShow(drawSeed, state.booking.artistId), equipment = equipmentPlanFor(state), ticketing = ticketingPlanFor(state), seating = seatingPlanFor(state);
   return {
     venue: venueStats,
+    ...(withIncident && setTimeFor(state) ? { setTime: setTimeFor(state) } : {}),
     ...(equipment ? { equipment } : {}),
     ...(ticketing ? { ticketing } : {}),
     ...(seating ? { seating } : {}),
@@ -767,7 +782,8 @@ function stageAudience(state, inputs, mainDraw, secondDraw) {
   return { capacity: v.capacity, secondCapacity: venueSpec(state.venue).secondCap,
     demand: Math.round(dem), mainDraw: Math.round(mainDraw * state.booking.terms.drawMult),
     secondDraw: Math.round(secondDraw * state.booking.secondTerms.drawMult), price: inputs.price,
-    presaleShare: presaleSplit(dem, buzz(inputs.ads), v.capacity).share, walkupMult: response?.walkupMult ?? 1 };
+    presaleShare: presaleSplit(dem, buzz(inputs.ads), v.capacity).share,
+    walkupMult: inputs.setTime?.curtailed ? inputs.setTime.walkupMult : response?.walkupMult ?? 1 };
 }
 
 function stageShowFor(state, withIncident) {
@@ -1212,6 +1228,11 @@ function applyActionCore(state, action) {
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
       }
       s.booking = { artistId, deal: action.deal, terms: { ask: terms.ask, drawMult: terms.drawMult }, nights: spec.nights.includes(nights) ? nights : 1, secondId, secondTerms };
+      if (action.curfewPolicy !== undefined) {
+        try { s.booking.curfew = curfewTerms({ version: action.curfewPolicy }, spec.id); }
+        catch { return fail(state, 'Choose a supported outdoor curfew policy'); }
+        delete s.curfewNotice;
+      }
       if (action.stagePolicy !== undefined) {
         if (action.stagePolicy !== 1 || !secondId || !termsFor(secondId, s.reputation.artists[secondId]).doorOk) return fail(state, 'Choose a distinct side act eligible for a door deal');
         try { s.booking.stages = stageBookingTerms({ version: 1 }, s); }
@@ -1249,6 +1270,8 @@ function applyActionCore(state, action) {
         delete s.roomNotice;
         delete s.booking.seating;
         delete s.seatingNotice;
+        delete s.booking.curfew;
+        delete s.curfewNotice;
         delete s.booking.run;
         delete s.runNotice;
         delete s.promotion.ticketing;
@@ -1376,6 +1399,7 @@ function applyActionCore(state, action) {
       if (s.booking.seating) s.show.seating = seatingContract({ ...s.booking.seating, lawnPrice: s.promotion.price, seatPrice: s.promotion.seatPrice });
       if (s.booking.stages) s.show.stages = stageContract({ ...s.booking.stages, price: s.promotion.price, ads: s.promotion.ads }, s);
       if (s.booking.festival) s.show.festival = festivalBookingPolicy(s.booking.festival, s);
+      if (s.booking.curfew) s.show.curfew = curfewTerms(s.booking.curfew, s.venue.id);
       if (s.booking.run) s.show.run = heldRunTerms(s.booking.run);
       if (s.venue.id === 'club' && s.promotion.ticketing) s.show.ticketing = ticketingTerms(s.promotion.ticketing);
       const v = evaluateVenue(s.venue);
@@ -1487,6 +1511,7 @@ function applyActionCore(state, action) {
           relHold,
           ...(s.show.equipment ? { equipment: clone(s.show.equipment) } : {}),
           ...(s.show.seating ? { seating: clone(s.show.seating) } : {}),
+          ...(s.show.curfew ? { curfew: clone(s.show.curfew) } : {}),
           ...(s.show.run ? { run: clone(s.show.run) } : {}),
         };
         s.phase = 'show';
@@ -1687,6 +1712,11 @@ export function normalizeState(raw, fallbackSeed = 1) {
     } catch { s.seatingNotice = 'Invalid seat sales booking removed; cash was preserved'; }
   }
   if (typeof raw.seatingNotice === 'string' && raw.seatingNotice) s.seatingNotice ||= 'Earlier seat sales recovery preserved cash; original terms may be incomplete';
+  if (booking.curfew !== undefined) {
+    try { s.booking.curfew = curfewTerms(booking.curfew, room.id); }
+    catch { s.curfewNotice = 'Invalid curfew booking removed; cash and signed history were preserved'; }
+  }
+  if (typeof raw.curfewNotice === 'string' && raw.curfewNotice) s.curfewNotice ||= 'Earlier curfew recovery preserved cash; original set terms may be incomplete';
   if (booking.run !== undefined) {
     try {
       const terms = heldRunTerms(booking.run);
@@ -1780,6 +1810,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
       repHold: intOr(raw.show.repHold, 0),
       relHold: intOr(raw.show.relHold, 0),
     };
+    if (raw.show.curfew !== undefined) {
+      try { s.show.curfew = curfewTerms(raw.show.curfew, room.id); }
+      catch { s.curfewNotice = 'Invalid paid curfew terms removed; cash and signed history were preserved'; }
+    }
     if (raw.show.seating !== undefined) {
       try {
         if (room.id !== 'amphitheater') throw new TypeError('Wrong seating room');

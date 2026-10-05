@@ -527,3 +527,9 @@ Loam Shell extends this policy in FOH-V02r2: its cutaway shell stays behind the 
 - Scope: FB-08 and HUD step7 for Split Acre.
 
 Zoomed side-stage and arbitrary-yaw views remove much of the main yard from view, so retain the planned desktop overview. Derive the visible ground from the active renderer: clip the perspective frustum to the site plane and floor regions, rather than showing a misleading rectangle at low pitch. The map rotates with the view, has pointer and keyboard pan controls, preserves zoom and carries no saved state. Fit and phone layouts hide it; compact windows hide it when no unobstructed HUD margin fits. Other venues keep their current navigation. No gameplay, physical scale or final art policy changes.
+
+## CT-DEC-24 Outdoor curfew timing
+
+Status: Accepted implementation decision by Codex under Dave's autonomous execution direction and CT-DEC-19,2026-10-04. Delivery and device acceptance are separately verified.
+
+New Amphitheater/Festival bookings carry optional version1 set timing. Doors19:00, set20:12–23:00; obey ends at the seeded curfew minute, appeal costs the existing$400 and ends five minutes later, capped at23:00. Uniform scheduled walk-up demand is multiplied by elapsed admission time. Bar income is multiplied by the played fraction of the168-minute set and rounded once. All presales and guarantees remain paid; door artists receive the usual net-ticket share. This is an aggregate outdoor rule, not the Lot's individual arrival queue. Unmarked saves retain their exact arithmetic; invalid optional terms preserve money/history and disclose lost timing authority.
