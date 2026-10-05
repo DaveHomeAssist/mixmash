@@ -223,6 +223,7 @@ export const COMMAND_NOTES = {
 // are. Keys must be tracked paths; the coverage test rejects stale keys.
 // `title` replaces the extracted title; `description` replaces the summary.
 const preview = (game) => ({ description: `${game} gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.` });
+const cover = (game) => ({ description: `${game} canonical 3:2 cover for the landing-page detail panel.` });
 const vercelFn = (route, what) => ({ description: `Vercel function for ${route}: ${what} It delegates to the shared handler in mars/server.mjs.` });
 
 // Notes for families of files that describe themselves only by name, such as a sprite
@@ -288,6 +289,12 @@ export const FILE_NOTES = {
   'vercel.json': { description: 'Vercel configuration for the MarsScape authority project: the www redirect and per-function time limits.' },
   'docs/HOMEPAGE_STATUS.json': { description: 'Public-safe projection of the approved homepage work in SPRINT_BOARDS.md; delivery evidence is verified separately.' },
   'assets/og-card.png': { description: '1200 × 630 social sharing card for the studio pages.' },
+  'assets/covers/empires.jpg': cover('Age of Dave'),
+  'assets/covers/foh.jpg': cover('Front of House'),
+  'assets/covers/garden.jpg': cover('Garden OS'),
+  'assets/covers/mars.jpg': cover('MarsScape'),
+  'assets/covers/mixmash.jpg': cover('MIXMASH'),
+  'assets/covers/pitch.jpg': cover('PITCH RIOT'),
   'assets/previews/foh.jpg': preview('Front of House'),
   'assets/previews/empires.jpg': preview('EMPIRES'),
   'assets/previews/garden.jpg': preview('Garden OS'),
