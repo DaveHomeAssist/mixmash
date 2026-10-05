@@ -682,6 +682,18 @@
         {
           "name": "npm run smoke:front-of-house-navigation",
           "description": "node test/front-of-house-navigation-smoke.mjs"
+        },
+        {
+          "name": "npm run hub:build",
+          "description": "node src/hub/build.mjs"
+        },
+        {
+          "name": "npm run hub:check",
+          "description": "node src/hub/build.mjs --check"
+        },
+        {
+          "name": "npm run hub:social",
+          "description": "node src/hub/social.mjs"
         }
       ]
     }
@@ -1966,6 +1978,16 @@
       "description": "Six full native visible Chrome empty/crowd/rain windows on frozen Loam Shell source, with quality, timing and source/raw digests.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-04-shell-native.json",
       "open": null
+    },
+    {
+      "path": "assets/previews/foh.jpg",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "JPG",
+      "title": "foh.jpg",
+      "description": "Front of House gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/foh.jpg",
+      "open": "/assets/previews/foh.jpg"
     },
     {
       "path": "front-of-house/docs/hud/hud-build.jpg",
@@ -4002,8 +4024,8 @@
       "project": "studio",
       "category": "surface",
       "kind": "HTML",
-      "title": "MixMash Studio — Games That Play in Your Browser",
-      "description": "MixMash Studio makes small, loud, instantly playable browser games: MIXMASH the DJ platform fighter, MarsScape the Mars colony skiller, Garden OS Story Mode, and more. No installs, no accounts.",
+      "title": "MixMash Studio | Free Browser Games",
+      "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/index.html",
       "open": "/"
     },
@@ -4018,12 +4040,22 @@
       "open": "/offline.html"
     },
     {
+      "path": "src/hub/template.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "{{TITLE}}",
+      "description": "{{DESCRIPTION}}",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/template.html",
+      "open": "/src/hub/template.html"
+    },
+    {
       "path": "assets/previews/README.md",
       "project": "studio",
       "category": "docs",
       "kind": "MD",
       "title": "Landing gameplay previews",
-      "description": "Captured from the public games on September 4, 2026, at 1000 × 650 CSS pixels, device scale 1.",
+      "description": "Refreshed from the live browser games on October 5, 2026 at 1000×650 CSS pixels, device scale 1, JPEG quality 76.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/README.md",
       "open": null
     },
@@ -4045,6 +4077,36 @@
       "title": "MixMash Claude instructions",
       "description": "Read and follow AGENTS.md before editing. It owns execution, feature brief and Next Steps Board maintenance rules for this repository. Use the shared workspace contract when available; do not duplicate its private paths…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/CLAUDE.md",
+      "open": null
+    },
+    {
+      "path": "docs/HOMEPAGE_BRIEF.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Homepage: playable festival poster",
+      "description": "Approved October 5, 2026 by Dave. Planning owner: Sprint Boards.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/HOMEPAGE_BRIEF.md",
+      "open": null
+    },
+    {
+      "path": "docs/HOMEPAGE_EVIDENCE.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Homepage catalog evidence",
+      "description": "Reviewed 2026-10-05 against source baseline bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd and live routes.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/HOMEPAGE_EVIDENCE.md",
+      "open": null
+    },
+    {
+      "path": "docs/HOMEPAGE_RELEASE.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Homepage acceptance snapshot",
+      "description": "The approved brief is implemented. This is the local acceptance record from October 5, 2026. Delivery is independently established by the commit on gh-pages, its CI run, GitHub Pages deployment and live homepage.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/HOMEPAGE_RELEASE.md",
       "open": null
     },
     {
@@ -4168,6 +4230,26 @@
       "open": null
     },
     {
+      "path": "test/hub-catalog.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-catalog.test.mjs",
+      "description": "Public catalog integrity and publication boundaries.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-catalog.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/hub-offline-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-offline-smoke.mjs",
+      "description": "Homepage worker upgrade preserves game data and the six launch links offline.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-offline-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/kit-layer.test.mjs",
       "project": "studio",
       "category": "tests",
@@ -4193,7 +4275,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "landing-smoke.mjs",
-      "description": "Playwright rail for the landing page at 320 to 1440 px: keyboard order, focus, reduced motion, hit targets, image budgets and contrast (smoke:landing).",
+      "description": "Playwright rail for the landing page in Chromium and WebKit at 320 to 3840 px: native launch links, details, theme persistence, focus, fallback, hit targets and image budget (smoke:landing).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/landing-smoke.mjs",
       "open": null
     },
@@ -4275,6 +4357,66 @@
       "title": "theme.js",
       "description": "Applies the saved admin theme before first paint. Light is the default; dark applies only after the visitor chooses it with the toggle.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/admin/theme.js",
+      "open": null
+    },
+    {
+      "path": "docs/HOMEPAGE_STATUS.json",
+      "project": "studio",
+      "category": "source",
+      "kind": "JSON",
+      "title": "HOMEPAGE_STATUS.json",
+      "description": "Public-safe projection of the approved homepage work in SPRINT_BOARDS.md; delivery evidence is verified separately.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/HOMEPAGE_STATUS.json",
+      "open": null
+    },
+    {
+      "path": "src/hub/app.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "app.js",
+      "description": "Progressive homepage navigation, theme and short-screen pagination. Never touches game saves.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/app.js",
+      "open": null
+    },
+    {
+      "path": "src/hub/build.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "build.mjs",
+      "description": "Generate the complete static homepage from the catalog. --check refuses drift.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/build.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/catalog.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "catalog.mjs",
+      "description": "Public browser-game catalog. Claims are supported by docs/HOMEPAGE_EVIDENCE.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/catalog.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/social.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "social.mjs",
+      "description": "Build the studio share image from the same catalog and real gameplay previews.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/social.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/style.css",
+      "project": "studio",
+      "category": "source",
+      "kind": "CSS",
+      "title": "style.css",
+      "description": "MixMash playbill: paper, bold ink and six genuine gameplay tickets.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/style.css",
       "open": null
     },
     {

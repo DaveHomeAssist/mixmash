@@ -1,6 +1,6 @@
 # Front of House
 
-**Status:** early playable at `mixmash.games/front-of-house/`. The career runs from the Oak St. Lot through Fathom Hall, Loam Shell and Split Acre, with Sandbox and a wet-lot scenario ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). Phases are in [`ROADMAP.md`](ROADMAP.md). The page is `noindex` and has no hub card until Dave signs off the first playable.
+**Status:** early playable at `mixmash.games/front-of-house/`. The career runs from the Oak St. Lot through Fathom Hall, Loam Shell and Split Acre, with Sandbox and a wet-lot scenario ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed). Phases are in [`ROADMAP.md`](ROADMAP.md). Dave signed off the first playable for homepage promotion on 2026-10-05. The hub lists it as **Early playable**. Its `noindex` and sitemap exclusion remain unchanged; search promotion is a separate decision.
 The name was decided on 2026-10-01 ([CT-DEC-06](docs/DECISIONS.md#ct-dec-06-name-and-route)); "Concert Tycoon" was the working title, and this folder was `tycoon/` until then. It is a standalone game ([CT-DEC-08](docs/DECISIONS.md#ct-dec-08-standalone-game)).
 
 Front of House is a management game in the tradition of RollerCoaster Tycoon and Zoo Tycoon, set in concert promotion and live production. The player builds a venue, books an artist, sells the show, gets through show night and settles the money. A career starts with a rented parking lot and a PA, and ends with the player running their own festival grounds.
@@ -88,7 +88,7 @@ This follows the MarsScape split in `mars/`:
 
 ## Publication note
 
-This repository is public, and `gh-pages` is served as it is (`.nojekyll`), so everything here can be read at `mixmash.games/front-of-house/...`. The game page is live but `noindex`, with no hub card and no sitemap entry; those ship once Dave signs off the first playable. The service worker precaches the page shell for offline play.
+This repository is public, and `gh-pages` is served as it is (`.nojekyll`), so everything here can be read at `mixmash.games/front-of-house/...`. Dave approved an **Early playable** homepage listing on 2026-10-05. The game page remains `noindex` and excluded from the sitemap; that separate search-promotion decision is still open. The service worker precaches the page shell for offline play.
 
 
 ### Live Lot departure trial

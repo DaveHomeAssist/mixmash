@@ -1,338 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MixMash Studio — Games That Play in Your Browser</title>
-<meta name="description" content="MixMash Studio makes small, loud, instantly playable browser games: MIXMASH the DJ platform fighter, MarsScape the Mars colony skiller, Garden OS Story Mode, and more. No installs, no accounts.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MixMash Studio | Free Browser Games</title>
+<meta name="description" content="Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.">
 <link rel="canonical" href="https://mixmash.games/">
-<meta name="google-site-verification" content="PwUDpqqaU3YZsUKNgUq5lGEcCuRFvL149sVLZUbXb8Q" />
-<!-- <meta name="msvalidate.01" content="PASTE_BING_TOKEN_HERE"> -->
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="google-site-verification" content="PwUDpqqaU3YZsUKNgUq5lGEcCuRFvL149sVLZUbXb8Q">
+<meta name="theme-color" content="#f5f1e7">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MixMash Studio">
-<meta property="og:title" content="MixMash Studio — Games That Play in Your Browser">
-<meta property="og:description" content="Small, loud, instantly playable browser games. No installs, no accounts.">
+<meta property="og:title" content="MixMash Studio | Free Browser Games">
+<meta property="og:description" content="Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.">
 <meta property="og:url" content="https://mixmash.games/">
 <meta property="og:image" content="https://mixmash.games/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="MixMash Studio — Games That Play in Your Browser">
-<meta name="twitter:description" content="Small, loud, instantly playable browser games. No installs, no accounts.">
+<meta name="twitter:title" content="MixMash Studio | Free Browser Games">
+<meta name="twitter:description" content="Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.">
 <meta name="twitter:image" content="https://mixmash.games/assets/og-card.png">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Space+Mono:wght@400;700&family=Anybody:wght@400;700;900&display=swap');
-
-:root {
-  --laser-pink: #FF2D6B;
-  --uv-violet: #B429F9;
-  --led-cyan: #00F0FF;
-  --strobe-yellow: #FFE23D;
-  --festival-green: #39FF8E;
-  --sunset-orange: #FF6B2D;
-  --void: #06060E;
-  --deep-black: #0A0A14;
-  --surface-dark: #12121E;
-  --surface-mid: #1A1A2E;
-  --surface-light: #252540;
-  --text-primary: #F0F0F8;
-  --text-secondary: #B4B4CC;
-  --text-muted: #A0A0B8;
-  --gradient-headliner: linear-gradient(135deg, #FF2D6B 0%, #B429F9 50%, #00F0FF 100%);
-  --glass-border: rgba(255,255,255,0.14);
-  --font-display: 'Anybody', 'Outfit', sans-serif;
-  --font-body: 'Outfit', sans-serif;
-  --font-mono: 'Space Mono', monospace;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 92px; scroll-padding-bottom: 24px; }
-body { background: var(--void); color: var(--text-primary); font-family: var(--font-body); line-height: 1.6; }
-body::before {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 99;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-}
-a { color: inherit; }
-a:focus-visible { outline: 3px solid var(--strobe-yellow); outline-offset: 5px; }
-a, main { scroll-margin-top: 92px; scroll-margin-bottom: 16px; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-.skip-link { position: fixed; top: 12px; left: 12px; z-index: 200; padding: 12px 20px; background: var(--strobe-yellow); color: var(--void); border-radius: 8px; transform: translateY(-160%); font-weight: 800; }
-.skip-link:focus { transform: none; }
-
-/* Navigation stays in flow; small screens get a deliberate second row. */
-.site-nav {
-  position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 10px max(24px, calc((100% - 1112px) / 2));
-  background: rgba(6,6,14,0.94); border-bottom: 1px solid var(--glass-border);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-}
-.nav-logo { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-family: var(--font-display); font-weight: 900; font-size: 1rem; letter-spacing: 0.02em; text-decoration: none; white-space: nowrap; }
-.nav-logo .mm { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--surface-light); border-radius: 9px; font-size: 0.75rem; color: var(--led-cyan); }
-.nav-logo .studio { color: var(--text-muted); font-weight: 400; }
-.nav-links { display: flex; gap: 8px; list-style: none; }
-.nav-links a { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 14px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-.nav-links a:hover { color: var(--led-cyan); background: var(--surface-dark); }
-
-/* Keep the studio's neon wordmark; bring the playable lineup closer to the fold. */
-.hero { position: relative; text-align: center; padding: 40px 24px 28px; }
-.hero::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(ellipse 55% 70% at 25% 20%, rgba(180,41,249,0.16), transparent 70%), radial-gradient(ellipse 50% 65% at 78% 30%, rgba(0,240,255,0.10), transparent 70%);
-}
-.hero > * { position: relative; }
-.hero-kicker, .eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--led-cyan); }
-.hero-kicker { margin-bottom: 18px; }
-.hero h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.35rem, 8vw, 6rem); line-height: 1; letter-spacing: -0.035em; text-transform: uppercase; }
-.hero h1 .grad, .footer-logo { background: var(--gradient-headliner); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.hero-sub { max-width: 540px; margin: 22px auto 0; color: var(--text-secondary); font-size: 1.05rem; }
-.hero-cta, .closing-actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 12px 24px; border-radius: 999px; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; transition: transform 0.18s, box-shadow 0.18s; }
-.btn-primary { background: var(--led-cyan); color: var(--void); box-shadow: 0 0 28px rgba(0,240,255,0.16); }
-.btn-ghost { border: 1px solid var(--glass-border); color: var(--text-primary); background: var(--deep-black); }
-.btn-ghost:hover { border-color: var(--led-cyan); color: var(--led-cyan); }
-
-/* One headliner, then four equal supporting cards. */
-.section { max-width: 1160px; margin: 0 auto; padding: 32px 24px 72px; }
-.section-h { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 24px; }
-.section-h h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.7rem, 4vw, 2.25rem); text-transform: uppercase; letter-spacing: -0.02em; }
-.count, .catalog-note { font-family: var(--font-mono); color: var(--text-muted); font-size: 0.72rem; }
-.catalog-note { margin-top: 20px; line-height: 1.8; }
-.games-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.game-card { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--surface-dark); border: 1px solid var(--glass-border); border-radius: 18px; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
-.game-card:focus-within { border-color: var(--strobe-yellow); box-shadow: 0 0 0 1px var(--strobe-yellow); }
-.game-vis { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 17px 17px 0 0; background: var(--surface-mid); }
-.game-vis img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.game-status { position: absolute; top: 14px; left: 14px; padding: 5px 10px; border-radius: 999px; background: var(--void); border: 1px solid currentColor; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-.st-live { color: var(--festival-green); }
-.st-preview { color: var(--strobe-yellow); }
-.game-body { display: flex; flex-direction: column; flex: 1; padding: 24px; }
-.game-genre { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-.game-name { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.2rem, 2.5vw, 1.55rem); line-height: 1.25; letter-spacing: -0.02em; text-transform: uppercase; }
-.game-desc { color: var(--text-secondary); font-size: 0.95rem; margin: 12px 0 24px; flex: 1; max-width: 52ch; }
-.game-actions { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
-.play-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 20px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--text-primary); background: var(--surface-light); border: 1px solid var(--glass-border); transition: background 0.2s, color 0.2s; }
-/* The native Play anchor covers the card. Secondary links stay above it. */
-.play-link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: 18px; }
-.play-link:focus-visible::after { outline: 3px solid var(--strobe-yellow); outline-offset: 4px; }
-.info-link { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 4px; color: var(--text-secondary); font-size: 0.8rem; text-underline-offset: 4px; }
-.info-link:hover { color: var(--led-cyan); }
-.featured { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); border-color: rgba(180,41,249,0.6); box-shadow: 0 12px 60px -36px var(--uv-violet); }
-.featured .game-vis { height: 100%; min-height: 360px; aspect-ratio: auto; border-radius: 17px 0 0 17px; }
-.featured .game-body { justify-content: center; padding: 36px; }
-.featured .eyebrow { margin-bottom: 16px; }
-.featured .game-name { font-size: clamp(2.2rem, 4vw, 3.3rem); }
-.featured .game-desc { flex: 0; }
-.featured .play-link { background: var(--led-cyan); color: var(--void); }
-.laser { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--gradient-headliner); animation: laser-pulse 2s ease-in-out infinite; animation-play-state: paused; }
-@keyframes laser-pulse { 50% { opacity: 0.4; } }
-.game-card:focus-within .laser { animation-play-state: running; }
-@media (hover: hover) and (pointer: fine) {
-  .game-card:hover { transform: translateY(-4px); border-color: var(--card-glow); box-shadow: 0 14px 44px -26px var(--card-glow); }
-  .game-card:hover .laser { animation-play-state: running; }
-  .game-card:hover .play-link { background: var(--led-cyan); color: var(--void); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(0,240,255,0.3); }
-}
-
-/* Studio context and a clear next step after the lineup. */
-.about { border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); background: var(--deep-black); }
-.about-inner { max-width: 760px; margin: 0 auto; padding: 56px 24px; text-align: center; }
-.about-inner h2, .closing h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.4rem, 4vw, 2rem); line-height: 1.25; text-transform: uppercase; margin-bottom: 16px; }
-.about-inner p, .closing p { color: var(--text-secondary); }
-.about-pills { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-.pill { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--glass-border); }
-.closing { max-width: 760px; margin: 0 auto; padding: 64px 24px 48px; text-align: center; }
-.closing .eyebrow { margin-bottom: 16px; color: var(--led-cyan); }
-.closing .feedback-note { margin-top: 16px; color: var(--text-muted); font-size: 0.8rem; }
-footer { padding: 24px 24px 36px; text-align: center; border-top: 1px solid var(--glass-border); }
-.footer-logo { font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; letter-spacing: 0.04em; }
-footer p { color: var(--text-muted); font-size: 0.78rem; }
-.footer-links { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: center; margin: 12px 0; }
-.footer-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px; color: var(--text-secondary); font-size: 0.8rem; text-decoration: none; }
-.footer-links a:hover { color: var(--led-cyan); }
-
-@media (max-width: 767px) {
-  .featured { display: flex; }
-  .featured .game-vis { height: auto; min-height: 0; aspect-ratio: 3 / 2; border-radius: 17px 17px 0 0; }
-  .featured .game-body { padding: 24px; }
-  .game-body { padding: 20px; }
-}
-@media (max-width: 540px) {
-  html { scroll-padding-top: 128px; }
-  a, main { scroll-margin-top: 128px; }
-  .site-nav { flex-direction: column; gap: 0; padding: 6px 16px; }
-  .nav-logo { align-self: flex-start; font-size: 0.95rem; }
-  .nav-links { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-  .nav-links a { padding: 8px; }
-  .hero { padding: 40px 20px 32px; }
-  .hero h1 { max-width: 360px; margin: auto; }
-  .hero h1 .grad { display: block; }
-  .hero-sub { font-size: 1rem; }
-  .hero-cta { gap: 10px; }
-  .btn { padding: 12px 20px; font-size: 0.78rem; }
-  .section { padding: 24px 16px 48px; }
-  .games-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .featured .game-body { padding: 22px; }
-  .game-name { font-size: 1.4rem; }
-  .closing { padding: 48px 20px 40px; }
-}
-@media (max-height: 500px) { .site-nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .game-card:hover, .btn-primary:hover { transform: none; }
-}
-</style>
-<script src="/src/kit/pwa.js" defer></script>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/src/hub/style.css">
+<script type="module" src="/src/hub/app.js"></script>
+<!-- Game routes register the existing offline worker when first played. -->
 </head>
 <body>
-<a class="skip-link" href="#games">Skip to games</a>
-
-<nav class="site-nav" aria-label="Main navigation">
-  <a class="nav-logo" href="./" aria-label="MixMash Studio home">
-    <span class="mm" aria-hidden="true">MM</span>
-    MIXMASH <span class="studio">STUDIO</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#games">Games</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="brand.html">Brand</a></li>
-  </ul>
-</nav>
-
-<header class="hero">
-  <div class="hero-kicker">mixmash.games</div>
-  <h1>MIXMASH <span class="grad">STUDIO</span></h1>
-  <p class="hero-sub">Small, loud, instantly playable games. Everything runs in your browser — no installs, no accounts.</p>
-  <div class="hero-cta">
-    <a class="btn btn-primary" href="play/"><span aria-hidden="true">▶</span> Play MIXMASH</a>
-    <a class="btn btn-ghost" href="#games">Explore games <span aria-hidden="true">↓</span></a>
+<a class="skip-link" href="#main">Skip to games</a>
+<div class="site-shell">
+  <header class="masthead">
+    <a class="brand" href="#games" aria-label="MixMash Studio home"><span class="monogram" aria-hidden="true">MM</span><span>MIXMASH <small>STUDIO</small></span></a>
+    <nav class="site-nav" aria-label="Studio navigation"><a id="nav-games" href="#games">Games</a><a id="nav-studio" href="#studio">Studio</a></nav>
+    <button class="theme-toggle" id="theme-toggle" type="button" hidden>Dark mode</button>
+  </header>
+  <div class="hero" id="intro" role="region" aria-label="Welcome to MixMash Studio">
+    <div><p class="eyebrow">Independent games. Open invitation.</p><h1>Small games.<br> <em>Big personality.</em></h1></div>
+    <p class="hero-copy">Fight for the stage. Build a colony. Run the show. Free games, ready to play in your browser.</p>
+    <div class="admission" aria-label="6 free browser games"><strong>6</strong><span>games<br>all free</span></div>
   </div>
-</header>
+  <main id="main" tabindex="-1">
+    <section class="view library" id="games" aria-labelledby="library-title">
+      <div class="library-top"><div><p class="eyebrow">The playable lineup</p><h2 id="library-title">Pick your next obsession.</h2></div><button class="button shuffle" id="pick-game" type="button" hidden>Pick for me <span aria-hidden="true">↗</span></button></div>
+      <div class="library-body">
+        <div class="games-grid" id="games-grid" aria-label="Playable games" tabindex="0" data-web2-scroll>
+<article class="game-card pink" data-game="mixmash" aria-labelledby="title-mixmash">
+  <div class="game-vis"><img src="/assets/previews/mixmash.jpg" width="1000" height="650" alt="Two DJs battling on a neon platform stage in MIXMASH." decoding="async" fetchpriority="high"><span class="ticket-number" aria-hidden="true">MM / 01</span></div>
+  <div class="game-body"><p class="game-genre">Platform fighter</p><h3 id="title-mixmash"><a class="details-link" id="details-mixmash" href="#game-mixmash" aria-label="View details: MIXMASH">MIXMASH</a></h3><p class="game-hook">Pick your DJ. Own the stage.</p><p class="game-status">Released</p></div>
+  <a class="play-link" href="/play/" aria-label="Play now: MIXMASH"><span>Play now</span><span aria-hidden="true">↗</span></a>
+</article>
 
-<main class="section" id="games" tabindex="-1">
-  <div class="section-h">
-    <h2>The Lineup</h2>
-    <span class="count">5 GAMES / ALL FREE</span>
-  </div>
+<article class="game-card orange" data-game="front-of-house" aria-labelledby="title-front-of-house">
+  <div class="game-vis"><img src="/assets/previews/foh.jpg" width="1000" height="650" alt="A concert venue being built for show night in Front of House." decoding="async" loading="lazy"><span class="ticket-number" aria-hidden="true">MM / 02</span></div>
+  <div class="game-body"><p class="game-genre">Venue management</p><h3 id="title-front-of-house"><a class="details-link" id="details-front-of-house" href="#game-front-of-house" aria-label="View details: Front of House">Front of House</a></h3><p class="game-hook">Book the band. Build the venue.</p><p class="game-status">Early playable</p></div>
+  <a class="play-link" href="/front-of-house/" aria-label="Play preview: Front of House"><span>Play preview</span><span aria-hidden="true">↗</span></a>
+</article>
 
-  <div class="games-grid">
-    <article class="game-card featured" style="--card-glow: var(--uv-violet)" aria-labelledby="mixmash-title">
-      <div class="game-vis vis-mixmash">
-        <img src="assets/previews/mixmash.jpg" width="1000" height="650" alt="Flume and Zomboy battle on floating platforms in Electric Forest." fetchpriority="high" decoding="async">
-        <span class="game-status st-live">Released</span>
-        <span class="laser" aria-hidden="true"></span>
-      </div>
-      <div class="game-body">
-        <div class="eyebrow">The headliner</div>
-        <div class="game-genre">Platform Fighter</div>
-        <h3 class="game-name" id="mixmash-title">MIXMASH</h3>
-        <p class="game-desc">Drop the beat. Throw the punch. Pick from 14 headliners and 11 arenas in the DJ-powered platform fighter. Take on a friend in couch versus or battle the CPU.</p>
-        <div class="game-actions">
-          <a class="play-link" href="play/" aria-label="Play MIXMASH"><span aria-hidden="true">▶</span> Play</a>
-          <a class="info-link" href="home.html">Game details</a>
-        </div>
-      </div>
-    </article>
+<article class="game-card blue" data-game="pitch" aria-labelledby="title-pitch">
+  <div class="game-vis"><img src="/assets/previews/pitch.jpg" width="1000" height="650" alt="Players challenging for the ball on Pitch Riot’s green soccer pitch." decoding="async" loading="lazy"><span class="ticket-number" aria-hidden="true">MM / 03</span></div>
+  <div class="game-body"><p class="game-genre">Arcade soccer</p><h3 id="title-pitch"><a class="details-link" id="details-pitch" href="#game-pitch" aria-label="View details: Pitch Riot">Pitch Riot</a></h3><p class="game-hook">Beat the keeper. Bring the hype.</p><p class="game-status">Released</p></div>
+  <a class="play-link" href="/pitch/" aria-label="Play now: Pitch Riot"><span>Play now</span><span aria-hidden="true">↗</span></a>
+</article>
 
-    <article class="game-card" style="--card-glow: var(--sunset-orange)" aria-labelledby="mars-title">
-      <div class="game-vis">
-        <img src="assets/previews/mars.jpg" width="1000" height="650" alt="An isometric Mars colony with mineral deposits, a habitat, and resource controls." loading="lazy" decoding="async">
-        <span class="game-status st-preview">In development</span>
-      </div>
-      <div class="game-body">
-        <div class="game-genre">Colony Skiller · Early Access</div>
-        <h3 class="game-name" id="mars-title">MarsScape</h3>
-        <p class="game-desc">Gather, craft, and build to survive the red planet. Train your skills, grow a colony, and prepare for the final storm. Your save stays in your browser.</p>
-        <div class="game-actions">
-          <a class="play-link" href="mars/" aria-label="Play MarsScape"><span aria-hidden="true">▶</span> Play</a>
-        </div>
-      </div>
-    </article>
+<article class="game-card rust" data-game="mars" aria-labelledby="title-mars">
+  <div class="game-vis"><img src="/assets/previews/mars.jpg" width="1000" height="650" alt="Resource seams and colony buildings on MarsScape’s rust-colored terrain." decoding="async" loading="lazy"><span class="ticket-number" aria-hidden="true">MM / 04</span></div>
+  <div class="game-body"><p class="game-genre">Colony survival</p><h3 id="title-mars"><a class="details-link" id="details-mars" href="#game-mars" aria-label="View details: MarsScape">MarsScape</a></h3><p class="game-hook">Make a home on the red planet.</p><p class="game-status">Playable preview</p></div>
+  <a class="play-link" href="/mars/" aria-label="Play preview: MarsScape"><span>Play preview</span><span aria-hidden="true">↗</span></a>
+</article>
 
-    <article class="game-card" style="--card-glow: var(--festival-green)" aria-labelledby="garden-title">
-      <div class="game-vis">
-        <img src="assets/previews/garden.jpg" width="1000" height="650" alt="Garden OS’s 3D raised bed and opening story dialog in Mom’s backyard." loading="lazy" decoding="async">
-        <span class="game-status st-preview">In development</span>
-      </div>
-      <div class="game-body">
-        <div class="game-genre">Open-World Adventure · Beta</div>
-        <h3 class="game-name" id="garden-title">Garden OS: Story Mode</h3>
-        <p class="game-desc">A 3D open-world garden adventure. Explore the plot, meet the characters, and grow a season from seed to harvest.</p>
-        <div class="game-actions">
-          <a class="play-link" href="garden/" aria-label="Play Garden OS: Story Mode"><span aria-hidden="true">▶</span> Play</a>
-        </div>
-      </div>
-    </article>
+<article class="game-card green" data-game="garden" aria-labelledby="title-garden">
+  <div class="game-vis"><img src="/assets/previews/garden.jpg" width="1000" height="650" alt="The backyard raised bed and gardener in Garden OS Story Mode." decoding="async" loading="lazy"><span class="ticket-number" aria-hidden="true">MM / 05</span></div>
+  <div class="game-body"><p class="game-genre">Garden adventure</p><h3 id="title-garden"><a class="details-link" id="details-garden" href="#game-garden" aria-label="View details: Garden OS: Story Mode">Garden OS: Story Mode</a></h3><p class="game-hook">A little soil. A whole lot of story.</p><p class="game-status">Playable preview</p></div>
+  <a class="play-link" href="/garden/" aria-label="Play preview: Garden OS: Story Mode"><span>Play preview</span><span aria-hidden="true">↗</span></a>
+</article>
 
-    <article class="game-card" style="--card-glow: var(--strobe-yellow)" aria-labelledby="empires-title">
-      <div class="game-vis">
-        <img src="assets/previews/empires.jpg" width="1000" height="650" alt="Villagers and buildings in an isometric Age of Dave settlement, surrounded by unexplored terrain." loading="lazy" decoding="async">
-        <span class="game-status st-preview">In development</span>
+<article class="game-card violet" data-game="empires" aria-labelledby="title-empires">
+  <div class="game-vis"><img src="/assets/previews/empires.jpg" width="1000" height="650" alt="Villagers and a settlement surrounded by unexplored terrain in Age of Dave." decoding="async" loading="lazy"><span class="ticket-number" aria-hidden="true">MM / 06</span></div>
+  <div class="game-body"><p class="game-genre">Real-time strategy</p><h3 id="title-empires"><a class="details-link" id="details-empires" href="#game-empires" aria-label="View details: Age of Dave">Age of Dave</a></h3><p class="game-hook">Build a settlement. Command an army.</p><p class="game-status">Playable preview</p></div>
+  <a class="play-link" href="/empires/" aria-label="Play preview: Age of Dave"><span>Play preview</span><span aria-hidden="true">↗</span></a>
+</article></div>
+        <aside class="spotlight" id="spotlight" aria-label="Featured game"><p class="eyebrow">On the turntable</p><img id="spotlight-image" src="/assets/previews/mixmash.jpg" alt="Two DJs battling on a neon stage." width="1000" height="650"><div><p class="eyebrow" id="spotlight-genre">Platform fighter</p><h2 id="spotlight-title">MIXMASH</h2><p id="spotlight-copy">Pick your DJ. Own the stage.</p></div><a class="button primary" id="spotlight-play" href="/play/">Play MIXMASH <span aria-hidden="true">↗</span></a></aside>
       </div>
-      <div class="game-body">
-        <div class="game-genre">Real-Time Strategy · Alpha</div>
-        <h3 class="game-name" id="empires-title">Age of Dave</h3>
-        <p class="game-desc">Choose a civilization, gather resources, and build your settlement. Raise an army and take on the AI in a classic strategy skirmish, right in your browser.</p>
-        <div class="game-actions">
-          <a class="play-link" href="empires/" aria-label="Play Age of Dave"><span aria-hidden="true">▶</span> Play</a>
-        </div>
+      <div class="pager" id="pager" hidden><button class="button" id="previous-page" type="button" aria-label="Previous games">←</button><span id="page-count" aria-live="polite"></span><button class="button" id="next-page" type="button" aria-label="Next games">→</button></div>
+      <p class="catalog-note">Every game here is playable now. Each card shows how far along it is.</p>
+    </section>
+    <section class="view studio-view" id="studio" aria-labelledby="studio-title">
+      <div class="studio-poster"><p class="eyebrow">Made by Dave. Played by you.</p><h2 id="studio-title" tabindex="-1">One curious<br>game workshop.</h2><p>Music. Management.<br>Strange little worlds.</p><a class="button primary" href="#games">Find a game <span aria-hidden="true">↗</span></a></div>
+      <div class="studio-copy" tabindex="0" role="region" aria-label="About MixMash Studio" data-web2-scroll>
+        <h3>Ideas worth playing.</h3><p>MixMash Studio is Dave Robertson's independent game workshop: music, management, strange little worlds, and ideas worth playing. Pick a game and jump in. Some are released; others are playable previews that are still taking shape.</p>
+        <h3>Your game, your progress.</h3><p>Saving works differently in each game. Open a game's details for local saves, backups and online requirements. The homepage never changes your game saves.</p>
+        <h3>Help shape the next round.</h3><p>Found a bug or have an idea? Send feedback through GitHub. An account is required to post.</p>
+        <div class="studio-links"><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span aria-hidden="true">↗</span><span class="sr-only"> (external GitHub site)</span></a><a class="button" href="/brand.html">Brand guide</a><a class="button" href="https://github.com/DaveHomeAssist/mixmash">Source <span aria-hidden="true">↗</span><span class="sr-only"> (external GitHub site)</span></a></div>
       </div>
-    </article>
-
-    <article class="game-card" style="--card-glow: var(--led-cyan)" aria-labelledby="pitch-title">
-      <div class="game-vis">
-        <img src="assets/previews/pitch.jpg" width="1000" height="650" alt="Neon soccer players face off against the CPU on Pitch Riot’s green pitch." loading="lazy" decoding="async">
-        <span class="game-status st-live">Released</span>
-      </div>
-      <div class="game-body">
-        <div class="game-genre">Arcade Soccer</div>
-        <h3 class="game-name" id="pitch-title">Pitch Riot</h3>
-        <p class="game-desc">Street soccer with the volume up. Beat the CPU across two halves, then cover the pitch for the halftime show to boost your second half. Keyboard or touch.</p>
-        <div class="game-actions">
-          <a class="play-link" href="pitch/" aria-label="Play Pitch Riot"><span aria-hidden="true">▶</span> Play</a>
-          <a class="info-link" href="https://systembydave.com/fifa-pitch-crew/">Full Cover Ops <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>
-        </div>
-      </div>
-    </article>
-  </div>
-  <p class="catalog-note">Real gameplay shown. Games marked “In development” are playable previews and may change.</p>
-</main>
-
-<section class="about" id="about">
-  <div class="about-inner">
-    <h2>One Studio. Zero Installs.</h2>
-    <p>MixMash Studio is an independent one-person shop making games the way the web intended: click a link, start playing. Saves stay in your browser. New games join the lineup as they graduate from the lab.</p>
-    <div class="about-pills">
-      <span class="pill">Browser Native</span>
-      <span class="pill">Keyboard + Gamepad</span>
-      <span class="pill">Free to Play</span>
-      <span class="pill">No Tracking</span>
-    </div>
-  </div>
+    </section>
+    
+<section class="view detail-view pink" id="game-mixmash" aria-labelledby="heading-mixmash" data-game-detail="mixmash">
+  <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">Released</span></div>
+  <div class="detail-body"><div class="detail-art"><img src="/assets/previews/mixmash.jpg" width="1000" height="650" alt="Two DJs battling on a neon platform stage in MIXMASH." decoding="async" loading="lazy"><span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+    <div class="detail-copy" role="region" aria-label="MIXMASH details" tabindex="0" data-web2-scroll><p class="eyebrow">Platform fighter</p><h2 id="heading-mixmash" tabindex="-1">MIXMASH</h2><p class="detail-hook">Pick your DJ. Own the stage.</p><p>Battle a friend or the CPU in a music-fueled platform fighter. Pick your producer, choose your venue, and throw down.</p>
+    <dl><div><dt>Players</dt><dd>Solo or local versus</dd></div><div><dt>Controls</dt><dd>Keyboard</dd></div></dl><h3>Saving progress</h3><p>Options, progress and supported match snapshots stay in this browser. Use the game menu to manage them.</p><div class="related-links"><a href="/home.html">Game guide ↗</a></div></div>
+  </div><div class="detail-actions"><a class="button primary" href="/play/" aria-label="Play now: MIXMASH">Play now <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
 </section>
 
-<section class="closing" aria-labelledby="closing-title">
-  <p class="eyebrow">One more round?</p>
-  <h2 id="closing-title">Find your next favorite.</h2>
-  <p>Jump into a game. Found a bug or have an idea? Help shape what comes next.</p>
-  <div class="closing-actions">
-    <a class="btn btn-primary" href="#games">Explore games <span aria-hidden="true">↑</span></a>
-    <a class="btn btn-ghost" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span aria-hidden="true">↗</span><span class="sr-only"> (external site: GitHub)</span></a>
-  </div>
-  <p class="feedback-note">Feedback opens GitHub; an account is required to post.</p>
+<section class="view detail-view orange" id="game-front-of-house" aria-labelledby="heading-front-of-house" data-game-detail="front-of-house">
+  <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">Early playable</span></div>
+  <div class="detail-body"><div class="detail-art"><img src="/assets/previews/foh.jpg" width="1000" height="650" alt="A concert venue being built for show night in Front of House." decoding="async" loading="lazy"><span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+    <div class="detail-copy" role="region" aria-label="Front of House details" tabindex="0" data-web2-scroll><p class="eyebrow">Venue management</p><h2 id="heading-front-of-house" tabindex="-1">Front of House</h2><p class="detail-hook">Book the band. Build the venue.</p><p>Make show night pay. Book an act, build a venue, promote the show and settle the money. Start with a parking lot and earn your next room.</p>
+    <dl><div><dt>Players</dt><dd>Solo</dd></div><div><dt>Controls</dt><dd>Mouse or keyboard</dd></div></dl><h3>Saving progress</h3><p>Your career saves in this browser. Export a save code from the game menu to keep a backup or move it to another device.</p><div class="related-links"></div></div>
+  </div><div class="detail-actions"><a class="button primary" href="/front-of-house/" aria-label="Play preview: Front of House">Play preview <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
 </section>
 
-<footer>
-  <div class="footer-logo">MIXMASH STUDIO</div>
-  <div class="footer-links">
-    <a href="#games">Games</a>
-    <a href="brand.html">Brand Guide</a>
-    <a href="https://github.com/DaveHomeAssist">GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>
-  </div>
-  <p>&copy; 2026 MixMash Studio &middot; mixmash.games</p>
-</footer>
+<section class="view detail-view blue" id="game-pitch" aria-labelledby="heading-pitch" data-game-detail="pitch">
+  <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">Released</span></div>
+  <div class="detail-body"><div class="detail-art"><img src="/assets/previews/pitch.jpg" width="1000" height="650" alt="Players challenging for the ball on Pitch Riot’s green soccer pitch." decoding="async" loading="lazy"><span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+    <div class="detail-copy" role="region" aria-label="Pitch Riot details" tabindex="0" data-web2-scroll><p class="eyebrow">Arcade soccer</p><h2 id="heading-pitch" tabindex="-1">Pitch Riot</h2><p class="detail-hook">Beat the keeper. Bring the hype.</p><p>Take on the CPU, run the halftime show, and bring the hype into the second half. Quick feet. Big goals. One more match.</p>
+    <dl><div><dt>Players</dt><dd>Solo vs CPU</dd></div><div><dt>Controls</dt><dd>Keyboard</dd></div></dl><h3>Saving progress</h3><p>Audio preferences stay in this browser. A match starts fresh when you reload.</p><div class="related-links"><a href="https://systembydave.com/fifa-pitch-crew/">Full Cover Ops (external) ↗</a></div></div>
+  </div><div class="detail-actions"><a class="button primary" href="/pitch/" aria-label="Play now: Pitch Riot">Play now <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
+</section>
+
+<section class="view detail-view rust" id="game-mars" aria-labelledby="heading-mars" data-game-detail="mars">
+  <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">Playable preview</span></div>
+  <div class="detail-body"><div class="detail-art"><img src="/assets/previews/mars.jpg" width="1000" height="650" alt="Resource seams and colony buildings on MarsScape’s rust-colored terrain." decoding="async" loading="lazy"><span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+    <div class="detail-copy" role="region" aria-label="MarsScape details" tabindex="0" data-web2-scroll><p class="eyebrow">Colony survival</p><h2 id="heading-mars" tabindex="-1">MarsScape</h2><p class="detail-hook">Make a home on the red planet.</p><p>Mine, craft, and grow a colony on Mars. Build the systems that will get you through the Great Storm.</p>
+    <dl><div><dt>Players</dt><dd>Solo</dd></div><div><dt>Controls</dt><dd>Mouse or keyboard</dd></div></dl><h3>Saving progress</h3><p>Online play uses a server-backed colony session. Offline play has a local fallback. Keep an exported save as a backup; clearing browser data can remove your session access.</p><div class="related-links"></div></div>
+  </div><div class="detail-actions"><a class="button primary" href="/mars/" aria-label="Play preview: MarsScape">Play preview <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
+</section>
+
+<section class="view detail-view green" id="game-garden" aria-labelledby="heading-garden" data-game-detail="garden">
+  <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">Playable preview</span></div>
+  <div class="detail-body"><div class="detail-art"><img src="/assets/previews/garden.jpg" width="1000" height="650" alt="The backyard raised bed and gardener in Garden OS Story Mode." decoding="async" loading="lazy"><span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+    <div class="detail-copy" role="region" aria-label="Garden OS: Story Mode details" tabindex="0" data-web2-scroll><p class="eyebrow">Garden adventure</p><h2 id="heading-garden" tabindex="-1">Garden OS: Story Mode</h2><p class="detail-hook">A little soil. A whole lot of story.</p><p>Grow a backyard story through soil, seasons, and the choices you make along the way. Meet your neighbors and bring the garden to life.</p>
+    <dl><div><dt>Players</dt><dd>Solo</dd></div><div><dt>Controls</dt><dd>Mouse and keyboard</dd></div></dl><h3>Saving progress</h3><p>Story Mode has three local save slots and export/import backups. The embedded game stores these under Garden OS. Its Free Play and Planner modes are session-only.</p><div class="related-links"></div></div>
+  </div><div class="detail-actions"><a class="button primary" href="/garden/" aria-label="Play preview: Garden OS: Story Mode">Play preview <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
+</section>
+
+<section class="view detail-view violet" id="game-empires" aria-labelledby="heading-empires" data-game-detail="empires">
+  <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">Playable preview</span></div>
+  <div class="detail-body"><div class="detail-art"><img src="/assets/previews/empires.jpg" width="1000" height="650" alt="Villagers and a settlement surrounded by unexplored terrain in Age of Dave." decoding="async" loading="lazy"><span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+    <div class="detail-copy" role="region" aria-label="Age of Dave details" tabindex="0" data-web2-scroll><p class="eyebrow">Real-time strategy</p><h2 id="heading-empires" tabindex="-1">Age of Dave</h2><p class="detail-hook">Build a settlement. Command an army.</p><p>Choose a civilization, gather resources, and take on the AI in a classic strategy skirmish. The in-game title is EMPIRES.</p>
+    <dl><div><dt>Players</dt><dd>Solo vs AI</dd></div><div><dt>Controls</dt><dd>Mouse and keyboard</dd></div></dl><h3>Saving progress</h3><p>Treat each browser skirmish as a new session. This catalog does not promise a resumable campaign.</p><div class="related-links"></div></div>
+  </div><div class="detail-actions"><a class="button primary" href="/empires/" aria-label="Play preview: Age of Dave">Play preview <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
+</section>
+  </main>
+  <footer class="site-footer"><span>Independent. Browser native. All welcome.</span><span>© 2026 MixMash Studio</span></footer>
+</div>
+<p id="announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
 </body>
 </html>

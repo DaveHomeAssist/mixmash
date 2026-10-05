@@ -20,7 +20,7 @@ import { CATEGORIES, COMMAND_NOTES, FILE_NOTES, PATTERN_NOTES, PROJECTS, REPO } 
 export const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const CATALOG_PATH = path.join(ROOT, 'admin', 'catalog.json');
 
-const PREVIEW_PROJECTS = { mixmash: 'mixmash', mars: 'mars', empires: 'empires', garden: 'garden', pitch: 'pitch' };
+const PREVIEW_PROJECTS = { foh: 'front-of-house', mixmash: 'mixmash', mars: 'mars', empires: 'empires', garden: 'garden', pitch: 'pitch' };
 
 // First match wins; anything unmatched belongs to the studio hub.
 const PROJECT_RULES = [

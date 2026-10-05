@@ -560,3 +560,11 @@ Choose **A: placeable touring requirements** over B: fixed scenery or C: a new V
 **Status:** Accepted presentation decision by Codex under CT-DEC-19, 2026-10-04.
 
 Moving service representatives use a restrained opposing hip/shoulder gait; queued representatives use planted legs and relaxed arms. The pose consumes existing movement/zone/time only. Keep the same authored geometry, material instance batches, representative count, routes and all engine/save/accounting rules. Reduced motion keeps a static pose. This completes a bounded sample movement task; it does not establish final realistic-art, physical calibration or device-performance acceptance.
+
+## Homepage visibility sign-off (2026-10-05)
+
+Dave approved HOME-02 A and explicitly signed off the first playable for the
+MixMash homepage. List Front of House as **Early playable**. This supersedes
+the historical no-hub-card hold, including that portion of earlier phase notes.
+Keep `noindex` and the sitemap exclusion unchanged. This does not approve
+search indexing or certify separate final-art, hardware or performance gates.
