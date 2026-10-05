@@ -1131,15 +1131,14 @@ try {
   {
     const { context, page } = await open('/');
     assert.equal(await page.locator('link[rel="manifest"]').count(), 1, 'HUB-104 manifest is linked');
-    const atRest = await page.evaluate(() =>
-      getComputedStyle(document.querySelector('.game-card .laser')).animationPlayState);
-    assert.equal(atRest, 'paused', 'HUB-103 card loops are paused at rest');
-    await page.locator('.game-card').first().hover();
-    await page.waitForTimeout(200);
-    const hovered = await page.evaluate(() =>
-      getComputedStyle(document.querySelector('.game-card .laser')).animationPlayState);
-    assert.equal(hovered, 'running', 'HUB-103 card loops run on hover');
-    record('HUB-103/104 hub previews and manifest');
+    assert.equal(await page.locator('.game-card').count(), 6, 'six playable titles');
+    const motion = await page.locator('.game-card').evaluateAll(cards => cards.map(card => getComputedStyle(card).animationName));
+    assert.ok(motion.every(name => name === 'none'), 'tickets never loop at rest');
+    await page.getByRole('button', { name: /Pick for me/ }).click();
+    await page.waitForFunction(() => document.querySelector('.detail-view:not([hidden])'));
+    assert.match(new URL(page.url()).hash, /^#game-/);
+    assert.equal(await page.locator('.detail-view:visible .primary').count(), 1, 'selection offers a direct launch link');
+    record('HUB-103/104 catalog, deliberate selection and manifest');
     await context.close();
   }
 

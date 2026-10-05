@@ -15,6 +15,7 @@ import vm from 'node:vm';
 const ROOT = path.resolve(import.meta.dirname, '..');
 
 // Every public surface that states a roster or arena total.
+// The studio catalog omits volatile totals; any claims there still get checked.
 const PUBLIC_SURFACES = ['index.html', 'home.html', 'brand.html', 'play/index.html', 'docs/PLAYER_GUIDE.md'];
 
 const FIGHTER_NOUNS = /^(headliner|fighter|producer)s?$/i;
@@ -81,8 +82,8 @@ test('public roster and arena counts match the shipped catalog registry', async 
     const phrases = await countPhrases(file);
     const fighterPhrases = phrases.filter((phrase) => phrase.kind === 'fighters');
     const arenaPhrases = phrases.filter((phrase) => phrase.kind === 'arenas');
-    assert.ok(fighterPhrases.length > 0, `${file} states a fighter total (guard would be vacuous otherwise)`);
-    assert.ok(arenaPhrases.length > 0, `${file} states an arena total (guard would be vacuous otherwise)`);
+    assert.ok(file === 'index.html' || fighterPhrases.length > 0, `${file} states a fighter total (guard would be vacuous otherwise)`);
+    assert.ok(file === 'index.html' || arenaPhrases.length > 0, `${file} states an arena total (guard would be vacuous otherwise)`);
 
     const stale = phrases.filter((phrase) => phrase.value !== counts[phrase.kind]);
     assert.deepEqual(

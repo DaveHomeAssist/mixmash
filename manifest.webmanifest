@@ -1,15 +1,18 @@
 {
   "name": "MixMash Studio",
   "short_name": "MixMash",
-  "description": "Free browser games by MixMash Studio: a platform fighter, a Mars colony skiller, a garden adventure, an RTS, and arcade soccer.",
+  "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#06060E",
-  "theme_color": "#06060E",
-  "categories": ["games", "entertainment"],
+  "background_color": "#f5f1e7",
+  "theme_color": "#f5f1e7",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
   "icons": [
     {
       "src": "/favicon.svg",
@@ -25,8 +28,35 @@
     }
   ],
   "shortcuts": [
-    { "name": "MIXMASH", "url": "/play/", "description": "Browser platform fighter" },
-    { "name": "MarsScape", "url": "/mars/", "description": "Mars colony skiller" },
-    { "name": "Pitch Riot", "url": "/pitch/", "description": "Arcade street soccer" }
+    {
+      "name": "MIXMASH",
+      "url": "/play/",
+      "description": "Platform fighter"
+    },
+    {
+      "name": "Front of House",
+      "url": "/front-of-house/",
+      "description": "Venue management"
+    },
+    {
+      "name": "Pitch Riot",
+      "url": "/pitch/",
+      "description": "Arcade soccer"
+    },
+    {
+      "name": "MarsScape",
+      "url": "/mars/",
+      "description": "Colony survival"
+    },
+    {
+      "name": "Garden OS: Story Mode",
+      "url": "/garden/",
+      "description": "Garden adventure"
+    },
+    {
+      "name": "Age of Dave",
+      "url": "/empires/",
+      "description": "Real-time strategy"
+    }
   ]
 }

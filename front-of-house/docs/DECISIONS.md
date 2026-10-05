@@ -566,3 +566,11 @@ Moving service representatives use a restrained opposing hip/shoulder gait; queu
 ## CT-DEC-29: Source-authored sample surfaces
 
 **Accepted 2026-10-04 by Codex under Dave's CT-DEC-19 delegated authority.** Advance the existing realistic Lot sample with bounded shared head/hair geometry and deterministic face, hair and fabric maps. Preserve guest batch counts, palettes, limb joints, representative limits, simulation and saves. Use smoother metal and distinct cloth/skin response. No downloaded assets or new dependencies are needed. This delivers a reviewable sample refinement under FOH-V01d; it does not substitute for physical calibration, device qualification or Dave's final art/camera acceptance.
+
+## Homepage visibility sign-off (2026-10-05)
+
+Dave approved HOME-02 A and explicitly signed off the first playable for the
+MixMash homepage. List Front of House as **Early playable**. This supersedes
+the historical no-hub-card hold, including that portion of earlier phase notes.
+Keep `noindex` and the sitemap exclusion unchanged. This does not approve
+search indexing or certify separate final-art, hardware or performance gates.

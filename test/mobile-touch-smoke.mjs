@@ -62,9 +62,8 @@ export const CONFIGS = [
 // --- the rows: every game hosted on or linked from mixmash.games ---------------------
 // Full Cover Ops lives in DaveHomeAssist/system-by-dave; it joins this table in Phase 5.
 export const GAMES = [
-  // The hub is a long-form landing page that scrolls by design (audit checkpoint 1 is green for it);
-  // it keeps the no-horizontal-overflow check and skips the no-vertical-scroll one.
-  { id: 'hub', name: 'Hub', path: '/', nav: false, scrollsVertically: true },
+  // The festival catalog uses a viewport shell and paginates short screens.
+  { id: 'hub', name: 'Hub', path: '/', nav: false },
   {
     id: 'play', name: 'MIXMASH', path: '/play/', nav: true,
     // Touch only, from a fresh load: tap the title stage (it opens the command menu), then tap Start
