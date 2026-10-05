@@ -539,3 +539,11 @@ New Amphitheater/Festival bookings carry optional version1 set timing. Doors19:0
 Status: Accepted implementation decision by Codex under Dave's autonomous execution direction and CT-DEC-19,2026-10-04. Release proof remains separate.
 
 New Club bookings select the version1 room profile. The medium house PA retains250-person sound supply; rent includes house lighting. A placed light tower remains an optional$175 rental with8kW draw and no duplicate lighting bonus. The60kW equipment budget continues to cover placed equipment, consistent with the existing included PA. Keep the existing pillar/sightline rules and360 permit. Suggested layout omits the redundant tower only for marked bookings; existing layouts/caches and unmarked saved arithmetic stay intact. Imported derived coverage/cost fields confer no benefit; malformed optional source preserves paid money/history with recovery feedback. Club scale and career verdicts follow as separate acceptance.
+
+## CT-DEC-26 Tier simulator acceptance
+
+Status: Accepted validation decision by Codex under CT-DEC-19,2026-10-04; verdicts are measured separately.
+
+Use100 deterministic ordinary-career seeds, preserve the existing Lot baseline, and require90% careful later-tier progression within20 Club shows,12 Amphitheater holds and8 Festival days. Exercise at least five Club shows with carried state, each hold length, cancellation, stage/site/cash conservation and booking after completion. Careless Club play must not unlock on every seed. Strategies use public ranges before doors and only visible incidents afterward. Record all failed seeds and cohort limits. Do not tune thresholds after observing the cohort or call missing Festival infrastructure complete. Physical/human acceptance remains independent.
+
+Tier cohort clarification: both later-tier strategies earn the Lot unlock with the same existing careful plan, then diverge at Club. The ten-seed diagnostic showed that carrying only survivors of careless Lot play selected unusually strong starting reputations. Matched, genuinely earned starts isolate later-tier choices without injecting money or unlocks; the original Lot report retains its own careless cohort. The declared thresholds and show limits are unchanged.
