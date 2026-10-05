@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Guest anatomy technical delivery",
+  "head": "Native HUD evidence and release acceptance",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 anatomy and buffer reuse are merged, deployed and hosted-verified in PR122. Both required final-head CI jobs and independent36-window/18-metric raw audit pass; all42 hosted files match before/after full player, offline,3D,Festival,navigation and action/state checks on Dominic. Retain prior failures and unchanged limits. Current native/device targets, final human style/camera/career, physical calibration and original image provenance remain open.",
+  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -32,15 +32,16 @@
     "PR104: Amphitheater sound/slope delivered at33bdc63 with27 matching hosted files, both-browser room/held journeys and offline signing/cancellation/journal proof.",
     "PR106/PR108: Festival room profile and spatial delays delivered; eight hosted Festival/eight seating journeys,27 source matches and exact offline tower costs/journal at137db3a.",
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.",
-    "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
+    "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
+    "PR126: delivery records mergedb746258; mandatory CI37368795577 attempt3 and postmergeCI37382914441 pass, Pages built2026-10-05T22:30:57Z, all44 checked hosted files/eight changed documents match. Runtime remains the PR122 qualified source."
   ],
   "nextStep": {
-    "title": "Complete remaining art and release acceptance",
-    "why": "Model15 technical delivery is verified through PR122. Resolve final realistic art and physical scale, current supported native/phone/low-power evidence, human Book-to-Done acceptance and original image provenance before full launch and search promotion.",
-    "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
+    "title": "Complete final release acceptance",
+    "why": "Available current-source native Lot and paused-Festival diagnostics are recorded, with earlier failures retained. Use the prepared existing RELEASE checklist to obtain remaining supported physical device, current Mac, sustained-workload, human art/camera/career, calibration and original-image rights evidence before full launch.",
+    "doneWhen": "Required supported-device targets, final art/camera/career review, physical calibration and provenance satisfy the existing release checks; no automated or screenshot proxy substitutes for missing acceptance.",
     "effort": "L",
     "owner": "either",
-    "blockedBy": "D1\u2013D11 are settled. Final art/camera acceptance requires Dave; supported physical devices and original image provenance are not established by browser automation."
+    "blockedBy": "D1\u2013D11 are settled. Actual human review, physical devices/calibration and original image rights require direct evidence; available Edge diagnostics do not establish the entire supported matrix."
   },
   "findings": [
     {
@@ -76,7 +77,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Device qualification remains open",
-      "detail": "Measured CI limits are implemented under CT-DEC-21; model15 final-source paired CI passes independently audited36windows/all18metrics. The six Apple M4 full-HUD windows at59.9439\u201359.9772Hz with no50ms stalls remain frozen model12 sourceb8bfe08 evidence. Current native/device, supported phone/low-power and human acceptance remain open.",
+      "detail": "Current model15 native Edge/AMD Lot and paused-Festival full-HUD diagnostics are independently audited on Duncan; Walter isolated renderer results and Windows Chrome startup failures remain separate. First Festival window59.7358Hz is retained. Supported physical phone/low-power/current-Mac/display and broader sustained targets remain open; earlier Mac/model12 evidence keeps frozen-source attribution.",
       "files": [
         "front-of-house/ROADMAP.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -307,7 +308,7 @@
   "unknowns": [
     "Final realistic art and physical scale/operator-eye calibration remain unaccepted.",
     "Original supplied image authorship and redistribution rights are not established; source-authored 3D samples use no external imagery.",
-    "Supported phone/low-power devices and sustained full-HUD targets remain unqualified; measured CI limits and available native-host evidence exist.",
+    "Current model15 available-host native diagnostics exist; first Festival fixed59.7358Hz, broader sustained target, current Mac, physical display/phone/low-power and supported roster remain unqualified.",
     "Human camera, visual and career acceptance remain pending."
   ],
   "evidence": {
@@ -332,7 +333,7 @@
     "diagnosticHost": "Mac16,12 / Apple M4 / 10 CPU cores / 16 GiB / macOS 27.0.1 (26A434) / Chromium 149.0.7827.55 headless / ANGLE Metal Apple M4 hardware",
     "rendererImplementation": "Explicit Lot preview, source-owned sample, service zones, guest transitions and unchanged-shadow reuse deployed; final art and device acceptance remain open",
     "artAcceptance": "Final model15 realistic style/camera review remains pending; automated images are not human sign-off.",
-    "deviceAcceptance": "Earlier Mac native renderer/display and model12 sample evidence retain their frozen-source attribution. Current model15 supported-device and phone/low-power qualification remain open; Dominic software browser checks do not establish native performance.",
+    "deviceAcceptance": "Current model15 native Edge/AMD Lot and paused-Festival full-HUD diagnostics are independently audited on Duncan; Walter isolated renderer results and Windows Chrome startup failures remain separate. First Festival window59.7358Hz is retained. Supported physical phone/low-power/current-Mac/display and broader sustained targets remain open; earlier Mac/model12 evidence keeps frozen-source attribution.",
     "preflightDelivery": "Documentation and diagnostics only; the linked PR owns CI/merge history, and Pages deployment is independently verified at delivery. This sourceRevision identifies reviewed production behavior, not a future renderer release.",
     "diagnosticMeasurements": {
       "runs": 18,
@@ -552,6 +553,463 @@
       "sourceTree": "1f2d23e4fc6ac1366fb8986612420bbbefdd12db",
       "finalHeadCIMergeAndDeliveredTreesIdentical": true,
       "e019ToFinalHeadChanges": "Homepage catalog/style/script and landing smoke integration only; Front of House runtime, saves, formulas and measurement protocol unchanged."
+    },
+    "nativeWindows20261005": {
+      "sourceRevision": "b746258d74278269eb047537294165d1d1e3e0bd",
+      "model": "lot-sample-15",
+      "scope": "Exact-source Windows SSH desktop diagnostics only; browser/backend, renderer-only/full-HUD and running/paused workloads stay separate. No supported matrix, physical display/phone/low-power, current Mac, human, calibration or rights closure.",
+      "isolatedRenderer": {
+        "runner": "Walter",
+        "browser": "Chrome154.0.8037.98",
+        "backend": "NVIDIA RTX3070 Laptop ANGLE/D3D11",
+        "viewport": [
+          1008,
+          673
+        ],
+        "dpr": 1,
+        "warmupMs": 10000,
+        "measurementMs": 30000,
+        "repeatsPerScene": 3,
+        "validWindows": 6,
+        "finalCrowdDetail": {
+          "full": 0,
+          "distant": 150
+        },
+        "runs": [
+          {
+            "id": "native-empty-1",
+            "valid": true,
+            "elapsedMs": 30015.600000000002,
+            "fps": 60.00213222457655,
+            "frameP95": 16.700000000004366,
+            "cpuP95": 0.3000001907348633,
+            "viewport": {
+              "width": 1008,
+              "height": 673
+            },
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3070 Laptop GPU (0x0000249D) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "revision": "lot-sample-15",
+            "detail": {
+              "full": 0,
+              "distant": 0
+            }
+          },
+          {
+            "id": "native-empty-2",
+            "valid": true,
+            "elapsedMs": 30015.499999999996,
+            "fps": 60.00233212840033,
+            "frameP95": 16.799999999995634,
+            "cpuP95": 0.20000028610229492,
+            "viewport": {
+              "width": 1008,
+              "height": 673
+            },
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3070 Laptop GPU (0x0000249D) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "revision": "lot-sample-15",
+            "detail": {
+              "full": 0,
+              "distant": 0
+            }
+          },
+          {
+            "id": "native-empty-3",
+            "valid": true,
+            "elapsedMs": 30015.4,
+            "fps": 60.00253203355609,
+            "frameP95": 16.799999999995634,
+            "cpuP95": 0.2999997138977051,
+            "viewport": {
+              "width": 1008,
+              "height": 673
+            },
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3070 Laptop GPU (0x0000249D) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "revision": "lot-sample-15",
+            "detail": {
+              "full": 0,
+              "distant": 0
+            }
+          },
+          {
+            "id": "native-crowd-1",
+            "valid": true,
+            "elapsedMs": 30015.5,
+            "fps": 60.00233212840032,
+            "frameP95": 16.799999999995634,
+            "cpuP95": 1.5,
+            "viewport": {
+              "width": 1008,
+              "height": 673
+            },
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3070 Laptop GPU (0x0000249D) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "revision": "lot-sample-15",
+            "detail": {
+              "full": 0,
+              "distant": 150
+            }
+          },
+          {
+            "id": "native-crowd-2",
+            "valid": true,
+            "elapsedMs": 30015.5,
+            "fps": 60.00233212840033,
+            "frameP95": 16.799999999999272,
+            "cpuP95": 1.6999998092651367,
+            "viewport": {
+              "width": 1008,
+              "height": 673
+            },
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3070 Laptop GPU (0x0000249D) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "revision": "lot-sample-15",
+            "detail": {
+              "full": 0,
+              "distant": 150
+            }
+          },
+          {
+            "id": "native-crowd-3",
+            "valid": true,
+            "elapsedMs": 30015.4,
+            "fps": 60.00253203355611,
+            "frameP95": 16.799999999999272,
+            "cpuP95": 1.5999999046325684,
+            "viewport": {
+              "width": 1008,
+              "height": 673
+            },
+            "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 3070 Laptop GPU (0x0000249D) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "revision": "lot-sample-15",
+            "detail": {
+              "full": 0,
+              "distant": 150
+            }
+          }
+        ],
+        "sourceAndRawHashesMatch": true
+      },
+      "fullHud": {
+        "runner": "Duncan",
+        "browser": "Edge154.0.4258.53",
+        "backend": "AMD Radeon RX5700 XT ANGLE/D3D11",
+        "viewport": [
+          1000,
+          676
+        ],
+        "dpr": 1,
+        "windowStableMs": 15000,
+        "windowDeadlineMs": 60000,
+        "warmupMs": 10000,
+        "measurementMs": 30000,
+        "repeatsPerCamera": 3,
+        "adapterSha256": "1cd6c480d907755227bdd7f92f47bc6467c191bfdb7131fe1b22008f5b1a1d0d",
+        "adapterChanges": [
+          "Existing Edge channel replaces Chrome; actual version recorded",
+          "Metal flag removed and Apple M4 assertion replaced with exact AMD Radeon RX 5700 XT D3D11 assertion",
+          "Classic bootstrap, native window stabilization, exact fixture import, then production 3D retry hook before measurement",
+          "Untimed renderer setup snapshots and failure capture added"
+        ],
+        "lot": {
+          "scope": "Actual running services/HUD, minute25\u219265, fixed/moving real middle-drag handler",
+          "finishedAt": "2026-10-05T22:57:27.862333+00:00",
+          "reportSha256": "871f5d80d31d6f5d4e895bc7aec72e87f6ea4caeb66fdddfaecac3c9288de231",
+          "runs": [
+            {
+              "id": "fixed-native3d-1",
+              "valid": true,
+              "camera": "fixed",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.002332128400326,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "minute": 65,
+              "movedFrames": 0,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "moving-native3d-1",
+              "valid": true,
+              "camera": "moving",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00233212840032,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "minute": 65,
+              "movedFrames": 1802,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "fixed-native3d-2",
+              "valid": true,
+              "camera": "fixed",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00233212840033,
+              "p95Ms": 16.799999999995634,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "minute": 65,
+              "movedFrames": 0,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "moving-native3d-2",
+              "valid": true,
+              "camera": "moving",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00253203355611,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "minute": 65,
+              "movedFrames": 1802,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "fixed-native3d-3",
+              "valid": true,
+              "camera": "fixed",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.002332128400326,
+              "p95Ms": 16.799999999995634,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "minute": 65,
+              "movedFrames": 0,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "moving-native3d-3",
+              "valid": true,
+              "camera": "moving",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00253203355611,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "minute": 65,
+              "movedFrames": 1802,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            }
+          ],
+          "independentHashesStatisticsFixtureAndFinalState": true
+        },
+        "festival": {
+          "scope": "Paused native full Festival/HUD/visible overview;6000 total attendance,1267 represented arrivals,180 representatives; no whole-career or every-layout qualification",
+          "finishedAt": "2026-10-05T23:04:17.274174+00:00",
+          "reportSha256": "b82ea3be94b50cdc8f255945127b8a3544195f7dea78b8f624a44b3e83adfbf4",
+          "runs": [
+            {
+              "id": "fixed-native3d-1",
+              "valid": true,
+              "camera": "fixed",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 59.73580316836301,
+              "p95Ms": 16.799999999995634,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "representedAttendance": 1267,
+              "representativeGuests": 180,
+              "overviewPaints": 0,
+              "paused": true,
+              "movedFrames": 0,
+              "frameCount": 1793,
+              "exactStateReplay": true
+            },
+            {
+              "id": "moving-native3d-1",
+              "valid": true,
+              "camera": "moving",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00233212840032,
+              "p95Ms": 16.799999999995634,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "representedAttendance": 1267,
+              "representativeGuests": 180,
+              "overviewPaints": 1802,
+              "paused": true,
+              "movedFrames": 1802,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "fixed-native3d-2",
+              "valid": true,
+              "camera": "fixed",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00233212840033,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "representedAttendance": 1267,
+              "representativeGuests": 180,
+              "overviewPaints": 0,
+              "paused": true,
+              "movedFrames": 0,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "moving-native3d-2",
+              "valid": true,
+              "camera": "moving",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.002132224576556,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "representedAttendance": 1267,
+              "representativeGuests": 180,
+              "overviewPaints": 1802,
+              "paused": true,
+              "movedFrames": 1802,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "fixed-native3d-3",
+              "valid": true,
+              "camera": "fixed",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.00253203355611,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "representedAttendance": 1267,
+              "representativeGuests": 180,
+              "overviewPaints": 0,
+              "paused": true,
+              "movedFrames": 0,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            },
+            {
+              "id": "moving-native3d-3",
+              "valid": true,
+              "camera": "moving",
+              "viewport": {
+                "width": 1000,
+                "height": 676
+              },
+              "dpr": 1,
+              "backend": "ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+              "revision": "lot-sample-15",
+              "cadenceHz": 60.002332128400326,
+              "p95Ms": 16.700000000004366,
+              "p99Ms": 16.80000000000291,
+              "above50": 0,
+              "longTasks": 0,
+              "representedAttendance": 1267,
+              "representativeGuests": 180,
+              "overviewPaints": 1802,
+              "paused": true,
+              "movedFrames": 1802,
+              "frameCount": 1801,
+              "exactStateReplay": true
+            }
+          ],
+          "independentHashesStatisticsFixtureStateAndOverview": true,
+          "firstFixedWindow": "Valid59.7358Hz retained; five intervals>33.3ms, maximum33.4ms, zero>50ms. No sustained60fps pass inferred."
+        },
+        "gameplayScreenshotsInspected": true
+      },
+      "retainedSetupFailures": [
+        "Walter first quick fixture import failed because isolated checkout omitted shared save code; materialized unchanged kit before later runs.",
+        "Walter subsequent quick readiness timeout remains cause-unconfirmed; two1s/2s fixed/moving quick validations are harness checks only.",
+        "Both Walter full Chrome attempts failed before timed sampling; captured WebGL context creation blocked even after explicit stable-before-3D setup. No driver/service/runtime/gate changes.",
+        "Duncan Chrome failed both short isolated renderer scenes on WebGL context creation; no valid measurement or AMD Chrome qualification inferred."
+      ],
+      "acceptance": "Open: first Festival window below60Hz, broader sustained full-HUD target, supported phone/low-power/current-Mac/physical display/roster, final human art/camera/career, physical calibration and legacy40 image rights."
+    },
+    "releaseChecklistPreparation": {
+      "sourceRevision": "b746258d74278269eb047537294165d1d1e3e0bd",
+      "path": "front-of-house/docs/RELEASE.md#4-current-revision-acceptance",
+      "status": "prepared; all human/device/calibration/rights acceptance boxes remain open",
+      "scope": "Preserve existing career/save code; eight source-tied art views, yaw37/135/zoom/pitch/reduced motion/touch review; actual desktop/phone Book-to-Done/reload; remaining device matrix, physical calibration, image rights and final launch. D1\u2013D11 settled under CT-DEC-19."
     }
   },
   "decisionState": {
@@ -907,11 +1365,12 @@
           },
           "PR81 density evidence delivered after CI37205050774, mergebc5ed37 and Pages13:35:36Z; four files match. Native and CI measurements retain their own frozen source6ed7b7c.",
           "Attempt1 on Intel Xeon Platinum 8573C:2560x720 empty CPU p95 2.0ms >1.7ms; crowd frame p95 1000ms >958.25ms. One diagnostic repeat on AMD EPYC 7763 passed all six groups. No source/protocol/limit changes; hardware causality is unproven. All 108 windows across initial, rejected and repeated pairs independently audited.",
-          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
+          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
+          "2026-10-05: b746258/model15 native Windows diagnostics: Walter6isolated-renderer windows and Duncan Edge/AMD6running-Lot+6paused-Festival full-HUD windows. Independent source/raw/fixture/adapter hashes, statistics, exact state/overview and actual images verified. First Festival fixed59.7358Hz retained; Chrome setup failures and remaining supported-device/physical/human/calibration/rights gates stay open. Existing RELEASE human checklist prepared with no acceptance inferred."
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [
-          "Supported phone/low-power qualification and sustained full-HUD performance acceptance.",
+          "Supported phone/low-power/current-Mac/physical display/roster and broader sustained full-HUD qualification. Current Edge/AMD diagnostics exist, but first Festival59.7358Hz remains below60Hz and no global target pass is inferred.",
           "Physical calibration and human acceptance; frozen native evidence does not qualify future sample revisions.",
           "Investigate cross-runner performance variability; the accepted diagnostic repeat does not erase the retained Intel rejection."
         ],
@@ -1558,7 +2017,8 @@
         "evidence": [
           "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
           "2026-10-05 name screening covers all 11 current acts and 4 rooms in WORLD.md; retain related-name proximity and bounded-search limitations. Original 40 raster image origins/licences remain unrecorded; no public promotion or asset replacement acceptance inferred.",
-          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
+          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
+          "2026-10-05: b746258/model15 native Windows diagnostics: Walter6isolated-renderer windows and Duncan Edge/AMD6running-Lot+6paused-Festival full-HUD windows. Independent source/raw/fixture/adapter hashes, statistics, exact state/overview and actual images verified. First Festival fixed59.7358Hz retained; Chrome setup failures and remaining supported-device/physical/human/calibration/rights gates stay open. Existing RELEASE human checklist prepared with no acceptance inferred."
         ],
         "slices": [
           {

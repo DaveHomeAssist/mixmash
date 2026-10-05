@@ -390,3 +390,142 @@ preserves1500 touring rent,1350 delay costs,225251 net and1225251 signed/journal
 Native model12 sample evidence keeps its original frozen source attribution;
 model15 native-device, final visual/camera, physical calibration and human career
 acceptance remain open.
+
+## Current model15 Windows renderer diagnostic, 2026-10-05
+
+The unchanged model15 runtime at deployed revision `b746258d74278269eb047537294165d1d1e3e0bd`
+was measured on Walter using the existing renderer protocol:
+`node test/front-of-house-performance.mjs --gpu=default --native-chrome`.
+Six valid windows completed at 22:38:56Z: three empty and three crowd repeats,
+each with a 10-second warm-up and 30-second sample. Source and raw sample digests
+match the retained reports; no window, browser error or validity violation was dropped.
+
+The host is Windows 11, Intel i7-10875H, 32 GiB RAM and Chrome 154.0.8037.98.
+The actual WebGL renderer identifies NVIDIA GeForce RTX 3070 Laptop via ANGLE/D3D11.
+The generic harness classifier still says `unverified hardware backend`; the
+actual renderer string supplies the NVIDIA identity. Each focused, visible native
+client window is 1008×673 at DPR 1, on the 1024×768 SSH desktop.
+
+| Scene | Valid repeats | Observed RAF cadence | Frame P95 | Submission CPU P95 |
+| --- | --- | --- | --- | --- |
+| Empty Lot | 3 | 60.0021–60.0026 Hz | 16.7–16.8 ms | 0.2–0.3 ms |
+| Crowd Lot | 3 | 60.0023–60.0026 Hz | 16.8 ms | 1.5–1.7 ms |
+
+This is the isolated renderer, excluding the actual game and HUD. The final
+crowd snapshots contain 150 distant-detail guests and zero full-detail guests;
+they do not qualify every close-view workload. The last crowd screenshot was
+inspected. RAF cadence is not GPU completion timing, a physical display test,
+sustained full-HUD qualification or supported-phone acceptance. Display refresh,
+power/thermal conditions and competing shared-host load remain uncontrolled or
+unknown. The 60 fps desktop and 30 fps low-power targets, earlier failures and
+existing paired CI limits remain unchanged.
+
+## Retained Windows setup failures, 2026-10-05
+
+The current full-game/HUD procedure was adapted privately from
+`test/front-of-house-native-hud-performance.mjs`, which originally requires
+Apple M4/Metal. The Windows adapter uses the existing browser, asserts its actual
+hardware/backend, and records its own source digest. Timing durations, repetitions,
+fixture, real pointer handlers, native density/page-fit checks and focus/resize/
+context-loss guards are preserved. Untimed setup snapshots were added to retain
+failure details. A second setup variant opens classic view until the native window
+is stable, imports the same fixture, then activates the existing 3D retry hook.
+This startup adaptation is explicit, rather than presented as the original Mac procedure.
+
+The first Walter quick setup failed before timing because the isolated checkout
+omitted the shared save-code script. Materializing the unchanged shared kit
+corrected that dependency gap. A subsequent quick readiness timeout is retained
+with cause unconfirmed. Two later fixed/moving quick validations completed, using
+only 1-second warm-ups and 2-second samples; they are harness checks, not qualification.
+
+Both full Walter Chrome attempts failed before the first timed window. The
+captured errors say WebGL context creation was blocked: “Web page caused context
+loss and was blocked.” Stabilizing the window before enabling 3D did not resolve
+that full-run failure. No driver, service, production renderer or gate was changed,
+and no invalid result was promoted to native full-HUD acceptance.
+
+Duncan's existing Chrome likewise failed to create a WebGL context for both short
+isolated-renderer probe scenes. Its existing Edge 154.0.4258.53 browser independently
+reported `ANGLE (AMD, AMD Radeon RX 5700 XT (0x0000731F) Direct3D11 vs_5_0 ps_5_0, D3D11)`
+in a visible, focused native capability probe. That capability observation alone
+is not timing qualification or evidence that either Chrome failure was repaired.
+
+## Current model15 Edge full HUD, 2026-10-05
+
+Duncan completed six valid actual game/HUD windows on the unchanged deployed
+model15 source `b746258d74278269eb047537294165d1d1e3e0bd` at 22:57:27Z.
+The host is Windows 10 build 19045, Ryzen 7 3700X, about 80 GiB RAM,
+and existing Edge 154.0.4258.53 using AMD Radeon RX 5700 XT through ANGLE/D3D11.
+All windows are visible and focused at the native 1000×676 client size and DPR 1.
+
+The private adapter uses the explicit Windows/backend and untimed setup changes
+recorded above. It preserves the original 15-second stable-window requirement,
+60-second setup deadline, 10-second warm-up, 30-second sample and three repeats
+each of fixed and moving camera. The Lot runs its real one-minute-per-second
+show clock from minute 25 to 65, with services and the actual HUD. Moving windows
+use the existing middle-drag pointer handler; no direct camera setter substitutes
+for the timed input. Fixed windows record no camera motion, while every moving
+window records 1802 camera changes across 1801 frame intervals.
+
+| Window | Observed RAF cadence | Frame P95 | Frame P99 | Intervals >50 ms | Long tasks |
+| --- | --- | --- | --- | --- | --- |
+| Fixed 1 | 60.0023 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+| Moving 1 | 60.0023 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+| Fixed 2 | 60.0023 Hz | 16.8 ms | 16.8 ms | 0 | 0 |
+| Moving 2 | 60.0025 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+| Fixed 3 | 60.0023 Hz | 16.8 ms | 16.8 ms | 0 | 0 |
+| Moving 3 | 60.0025 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+
+The independent audit recreates the exact seeded fixture, matches all source,
+fixture, adapter and raw digests, recomputes every timing summary and reproduces
+all six final engine states by advancing the canonical fixture to minute 65.
+Every native density/page-fit, active 3D, visibility/focus, resize/context and
+running-clock assertion passes. The report SHA-256 is
+`871f5d80d31d6f5d4e895bc7aec72e87f6ea4caeb66fdddfaecac3c9288de231`;
+the adapter SHA-256 is
+`1cd6c480d907755227bdd7f92f47bc6467c191bfdb7131fe1b22008f5b1a1d0d`.
+Fixed and final moving gameplay captures were inspected. They are paused after
+the measured running window to freeze review; they are not human art approval.
+
+This supplies current-source native full-HUD evidence for this single Edge/AMD
+Lot configuration. It does not close the supported-device matrix, physical
+display/phone/low-power qualification, current Mac qualification, human review
+or broader sustained-workload target. Observed RAF cadence is not GPU completion
+timing; shared-host load, power and thermal conditions are uncontrolled. The
+accepted 60 fps desktop/30 fps low-power targets and all previous failures remain.
+
+## Current model15 Festival native HUD, 2026-10-05
+
+The same Duncan Edge/AMD configuration and frozen source completed six further
+valid 30-second full-client windows at 23:04:17Z. This is the existing paused
+Festival fixture: 6000 total attendance, 1267 represented arrivals, 180 rendered
+representatives and the visible site overview. It is distinct from the running
+Lot clock and does not qualify a whole Festival career or every production layout.
+The unchanged full timing, native window, input and validity protocol applies.
+
+| Window | Observed RAF cadence | Frame P95 | Maximum interval | Intervals >33.3 ms | Intervals >50 ms |
+| --- | --- | --- | --- | --- | --- |
+| Fixed 1 | 59.7358 Hz | 16.8 ms | 33.4 ms | 5 | 0 |
+| Moving 1 | 60.0023 Hz | 16.8 ms | 16.8 ms | 0 | 0 |
+| Fixed 2 | 60.0023 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+| Moving 2 | 60.0021 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+| Fixed 3 | 60.0025 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+| Moving 3 | 60.0023 Hz | 16.7 ms | 16.8 ms | 0 | 0 |
+
+All six windows retain exact initial/final engine state and scene counts. Fixed
+windows reuse the overview without a repaint; each moving window records 1802
+real-handler camera changes and 1802 overview paints across 1801 frame intervals.
+Independent source/raw/fixture/adapter hashes, fixture recreation, statistics,
+paused-state preservation and overview assertions pass. No browser errors, long
+tasks or visibility/focus/resize/context violations were captured. The report
+SHA-256 is `b82ea3be94b50cdc8f255945127b8a3544195f7dea78b8f624a44b3e83adfbf4`.
+The final actual game/HUD/overview image was inspected.
+
+The first fixed window's 59.7358 Hz is valid and retained, including its five
+intervals over 33.3 ms and maximum 33.4 ms. The other five windows are about
+60.0021–60.0025 Hz. Do not discard that first window, round it into an all-window
+60 fps pass, attribute its cause to hardware without evidence or relax the target.
+Current available-host evidence is stronger, but broader sustained 60 fps,
+phone/low-power 30 fps, physical display, current Mac and human acceptance remain
+open. Chrome setup failures and earlier source-specific measurements remain
+separate; Edge results do not repair those failures by proxy.
