@@ -61,6 +61,7 @@ export function festivalSettlement(raw, input) {
   const broadcast = flag(input.broadcast, 'broadcast') ? sales.attendance * BROADCAST_PER_HEAD : 0;
   const sponsor = input.mainDeal === 'sponsor' ? SPONSOR_PAY : 0;
   const siteCosts = Object.fromEntries(['rental', 'permit', 'fence', 'staff', 'bars', 'restrooms', 'ads', 'incident'].map(key => [key, whole(input.siteCosts[key], `site ${key}`)]));
+  for (const key of ['vipDeck', 'busCompound']) if (input.siteCosts[key] !== undefined) siteCosts[key] = whole(input.siteCosts[key], `site ${key}`);
   const sharedTotal = Object.values(siteCosts).reduce((sum, value) => sum + value, 0);
   const sideAllocation = sales.attendance ? share(sharedTotal, sales.second.attendance, sales.attendance)
     : share(sharedTotal, sales.second.capacity, sales.capacity);

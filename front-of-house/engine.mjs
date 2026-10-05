@@ -189,7 +189,8 @@ export function nextShowCost(state) {
     const terms = termsFor(id, state.reputation.artists[id]);
     const ordinary = showCost(spec, terms.doorOk ? 'door' : 'guarantee', terms.doorOk ? undefined : terms.ask);
     return Math.min(ordinary, spec.sponsor ? showCost(spec, 'sponsor', terms.ask) : ordinary)
-      + (spec.id === 'festival' ? 4 * D.STAFF_RATE + D.PA_RENTAL.M + D.LIGHTS_RENTAL : 0);
+      + (spec.id === 'festival' ? 4 * D.STAFF_RATE + D.PA_RENTAL.M + D.LIGHTS_RENTAL : 0)
+      + (festivalSupportFor(state.venue) ? D.FESTIVAL_SUPPORT.vipDeck + D.FESTIVAL_SUPPORT.busCompound : 0);
   }));
 }
 
@@ -299,6 +300,14 @@ function onEdge(x, y, grid) {
   return x === 0 || y === 0 || x === grid.w - 1 || y === grid.h - 1;
 }
 
+function festivalSupportTerms(raw, venueId) {
+  if (!isObj(raw) || raw.version !== 1 || venueId !== 'festival') throw new TypeError('Invalid Festival touring support');
+  return { version: 1 };
+}
+export function festivalSupportFor(venue) {
+  return venue?.id === 'festival' && venue.support?.version === 1 ? D.FESTIVAL_SUPPORT : null;
+}
+
 export function validateLayout(objects, venue) {
   const spec = venueSpec(venue);
   const grid = spec.grid;
@@ -365,6 +374,10 @@ export function validatePlacement(objects, venue) {
   const result = validateLayout(objects, venue), pillars = new Set(venueSpec(venue).pillars.map(([x, y]) => key(x, y)));
   objects.forEach((object, index) => {
     if (result.problems.some(p => p.index === index) || D.OBJECT_TYPES[object.type].kit) return;
+    if (D.OBJECT_TYPES[object.type].supportOnly && !festivalSupportFor(venue)) {
+      result.problems.push({ index, type: object.type, message: 'Touring support needs a new Festival booking' });
+      return;
+    }
     if (footprint(object).some(([x, y]) => pillars.has(key(x, y)))) result.problems.push({ index, type: object.type, message: `${D.OBJECT_TYPES[object.type].label} overlaps a fixed pillar` });
   });
   result.problems.sort((a, b) => a.index - b.index);
@@ -490,8 +503,17 @@ export function evaluateVenue(venue) {
       stats.delayTiles = coverage.added.size; stats.soundCapacity = coverage.soundCapacity;
     }
   }
+  if (festivalSupportFor(venue) || count('vip-deck') || count('bus-compound')) {
+    stats.vipDecks = count('vip-deck'); stats.busCompounds = count('bus-compound');
+    stats.vipDeckCost = stats.vipDecks * D.FESTIVAL_SUPPORT.vipDeck;
+    stats.busCompoundCost = stats.busCompounds * D.FESTIVAL_SUPPORT.busCompound;
+  }
   stats.staff = staffFor(stats);
   const missing = [];
+  if (festivalSupportFor(venue)) {
+    if (!stats.vipDecks) missing.push('Place the VIP deck for touring hospitality');
+    if (!stats.busCompounds) missing.push('Place the bus compound for the touring bill');
+  }
   if (!stats.stage) missing.push('Place the stage');
   if (!stats.paTier) missing.push('Rent a PA and place it touching the stage');
   if (!stats.fence) missing.push('Add the fence kit');
@@ -622,6 +644,8 @@ export function evaluateShow(inputs) {
     incident: response ? response.cost : 0,
   };
   if (v.delayCost) costs.delays = v.delayCost;
+  if (v.vipDeckCost) costs.vipDeck = v.vipDeckCost;
+  if (v.busCompoundCost) costs.busCompound = v.busCompoundCost;
   if (inputs.facilities) costs.facilities = inputs.facilities.cost;
   if (inputs.equipment) costs.equipmentOperation = inputs.equipment.cost;
   costs.total = Object.values(costs).reduce((a, b) => a + b, 0);
@@ -803,7 +827,8 @@ function stageShowFor(state, withIncident) {
     rig: { paTier: v.paTier || null, housePa: v.housePa, lights: !!v.lights,
       ...(v.delays ? { delays: v.delays } : {}),
       ...(inputs.equipment ? { equipmentOperation: inputs.equipment.cost } : {}) },
-    siteCosts: { rental: c.lot, permit: c.permit, fence: c.fence, staff: c.staff, bars: c.bars, restrooms: c.restrooms, ads: c.ads, incident: c.incident },
+    siteCosts: { rental: c.lot, permit: c.permit, fence: c.fence, staff: c.staff, bars: c.bars, restrooms: c.restrooms, ads: c.ads, incident: c.incident,
+      ...(c.vipDeck ? { vipDeck: c.vipDeck } : {}), ...(c.busCompound ? { busCompound: c.busCompound } : {}) },
     mainDeal: state.booking.deal, mainAsk: state.booking.terms.ask, bar: main.bar, broadcast: !!v.broadcast,
   });
   const relation = (pay, ask) => clamp(D.REL_BASE + Math.round(D.REL_SLOPE * (pay / ask - 1)), D.REL_MIN_STEP, D.REL_MAX_STEP);
@@ -1224,6 +1249,11 @@ function applyActionCore(state, action) {
         catch { return fail(state, 'Choose a supported room profile'); }
         delete s.roomNotice;
       }
+      if (action.supportPolicy !== undefined) {
+        try { s.venue.support = festivalSupportTerms({ version: action.supportPolicy }, spec.id); }
+        catch { return fail(state, 'Choose a supported Festival touring policy'); }
+        delete s.supportNotice;
+      }
       const nights = spec.nights.includes(action.nights) ? action.nights : (s.booking.nights || 1);
       let secondId = null;
       let secondTerms = null;
@@ -1273,6 +1303,7 @@ function applyActionCore(state, action) {
         delete s.booking.festival;
         delete s.stagesNotice;
         delete s.roomNotice;
+        delete s.supportNotice;
         delete s.booking.seating;
         delete s.seatingNotice;
         delete s.booking.curfew;
@@ -1646,6 +1677,11 @@ export function normalizeState(raw, fallbackSeed = 1) {
     const spec = D.VENUES[raw.venue.id];
     s.venue = { id: spec.id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: [] };
   }
+  if (raw.venue?.support !== undefined) {
+    try { s.venue.support = festivalSupportTerms(raw.venue.support, s.venue.id); }
+    catch { s.supportNotice = 'Invalid touring support removed; paid cash and history were preserved'; }
+  }
+  if (typeof raw.supportNotice === 'string' && raw.supportNotice) s.supportNotice ||= 'Earlier touring-support recovery preserved cash; original conditions may be incomplete';
   if (raw.venue?.profile !== undefined) {
     try { s.venue.profile = roomProfileTerms(raw.venue.profile, s.venue.id); }
     catch { s.roomNotice = 'Invalid room profile removed; paid cash and history were preserved'; }

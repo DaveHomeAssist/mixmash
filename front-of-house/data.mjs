@@ -98,6 +98,8 @@ export const OBJECT_TYPES = {
   'pa-s': { label: 'PA (small)', w: 1, h: 1, watts: 3000, group: 'pa', max: 1, nextToStage: true, paTier: 'S' },
   'pa-m': { label: 'PA (medium)', w: 1, h: 1, watts: 6000, group: 'pa', max: 1, nextToStage: true, paTier: 'M' },
   delay: { label: 'Delay tower', w: 1, h: 1, watts: 8000, group: 'delay', max: 2, blocksSight: true, festivalOnly: true },
+  'vip-deck': { label: 'VIP deck', w: 4, h: 3, watts: 2000, group: 'vip-deck', max: 1, blocksSight: true, festivalOnly: true, supportOnly: true },
+  'bus-compound': { label: 'Bus compound', w: 6, h: 3, watts: 6000, group: 'bus-compound', max: 1, blocksSight: true, festivalOnly: true, supportOnly: true },
   lights: { label: 'Light tower', w: 1, h: 1, watts: 8000, group: 'lights', max: 1, blocksSight: true },
   bar: { label: 'Bar', w: 2, h: 1, watts: 1500, blocksSight: true },
   food: { label: 'Food stall', w: 2, h: 1, watts: 0, group: 'food', max: 1, blocksSight: true, lotOnly: true },
@@ -322,7 +324,7 @@ export const ROOM_PROFILES = Object.freeze({
     version: 1, venueId: 'festival', label: 'Main system', soundCapacity: 3000,
     lawnStart: 0, lawnEnd: 0, risePerTile: 0, sightDegrees: 120, sightRange: 60,
     eyeHeight: 0.83, performerHeight: 2.38,
-    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15 }),
+    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15, 'vip-deck': 1.6, 'bus-compound': 1.8 }),
   }),
 });
 
@@ -404,3 +406,10 @@ export const OWNED_EQUIPMENT = Object.freeze({
 
 // Per-show Festival delay deployment; coverage is a spatial game model.
 export const FESTIVAL_DELAYS = Object.freeze({ range: 12, rental: 600, operator: 75 });
+
+// Version1 touring requirements. Rental once per show; no extra admissions or income.
+export const FESTIVAL_SUPPORT = Object.freeze({ vipDeck: 600, busCompound: 900 });
+export const FESTIVAL_SUPPORT_LAYOUT = Object.freeze([
+  Object.freeze({ type: 'vip-deck', x: 30, y: 3, rot: 0 }),
+  Object.freeze({ type: 'bus-compound', x: 2, y: 1, rot: 0 }),
+]);

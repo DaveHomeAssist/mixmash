@@ -355,7 +355,7 @@ function catalogDoc() {
   const responseRows = Object.entries(D.INCIDENTS).flatMap(([id, inc]) => inc.responses.map((r) => [`\`${id}\``, `\`${r.id}\``, r.label, usd(r.cost), r.score,
     r.walkupMult ?? '—', r.flowMult ?? '—']));
 
-  const objCost = { stage: 'With the lot', 'pa-s': usd(D.PA_RENTAL.S), 'pa-m': usd(D.PA_RENTAL.M), lights: usd(D.LIGHTS_RENTAL), delay: `${usd(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)} including operator`, bar: usd(D.BAR_SETUP), food: 'Vendor funded', trailer: `${usd(D.SANITATION_COSTS.trailer)} + optional cleaner/utilities`, restroom: usd(D.RESTROOM_UNIT), gate: 'Free', exit: 'Free', fence: usd(D.FENCE_KIT) };
+  const objCost = { 'vip-deck': usd(D.FESTIVAL_SUPPORT.vipDeck), 'bus-compound': usd(D.FESTIVAL_SUPPORT.busCompound), stage: 'With the lot', 'pa-s': usd(D.PA_RENTAL.S), 'pa-m': usd(D.PA_RENTAL.M), lights: usd(D.LIGHTS_RENTAL), delay: `${usd(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)} including operator`, bar: usd(D.BAR_SETUP), food: 'Vendor funded', trailer: `${usd(D.SANITATION_COSTS.trailer)} + optional cleaner/utilities`, restroom: usd(D.RESTROOM_UNIT), gate: 'Free', exit: 'Free', fence: usd(D.FENCE_KIT) };
   const objStaff = { bar: `${D.BAR_STAFF_PER_BAR} bar`, gate: `${D.DOOR_STAFF_PER_GATE} door` };
   const objectRows = Object.entries(D.OBJECT_TYPES).map(([id, t]) => {
     const rules = [t.max ? `max ${t.max}` : null, t.edge ? 'on the boundary' : null, t.nextToStage ? 'touches the stage' : null, t.blocksSight ? 'blocks sightlines' : null, t.kit ? 'site-wide kit' : null].filter(Boolean).join(', ');

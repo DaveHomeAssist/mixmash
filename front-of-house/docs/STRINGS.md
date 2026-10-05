@@ -117,6 +117,8 @@ Names the engine, the board and the settlement sheet all use. Act names and genr
 | Object | `pa-s` | PA (small) |
 | Object | `pa-m` | PA (medium) |
 | Object | `delay` | Delay tower |
+| Object | `vip-deck` | VIP deck |
+| Object | `bus-compound` | Bus compound |
 | Object | `lights` | Light tower |
 | Object | `bar` | Bar |
 | Object | `food` | Food stall |
