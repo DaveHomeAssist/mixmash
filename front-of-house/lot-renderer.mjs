@@ -105,7 +105,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     }
     const night = !!input.night;
     world.background = new T.Color(venue === 'club' ? (night ? 0x15121d : 0x55515a) : (night ? 0x111923 : 0x85949d));
-    sky.intensity = night ? 1.15 : 2.2; sun.intensity = night ? 0.7 : 3; stageLight.intensity = night && input.lightTower ? 60 : 0;
+    sky.intensity = night ? 1.15 : 2.2; sun.intensity = night ? 0.7 : 3; stageLight.intensity = night && (input.lightTower || input.houseLights) ? 60 : 0;
     render();
   }
   function resize() {
