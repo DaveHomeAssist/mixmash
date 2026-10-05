@@ -76,6 +76,21 @@ stage.addEventListener('pointerdown', (event) => {
   focusGame();
 });
 
+// Strip controls (Mute, Fullscreen, GitHub) leave a :focus-visible ring and
+// keep capturing keys (e.g. tool hotkey "2"). Blur them and return focus to
+// the iframe after their click handlers run. Same-tab Hub navigates away.
+function restoreFocusAfterNavClick(event) {
+  const control = event.target.closest && event.target.closest('.mixnav a, .mixnav button');
+  if (!control) return;
+  // Same-tab Hub navigates away; leave focus alone.
+  if (control.tagName === 'A' && control.getAttribute('target') !== '_blank') return;
+  try { control.blur(); } catch (e) {}
+  // Defer past the click and any button reflow (Mute label/aria updates) so
+  // focusGame wins over the control that just received the activation focus.
+  setTimeout(focusGame, 0);
+}
+document.addEventListener('click', restoreFocusAfterNavClick);
+
 // Leaving fullscreen often leaves focus on the document; restore the game.
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) focusGame();
