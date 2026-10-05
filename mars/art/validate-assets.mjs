@@ -1538,6 +1538,7 @@ export function generateContactSheet(manifest, outputPath, options = {}) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MarsScape DEC-79 Golden Contact Sheet</title>
+  <link rel="icon" type="image/svg+xml" href="../../../favicon.svg" />
   <style>
     :root { color-scheme: dark; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:#15100d; color:#f2ede6; }
     body { margin:0; padding:24px; }
