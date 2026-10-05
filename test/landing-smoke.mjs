@@ -106,7 +106,8 @@ try {
     await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
     const panel = page.locator('#game-mars .detail-copy');
     await panel.hover(); await page.mouse.wheel(0,600);
-    await page.waitForFunction(() => { const e = document.querySelector('#game-mars .detail-copy'); return e.scrollTop > 0 && e.scrollTop >= e.scrollHeight - e.clientHeight - 1; });
+    // Wait for the wheel's final pixel before sampling the position to restore.
+    await page.waitForFunction(() => { const e = document.querySelector('#game-mars .detail-copy'); return e.scrollTop > 0 && e.scrollTop >= e.scrollHeight - e.clientHeight; });
     const scroll = await panel.evaluate(e => e.scrollTop);
     await page.locator('#game-mars .back-link').click();
     await page.waitForFunction(() => !document.getElementById('games').hidden);
