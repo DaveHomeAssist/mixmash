@@ -27,6 +27,10 @@ Use the production `STARTER_LAYOUT` as the placement reference. Author only the 
 
 Preserve footprint containment and pick geometry even when visual details overhang; record each overhang explicitly. Do not squeeze a reference model to a cell by arbitrary non-uniform scaling. The existing source's 2 m tile comment and archive dimensions need reconciliation, as described in the render contract. No accepted metre conversion or eye height is asserted here. Review stage/PA/guest and bar/restroom/guest side by side with a neutral scale reference and a table of measured dimensions, units, authoring scale, logical footprint and unresolved discrepancies.
 
+### Representative pose candidate, 2026-10-04
+
+Model revision11 retains the same source-owned guest geometry and material batches, adding opposing hip/shoulder motion from existing service routes and a planted queue stance. Reduced motion is static. Geometry checks preserve the authored joint attachments, ground contact and representative space; actual renderer captures distinguish walking frames and retain identical reduced-motion pixels. The current sample remains a technical candidate: anatomy/material refinement, final visual acceptance and physical calibration are separate.
+
 ### Review views and lighting
 
 Freeze sample revision, asset digests, camera transforms, exposure/tone mapping, output dimensions, effective pixel ratio and lighting parameters for all eight combinations below. Save lossless captures and a short orbit recording as private review evidence until all redistribution rights are known. Use the actual renderer with HUD/selection context; a beauty render from another tool does not prove in-game quality.

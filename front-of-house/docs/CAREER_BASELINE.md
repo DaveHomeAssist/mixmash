@@ -6,7 +6,7 @@ Engine 1 · schema 2 · seeds 1–30 · 3000 starting cash · 100-show limit
 
 ## Policy and limits
 
-Normal career actions only: no injected cash, unlocks, relationships, future draws or future incidents. Enable the existing Equipment ledger after the first signed show, without purchases; its opening balance preserves that first show. Advance to each earned room, compare affordable deals at published middle draw with a $400 response reserve, use usual ticket prices and $150 each social/radio promotion. The Lot compares suggested and budget layouts; other rooms use suggested layouts, with two Festival delays at (8,16)/(30,16), a VIP deck and a bus compound. The $1,500 touring rental is included in the opening quote. Club and outdoor room profiles, outdoor curfew, separate Shell seating and Festival bill/sponsor/touring policies are marked explicitly. Each booking is one night.
+Normal career actions only: no injected cash, unlocks, relationships, future draws or future incidents. Enable the existing Equipment ledger after the first signed show, without purchases; its opening balance preserves that first show. Advance to each earned room, compare affordable deals at published middle draw with a $400 response reserve, use usual ticket prices and $150 each social/radio promotion. The Lot compares suggested and budget layouts; other rooms use suggested layouts, omitting redundant towers when house lights are included, with two Festival delays at (8,16)/(30,16), a VIP deck and a bus compound. The $1,500 touring rental is included in the opening quote. Club and outdoor room profiles, outdoor curfew, separate Shell seating and Festival bill/sponsor/touring policies are marked explicitly. Each booking is one night.
 
 After the current incident is revealed, choose its strongest affordable response by authored incident score, breaking ties by lower cost. This fixed policy does not preview settlements or use the hidden draw. The Festival booking score uses the average public gross bounds less the opening quote; it is an approximate planning policy, not a net forecast. Every booking choice is checked against an alternative future seed while holding published offers fixed. Each career repeats with JSON save normalization after every applied action; full receipts, cash, journal, choices, history, relationships and unlocks must match.
 
@@ -16,36 +16,36 @@ These fixed seeds demonstrate automated feasibility and recovery. They do not ap
 
 | Seed | Lot shows | Club shows | Shell shows | Festival shows | Total | Final cash | Lowest cash | Complete |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 6 | 5 | 4 | 3 | 18 | 1485629 | 832 | Yes |
-| 2 | 8 | 3 | 4 | 3 | 18 | 1532735 | 845 | Yes |
-| 3 | 6 | 5 | 5 | 1 | 17 | 604891 | 845 | Yes |
-| 4 | 6 | 4 | 5 | 1 | 16 | 644844 | 845 | Yes |
-| 5 | 7 | 3 | 5 | 1 | 16 | 638610 | 1020 | Yes |
-| 6 | 10 | 3 | 3 | 3 | 19 | 1507381 | 845 | Yes |
-| 7 | 11 | 3 | 5 | 1 | 20 | 642514 | 845 | Yes |
-| 8 | 7 | 4 | 4 | 3 | 18 | 1485269 | 779 | Yes |
-| 9 | 10 | 5 | 3 | 3 | 21 | 1519274 | 1020 | Yes |
-| 10 | 8 | 5 | 3 | 3 | 19 | 1474275 | 1020 | Yes |
-| 11 | 7 | 5 | 5 | 1 | 18 | 652127 | 995 | Yes |
-| 12 | 7 | 4 | 3 | 2 | 16 | 988334 | 641 | Yes |
-| 13 | 7 | 3 | 5 | 1 | 16 | 638189 | 995 | Yes |
-| 14 | 7 | 3 | 3 | 3 | 16 | 1458400 | 995 | Yes |
-| 15 | 6 | 3 | 4 | 4 | 17 | 1520050 | 995 | Yes |
-| 16 | 6 | 4 | 3 | 2 | 15 | 1077417 | 832 | Yes |
-| 17 | 7 | 3 | 4 | 2 | 16 | 1099278 | 845 | Yes |
-| 18 | 7 | 3 | 5 | 1 | 16 | 637777 | 793 | Yes |
-| 19 | 6 | 4 | 5 | 1 | 16 | 598766 | 388 | Yes |
-| 20 | 7 | 5 | 5 | 1 | 18 | 652802 | 995 | Yes |
-| 21 | 6 | 4 | 4 | 2 | 16 | 1101925 | 994 | Yes |
-| 22 | 6 | 3 | 3 | 2 | 14 | 1067364 | 845 | Yes |
-| 23 | 7 | 5 | 3 | 3 | 18 | 1511276 | 845 | Yes |
-| 24 | 9 | 3 | 3 | 3 | 18 | 1465030 | 909 | Yes |
-| 25 | 6 | 5 | 5 | 1 | 17 | 650904 | 1020 | Yes |
-| 26 | 6 | 5 | 3 | 3 | 17 | 1518799 | 875 | Yes |
-| 27 | 8 | 5 | 3 | 2 | 18 | 1087636 | 695 | Yes |
-| 28 | 8 | 5 | 3 | 2 | 18 | 1083887 | 1020 | Yes |
-| 29 | 7 | 3 | 5 | 1 | 16 | 643627 | 662 | Yes |
-| 30 | 6 | 5 | 5 | 1 | 17 | 647922 | 1020 | Yes |
+| 1 | 6 | 5 | 4 | 3 | 18 | 1486504 | 832 | Yes |
+| 2 | 8 | 3 | 4 | 3 | 18 | 1533260 | 845 | Yes |
+| 3 | 6 | 5 | 5 | 1 | 17 | 605766 | 845 | Yes |
+| 4 | 6 | 4 | 5 | 1 | 16 | 645544 | 845 | Yes |
+| 5 | 7 | 3 | 5 | 1 | 16 | 639135 | 1020 | Yes |
+| 6 | 10 | 3 | 3 | 3 | 19 | 1507906 | 845 | Yes |
+| 7 | 11 | 3 | 5 | 1 | 20 | 643039 | 845 | Yes |
+| 8 | 7 | 4 | 4 | 3 | 18 | 1485969 | 779 | Yes |
+| 9 | 10 | 5 | 3 | 3 | 21 | 1520149 | 1020 | Yes |
+| 10 | 8 | 5 | 3 | 3 | 19 | 1475150 | 1020 | Yes |
+| 11 | 7 | 5 | 5 | 1 | 18 | 653002 | 995 | Yes |
+| 12 | 7 | 4 | 3 | 2 | 16 | 989034 | 641 | Yes |
+| 13 | 7 | 3 | 5 | 1 | 16 | 638714 | 995 | Yes |
+| 14 | 7 | 3 | 3 | 3 | 16 | 1458925 | 995 | Yes |
+| 15 | 6 | 3 | 4 | 4 | 17 | 1520575 | 995 | Yes |
+| 16 | 6 | 4 | 3 | 2 | 15 | 1078117 | 832 | Yes |
+| 17 | 7 | 3 | 4 | 2 | 16 | 1099803 | 845 | Yes |
+| 18 | 7 | 3 | 5 | 1 | 16 | 638302 | 793 | Yes |
+| 19 | 6 | 4 | 5 | 1 | 16 | 599466 | 388 | Yes |
+| 20 | 7 | 5 | 5 | 1 | 18 | 653677 | 995 | Yes |
+| 21 | 6 | 4 | 4 | 2 | 16 | 1102625 | 994 | Yes |
+| 22 | 6 | 3 | 3 | 2 | 14 | 1067889 | 845 | Yes |
+| 23 | 7 | 5 | 3 | 3 | 18 | 1512151 | 845 | Yes |
+| 24 | 9 | 3 | 3 | 3 | 18 | 1465555 | 909 | Yes |
+| 25 | 6 | 5 | 5 | 1 | 17 | 651779 | 1020 | Yes |
+| 26 | 6 | 5 | 3 | 3 | 17 | 1519674 | 875 | Yes |
+| 27 | 8 | 5 | 3 | 2 | 18 | 1088511 | 695 | Yes |
+| 28 | 8 | 5 | 3 | 2 | 18 | 1084762 | 1020 | Yes |
+| 29 | 7 | 3 | 5 | 1 | 16 | 644152 | 662 | Yes |
+| 30 | 6 | 5 | 5 | 1 | 17 | 648797 | 1020 | Yes |
 
 ## Tier evidence
 

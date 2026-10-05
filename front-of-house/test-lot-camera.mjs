@@ -263,3 +263,43 @@ test('reused camera fit stays equal to a fresh fit after lens, view and safe-are
     }
   }
 });
+
+test('representative gait keeps bodies grounded, waiting feet planted and reduced motion static', () => {
+  const models = createLotModels(), presentation = createLotPresentation(models), template = models.guest();
+  const source = { crowd: 2, t: 0.2, serviceCrowd: { actors: [
+    { x: 5.5, y: 5.5, heading: 0, moving: true, zone: 'floor' },
+    { x: 8.5, y: 5.5, heading: 0, moving: false, zone: 'bar' },
+  ], totals: { floor: 1, bar: 1 } } };
+  template.updateMatrixWorld(true);
+  const original = JSON.stringify(source), batches = presentation.group.children.filter(x => x.isInstancedMesh);
+  const capture = (t, motion) => {
+    presentation.update({ ...source, t }, [], [], motion);
+    return batches.map(b => Array.from({ length: b.count }, (_, i) => { const m = new Matrix4(); b.getMatrixAt(i, m); return m; }));
+  };
+  const a = capture(0.2, true), b = capture(0.6, true);
+  assert.equal(batches.length, template.children.length, 'no additional mesh batches');
+  assert.equal(presentation.info().representativeGuests, 2);
+  const limbs = template.children.map((part, i) => ({ part, i })).filter(x => x.part.userData.guestLimb);
+  for (const { part, i } of limbs) {
+    const relative = frame => frame[0][0].clone().multiply(template.children[0].matrix.clone().invert()).invert().multiply(frame[i][0]);
+    assert.notDeepEqual(relative(a).elements, relative(b).elements, 'limbs articulate relative to the torso');
+    for (const frame of [a, b]) {
+      const joint = new Vector3(...part.userData.guestLimb.pivot);
+      const posedJoint = joint.clone().applyMatrix4(part.matrix.clone().invert()).applyMatrix4(relative(frame));
+      assert.ok(posedJoint.distanceTo(joint) < 0.000001, 'hip and shoulder attachments remain fixed');
+    }
+    for (const frame of [a, b]) {
+      const bounds = new Box3().setFromBufferAttribute(part.geometry.attributes.position).applyMatrix4(frame[i][0]);
+      assert.ok(bounds.min.y > -0.005, 'walking feet stay on or above the ground');
+      assert.ok(bounds.min.x > 5.2 && bounds.max.x < 5.8 && bounds.min.z > 5.2 && bounds.max.z < 5.8, 'pose remains in representative space');
+    }
+    if (part.userData.guestLimb.joint === 'hip') {
+      const ac = new Vector3().setFromMatrixPosition(a[i][1]), bc = new Vector3().setFromMatrixPosition(b[i][1]);
+      assert.ok(ac.distanceTo(bc) < 0.01, 'queue legs remain planted despite idle sway');
+    }
+  }
+  const still = capture(3, false), later = capture(90, false);
+  assert.deepEqual(still.map(row => row.map(m => m.elements)), later.map(row => row.map(m => m.elements)));
+  assert.equal(JSON.stringify(source), original, 'presentation never edits actor positions or counts');
+  presentation.dispose(); models.dispose();
+});

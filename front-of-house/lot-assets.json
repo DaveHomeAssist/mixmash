@@ -1,5 +1,5 @@
 {
-  "revision": "lot-sample-10",
+  "revision": "lot-sample-11",
   "provenance": {
     "author": "Codex for Front of House",
     "source": "Procedural geometry and materials in lot-models.mjs",
@@ -29,10 +29,10 @@
     "restroomHeightMetres": 2.3
   },
   "sources": {
-    "lot-models.mjs": "95cfc2984303d7137d40d64abb58360b7aa6b4346894008e9b533efa7044c310",
+    "lot-models.mjs": "ce2b1bb0d9c5da23ddf8b935346b0b584777ef6b298f1d84c8a547762e39f8b6",
     "lot-camera.mjs": "acb439336f7d19fd7e356ec2cc34a4fa233b3fcbff31a9aaab7172f42d6eb13a",
     "site-map-geometry.mjs": "496d0f9695ab7939e8228039dbf8e98ebd5be8a403ea7f8280215d444bd1aa3a",
-    "lot-presentation.mjs": "5fdf3765438ab91cb41d6a1f6d2367f4e1a9e5a224ab0c926fcac296159a616e",
+    "lot-presentation.mjs": "b52f9f249c4bd0b746aa0818a90eb24640a79d1480b6dea038f31a9327798541",
     "lot-renderer.mjs": "128880913de1b9b1ab68a510c02702c0d6e7a8ea5c504c70c3002a25641185ae",
     "service-crowd.mjs": "cadce68373a76b0284d42717ae6dec557673caa191aba9e668356a3b584427eb",
     "service-guests.mjs": "b66e9f09ce01b53c3c70b013bf913ec3c41294013059890ab85bc78793a2249f",
@@ -61,9 +61,9 @@
       },
       "meshCount": 24,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "07bf2955c0a3753637e39cba6315ad87e3537b79acea7b55ab79e93cd02c35af"
+      "contentDigest": "0aad43d002ce791593a3093eff0c50ecb60e45ef207cf610c7a2bc97f93472a4"
     },
     {
       "id": "pa-s",
@@ -87,9 +87,9 @@
       },
       "meshCount": 11,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "3884348fc8ef0c7586b955997b26ada95256966b5ccd991b9a13cf6512df0bf4"
+      "contentDigest": "ed299b8e24eb4cc534d611bdd2490b4432d9689bb809c8a77de64865e1ebe41a"
     },
     {
       "id": "pa-m",
@@ -113,9 +113,9 @@
       },
       "meshCount": 35,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "e3d02ebf9a5c2426ceff3b2decdacb936effa751e80067e478ea3db3b6016cca"
+      "contentDigest": "e50435d830424851d66bd622503e7193a49519505099aa36ac62e1fe3809ad3f"
     },
     {
       "id": "lights",
@@ -139,9 +139,9 @@
       },
       "meshCount": 6,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "209820fed545931055484e5f68705b235b4288133f0c56ed909f3c0be6139a77"
+      "contentDigest": "4bf91527bd1577916dfc2d77e4c9de6a214a38630a089b503bc57e5be8d26bb1"
     },
     {
       "id": "bar",
@@ -165,9 +165,9 @@
       },
       "meshCount": 8,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "b1571cf791b72e62db8590374e4d7fc8b6316342a5c920dc7d3ef0857d3a86bb"
+      "contentDigest": "a0c99cad4d01f167dc308a31f18dde4666348fda7cb8a435da622874db4be840"
     },
     {
       "id": "food",
@@ -191,9 +191,9 @@
       },
       "meshCount": 9,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "f1a3488f0693f2bf38c010ff0b6450b1d0a924b0a5429c85b0ae5a38c1058b4f"
+      "contentDigest": "e38f218dedc6dad8f42e80245d210538ceb183725e6058d58db0ec28f3801f28"
     },
     {
       "id": "trailer",
@@ -217,9 +217,9 @@
       },
       "meshCount": 18,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "d10531ad3ec25d9fc2978f3b1e8c412845b18591db58d921c76735aa891d3b69"
+      "contentDigest": "58a6336f5f48c7d037c3864455fabedc2634a4fb4e93512a981957d104617f29"
     },
     {
       "id": "restroom",
@@ -243,9 +243,9 @@
       },
       "meshCount": 14,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "26a3179a85a68a4e6047d0b8407778c9d234384f1186f42de99e8ea2fb60b4e6"
+      "contentDigest": "9f7a80acc3df5008267b928d70c314894259b2af16a158dadf2acf17873adc6f"
     },
     {
       "id": "gate",
@@ -269,9 +269,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "0df49d27865713067b4bc275fd0fffc52e51456b3790e28ddd2538c528478a23"
+      "contentDigest": "d04f750fb08fbaa2eef9282817ad37d81f4f969a5622dc7948c095caa515f5a7"
     },
     {
       "id": "exit",
@@ -295,9 +295,9 @@
       },
       "meshCount": 4,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "9e3cb22c2bc357576df50995c1d0418e93ef197068c9b12ce5d043126754fead"
+      "contentDigest": "547b8196b44a0c23d8adaac7d35aacb2fee46a6bbeca405c61fc9e658e520030"
     },
     {
       "id": "guest",
@@ -318,9 +318,9 @@
       },
       "meshCount": 16,
       "pickProxy": "not selectable; representative decoration",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "e0704f03a5d9014918851635d06e9aca77edad0e0a287ef3ce432ba3b3cb5786"
+      "contentDigest": "57556143ba9c24bca3d2a6d48bbc584f99729a0bffc722d54509df4e3fa1cb0d"
     }
   ],
   "venueAssets": [
@@ -346,9 +346,9 @@
       },
       "meshCount": 26,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "11702372eacdaae423766a4579b9f51ab583a6ce1efaac13dfba7e81b7b6f459",
+      "contentDigest": "f6b71b5e13b754140acb375364d9aab654fdeae599a6a065d997baa050c52c0b",
       "venues": [
         "festival"
       ]
@@ -375,9 +375,9 @@
       },
       "meshCount": 37,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "933d189fce28045464f123c081a7f4b15608a6bfa11d23142dc71c5457ea9a26",
+      "contentDigest": "06c800652be269ba8fe31a7c8a98285f4e950d4ddd480340525814857c7c182b",
       "venues": [
         "festival"
       ]
@@ -404,9 +404,9 @@
       },
       "meshCount": 50,
       "pickProxy": "opaque rendered mesh surfaces",
-      "materialRevision": "lot-sample-10",
+      "materialRevision": "lot-sample-11",
       "lod": "fixed source detail; guests instanced",
-      "contentDigest": "81716130fab923eacb5d5b945897138389af91545f9271998717492962ac947b",
+      "contentDigest": "ea97a1bd54045e970d05c1baf9f4777bb5fb7a280e776e3804e98302302a9d99",
       "venues": [
         "festival"
       ]
@@ -892,7 +892,7 @@
           }
         }
       ],
-      "contentDigest": "d075fc289a3f5d23b66ce265c1510aae74269a6ceeb85973ffd15227104e0938"
+      "contentDigest": "96d3a208d8a9555b2c4eaac75e830146ec9e424f32ba713017d65d4a4b43625e"
     },
     {
       "id": "amphitheater",
@@ -1548,7 +1548,7 @@
           }
         }
       ],
-      "contentDigest": "640311cac9818b098d7e92f1632a8325852465e499ff523a30e66269dd507beb"
+      "contentDigest": "b0b688ca465ec61d321939a7b9c80a5b8c8996e1c449ad07c64bf1a614390bd2"
     },
     {
       "id": "festival",
@@ -2315,7 +2315,7 @@
           }
         }
       ],
-      "contentDigest": "daf420b6a71e6d115ecb030f4b9c08127b84f810357cbe6490a356b25467a0e0"
+      "contentDigest": "dd4c50366c2cb84ee9143ace97cf2ba217e3ca36fa051558ca98f3ebfc2475b6"
     }
   ],
   "acceptance": {
