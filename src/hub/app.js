@@ -27,7 +27,9 @@ function fitCatalog() {
   if (currentView !== 'games') return;
   const columns = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
   const short = innerHeight <= 400;
-  const minimum = short ? 68 : innerWidth <= 700 ? 76 : 220;
+  // Under 850px tall, wider screenshot crops let the full lineup fit before pagination is considered.
+  const compact = innerHeight < 850;
+  const minimum = short ? 68 : innerWidth <= 700 ? 76 : compact ? 150 : 220;
   const gap = parseFloat(getComputedStyle(grid).rowGap) || 0;
   // First measure with the pager reserved, then remove it if every game fits without it.
   pager.hidden = false;

@@ -1211,3 +1211,18 @@ body:has(.view:not(#games):target) .site-shell {
   .library-top { justify-content:flex-start; }
   .library-top > div { display:none; }
 }
+
+/* Short laptop screens: crop the art wider first, then line all six tickets up in one row. */
+@media(min-width:701px) and (max-height:849px) and (min-height:401px) {
+  .games-grid { grid-auto-rows:minmax(150px,1fr); }
+  .game-card { grid-template-rows:minmax(56px,1fr) auto; }
+}
+@media(min-width:1200px) and (max-height:849px) and (min-height:401px) {
+  .games-grid { grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; }
+  .game-card { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(56px,1fr) auto auto; }
+  .game-body { padding:10px 12px 4px; }
+  .game-body h3 { font-size:18px; }
+  .game-hook { display:none; }
+  .play-link { flex-direction:row; border-left:0; border-top:1px dashed var(--line); margin:0 10px; padding:6px 4px; }
+  .play-link span:last-child { font-size:18px; }
+}
