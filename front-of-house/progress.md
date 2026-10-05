@@ -1,5 +1,9 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Complete career verification
+
+FOH-V02d adds a separate deterministic four-room career simulator and generated [CAREER_BASELINE.md](docs/CAREER_BASELINE.md). Normal starting cash and earned unlocks are preserved. Published ranges and quotes drive booking; strongest affordable incident responses do not preview hidden outcomes. Thirty fixed seeds compare uninterrupted careers with reload after every action, full receipts/journals/history/relationships, affordable charges and duplicate-signing refusal. Thirty careers complete with515 signed shows; all thirty uninterrupted/reload pairs and five verdicts pass. 416 repository tests, build, generated references and the unchanged eleven Lot simulator verdicts pass. CI and delivery remain pending. Existing Lot balance targets and production runtime are unchanged; human career and balance acceptance remain separate.
+
 ## 2026-10-04: Loam Shell technical scene
 
 Six full native Shell renderer windows at clean47f680e pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120×1286/DPR1; cadence59.9734–59.9798Hz, 0 intervals over50ms. Three empty/three700-person rain repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.

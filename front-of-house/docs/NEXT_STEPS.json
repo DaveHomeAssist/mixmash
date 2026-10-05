@@ -1155,6 +1155,14 @@
         ],
         "slices": [
           {
+            "id": "FOH-V02d",
+            "scope": "Complete career feasibility and exact save/accounting verification",
+            "status": "in-progress",
+            "evidence": [
+              "Separate four-room simulator implemented against integrated source65fc08e, using normal3000 starting cash, earned unlocks, published booking information and a fixed strongest-affordable incident policy. Thirty uninterrupted/reload pairs pass:30/30careers complete,515signed shows, full receipt/state/journal parity, affordable charges and duplicate-signing refusal. Five generated verdicts and416 repository tests/build/references pass; the eleven Lot verdicts remain unchanged. Existing Lot balance baseline and all runtime rules are unchanged. CI and delivery remain pending; balance, human careers, art and physical acceptance stay open."
+            ]
+          },
+          {
             "id": "FOH-V02a",
             "scope": "Club ticketing authority, career adapter and controls",
             "status": "verified-delivered",

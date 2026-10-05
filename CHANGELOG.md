@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: add complete career verification across earned Lot, Club, Shell and Festival unlocks, with public booking forecasts and exact receipt/journal/save replay checks. Runtime rules and the existing Lot balance targets are unchanged.
+
 - Front of House: the Festival delay tower has a source-owned 3D mast and speaker cluster instead of a generic gate. A 3D touch inspection stays open when the following click lands on its new dialog; fresh UI taps remain available. Footprints and accounting are unchanged.
 
 - Front of House: add the player guide and complete audited native camera-fit comparison; preserve the open full-game performance and device acceptance gates.

@@ -205,6 +205,7 @@ export const COMMAND_NOTES = {
   'smoke:zelda2mario': { project: 'zelda2mario', description: 'Status ledger scope, privacy, mobile and ultrawide layout, themes, keyboard tabs, filters and printing.' },
   'smoke:front-of-house': { project: 'front-of-house', description: 'Lot Night end to end: reload, save codes and version 1 conversion, the next show, the out-of-money stop, keyboard building, the board sprites, the board camera, no page scroll in any phase, the corner HUD, the sheets and windows, the phone tabs, the menu, reduced motion, phone width, contrast.' },
   'sim:front-of-house': { project: 'front-of-house', description: 'Regenerate docs/BALANCE_BASELINE.md. CI fails on drift or a FAIL verdict.' },
+  'sim:front-of-house-career': { project: 'front-of-house', description: 'Regenerate the four-room career report; verify earned unlocks, cash, receipts and exact save/reload pairs.' },
   'start:mars': { project: 'mars', description: 'Run the authority server locally with SQLite at http://localhost:8787/mars/.' },
   'art:index': { project: 'mars', description: 'Regenerate the commissioned-art runtime index from valid present frames.' },
   'art:validate': { project: 'mars', description: 'Validate DEC-79 assets and verify the runtime index and strict-report parity.' },
