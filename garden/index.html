@@ -57,8 +57,29 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
 <script>
 const frame = document.getElementById('game-frame');
 const stage = document.getElementById('garden-stage');
-window.addEventListener('load', () => { try { frame.contentWindow.focus(); } catch(e) {} });
-window.addEventListener('mousedown', () => { try { frame.contentWindow.focus(); } catch(e) {} });
+
+// Cross-origin Garden OS only gets keys when the iframe element itself is
+// focused. contentWindow.focus() alone is unreliable across origins; match
+// home.html and call frame.focus() first.
+function focusGame() {
+  try { frame.focus(); } catch (e) {}
+  try { if (frame.contentWindow) frame.contentWindow.focus(); } catch (e) {}
+}
+
+window.addEventListener('load', focusGame);
+frame.addEventListener('load', focusGame);
+
+// Pointer on the stage/strip (but not Hub/Mute/Fullscreen/GitHub) hands focus
+// back to the game so keys work without a canvas click first.
+stage.addEventListener('pointerdown', (event) => {
+  if (event.target.closest && event.target.closest('.mixnav a, .mixnav button')) return;
+  focusGame();
+});
+
+// Leaving fullscreen often leaves focus on the document; restore the game.
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) focusGame();
+});
 
 // Move the shared nav (src/kit/nav.js) into the strip above the game, and make
 // its Fullscreen button fullscreen the whole stage (strip + game) instead of
