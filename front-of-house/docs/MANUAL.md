@@ -37,7 +37,7 @@ The top strip has **−**, **Fit**, **+** and **Turn**. Fit returns to the whole
 
 Open **Menu → Camera → Try 3D preview** for the dimensional view. In Select, tap to inspect and drag to orbit. Two fingers pan and pinch. With a placement tool, a tap places and dragging previews; **Drag camera while placing** explicitly changes that gesture. The Camera window also offers orbit buttons and **Wide**, **FOH**, **Stage** and **Plan** presets. Split Acre adds **Side stage**.
 
-The normal entry route starts in classic view. A Camera-window toggle lasts for the session. The explicit [3D preview entry](../?renderer=3d) requests 3D when reopening. Camera views and zoom do not change show outcomes.
+The normal entry route starts in classic view. A Camera-window toggle lasts for the session. The explicit [3D preview entry](https://mixmash.games/front-of-house/?renderer=3d) requests 3D when reopening. Camera views and zoom do not change show outcomes.
 
 If 3D fails, classic view keeps the show available. Open Camera to read its status or choose **Retry 3D**. Export the save before clearing any browser data.
 
