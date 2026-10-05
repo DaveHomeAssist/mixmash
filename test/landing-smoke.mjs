@@ -39,6 +39,14 @@ try {
     assert.equal(await page.title(), studio.title);
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', 'fresh visit defaults light despite system dark');
     assert.equal(await page.locator('.game-card').count(), playableGames.length);
+    if (width === 1440 && height === 900) {
+      const requested = responses.map(r => r.url());
+      assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
+      const unique = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
+      let bytes = 0; for (const response of unique) bytes += (await response.body()).length;
+      console.log(`${engine} ${width}×${height} initial homepage transfer: ${bytes} bytes`);
+      assert.ok(bytes <= 500000, `homepage transfer budget: ${bytes}`);
+    }
     if (noPaging.has(`${width}x${height}`)) {
       assert.ok(await page.locator('#pager').isHidden(), `no paging at ${width}x${height}`);
       const playLinks = await page.locator('.game-card:visible .play-link').evaluateAll(links => links.filter(link => { const r = link.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; }).length);
@@ -91,11 +99,6 @@ try {
     await page.waitForFunction(() => !document.getElementById('games').hidden);
     assert.equal(await page.locator(':focus').getAttribute('id'), 'nav-games', 'arrow key keeps focus on tabs');
     if (width === 1440) {
-      const requested = responses.map(r => r.url());
-      assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
-      const unique = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
-      let bytes = 0; for (const response of unique) bytes += (await response.body()).length;
-      assert.ok(bytes <= 500000, `homepage transfer budget: ${bytes}`);
       await page.evaluate(() => { localStorage.setItem('front_of_house_v1', 'unchanged-game-sentinel'); localStorage.setItem('mixmash_opts', 'unchanged-options'); });
       await page.locator('#theme-toggle').click(); await page.locator('#pick-game').click(); await page.reload();
       assert.deepEqual(await page.evaluate(() => [localStorage.getItem('front_of_house_v1'), localStorage.getItem('mixmash_opts')]), ['unchanged-game-sentinel','unchanged-options']);
