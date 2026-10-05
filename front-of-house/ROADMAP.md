@@ -1,6 +1,6 @@
 # Front of House Roadmap
 
-**Status:** The four-room playable and its operations, research, ownership and technical 3D scenes are implemented. Curfew, Club house lighting and the earned tier report are delivered. Festival touring controls, delay models, the player guide and complete-career replay are delivered through PR117/119. Guest walking and queue poses are delivered; face/material refinement is under verification. The active phase table below owns remaining work; historical milestone sections retain their original context. Final art, physical-device, human career and public-promotion gates remain open.
+**Status:** The four-room playable and its operations, research, ownership and technical 3D scenes are implemented. Curfew, Club house lighting and the earned tier report are delivered. Festival touring controls, delay models, the player guide and complete-career replay are delivered through PR117/119. Guest walking/queue poses and model12 face/material refinement are delivered through PR120, with full hosted player and offline verification. The active phase table below owns remaining work; historical milestone sections retain their original context. Final art, physical-device, human career and public-promotion gates remain open.
 
 The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its **Done when** line. The career tiers come from [CT-DEC-09](docs/DECISIONS.md#ct-dec-09-career-tier-ladder); what each tier contains is in [GDD section 5](docs/GDD.md#5-progression).
 
@@ -27,7 +27,7 @@ Dave authorized continuing execution until no Front of House phases remain. Code
 
 Imported M4/M5 wish lists, Challenge/Endless and the broader eight-branch research proposal are not additional release phases. The scoped briefs and explicit remaining tier requirements above define this execution; do not turn an unbounded future idea list into a completion claim. Preserve deliberate exclusions and record a new scoped decision before expansion. Missing human or physical-device evidence cannot be replaced with automated results.
 
-FOH-F01 is merged and live-verified in [PR60](https://github.com/DaveHomeAssist/mixmash/pull/60). FOH-V01a Select controls are merged and live-verified in [PR61](https://github.com/DaveHomeAssist/mixmash/pull/61). FOH-V01b has a deployed [Lot backend and preview](docs/LOT_BACKEND.md), live-verified through [PR65](https://github.com/DaveHomeAssist/mixmash/pull/65). The [18-run Metal baseline](docs/PERFORMANCE.md) establishes available-host renderer evidence at DPR 1; full HUD, high-DPI/low-power devices, final realistic art and human acceptance remain required.
+FOH-F01 is merged and live-verified in [PR60](https://github.com/DaveHomeAssist/mixmash/pull/60). FOH-V01a Select controls are merged and live-verified in [PR61](https://github.com/DaveHomeAssist/mixmash/pull/61). FOH-V01b has a deployed [Lot backend and preview](docs/LOT_BACKEND.md), live-verified through [PR65](https://github.com/DaveHomeAssist/mixmash/pull/65). The [18-run Metal baseline](docs/PERFORMANCE.md) establishes available-host renderer evidence at DPR 1; later exact-source full-HUD native measurements and display-transition checks are recorded in PERFORMANCE.md. Supported low-power/phone qualification, final realistic art and human acceptance remain required.
 
 ## Shipped
 
@@ -84,7 +84,7 @@ The table below is the original scope. The playable slice is the decision, not t
 
 Sandbox and the wet-lot scenario are in the same pass. Challenge and Endless are still after v1.
 
-Current execution (2026-10-04): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation, Festival stage/site and sponsor/headliner rules, outdoor room profiles, spatial delay coverage and the three technical room previews are delivered. The delay-tower preview correction is in CI. A separate thirty-seed full career verifier passes locally under FOH-V02d, including515signed shows and exact save/reload pairs; CI and delivery remain pending. The existing Lot baseline is unchanged. VIP/bus infrastructure, balance, final art and physical/human acceptance remain open. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
+Historical checkpoint (2026-10-04, superseded by PR117/119/120 delivery): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation, Festival stage/site and sponsor/headliner rules, outdoor room profiles, spatial delay coverage and the three technical room previews are delivered. The delay-tower preview correction is in CI. A separate thirty-seed full career verifier passes locally under FOH-V02d, including515signed shows and exact save/reload pairs; CI and delivery remain pending. The existing Lot baseline is unchanged. VIP/bus infrastructure, balance, final art and physical/human acceptance remain open. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
 
 ## HUD layout (CT-DEC-12)
 
@@ -127,14 +127,14 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 
 The accepted mockup review is applied to the existing steps 1 to 5: honest Show status, consequence-based incident copy, equipment location, phone sheet controls and light/dark controls. See [HUD.md](docs/HUD.md#review-refinement-2026-10-02). Engine rules, saves and the optional Lot doors experiment are unchanged.
 
-Current follow-up: complete the source-authored realistic sample refinement and its release checks, then retain physical low-power, sustained full-HUD, human camera/art and career acceptance as distinct release gates. Performance infrastructure and the site overview are delivered; older roadmap proposals remain historical rather than additional authorized phases.
+Current follow-up: model12 sample refinement and release checks are delivered through [PR120](https://github.com/DaveHomeAssist/mixmash/pull/120). Complete final realistic art/physical calibration, supported low-power qualification, human camera/art and career acceptance; retain the Intel CI rejection alongside the AMD diagnostic pass. Performance infrastructure and the site overview are delivered; older roadmap proposals remain historical rather than additional authorized phases.
 
 ## Separate tracks
 
 - **Public release of the first playable** waits on Dave's playtest sign-off. On sign-off: a hub card on the landing page with a gameplay preview and its provenance, a sitemap entry, and `noindex` removed.
-- **Art.** Provisional prop sprites are on the board as of 2026-10-01. They are a stand-in. The style anchor still waits on the render contract and the open conflicts in `docs/ART_DIRECTION.md` section 8. The order is in `docs/FUTURE.md`.
-- **HUD layout.** Accepted 2026-10-01 (CT-DEC-12). Its seven steps, the deferred minimap included, are in [HUD layout](#hud-layout-ct-dec-12) above.
-- **Documents that start later:** `docs/MANUAL.md` once the loop is stable. `docs/WORLD.md` started in Phase 4.
+- **Art.** Classic raster props remain provisional. The source-authored model12 sample and render contract are delivered; final realistic style, physical calibration and image provenance remain open in [ART_DIRECTION.md](docs/ART_DIRECTION.md) and [KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md).
+- **HUD layout.** Accepted 2026-10-01 (CT-DEC-12). All seven technical steps, including the subsequently accepted site overview, have delivery evidence in [HUD layout](#hud-layout-ct-dec-12) above.
+- **Documentation.** The [player manual](docs/MANUAL.md) is delivered. [WORLD.md](docs/WORLD.md) retains historical checks and current screening for all fifteen act/room names.
 
 ### 2026-10-04 execution checkpoint
 

@@ -259,3 +259,18 @@ A separate Node22.22.1 helper diagnostic on the same Apple M4 compared five alte
 [All six full native windows](../performance/2026-10-05-sample-native.json) use clean source `b8bfe08fe110121c51dafb75eb8efda837e3353a`, including model12 faces, hair, material maps and walking/queue poses. Apple M4/Metal, Chrome154.0.8037.97, actual5120×1286 at DPR1; three fixed and three moving-camera repeats, each with10s warmup and30s measurement. Every running Lot advances from minute25 to65 and matches exact engine replay. Source, fixture and raw hashes and recomputed statistics pass the independent audit. All six remain visible/focused with no resize or context violations.
 
 Observed cadence is59.9439–59.9772Hz, with zero intervals over50ms. This is current evidence near the available display's60Hz cadence, not a promise of all-device sustained60fps, causal improvement over prior shared-host runs or human smoothness/readability acceptance. No other local tests, builds or browser checks from this task ran during the windows; other host load remains uncontrolled. The existing untracked dependency symlink was excluded only from measurement-process Git metadata; tracked source was unchanged. Physical low-power/phone qualification remains open.
+
+
+## Model12 release regression and retained rejection, 2026-10-05
+
+[PR120](https://github.com/DaveHomeAssist/mixmash/pull/120) delivered model12 at `51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf`. [Final-head CI 37263372266](https://github.com/DaveHomeAssist/mixmash/actions/runs/37263372266) retains both attempts at `bab8f0e4a1f19311d2d6df98e67bf4c43c32048e`; general job 111615017900 passed before the renderer retry.
+
+| Pair | Runner CPU | Valid windows | Numeric result |
+| --- | --- | --- | --- |
+| Initial runtime CI 37261347354 | AMD EPYC 9V45 |36| All six scene/viewport groups pass |
+| Final head attempt1 | Intel Xeon Platinum 8573C |36|2560×720 empty CPU p95:2.0ms exceeds1.7ms; crowd frame p95:1000ms exceeds958.25ms |
+| One diagnostic repeat, attempt2 job 111622152804 | AMD EPYC 7763 |36| All six scene/viewport groups pass |
+
+All 108 raw windows were independently audited against source/fixture/raw digests, recomputed statistics and exact numeric comparisons. The tested synthetic merge `440419227bd6afc4f3fae9b02bf30a24f476b6a7` matches the PR candidate tree; measured runtime files match the original source. No source, protocol, quality or threshold changed for the retry. Hardware differs between runs, but that difference does not establish the cause of the rejection. Keep the failed result as an unresolved variability finding under KI-14. No further retry was used. The optional deliberate CPU-fault workflow was not selected on this PR; earlier fault evidence above is separate.
+
+Pages built the exact merge at 2026-10-05T05:28:24Z. All 42 hosted source files match before and after the complete player suite, pose/reduced-motion captures and 3D offline signing/reload. The six native Mac windows above retain their frozen `b8bfe08` attribution. Neither CI software-renderer comparisons nor native Mac cadence establishes supported phone, low-power or human acceptance.
