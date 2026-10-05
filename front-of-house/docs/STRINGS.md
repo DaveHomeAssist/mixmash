@@ -11,9 +11,9 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 
 | Key | Text |
 | --- | --- |
-| `guarantee` | You pay the agreed amount before doors and keep every dollar after costs. The act is happy however the night goes. |
-| `door` | The act takes 70% of ticket money after show costs, paid at settlement. Cheaper on a slow night, but an act that expected its ask remembers a small payout. |
-| `sponsor` | A sponsor pays $8,000 up front and wants the ticket at the usual price. You still pay the act's ask, and broadcast pays on top if the grounds are big enough. |
+| `guarantee` | Pay the agreed amount before doors. Keep every dollar left after costs. The act is happy however the night goes. |
+| `door` | The act gets 70% of tickets after show costs. Pay at settlement. Cheaper on a slow night. An act that expected its ask remembers a small payout. |
+| `sponsor` | A sponsor pays $8,000 before doors. Tickets stay at the usual price. You still pay the act's ask. Broadcast adds income if the grounds are big enough. |
 
 ### `INCIDENT_TEXT`: Incident card text (Show)
 
@@ -42,11 +42,11 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 
 | Key | Text |
 | --- | --- |
-| `sound` | Sound and light scored lowest. Rent the medium PA for crowds over 100, and add the light tower. |
+| `sound` | Sound and light scored lowest. Check room coverage and lighting before renting extra gear. |
 | `sightlines` | Sightlines scored lowest. Keep bars, restrooms and the light tower out of the cone in front of the stage. |
 | `amenities` | Bars and restrooms scored lowest. Plan one bar for every 125 people and one restroom for every 40. |
 | `flow` | Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane. |
-| `incident` | The incident cost the most. A stronger response costs money up front but saves the night. |
+| `incident` | Incident handling scored lowest. Compare the response cost, crowd result and act payout. |
 
 ### `PART_LABELS`: Satisfaction part names (Settlement)
 
@@ -71,6 +71,8 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | Key | Text |
 | --- | --- |
 | `stage` | with the lot |
+| `vip-deck` | $600 |
+| `bus-compound` | $900 |
 | `pa-s` | $200 |
 | `pa-m` | $450 |
 | `lights` | $175 |
@@ -97,6 +99,8 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `food` | Food |
 | `trailer` | Trailer |
 | `delay` | Delay |
+| `vip-deck` | VIP deck |
+| `bus-compound` | Buses |
 
 ### `FACING`: Rotation directions (Build)
 
@@ -151,4 +155,4 @@ The messages shown when an action is refused are listed by action in [CATALOG.md
 
 ## 4. Not covered here
 
-Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 370 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 380 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

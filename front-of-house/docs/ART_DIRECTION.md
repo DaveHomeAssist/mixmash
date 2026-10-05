@@ -199,3 +199,11 @@ The concept images (two sprite-sheet specs, the asset sheet, the build-phase moc
 ### Festival delay technical prop (2026-10-04)
 
 The delay tower introduced with FOH-V02b10 is independently authored in `board.js` as a thin, four-logical-unit code-drawn enclosure over its1×1 footprint. Palette glyph and geometry use no image or external asset. Source and runtime use are the repository code under the repository's existing terms. It is a provisional technical representation for placement/picking/occlusion and has no physical calibration or final visual acceptance. The unused legacy delay-tower library image remains unused.
+
+### Festival touring reference and technical models (2026-10-04)
+
+The supplied `imagine_images.zip` collection passed CRC/path checks:34 RGB JPEGs, including32 subjects corresponding visually to the prepared sprite library and two title images. Archive SHA-256:`0de7d345add3d1cc7981b2fa6750fc55fed9eb592805398149858313482f3793`. The provided sheet and inspected VIP deck/coach originals inform the new source-authored touring models. Numerical image similarity supports subject correspondence, not exact file identity or the processing history of the existing PNGs. No original JPEGs were imported; existing library files remain retained under D8 A.
+
+The technical deck has a raised modular floor, supports, guardrails and stairs. The bus compound has one representative coach with glazing, wheels, lights and working aisle inside its reserved footprint. Both fit every rotated engine footprint. Materials and geometry are generated in project source, with no external image request. Classic uses explicitly labeled procedural representations; the dimensional view supports the existing full orbit and practical zoom. These are technical candidates, not final human art or physical-scale acceptance.
+
+FOH-V02r4 gives the optional 3D preview its own source-authored four-unit mast, base and three-cabinet speaker cluster in `lot-models.mjs`. All rotations stay inside the existing one-cell footprint, and the complete tower is one selectable object. The manifest records this Festival-only prop under `venueAssets`, separately from the Lot samples. Procedural geometry and materials use no external image. The dimensions express the existing logical obstacle height, not a calibrated physical tower.

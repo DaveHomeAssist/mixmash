@@ -120,6 +120,10 @@ async function checkPhoneSheet(page, phase) {
   const previous = page.viewportSize();
   for (const [width, height] of [[360, 780], [375, 812], [390, 844]]) {
     await resizeTo(page, width, height);
+    const clippedMeters = await page.locator('.topbar .meters dt, .topbar .meters dd').evaluateAll(nodes => nodes.filter(node => {
+      const r = node.getBoundingClientRect(); return r.left < 0 || r.right > innerWidth + 1 || node.scrollWidth > node.clientWidth + 1;
+    }).map(node => node.textContent));
+    assert.deepEqual(clippedMeters, [], phase + ': cash, reputation and act relationship are visible at ' + width);
     const tabs = page.locator('#panel .tabbar [role="tab"]');
     for (let i = 0; i < Math.max(1, await tabs.count()); i += 1) {
       if (await tabs.count()) await tabs.nth(i).click();

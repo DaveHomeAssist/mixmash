@@ -1,6 +1,6 @@
 # Front of House Roadmap
 
-**Status:** Phases 0 to 7 are in the tree (see [`progress.md`](progress.md)). Phases 5 to 7 shipped in one pass ([CT-DEC-11](docs/DECISIONS.md#ct-dec-11-rooms-after-the-lot), Proposed), not as separate pull requests. The public release still waits on Dave's sign-off. The [HUD layout](#hud-layout-ct-dec-12) is under way: steps 1 to 5 are done (the board camera, the full-window board that never scrolls, the Build and Show corner HUD, the sheets and windows, and the phone tabs), and step 6, performance, is next. Since 2026-10-02 no panel scrolls either ([HUD.md](docs/HUD.md) section 9).
+**Status:** The four-room playable and its operations, research, ownership and technical 3D scenes are implemented. Curfew, Club house lighting and the earned tier report are delivered. Festival touring controls, delay models, the player guide and complete-career replay are being integrated and verified. The active phase table below owns remaining work; historical milestone sections retain their original context. Final art, physical-device, human career and public-promotion gates remain open.
 
 The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its **Done when** line. The career tiers come from [CT-DEC-09](docs/DECISIONS.md#ct-dec-09-career-tier-ladder); what each tier contains is in [GDD section 5](docs/GDD.md#5-progression).
 
@@ -84,7 +84,7 @@ The table below is the original scope. The playable slice is the decision, not t
 
 Sandbox and the wet-lot scenario are in the same pass. Challenge and Endless are still after v1.
 
-Current execution (2026-10-04): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation and Festival stage/site receipts plus sponsor/headliner rules are delivered. Amphitheater sound/slope rules are delivered with hosted acceptance; Festival room sound/sightline rules are in CI, with spatial delay coverage under implementation. These rule profiles do not complete dimensional venue scenes. Tier-specific full career simulator verdicts remain open; the existing Lot baseline is unchanged. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
+Current execution (2026-10-04): Club ticketing, independent Amphitheater seat/lawn prices, held-night cancellation, Festival stage/site and sponsor/headliner rules, outdoor room profiles, spatial delay coverage and the three technical room previews are delivered. The delay-tower preview correction is in CI. A separate thirty-seed full career verifier passes locally under FOH-V02d, including515signed shows and exact save/reload pairs; CI and delivery remain pending. The existing Lot baseline is unchanged. VIP/bus infrastructure, balance, final art and physical/human acceptance remain open. See [NEXT_STEPS.json](docs/NEXT_STEPS.json) for distinct source, local, CI and hosted proof.
 
 ## HUD layout (CT-DEC-12)
 
@@ -146,3 +146,8 @@ Festival profiles and spatial delays are delivered through PR106/PR108 and verif
 Version1 Festival touring-support core passes432 repository tests, five dedicated integration cases, build/docs/catalog/assets and unchanged Lot simulator. Both fixtures use normal placement, consume30 tiles and8kW, require readiness on marked bookings and add exactly1500 once to shared-site opening costs. All legal deal paths, stage/site/journal/signing/reload, malformed-marker recovery and960 unmarked transitions/120 receipts pass. Player controls and detailed models follow; core CI/Pages/hosted acceptance remains pending.
 
 PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.
+
+
+### Touring controls under verification
+
+Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending.

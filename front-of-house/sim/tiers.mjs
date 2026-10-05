@@ -17,7 +17,7 @@ const step=(s,a)=>{
 };
 function layouts(room,careful){
  if(room==='lot')return careful?[REFERENCE_LAYOUT,BUDGET_LAYOUT]:[REFERENCE_LAYOUT];
- const base=D.VENUES[room].starter.filter(o=>room!=='club'||o.type!=='lights');
+ const base=[...D.VENUES[room].starter.filter(o=>room!=='club'||o.type!=='lights'),...(room==='festival'?D.FESTIVAL_SUPPORT_LAYOUT:[])];
  return [room==='festival'&&careful?[...base,{type:'delay',x:8,y:16,rot:0},{type:'delay',x:30,y:16,rot:0}]:base];
 }
 function candidates(s,careful,hold){
@@ -30,7 +30,7 @@ function candidates(s,careful,hold){
    if(room==='festival'&&!secondId)continue;
    const action={type:'chooseDeal',artistId,deal,secondId,nights:hold,
     ...(room!=='lot'?{roomPolicy:1}:{}),...(room==='amphitheater'?{seatingPolicy:1,curfewPolicy:1,...(hold>1?{runPolicy:1}:{})}:{}),
-    ...(room==='festival'?{stagePolicy:1,festivalPolicy:1,curfewPolicy:1}:{})};
+    ...(room==='festival'?{stagePolicy:1,festivalPolicy:1,curfewPolicy:1,supportPolicy:1}:{})};
    const booked=E.applyAction(s,action);if(booked.error)continue;
    let p=step(booked.state,{type:'setLayout',objects});p=step(p,{type:'confirmBuild'});
    p=step(p,{type:'setPromotion',price:artist.fairPrice,ads:REFERENCE_ADS,
@@ -119,7 +119,7 @@ if(process.argv[1]===fileURLToPath(import.meta.url)){
  const count=Number(process.env.FOH_TIER_SEEDS||SEEDS);assert.ok(Number.isInteger(count)&&count>0&&count<=SEEDS);
  const result=tierReport(count),lines=['# Front of House tier career baseline','',`Generated from the real engine on ${count} fixed ordinary-career seeds per strategy. No injected cash, unlocks or relationships.`,
  '', 'Both strategies earn the Lot unlock with the same careful plan, so later-tier comparisons start from identical genuinely earned cash and reputation. The existing Lot report retains its separate careless control. Careful planning compares public middle draws and affordable deals, uses the platform at Club and two delay towers at Festival, then compares affordable responses to a visible incident. Careless planning takes the first affordable offer/deal and free response. Both use usual ticket prices, the documented layouts and $300 promotion. Each Amphitheater cohort cycles one, two and three-night holds; cancellation is checked on a separate copy, not used to improve the measured cohort.',
- '', 'This validates the current mechanics. Festival VIP/bus infrastructure, human play, final art and physical-device acceptance remain separate. The existing Lot baseline is unchanged.',
+ '', 'This validates the current mechanics. Festival VIP/bus requirements are included. Human play, final art and physical-device acceptance remain separate. The existing Lot baseline is unchanged.',
  '', '| Strategy | Room | Reached | Attempted | Failed seeds |','| --- | --- | --- | --- | --- |'];
  for(const[style,rooms]of Object.entries(result.stats))for(const[room,r]of Object.entries(rooms))lines.push(`| ${style} | ${room} | ${r.reached}/${count} | ${r.attempted} | ${r.failedSeeds.join(', ')||'None'} |`);
  lines.push('','## Verdicts','');for(const check of result.checks)lines.push(`- ${check.pass?'PASS':'FAIL'}: ${check.name}`);

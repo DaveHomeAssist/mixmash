@@ -4,7 +4,7 @@ Generated from the real engine on 100 fixed ordinary-career seeds per strategy. 
 
 Both strategies earn the Lot unlock with the same careful plan, so later-tier comparisons start from identical genuinely earned cash and reputation. The existing Lot report retains its separate careless control. Careful planning compares public middle draws and affordable deals, uses the platform at Club and two delay towers at Festival, then compares affordable responses to a visible incident. Careless planning takes the first affordable offer/deal and free response. Both use usual ticket prices, the documented layouts and $300 promotion. Each Amphitheater cohort cycles one, two and three-night holds; cancellation is checked on a separate copy, not used to improve the measured cohort.
 
-This validates the current mechanics. Festival VIP/bus infrastructure, human play, final art and physical-device acceptance remain separate. The existing Lot baseline is unchanged.
+This validates the current mechanics. Festival VIP/bus requirements are included. Human play, final art and physical-device acceptance remain separate. The existing Lot baseline is unchanged.
 
 | Strategy | Room | Reached | Attempted | Failed seeds |
 | --- | --- | --- | --- | --- |
