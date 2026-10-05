@@ -19,7 +19,7 @@ The site is the `gh-pages` branch served as-is by GitHub Pages; a merge into `gh
 - [ ] A save field changed → follow the [migration policy](SAVE_FORMAT.md#migration-policy). Compatible optional fields use `normalizeState` defaults, with tests for older saves and the new field, and updated schema documentation. Only a change that breaks older saves bumps `version` and `schema`; it also needs `migrateSave`, a frozen fixture in `test/fixtures/`, and migration tests. Preserve the existing namespace unless an intentional fresh start is approved.
 - [ ] `game.js`, `board.js`, `engine.mjs`, `data.mjs`, `styles.css` or `index.html` changed → the service worker `VERSION` in `/sw.js` is bumped.
 - [ ] A new screen, window, control or edge path → [SCREENS.md](SCREENS.md) updated.
-- [ ] A design choice was made → a `CT-DEC-NN` entry in [DECISIONS.md](DECISIONS.md), Proposed until Dave accepts it.
+- [ ] A design choice was made → a `CT-DEC-NN` entry in [DECISIONS.md](DECISIONS.md). Record autonomous choices authorized under CT-DEC-19 as Accepted; unapproved proposals remain Proposed. Neither status substitutes for device or human acceptance.
 - [ ] A new act or room name → a name check in [WORLD.md](WORLD.md) (CT-DEC-03).
 - [ ] [`progress.md`](../progress.md) has a dated entry, and the root `CHANGELOG.md` an `[Unreleased]` line.
 - [ ] [KNOWN_ISSUES.md](KNOWN_ISSUES.md): fixed rows moved to Fixed, new ones added.
@@ -62,3 +62,46 @@ Then, in one PR:
 - [ ] Review the existing approved hub card and its gameplay preview against the accepted launch scope; keep preview provenance in `assets/previews/README.md`.
 - [ ] Update the README status line and the CHANGELOG.
 - [ ] Follow sections 1 and 2.
+
+## 4. Current revision acceptance
+
+Prepared on 2026-10-05 for model15 at deployed revision `b746258d74278269eb047537294165d1d1e3e0bd`. Its runtime is unchanged from PR122; PR126 records delivery evidence. Earlier model12 measurements and pictures retain their original source attribution. This checklist is prepared for review, with every acceptance item below still open.
+
+### Protect the existing career
+
+1. Open [Front of House](https://mixmash.games/front-of-house/) in the browser containing the existing career.
+2. Open **Menu → Save and load → Show my save code** and copy the entire code somewhere safe.
+3. Use a separate browser profile for a new review career. Do not clear the original browser's data or overwrite its career for a test.
+4. Record the deployed revision, date, reviewer, device, browser/version, viewport, pixel ratio and actual graphics backend. Record an unavailable field as unknown.
+
+### Final realistic sample and camera review
+
+- [ ] Review the current stage, PA, bar, restroom and representative guest in **Wide**, **FOH**, **Stage** and **Plan**, both in daylight Build and Show lighting. Capture eight views tied to the exact runtime/asset digests.
+- [ ] Open **Menu → Camera → Try 3D preview**. In **Select**, tap/click to inspect and drag to orbit. Review yaw 37° and 135°, practical zoom extremes and both pitch bounds. Confirm orbiting changes neither equipment orientation nor saved placement.
+- [ ] Check close and management views, walking and queues, detail transitions, silhouette/ground contact, material readability, shadows and overlap. Record objectionable views rather than accepting unseen conditions.
+- [ ] Repeat controls with reduced motion and both light/dark controls. On a real phone, verify tap selection, pinch/pan and **Drag camera while placing** without unintended placement/removal.
+- [ ] Review operator-eye FOH visibility. Keep the provisional 2 m/tile authoring reference distinct from measured physical venue calibration.
+- [ ] Record an explicit dated visual/camera decision for the exact revision, including requested changes. Screenshots, automated passes and silence do not count as approval.
+
+### Real desktop and phone gameplay
+
+1. On a desktop browser, play **Book → Build → Promote → Show → Done**. Reload partway through Show and finish the same career.
+2. Compare cash, attendance, costs and signed history before/after reload. Confirm the next booking retains the expected career state.
+3. Repeat on a physical phone; record its actual model, OS/browser, orientation and any unreachable control or page overflow.
+4. Open **Save and load**, paste the preserved code into **Save code**, and choose **Load this code** in the separate profile. Check the recovered booking, layout and history without altering the original profile.
+5. Review Club, Amphitheater and Festival progression, then record the human career/balance result and any unresolved issue. Automated replay is separate evidence.
+
+### Device performance and physical calibration
+
+- [ ] Capture the current source on every supported device using the established warm-up, duration and repeated measurement protocol; retain invalid windows and failures.
+- [ ] Identify the actual GPU/backend and separate isolated-renderer, full-HUD, emulated viewport and physical-device evidence. The accepted 60 fps desktop/30 fps low-power targets remain unchanged.
+- [ ] Establish the supported phone/low-power roster before claiming qualification. Walter's SSH desktop or NVIDIA renderer evidence cannot qualify a phone or a physical display by proxy.
+- [ ] Record agreed measured scale references and operator-eye placement; do not treat the authoring convention as a venue measurement.
+
+### Rights and final launch
+
+- [ ] Establish author/tool/source/license and redistribution permission for every used image, mesh, material, texture and animation. Preserve the unresolved legacy-image inventory; do not delete it or infer rights from its presence.
+- [ ] Reconcile the existing release issues, name screening and scoped career decisions with actual acceptance evidence.
+- [ ] Keep the current Early playable listing, noindex and sitemap exclusion until all required final launch gates are fulfilled. Do not promote automatically from CI or device diagnostics alone.
+
+Outcome: pending. This checklist prepares review; it grants no human, physical-device, calibration, rights or full-launch acceptance.
