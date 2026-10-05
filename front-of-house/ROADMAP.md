@@ -127,7 +127,7 @@ A run of shows on the Lot, so the first tier is a career rather than one night (
 
 The accepted mockup review is applied to the existing steps 1 to 5: honest Show status, consequence-based incident copy, equipment location, phone sheet controls and light/dark controls. See [HUD.md](docs/HUD.md#review-refinement-2026-10-02). Engine rules, saves and the optional Lot doors experiment are unchanged.
 
-Current follow-up: model12 sample refinement and release checks are delivered through [PR120](https://github.com/DaveHomeAssist/mixmash/pull/120). Complete final realistic art/physical calibration, supported low-power qualification, human camera/art and career acceptance; retain the Intel CI rejection alongside the AMD diagnostic pass. Performance infrastructure and the site overview are delivered; older roadmap proposals remain historical rather than additional authorized phases.
+Current follow-up: model15 guest anatomy, projected detail and buffer reuse are delivered through [PR122](https://github.com/DaveHomeAssist/mixmash/pull/122), with final paired CI, independent raw audit and complete hosted/offline/recovery proof. Complete final realistic art/physical calibration, current native and supported phone/low-power qualification, human camera/art and career acceptance; retain all prior renderer failures alongside the corrected final-source pass. Performance infrastructure and the site overview are delivered; older roadmap proposals remain historical rather than additional authorized phases.
 
 ## Separate tracks
 

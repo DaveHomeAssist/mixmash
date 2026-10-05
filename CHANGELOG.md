@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: record delivered guest anatomy with final CI, independent raw audit and complete hosted/offline/recovery proof; retain earlier failures and open native-device, physical and human acceptance gates.
+
 - Front of House: reuse unchanged guest buffers during camera moves and animation, preserving detail selection and appearance after a retained CPU performance rejection.
 
 - Front of House: retain the second crowd timing rejection and select guest geometry by projected size, preserving full close anatomy, authored contours, materials, motion and attendance.

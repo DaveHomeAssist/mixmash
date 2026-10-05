@@ -346,3 +346,47 @@ The corrected source also passes439 repository tests/build and targeted backend,
 actual3D, camera-only batching, DPR/resolution and full Festival geometry/replay
 checks on Dominic. The FOH show capture was inspected; no visual change is
 expected from identical guest matrices, colors and geometry.
+
+## Final buffer-reuse qualification, 2026-10-05
+
+The first corrected-source run [CI37283959269](https://github.com/DaveHomeAssist/mixmash/actions/runs/37283959269)
+stopped before measurement because the manifest still named the previous presentation
+digest. Commit e019f12 corrected that metadata without another runtime change.
+[CI37284130070](https://github.com/DaveHomeAssist/mixmash/actions/runs/37284130070)
+then passed both required jobs. Independent audit validates its36 windows and18
+metrics, including exact source, fixture and raw hashes and recomputed statistics.
+
+The final PR122 head9ce8a9e integrates the concurrent homepage changes while retaining
+the exact e019f12 Front of House runtime, geometry, saves and performance protocol.
+[CI37359157706](https://github.com/DaveHomeAssist/mixmash/actions/runs/37359157706)
+passes both required general and renderer jobs. Independently downloaded artifact
+11366478578 (`foh-pair-37359157706-1`,108801 ZIP bytes) matches the provider SHA-256
+`022b759d441f73463b562c6428bdde2ee2dc2ad51ff7e697f31b4c5414fe6404`.
+Independent audit verifies all36 windows and18 metrics against the unchanged
+baseline6ed7b7c and limits. The CI host reports AMD EPYC7763.
+
+| Crowd viewport | CPU P95 | Limit | Verdict |
+| --- | --- | --- | --- |
+| 1440×900 | 6.3ms | 7.95ms | Pass |
+| 375×812 | 4.4ms | 6.15ms | Pass |
+| 2560×720 | 7.4ms | 8.25ms | Pass |
+
+These are paired software-renderer regression results, not sustained native60fps
+or supported-phone30fps qualification. Earlier model13/model14 failures and the
+bc89 Intel8.8ms rejection remain valid historical results; the correction is an
+actual buffer-work change, not an unchanged retry or relaxed gate.
+
+[PR122](https://github.com/DaveHomeAssist/mixmash/pull/122) merged8e723ed.
+The final head, CI synthetic merge and delivered merge have identical source trees.
+Pages built that merge at2026-10-05T19:27:12Z; postmerge
+[CI37362776702](https://github.com/DaveHomeAssist/mixmash/actions/runs/37362776702)
+also passes. On Dominic all42 hosted files match before and after the complete
+twelve-script player suite,3D offline signing/reload, gestures/context/module
+recovery, Festival geometry/eight exact settlement comparisons, four navigation
+journeys and the supplied action/state captures. Screenshots and state were
+inspected; no captured action-client errors. Four controlled motion scenarios
+are local fixtures, separate from the hosted client journeys. Offline seed3786835978
+preserves1500 touring rent,1350 delay costs,225251 net and1225251 signed/journal cash.
+Native model12 sample evidence keeps its original frozen source attribution;
+model15 native-device, final visual/camera, physical calibration and human career
+acceptance remain open.
