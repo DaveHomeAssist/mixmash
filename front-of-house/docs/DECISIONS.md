@@ -533,3 +533,9 @@ Zoomed side-stage and arbitrary-yaw views remove much of the main yard from view
 Status: Accepted implementation decision by Codex under Dave's autonomous execution direction and CT-DEC-19,2026-10-04. Delivery and device acceptance are separately verified.
 
 New Amphitheater/Festival bookings carry optional version1 set timing. Doors19:00, set20:12–23:00; obey ends at the seeded curfew minute, appeal costs the existing$400 and ends five minutes later, capped at23:00. Uniform scheduled walk-up demand is multiplied by elapsed admission time. Bar income is multiplied by the played fraction of the168-minute set and rounded once. All presales and guarantees remain paid; door artists receive the usual net-ticket share. This is an aggregate outdoor rule, not the Lot's individual arrival queue. Unmarked saves retain their exact arithmetic; invalid optional terms preserve money/history and disclose lost timing authority.
+
+## CT-DEC-25 Included Club lighting
+
+Status: Accepted implementation decision by Codex under Dave's autonomous execution direction and CT-DEC-19,2026-10-04. Release proof remains separate.
+
+New Club bookings select the version1 room profile. The medium house PA retains250-person sound supply; rent includes house lighting. A placed light tower remains an optional$175 rental with8kW draw and no duplicate lighting bonus. The60kW equipment budget continues to cover placed equipment, consistent with the existing included PA. Keep the existing pillar/sightline rules and360 permit. Suggested layout omits the redundant tower only for marked bookings; existing layouts/caches and unmarked saved arithmetic stay intact. Imported derived coverage/cost fields confer no benefit; malformed optional source preserves paid money/history with recovery feedback. Club scale and career verdicts follow as separate acceptance.

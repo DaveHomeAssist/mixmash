@@ -62,7 +62,7 @@ These gates were written before Phase 5 shipped. They still matter for public si
 
 ## Phase 5: the Club
 
-Tier 2. Indoor, 150 to 600 people. Unlocked by the Lot goal. This section records the original scope; the playable room exists, while its ticketing and tier-specific balance verification are still missing.
+Tier 2. Indoor, 150 to 600 people. Unlocked by the Lot goal. This section records the original scope; the playable room exists, ticketing is delivered, included house lighting is under verification, and tier-specific balance verification remains open.
 
 **Resolve before adding the missing Club mechanics:**
 
@@ -140,7 +140,7 @@ GDD section 6 lists these as "later". This is the order. A system does not jump 
 
 ## Art
 
-The painted props on the lot are a stand-in so the board is readable. They are not art Phase 2. The original pixel-sheet plan below is historical: [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction) now selects more realistic 3D for the new renderer. Existing assets remain until a validated replacement; D8 disposition is still open.
+The painted props on the lot are a stand-in so the board is readable. They are not art Phase 2. The original pixel-sheet plan below is historical: [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction) now selects more realistic 3D for the new renderer. Existing assets remain under the accepted compatibility disposition; D1–D11 are settled by CT-DEC-19. Technical scene delivery and final human art acceptance remain separate.
 
 | Step | What changes | Blocked by |
 | --- | --- | --- |

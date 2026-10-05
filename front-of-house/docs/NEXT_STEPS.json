@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "137db3a combined release verified; outdoor curfew locally verified, full regression running",
+  "head": "137db3a release verified; curfew in CI; Club lighting locally verified",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Festival profiles and delay towers are delivered with hosted player and offline proof. The current release includes the source-owned venue/navigation stack. Curfew timing passes423 tests and eight browser journeys; full regression, CI and hosted curfew acceptance remain. House lighting, VIP/bus systems, whole-career balance and release/device acceptance remain open.",
+  "statusReason": "Curfew release checks continue on PR110. Included Club lighting is locally verified:425 tests, seven player journeys, exact old-save parity and offline cash/journal proof. CI and hosted Club acceptance remain. Festival VIP/bus infrastructure, whole-career balance and final release/device acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -33,8 +33,8 @@
     "PR106/PR108: Festival room profile and spatial delays delivered; eight hosted Festival/eight seating journeys,27 source matches and exact offline tower costs/journal at137db3a."
   ],
   "nextStep": {
-    "title": "Deliver curfew and finish the venue/career requirements",
-    "why": "Complete time-of-day release proof, then included Club lighting, Festival VIP/bus infrastructure and full tier simulator/career acceptance. Reconcile the delivered scene/navigation evidence before extending those surfaces.",
+    "title": "Deliver curfew and Club lighting, then finish venue and career acceptance",
+    "why": "Complete both bounded releases with current CI and hosted proof, then Festival VIP/bus infrastructure and full tier simulator verdicts. Preserve the independently owned scene/navigation work.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -304,6 +304,11 @@
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
+    "clubLighting": {
+      "baseRevision": "12a501afddb219b2c7a00b1a4ae224f09a4e001d",
+      "checkedOn": "2026-10-04",
+      "localChecks": "Club house lighting passes425 repository tests,40 final room/camera/catalog checks, build, asset/docs checks and unchanged Lot baseline. Seven Chromium/WebKit player journeys cover both deals, optional tower placement/undo, Room/Lighting pages, both themes, compact sizes, classic/3D, ticketing, signing and reload.960 unmarked transitions and120 receipts match12a501a. Offline signing preserves zero light rental and1001380 cash/journal balance. Actual classic/3D night, full HUD, phone and supplied action-client images inspected. CI and hosted release acceptance remain pending."
+    },
     "checkedOn": "2026-10-04",
     "sourceRevision": "f258625cddb476533bb52d5c3044d552344fb4ec",
     "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
