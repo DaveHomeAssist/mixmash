@@ -73,6 +73,15 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     // Some browser density changes update media matches without delivering a change event.
     if (pixelRatio === null && density() !== requestedDpr) { resize(); return; }
     try {
+      if (lastScene) {
+        const input = lastScene, view = { camera: camera.camera, pixelHeight: canvas.height };
+        presentation.update(stageAudience ? { ...input, crowd: stageAudience.displayed.main } : input, objects, objectHeights, motion, stageAudience?.representatives.main, view);
+        if (sidePresentation) sidePresentation.update({ ...input, crowd: stageAudience.displayed.second, incident: input.incident === 'rain' ? 'rain' : null, showClear: false }, [{ type: 'stage', x: 3, y: 1, rot: 0 }], [0.55], motion, stageAudience.representatives.second, view);
+        // Include both detail levels and camera-only transitions in shadow invalidation.
+        const casters = [...presentation.group.children, ...(sidePresentation?.group.children || [])].filter(mesh => mesh.isInstancedMesh && mesh.castShadow);
+        const nextShadow = JSON.stringify([layoutKey, ...casters.map(mesh => [mesh.count, mesh.count ? mesh.instanceMatrix.version : 0])]);
+        if (nextShadow !== shadowKey) { renderer.shadowMap.needsUpdate = true; shadowKey = nextShadow; }
+      }
       const updateShadow = renderer.shadowMap.needsUpdate;
       renderer.render(world, camera.camera); renderedFrames++;
       if (updateShadow) shadowUpdates++;
@@ -85,12 +94,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     const key = JSON.stringify(input.objects || []);
     if (key !== layoutKey) { rebuildObjects(input.objects || []); layoutKey = key; }
     stageAudience = festival ? stageRepresentatives(input.crowd, input.stageAudience) : null;
-    presentation.update(stageAudience ? { ...input, crowd: stageAudience.displayed.main } : input, objects, objectHeights, motion, stageAudience?.representatives.main);
-    if (sidePresentation) sidePresentation.update({ ...input, crowd: stageAudience.displayed.second, incident: input.incident === 'rain' ? 'rain' : null, showClear: false }, [{ type: 'stage', x: 3, y: 1, rot: 0 }], [0.55], motion, stageAudience.representatives.second);
-    // Track the actual instance buffers, including a lone worker and paused queue changes.
-    const casters = [...presentation.group.children, ...(sidePresentation?.group.children || [])].filter(mesh => mesh.isInstancedMesh && mesh.castShadow);
-    const nextShadow = JSON.stringify([key, ...casters.map(mesh => [mesh.count, mesh.count ? mesh.instanceMatrix.version : 0])]);
-    if (nextShadow !== shadowKey) { renderer.shadowMap.needsUpdate = true; shadowKey = nextShadow; }
     const nextOverlay = JSON.stringify([key, input.showClear, [...(input.clearSet || [])], [...(input.blockedSet || [])], input.cursor, input.cursorColor, input.selection, input.ghost]);
     if (nextOverlay !== overlayKey) {
       clearOverlays();

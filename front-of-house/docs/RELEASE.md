@@ -47,9 +47,9 @@ The site is the `gh-pages` branch served as-is by GitHub Pages; a merge into `gh
 
 ## 3. Public launch (one time)
 
-The page is live but `noindex`, with no hub card and no sitemap entry ([FUTURE.md](FUTURE.md#release)). All of these first:
+Dave approved the **Early playable** homepage listing on2026-10-05; the hub card is deployed. The game remains `noindex` and excluded from the sitemap. That limited sign-off does not close final art, performance, device or career acceptance. Before full launch and search promotion:
 
-- [ ] Dave has played the Lot and signed off the first playable, or listed what to change.
+- [x] Dave signed off the first playable for the Early playable homepage listing on2026-10-05 ([record](DECISIONS.md#homepage-visibility-sign-off-2026-10-05)); final acceptance for later revisions remains separate.
 - [ ] CT-DEC-10 (the Lot career) and CT-DEC-11 (rooms after the Lot) are accepted or changed.
 - [ ] The Medium issues in KNOWN_ISSUES.md are fixed, or Dave has accepted them for launch.
 - [ ] Every image in ASSETS.md has a recorded source and licence (KI-07).
@@ -59,6 +59,6 @@ Then, in one PR:
 
 - [ ] Remove `noindex` from `front-of-house/index.html`.
 - [ ] Add the sitemap entry.
-- [ ] Add the hub card with a gameplay preview and where the preview came from (`assets/previews/README.md`).
+- [ ] Review the existing approved hub card and its gameplay preview against the accepted launch scope; keep preview provenance in `assets/previews/README.md`.
 - [ ] Update the README status line and the CHANGELOG.
 - [ ] Follow sections 1 and 2.

@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Distance detail after retained model14 rejection
+
+CI37274607801 general checks pass, but the independently audited36-window pair rejects five crowd-frame metrics. All empty-scene and CPU submission limits pass. The crowd draws506610 triangles against290610 in the baseline, at the same165 calls. Original failures remain recorded; no blind retry, baseline or threshold change.
+
+Model15/cache68 retains full anatomy close to the camera and adds source-owned distant geometry with every authored clothing contour and the same sculpt/materials/joints. Projected physical pixel size with80/64 hysteresis chooses detail independently for each representative, including camera-only and DPR changes. Sixteen parts per tier allocate at most32 batches; no duplicated actors, save changes, simulation changes or removed shadows. Dominic passes439 tests/build,20 geometry/camera checks, backend and actual3D parity/recovery, batching and resolution. Full and distant72px front/angled/side comparisons have no silhouette mismatch beyond2px and were inspected; close/action captures were also inspected. Six short diagnostic windows pass validity only. Festival/navigation and full paired qualification remain pending. No local browser or focus action.
+
+
 ## 2026-10-05: Retained crowd regression and contour correction
 
 Integrated412bb00 passed438 tests/build and the complete independent Dominic player suite. CI37271315330 general checks pass, but the full paired renderer gate rejects mean/p95 crowd-frame intervals at all three viewports. Independent raw/source/fixture/statistics audit validates all36 windows. No blind retry or threshold change: PR122 remains unmerged.

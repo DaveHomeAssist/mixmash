@@ -221,3 +221,8 @@ The private review pack freezes source `b8bfe08fe110121c51dafb75eb8efda837e3353a
 ### Model13 anatomy follow-up
 
 The inspected model12 close view still had a barrel torso, flat shoulders, exposed cylindrical neck and tube limbs. CT-DEC-30/FOH-V01e shapes the shared chest/waist/shoulder silhouette and tapers limbs, preserving pose joints, height, instance count and gameplay. The existing eight-view review and physical/device/human boundaries continue to apply. Model12 native measurements retain their original source attribution; they do not qualify this geometry change.
+
+
+### Distance detail, 2026-10-05
+
+CT-DEC-31 keeps the refined anatomy in close views and preserves its authored contours and surfaces in distant geometry. Detail follows physical screen size with hysteresis, not frame rate or machine identity. Review both tiers, transition silhouettes, walking/queues and all camera presets; no guest may disappear or be duplicated. Native/device and final human style acceptance remain open.

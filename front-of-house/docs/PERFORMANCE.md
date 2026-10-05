@@ -292,3 +292,18 @@ PR122 source412bb00, CI37271315330 attempt1, failed the unchanged paired gate on
 |2560×720|334.617 /617.661 /418.271|649.9 /1183.2 /812.375|
 
 Model14 replaces redundant uniform longitudinal subdivisions with the exact authored contour rings and indexed cap centers, retaining radial resolution, closed surfaces, clothing maps, instance counts and motion. Its performance remains unqualified until new full paired measurements pass. Short remote before/after diagnostics are exploratory only; no threshold or test timeout is relaxed.
+
+
+## Model14 retained crowd rejection and projected detail correction, 2026-10-05
+
+PR122 head74da757 ran CI37274607801. General tests and complete player checks passed. The paired renderer job failed on AMD EPYC7763. Independent audit verified all36 windows, source/raw/fixture hashes and recomputed statistics against the provider artifact11330961233. Empty-scene and CPU-submission limits passed; five crowd-frame metrics failed:
+
+| Viewport | Mean baseline / candidate / limit (ms) | P95 baseline / candidate / limit (ms) |
+| --- | --- | --- |
+| 1440×900 | 493.9705 /690.8795 /617.4631 — fail | 1150 /1283.3 /1437.5 — pass |
+| 375×812 | 328.6109 /509.8661 /410.7636 — fail | 650 /1016.6 /812.5 — fail |
+| 2560×720 | 476.9046 /655.6489 /596.1308 — fail | 900 /1266.6 /1125 — fail |
+
+The recorded crowd has506610 rendered triangles versus290610 in the baseline, with the same165 draw calls. This supports investigating geometry cost; it does not prove a sole causal bottleneck. No unchanged retry or limit relaxation follows. Model15 introduces deterministic projected-size guest detail under CT-DEC-31, retaining the full anatomy near the camera and each authored body contour at distance. Screen-size detail is independent of measured frame rate; the protocol still disables time-based adaptive quality. Existing sample duration, repetitions, fixtures, DPR, shadows, antialiasing, baseline and limits remain unchanged. Full current-source qualification is required before delivery.
+
+Dominic's isolated existing-driver probes rendered correctly but reported SwiftShader, including the read-only Intel Vulkan configuration. These are software capability results, not native Intel, supported phone or low-power qualification. No driver or service changes were made.

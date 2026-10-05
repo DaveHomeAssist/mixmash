@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-14';
+export const MODEL_REVISION = 'lot-sample-15';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -59,6 +59,7 @@ export function createLotModels() {
       const n = new T.Vector3().fromBufferAttribute(normals, a).add(new T.Vector3().fromBufferAttribute(normals, b)).normalize();
       normals.setXYZ(a, n.x, n.y, n.z); normals.setXYZ(b, n.x, n.y, n.z);
     }
+    geometry.userData.contours = rings;
     return geometry;
   }
   const shape = {
@@ -73,23 +74,33 @@ export function createLotModels() {
     head: new T.SphereGeometry(1, 24, 16),
     hair: new T.SphereGeometry(1, 16, 12),
   };
-  // Sculpt the shared head rather than adding draw calls for facial features.
-  const headPositions = shape.head.attributes.position;
-  for (let i = 0; i < headPositions.count; i++) {
-    const x = headPositions.getX(i), y = headPositions.getY(i), z = headPositions.getZ(i);
-    const jaw = y < 0 ? 1 + y * 0.18 : 1;
-    const nose = z > 0 ? 0.24 * Math.exp(-((x / 0.2) ** 2) - (((y + 0.1) / 0.27) ** 2)) : 0;
-    headPositions.setXYZ(i, x * jaw, y, z + nose);
+  const distant = {
+    box: shape.box, sphere: new T.SphereGeometry(1, 8, 6),
+    cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 8),
+    head: new T.SphereGeometry(1, 12, 8), hair: new T.SphereGeometry(1, 8, 6),
+    ...Object.fromEntries(['torso', 'sleeve', 'forearm', 'thigh', 'calf'].map(name =>
+      [name, profile(shape[name].userData.contours, name === 'torso' ? 12 : 8)])),
+  };
+  // Both detail levels retain the same sculpt and authored clothing contours.
+  for (const forms of [shape, distant]) {
+    // Sculpt the shared head rather than adding draw calls for facial features.
+    const headPositions = forms.head.attributes.position;
+    for (let i = 0; i < headPositions.count; i++) {
+      const x = headPositions.getX(i), y = headPositions.getY(i), z = headPositions.getZ(i);
+      const jaw = y < 0 ? 1 + y * 0.18 : 1;
+      const nose = z > 0 ? 0.24 * Math.exp(-((x / 0.2) ** 2) - (((y + 0.1) / 0.27) ** 2)) : 0;
+      headPositions.setXYZ(i, x * jaw, y, z + nose);
+    }
+    forms.head.computeVertexNormals();
+    const hairPositions = forms.hair.attributes.position;
+    for (let i = 0; i < hairPositions.count; i++) {
+      const x = hairPositions.getX(i), y = hairPositions.getY(i), z = hairPositions.getZ(i);
+      // A higher front hairline and fuller back keep the face visible from FOH.
+      hairPositions.setXYZ(i, x, y < 0 && z > 0 ? y * 0.35 : y, z);
+    }
+    forms.hair.computeVertexNormals();
   }
-  shape.head.computeVertexNormals();
-  const hairPositions = shape.hair.attributes.position;
-  for (let i = 0; i < hairPositions.count; i++) {
-    const x = hairPositions.getX(i), y = hairPositions.getY(i), z = hairPositions.getZ(i);
-    // A higher front hairline and fuller back keep the face visible from FOH.
-    hairPositions.setXYZ(i, x, y < 0 && z > 0 ? y * 0.35 : y, z);
-  }
-  shape.hair.computeVertexNormals();
-  Object.values(shape).forEach(g => geometries.add(g));
+  [...Object.values(shape), ...Object.values(distant)].forEach(g => geometries.add(g));
   const pixels = new Uint8Array(64 * 64 * 4);
   for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
     const at = (y * 64 + x) * 4;
@@ -263,10 +274,12 @@ export function createLotModels() {
     g.rotation.y = -rot * Math.PI / 2; g.position.set(object.x + rw / 2, 0, object.y + rh / 2);
     return g;
   }
-  function guest() {
+  function guest(detail = 'full') {
+    if (!['full', 'distant'].includes(detail)) throw new Error('Unknown guest detail');
     const g = new T.Group();
     const p = (size, pos, surface, form = 'cylinder') => {
       const mesh = part(g, size, pos, 0xffffff, 0, form, surface);
+      if (detail === 'distant') mesh.geometry = distant[form];
       const finish = form === 'head' ? 'face' : surface === 'clothing' || surface === 'trousers' ? 'cloth' : surface;
       mesh.material = material(0xffffff, 0, surface === 'skin' ? 0.62 : surface === 'hair' ? 0.72 : 0.9, finish);
       return mesh;

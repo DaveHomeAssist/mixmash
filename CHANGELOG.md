@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: retain the second crowd timing rejection and select guest geometry by projected size, preserving full close anatomy, authored contours, materials, motion and attendance.
+
 - Front of House: retain the failed crowd performance gate and remove redundant anatomy tessellation while preserving authored contours, radial detail and gameplay.
 
 - Front of House: shape guest shoulders, torso and clothing silhouettes with tapered limbs, retaining shared crowd batches, motion rules and simulation.

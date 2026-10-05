@@ -37,3 +37,6 @@ Close views now include a shaped jaw and nose, forward-facing eye/brow/mouth lan
 FOH-V01e refines the shared clothed torso with a waist, chest and sloping shoulder/collar line, rounds the sleeve caps and tapers forearms and trouser legs. The reference height and existing hip/shoulder pivots remain fixed. Sixteen part batches and four owned textures remain; geometry is shared across all representatives. This is a bounded silhouette refinement, not physical calibration or final realistic-art acceptance. Current-source browser, performance, CI and hosted evidence must qualify this revision separately from the retained model12 native report.
 
 Model14 retains the authored anatomy contours and radial detail while indexing the contour rings directly. Model13 failed paired crowd timing; model14 qualification remains pending in PERFORMANCE.md.
+
+
+Model15 retains model14 geometry for close guests and shares a second geometry set for distant guests. Both preserve every authored body ring, sculpt, material and animation pivot. Conservative projected physical size selects the tier, with80px promotion/64px demotion to avoid flicker. Each representative appears once, across a maximum of32 allocated part batches. This is a technical performance correction awaiting current-source browser/visual, paired CI and hosted qualification; it is not final art acceptance.

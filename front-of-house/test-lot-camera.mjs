@@ -271,7 +271,7 @@ test('representative gait keeps bodies grounded, waiting feet planted and reduce
     { x: 8.5, y: 5.5, heading: 0, moving: false, zone: 'bar' },
   ], totals: { floor: 1, bar: 1 } } };
   template.updateMatrixWorld(true);
-  const original = JSON.stringify(source), batches = presentation.group.children.filter(x => x.isInstancedMesh);
+  const original = JSON.stringify(source), batches = presentation.group.children.filter(x => x.isInstancedMesh).slice(0, template.children.length);
   const capture = (t, motion) => {
     presentation.update({ ...source, t }, [], [], motion);
     return batches.map(b => Array.from({ length: b.count }, (_, i) => { const m = new Matrix4(); b.getMatrixAt(i, m); return m; }));
@@ -365,4 +365,43 @@ test('clothed anatomy stays connected, shared and inside the guest geometry budg
   for (const geometry of owned) geometry.addEventListener('dispose', () => disposed++);
   models.dispose(); models.dispose();
   assert.equal(disposed, owned.size, 'new shared profiles disposed exactly once');
+});
+
+
+test('guest distance detail preserves contours, materials, counts and near-view anatomy', () => {
+  const models = createLotModels(), full = models.guest(), far = models.guest('distant');
+  let nearTriangles = 0, farTriangles = 0;
+  for (let i = 0; i < full.children.length; i++) {
+    const a = full.children[i], b = far.children[i];
+    assert.equal(a.material, b.material); assert.deepEqual(a.position, b.position);
+    assert.deepEqual(a.userData, b.userData);
+    nearTriangles += a.geometry.index.count / 3; farTriangles += b.geometry.index.count / 3;
+    if (a.geometry.userData.contours) assert.deepEqual(a.geometry.userData.contours, b.geometry.userData.contours);
+    const ab = new Box3().setFromBufferAttribute(a.geometry.attributes.position), bb = new Box3().setFromBufferAttribute(b.geometry.attributes.position);
+    assert.ok(ab.min.distanceTo(bb.min) < 0.06 && ab.max.distanceTo(bb.max) < 0.06, 'same authored envelope');
+  }
+  assert.ok(farTriangles < nearTriangles / 2, 'distant geometry removes subpixel subdivisions');
+  const p = createLotPresentation(models), c = createLotCamera();
+  c.resize({ x: 0, y: 0, w: 1440, h: 900 });
+  const source = { crowd: 2, t: 1, serviceCrowd: { actors: [
+    { x: 12, y: 8, heading: 0, moving: false, zone: 'bar' },
+    { x: 12, y: 1, heading: 0, moving: false, zone: 'floor' },
+  ], totals: { bar: 1, floor: 1 } } }, before = JSON.stringify(source);
+  const update = height => p.update(source, [], [], false, 180, { camera: c.camera, pixelHeight: height });
+  update(900); assert.deepEqual(p.info().guestDetail, { full: 0, distant: 2 });
+  const meshes = p.group.children.filter(m => m.isInstancedMesh);
+  const farVersions = meshes.map(m => m.instanceMatrix.version);
+  c.setCamera({ yaw: 46 }); update(900);
+  assert.deepEqual(meshes.map(m => m.instanceMatrix.version), farVersions, 'camera movement with unchanged detail reuses shadows');
+  c.preset('foh'); c.resize({ x: 0, y: 0, w: 1440, h: 400 }); update(400);
+  assert.deepEqual(p.info().guestDetail, { full: 1, distant: 1 }, 'mixed near/far crowd retains close anatomy without duplicating guests');
+  const nearMatrix = new Matrix4(), farMatrix = new Matrix4();
+  meshes[0].getMatrixAt(0, nearMatrix); meshes[16].getMatrixAt(0, farMatrix);
+  assert.equal(nearMatrix.elements[14], 8); assert.equal(farMatrix.elements[14], 1);
+  assert.notDeepEqual(meshes[0].instanceColor.array.slice(0, 3), meshes[16].instanceColor.array.slice(0, 3), 'compacting detail tiers preserves different service colors');
+  update(90); assert.deepEqual(p.info().guestDetail, { full: 0, distant: 2 });
+  update(1800); assert.deepEqual(p.info().guestDetail, { full: 2, distant: 0 }, 'physical pixel size controls density transition');
+  assert.equal(meshes.reduce((n, m) => n + m.count, 0), 2 * full.children.length, 'each guest occurs once per part');
+  assert.equal(p.info().representativeGuests, 2); assert.equal(JSON.stringify(source), before);
+  p.dispose(); models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
 });
