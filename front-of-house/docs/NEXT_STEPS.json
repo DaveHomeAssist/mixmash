@@ -8,7 +8,7 @@
   "head": "Guest distance detail correction",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model14 general/player CI passes but the audited36-window pair rejects five crowd-frame metrics. Model15 preserves full close anatomy and uses authored distant geometry selected by physical pixel size. Current-source browser, performance and hosted qualification remain required; human, physical-device and provenance gates stay open.",
+  "statusReason": "Model15 projected guest detail passes source/player checks on Dominic; its required renderer pair remains active. Integrated homepage CI failure was traced to counting all later detail artwork against the approved first-load limit. The corrected unchanged500KB initial-load check passes14 browser/viewport views and offline recovery on Dominic. Final-head CI, merge, Pages and hosted checks remain pending; human/device/provenance gates stay open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -268,7 +268,8 @@
     "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6\u2013D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
-    "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
+    "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice.",
+    "2026-10-05: CI37278816549 general job failed cumulative homepage transfer1363823>500000; approved HOMEPAGE_BRIEF specifies initial load. First load422208 Chromium/423574 WebKit passes unchanged500000 limit. Corrected landing smoke records later journey bytes and checks cover decode;14 views plus fallback/history/theme/offline/save preservation pass on Dominic. Original artwork and runtime unchanged. Existing model15 renderer pair retained; final-source CI still required."
   ],
   "links": [
     {

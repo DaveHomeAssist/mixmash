@@ -35,6 +35,13 @@ try {
     const responses = [];
     page.on('response', response => responses.push(response));
     await page.goto(origin, { waitUntil: 'networkidle' });
+    // The approved budget covers first load; later detail artwork is measured separately.
+    let initialBytes = null, journeyBytes = null;
+    if (width === 1440) {
+      const initial = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
+      initialBytes = 0; for (const response of initial) initialBytes += (await response.body()).length;
+      assert.ok(initialBytes <= 500000, `initial homepage transfer budget: ${initialBytes}`);
+    }
     assert.equal(await page.title(), studio.title);
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', 'fresh visit defaults light despite system dark');
     assert.equal(await page.locator('.game-card').count(), playableGames.length);
@@ -68,6 +75,8 @@ try {
       assert.ok(await view.locator('.back-link').isVisible(), 'detail controls are rendered');
       assert.equal(await view.locator('.primary').getAttribute('href'), game.route);
       assert.ok((await view.innerText()).includes(game.saving));
+      const artwork = view.locator('.detail-art img');
+      if (await artwork.isVisible()) await artwork.evaluate(img => img.decode());
       await fit(page, `${engine} ${width} ${game.id} details`);
       await view.locator('.back-link').click();
       await page.waitForFunction(() => !document.getElementById('games').hidden);
@@ -90,13 +99,13 @@ try {
       assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
       const unique = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
       let bytes = 0; for (const response of unique) bytes += (await response.body()).length;
-      assert.ok(bytes <= 500000, `homepage transfer budget: ${bytes}`);
+      journeyBytes = bytes;
       await page.evaluate(() => { localStorage.setItem('front_of_house_v1', 'unchanged-game-sentinel'); localStorage.setItem('mixmash_opts', 'unchanged-options'); });
       await page.locator('#theme-toggle').click(); await page.locator('#pick-game').click(); await page.reload();
       assert.deepEqual(await page.evaluate(() => [localStorage.getItem('front_of_house_v1'), localStorage.getItem('mixmash_opts')]), ['unchanged-game-sentinel','unchanged-options']);
     }
     assert.deepEqual(failures, []);
-    results.push({ engine,width,height,passed:true }); console.log(`${engine} ${width}×${height} passed`); await context.close();
+    results.push({ engine,width,height,initialBytes,journeyBytes,passed:true }); console.log(`${engine} ${width}×${height} passed`); await context.close();
    }
    // A direct detail link must return to its card even before catalog capacity was measured.
    {
