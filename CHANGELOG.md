@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: representative 3D guests walk with restrained limb motion and rest while queued; reduced motion stays static, with unchanged routes, counts, geometry batches and settlement rules.
+
 - Front of House: clarify act trust, show status, room-aware production advice and the basic no-ad affordability estimate; no rule or save changes.
 
 - Front of House: new Festival bookings require a placeable VIP deck and bus compound, with disclosed $1,500 shared rentals, normal footprint/power/view constraints, classic and 3D props, and contained Rider reports. Older unmarked bookings retain their rules. The earned tier career baseline now covers these requirements.

@@ -26,6 +26,7 @@ This file records Front of House decisions that affect more than one part of the
 | [CT-DEC-20](#ct-dec-20-live-service-pilot-rules-and-compatibility) | Live service pilot rules and compatibility | Accepted experiment |
 | [CT-DEC-21](#ct-dec-21-measured-ci-regression-policy) | Paired CI timing limits, retained full-client evidence and render batching | Accepted engineering policy |
 | [CT-DEC-22](#ct-dec-22-fixed-scenery-editing-and-legacy-compatibility) | Fixed scenery editing and legacy compatibility | Accepted engineering policy |
+| [CT-DEC-28](#ct-dec-28-representative-guest-poses) | Restrained walking and queue poses using existing representative actors | Accepted presentation policy |
 
 ## CT-DEC-01: Core scope
 
@@ -553,3 +554,9 @@ Tier cohort clarification: both later-tier strategies earn the Lot unlock with t
 Status: Accepted implementation decision by Codex under Dave's autonomous execution direction and CT-DEC-19,2026-10-04. Implementation and release evidence remain separate.
 
 Choose **A: placeable touring requirements** over B: fixed scenery or C: a new VIP ticket market. New marked Festival bookings require a4×3 VIP deck (600 rental,2kW) and6×3 bus compound (900 rental,6kW); one of each, both movable with existing rotation/undo rules. Their footprints and obstruction make placement matter. Charge both once as shared-site costs and allocate to the two stage accounts using existing conservation. Do not invent extra admissions or a VIP revenue bonus. Preserve every unmarked booking and paid save. Suggested layout adds the fixtures only for marked terms. The supplied prop references inform source-authored technical models; they do not establish human acceptance or change D2 B.
+
+## CT-DEC-28: Representative guest poses
+
+**Status:** Accepted presentation decision by Codex under CT-DEC-19, 2026-10-04.
+
+Moving service representatives use a restrained opposing hip/shoulder gait; queued representatives use planted legs and relaxed arms. The pose consumes existing movement/zone/time only. Keep the same authored geometry, material instance batches, representative count, routes and all engine/save/accounting rules. Reduced motion keeps a static pose. This completes a bounded sample movement task; it does not establish final realistic-art, physical calibration or device-performance acceptance.

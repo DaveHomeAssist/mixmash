@@ -41,14 +41,18 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
   group.add(marker); marker.visible = false;
   const rain = lines(new Float32Array(240 * 6), 0xb9d0df, 0.42); rain.visible = false;
   const template = models.guest(); template.updateMatrixWorld(true);
+  const joints = new Map();
   const batches = template.children.map(part => {
     const material = part.material.clone(); material.color.set(0xffffff); ownedMaterial.add(material);
     const mesh = new T.InstancedMesh(part.geometry, material, MAX_GUESTS + 1);
     mesh.castShadow = true; mesh.receiveShadow = true; mesh.frustumCulled = false;
     mesh.count = 0; mesh.visible = false; group.add(mesh);
-    return { mesh, local: part.matrix.clone(), surface: part.name };
+    const limb = part.userData.guestLimb, key = limb && `${limb.joint}:${limb.side}`;
+    if (limb && !joints.has(key)) joints.set(key, { ...limb, matrix: new T.Matrix4() });
+    return { mesh, local: part.matrix.clone(), surface: part.name, joint: joints.get(key) };
   });
   const transform = new T.Object3D(), matrix = new T.Matrix4(), color = new T.Color();
+  const posed = new T.Matrix4();
   let layoutKey = '', actorKey = '', positions = [], crowdCount = 0, fencePanels = 0, gateOpenings = 0, incident = null, offsets = [], lastTime = null, serviceWorker = false, disposed = false;
   function rebuildFence(objects) {
     const hasFence = !indoor && objects.some(o => o.type === 'fence');
@@ -109,7 +113,21 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
       for (let i = 0; i < crowdCount; i++) {
         const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
         transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
-        for (const batch of batches) { matrix.multiplyMatrices(transform.matrix, batch.local); batch.mesh.setMatrixAt(i, matrix); }
+        const walking = motion && actors?.[i]?.moving;
+        const waiting = ['gate', 'bar', 'food', 'sanitation'].includes(actors?.[i]?.zone);
+        const stride = walking ? Math.sin(t * 8 + i) * 0.28 : 0;
+        if (walking || waiting) for (const { joint, side, pivot, matrix: jointMatrix } of joints.values()) {
+          const angle = joint === 'hip' ? stride * side : walking ? -stride * side * 0.8 : waiting ? -0.12 : 0;
+          const [, y, z] = pivot;
+          // Rotation about a fixed joint retains each part's authored shape and attachment.
+          jointMatrix.makeRotationX(angle).setPosition(0, y * (1 - Math.cos(angle)) + z * Math.sin(angle), z * (1 - Math.cos(angle)) - y * Math.sin(angle));
+        }
+        for (const batch of batches) {
+          const joint = batch.joint;
+          if (joint && (walking || waiting)) { posed.multiplyMatrices(joint.matrix, batch.local); matrix.multiplyMatrices(transform.matrix, posed); }
+          else matrix.multiplyMatrices(transform.matrix, batch.local);
+          batch.mesh.setMatrixAt(i, matrix);
+        }
         if (i < 3) offsets.push(sway);
       }
       for (const batch of batches) batch.mesh.instanceMatrix.needsUpdate = true;

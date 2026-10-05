@@ -831,3 +831,11 @@ The integrated source passes423repository tests, build, asset validation, genera
 Integrated parent5794977, retaining the delivered curfew/guide and delay inspection correction. The strict career booking policy now explicitly selects current outdoor curfew terms as well as room profiles. Thirty full uninterrupted/reload pairs are being regenerated against this integrated source; earlier515show results remain source04d7408 evidence. No runtime formula or goal change. Final source verification, replacement CI and delivery follow.
 
 Final current-policy replay passes30/30careers and515signed shows, with30exact uninterrupted/every-action-reload pairs. Full normalized saves, receipts and journals match; a repeat is byte-identical.423repository tests, build, generated references/catalog and the unchanged11Lot verdicts pass. Runtime remains exactly parent5794977. CI, stacked merge and deployed report proof follow; broader100-seed peer tier/held-night evidence is preserved separately.
+
+## 2026-10-04 — Representative walking and queue pose candidate
+
+Scoped FOH-V01c/CT-DEC-28 before implementation. Model11 adds restrained opposing hip/shoulder rotation to moving service guests and a planted queue resting pose. Reuses existing geometry/material instance batches; idle crowds avoid joint work. Routes, totals, engine rules and saves are unchanged; reduced motion is static. Cachev63 identifies this runtime.
+
+433 repository tests/build/generated assets/references pass. Dedicated geometry invariants verify attachments, ground contact, representative space, unchanged batches/counts and input immutability. Actual renderer walking frames differ, reduced-motion pixels match, and day/night captures were inspected. Full3D application gestures, inspection, recovery/fallback, resize, reload and complete settlement parity pass. A follow-up crowd invocation used a nonexistent filename; no game failure occurred, and the actual registered service-crowd rail passes all eight player/motion/departure journeys. Final player regression, CI/Pages and hosted acceptance remain pending.
+
+Reconciled the duplicated FOH-V02d career entry by preserving the union of all historical evidence under its existing stable ID. Broader art refinement and physical/human acceptance remain open.

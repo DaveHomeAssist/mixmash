@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Touring release: compact corrections verified; final CI pending",
+  "head": "Guest poses implemented; combined touring release in final CI",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Curfew, Club lighting, tier report and touring core are delivered with hosted proof. Linux CI37255270879 failed the320\u00d7256 Deals window by9px after five Chromium player journeys passed. Short complete statements retain all deal terms;20 local browser/theme/size combinations pass on the corrected source. Phone screenshot review also found the navigation inset clipping the meters; their second row now uses the full width, with explicit label/value bounds assertions. All28 player checks and20 actual Festival meter combinations pass; the rendered phone scene and all meters are visible. Final CI and hosted controls remain required.",
+  "statusReason": "Combined touring release PR117 is pushed with final-head CI pending. Source-owned guest walking/queue poses now pass geometry and renderer checks; player regression and their separate delivery continue. Final art, provenance and physical/human acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -649,6 +649,18 @@
             ],
             "backendPR": "https://github.com/DaveHomeAssist/mixmash/pull/63",
             "integrationPR": "https://github.com/DaveHomeAssist/mixmash/pull/64"
+          },
+          {
+            "id": "FOH-V01c",
+            "scope": "Source-owned representative walking and queue poses",
+            "status": "implemented-local-verification",
+            "evidence": [
+              "433 repository tests, build and generated assets/references pass. Seventeen camera/model checks include coherent hip/shoulder attachments, ground contact, representative-space containment, unchanged batch/count limits, input immutability and static reduced motion. Actual renderer moving pixels differ and reduced-motion frames are identical; actual day/night captures inspected. Full3D application gestures/recovery/fallback/reload and exact settlement parity pass. Final player regression, CI and hosted acceptance remain separate."
+            ],
+            "remaining": [
+              "Final player regression and exact-head CI/Pages/hosted acceptance",
+              "Final visual review and physical-device performance"
+            ]
           }
         ]
       },
@@ -1286,16 +1298,6 @@
               "Six full native Festival renderer windows at cleanbdfd5ea pass independent source/fixture/raw digest, exact fixture replay and timing audits. Apple M4 Metal, Chrome154.0.8037.97, actual5120\u00d71286/DPR1; cadence59.9746\u201359.9812Hz, 0 intervals over50ms. Three empty/three6000-person two-stage repeats preserve scene quality and180 representatives. Renderer-only; full game, human and low-power acceptance remain separate.",
               "Full combined local player rail passes all28 legacy checks plus live services, crowd/movement, food, sanitation, research, equipment, ticketing, held runs and eight seating/eight stage-control journeys. The latter include real desktop/phone3D price, bill, sponsor, receipt and reload controls. Club and Shell scene regressions also pass, including four exact two-night legacy comparisons. Native timing uses the clean pushed bdfd5ea source; hosted delivery still requires current-head CI, merge and Pages verification.",
               "Technical source is included in PR107 headbacebdd, CI37242898789 successful, mergeeadaafe and built Pages137db3a.32 checked runtime files match source. Hosted Club ticketing journeys exercise the3D client; hosted Shell3-size geometry/4 two-night comparisons and Festival3-size geometry/8 exact show comparisons pass. Dedicated Club shape/camera tests are local proof. Final art and physical/human acceptance remain separate."
-            ]
-          },
-          {
-            "id": "FOH-V02d",
-            "scope": "Complete career feasibility and exact save/accounting verification",
-            "status": "in-progress",
-            "evidence": [
-              "Separate four-room simulator implemented against integrated source65fc08e, using normal3000 starting cash, earned unlocks, published booking information and a fixed strongest-affordable incident policy. Thirty uninterrupted/reload pairs pass:30/30careers complete,515signed shows, full receipt/state/journal parity, affordable charges and duplicate-signing refusal. Five generated verdicts and416 repository tests/build/references pass; the eleven Lot verdicts remain unchanged. Existing Lot balance baseline and all runtime rules are unchanged. CI and delivery remain pending; balance, human careers, art and physical acceptance stay open.",
-              "Integrated committed delay preview52b9fdd and complete-career verification802b3c2 with touring controls2b3248a. Both career commands and CI report-drift gates are retained. The stricter replay now selects current Club room and Festival touring policies, includes both support fixtures and their1500 rental, and passes30 complete careers/515 signed shows/30 exact every-action reload pairs. Model revision10 retains delay/deck/coach geometry and all rotated footprint tests; cachev60 distinguishes the combined runtime. The player guide now explains touring controls and costs. Initial repository verification found only the stale generated catalog; it was regenerated before final checks. Combined CI, runtime browser and hosted proof remain pending.",
-              "Combined model/client verification passes: Festival geometry at three sizes, eight exact classic/3D legacy/versioned settlement/reload comparisons, full3D gesture/inspection/fallback/recovery smoke and four site navigation journeys. The complete touring player regression and20 compact Deal terms combinations pass. Four remaining copy issues are corrected: explicit Act relationship labeling, neutral Show night heading, honest incident/room advice and a basic no-ad affordability estimate. The first longer Act trust label overflowed the strip by16px; Act plus tooltip/accessible name preserves meaning and all28 browser checks pass. No rule, timing, price or save changed; cachev61 identifies the final runtime. Required final-head CI and hosted integration acceptance remain pending."
             ]
           },
           {

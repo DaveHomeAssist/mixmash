@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-10';
+export const MODEL_REVISION = 'lot-sample-11';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -182,15 +182,22 @@ export function createLotModels() {
     p([0.055, 0.05, 0.055], [0, 0.745, 0], 'skin');
     p([0.057, 0.065, 0.052], [0, 0.835, 0], 'skin', 'sphere');
     p([0.058, 0.026, 0.053], [0, 0.874, -0.005], 'hair', 'sphere');
-    for (const x of [-0.057, 0.057]) {
-      p([0.077, 0.2, 0.09], [x, 0.33, 0], 'trousers');
-      p([0.063, 0.18, 0.073], [x, 0.14, 0], 'trousers');
-      p([0.075, 0.046, 0.13], [x, 0.023, 0.025], 'shoes', 'box');
+    const limb = (mesh, joint, side, pivot) => {
+      mesh.userData.guestLimb = { joint, side, pivot };
+      return mesh;
+    };
+    for (const side of [-1, 1]) {
+      const x = side * 0.057, pivot = [x, 0.43, 0];
+      limb(p([0.077, 0.2, 0.09], [x, 0.33, 0], 'trousers'), 'hip', side, pivot);
+      limb(p([0.063, 0.18, 0.073], [x, 0.14, 0], 'trousers'), 'hip', side, pivot);
+      limb(p([0.075, 0.046, 0.13], [x, 0.023, 0.025], 'shoes', 'box'), 'hip', side, pivot);
     }
-    for (const sign of [-1, 1]) {
-      const sleeve = p([0.074, 0.15, 0.074], [sign * 0.135, 0.64, 0], 'clothing'); sleeve.rotation.z = sign * 0.12;
-      p([0.05, 0.19, 0.05], [sign * 0.148, 0.475, 0.005], 'skin');
-      p([0.026, 0.035, 0.022], [sign * 0.148, 0.36, 0.008], 'skin', 'sphere');
+    for (const side of [-1, 1]) {
+      const pivot = [side * 0.135, 0.715, 0];
+      const arm = mesh => limb(mesh, 'shoulder', side, pivot);
+      const sleeve = arm(p([0.074, 0.15, 0.074], [side * 0.135, 0.64, 0], 'clothing')); sleeve.rotation.z = side * 0.12;
+      arm(p([0.05, 0.19, 0.05], [side * 0.148, 0.475, 0.005], 'skin'));
+      arm(p([0.026, 0.035, 0.022], [side * 0.148, 0.36, 0.008], 'skin', 'sphere'));
     }
     return g;
   }
