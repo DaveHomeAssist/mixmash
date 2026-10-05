@@ -4060,6 +4060,16 @@
       "open": "/src/hub/template.html"
     },
     {
+      "path": "assets/covers/README.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Canonical covers",
+      "description": "Landscape 3:2 key art for the homepage detail panels only. Lineup cards and the turntable stay on assets/previews, which are live gameplay captures.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/README.md",
+      "open": null
+    },
+    {
       "path": "assets/previews/README.md",
       "project": "studio",
       "category": "docs",
@@ -4188,6 +4198,66 @@
       "description": "Session log for hub-level work: the public roster and arena count correction, the landing polish and this admin index.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/progress.md",
       "open": null
+    },
+    {
+      "path": "assets/covers/empires.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "empires.jpg",
+      "description": "Age of Dave canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/empires.jpg",
+      "open": "/assets/covers/empires.jpg"
+    },
+    {
+      "path": "assets/covers/foh.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "foh.jpg",
+      "description": "Front of House canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/foh.jpg",
+      "open": "/assets/covers/foh.jpg"
+    },
+    {
+      "path": "assets/covers/garden.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "garden.jpg",
+      "description": "Garden OS canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/garden.jpg",
+      "open": "/assets/covers/garden.jpg"
+    },
+    {
+      "path": "assets/covers/mars.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mars.jpg",
+      "description": "MarsScape canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/mars.jpg",
+      "open": "/assets/covers/mars.jpg"
+    },
+    {
+      "path": "assets/covers/mixmash.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mixmash.jpg",
+      "description": "MIXMASH canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/mixmash.jpg",
+      "open": "/assets/covers/mixmash.jpg"
+    },
+    {
+      "path": "assets/covers/pitch.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "pitch.jpg",
+      "description": "PITCH RIOT canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/pitch.jpg",
+      "open": "/assets/covers/pitch.jpg"
     },
     {
       "path": "assets/og-card.png",

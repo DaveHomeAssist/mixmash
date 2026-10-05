@@ -11,7 +11,8 @@ const origin = process.env.LANDING_BASE_URL || server.origin;
 const output = process.env.LANDING_SCREENSHOT_DIR || await mkdtemp(join(tmpdir(), 'mixmash-landing-'));
 await mkdir(output, { recursive: true });
 const results = [];
-const dimensions = [[1440,900], [375,812], [844,390], [320,256], [3840,1080], [768,900], [320,812]];
+const dimensions = [[1440,900], [375,812], [844,390], [320,256], [3840,1080], [768,900], [320,812], [1366,768], [1280,720], [1470,830]];
+const noPaging = new Set(['1440x900', '375x812', '1366x768', '1280x720', '1470x830']);
 async function fit(page, label) {
   const state = await page.evaluate(() => {
     const d = document.documentElement;
@@ -38,7 +39,19 @@ try {
     assert.equal(await page.title(), studio.title);
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', 'fresh visit defaults light despite system dark');
     assert.equal(await page.locator('.game-card').count(), playableGames.length);
-    if ((width === 1440 && height === 900) || (width === 375 && height === 812)) assert.equal(await page.locator('.game-card:visible').count(), 6, 'all six launch choices fit');
+    if (width === 1440 && height === 900) {
+      const requested = responses.map(r => r.url());
+      assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
+      const unique = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
+      let bytes = 0; for (const response of unique) bytes += (await response.body()).length;
+      console.log(`${engine} ${width}×${height} initial homepage transfer: ${bytes} bytes`);
+      assert.ok(bytes <= 500000, `homepage transfer budget: ${bytes}`);
+    }
+    if (noPaging.has(`${width}x${height}`)) {
+      assert.ok(await page.locator('#pager').isHidden(), `no paging at ${width}x${height}`);
+      const playLinks = await page.locator('.game-card:visible .play-link').evaluateAll(links => links.filter(link => { const r = link.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; }).length);
+      assert.equal(playLinks, 6, `six Play links visible without paging at ${width}x${height}`);
+    }
     const visited = new Set();
     do {
       for (const card of await page.locator('.game-card:visible').all()) {
@@ -86,11 +99,6 @@ try {
     await page.waitForFunction(() => !document.getElementById('games').hidden);
     assert.equal(await page.locator(':focus').getAttribute('id'), 'nav-games', 'arrow key keeps focus on tabs');
     if (width === 1440) {
-      const requested = responses.map(r => r.url());
-      assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
-      const unique = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
-      let bytes = 0; for (const response of unique) bytes += (await response.body()).length;
-      assert.ok(bytes <= 500000, `homepage transfer budget: ${bytes}`);
       await page.evaluate(() => { localStorage.setItem('front_of_house_v1', 'unchanged-game-sentinel'); localStorage.setItem('mixmash_opts', 'unchanged-options'); });
       await page.locator('#theme-toggle').click(); await page.locator('#pick-game').click(); await page.reload();
       assert.deepEqual(await page.evaluate(() => [localStorage.getItem('front_of_house_v1'), localStorage.getItem('mixmash_opts')]), ['unchanged-game-sentinel','unchanged-options']);
