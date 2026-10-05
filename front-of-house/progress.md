@@ -1,6 +1,17 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-05: Sample review and native proof
+
+At frozenb8bfe08, all six full native running-Lot/HUD windows pass source/raw/fixture hashes, statistics and exact minute25→65 engine replay. Apple M4/Metal, Chrome154, actual5120×1286/DPR1;59.9439–59.9772Hz, no intervals over50ms, no focus/visibility/resize/context errors. No other local browser/build/test work from this task overlapped the windows. This supports the current available-host sample, not all-device or human qualification.
+
+Eight actual HUD/view/light captures and a67.4-second orbit/live-motion/reduced-motion recording freeze the candidate. All eight stills and neutral guest close views were inspected. Nearby guests can obscure eye-level FOH; simplified anatomy and provisional dimensions remain explicit. The private material swatches use actual source materials. Final art/physical/phone/human acceptance is not fabricated.
+
+The new report initially failed the catalog-description check after staging; explicit public-safe report metadata was added and the six catalog checks rerun. No acceptance check was relaxed.
+
+PR119's full hosted suite, moving versus static reduced-motion pixels and offline sponsor signing/reload are terminal passes: seed4278227298, touring1500 and cash/journal1437148. Superseded PR109/111/114 are closed after verifying implementation ancestry and preservation of the Club-light fixture correction; branches remain. PR120 CI37261347354 is still running. Its first watcher requested configured required checks, which this repository does not expose; the corrected watcher explicitly requires successful test and foh-regression jobs before merging the unchangedb8bfe08 head.
+
+
 ## 2026-10-04: Authored face and material sample, delivery reconciliation
 
 FOH-V01d and CT-DEC-29 add a bounded shared head/jaw/nose and hairline, deterministic face/hair/fabric maps, and distinct skin/metal roughness. Guest palettes, sixteen instance batches, limb poses, actor routes, caps and all simulation/save rules are unchanged. Model12/cache64 identify this candidate. Eighteen camera/model tests and all434 repository tests pass, along with build, asset and documentation checks. Actual3D controls, viewport fit, fallback/recovery and complete settlement parity pass. Backend checks pass all eight review views, reduced motion, immutable input, constant instance counts and20 disposal cycles. Close front/side captures inspected; final CI and hosted sample delivery remain pending.

@@ -19,9 +19,8 @@ One list of what is wrong, weak or unrecorded, so it isn't scattered through ses
 | KI-10 | Low | Tooling | The simulator's careful strategy picks incident responses by computing the settlement with the hidden draw, so its verdicts are an upper bound on informed play | `progress.md` TODO | Keep `paired.mjs` as the informed-play check, or give the simulator a screen-only policy |
 | KI-11 | Low | Scope | Ticketing, Shell room profiles, held-night cancellation and technical room previews are delivered. Complete-career replay, the earned tier cohort, touring controls and detailed props are delivered through PR117/119 with passing CI and hosted checks. Final venue art and human tier acceptance remain open | [Next steps](NEXT_STEPS.json), [career report](CAREER_BASELINE.md), [roadmap](../ROADMAP.md) | Complete remaining venue slices and their distinct release/human gates |
 | KI-12 | Low | Release | Public release gates are open: Dave's playtest sign-off, CT-DEC-10 and CT-DEC-11 still Proposed, `noindex`, no hub card, no sitemap entry | [RELEASE.md](RELEASE.md); [DECISIONS.md](DECISIONS.md) | Dave |
-| KI-14 | Medium | Performance | Full native3D/HUD repeats do not establish sustained60fps:58.28–59.65Hz after camera fit reuse, with shared-host variation | [Complete repeated evidence](PERFORMANCE.md#native-camera-fit-comparison) | Keep exact source/quality attribution; profile the supported desktop/low-power matrix and retain human readability acceptance before release |
+| KI-14 | Medium | Performance | Current model12 full native3D/HUD repeats record59.9439–59.9772Hz and zero intervals over50ms on Apple M4. Supported phone/low-power and broader sustained-performance qualification remain incomplete; shared-host variation prevents causal claims | [Current and retained repeated evidence](PERFORMANCE.md#refined-sample-full-client-native-measurement) | Keep exact source/quality attribution; profile the supported desktop/low-power matrix and retain human readability acceptance before release |
 
-| KI-15 | Medium | Layout | Compact Deal Help overflowed after adding the Festival Rider tab: CI measured 165px content inside a 156px panel. Resolved in PR117/119: corrected parent 33fc9f9 passes 100 independent local and hosted help-page checks with unclipped labels and 44px touch targets; final CI37258873878 passed. | [Failed stage player check](https://github.com/DaveHomeAssist/mixmash/actions/runs/37255270879), [parent correction](https://github.com/DaveHomeAssist/mixmash/commit/33fc9f924f47442d69cc9d01159494d25b1397c5) | Resolved: retain the failed run as historical evidence |
 
 ### KI-01: paired engine example
 
@@ -38,6 +37,7 @@ The backup costs $100, earns $37 more at the bar and reduces the artist's door-d
 
 | ID | Fixed in | Issue |
 | --- | --- | --- |
+| KI-15 | PR117/119, final CI37258873878 and100 hosted compact cases | Deal Help overflow is resolved with unclipped labels and44px touch targets. The original failing CI37255270879 remains historical evidence. |
 | KI-04 | Release copy correction (2026-10-04) | Incident advice now describes the cost/result/payout trade-off without promising that spending saves the night. Sound advice checks the room system before recommending rentals. |
 | KI-05 | Release copy correction (2026-10-04) | Act labels the booked artist; its tooltip and accessible name identify the relationship. |
 | KI-06 | Release copy correction (2026-10-04) | The out-of-cash message identifies the basic no-ad estimate and warns that retained rentals can cost more. |

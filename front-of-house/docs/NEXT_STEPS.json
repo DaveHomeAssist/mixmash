@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Touring and guest poses delivered; sample surfaces under verification",
-  "lastActivity": "2026-10-04",
+  "head": "Sample surfaces locally verified; release CI running",
+  "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "PR117/119 are merged with required CI and Pages delivery; hosted touring accounting, camera/navigation, compact help and guest journeys pass. Source-authored face/material refinement is in local verification. Final art, physical calibration, low-power and human acceptance remain open.",
+  "statusReason": "Model12 has434 passing repository tests, exact3D gameplay/recovery checks, all eight review views and six valid current native Mac windows near60Hz with no50ms stalls. PR120 final CI and hosted delivery continue. Final visual/physical calibration, supported low-power/phone and human career acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -34,8 +34,8 @@
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected."
   ],
   "nextStep": {
-    "title": "Deliver sample surface refinement and finish acceptance reconciliation",
-    "why": "Verify and deliver the source-authored face, hair and material sample. Preserve final art/camera, physical-device and human career gates with concrete evidence gaps.",
+    "title": "Complete sample delivery and outstanding acceptance evidence",
+    "why": "Finish PR120 CI/Pages/live checks and publish the frozen native report. Keep final visual, physical scale, supported low-power/phone and human career evidence separate.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -46,8 +46,8 @@
       "id": "MXS-06",
       "type": "responsive",
       "sev": "P1",
-      "title": "Book/Promote phone sheet still has a 580px minimum",
-      "detail": "Reproduced at 390 CSS px: Book sheet was 580px wide inside a 390px panel while root overflow stayed zero. Phone breakpoint now overrides phase-specific Book/Promote widths. Regression checks cover every visible tab/control at 360, 375 and 390px; delivery evidence follows the phase PR.",
+      "title": "Phone sheet containment delivered",
+      "detail": "Reproduced at 390 CSS px: Book sheet was 580px wide inside a 390px panel while root overflow stayed zero. Phone breakpoint now overrides phase-specific Book/Promote widths. Regression checks cover every visible tab/control at 360, 375 and 390px; delivery evidence follows the phase PR. Current release119 also passes100 independent hosted compact Deal Help cases.",
       "files": [
         "front-of-house/styles.css:186",
         "test/front-of-house-smoke.mjs"
@@ -74,8 +74,8 @@
       "id": "MXS-08",
       "type": "decision",
       "sev": "P1",
-      "title": "Accepted performance model needs device baselines and thresholds",
-      "detail": "Accepted targets remain60fps desktop/30fps low-power. Separate full HUD, DPR2, native desktop and actual display-transition evidence is recorded alongside18 valid CI software windows. Measured CI limits, supported low-power/phone and human acceptance remain open.",
+      "title": "Device qualification remains open",
+      "detail": "Measured CI limits are implemented under CT-DEC-21. Current model12 has six valid Apple M4 full-HUD windows at59.9439\u201359.9772Hz with no50ms stalls. Supported phone/low-power and human acceptance remain open.",
       "files": [
         "front-of-house/ROADMAP.md",
         "front-of-house/docs/FEATURE_BRIEFS.md"
@@ -449,8 +449,20 @@
       "integration": "Reuses the committed touch-click suppression from PR111 source65fc08e; peer branch and delay model work preserved. Full stack integration still follows."
     },
     "touringIntegratedRelease": "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly.",
-    "guestPoseRelease": "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass.",
-    "currentReviewedRelease": "bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd"
+    "guestPoseRelease": "PR119: CI37258873878 passed; mergedbb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd; Pages built2026-10-05T03:46:34Z.35 hosted files match. Independent100 hosted compact help cases and four hosted crowd journeys pass; four controlled movement cases are local fixture evidence.433 repository tests and30/30 careers with515 signed shows and30 exact reload pairs pass. Root full hosted player suite, moving/reduced-motion pixel checks and offline sponsor signing/reload pass. Seed4278227298, touring1500, cash/journal/signed receipt1437148. Earlier premature-build byte mismatch retained separately.",
+    "currentReviewedRelease": "bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd",
+    "sampleNative": {
+      "source": "b8bfe08fe110121c51dafb75eb8efda837e3353a",
+      "checkedOn": "2026-10-05",
+      "report": "front-of-house/performance/2026-10-05-sample-native.json",
+      "validWindows": 6,
+      "cadenceHz": [
+        59.94388798923075,
+        59.97720866070893
+      ],
+      "intervalsOver50ms": 0,
+      "scope": "Apple M4/Metal native5120x1286 DPR1 running-Lot full HUD; exact source/raw/fixture hashes and engine-state replay. No phone/low-power or human acceptance."
+    }
   },
   "decisionState": {
     "D1": {
@@ -688,7 +700,8 @@
             "scope": "Source-authored guest face, hair and surface refinement",
             "status": "implemented-local-verification",
             "evidence": [
-              "FOH-V01d brief and CT-DEC-29 define the bounded slice. Shared sculpted geometry, deterministic mipmapped facial/hair/fabric maps and distinct metal response preserve sixteen guest batches, palettes, poses and simulation. Close-view capture inspected; final regression, CI and hosted verification pending."
+              "FOH-V01d brief and CT-DEC-29 define the bounded slice. Shared sculpted geometry, deterministic mipmapped facial/hair/fabric maps and distinct metal response preserve sixteen guest batches, palettes, poses and simulation. Close-view capture inspected; final regression, CI and hosted verification pending.",
+              "All434 repository tests,18 camera/model cases, actual3D full-show parity/recovery and eight-view/20-disposal checks pass. Actual game eight-view/light review and orbit recording retained privately. Six native full-HUD windows atb8bfe08 pass independent audit near60Hz with no50ms stalls. PR120 CI/hosted delivery pending."
             ]
           }
         ]
