@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
+  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
@@ -270,11 +270,12 @@ const DEAL_HELP = {
 };
 
 function dealHelpHtml() {
-  const spec = venueSpec(state.venue);
+  const spec = venueSpec(state.venue), outdoor = ['amphitheater','festival'].includes(spec.id);
   return `
-    <section><h3>Pay the guarantee</h3><p>${DEAL_HELP.guarantee}</p></section>
-    <section><h3>Offer a door deal</h3><p>${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.</p></section>
-    ${spec.sponsor ? `<section><h3>Take a sponsor</h3><p>${DEAL_HELP.sponsor}</p></section>` : ''}`;
+    <section ${outdoor ? 'data-tab="Guarantee" data-always-tabs' : ''}><h3>Pay the guarantee</h3><p>${DEAL_HELP.guarantee}</p></section>
+    <section ${outdoor ? 'data-tab="Door"' : ''}><h3>Offer a door deal</h3><p>${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.</p></section>
+    ${spec.sponsor ? `<section data-tab="Sponsor"><h3>Take a sponsor</h3><p>${DEAL_HELP.sponsor}</p></section>` : ''}
+    ${['amphitheater','festival'].includes(spec.id) ? '<section data-tab="Curfew"><h3>Set time</h3><p>Doors 19:00. Set 20:12 to 23:00.</p><p>A noise curfew can end the set early.</p><p>End now for free, or pay $400 for five more minutes.</p><p>Closing early reduces walk-ups and bar income.</p><p>Presales and the quoted guarantee stay paid.</p></section>' : ''}`;
 }
 
 function bookPanel() {
@@ -928,7 +929,7 @@ function endPlayback() {
   stopPlayback();
   if (ui.play && ui.play.after) {
     ui.play.after.done = true;
-    ui.play.p = 1;
+    ui.play.p = ui.play.end ?? 1;
   }
 }
 
@@ -954,7 +955,8 @@ function loop() {
     }
     if (play.after) {
       const k = Math.min(1, (performance.now() - play.after.start) / 1000 / AFTER_SECONDS);
-      play.p = play.at + (1 - play.at) * k;
+      play.p = play.at + ((play.end ?? 1) - play.at) * k;
+      play.after.progress = k;
       if (k >= 1) play.after.done = true;
     }
     draw();
@@ -1022,7 +1024,9 @@ function reachIncident() {
   feedLine(`${clock(play.p)}: ${incident.label}.`);
   const effect = (r) => {
     const bits = [];
-    if (r.walkupMult !== undefined) bits.push(`walk-ups ${Math.round(r.walkupMult * 100)}%`);
+    const time = id === 'curfew' ? setTimeFor(state, r.id) : null;
+    if (time) bits.push(`Ends ${clock(time.end / 240)}`);
+    else if (r.walkupMult !== undefined) bits.push(`walk-ups ${Math.round(r.walkupMult * 100)}%`);
     if (r.flowMult !== undefined) bits.push(`entry flow ${Math.round(r.flowMult * 100)}%`);
     bits.unshift(RESPONSE_TEXT[id]?.[r.id] || 'Respond to the incident.');
     if (id === 'pa-dropout' && r.id === 'backup-amp' && researchEffectsFor(state).patchScore) bits.push('Patch standards: 95% response');
@@ -1084,11 +1088,12 @@ function respond(responseId) {
     if (state.phase === 'show') { syncTabs(el.panel, 'show', 'Controls'); updateLiveServices(); $('#live-play').focus(); }
     return;
   }
+  if (play) play.end = (setTimeFor(state)?.end ?? 240) / 240;
   if (play && !reduceMotion) {
-    play.after = { start: performance.now(), done: false };
+    play.after = { start: performance.now(), done: false, progress: 0 };
     loop();
   } else if (play) {
-    play.p = 1;
+    play.p = play.end ?? 1;
   }
   focusHeading();
 }
@@ -1135,7 +1140,7 @@ function sheetParts(r, { signed: done }) {
     : r.weakest === 'sound' && roomProfileFor(state.venue)
       ? 'Use the included house system and lights. A placed portable PA replaces the house sound capacity.' : TIPS[r.weakest];
   const head = `
-    <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${clock(1)} CURFEW</span></div>
+    <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${r.setTime || state.curfewNotice ? `<button class="receipt-link" data-act="set-time">${r.setTime ? `${clock(r.setTime.end / D.SET_SCHEDULE.close)} SET ENDED` : 'SET TIME UNAVAILABLE'}</button>` : `${clock(1)} CURFEW`}</span></div>
     <div class="meta-strip">
       <div><span class="meta-label">Headliner</span><span class="meta-val">${esc(a.name)}</span></div>
       <div><span class="meta-label">Venue</span><span class="meta-val">${esc(venueSpec(state.venue).name)}</span></div>
@@ -1207,6 +1212,12 @@ function sheetParts(r, { signed: done }) {
   };
 }
 
+function setTimeHtml(time) {
+  const field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+  if (!time) return `<p role="status">${esc(state.curfewNotice || 'Original set rules apply.')}</p><button data-act="food-back">Back to settlement</button>`;
+  return `<section data-tab="Time"><h3>Set time</h3><dl class="live-readouts">${field('Started',clock(time.start / 240))}${field('Ended',clock(time.end / 240))}${field('Played',`${time.played} minutes`)}${field('Lost',`${time.lost} minutes`)}</dl><p>Planned end 23:00.</p><p>Walk-ups use elapsed admission time.</p><p>Bar income uses the played set share.</p><p>Presales and guarantees stay paid.</p>${state.curfewNotice ? `<p role="status">${esc(state.curfewNotice)}</p>` : ''}<button data-act="food-back">Back to settlement</button></section>`;
+}
+
 // The settlement window: the sheet, with the stamp, the tip and the signature in its footer
 // (docs/HUD.md decision 9). Signed, it is the read-only copy the Done screen reopens.
 function openSettlement(opener, { signed: done = false } = {}) {
@@ -1226,7 +1237,7 @@ function openSettlement(opener, { signed: done = false } = {}) {
 function settlePanel() {
   const r = settlementFor(state);
   return `
-    <p class="eyebrow">Curfew · ${esc(venueSpec(state.venue).name)}</p>
+    <p class="eyebrow">${r.setTime ? `Set ended ${clock(r.setTime.end / 240)}` : 'Curfew'} · ${esc(venueSpec(state.venue).name)}</p>
     <h2>Settlement</h2>
     <p id="msg" class="message" aria-live="polite"></p>
     <p class="lede">${r.attendance} people came. The promoter's net is <strong class="${r.net < 0 ? 'neg' : 'pos'}">${money(r.net)}</strong>.</p>
@@ -1477,7 +1488,8 @@ function cashReference(entry) {
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
 function paginateCompactWindow(step = 0) {
-  if (!['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(win.kind) || innerHeight > 560) return;
+  if (!['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(win.kind) || innerHeight > 560) return;
+  el.winBody.scrollTop = 0;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
   if (!panel._compactAtoms) {
     for (const list of [...panel.children].filter(e => e.matches('dl,ol'))) {
@@ -1600,7 +1612,7 @@ function crowdNow() {
     const final = r ? r.attendance : 0;
     const play = ui.play;
     if (play && play.after && !play.after.done) {
-      const k = (play.p - play.at) / Math.max(0.0001, 1 - play.at);
+      const k = play.after.progress ?? 0;
       return Math.round(play.preview + (final - play.preview) * k);
     }
     return final;
@@ -1975,7 +1987,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2007,6 +2019,7 @@ function onAct(e) {
   else if (a === 'locate-incident') locateIncident();
   else if (a === 'lot-details') openWindow('lot', 'Lot details', lotDetailsHtml(), target);
   else if (a === 'deal-help') openWindow('deals', 'How the deals work', dealHelpHtml(), target);
+  else if (a === 'set-time') openWindow('set-time', 'Set time', setTimeHtml(setTimeFor(state)), target);
   else if (a === 'open-settlement') openSettlement(target);
   else if (a === 'last-sheet') openSettlement(target, { signed: true });
   else if (a === 'history') openWindow('history', `Show history (${state.history.length})`, historyHtml(), target, { scrolls: true });
@@ -2208,7 +2221,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(win.kind)) paginateCompactWindow();
+  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2232,6 +2245,8 @@ window.addEventListener('resize', () => {
   if (win.kind === 'held-run') openHeldRun(win.opener);
   if (win.kind === 'seating') openSeating(win.opener);
   if (win.kind === 'stages') openStages(win.opener);
+  if (win.kind === 'set-time') openWindow('set-time', 'Set time', setTimeHtml(setTimeFor(state)), win.opener);
+  if (win.kind === 'deals') openWindow('deals', 'How the deals work', dealHelpHtml(), win.opener);
 });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
@@ -2242,15 +2257,16 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
   el.win.classList.toggle('wide', wide);
   el.win.classList.toggle('scrolls', scrolls);
   el.win.hidden = false;
+  el.winBody.scrollTop = 0;
   syncTabs(el.winBody, `win:${kind}`);
-  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages'].includes(kind)) paginateCompactWindow();
+  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(kind)) paginateCompactWindow();
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2431,6 +2447,7 @@ window.render_game_to_text = () => {
     room: roomProfileFor(state.venue) || v.delays ? { version: state.venue.profile?.version ?? null, house: v.housePa, soundCapacity: v.soundCapacity ?? D.PA_COVERAGE[v.paTier] ?? 0, ...(v.delays ? { delays: v.delays, delayTiles: v.delayTiles, delayCost: v.delayCost, delayActive: v.delayActive } : {}), clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
     promotion: state.promotion,
     show: state.show,
+    setTime: setTimeFor(state),
     playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
     crowd: crowdNow(),
     services: liveServicesFor(state),

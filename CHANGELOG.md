@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: outdoor curfew ends new booked sets at the seeded minute or five minutes later on appeal; attendance, bar income, playback and signed Set time receipts share the same rule. Legacy saves retain their prior math.
+
 - Front of House: reuse unchanged camera volume fit for pan and zoom, preserving projection, picking, presets and saved outcomes.
 
 - Front of House: zoomed Split Acre gets a desktop site overview with a perspective-correct ground outline, rotated layout blocks and pointer/keyboard panning. It preserves zoom and saves, avoids HUD controls, and hides at Fit or on phones.

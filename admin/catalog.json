@@ -2380,6 +2380,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-curfew.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-curfew.mjs",
+      "description": "Outdoor curfew timing, exact receipts, legacy compatibility and paid replay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-curfew.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-engine.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2637,6 +2647,16 @@
       "title": "front-of-house-club-3d-smoke.mjs",
       "description": "Actual Club client: fixed scenery, safe placement, room switching, recovery and settlement parity.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-club-3d-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-curfew-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-curfew-smoke.mjs",
+      "description": "Seeded outdoor curfew through actual booking, response, clock, receipt and signing controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-curfew-smoke.mjs",
       "open": null
     },
     {
@@ -2947,6 +2967,16 @@
       "title": "controls.mjs",
       "description": "Front of House key bindings: the one table both key handlers in game.js read, the list the menu shows (index.html, \"Keys and mouse\") and what test-engine.mjs checks for clashes.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/controls.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/curfew.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "curfew.mjs",
+      "description": "Versioned outdoor set timing; minutes are elapsed from 19:00 doors.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/curfew.mjs",
       "open": null
     },
     {
