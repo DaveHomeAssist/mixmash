@@ -307,3 +307,42 @@ PR122 head74da757 ran CI37274607801. General tests and complete player checks pa
 The recorded crowd has506610 rendered triangles versus290610 in the baseline, with the same165 draw calls. This supports investigating geometry cost; it does not prove a sole causal bottleneck. No unchanged retry or limit relaxation follows. Model15 introduces deterministic projected-size guest detail under CT-DEC-31, retaining the full anatomy near the camera and each authored body contour at distance. Screen-size detail is independent of measured frame rate; the protocol still disables time-based adaptive quality. Existing sample duration, repetitions, fixtures, DPR, shadows, antialiasing, baseline and limits remain unchanged. Full current-source qualification is required before delivery.
 
 Dominic's isolated existing-driver probes rendered correctly but reported SwiftShader, including the read-only Intel Vulkan configuration. These are software capability results, not native Intel, supported phone or low-power qualification. No driver or service changes were made.
+
+
+## Model15 paired results and redundant buffer work, 2026-10-05
+
+[CI37278816549](https://github.com/DaveHomeAssist/mixmash/actions/runs/37278816549)
+at9ef6e4d passed the renderer gate on AMD EPYC7763. All36 windows, fixture/raw/source
+hashes and recomputed statistics matched artifact11332291985. Its general job
+failed the homepage budget assertion, subsequently corrected against the approved
+initial-load requirement. Desktop crowd CPU P95 was8.5ms against8.55ms.
+
+The finalbc89 revision retained identical renderer bytes but
+[CI37280046410](https://github.com/DaveHomeAssist/mixmash/actions/runs/37280046410)
+ran on Intel Xeon Platinum8370C. General tests passed. The independently audited
+artifact11333051862 contains36 valid windows; all frame-time and empty-scene
+limits pass, but ultrawide crowd CPU P95 is8.8ms versus baseline5.7ms and limit8.55ms.
+The earlier AMD pass does not override this rejection. Both complete records are
+retained; no unchanged retry, runner selection, baseline or limit relaxation.
+
+A bounded probe on Dominic found that each camera-only move with all150 guests
+remaining distant rewrote2400 matrices and2400 colors, although no shadow update
+was needed. Pose updates also rewrote unchanged colors. The correction separates
+per-guest detail selection from buffer packing: camera-only moves reuse buffers
+when membership stays unchanged, poses refresh matrices, and actor or detail
+changes refresh colors. Geometry, hysteresis, animation, materials, representative
+counts, shadows and gameplay remain unchanged; cache69 carries the correction.
+
+All20 geometry/camera tests pass, and768 exact prior/corrected snapshots match
+active matrices/colors/counts/visibility/buffer versions across paused/moving
+actors, workers, camera/detail transitions and a translated Festival-style group.
+The same bounded probe records zero camera-only buffer writes and2400 pose matrix
+writes with zero redundant color writes. Warm-tail median submission times were
+3.45 to1.55ms for camera updates and4.25 to2.60ms for draws on Dominic. These short
+instrumented observations diagnose work removed; they are not a qualified paired
+performance pass. New final-source CI and hosted validation remain required.
+
+The corrected source also passes439 repository tests/build and targeted backend,
+actual3D, camera-only batching, DPR/resolution and full Festival geometry/replay
+checks on Dominic. The FOH show capture was inspected; no visual change is
+expected from identical guest matrices, colors and geometry.

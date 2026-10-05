@@ -391,8 +391,19 @@ test('guest distance detail preserves contours, materials, counts and near-view 
   update(900); assert.deepEqual(p.info().guestDetail, { full: 0, distant: 2 });
   const meshes = p.group.children.filter(m => m.isInstancedMesh);
   const farVersions = meshes.map(m => m.instanceMatrix.version);
+  let matrixWrites = 0, colorWrites = 0;
+  for (const mesh of meshes) {
+    const matrixAt = mesh.setMatrixAt.bind(mesh), colorAt = mesh.setColorAt.bind(mesh);
+    mesh.setMatrixAt = (...args) => { matrixWrites++; return matrixAt(...args); };
+    mesh.setColorAt = (...args) => { colorWrites++; return colorAt(...args); };
+  }
   c.setCamera({ yaw: 46 }); update(900);
   assert.deepEqual(meshes.map(m => m.instanceMatrix.version), farVersions, 'camera movement with unchanged detail reuses shadows');
+  assert.equal(matrixWrites, 0, 'camera-only movement with unchanged tiers preserves existing matrices');
+  assert.equal(colorWrites, 0, 'camera-only movement preserves existing colors');
+  p.update({ ...source, t: 2 }, [], [], true, 180, { camera: c.camera, pixelHeight: 900 });
+  assert.equal(matrixWrites, 2 * full.children.length, 'new animation time updates every visible part');
+  assert.equal(colorWrites, 0, 'animation alone does not rewrite unchanged colors');
   c.preset('foh'); c.resize({ x: 0, y: 0, w: 1440, h: 400 }); update(400);
   assert.deepEqual(p.info().guestDetail, { full: 1, distant: 1 }, 'mixed near/far crowd retains close anatomy without duplicating guests');
   const nearMatrix = new Matrix4(), farMatrix = new Matrix4();

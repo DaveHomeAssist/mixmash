@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: reuse unchanged guest buffers during camera moves and animation, preserving detail selection and appearance after a retained CPU performance rejection.
+
 - Front of House: retain the second crowd timing rejection and select guest geometry by projected size, preserving full close anatomy, authored contours, materials, motion and attendance.
 
 - Front of House: retain the failed crowd performance gate and remove redundant anatomy tessellation while preserving authored contours, radial detail and gameplay.

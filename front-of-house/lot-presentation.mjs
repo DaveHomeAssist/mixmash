@@ -115,14 +115,12 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
     if (t !== lastTime || nextViewKey !== viewKey) {
       const poseChanged = t !== lastTime;
       let detailChanged = false;
-      offsets = []; detailCounts = { full: 0, distant: 0 };
+      detailCounts = { full: 0, distant: 0 };
       group.updateWorldMatrix(true, false);
       for (let i = 0; i < crowdCount; i++) {
-        const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
-        transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
         let detail = 'full';
         if (view) {
-          eyePoint.copy(transform.position); eyePoint.y += 0.45;
+          eyePoint.set(actors ? actors[i].x : positions[i][0], 0.45 + (motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0), actors ? actors[i].y : positions[i][1]);
           eyePoint.applyMatrix4(group.matrixWorld).applyMatrix4(view.camera.matrixWorldInverse);
           // A conservative depth bound also covers plan views and articulated limbs.
           const depth = -eyePoint.z - 0.5;
@@ -131,26 +129,38 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
         }
         if (details[i] !== detail) detailChanged = true;
         details[i] = detail;
-        const instance = detailCounts[detail]++;
-        const walking = motion && actors?.[i]?.moving;
-        const waiting = ['gate', 'bar', 'food', 'sanitation'].includes(actors?.[i]?.zone);
-        const stride = walking ? Math.sin(t * 8 + i) * 0.28 : 0;
-        if (walking || waiting) for (const { joint, side, pivot, matrix: jointMatrix } of joints.values()) {
-          const angle = joint === 'hip' ? stride * side : walking ? -stride * side * 0.8 : waiting ? -0.12 : 0;
-          const [, y, z] = pivot;
-          // Rotation about a fixed joint retains each part's authored shape and attachment.
-          jointMatrix.makeRotationX(angle).setPosition(0, y * (1 - Math.cos(angle)) + z * Math.sin(angle), z * (1 - Math.cos(angle)) - y * Math.sin(angle));
+        detailCounts[detail]++;
+      }
+      // Camera-only movement still selects geometry, but unchanged tiers reuse authored buffers.
+      if (poseChanged || detailChanged) {
+        const instances = { full: 0, distant: 0 };
+        offsets = [];
+        for (let i = 0; i < crowdCount; i++) {
+          const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
+          transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
+          const detail = details[i], instance = instances[detail]++;
+          const walking = motion && actors?.[i]?.moving;
+          const waiting = ['gate', 'bar', 'food', 'sanitation'].includes(actors?.[i]?.zone);
+          const stride = walking ? Math.sin(t * 8 + i) * 0.28 : 0;
+          if (walking || waiting) for (const { joint, side, pivot, matrix: jointMatrix } of joints.values()) {
+            const angle = joint === 'hip' ? stride * side : walking ? -stride * side * 0.8 : waiting ? -0.12 : 0;
+            const [, y, z] = pivot;
+            // Rotation about a fixed joint retains each part's authored shape and attachment.
+            jointMatrix.makeRotationX(angle).setPosition(0, y * (1 - Math.cos(angle)) + z * Math.sin(angle), z * (1 - Math.cos(angle)) - y * Math.sin(angle));
+          }
+          for (const batch of batches) {
+            const joint = batch.joint;
+            if (joint && (walking || waiting)) { posed.multiplyMatrices(joint.matrix, batch.local); matrix.multiplyMatrices(transform.matrix, posed); }
+            else matrix.multiplyMatrices(transform.matrix, batch.local);
+            const mesh = detail === 'full' ? batch.mesh : batch.far;
+            mesh.setMatrixAt(instance, matrix);
+            if (actorsChanged || detailChanged) {
+              const palette = PALETTES[batch.surface] || PALETTES.clothing;
+              mesh.setColorAt(instance, color.set(batch.surface === 'clothing' && SERVICE_COLORS[actors?.[i]?.zone] || palette[i % palette.length]));
+            }
+          }
+          if (i < 3) offsets.push(sway);
         }
-        for (const batch of batches) {
-          const joint = batch.joint;
-          if (joint && (walking || waiting)) { posed.multiplyMatrices(joint.matrix, batch.local); matrix.multiplyMatrices(transform.matrix, posed); }
-          else matrix.multiplyMatrices(transform.matrix, batch.local);
-          const mesh = detail === 'full' ? batch.mesh : batch.far;
-          mesh.setMatrixAt(instance, matrix);
-          const palette = PALETTES[batch.surface] || PALETTES.clothing;
-          mesh.setColorAt(instance, color.set(batch.surface === 'clothing' && SERVICE_COLORS[actors?.[i]?.zone] || palette[i % palette.length]));
-        }
-        if (i < 3) offsets.push(sway);
       }
       for (const batch of batches) for (const [detail, mesh] of [['full', batch.mesh], ['distant', batch.far]]) {
         mesh.count = detailCounts[detail]; mesh.visible = mesh.count > 0;

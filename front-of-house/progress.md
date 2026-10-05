@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Crowd buffer reuse after valid CPU rejection
+
+Model15's AMD pair37278816549 passed an independent36-window audit. Finalbc89 CI37280046410 passed general checks but its Intel pair rejected ultrawide crowd CPU P95:8.8ms against8.55ms. All frame-time limits pass. Both records are retained; no unchanged retry or threshold change.
+
+Dominic instrumentation found2400 unnecessary matrix and2400 color writes on each camera-only move with unchanged guest detail. Cache69 separates detail selection from packing, reuses unchanged camera-only buffers and refreshes colors only with actor/detail changes. Full geometry, poses, materials, shadows and rules remain intact.20 camera tests and768 exact prior/corrected presentation snapshots pass. Instrumentation confirms zero redundant camera writes and no unchanged-color writes during animation. Dominic also passes439 repository tests/build, backend eight views/context recovery/20 disposals, actual3D controls/fallback/reload/settlement parity, batching, DPR/resolution and all Festival geometry/legacy/versioned settlement/reload checks. FOH show capture inspected. Supplied action client produced two valid Build states/captures without console errors; final capture inspected. Generated references and unchanged Lot simulation pass. New full CI and hosted qualification remain pending; native/device/human acceptance stays separate.
+
+
 ## 2026-10-05: Distance detail after retained model14 rejection
 
 CI37274607801 general checks pass, but the independently audited36-window pair rejects five crowd-frame metrics. All empty-scene and CPU submission limits pass. The crowd draws506610 triangles against290610 in the baseline, at the same165 calls. Original failures remain recorded; no blind retry, baseline or threshold change.

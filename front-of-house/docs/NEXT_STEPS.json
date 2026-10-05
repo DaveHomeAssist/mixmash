@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Guest distance detail correction",
+  "head": "Guest buffer reuse correction",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 projected guest detail passes source/player checks on Dominic; its required renderer pair remains active. Integrated homepage CI failure was traced to counting all later detail artwork against the approved first-load limit. The corrected unchanged500KB initial-load check passes14 browser/viewport views and offline recovery on Dominic. Final-head CI, merge, Pages and hosted checks remain pending; human/device/provenance gates stay open.",
+  "statusReason": "Model15 AMD paired evidence passes, but finalbc89 Intel CI rejects ultrawide crowd CPU P95 8.8ms against8.55ms; general tests pass. Buffer reuse removes verified redundant camera/color writes. Dominic passes439 tests/build,20 camera tests,768 exact snapshots and targeted backend,3D,detail,DPR,Festival/reload checks. New final-source CI and hosted qualification remain required; human/device/provenance gates stay open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -269,7 +269,9 @@
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
     "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice.",
-    "2026-10-05: CI37278816549 general job failed cumulative homepage transfer1363823>500000; approved HOMEPAGE_BRIEF specifies initial load. First load422208 Chromium/423574 WebKit passes unchanged500000 limit. Corrected landing smoke records later journey bytes and checks cover decode;14 views plus fallback/history/theme/offline/save preservation pass on Dominic. Original artwork and runtime unchanged. Existing model15 renderer pair retained; final-source CI still required."
+    "2026-10-05: CI37278816549 general job failed cumulative homepage transfer1363823>500000; approved HOMEPAGE_BRIEF specifies initial load. First load422208 Chromium/423574 WebKit passes unchanged500000 limit. Corrected landing smoke records later journey bytes and checks cover decode;14 views plus fallback/history/theme/offline/save preservation pass on Dominic. Original artwork and runtime unchanged. Existing model15 renderer pair retained; final-source CI still required.",
+    "2026-10-05: audited36-window AMD372788 pass andIntel372800 singleCPU rejection retained. Cache69 removes redundant unchanged camera matrices/colors and animation color writes; same geometry and appearance.20 camera tests and768 exact state snapshots pass onDominic. New paired qualification pending; no limits changed.",
+    "Current buffer correction:439 repository tests/build, backend eight views/context/20disposals, actual3D gestures/fallback/reload/settlement, camera-onlydetail/shadow reuse, resolution/DPR and fullFestival venue/legacy/versioned replay checks pass onDominic. FOHshow screenshot inspected. Unchangedgeometry and768 exact presentation snapshots provide behavior-preservation evidence; paired CI still required."
   ],
   "links": [
     {
@@ -745,10 +747,11 @@
               "CI37274607801 at74da757 general tests/player checks pass; paired AMD EPYC7763 evidence fails crowd mean all three sizes and p95 phone/ultrawide. All36 windows/source/raw/fixture/statistics audit correctly. Model15/cache68 introduces projected-size detail with full anatomy near the camera, unchanged contours/materials/joints and one occurrence per representative.20 geometry/camera tests pass on Dominic; remaining qualification pending.",
               "Model15 passes439 repository tests/build,20 geometry/camera checks, backend recovery/disposal, actual3D controls/reload/settlement parity, camera-only batching and DPR/resolution checks on Dominic. Mixed near/far counts, distinct colors and transforms pass.72px front/angled/side images have no unmatched silhouette beyond2px and were visually inspected; close full-detail and supplied action-client captures were inspected. Six short diagnostic windows are valid but do not qualify sustained performance. Festival/navigation and new full paired CI remain pending.",
               "The complete Festival geometry/interaction and eight classic/3D legacy/versioned settlement/reload cases pass on model15, including the offset second-stage crowd. All four site-navigation journeys pass. Original mixed-test setup failure was corrected to exercise actual near/far membership without changing thresholds. Required new final-head paired CI and hosted qualification remain open.",
-              "Integrated homepage covers at62fd6e1 preserve the tested model15 runtime. Dominic repeats439 tests/build and validates assets, generated references and unchanged Lot baseline. Required cover-file catalog metadata is regenerated; final-head CI and hosted delivery remain pending."
+              "Integrated homepage covers at62fd6e1 preserve the tested model15 runtime. Dominic repeats439 tests/build and validates assets, generated references and unchanged Lot baseline. Required cover-file catalog metadata is regenerated; final-head CI and hosted delivery remain pending.",
+              "Model15 audit372788 AMD passes all18metrics; final372800 Intel fails onlyultrawidecrowdCPUp95 8.8>8.55ms, generalchecks pass. Cache69 eliminates measured redundant bufferwrites;20camera tests and768 exact prior/corrected presentationstates pass onDominic. Full current-source qualification pending."
             ],
             "remaining": [
-              "Current model15 visual/browser verification, unchanged-limit full paired CI and hosted delivery; retain both original valid rejections.",
+              "Complete current buffer-reuse browser checks, unchanged-limit final-source paired CI and hosted delivery; retain all earlier valid results.",
               "Final realistic style/camera acceptance, physical calibration and supported phone/low-power plus human career acceptance."
             ]
           }
