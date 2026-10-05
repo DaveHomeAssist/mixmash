@@ -211,3 +211,7 @@ Split Acre shows a small desktop overview above Fit zoom. The blocks rotate with
 ### Outdoor Set time receipt
 
 Outdoor Deals has Guarantee/Door/(Sponsor)/Curfew pages explaining the pre-booking rule. Actual curfew choices quote their end time and existing fee. The settlement header's SET ENDED time opens a contained Set time window: start, actual end, played/lost minutes, demand/bar rules and Back to settlement. It works in signed history and after reload. Unsupported saved terms display a cash-preserving recovery notice instead of an invented time. Reduced motion and normal wind-down end at the same authoritative minute.
+
+### Festival touring controls
+
+New Festival bookings disclose the combined touring rental, with a Rider page in Deals describing both fixtures, power and footprint. Build exposes VIP deck (V) and Buses (U), only on marked Festival bookings; Suggested layout includes both. Standard rotation, selection, removal and undo/redo apply. Missing fixtures prevent Lock layout. Room/Stage accounts include a Rider page with current counts and rentals. Settlement lists VIP deck and Bus compound as shared site costs; Site/Production cost pages preserve readable contained receipts. Legacy shows do not silently acquire fixtures or requirements.

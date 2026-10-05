@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Festival touring player verification
+
+Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending.
+
+Compact validation found an extra tab row, a fourth phone toolbar row, and overflowing combined site costs. The account tabs now fit two rows, the expanded Festival toolbar uses three phone rows, and Rider costs have a separate contained receipt page. Desktop/phone inspection reused the already committed PR111 touch-click suppression after reproducing the same pointerup/dialog click issue. The private picking harness initially used an ambiguous Close selector; it now targets the actual header close button and all16 prop/angle/browser/size picks pass. No assertion or timeout was relaxed. Final-source regression continues.
+
+Club lighting PR112 passed required CI, merged355fe9d7a7c6da050979223cc0defd1bbd102df3 and Pages built02:13:26Z. Ten affected hosted files match. Seven hosted Chromium/WebKit player journeys pass, including actual desktop/phone3D Club play. Warmed-cache offline signing/reload preserves included house lights, zero light rental,1380 net and1001380 cash with exact journal and signed-receipt parity.
+
 ## 2026-10-04: Festival touring core and curfew delivery
 
 Version1 Festival touring-support core passes432 repository tests, five dedicated integration cases, build/docs/catalog/assets and unchanged Lot simulator. Both fixtures use normal placement, consume30 tiles and8kW, require readiness on marked bookings and add exactly1500 once to shared-site opening costs. All legal deal paths, stage/site/journal/signing/reload, malformed-marker recovery and960 unmarked transitions/120 receipts pass. Player controls and detailed models follow; core CI/Pages/hosted acceptance remains pending.

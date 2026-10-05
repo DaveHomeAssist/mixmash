@@ -48,7 +48,7 @@ test('camera clamps bad values, Plan is stable, and zoom preserves its ground an
 
 test('sample orientation and occupied bounds agree with engine footprints in all rotations', () => {
   const models = createLotModels();
-  for (const type of ['stage', 'pa-m', 'bar', 'restroom', 'gate']) for (let rot = 0; rot < 4; rot++) {
+  for (const type of ['stage', 'pa-m', 'bar', 'restroom', 'gate', 'vip-deck', 'bus-compound']) for (let rot = 0; rot < 4; rot++) {
     const object = { type, x: 4, y: 5, rot };
     const original = structuredClone(object), mesh = models.create(object); mesh.updateMatrixWorld(true);
     const box = new Box3().setFromObject(mesh), cells = footprint(object);

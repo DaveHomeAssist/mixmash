@@ -71,6 +71,8 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | Key | Text |
 | --- | --- |
 | `stage` | with the lot |
+| `vip-deck` | $600 |
+| `bus-compound` | $900 |
 | `pa-s` | $200 |
 | `pa-m` | $450 |
 | `lights` | $175 |
@@ -97,6 +99,8 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `food` | Food |
 | `trailer` | Trailer |
 | `delay` | Delay |
+| `vip-deck` | VIP deck |
+| `bus-compound` | Buses |
 
 ### `FACING`: Rotation directions (Build)
 
@@ -151,4 +155,4 @@ The messages shown when an action is refused are listed by action in [CATALOG.md
 
 ## 4. Not covered here
 
-Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 370 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 380 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

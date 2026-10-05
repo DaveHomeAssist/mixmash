@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
+  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
@@ -24,7 +24,7 @@ const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
-const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay'];
+const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay', 'vip-deck', 'bus-compound'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
 const AD_LABELS = { flyers: 'Flyers and posters', social: 'Social ads', radio: 'Local radio' };
@@ -205,7 +205,7 @@ function render() {
 
 function renderTop() {
   $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
-  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice || state.venue.objects.some(o => o.type === 'delay'));
+  $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice || state.supportNotice || festivalSupportFor(state.venue) || state.venue.objects.some(o => o.type === 'delay'));
   $('#seating-menu').textContent = state.venue.id !== 'amphitheater' ? 'Sound and views' : 'Seats and lawn';
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
@@ -275,6 +275,7 @@ function dealHelpHtml() {
     <section ${outdoor ? 'data-tab="Guarantee" data-always-tabs' : ''}><h3>Pay the guarantee</h3><p>${DEAL_HELP.guarantee}</p></section>
     <section ${outdoor ? 'data-tab="Door"' : ''}><h3>Offer a door deal</h3><p>${DEAL_HELP.door} Some acts refuse a door deal once trust runs low, and some only ever play for a guarantee.</p></section>
     ${spec.sponsor ? `<section data-tab="Sponsor"><h3>Take a sponsor</h3><p>${DEAL_HELP.sponsor}</p></section>` : ''}
+    ${spec.id === 'festival' ? `<section data-tab="Rider"><h3>Touring requirements</h3><p>Place one VIP deck and one bus compound before doors.</p><p>Deck: ${money(D.FESTIVAL_SUPPORT.vipDeck)}, 4×3 tiles, 2kW.</p><p>Buses: ${money(D.FESTIVAL_SUPPORT.busCompound)}, 6×3 tiles, 6kW.</p><p>Shared site rentals, paid once at opening.</p><p>No additional tickets or income bonus.</p></section>` : ''}
     ${['amphitheater','festival'].includes(spec.id) ? '<section data-tab="Curfew"><h3>Set time</h3><p>Doors 19:00. Set 20:12 to 23:00.</p><p>A noise curfew can end the set early.</p><p>End now for free, or pay $400 for five more minutes.</p><p>Closing early reduces walk-ups and bar income.</p><p>Presales and the quoted guarantee stay paid.</p></section>' : ''}`;
 }
 
@@ -314,7 +315,7 @@ function bookPanel() {
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
       <p class="artist-name">${esc(a.name)}</p>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
-      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : spec.id === 'festival' ? ' Main system included: 3,000 people.' : spec.id === 'club' ? ' House PA and lights included.' : ''}</p>
+      <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : spec.id === 'festival' ? ` Main sound included. Touring rentals: ${money(D.FESTIVAL_SUPPORT.vipDeck + D.FESTIVAL_SUPPORT.busCompound)}.` : spec.id === 'club' ? ' House PA and lights included.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
       ${opener === id ? '<p class="lede">Selected for side stage. Choose another side act first.</p>' : opener ? `<p class="lede">Side: ${esc(artistFor(opener).name)} · door deal.</p>` : spec.secondStage ? '<p class="lede">No side act accepts a door deal. Choose another venue.</p>' : ''}
       ${deal('guarantee', 'Guarantee', `${money(t.ask)} up front`, teach ? 'Paid before doors. You keep the rest, and the act is happy either way.' : '')}
@@ -343,6 +344,8 @@ function bookPanel() {
 
 const COSTS = {
   stage: 'with the lot',
+  'vip-deck': money(D.FESTIVAL_SUPPORT.vipDeck),
+  'bus-compound': money(D.FESTIVAL_SUPPORT.busCompound),
   'pa-s': money(D.PA_RENTAL.S),
   'pa-m': money(D.PA_RENTAL.M),
   lights: money(D.LIGHTS_RENTAL),
@@ -356,7 +359,7 @@ const COSTS = {
 };
 
 // Short names for the tool tiles; the full label, size and cost are read out with each.
-const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer', delay: 'Delay' };
+const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer', delay: 'Delay', 'vip-deck': 'VIP deck', 'bus-compound': 'Buses' };
 // The rotation as an arrow on screen, in FACING order.
 const ARROWS = ['↙', '↖', '↗', '↘'];
 
@@ -372,12 +375,12 @@ function buildPanel() {
   const where = spec.id === 'lot' ? 'lot' : 'room';
   const tiles = PLACEABLE.map((type, i) => {
     const t = D.OBJECT_TYPES[type];
-    if (t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival') return '';
-    const shortcut = type === 'trailer' ? 'T' : type === 'delay' ? 'D' : i + 1;
+    if (t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival' || t.supportOnly && !festivalSupportFor(state.venue)) return '';
+    const shortcut = type === 'trailer' ? 'T' : type === 'delay' ? 'D' : type === 'vip-deck' ? 'V' : type === 'bus-compound' ? 'U' : i + 1;
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
-        ${['food', 'trailer', 'delay'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
+        ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
         <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}</span>
       </label>`;
@@ -504,7 +507,7 @@ function lotDetailsHtml() {
       <h3 id="ready-title">Readiness</h3>
       ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<p class="checklist ok">✓ Ready for a show.</p>'}
       ${roomProfileFor(state.venue) || state.venue.objects.some(o => o.type === 'delay') ? '<button data-act="room-open">Sound and views</button>' : ''}
-      ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}
+      ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}${state.supportNotice ? `<p role="status">${esc(state.supportNotice)}</p>` : ''}
     </section>
     <section aria-labelledby="placed-title">
       <h3 id="placed-title">Placed objects (${state.venue.objects.length})</h3>
@@ -1115,6 +1118,8 @@ function sheetParts(r, { signed: done }) {
   const rows = [
     ['Lot lease and permit', 'Site', r.costs.lot + r.costs.permit],
     ['Fence kit', 'Site', r.costs.fence],
+    ...(r.costs.vipDeck ? [['VIP deck', 'Touring', r.costs.vipDeck]] : []),
+    ...(r.costs.busCompound ? [['Bus compound', 'Touring', r.costs.busCompound]] : []),
     r.equipment ? ['Owned PA operation', 'Audio', r.costs.equipmentOperation] : [`PA rental (${v.paTier === 'M' ? 'medium' : 'small'})`, 'Audio', r.costs.pa],
     ['Light tower', 'Lighting', r.costs.lights],
     ...(r.costs.delays ? [[`Delays + operators (${v.delays})`, 'Main stage', r.costs.delays]] : []),
@@ -1170,10 +1175,10 @@ function sheetParts(r, { signed: done }) {
   const costs = `
     <div class="ledger">
       <div class="ledger-title">SECTION B · PRODUCTION AND SITE COSTS</div>
-      ${r.costs.delays ? '<div class="actions" role="group" aria-label="Cost categories"><button data-act="cost-page" data-cost="site" aria-pressed="true">Site</button><button data-act="cost-page" data-cost="production" aria-pressed="false">Production</button></div>' : ''}
+      ${(r.costs.delays || r.costs.vipDeck || r.costs.busCompound) ? '<div class="actions" role="group" aria-label="Cost categories"><button data-act="cost-page" data-cost="site" aria-pressed="true">Site</button><button data-act="cost-page" data-cost="production" aria-pressed="false">Production</button>' + ((r.costs.vipDeck || r.costs.busCompound) ? '<button data-act="cost-page" data-cost="touring" aria-pressed="false">Rider</button>' : '') + '</div>' : ''}
       <table>
         <thead><tr><th scope="col">Line</th><th scope="col">Category</th><th scope="col" class="num">Total</th></tr></thead>
-        <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr${r.costs.delays ? ` data-cost-group="${productionCategory(row[1]) ? 'production' : 'site'}"${productionCategory(row[1]) ? ' hidden' : ''}` : ''}><td>${row[0] === 'Facilities' ? '<button class="receipt-link" data-act="sanitation-receipt">Facilities</button>' : esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
+        <tbody>${rows.filter((row) => row[2] > 0).map((row) => `<tr${(r.costs.delays || r.costs.vipDeck || r.costs.busCompound) ? ` data-cost-group="${row[1] === 'Touring' ? 'touring' : productionCategory(row[1]) ? 'production' : 'site'}"${productionCategory(row[1]) || row[1] === 'Touring' ? ' hidden' : ''}` : ''}><td>${row[0] === 'Facilities' ? '<button class="receipt-link" data-act="sanitation-receipt">Facilities</button>' : esc(row[0])}</td><td>${esc(row[1])}</td>${cost(row[2])}</tr>`).join('')}</tbody>
         <tfoot><tr><td colspan="2">Total show costs</td>${cost(r.costs.total)}</tr></tfoot>
       </table>
     </div>`;
@@ -1395,14 +1400,15 @@ function openStages(opener) {
 function roomProfileHtml() {
   const profile = roomProfileFor(state.venue);
   const v = evaluateVenue(state.venue), field = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
-  if (!profile) return v.delays ? `<section data-tab="Room" data-always-tabs><h3>Original room rules</h3><dl class="live-readouts">${field('Delay towers',v.delays)}${field('Delay deployment',money(v.delayCost))}</dl><p>Delays need the Festival room profile.</p><p>Rental and operators still cost money.</p><p>New bookings include the profile.</p></section>` : '';
+  const support = festivalSupportFor(state.venue) || v.vipDecks || v.busCompounds || state.supportNotice ? `<section data-tab="Rider" data-always-tabs><h3>Touring support</h3><dl class="live-readouts">${field('VIP deck', `${v.vipDecks || 0} / 1 · ${money(v.vipDeckCost || 0)}`)}${field('Bus compound', `${v.busCompounds || 0} / 1 · ${money(v.busCompoundCost || 0)}`)}</dl><p>Both required before doors on new bookings.</p><p>Deck 4×3 · 2kW. Buses 6×3 · 6kW.</p><p>Move and rotate them in Build.</p><p>They use floor space and block views.</p><p>Shared rentals; no extra ticket income.</p>${state.supportNotice ? `<p role="status">${esc(state.supportNotice)}</p>` : ''}</section>` : '';
+  if (!profile) return (v.delays ? `<section data-tab="Room" data-always-tabs><h3>Original room rules</h3><dl class="live-readouts">${field('Delay towers',v.delays)}${field('Delay deployment',money(v.delayCost))}</dl><p>Delays need the Festival room profile.</p><p>Rental and operators still cost money.</p><p>New bookings include the profile.</p></section>` : '') + support;
   return `<section data-tab="Room" data-always-tabs><h3>${state.venue.id === 'festival' ? 'Festival sound and views' : profile.houseLights ? 'House sound and lights' : 'Shell sound and slope'}</h3><dl class="live-readouts">
     ${field('System', v.housePa ? profile.label : 'Portable PA')}${field('Sound capacity', `${v.soundCapacity} people`)}
     ${field('Room capacity', `${v.capacity} people`)}${field('Clear-view tiles', v.clearTiles)}${field('Blocked-view tiles', v.blockedTiles)}</dl>
     <p>The house system is included in rent. A placed PA replaces it.</p>${profile.houseLights ? '<p>House lights are included. Pillars still block views.</p>' : '<p>Lights are still needed for full sound-and-light quality.</p>'}
     ${state.venue.id === 'festival' ? '<p>Flat ground; raised main stage. Tall objects block views.</p><p>Main rig covers half the permit. Shared site quality.</p>' : profile.houseLights ? '' : '<p>The lawn rises behind the seats. Higher ground sees over low objects; tall objects can still block views.</p>'}</section>
     ${profile.houseLights ? `<section data-tab="Lighting" data-always-tabs><h3>Included house lights</h3><dl class="live-readouts">${field('House lighting', 'Included')}${field('Extra towers', v.rentedLights)}${field('Extra rental', money(v.rentedLights ? D.LIGHTS_RENTAL : 0))}</dl><p>An optional tower costs ${money(D.LIGHTS_RENTAL)} and draws 8kW.</p><p>It adds no extra quality bonus.</p><p>The 60kW budget covers placed equipment.</p></section>` : ''}
-    ${state.venue.id === 'festival' ? `<section data-tab="Delay" data-always-tabs><h3>Delay coverage</h3><dl class="live-readouts">${field('Delay towers',v.delays || 0)}${field('Extra covered tiles',v.delayTiles || 0)}${field('Delay deployment',money(v.delayCost || 0))}</dl><p>Place up to two towers in Build.</p><p>Each costs ${money(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)}, operator included.</p><p>Overlaps count once.</p><p>Extra supply stops at room capacity.</p><p>${v.delays && !v.delayActive ? 'Inactive: use the house PA and room profile.' : 'Uses the house PA and room profile.'}</p></section>` : ''}`;
+    ${state.venue.id === 'festival' ? `<section data-tab="Delay" data-always-tabs><h3>Delay coverage</h3><dl class="live-readouts">${field('Delay towers',v.delays || 0)}${field('Extra covered tiles',v.delayTiles || 0)}${field('Delay deployment',money(v.delayCost || 0))}</dl><p>Place up to two towers in Build.</p><p>Each costs ${money(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)}, operator included.</p><p>Overlaps count once.</p><p>Extra supply stops at room capacity.</p><p>${v.delays && !v.delayActive ? 'Inactive: use the house PA and room profile.' : 'Uses the house PA and room profile.'}</p></section>` : ''}${support}`;
 }
 
 function openSeating(opener) {
@@ -1419,7 +1425,7 @@ function openSeating(opener) {
   }).join('');
   openWindow('seating', 'Seats and lawn', `<p class="development-summary">Separate sales · one settlement</p>${zones}${roomProfileHtml()}
     <section data-tab="Rules" data-always-tabs><h3>Price and value</h3>${state.seatingNotice ? `<p role="status">${esc(state.seatingNotice)}</p>` : ''}
-      ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}
+      ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}${state.supportNotice ? `<p role="status">${esc(state.supportNotice)}</p>` : ''}
       <p>Audience splits by zone capacity.</p><p>Each price changes its own demand. Unsold places do not transfer.</p>
       <p>Fair value is the act's usual price on lawn, plus ${money(10)} for seats.</p>
       <p>Above fair value, each extra fair-price multiple costs 10 satisfaction points.</p><p>The penalty stops at 20. Discounts add no points.</p>
@@ -1755,6 +1761,14 @@ function updateZoomButtons() {
 const lotPointers = new Map();
 let lotGesture = null;
 let swallowLotClick = false;
+// A touch click can target a dialog opened by pointerup, outside the canvas.
+// Consume that gesture's click; a new press must still work on any UI control.
+document.addEventListener('pointerdown', () => { swallowLotClick = false; }, true);
+document.addEventListener('click', (event) => {
+  if (!swallowLotClick || event.detail === 0) return;
+  swallowLotClick = false;
+  event.preventDefault(); event.stopImmediatePropagation();
+}, true);
 function cancelLotGesture() {
   lotPointers.clear(); lotGesture = null; ui.dozing = false; ui.pan = null; history.drag = null;
 }
@@ -1989,7 +2003,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1, supportPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2034,7 +2048,7 @@ function onAct(e) {
     if (i >= 0) act({ type: 'remove', index: i });
     else act({ type: 'place', object: { type: 'fence', x: 0, y: 0, rot: 0 } });
   } else if (a === 'starter') {
-    if (act({ type: 'setLayout', objects: venueSpec(state.venue).starter.filter(o => !roomProfileFor(state.venue)?.houseLights || o.type !== 'lights') }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
+    if (act({ type: 'setLayout', objects: [...venueSpec(state.venue).starter.filter(o => !roomProfileFor(state.venue)?.houseLights || o.type !== 'lights'), ...(festivalSupportFor(state.venue) ? D.FESTIVAL_SUPPORT_LAYOUT : [])] }, { quiet: true })) say('Placed the suggested layout. Change anything you like.');
   } else if (a === 'clear-lot') {
     if (!state.venue.objects.length) { say('The lot is already clear.'); return; }
     openWindow('clear', 'Clear the layout?', '<p>Remove all ' + state.venue.objects.length + ' placed objects? Undo can restore this layout while you remain in Build.</p>', target,
@@ -2337,9 +2351,9 @@ document.addEventListener('keydown', (e) => {
   if (matches('close', e)) { e.preventDefault(); selectTool(); return; }
   if (matches('pick-tool', e)) {
     e.preventDefault();
-    const tool = e.key.toLowerCase() === 't' ? 'trailer' : e.key.toLowerCase() === 'd' ? 'delay' : PLACEABLE[Number(e.key) - 1];
+    const tool = e.key.toLowerCase() === 't' ? 'trailer' : e.key.toLowerCase() === 'd' ? 'delay' : e.key.toLowerCase() === 'v' ? 'vip-deck' : e.key.toLowerCase() === 'u' ? 'bus-compound' : PLACEABLE[Number(e.key) - 1];
     const type = D.OBJECT_TYPES[tool];
-    if ((!type.lotOnly || state.venue.id === 'lot') && (!type.festivalOnly || state.venue.id === 'festival')) pickTool(tool);
+    if ((!type.lotOnly || state.venue.id === 'lot') && (!type.festivalOnly || state.venue.id === 'festival') && (!type.supportOnly || festivalSupportFor(state.venue))) pickTool(tool);
   } else if (matches('undo', e)) {
     e.preventDefault();
     undoLayout();
@@ -2446,6 +2460,7 @@ window.render_game_to_text = () => {
     career: (({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }) =>
       ({ shows, sellouts, venueRep, loyalAct, goalMet, clubUnlocked, nextShowCost, canAffordAShow }))(careerProgress(state)),
     venue: { objects: state.venue.objects.length, capacity: v.capacity, ready: v.ready, missing: v.missing },
+    touring: festivalSupportFor(state.venue) || v.vipDecks || v.busCompounds ? { version: state.venue.support?.version ?? null, vipDecks: v.vipDecks, busCompounds: v.busCompounds, cost: v.vipDeckCost + v.busCompoundCost, notice: state.supportNotice || null } : null,
     room: roomProfileFor(state.venue) || v.delays ? { version: state.venue.profile?.version ?? null, house: v.housePa, ...(v.houseLights ? { houseLights: true, rentedLights: v.rentedLights } : {}), soundCapacity: v.soundCapacity ?? D.PA_COVERAGE[v.paTier] ?? 0, ...(v.delays ? { delays: v.delays, delayTiles: v.delayTiles, delayCost: v.delayCost, delayActive: v.delayActive } : {}), clearTiles: v.clearTiles, blockedTiles: v.blockedTiles, overlayClearTiles: sight().clear.size, overlayBlockedTiles: sight().blocked.size, notice: state.roomNotice || null } : null,
     promotion: state.promotion,
     show: state.show,

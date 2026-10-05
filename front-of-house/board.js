@@ -391,6 +391,32 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
     ctx.globalAlpha = 1;
   }
 
+  function touringProp(o) {
+    const spec = D.OBJECT_TYPES[o.type], { w, h } = dims(o), look = LOOK[o.type];
+    if (o.type === 'vip-deck') {
+      box(o.x, o.y, w, h, 0.95, look);
+      ctx.save(); ctx.strokeStyle = '#bbc4cc'; ctx.lineWidth = 1.5;
+      const corners = [[o.x + 0.12, o.y + 0.12], [o.x + w - 0.12, o.y + 0.12], [o.x + w - 0.12, o.y + h - 0.12], [o.x + 0.12, o.y + h - 0.12]];
+      for (const [x, y] of corners) { ctx.beginPath(); ctx.moveTo(...iso(x, y, 0.95)); ctx.lineTo(...iso(x, y, 1.6)); ctx.stroke(); }
+      ctx.beginPath(); corners.forEach(([x, y], i) => i ? ctx.lineTo(...iso(x, y, 1.6)) : ctx.moveTo(...iso(x, y, 1.6))); ctx.closePath(); ctx.stroke(); ctx.restore();
+    } else {
+      fillDiamond(o.x, o.y, w, h, '#464d4a', 0.03);
+      const rotate = (u, v) => [[u, v], [spec.h - v, u], [spec.w - u, spec.h - v], [v, spec.w - u]][o.rot || 0];
+      const corners = [[0.22, 0.22], [spec.w - 0.22, 1.82]].map(([u, v]) => rotate(u, v));
+      const x = o.x + Math.min(...corners.map(p => p[0])), y = o.y + Math.min(...corners.map(p => p[1]));
+      const bw = Math.abs(corners[1][0] - corners[0][0]), bh = Math.abs(corners[1][1] - corners[0][1]);
+      box(x, y, bw, bh, 1.72, look);
+      for (const [a, b] of visibleFaces(x + 0.06, y + 0.06, x + bw - 0.06, y + bh - 0.06)) {
+        quad(iso(...a, 0.98), iso(...b, 0.98), iso(...b, 1.5), iso(...a, 1.5), '#193443');
+        ctx.save(); ctx.strokeStyle = '#788694'; ctx.lineWidth = 1;
+        for (let t = 0.16; t < 1; t += 0.16) { const px = a[0] + (b[0] - a[0]) * t, py = a[1] + (b[1] - a[1]) * t; ctx.beginPath(); ctx.moveTo(...iso(px, py, 0.98)); ctx.lineTo(...iso(px, py, 1.5)); ctx.stroke(); }
+        ctx.restore();
+      }
+    }
+    const [x, y] = iso(o.x + w / 2, o.y + h / 2, LOOK[o.type].height + 0.1);
+    ctx.save(); ctx.fillStyle = '#f3ecce'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(o.type === 'vip-deck' ? 'VIP' : 'BUSES', x, y); ctx.restore();
+  }
+
   function dims(o) {
     const t = D.OBJECT_TYPES[o.type];
     return o.rot % 2 ? { w: t.h, h: t.w } : { w: t.w, h: t.h };
@@ -834,6 +860,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
     layers.forEach(({ o, d, g, repaint }, i) => {
       if (repaint) drawSprite(o, 0.6 * flickerOf(o));
       else if (g.r) { drawSprite(o, flickerOf(o)); drawn.push({ o, r: g.r }); }
+      else if (D.OBJECT_TYPES[o.type]?.supportOnly) touringProp(o);
       else box(o.x, o.y, d.w, d.h, lookOf(o).height, lookOf(o), flickerOf(o));
       hits.push(g.r ? { o, d, r: g.r } : { o, d, poly: g.poly });
       if (o.type === 'stage' && !repaint) drawStageFacing(o);

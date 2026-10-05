@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-7';
+export const MODEL_REVISION = 'lot-sample-9';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -112,6 +112,40 @@ export function createLotModels() {
       b([0.12, 0.13, 0.014], [0, 0.79, 0.342], 0xd0d8cf);
       b([0.025, 0.06, 0.015], [0, 0.785, 0.352], 0x253a43);
       b([0.02, 0.02, 0.01], [0, 0.823, 0.357], 0x253a43, 0, 'sphere');
+    } else if (object.type === 'vip-deck') {
+      // Touring hospitality reference: modular deck, guardrails, stairs and edge trim.
+      b([w - 0.12, 0.15, h - 0.12], [0, 0.875, 0], COLORS.steel);
+      for (const x of [-1.7, 0, 1.7]) for (const z of [-1.2, 1.2]) {
+        b([0.12, 0.8, 0.12], [x, 0.4, z], COLORS.aluminium, 0.6);
+        b([0.25, 0.05, 0.25], [x, 0.025, z], COLORS.steel);
+      }
+      for (let x = -1.8; x <= 1.81; x += 0.9) for (const z of [-1.38, 1.38]) {
+        if (z > 0 && x > 0.8) continue;
+        b([0.045, 0.65, 0.045], [x, 1.275, z], COLORS.aluminium, 0.7);
+      }
+      for (const z of [-1.38, 1.38]) for (const y of [1.25, 1.58]) b([z > 0 ? 2.5 : 3.7, 0.035, 0.035], [z > 0 ? -0.6 : 0, y, z], COLORS.aluminium, 0.7);
+      for (const x of [-1.82, 1.82]) for (const y of [1.25, 1.58]) b([0.035, 0.035, 2.76], [x, y, 0], COLORS.aluminium, 0.7);
+      for (let i = 0; i < 4; i++) b([0.7, (i + 1) * 0.22, 0.24], [1.23, (i + 1) * 0.11, 1.33 - i * 0.24], 0x5c636b, 0.3);
+      for (let x = -1.5; x < 1.5; x += 0.75) b([0.012, 0.006, 2.7], [x, 0.952, 0], 0x8c959d);
+    } else if (object.type === 'bus-compound') {
+      // One representative coach and its working aisle, inside the reserved footprint.
+      b([w - 0.08, 0.03, h - 0.08], [0, 0.015, 0], 0x454b4e);
+      for (const z of [-1.4, 0.55]) b([5.65, 0.008, 0.04], [0, 0.034, z], 0xc6ae67);
+      b([5.35, 1.12, 1.35], [0, 0.94, -0.45], 0x727e89, 0.5);
+      b([5.1, 0.18, 1.25], [0, 1.59, -0.45], 0x929aa3, 0.5);
+      b([4.9, 0.06, 1.1], [0, 1.71, -0.45], 0x4b565f, 0.4);
+      for (const z of [-1.134, 0.234]) {
+        for (let x = -2.24; x < 2.4; x += 0.59) b([0.51, 0.42, 0.016], [x, 1.23, z], 0x152b39, 0.35);
+        for (let x = -1.9; x < 1.9; x += 0.95) b([0.88, 0.28, 0.02], [x, 0.66, z], 0x5b6671, 0.45);
+        for (const x of [-1.9, -1.3, 1.8]) {
+          const wheel = b([0.43, 0.12, 0.43], [x, 0.28, z], 0x14171b, 0, 'cylinder'); wheel.rotation.x = Math.PI / 2;
+          const hub = b([0.2, 0.13, 0.2], [x, 0.28, z], COLORS.aluminium, 0.65, 'cylinder'); hub.rotation.x = Math.PI / 2;
+        }
+      }
+      b([0.025, 0.55, 1.13], [2.68, 1.14, -0.45], 0x152b39, 0.35);
+      for (const z of [-0.93, 0.03]) b([0.03, 0.12, 0.2], [2.685, 0.63, z], 0xe4e4bb);
+      for (const x of [-2.8, 2.8]) for (const z of [-1.4, 1.4]) b([0.045, 0.62, 0.045], [x, 0.31, z], COLORS.aluminium, 0.7);
+      b([5.6, 0.035, 0.035], [0, 0.6, 1.4], COLORS.aluminium, 0.7);
     } else if (object.type === 'lights') {
       b([0.7, 0.08, 0.7], [0, 0.04, 0], COLORS.steel);
       b([0.055, 2.8, 0.055], [0, 1.4, 0], COLORS.aluminium, 0.8, 'cylinder');

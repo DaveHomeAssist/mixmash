@@ -574,6 +574,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .camera-row button { width: 44px; padding: 0; }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .tiles:has(input[value="vip-deck"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
   .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .win-layer { padding: calc(var(--strip-h) + 4px) 4px 4px; }
@@ -735,9 +736,9 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 .site-map[hidden] { display: none; }
 @media (max-width: 680px) { .site-map { display: none; } }
 
-/* Seven Festival account pages need two touch-sized rows on narrow screens. */
+/* Festival account pages keep two touch-sized rows on narrow screens. */
 @media (max-width: 420px) {
-  #win[data-kind="stages"] .tabbar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #win[data-kind="stages"] .tabbar { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 @media (max-width: 420px) and (max-height: 560px) {
   #win[data-kind="stages"] .development-summary { display: none; }
