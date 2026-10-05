@@ -322,6 +322,8 @@ export const ROOM_PROFILES = Object.freeze({
 });
 
 // Show night runs from doors (19:00) to curfew (23:00); times below are shares of that night.
+// Version1 outdoor set timing: elapsed minutes from19:00 doors.
+export const SET_SCHEDULE = Object.freeze({ start: 72, close: 240, extension: 5 });
 export const ACT_ON_STAGE_AT = 0.3; // 20:12, when the feed says the act takes the stage
 
 // Incidents (R-11). Exactly one per show, chosen by the seeded generator. `window` is the share of

@@ -60,6 +60,12 @@ Focus the overview with Tab. Arrow keys pan, Enter or Space centers the site, Ho
 
 An act cannot play both Festival stages in one booking. Earlier-tier headliners need the relationship shown in the bill. If no side act accepts a door deal, choose another venue rather than opening a second contract.
 
+### Outdoor curfew
+
+For new Loam Shell and Split Acre bookings, a noise curfew ends the set at the reported incident time. **End the set** is free. **Appeal and finish the song** costs $400 and extends the set by five minutes, up to 23:00. Each held night has its own timing.
+
+Open **Set time** to read the start, actual end and minutes lost. Early closing reduces scheduled walk-up admissions and bar income; presales remain admitted. The response button, playback and signed receipt use the same end time. Older unmarked bookings retain their original terms.
+
 ### Held nights
 
 For a Loam Shell hold, finish and settle the current night before deciding what happens next. **Held nights → Continue** shows the next opening and remaining cash. **Cancel** quotes the unplayed-night fee. Completed nights keep their earnings and reputation; cancelling does not charge another opening or award unplayed-night progress.

@@ -135,3 +135,7 @@ Next: HUD step 6, performance. Record frame times at 1920 × 1080, cache the sta
 - **Art.** Provisional prop sprites are on the board as of 2026-10-01. They are a stand-in. The style anchor still waits on the render contract and the open conflicts in `docs/ART_DIRECTION.md` section 8. The order is in `docs/FUTURE.md`.
 - **HUD layout.** Accepted 2026-10-01 (CT-DEC-12). Its seven steps, the deferred minimap included, are in [HUD layout](#hud-layout-ct-dec-12) above.
 - **Documents that start later:** `docs/MANUAL.md` once the loop is stable. `docs/WORLD.md` started in Phase 4.
+
+### 2026-10-04 execution checkpoint
+
+Festival profiles and spatial delays are delivered through PR106/PR108 and verified on combined production137db3a. Outdoor set timing CT-DEC-24 is implemented and locally verified; its release gates remain. Continue included Club lighting, Festival VIP/bus infrastructure, whole-tier simulator/career acceptance and remaining release gates. The current production source includes the parallel technical venue scenes and site overview; preserve and verify those instead of duplicating them.
