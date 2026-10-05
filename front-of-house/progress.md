@@ -1,5 +1,14 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Runner placement and native setup evidence
+
+The complete twelve-script player regression passed at823db8f. Two full native Mac attempts invalidated their first window on resize during warmup; raw evidence is retained and no new native performance claim is made. Native setup now requires fifteen seconds of stable dimensions, screen, density and focus before importing the fixture, with a sixty-second deadline. Timed resize/focus/context rejection and the ten-second warmup/thirty-second measurement are unchanged. Syntax and seven statistics/evaluator checks pass. A quick setup check completed its fixed sample at59.98Hz with no50ms stalls; the next page closed, so the overall check is incomplete and never counts as full qualification.
+
+Dominic isolated Linux validation passed all435 repository tests, build, syntax and seven performance statistics/evaluator tests using the existing Playwright1.61.1 image and lockfile-identical dependencies.
+
+Dave directed further browser and sustained checks to Dominic to keep his Mac responsive. No further local headed browser runs are authorized by this phase. Linux/software diagnostics will be identified by their actual host/backend, separately from native Mac and supported physical-device evidence.
+
+
 
 ## 2026-10-05: Source-owned guest anatomy refinement
 

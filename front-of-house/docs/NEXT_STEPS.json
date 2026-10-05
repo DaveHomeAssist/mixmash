@@ -8,7 +8,7 @@
   "head": "Guest anatomy refinement under verification",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "PR120 technical delivery is verified; model13 now addresses the observed barrel torso and straight limb silhouettes. Shared geometry, sixteen batches and original joints are preserved. Current-source browser/performance, CI and hosted proof remain required alongside final art, physical-device, human career and provenance gates.",
+  "statusReason": "Model13 source and complete local player regression pass. Native Mac attempts were invalidated by window resize; further browser and sustained validation moves to Dominic. Current CI and hosted delivery remain required; physical-device, final art, human career and provenance gates remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -736,10 +736,12 @@
             "status": "implemented-local-verification",
             "evidence": [
               "Source-owned torso, sleeves, forearm and trouser profiles; reference height, sixteen batches, four textures, original joint pivots, routes and simulation preserved. Initial close rendering inspected; further current-source validation and delivery required.",
-              "435 repository tests, build, asset hashes, generated references and unchanged balance pass. Nineteen camera/model tests include coherent joint bounds, finite rendered normals, shared geometry, fixed height and bounded vertex cost. Backend eight views/context recovery/20 disposals and actual3D gestures/picking/fallback/reload/settlement parity pass. Moving pixels differ; reduced-motion pixels remain identical. Close view and all eight actual HUD day/show views inspected; full player regression, current native measurements and release proof still required."
+              "435 repository tests, build, asset hashes, generated references and unchanged balance pass. Nineteen camera/model tests include coherent joint bounds, finite rendered normals, shared geometry, fixed height and bounded vertex cost. Backend eight views/context recovery/20 disposals and actual3D gestures/picking/fallback/reload/settlement parity pass. Moving pixels differ; reduced-motion pixels remain identical. Close view and all eight actual HUD day/show views inspected; full player regression, current native measurements and release proof still required.",
+              "The complete twelve-script player regression passed at823db8f. Two full Mac native attempts were invalidated by window resizing and retained; neither qualifies model13 performance. A bounded window-settling setup check passed its fixed sample before the next browser page closed. Further browser and sustained validation moves to Dominic under the runner preference; Linux/software results remain separate from Mac/device acceptance.",
+              "Dominic isolated Linux runner passed all435 repository tests, build, syntax and seven performance statistics/evaluator tests with existing Playwright1.61.1 dependencies matching the lockfile. Browser checks continue remotely; no local headed browser runs follow the runner directive."
             ],
             "remaining": [
-              "Current-source runtime, performance, CI and hosted verification.",
+              "Dominic performance and final CI/hosted verification; model13 native Mac measurement remains incomplete.",
               "Final realistic style, physical calibration, supported-device and human acceptance."
             ]
           }
