@@ -4,6 +4,8 @@ import { OBJECT_TYPES } from './data.mjs';
 import { SERVICE_COLORS } from './service-crowd.mjs';
 
 const MAX_GUESTS = 180;
+// Pixel-size hysteresis is deterministic and independent of measured performance.
+export const GUEST_DETAIL_PIXELS = Object.freeze({ full: 80, distant: 64 });
 const PALETTES = {
   skin: [0xb98c71, 0x704b3b, 0xe0b99c, 0x98664d], clothing: [0x627e8b, 0x80545b, 0x8a8862, 0x384c68, 0xa8b6ba],
   trousers: [0x303c48, 0x4b4945], shoes: [0x252827], hair: [0x28221d, 0x6e5742, 0xa3937d, 0x302e2c],
@@ -40,17 +42,23 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
   }
   group.add(marker); marker.visible = false;
   const rain = lines(new Float32Array(240 * 6), 0xb9d0df, 0.42); rain.visible = false;
-  const template = models.guest(); template.updateMatrixWorld(true);
+  const template = models.guest(), distantTemplate = models.guest('distant'); template.updateMatrixWorld(true);
   const joints = new Map();
-  const batches = template.children.map(part => {
+  const batches = template.children.map((part, index) => {
     const material = part.material.clone(); material.color.set(0xffffff); ownedMaterial.add(material);
     const mesh = new T.InstancedMesh(part.geometry, material, MAX_GUESTS + 1);
     mesh.castShadow = true; mesh.receiveShadow = true; mesh.frustumCulled = false;
     mesh.count = 0; mesh.visible = false; group.add(mesh);
     const limb = part.userData.guestLimb, key = limb && `${limb.joint}:${limb.side}`;
     if (limb && !joints.has(key)) joints.set(key, { ...limb, matrix: new T.Matrix4() });
-    return { mesh, local: part.matrix.clone(), surface: part.name, joint: joints.get(key) };
+    const far = new T.InstancedMesh(distantTemplate.children[index].geometry, material, MAX_GUESTS + 1);
+    far.castShadow = true; far.receiveShadow = true; far.frustumCulled = false;
+    far.count = 0; far.visible = false;
+    return { mesh, far, local: part.matrix.clone(), surface: part.name, joint: joints.get(key) };
   });
+  batches.forEach(batch => group.add(batch.far));
+  const eyePoint = new T.Vector3();
+  let details = [], viewKey = '', detailCounts = { full: 0, distant: 0 };
   const transform = new T.Object3D(), matrix = new T.Matrix4(), color = new T.Color();
   const posed = new T.Matrix4();
   let layoutKey = '', actorKey = '', positions = [], crowdCount = 0, fencePanels = 0, gateOpenings = 0, incident = null, offsets = [], lastTime = null, serviceWorker = false, disposed = false;
@@ -88,7 +96,7 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
       if (!occupied(x, y)) positions.push([x, y]);
     }
   }
-  function update(input, objects, heights, motion, limit = MAX_GUESTS) {
+  function update(input, objects, heights, motion, limit = MAX_GUESTS, view = null) {
     if (disposed) return;
     const key = JSON.stringify(objects);
     if (key !== layoutKey) { rebuildFence(objects); rebuildPositions(objects); layoutKey = key; }
@@ -97,41 +105,69 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
     serviceWorker = !!service?.worker;
     const actors = service ? [...service.actors, ...(service.worker ? [service.worker] : [])] : null;
     const nextActorKey = `${key}:${requested}:${limit}:${JSON.stringify([input.services?.minute, input.services?.worker, service?.totals, service?.actors.length])}`;
-    if (nextActorKey !== actorKey) {
+    const actorsChanged = nextActorKey !== actorKey;
+    if (actorsChanged) {
       crowdCount = actors ? actors.length : Math.min(MAX_GUESTS, Math.max(0, Math.floor(limit)), requested, positions.length);
-      for (const batch of batches) {
-        batch.mesh.count = crowdCount; batch.mesh.visible = crowdCount > 0;
-        const palette = PALETTES[batch.surface] || PALETTES.clothing;
-        for (let i = 0; i < crowdCount; i++) batch.mesh.setColorAt(i, color.set(batch.surface === 'clothing' && SERVICE_COLORS[actors?.[i]?.zone] || palette[i % palette.length]));
-        if (batch.mesh.instanceColor) batch.mesh.instanceColor.needsUpdate = true;
-      }
       actorKey = nextActorKey; lastTime = null;
     }
     const t = motion && Number.isFinite(input.t) ? input.t : 0;
-    if (t !== lastTime) {
-      offsets = [];
+    const nextViewKey = view ? [...view.camera.matrixWorldInverse.elements, ...view.camera.projectionMatrix.elements, view.pixelHeight].join(',') : '';
+    if (t !== lastTime || nextViewKey !== viewKey) {
+      const poseChanged = t !== lastTime;
+      let detailChanged = false;
+      detailCounts = { full: 0, distant: 0 };
+      group.updateWorldMatrix(true, false);
       for (let i = 0; i < crowdCount; i++) {
-        const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
-        transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
-        const walking = motion && actors?.[i]?.moving;
-        const waiting = ['gate', 'bar', 'food', 'sanitation'].includes(actors?.[i]?.zone);
-        const stride = walking ? Math.sin(t * 8 + i) * 0.28 : 0;
-        if (walking || waiting) for (const { joint, side, pivot, matrix: jointMatrix } of joints.values()) {
-          const angle = joint === 'hip' ? stride * side : walking ? -stride * side * 0.8 : waiting ? -0.12 : 0;
-          const [, y, z] = pivot;
-          // Rotation about a fixed joint retains each part's authored shape and attachment.
-          jointMatrix.makeRotationX(angle).setPosition(0, y * (1 - Math.cos(angle)) + z * Math.sin(angle), z * (1 - Math.cos(angle)) - y * Math.sin(angle));
+        let detail = 'full';
+        if (view) {
+          eyePoint.set(actors ? actors[i].x : positions[i][0], 0.45 + (motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0), actors ? actors[i].y : positions[i][1]);
+          eyePoint.applyMatrix4(group.matrixWorld).applyMatrix4(view.camera.matrixWorldInverse);
+          // A conservative depth bound also covers plan views and articulated limbs.
+          const depth = -eyePoint.z - 0.5;
+          const pixels = depth <= view.camera.near ? Infinity : 0.9 * Math.abs(view.camera.projectionMatrix.elements[5]) * view.pixelHeight / (2 * depth);
+          detail = pixels < (details[i] === 'full' ? GUEST_DETAIL_PIXELS.distant : GUEST_DETAIL_PIXELS.full) ? 'distant' : 'full';
         }
-        for (const batch of batches) {
-          const joint = batch.joint;
-          if (joint && (walking || waiting)) { posed.multiplyMatrices(joint.matrix, batch.local); matrix.multiplyMatrices(transform.matrix, posed); }
-          else matrix.multiplyMatrices(transform.matrix, batch.local);
-          batch.mesh.setMatrixAt(i, matrix);
-        }
-        if (i < 3) offsets.push(sway);
+        if (details[i] !== detail) detailChanged = true;
+        details[i] = detail;
+        detailCounts[detail]++;
       }
-      for (const batch of batches) batch.mesh.instanceMatrix.needsUpdate = true;
-      lastTime = t;
+      // Camera-only movement still selects geometry, but unchanged tiers reuse authored buffers.
+      if (poseChanged || detailChanged) {
+        const instances = { full: 0, distant: 0 };
+        offsets = [];
+        for (let i = 0; i < crowdCount; i++) {
+          const sway = motion && t > 0 ? Math.sin(t * 1.2 + i * 1.7) * 0.025 : 0;
+          transform.position.set(actors ? actors[i].x : positions[i][0], motion && actors?.[i]?.moving ? Math.abs(Math.sin(t * 8 + i)) * 0.018 : 0, actors ? actors[i].y : positions[i][1]); transform.rotation.set(0, (actors?.[i]?.heading ?? Math.PI) + sway, 0); transform.updateMatrix();
+          const detail = details[i], instance = instances[detail]++;
+          const walking = motion && actors?.[i]?.moving;
+          const waiting = ['gate', 'bar', 'food', 'sanitation'].includes(actors?.[i]?.zone);
+          const stride = walking ? Math.sin(t * 8 + i) * 0.28 : 0;
+          if (walking || waiting) for (const { joint, side, pivot, matrix: jointMatrix } of joints.values()) {
+            const angle = joint === 'hip' ? stride * side : walking ? -stride * side * 0.8 : waiting ? -0.12 : 0;
+            const [, y, z] = pivot;
+            // Rotation about a fixed joint retains each part's authored shape and attachment.
+            jointMatrix.makeRotationX(angle).setPosition(0, y * (1 - Math.cos(angle)) + z * Math.sin(angle), z * (1 - Math.cos(angle)) - y * Math.sin(angle));
+          }
+          for (const batch of batches) {
+            const joint = batch.joint;
+            if (joint && (walking || waiting)) { posed.multiplyMatrices(joint.matrix, batch.local); matrix.multiplyMatrices(transform.matrix, posed); }
+            else matrix.multiplyMatrices(transform.matrix, batch.local);
+            const mesh = detail === 'full' ? batch.mesh : batch.far;
+            mesh.setMatrixAt(instance, matrix);
+            if (actorsChanged || detailChanged) {
+              const palette = PALETTES[batch.surface] || PALETTES.clothing;
+              mesh.setColorAt(instance, color.set(batch.surface === 'clothing' && SERVICE_COLORS[actors?.[i]?.zone] || palette[i % palette.length]));
+            }
+          }
+          if (i < 3) offsets.push(sway);
+        }
+      }
+      for (const batch of batches) for (const [detail, mesh] of [['full', batch.mesh], ['distant', batch.far]]) {
+        mesh.count = detailCounts[detail]; mesh.visible = mesh.count > 0;
+        if (poseChanged || detailChanged) mesh.instanceMatrix.needsUpdate = true;
+        if (mesh.instanceColor && (actorsChanged || detailChanged)) mesh.instanceColor.needsUpdate = true;
+      }
+      details.length = crowdCount; lastTime = t; viewKey = nextViewKey;
     }
     grid.visible = !input.night || !!input.showClear; fence.material.opacity = input.night ? 0.25 : 0.45;
     marker.visible = !!input.incident && input.incident !== 'rain';
@@ -157,8 +193,8 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
   }
   function dispose() {
     if (disposed) return; disposed = true;
-    batches.forEach(b => b.mesh.dispose()); ownedGeometry.forEach(g => g.dispose()); ownedMaterial.forEach(m => m.dispose());
+    batches.forEach(b => { b.mesh.dispose(); b.far.dispose(); }); ownedGeometry.forEach(g => g.dispose()); ownedMaterial.forEach(m => m.dispose());
     ownedGeometry.clear(); ownedMaterial.clear(); group.clear();
   }
-  return { group, update, dispose, info: () => ({ fencePanels, gateOpenings, incident, rain: rain.visible, grid: grid.visible, representativeGuests: crowdCount - (serviceWorker ? 1 : 0), guestBatches: batches.length, offsets }) };
+  return { group, update, dispose, info: () => ({ fencePanels, gateOpenings, incident, rain: rain.visible, grid: grid.visible, representativeGuests: crowdCount - (serviceWorker ? 1 : 0), guestBatches: batches.length * 2, guestDetail: { ...detailCounts }, offsets }) };
 }

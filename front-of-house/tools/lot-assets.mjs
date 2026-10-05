@@ -17,7 +17,7 @@ function describe(type) {
     pivot: 'footprint center at ground; guest feet at origin', forward: '+Z',
     visualBounds: { min: bounds.min.toArray().map(round), max: bounds.max.toArray().map(round) },
     meshCount, pickProxy: type === 'guest' ? 'not selectable; representative decoration' : 'opaque rendered mesh surfaces',
-    materialRevision: MODEL_REVISION, lod: 'fixed source detail; guests instanced',
+    materialRevision: MODEL_REVISION, lod: type === 'guest' ? 'projected pixel size: full above80, distant below64; sixteen instanced parts per detail level' : 'fixed source detail',
     contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], three: '0.184.0', type, footprint: spec ? [spec.w, spec.h] : null })) };
 }
 const assets = [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && !OBJECT_TYPES[id].festivalOnly), 'guest'].map(describe);

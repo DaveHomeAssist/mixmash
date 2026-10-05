@@ -1,5 +1,45 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Crowd buffer reuse after valid CPU rejection
+
+Model15's AMD pair37278816549 passed an independent36-window audit. Finalbc89 CI37280046410 passed general checks but its Intel pair rejected ultrawide crowd CPU P95:8.8ms against8.55ms. All frame-time limits pass. Both records are retained; no unchanged retry or threshold change.
+
+Dominic instrumentation found2400 unnecessary matrix and2400 color writes on each camera-only move with unchanged guest detail. Cache69 separates detail selection from packing, reuses unchanged camera-only buffers and refreshes colors only with actor/detail changes. Full geometry, poses, materials, shadows and rules remain intact.20 camera tests and768 exact prior/corrected presentation snapshots pass. Instrumentation confirms zero redundant camera writes and no unchanged-color writes during animation. Dominic also passes439 repository tests/build, backend eight views/context recovery/20 disposals, actual3D controls/fallback/reload/settlement parity, batching, DPR/resolution and all Festival geometry/legacy/versioned settlement/reload checks. FOH show capture inspected. Supplied action client produced two valid Build states/captures without console errors; final capture inspected. Generated references and unchanged Lot simulation pass. CI37283959269 stopped before measurement because the generated asset manifest still held the previous presentation-source digest. Regenerated the manifest on Dominic; asset drift validation and generated references pass. No runtime change or performance retry occurred in that failed run. New full CI and hosted qualification remain pending; native/device/human acceptance stays separate.
+
+
+## 2026-10-05: Distance detail after retained model14 rejection
+
+CI37274607801 general checks pass, but the independently audited36-window pair rejects five crowd-frame metrics. All empty-scene and CPU submission limits pass. The crowd draws506610 triangles against290610 in the baseline, at the same165 calls. Original failures remain recorded; no blind retry, baseline or threshold change.
+
+Model15/cache68 retains full anatomy close to the camera and adds source-owned distant geometry with every authored clothing contour and the same sculpt/materials/joints. Projected physical pixel size with80/64 hysteresis chooses detail independently for each representative, including camera-only and DPR changes. Sixteen parts per tier allocate at most32 batches; no duplicated actors, save changes, simulation changes or removed shadows. Dominic passes439 tests/build,20 geometry/camera checks, backend and actual3D parity/recovery, batching and resolution. Full and distant72px front/angled/side comparisons have no silhouette mismatch beyond2px and were inspected; close/action captures were also inspected. Six short diagnostic windows pass validity only. Festival geometry and eight exact settlements/reloads plus four navigation journeys also pass. New full paired CI and hosted qualification remain pending. Integrated the delivered homepage covers, preserved their precache entries with cache68, and restored mandatory catalog coverage for the six cover files and README. Integrated439 tests/build, assets, references and unchanged Lot simulation pass on Dominic. No local browser or focus action.
+
+
+## 2026-10-05: Retained crowd regression and contour correction
+
+Integrated412bb00 passed438 tests/build and the complete independent Dominic player suite. CI37271315330 general checks pass, but the full paired renderer gate rejects mean/p95 crowd-frame intervals at all three viewports. Independent raw/source/fixture/statistics audit validates all36 windows. No blind retry or threshold change: PR122 remains unmerged.
+
+Model14/cache67 uses the exact authored contour rings instead of uniform height subdivisions and shares each cap's center vertex. Radial detail, closed surfaces, smooth texture seams, guest reference height, sixteen part batches, textures, animation and simulation remain intact. Tightened geometry budget and contour-preservation checks precede new remote visual/runtime validation and final paired CI. Short exploratory diagnostics are not qualification. Dominic passes438 tests/build,19 camera/model checks, eight backend views/context recovery/20 disposals and actual3D controls/fallback/reload/settlement parity on the correction. Supplied action-client captures and the full-figure close view were inspected, with no visible holes; block-shaped shoes and simplified anatomy remain explicit. The figure now has2348 vertices,16 parts and4 textures. Full paired CI is still required.
+
+
+## 2026-10-05: Homepage release integration
+
+Integrated delivered records3aaaa81 and the concurrent homepage release without changing guest geometry, engine or saves. Preserved both CT-DEC-30 and the homepage visibility sign-off. Homepage assets and offline precache remain intact; cache66 distinguishes the anatomy candidate from the homepage's cache65. Earlier435-test and remote browser evidence retains source1ef69b8 attribution; combined-head CI and hosted acceptance follow.
+
+
+## 2026-10-05: Runner placement and native setup evidence
+
+The complete twelve-script player regression passed at823db8f. Two full native Mac attempts invalidated their first window on resize during warmup; raw evidence is retained and no new native performance claim is made. Native setup now requires fifteen seconds of stable dimensions, screen, density and focus before importing the fixture, with a sixty-second deadline. Timed resize/focus/context rejection and the ten-second warmup/thirty-second measurement are unchanged. Syntax and seven statistics/evaluator checks pass. A quick setup check completed its fixed sample at59.98Hz with no50ms stalls; the next page closed, so the overall check is incomplete and never counts as full qualification.
+
+Dominic isolated Linux validation passed all435 repository tests, build, syntax and seven performance statistics/evaluator tests using the existing Playwright1.61.1 image and lockfile-identical dependencies.
+
+Dave directed further browser and sustained checks to Dominic to keep his Mac responsive. No further local headed browser runs are authorized by this phase. Linux/software diagnostics will be identified by their actual host/backend, separately from native Mac and supported physical-device evidence.
+
+
+
+## 2026-10-05: Source-owned guest anatomy refinement
+
+FOH-V01e/CT-DEC-30 addresses the inspected model12 barrel torso, flat shoulders and tube limbs with shared clothed profiles. Model13/cache65 retains sixteen part batches, four textures, original animation pivots, guest height, routes and simulation. Initial close captures inspected; source geometry/attachment/budget checks supplement existing pose and disposal checks. The first normal assertion included unused sphere seam/pole vertices; restricting it to indexed, rendered vertices preserves the actual surface invariant. 435 repository tests, build, asset verification, generated references and unchanged Lot balance pass. Nineteen camera/model tests, backend/context/disposal and actual3D controls/recovery/settlement parity pass. Close view and eight actual HUD/view/light captures inspected; moving/reduced-motion pixels pass. Full player regression, current native measurements, CI and hosted checks remain required. Model12 measurements retain their original source attribution.
+
 
 ## 2026-10-05: Deployed sample and release evidence reconciliation
 

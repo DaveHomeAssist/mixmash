@@ -230,6 +230,10 @@ const vercelFn = (route, what) => ({ description: `Vercel function for ${route}:
 // library. A file's own entry in FILE_NOTES wins over a pattern.
 export const PATTERN_NOTES = [
   {
+    match: /^assets\/covers\/([a-z]+)\.jpg$/,
+    note: ([, game]) => ({ description: `Canonical ${game} cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.` }),
+  },
+  {
     match: /^front-of-house\/docs\/hud\/hud-([a-z]+)\.jpg$/,
     note: ([, screen]) => ({ description: `Front of House HUD layout mockup (${screen}) for docs/HUD.md: proposed panels laid over a real board capture. Layout direction, not final styling.` }),
   },

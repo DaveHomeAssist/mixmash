@@ -50,6 +50,19 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Risks / acceptance:** Facial UV orientation, texture aliasing, crowd cost and resource lifetime need direct checks. Verify front-facing landmarks, finite bounded geometry, constant crowd batches, palette variation, mipmapped textures and complete disposal. Inspect close and management views, retain reduced-motion and context-recovery checks, exact settlement parity and CI performance limits. This advances the realistic sample; physical calibration, supported devices and Dave's final visual acceptance remain separate evidence gates.
 
+### FOH-V01e guest anatomy refinement
+
+**Distance detail correction, 2026-10-05:** Model14 still fails five paired crowd metrics while empty scenes and CPU submission pass. It draws506610 triangles versus290610 for the calibrated scene. Retain full authored anatomy for close guests; use shared lower radial/sphere subdivision geometry only for small projected figures, preserving every authored body contour, material, joint, pose and representative. Select detail from projected physical pixel size, never frame rate, hardware identity or benchmark mode. Two sets of sixteen part batches may be allocated; each guest appears in exactly one. Check near/far camera and DPR transitions, static reduced motion, geometry bounds, no duplicate guests, shadow invalidation, resource disposal, visual difference at the switch and unchanged settlement. Keep the existing paired baseline, protocol and limits. This is a presentation optimization with no save or simulation changes; final human/device acceptance remains separate.
+
+**Performance correction, 2026-10-05:** Model13's valid paired CI rejects crowd frame timing at all three sizes. Use the same authored profile contours directly, eliminate redundant height rows and cap-center duplicates, retain radial resolution and smooth texture seams, and lower the per-figure vertex budget below2500. Preserve all16 parts, palettes, textures, animation pivots and physical reference. Require geometry/joint/normal checks, actual close review, controls/parity and a new unchanged-limit full CI pair before delivery.
+
+
+**Problem / outcome:** The model12 close review shows a barrel torso, flat shoulder line, long exposed neck and straight tube limbs. The accepted sample calls for convincing anatomy. Shape a continuous shoulder/chest/waist silhouette, rounded sleeve cap and tapered limbs so the guest reads as a clothed person in management and close views.
+
+**Smallest slice / flow:** Refine shared source-owned geometry inside the existing sixteen guest batches. Preserve head height, ground contact, hip/shoulder pivots, representative footprint, palettes and animation timing. Review front/side, walking/queue and all four actual-game presets in day/show conditions. No new textures, dependencies, individual AI, routes, economy, save fields or physical calibration claims.
+
+**Risks / acceptance:** Check finite indexed geometry/normals, bounded total vertex cost, coherent joint attachment, stable bounds and resource disposal. Inspect shoulder/neck overlap and clothing silhouettes in actual rendered captures; preserve static reduced motion, representative counts, picking/recovery and classic/3D settlement parity. Run current-source regression and performance checks. Final art and supported physical-device acceptance remain separate from this technical refinement.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.

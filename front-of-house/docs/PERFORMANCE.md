@@ -274,3 +274,75 @@ Observed cadence is59.9439–59.9772Hz, with zero intervals over50ms. This is cu
 All 108 raw windows were independently audited against source/fixture/raw digests, recomputed statistics and exact numeric comparisons. The tested synthetic merge `440419227bd6afc4f3fae9b02bf30a24f476b6a7` matches the PR candidate tree; measured runtime files match the original source. No source, protocol, quality or threshold changed for the retry. Hardware differs between runs, but that difference does not establish the cause of the rejection. Keep the failed result as an unresolved variability finding under KI-14. No further retry was used. The optional deliberate CPU-fault workflow was not selected on this PR; earlier fault evidence above is separate.
 
 Pages built the exact merge at 2026-10-05T05:28:24Z. All 42 hosted source files match before and after the complete player suite, pose/reduced-motion captures and 3D offline signing/reload. The six native Mac windows above retain their frozen `b8bfe08` attribution. Neither CI software-renderer comparisons nor native Mac cadence establishes supported phone, low-power or human acceptance.
+
+
+## Model13 geometry qualification
+
+The anatomy candidate changes shared torso and limb vertex geometry while retaining sixteen instance batches and four textures. The preceding model12 native report remains frozen evidence for its recorded source. Current-source browser lifecycle, full-client and paired CI checks are required; supported physical devices and final human acceptance remain open.
+
+
+## Model13 crowd regression retained — 2026-10-05
+
+PR122 source412bb00, CI37271315330 attempt1, failed the unchanged paired gate on AMD EPYC9V74. Independent audit validates all36 windows, source/fixture/raw hashes and recomputed statistics. Empty scenes and CPU submission metrics pass; crowd mean and p95 frame intervals fail at all three sizes. These are software-renderer change limits, not device frame-rate targets. General CI and the complete independent Dominic player suite pass; they do not override this rejection.
+
+| Crowd viewport | Mean baseline / candidate / limit ms | p95 baseline / candidate / limit ms |
+| --- | --- | --- |
+|1440×900|350.955 /641.464 /438.693|633.3 /1199.9 /791.625|
+|375×812|237.392 /486.810 /296.740|466.6 /983.3 /583.25|
+|2560×720|334.617 /617.661 /418.271|649.9 /1183.2 /812.375|
+
+Model14 replaces redundant uniform longitudinal subdivisions with the exact authored contour rings and indexed cap centers, retaining radial resolution, closed surfaces, clothing maps, instance counts and motion. Its performance remains unqualified until new full paired measurements pass. Short remote before/after diagnostics are exploratory only; no threshold or test timeout is relaxed.
+
+
+## Model14 retained crowd rejection and projected detail correction, 2026-10-05
+
+PR122 head74da757 ran CI37274607801. General tests and complete player checks passed. The paired renderer job failed on AMD EPYC7763. Independent audit verified all36 windows, source/raw/fixture hashes and recomputed statistics against the provider artifact11330961233. Empty-scene and CPU-submission limits passed; five crowd-frame metrics failed:
+
+| Viewport | Mean baseline / candidate / limit (ms) | P95 baseline / candidate / limit (ms) |
+| --- | --- | --- |
+| 1440×900 | 493.9705 /690.8795 /617.4631 — fail | 1150 /1283.3 /1437.5 — pass |
+| 375×812 | 328.6109 /509.8661 /410.7636 — fail | 650 /1016.6 /812.5 — fail |
+| 2560×720 | 476.9046 /655.6489 /596.1308 — fail | 900 /1266.6 /1125 — fail |
+
+The recorded crowd has506610 rendered triangles versus290610 in the baseline, with the same165 draw calls. This supports investigating geometry cost; it does not prove a sole causal bottleneck. No unchanged retry or limit relaxation follows. Model15 introduces deterministic projected-size guest detail under CT-DEC-31, retaining the full anatomy near the camera and each authored body contour at distance. Screen-size detail is independent of measured frame rate; the protocol still disables time-based adaptive quality. Existing sample duration, repetitions, fixtures, DPR, shadows, antialiasing, baseline and limits remain unchanged. Full current-source qualification is required before delivery.
+
+Dominic's isolated existing-driver probes rendered correctly but reported SwiftShader, including the read-only Intel Vulkan configuration. These are software capability results, not native Intel, supported phone or low-power qualification. No driver or service changes were made.
+
+
+## Model15 paired results and redundant buffer work, 2026-10-05
+
+[CI37278816549](https://github.com/DaveHomeAssist/mixmash/actions/runs/37278816549)
+at9ef6e4d passed the renderer gate on AMD EPYC7763. All36 windows, fixture/raw/source
+hashes and recomputed statistics matched artifact11332291985. Its general job
+failed the homepage budget assertion, subsequently corrected against the approved
+initial-load requirement. Desktop crowd CPU P95 was8.5ms against8.55ms.
+
+The finalbc89 revision retained identical renderer bytes but
+[CI37280046410](https://github.com/DaveHomeAssist/mixmash/actions/runs/37280046410)
+ran on Intel Xeon Platinum8370C. General tests passed. The independently audited
+artifact11333051862 contains36 valid windows; all frame-time and empty-scene
+limits pass, but ultrawide crowd CPU P95 is8.8ms versus baseline5.7ms and limit8.55ms.
+The earlier AMD pass does not override this rejection. Both complete records are
+retained; no unchanged retry, runner selection, baseline or limit relaxation.
+
+A bounded probe on Dominic found that each camera-only move with all150 guests
+remaining distant rewrote2400 matrices and2400 colors, although no shadow update
+was needed. Pose updates also rewrote unchanged colors. The correction separates
+per-guest detail selection from buffer packing: camera-only moves reuse buffers
+when membership stays unchanged, poses refresh matrices, and actor or detail
+changes refresh colors. Geometry, hysteresis, animation, materials, representative
+counts, shadows and gameplay remain unchanged; cache69 carries the correction.
+
+All20 geometry/camera tests pass, and768 exact prior/corrected snapshots match
+active matrices/colors/counts/visibility/buffer versions across paused/moving
+actors, workers, camera/detail transitions and a translated Festival-style group.
+The same bounded probe records zero camera-only buffer writes and2400 pose matrix
+writes with zero redundant color writes. Warm-tail median submission times were
+3.45 to1.55ms for camera updates and4.25 to2.60ms for draws on Dominic. These short
+instrumented observations diagnose work removed; they are not a qualified paired
+performance pass. New final-source CI and hosted validation remain required.
+
+The corrected source also passes439 repository tests/build and targeted backend,
+actual3D, camera-only batching, DPR/resolution and full Festival geometry/replay
+checks on Dominic. The FOH show capture was inspected; no visual change is
+expected from identical guest matrices, colors and geometry.

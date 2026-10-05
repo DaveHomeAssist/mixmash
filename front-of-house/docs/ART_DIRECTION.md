@@ -50,7 +50,7 @@ Daylight uses a neutral key/sky fill, consistent shadows and exposure; show ligh
 
 **Dave's visual acceptance:** an explicit dated answer tied to the exact sample revision and asset digests, covering all five subjects, all eight view/light combinations, management/close-scale consistency, operator-eye FOH, a short orbit/animation review and reduced motion. Record requested changes and rejected views; silence, archive screenshots, test passes and this specification are not acceptance. Include author/tool/source/license and modification history for every mesh/material/texture/animation, retained license notices and permission for distribution. Unknown rights block that asset's inclusion. No purchases or commissions are authorized by this document.
 
-**Device acceptance:** separately run the declared supported-device matrix and accepted targets after the realistic sample exists. Neither placeholder speed nor the software-rendered preflight diagnostics can approve final-art performance. Current status: the source-owned [lot-sample-12 candidate](LOT_SAMPLE.md) is authored and technically tested, with bounds/provenance/digests in its manifest. It remains simplified at close range. Physical calibration, supported low-power/phone qualification and Dave's visual acceptance remain pending; measured CI regression limits and current native-host results are recorded separately; no archive assets are reused.
+**Device acceptance:** separately run the declared supported-device matrix and accepted targets after the realistic sample exists. Neither placeholder speed nor the software-rendered preflight diagnostics can approve final-art performance. Current status: the source-owned [lot-sample-14 candidate](LOT_SAMPLE.md) refines the guest anatomy, with bounds/provenance/digests in its manifest. Current-source browser and performance qualification is tracked separately from model12 and the rejected model13 pair. It remains simplified at close range. Physical calibration, supported low-power/phone qualification and Dave's visual acceptance remain pending; measured CI regression limits and current native-host results are recorded separately; no archive assets are reused.
 
 ## 1. Visual pillars
 
@@ -216,3 +216,13 @@ FOH-V02r4 gives the optional 3D preview its own source-authored four-unit mast, 
 ### Revision12 review evidence, 2026-10-05
 
 The private review pack freezes source `b8bfe08fe110121c51dafb75eb8efda837e3353a`: all eight actual HUD/view/light captures, camera/state/file hashes, a67.4-second orbit/live-motion/reduced-motion recording, neutral guest close views and the eight material swatches. Day views show the starter layout in Build; Show views use the same layout with150 admitted guests paused at minute65. All eight stills were inspected and retain page containment and exact fixture state. The review records that nearby guests can obscure the eye-level FOH view; the crowd, faces and materials remain simplified. This is concrete candidate evidence, not Dave's final style acceptance. [Current native measurements](PERFORMANCE.md#refined-sample-full-client-native-measurement) retain their exact source and device boundaries.
+
+
+### Model13 anatomy follow-up
+
+The inspected model12 close view still had a barrel torso, flat shoulders, exposed cylindrical neck and tube limbs. CT-DEC-30/FOH-V01e shapes the shared chest/waist/shoulder silhouette and tapers limbs, preserving pose joints, height, instance count and gameplay. The existing eight-view review and physical/device/human boundaries continue to apply. Model12 native measurements retain their original source attribution; they do not qualify this geometry change.
+
+
+### Distance detail, 2026-10-05
+
+CT-DEC-31 keeps the refined anatomy in close views and preserves its authored contours and surfaces in distant geometry. Detail follows physical screen size with hysteresis, not frame rate or machine identity. Review both tiers, transition silhouettes, walking/queues and all camera presets; no guest may disappear or be duplicated. Native/device and final human style acceptance remain open.

@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Refined 3D sample deployed; acceptance gates remain",
+  "head": "Guest buffer reuse correction",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "PR120 is merged and live-verified at 51a8b96: 42 hosted files, complete browser player suite, motion/reduced-motion and 3D offline settlement checks pass. The original Intel performance rejection and unchanged-source AMD diagnostic pass are both retained. Final realistic art/physical calibration, supported phone/low-power and human career acceptance remain open.",
+  "statusReason": "Model15 AMD paired evidence passes, but finalbc89 Intel CI rejects ultrawide crowd CPU P95 8.8ms against8.55ms; general tests pass. Buffer reuse removes verified redundant camera/color writes. Dominic passes439 tests/build,20 camera tests,768 exact snapshots and targeted backend,3D,detail,DPR,Festival/reload checks. New final-source CI and hosted qualification remain required; human/device/provenance gates stay open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -35,7 +35,7 @@
   ],
   "nextStep": {
     "title": "Complete remaining art and release acceptance",
-    "why": "Model12 technical delivery and current name screening are recorded. Resolve final realistic art and physical scale, supported phone/low-power evidence, human Book-to-Done acceptance and original image provenance before public promotion.",
+    "why": "Model12 technical delivery and current name screening are recorded. Resolve final realistic art and physical scale, supported phone/low-power evidence, human Book-to-Done acceptance and original image provenance before full launch and search promotion.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -101,7 +101,7 @@
       "type": "decision",
       "sev": "P1",
       "title": "Public release: selected sequence and remaining acceptance evidence",
-      "detail": "D8\u2013D11 selected A under CT-DEC-19; promotion follows the 3D Lot and operations pilots plus release gates; noindex/hub/sitemap gates unchanged. Archive and eight dependency hashes checked; isolated runtime exercised. Archive code/image rights, physical calibration and human art/career acceptance remain pending.",
+      "detail": "D8\u2013D11 selected A under CT-DEC-19; full launch follows the remaining release gates. Dave approved the deployed Early playable homepage listing; noindex and sitemap exclusion remain unchanged. Archive and eight dependency hashes checked; isolated runtime exercised. Archive code/image rights, physical calibration and human art/career acceptance remain pending.",
       "files": [
         "front-of-house/docs/KNOWN_ISSUES.md",
         "front-of-house/docs/DECISIONS.md"
@@ -268,7 +268,11 @@
     "2026-10-04: Dave instructed Codex to make decisions autonomously and stop asking again. Codex selected D6\u2013D11 A in CT-DEC-19. These delegated selections close all eleven questions; CT-DEC-10/11/13 retain their explicitly limited Proposed statuses and evidence gates.",
     "2026-10-04: Dave authorized executing the remaining Front of House phases. The ROADMAP active execution table and execution.items map all bounded work and evidence; no new product questionnaire.",
     "FOH-V01a adds session-only Select and inspection; Enter inspects, Escape closes dialogs before cancelling tools, Clear confirms once, and existing undo handles both single and bulk removal. No save schema, money or gameplay formulas change.",
-    "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice."
+    "Historical backend-only slice: The Unreal discussion was an architecture assessment, not a migration instruction. The accepted browser adapter continues; the backend is not imported into the game in this slice.",
+    "2026-10-05: CI37278816549 general job failed cumulative homepage transfer1363823>500000; approved HOMEPAGE_BRIEF specifies initial load. First load422208 Chromium/423574 WebKit passes unchanged500000 limit. Corrected landing smoke records later journey bytes and checks cover decode;14 views plus fallback/history/theme/offline/save preservation pass on Dominic. Original artwork and runtime unchanged. Existing model15 renderer pair retained; final-source CI still required.",
+    "2026-10-05: audited36-window AMD372788 pass andIntel372800 singleCPU rejection retained. Cache69 removes redundant unchanged camera matrices/colors and animation color writes; same geometry and appearance.20 camera tests and768 exact state snapshots pass onDominic. New paired qualification pending; no limits changed.",
+    "Current buffer correction:439 repository tests/build, backend eight views/context/20disposals, actual3D gestures/fallback/reload/settlement, camera-onlydetail/shadow reuse, resolution/DPR and fullFestival venue/legacy/versioned replay checks pass onDominic. FOHshow screenshot inspected. Unchangedgeometry and768 exact presentation snapshots provide behavior-preservation evidence; paired CI still required.",
+    "CI37283959269 stopped at asset drift validation before performance measurement. Regenerated the presentation source digest onDominic and passed asset/reference checks; corrected final-source CI remains required. All prior runtime verification remains byte-identical."
   ],
   "links": [
     {
@@ -636,7 +640,7 @@
           "FOH-F01"
         ],
         "doneWhen": "Source-owned stage/PA/bar/restroom/guest sample, four presets, picking and engine/save parity, safe gestures and context fallback; visual review recorded separately.",
-        "status": "technical-delivery-verified-acceptance-open",
+        "status": "in_progress",
         "evidence": [
           "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md."
         ],
@@ -728,6 +732,28 @@
             ],
             "remaining": [
               "Final realistic-style and camera review, physical scale/operator-eye calibration and supported-device acceptance. Simplified sample figures are not final photorealistic art."
+            ]
+          },
+          {
+            "id": "FOH-V01e",
+            "scope": "Shared clothed guest anatomy refinement under CT-DEC-30",
+            "status": "distance-detail-correction-under-verification",
+            "evidence": [
+              "Source-owned torso, sleeves, forearm and trouser profiles; reference height, sixteen batches, four textures, original joint pivots, routes and simulation preserved. Initial close rendering inspected; further current-source validation and delivery required.",
+              "435 repository tests, build, asset hashes, generated references and unchanged balance pass. Nineteen camera/model tests include coherent joint bounds, finite rendered normals, shared geometry, fixed height and bounded vertex cost. Backend eight views/context recovery/20 disposals and actual3D gestures/picking/fallback/reload/settlement parity pass. Moving pixels differ; reduced-motion pixels remain identical. Close view and all eight actual HUD day/show views inspected; full player regression, current native measurements and release proof still required.",
+              "The complete twelve-script player regression passed at823db8f. Two full Mac native attempts were invalidated by window resizing and retained; neither qualifies model13 performance. A bounded window-settling setup check passed its fixed sample before the next browser page closed. Further browser and sustained validation moves to Dominic under the runner preference; Linux/software results remain separate from Mac/device acceptance.",
+              "Dominic isolated Linux runner passed all435 repository tests, build, syntax and seven performance statistics/evaluator tests with existing Playwright1.61.1 dependencies matching the lockfile. Browser checks continue remotely; no local headed browser runs follow the runner directive.",
+              "Integrated412bb00 passes438 tests/build, full twelve-script player regression and actual3D parity checks on Dominic. CI37271315330 general checks pass, but independently audited36-window paired software evidence fails six crowd-frame metrics across all three sizes; original failure retained. Model14 uses authored contour rings directly with unchanged radial resolution and indexed caps; replacement qualification pending.",
+              "Model14 contour correction passes438 repository tests/build,19 geometry/camera checks, backend views/recovery/disposal and actual3D controls/reload/settlement parity on Dominic.2348 vertices,16 parts and4 textures; authored height rings retained. Supplied action-client and close captures inspected. New full paired CI remains required; short diagnostics do not qualify performance.",
+              "CI37274607801 at74da757 general tests/player checks pass; paired AMD EPYC7763 evidence fails crowd mean all three sizes and p95 phone/ultrawide. All36 windows/source/raw/fixture/statistics audit correctly. Model15/cache68 introduces projected-size detail with full anatomy near the camera, unchanged contours/materials/joints and one occurrence per representative.20 geometry/camera tests pass on Dominic; remaining qualification pending.",
+              "Model15 passes439 repository tests/build,20 geometry/camera checks, backend recovery/disposal, actual3D controls/reload/settlement parity, camera-only batching and DPR/resolution checks on Dominic. Mixed near/far counts, distinct colors and transforms pass.72px front/angled/side images have no unmatched silhouette beyond2px and were visually inspected; close full-detail and supplied action-client captures were inspected. Six short diagnostic windows are valid but do not qualify sustained performance. Festival/navigation and new full paired CI remain pending.",
+              "The complete Festival geometry/interaction and eight classic/3D legacy/versioned settlement/reload cases pass on model15, including the offset second-stage crowd. All four site-navigation journeys pass. Original mixed-test setup failure was corrected to exercise actual near/far membership without changing thresholds. Required new final-head paired CI and hosted qualification remain open.",
+              "Integrated homepage covers at62fd6e1 preserve the tested model15 runtime. Dominic repeats439 tests/build and validates assets, generated references and unchanged Lot baseline. Required cover-file catalog metadata is regenerated; final-head CI and hosted delivery remain pending.",
+              "Model15 audit372788 AMD passes all18metrics; final372800 Intel fails onlyultrawidecrowdCPUp95 8.8>8.55ms, generalchecks pass. Cache69 eliminates measured redundant bufferwrites;20camera tests and768 exact prior/corrected presentationstates pass onDominic. Full current-source qualification pending."
+            ],
+            "remaining": [
+              "Complete current buffer-reuse browser checks, unchanged-limit final-source paired CI and hosted delivery; retain all earlier valid results.",
+              "Final realistic style/camera acceptance, physical calibration and supported phone/low-power plus human career acceptance."
             ]
           }
         ]

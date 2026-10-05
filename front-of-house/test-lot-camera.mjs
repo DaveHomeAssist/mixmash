@@ -271,7 +271,7 @@ test('representative gait keeps bodies grounded, waiting feet planted and reduce
     { x: 8.5, y: 5.5, heading: 0, moving: false, zone: 'bar' },
   ], totals: { floor: 1, bar: 1 } } };
   template.updateMatrixWorld(true);
-  const original = JSON.stringify(source), batches = presentation.group.children.filter(x => x.isInstancedMesh);
+  const original = JSON.stringify(source), batches = presentation.group.children.filter(x => x.isInstancedMesh).slice(0, template.children.length);
   const capture = (t, motion) => {
     presentation.update({ ...source, t }, [], [], motion);
     return batches.map(b => Array.from({ length: b.count }, (_, i) => { const m = new Matrix4(); b.getMatrixAt(i, m); return m; }));
@@ -327,4 +327,92 @@ test('guest surfaces retain bounded instancing, readable forward face and owned 
   let disposals = 0; for (const texture of textures) texture.addEventListener('dispose', () => disposals++);
   a.dispose(); a.dispose(); assert.equal(disposals, textures.size, 'each shared texture disposed exactly once');
   assert.deepEqual(a.counts(), { geometries: 0, materials: 0, textures: 0 }); b.dispose();
+});
+
+test('clothed anatomy stays connected, shared and inside the guest geometry budget', () => {
+  const models = createLotModels(), guest = models.guest(), copy = models.guest();
+  guest.updateMatrixWorld(true);
+  assert.equal(guest.children.length, 16);
+  let vertices = 0;
+  for (const [i, part] of guest.children.entries()) {
+    assert.equal(part.geometry, copy.children[i].geometry, 'crowd figures share geometry');
+    const { position, normal } = part.geometry.attributes;
+    vertices += position.count;
+    for (const index of part.geometry.index.array) assert.ok(index < position.count);
+    // Sphere seam/pole duplicates can be unreferenced; only drawn vertices need normals.
+    for (const j of new Set(part.geometry.index.array)) {
+      const length = Math.hypot(normal.getX(j), normal.getY(j), normal.getZ(j));
+      assert.ok(Number.isFinite(length) && Math.abs(length - 1) < 0.001, 'valid surface normals');
+    }
+  }
+  assert.ok(vertices < 2500, 'contour rings keep per-figure geometry below the rejected dense candidate');
+  const torso = guest.children[0].geometry.attributes.position;
+  for (const y of [-0.5, -0.25, 0.15, 0.32, 0.42, 0.5]) {
+    assert.ok(Array.from({ length: torso.count }, (_, i) => torso.getY(i)).some(v => Math.abs(v - y) < 0.00001), 'authored shoulder and collar contours retained');
+  }
+  const bounds = i => new Box3().setFromObject(guest.children[i]);
+  assert.ok(bounds(0).intersectsBox(bounds(1)), 'neck enters the shirt collar');
+  for (const [sleeve, arm, hand] of [[10, 11, 12], [13, 14, 15]]) {
+    assert.ok(bounds(0).intersectsBox(bounds(sleeve)), 'sleeve joins shoulder');
+    assert.ok(bounds(sleeve).intersectsBox(bounds(arm)), 'forearm enters sleeve');
+    assert.ok(bounds(arm).intersectsBox(bounds(hand)), 'wrist meets hand');
+  }
+  const body = new Box3().setFromObject(guest);
+  assert.ok(body.min.y >= -0.001 && Math.abs(body.max.y - 0.9) < 0.005);
+  assert.ok(body.min.x > -0.2 && body.max.x < 0.2, 'existing representative width');
+  const owned = new Set(guest.children.map(part => part.geometry));
+  let disposed = 0;
+  for (const geometry of owned) geometry.addEventListener('dispose', () => disposed++);
+  models.dispose(); models.dispose();
+  assert.equal(disposed, owned.size, 'new shared profiles disposed exactly once');
+});
+
+
+test('guest distance detail preserves contours, materials, counts and near-view anatomy', () => {
+  const models = createLotModels(), full = models.guest(), far = models.guest('distant');
+  let nearTriangles = 0, farTriangles = 0;
+  for (let i = 0; i < full.children.length; i++) {
+    const a = full.children[i], b = far.children[i];
+    assert.equal(a.material, b.material); assert.deepEqual(a.position, b.position);
+    assert.deepEqual(a.userData, b.userData);
+    nearTriangles += a.geometry.index.count / 3; farTriangles += b.geometry.index.count / 3;
+    if (a.geometry.userData.contours) assert.deepEqual(a.geometry.userData.contours, b.geometry.userData.contours);
+    const ab = new Box3().setFromBufferAttribute(a.geometry.attributes.position), bb = new Box3().setFromBufferAttribute(b.geometry.attributes.position);
+    assert.ok(ab.min.distanceTo(bb.min) < 0.06 && ab.max.distanceTo(bb.max) < 0.06, 'same authored envelope');
+  }
+  assert.ok(farTriangles < nearTriangles / 2, 'distant geometry removes subpixel subdivisions');
+  const p = createLotPresentation(models), c = createLotCamera();
+  c.resize({ x: 0, y: 0, w: 1440, h: 900 });
+  const source = { crowd: 2, t: 1, serviceCrowd: { actors: [
+    { x: 12, y: 8, heading: 0, moving: false, zone: 'bar' },
+    { x: 12, y: 1, heading: 0, moving: false, zone: 'floor' },
+  ], totals: { bar: 1, floor: 1 } } }, before = JSON.stringify(source);
+  const update = height => p.update(source, [], [], false, 180, { camera: c.camera, pixelHeight: height });
+  update(900); assert.deepEqual(p.info().guestDetail, { full: 0, distant: 2 });
+  const meshes = p.group.children.filter(m => m.isInstancedMesh);
+  const farVersions = meshes.map(m => m.instanceMatrix.version);
+  let matrixWrites = 0, colorWrites = 0;
+  for (const mesh of meshes) {
+    const matrixAt = mesh.setMatrixAt.bind(mesh), colorAt = mesh.setColorAt.bind(mesh);
+    mesh.setMatrixAt = (...args) => { matrixWrites++; return matrixAt(...args); };
+    mesh.setColorAt = (...args) => { colorWrites++; return colorAt(...args); };
+  }
+  c.setCamera({ yaw: 46 }); update(900);
+  assert.deepEqual(meshes.map(m => m.instanceMatrix.version), farVersions, 'camera movement with unchanged detail reuses shadows');
+  assert.equal(matrixWrites, 0, 'camera-only movement with unchanged tiers preserves existing matrices');
+  assert.equal(colorWrites, 0, 'camera-only movement preserves existing colors');
+  p.update({ ...source, t: 2 }, [], [], true, 180, { camera: c.camera, pixelHeight: 900 });
+  assert.equal(matrixWrites, 2 * full.children.length, 'new animation time updates every visible part');
+  assert.equal(colorWrites, 0, 'animation alone does not rewrite unchanged colors');
+  c.preset('foh'); c.resize({ x: 0, y: 0, w: 1440, h: 400 }); update(400);
+  assert.deepEqual(p.info().guestDetail, { full: 1, distant: 1 }, 'mixed near/far crowd retains close anatomy without duplicating guests');
+  const nearMatrix = new Matrix4(), farMatrix = new Matrix4();
+  meshes[0].getMatrixAt(0, nearMatrix); meshes[16].getMatrixAt(0, farMatrix);
+  assert.equal(nearMatrix.elements[14], 8); assert.equal(farMatrix.elements[14], 1);
+  assert.notDeepEqual(meshes[0].instanceColor.array.slice(0, 3), meshes[16].instanceColor.array.slice(0, 3), 'compacting detail tiers preserves different service colors');
+  update(90); assert.deepEqual(p.info().guestDetail, { full: 0, distant: 2 });
+  update(1800); assert.deepEqual(p.info().guestDetail, { full: 2, distant: 0 }, 'physical pixel size controls density transition');
+  assert.equal(meshes.reduce((n, m) => n + m.count, 0), 2 * full.children.length, 'each guest occurs once per part');
+  assert.equal(p.info().representativeGuests, 2); assert.equal(JSON.stringify(source), before);
+  p.dispose(); models.dispose(); assert.deepEqual(models.counts(), { geometries: 0, materials: 0, textures: 0 });
 });

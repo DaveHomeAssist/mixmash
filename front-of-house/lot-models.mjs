@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-12';
+export const MODEL_REVISION = 'lot-sample-15';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -21,30 +21,86 @@ export const MODEL_METADATA = Object.freeze({
 const COLORS = { steel: 0x31363d, aluminium: 0xb0b8bd, fabric: 0x181b20, wood: 0x79654c, plastic: 0x456778, trim: 0xc5c9bf };
 export function createLotModels() {
   const geometries = new Set(), materials = new Map(), textures = new Set();
+  function profile(rings, radialSegments = 16) {
+    // Use the authored contour rings directly; uniform height subdivisions add
+    // redundant triangles while missing the actual shoulder and sleeve peaks.
+    const positions = [], uvs = [], indices = [], ordered = [...rings].reverse();
+    for (const [y, radius] of ordered) for (let i = 0; i <= radialSegments; i++) {
+      const angle = i / radialSegments * Math.PI * 2;
+      positions.push(Math.sin(angle) * radius, y, Math.cos(angle) * radius);
+      uvs.push(i / radialSegments, y + 0.5);
+    }
+    const row = radialSegments + 1;
+    for (let j = 0; j < ordered.length - 1; j++) for (let i = 0; i < radialSegments; i++) {
+      const a = j * row + i, b = a + row;
+      indices.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+    for (const [ring, top] of [[ordered[0], true], [ordered.at(-1), false]]) {
+      const [y, radius] = ring, center = positions.length / 3;
+      positions.push(0, y, 0); uvs.push(0.5, 0.5);
+      for (let i = 0; i <= radialSegments; i++) {
+        const angle = i / radialSegments * Math.PI * 2;
+        positions.push(Math.sin(angle) * radius, y, Math.cos(angle) * radius);
+        uvs.push(Math.sin(angle) * 0.5 + 0.5, Math.cos(angle) * 0.5 + 0.5);
+        if (i < radialSegments) {
+          const a = center + i + 1, b = a + 1;
+          indices.push(center, top ? a : b, top ? b : a);
+        }
+      }
+    }
+    const geometry = new T.BufferGeometry();
+    geometry.setAttribute('position', new T.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new T.Float32BufferAttribute(uvs, 2));
+    geometry.setIndex(indices); geometry.computeVertexNormals();
+    // Share the smooth seam normal while retaining the texture seam's UVs.
+    const normals = geometry.attributes.normal;
+    for (let j = 0; j < ordered.length; j++) {
+      const a = j * row, b = a + radialSegments;
+      const n = new T.Vector3().fromBufferAttribute(normals, a).add(new T.Vector3().fromBufferAttribute(normals, b)).normalize();
+      normals.setXYZ(a, n.x, n.y, n.z); normals.setXYZ(b, n.x, n.y, n.z);
+    }
+    geometry.userData.contours = rings;
+    return geometry;
+  }
   const shape = {
     box: new T.BoxGeometry(1, 1, 1), sphere: new T.SphereGeometry(1, 16, 12),
     cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 12),
-    torso: new T.CylinderGeometry(0.46, 0.38, 1, 12),
+    // The collar rises inside the neck; outer shoulders slope into the sleeve caps.
+    torso: profile([[-0.5, 0.4], [-0.25, 0.36], [0.15, 0.46], [0.32, 0.5], [0.42, 0.31], [0.5, 0.12]], 24),
+    sleeve: profile([[-0.5, 0.42], [-0.25, 0.46], [0.1, 0.5], [0.3, 0.43], [0.45, 0.25], [0.5, 0.08]]),
+    forearm: profile([[-0.5, 0.31], [-0.2, 0.4], [0.15, 0.49], [0.35, 0.5], [0.5, 0.43]]),
+    thigh: profile([[-0.5, 0.39], [-0.2, 0.44], [0.2, 0.5], [0.5, 0.48]]),
+    calf: profile([[-0.5, 0.34], [-0.1, 0.43], [0.2, 0.5], [0.5, 0.48]]),
     head: new T.SphereGeometry(1, 24, 16),
     hair: new T.SphereGeometry(1, 16, 12),
   };
-  // Sculpt the shared head rather than adding draw calls for facial features.
-  const headPositions = shape.head.attributes.position;
-  for (let i = 0; i < headPositions.count; i++) {
-    const x = headPositions.getX(i), y = headPositions.getY(i), z = headPositions.getZ(i);
-    const jaw = y < 0 ? 1 + y * 0.18 : 1;
-    const nose = z > 0 ? 0.24 * Math.exp(-((x / 0.2) ** 2) - (((y + 0.1) / 0.27) ** 2)) : 0;
-    headPositions.setXYZ(i, x * jaw, y, z + nose);
+  const distant = {
+    box: shape.box, sphere: new T.SphereGeometry(1, 8, 6),
+    cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 8),
+    head: new T.SphereGeometry(1, 12, 8), hair: new T.SphereGeometry(1, 8, 6),
+    ...Object.fromEntries(['torso', 'sleeve', 'forearm', 'thigh', 'calf'].map(name =>
+      [name, profile(shape[name].userData.contours, name === 'torso' ? 12 : 8)])),
+  };
+  // Both detail levels retain the same sculpt and authored clothing contours.
+  for (const forms of [shape, distant]) {
+    // Sculpt the shared head rather than adding draw calls for facial features.
+    const headPositions = forms.head.attributes.position;
+    for (let i = 0; i < headPositions.count; i++) {
+      const x = headPositions.getX(i), y = headPositions.getY(i), z = headPositions.getZ(i);
+      const jaw = y < 0 ? 1 + y * 0.18 : 1;
+      const nose = z > 0 ? 0.24 * Math.exp(-((x / 0.2) ** 2) - (((y + 0.1) / 0.27) ** 2)) : 0;
+      headPositions.setXYZ(i, x * jaw, y, z + nose);
+    }
+    forms.head.computeVertexNormals();
+    const hairPositions = forms.hair.attributes.position;
+    for (let i = 0; i < hairPositions.count; i++) {
+      const x = hairPositions.getX(i), y = hairPositions.getY(i), z = hairPositions.getZ(i);
+      // A higher front hairline and fuller back keep the face visible from FOH.
+      hairPositions.setXYZ(i, x, y < 0 && z > 0 ? y * 0.35 : y, z);
+    }
+    forms.hair.computeVertexNormals();
   }
-  shape.head.computeVertexNormals();
-  const hairPositions = shape.hair.attributes.position;
-  for (let i = 0; i < hairPositions.count; i++) {
-    const x = hairPositions.getX(i), y = hairPositions.getY(i), z = hairPositions.getZ(i);
-    // A higher front hairline and fuller back keep the face visible from FOH.
-    hairPositions.setXYZ(i, x, y < 0 && z > 0 ? y * 0.35 : y, z);
-  }
-  shape.hair.computeVertexNormals();
-  Object.values(shape).forEach(g => geometries.add(g));
+  [...Object.values(shape), ...Object.values(distant)].forEach(g => geometries.add(g));
   const pixels = new Uint8Array(64 * 64 * 4);
   for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
     const at = (y * 64 + x) * 4;
@@ -218,15 +274,17 @@ export function createLotModels() {
     g.rotation.y = -rot * Math.PI / 2; g.position.set(object.x + rw / 2, 0, object.y + rh / 2);
     return g;
   }
-  function guest() {
+  function guest(detail = 'full') {
+    if (!['full', 'distant'].includes(detail)) throw new Error('Unknown guest detail');
     const g = new T.Group();
     const p = (size, pos, surface, form = 'cylinder') => {
       const mesh = part(g, size, pos, 0xffffff, 0, form, surface);
+      if (detail === 'distant') mesh.geometry = distant[form];
       const finish = form === 'head' ? 'face' : surface === 'clothing' || surface === 'trousers' ? 'cloth' : surface;
       mesh.material = material(0xffffff, 0, surface === 'skin' ? 0.62 : surface === 'hair' ? 0.72 : 0.9, finish);
       return mesh;
     };
-    p([0.23, 0.29, 0.14], [0, 0.575, 0], 'clothing', 'torso');
+    p([0.27, 0.32, 0.17], [0, 0.59, 0], 'clothing', 'torso');
     p([0.055, 0.05, 0.055], [0, 0.745, 0], 'skin');
     p([0.057, 0.065, 0.052], [0, 0.835, 0], 'skin', 'head');
     p([0.058, 0.026, 0.053], [0, 0.874, -0.005], 'hair', 'hair');
@@ -236,15 +294,15 @@ export function createLotModels() {
     };
     for (const side of [-1, 1]) {
       const x = side * 0.057, pivot = [x, 0.43, 0];
-      limb(p([0.077, 0.2, 0.09], [x, 0.33, 0], 'trousers'), 'hip', side, pivot);
-      limb(p([0.063, 0.18, 0.073], [x, 0.14, 0], 'trousers'), 'hip', side, pivot);
+      limb(p([0.077, 0.2, 0.09], [x, 0.33, 0], 'trousers', 'thigh'), 'hip', side, pivot);
+      limb(p([0.063, 0.18, 0.073], [x, 0.14, 0], 'trousers', 'calf'), 'hip', side, pivot);
       limb(p([0.075, 0.046, 0.13], [x, 0.023, 0.025], 'shoes', 'box'), 'hip', side, pivot);
     }
     for (const side of [-1, 1]) {
       const pivot = [side * 0.135, 0.715, 0];
       const arm = mesh => limb(mesh, 'shoulder', side, pivot);
-      const sleeve = arm(p([0.074, 0.15, 0.074], [side * 0.135, 0.64, 0], 'clothing')); sleeve.rotation.z = side * 0.12;
-      arm(p([0.05, 0.19, 0.05], [side * 0.148, 0.475, 0.005], 'skin'));
+      const sleeve = arm(p([0.084, 0.16, 0.084], [side * 0.125, 0.645, 0], 'clothing', 'sleeve')); sleeve.rotation.z = side * 0.12;
+      arm(p([0.052, 0.19, 0.052], [side * 0.143, 0.475, 0.005], 'skin', 'forearm'));
       arm(p([0.026, 0.035, 0.022], [side * 0.148, 0.36, 0.008], 'skin', 'sphere'));
     }
     return g;

@@ -23,6 +23,19 @@ try {
   assert.equal(first.before.renderedFrames, 0); assert.equal(first.before.pendingRender, true);
   assert.equal(first.after.renderedFrames, 1); assert.equal(first.after.pendingRender, false);
   assert.equal(first.after.camera.yaw, 135); assert.deepEqual(first.pick, { x: 12, y: 8 }); assert.equal(first.unchanged, true);
+  const detail = await page.evaluate(async () => {
+    backend.preset('wide'); await new Promise(requestAnimationFrame); const wide = backend.info();
+    backend.preset('foh'); await new Promise(requestAnimationFrame); const close = backend.info();
+    backend.preset('wide'); await new Promise(requestAnimationFrame); const back = backend.info();
+    return { wide, close, back };
+  });
+  for (const state of Object.values(detail)) {
+    assert.equal(state.representativeGuests, 150);
+    assert.equal(state.presentation.guestDetail.full + state.presentation.guestDetail.distant, 150);
+  }
+  assert.ok(detail.wide.presentation.guestDetail.distant > 0);
+  assert.ok(detail.close.presentation.guestDetail.full > detail.wide.presentation.guestDetail.full, 'camera-only close view restores detailed geometry');
+  assert.deepEqual(detail.back.presentation.guestDetail, detail.wide.presentation.guestDetail);
   const paused = await page.evaluate(async () => {
     const before = backend.info().renderedFrames; backend.draw(input); backend.pause();
     for (let i = 0; i < 5; i++) backend.setCamera({ yaw: 37 });

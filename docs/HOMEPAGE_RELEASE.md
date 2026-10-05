@@ -59,3 +59,22 @@ re-audit every game mechanic or older cross-project audit finding.
 Edit `src/hub/catalog.mjs` and `src/hub/template.html`, then run `npm run hub:build`.
 Refresh real gameplay captures before `npm run hub:social`. Stage new files
 before `npm run admin:index`; the catalog drift check must remain clean.
+
+## Cover integration check correction (October 5)
+
+CI [37278816549](https://github.com/DaveHomeAssist/mixmash/actions/runs/37278816549)
+reported 1,363,823 bytes after visiting every detail panel. That cumulative journey
+includes the six canonical covers; the approved brief limits **initial** homepage
+transfer to 500,000 bytes. A fresh first-load probe on Dominic measured 422,208
+bytes in Chromium and 423,574 in WebKit.
+
+The landing check now applies the unchanged limit immediately after the initial
+network-idle navigation. It records cumulative detail-journey bytes separately,
+checks visible cover decoding, and preserves all route, focus, theme, layout,
+no-game-runtime and save-preservation assertions. Artwork, lazy loading and
+production runtime are unchanged. Final integrated CI remains a separate gate.
+
+The corrected full `npm run smoke:landing` passes on Dominic: 14 Chromium/WebKit
+viewport views, fallback, theme, history, selection, initial budget, offline hub,
+stale-cache replacement and game-save preservation. This is source verification,
+not deployed acceptance.

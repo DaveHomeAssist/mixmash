@@ -36,6 +36,7 @@ const report = {
   fixtureSha256: hash(fixture), runs: [], errors: [],
 };
 const save = () => writeFile(join(output, 'report.json'), JSON.stringify(report, null, 2));
+report.protocol.windowSetup = { stableMs: 15000, deadlineMs: 60000, scope: 'Require unchanged native dimensions, screen, density and focus before loading the fixture; timed resize/focus/visibility rejection remains unchanged.' };
 await save();
 const server = await startStaticServer(); let browser;
 try {
@@ -50,7 +51,26 @@ try {
       const cdp = await context.newCDPSession(page), { windowId } = await cdp.send('Browser.getWindowForTarget');
       const available = await page.evaluate(() => ({ left: screen.availLeft, top: screen.availTop, width: screen.availWidth, height: screen.availHeight }));
       await cdp.send('Browser.setWindowBounds', { windowId, bounds: { ...available, windowState: 'normal' } });
-      await page.bringToFront(); await page.waitForFunction(() => document.hasFocus()); await page.waitForTimeout(500);
+      await page.bringToFront(); await page.waitForFunction(() => document.hasFocus());
+      record.windowSetup = await page.evaluate(async ({ stableMs, deadlineMs }) => {
+        const snapshot = () => ({ width: innerWidth, height: innerHeight, outerWidth, outerHeight,
+          screenWidth: screen.width, screenHeight: screen.height, dpr: devicePixelRatio,
+          focused: document.hasFocus(), visibility: document.visibilityState });
+        const started = performance.now(), changes = [];
+        let current = snapshot(), changedAt = started;
+        while (performance.now() - started < deadlineMs) {
+          await new Promise(resolve => setTimeout(resolve, 250));
+          const next = snapshot(), now = performance.now();
+          if (JSON.stringify(next) !== JSON.stringify(current)) {
+            changes.push({ afterMs: now - started, from: current, to: next });
+            current = next; changedAt = now;
+          }
+          if (current.focused && current.visibility === 'visible' && now - changedAt >= stableMs) {
+            return { waitedMs: now - started, stableMs: now - changedAt, final: current, changes };
+          }
+        }
+        throw new Error('Native window did not settle before fixture loading; no timing sample collected');
+      }, report.protocol.windowSetup);
       record.nativeWindow = await page.evaluate(() => ({ viewport: { width: innerWidth, height: innerHeight }, outer: { width: outerWidth, height: outerHeight }, screen: { width: screen.width, height: screen.height }, dpr: devicePixelRatio, focused: document.hasFocus(), visibility: document.visibilityState }));
       assert.equal(await page.evaluate(code => __frontOfHouse.importCode(code), saveCode), true);
       await page.waitForFunction(() => __frontOfHouse.rendererStatus().active);
