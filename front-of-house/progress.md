@@ -1,6 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
 
+## 2026-10-05: Combined sample evidence delivery
+
+Preserved the concurrentbe34a18 correction to the delivered touring slice's remaining-evidence field and integrated native evidence32bc302 into the same PR120. Runtime remains byte-identical tob8bfe08, so the six native windows and review captures retain their original source attribution. The initial renderer regression job111609049469 passed in CI37261347354; final combined-head checks remain independently required. The old watch process was absent after interruption and was not treated as a running merge. This combined delivery avoids publishing runtime and its frozen native report in separate releases.
+
+
 ## 2026-10-05: Sample review and native proof
 
 At frozenb8bfe08, all six full native running-Lot/HUD windows pass source/raw/fixture hashes, statistics and exact minute25→65 engine replay. Apple M4/Metal, Chrome154, actual5120×1286/DPR1;59.9439–59.9772Hz, no intervals over50ms, no focus/visibility/resize/context errors. No other local browser/build/test work from this task overlapped the windows. This supports the current available-host sample, not all-device or human qualification.

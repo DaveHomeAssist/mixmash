@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Sample surfaces locally verified; release CI running",
+  "head": "Refined 3D sample with current native evidence",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model12 has434 passing repository tests, exact3D gameplay/recovery checks, all eight review views and six valid current native Mac windows near60Hz with no50ms stalls. PR120 final CI and hosted delivery continue. Final visual/physical calibration, supported low-power/phone and human career acceptance remain open.",
+  "statusReason": "Model12 has434 passing local repository tests, exact3D gameplay/recovery checks, eight actual review views and six valid current native Mac windows near60Hz with no50ms stalls. PR120 owns integration and hosted delivery evidence. Final visual/physical calibration, supported low-power/phone and human career acceptance remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -34,8 +34,8 @@
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected."
   ],
   "nextStep": {
-    "title": "Complete sample delivery and outstanding acceptance evidence",
-    "why": "Finish PR120 CI/Pages/live checks and publish the frozen native report. Keep final visual, physical scale, supported low-power/phone and human career evidence separate.",
+    "title": "Complete release acceptance for the refined sample",
+    "why": "Use PR120 for current CI/Pages/hosted delivery. Retain exact-source sample review and native measurements; close final visual, physical scale, supported low-power/phone and human career evidence before promotion.",
     "doneWhen": "Complete venue mechanics/scenes, navigation and remaining release acceptance with separate source, CI, hosted and device evidence.",
     "effort": "L",
     "owner": "either",
@@ -462,7 +462,9 @@
       ],
       "intervalsOver50ms": 0,
       "scope": "Apple M4/Metal native5120x1286 DPR1 running-Lot full HUD; exact source/raw/fixture hashes and engine-state replay. No phone/low-power or human acceptance."
-    }
+    },
+    "sampleReleasePR": "https://github.com/DaveHomeAssist/mixmash/pull/120",
+    "sampleInitialRegression": "Renderer regression job111609049469 in CI37261347354 passed forb8bfe08; combined final-head CI is tracked by PR120."
   },
   "decisionState": {
     "D1": {
@@ -1395,7 +1397,7 @@
               "CI37255270879 found9px of Linux compact Deals overflow. Short complete statements preserve every term and pass20 corrected local browser/theme/size combinations. The phone meter row now spans the available width, with label/value visibility asserted; combined-source28 player checks and20 meter combinations pass. Replacement CI is required; the failing run remains recorded.",
               "PR117: CI37256822385 passed; merged761d2d0ec8207e0e26eccf359d8cb2dfd684e38c; Pages built2026-10-05T03:20:23Z.35 hosted files match. Full player suite, Festival geometry/eight exact settlements, four navigation journeys and sixteen touring-prop picks pass. Offline touring rental1500 and cash/journal1404274 replay exactly."
             ],
-            "remaining": "Final both-browser/full regression, CI, merge/Pages/hosted acceptance and complementary career replay on integrated source."
+            "remaining": "Final human art/camera acceptance, physical calibration and supported phone/low-power qualification; human career acceptance remains separate from the completed automated replay."
           }
         ]
       },
