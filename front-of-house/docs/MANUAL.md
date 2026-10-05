@@ -60,6 +60,12 @@ Focus the overview with Tab. Arrow keys pan, Enter or Space centers the site, Ho
 
 An act cannot play both Festival stages in one booking. Earlier-tier headliners need the relationship shown in the bill. If no side act accepts a door deal, choose another venue rather than opening a second contract.
 
+### Festival touring requirements
+
+New Split Acre bookings require one **VIP deck** and one **Buses** compound before doors. Suggested layout includes both. Use their Build tools (V and U) to place them; rotate with R and use Select to inspect or remove them. The deck uses 4×3 tiles, 2kW and $600 per show. The bus compound uses 6×3 tiles, 6kW and $900. Their shared $1,500 rental is paid once at opening. They consume space and can block views; they do not add tickets or income.
+
+The **Rider** page in Deal terms, Sound and views and Stage accounts explains these requirements. Settlement Costs separates Rider rentals from other site and production costs. Older unmarked bookings retain their original rules.
+
 ### Included Club lights
 
 New Fathom Hall bookings include house lights in the room rent. Suggested layout omits an unnecessary lighting tower. An extra tower still costs rental money and uses power; it adds no lighting quality bonus. Pillars still block views, and a placed portable PA replaces house sound coverage. Older unmarked bookings keep their original lighting terms.

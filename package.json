@@ -26,6 +26,7 @@
     "sim": "node mars/sim/simulate.mjs",
     "sim:front-of-house": "node front-of-house/sim/simulate.mjs",
     "sim:front-of-house-tiers": "node front-of-house/sim/tiers.mjs",
+    "sim:front-of-house-career": "node front-of-house/sim/career.mjs",
     "docs:front-of-house": "node front-of-house/tools/docs.mjs",
     "admin:index": "node admin/build-catalog.mjs",
     "vendor:front-of-house": "node front-of-house/tools/vendor-three.mjs",

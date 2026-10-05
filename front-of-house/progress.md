@@ -1,5 +1,11 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-04: Touring release integration
+
+Integrated committed delay preview52b9fdd and complete-career verification802b3c2 with touring controls2b3248a. Both career commands and CI report-drift gates are retained. The stricter replay now selects current Club room and Festival touring policies, includes both support fixtures and their1500 rental, and passes30 complete careers/515 signed shows/30 exact every-action reload pairs. Model revision10 retains delay/deck/coach geometry and all rotated footprint tests; cachev60 distinguishes the combined runtime. The player guide now explains touring controls and costs. Initial repository verification found only the stale generated catalog; it was regenerated before final checks. Combined CI, runtime browser and hosted proof remain pending.
+
+PR113 passed CI37253221986 and merged7908a67440d9958054554e686327362f3c4ce5e5 at02:24:41Z; Pages built02:25:05Z. Hosted tier report, simulator, test, README and catalog match the merged source. This report release does not establish human tier acceptance.
+
 ## 2026-10-04: Festival touring player verification
 
 Festival touring controls and source-authored deck/coach models are implemented.432 repository tests,77 final targeted checks, build/docs/assets and the100-seed earned tier cohort pass; careful completion remains99/100 with every completed career settling another day. Both browsers select both3D props at37/135 degrees on desktop and touch phone. Actual full orbit/zoom, screenshots, supplied action runner and offline1500 touring rental/stage/journal replay pass. Chromium player journeys pass; final both-browser, full regression, CI and hosted acceptance are still running or pending.
@@ -37,6 +43,9 @@ FOH-V02b12 and CT-DEC-25 add optional house lighting to new Club bookings. Sugge
 
 Curfew full regression resumed at the screenshot timeout: the unchanged food-vendor rail now passes all six journeys, and sanitation passes all seven. Remaining rails and PR110 checks are running. This records the failed capture and successful retry without changing a gameplay assertion or test timeout.
 
+## 2026-10-04: Complete career verification
+
+FOH-V02d adds a separate deterministic four-room career simulator and generated [CAREER_BASELINE.md](docs/CAREER_BASELINE.md). Normal starting cash and earned unlocks are preserved. Published ranges and quotes drive booking; strongest affordable incident responses do not preview hidden outcomes. Thirty fixed seeds compare uninterrupted careers with reload after every action, full receipts/journals/history/relationships, affordable charges and duplicate-signing refusal. Thirty careers complete with515 signed shows; all thirty uninterrupted/reload pairs and five verdicts pass. 416 repository tests, build, generated references and the unchanged eleven Lot simulator verdicts pass. CI and delivery remain pending. Existing Lot balance targets and production runtime are unchanged; human career and balance acceptance remain separate.
 
 ## 2026-10-04: Loam Shell technical scene
 
@@ -802,3 +811,9 @@ PR110 merged4dee773 and Pages built at02:00:26Z. Reconciled the guide/native evi
 Integrated guide sourcecf3865b and deployed curfew4dee773 into the delay/touch branch. Both appended briefs/progress histories are preserved; the document-capture fix coexists with the new curfew controls. Cachev58r1 distinguishes this source from curfewv56 and concurrent house-lightingv57. Earlier65fc08e completed the entire local player suite; new integrated source checks and actual Festival/modal/curfew journeys precede replacement CI and hosted proof. No independent rule or balance change is introduced by this correction.
 
 The integrated source passes423repository tests, build, asset validation, generated references and the unchanged11Lot verdicts. Festival selection/scene checks pass at1440,375and2560 with both tower rotations/camera yaws, followed by8exact legacy/versioned classic/3D show/reload comparisons. Dedicated curfew journeys are running; final-head CI and hosted correction proof remain required. An initial command used a nonexistent npm alias; invoking the existing curfew smoke file fixes the harness invocation without a product change.
+
+## 2026-10-04 — Career replay integration with curfew
+
+Integrated parent5794977, retaining the delivered curfew/guide and delay inspection correction. The strict career booking policy now explicitly selects current outdoor curfew terms as well as room profiles. Thirty full uninterrupted/reload pairs are being regenerated against this integrated source; earlier515show results remain source04d7408 evidence. No runtime formula or goal change. Final source verification, replacement CI and delivery follow.
+
+Final current-policy replay passes30/30careers and515signed shows, with30exact uninterrupted/every-action-reload pairs. Full normalized saves, receipts and journals match; a repeat is byte-identical.423repository tests, build, generated references/catalog and the unchanged11Lot verdicts pass. Runtime remains exactly parent5794977. CI, stacked merge and deployed report proof follow; broader100-seed peer tier/held-night evidence is preserved separately.
