@@ -250,3 +250,20 @@ All five are now closed out.
   new catalog rail accepts a `PW_EXECUTABLE_PATH` override so it stays runnable
   in constrained environments; CI leaves it unset and uses Playwright's own
   managed browser.
+
+## Homepage festival catalog (2026-10-05)
+
+[Approved brief](HOMEPAGE_BRIEF.md) · [Game evidence](HOMEPAGE_EVIDENCE.md).
+HOME-01 A, HOME-02 A and HOME-03 A are accepted. Dave signed off Front of House
+for an Early playable hub listing only; noindex and sitemap exclusion remain.
+The catalog, viewport shell, real gameplay tickets and Pick for me are implemented.
+The [release record](HOMEPAGE_RELEASE.md) documents the local acceptance snapshot;
+[status projection](HOMEPAGE_STATUS.json) feeds the private Next Steps Board.
+CI and direct gh-pages release remain independently verified gates. HUB-103's looping laser treatment is superseded by finite hover/focus
+motion. The homepage defers initial offline-worker registration to the first
+played game, avoiding downloads of game runtimes while browsing the catalog.
+Existing workers and game routes keep the same offline storage contract.
+
+Next: run the required CI against the candidate, advance gh-pages directly on success,
+then verify Pages and the live homepage. Provider evidence supplies final delivery status.
+Real physical-device/controller acceptance is separate.

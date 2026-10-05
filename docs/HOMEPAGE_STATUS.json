@@ -1,0 +1,81 @@
+{
+  "id": "mixmash",
+  "name": "MixMash Studio (other games)",
+  "status": "amber",
+  "head": "Homepage candidate based on bb44ccb",
+  "lastActivity": "2026-10-05",
+  "statusReason": "Approved homepage implemented and locally verified. CI, direct gh-pages delivery and live readback have separate provider evidence. Other game audit findings are outside this update.",
+  "nextStep": {
+    "title": "Complete direct homepage release and verify the public result",
+    "doneWhen": "Required CI passes, the same candidate reaches gh-pages, Pages succeeds and live catalog behavior is verified.",
+    "owner": "Codex"
+  },
+  "evidence": {
+    "checkedOn": "2026-10-05",
+    "sourceRevision": "bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd plus homepage candidate"
+  },
+  "findings": [],
+  "phases": [
+    {
+      "name": "Homepage update",
+      "goal": "Expose every playable browser game with accurate copy and a festival poster layout",
+      "items": [
+        "HOME-01 A accepted: festival poster",
+        "HOME-02 A accepted: Front of House Early playable; noindex/sitemap unchanged",
+        "HOME-03 A accepted: Pick for me",
+        "Catalog, artwork, layout, integration and local verification implemented"
+      ],
+      "gate": "Required CI before direct gh-pages delivery, then Pages and live readback"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/SPRINT_BOARDS.md",
+      "why": "Canonical planning owner"
+    },
+    {
+      "path": "docs/HOMEPAGE_BRIEF.md",
+      "why": "Approved scope and acceptance"
+    },
+    {
+      "path": "docs/HOMEPAGE_EVIDENCE.md",
+      "why": "Players, controls, saving and launch evidence"
+    },
+    {
+      "path": "docs/HOMEPAGE_RELEASE.md",
+      "why": "Local acceptance snapshot"
+    },
+    {
+      "path": "src/hub/catalog.mjs",
+      "why": "Six-game public catalog"
+    }
+  ],
+  "decisionsForDave": [],
+  "context": [
+    "Projection of the homepage section in SPRINT_BOARDS.md.",
+    "Accepted HOME-01, HOME-02 and HOME-03 decisions remain settled.",
+    "Preserve older private studio audit findings and the dedicated Front of House card."
+  ],
+  "verify": [
+    "npm test",
+    "npm run hub:check",
+    "npm run vercel-build",
+    "npm run smoke:catalog",
+    "npm run smoke:landing",
+    "SMOKE_GAMES=hub npm run smoke:mobile"
+  ],
+  "links": [
+    {
+      "label": "Homepage",
+      "url": "https://mixmash.games/"
+    },
+    {
+      "label": "CI",
+      "url": "https://github.com/DaveHomeAssist/mixmash/actions/workflows/ci.yml"
+    }
+  ],
+  "unknowns": [
+    "Physical-device, controller and two-person local play acceptance.",
+    "Older game audit findings not reverified by this homepage update."
+  ]
+}

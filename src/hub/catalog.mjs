@@ -1,0 +1,141 @@
+/** Public browser-game catalog. Claims are supported by docs/HOMEPAGE_EVIDENCE.md. */
+export const studio = {
+  "title": "MixMash Studio | Free Browser Games",
+  "headline": "Small games. Big personality.",
+  "intro": "Fight for the stage. Build a colony. Run the show. Free games, ready to play in your browser.",
+  "note": "Every game here is playable now. Each card shows how far along it is.",
+  "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management."
+};
+export const games = [
+  {
+    "id": "mixmash",
+    "name": "MIXMASH",
+    "route": "/play/",
+    "published": true,
+    "genre": "Platform fighter",
+    "status": "Released",
+    "action": "Play now",
+    "accent": "pink",
+    "hook": "Pick your DJ. Own the stage.",
+    "description": "Battle a friend or the CPU in a music-fueled platform fighter. Pick your producer, choose your venue, and throw down.",
+    "image": "mixmash.jpg",
+    "alt": "Two DJs battling on a neon platform stage in MIXMASH.",
+    "players": "Solo or local versus",
+    "controls": "Keyboard",
+    "saving": "Options, progress and supported match snapshots stay in this browser. Use the game menu to manage them.",
+    "evidence": "mixmash",
+    "verified": "2026-10-05",
+    "related": [
+      {
+        "title": "Game guide",
+        "href": "/home.html"
+      }
+    ]
+  },
+  {
+    "id": "front-of-house",
+    "name": "Front of House",
+    "route": "/front-of-house/",
+    "published": true,
+    "genre": "Venue management",
+    "status": "Early playable",
+    "action": "Play preview",
+    "accent": "orange",
+    "hook": "Book the band. Build the venue.",
+    "description": "Make show night pay. Book an act, build a venue, promote the show and settle the money. Start with a parking lot and earn your next room.",
+    "image": "foh.jpg",
+    "alt": "A concert venue being built for show night in Front of House.",
+    "players": "Solo",
+    "controls": "Mouse or keyboard",
+    "saving": "Your career saves in this browser. Export a save code from the game menu to keep a backup or move it to another device.",
+    "evidence": "front-of-house",
+    "verified": "2026-10-05",
+    "related": []
+  },
+  {
+    "id": "pitch",
+    "name": "Pitch Riot",
+    "route": "/pitch/",
+    "published": true,
+    "genre": "Arcade soccer",
+    "status": "Released",
+    "action": "Play now",
+    "accent": "blue",
+    "hook": "Beat the keeper. Bring the hype.",
+    "description": "Take on the CPU, run the halftime show, and bring the hype into the second half. Quick feet. Big goals. One more match.",
+    "image": "pitch.jpg",
+    "alt": "Players challenging for the ball on Pitch Riot’s green soccer pitch.",
+    "players": "Solo vs CPU",
+    "controls": "Keyboard",
+    "saving": "Audio preferences stay in this browser. A match starts fresh when you reload.",
+    "evidence": "pitch",
+    "verified": "2026-10-05",
+    "related": [
+      {
+        "title": "Full Cover Ops (external)",
+        "href": "https://systembydave.com/fifa-pitch-crew/"
+      }
+    ]
+  },
+  {
+    "id": "mars",
+    "name": "MarsScape",
+    "route": "/mars/",
+    "published": true,
+    "genre": "Colony survival",
+    "status": "Playable preview",
+    "action": "Play preview",
+    "accent": "rust",
+    "hook": "Make a home on the red planet.",
+    "description": "Mine, craft, and grow a colony on Mars. Build the systems that will get you through the Great Storm.",
+    "image": "mars.jpg",
+    "alt": "Resource seams and colony buildings on MarsScape’s rust-colored terrain.",
+    "players": "Solo",
+    "controls": "Mouse or keyboard",
+    "saving": "Online play uses a server-backed colony session. Offline play has a local fallback. Keep an exported save as a backup; clearing browser data can remove your session access.",
+    "evidence": "mars",
+    "verified": "2026-10-05",
+    "related": []
+  },
+  {
+    "id": "garden",
+    "name": "Garden OS: Story Mode",
+    "route": "/garden/",
+    "published": true,
+    "genre": "Garden adventure",
+    "status": "Playable preview",
+    "action": "Play preview",
+    "accent": "green",
+    "hook": "A little soil. A whole lot of story.",
+    "description": "Grow a backyard story through soil, seasons, and the choices you make along the way. Meet your neighbors and bring the garden to life.",
+    "image": "garden.jpg",
+    "alt": "The backyard raised bed and gardener in Garden OS Story Mode.",
+    "players": "Solo",
+    "controls": "Mouse and keyboard",
+    "saving": "Story Mode has three local save slots and export/import backups. The embedded game stores these under Garden OS. Its Free Play and Planner modes are session-only.",
+    "evidence": "garden",
+    "verified": "2026-10-05",
+    "related": []
+  },
+  {
+    "id": "empires",
+    "name": "Age of Dave",
+    "route": "/empires/",
+    "published": true,
+    "genre": "Real-time strategy",
+    "status": "Playable preview",
+    "action": "Play preview",
+    "accent": "violet",
+    "hook": "Build a settlement. Command an army.",
+    "description": "Choose a civilization, gather resources, and take on the AI in a classic strategy skirmish. The in-game title is EMPIRES.",
+    "image": "empires.jpg",
+    "alt": "Villagers and a settlement surrounded by unexplored terrain in Age of Dave.",
+    "players": "Solo vs AI",
+    "controls": "Mouse and keyboard",
+    "saving": "Treat each browser skirmish as a new session. This catalog does not promise a resumable campaign.",
+    "evidence": "empires",
+    "verified": "2026-10-05",
+    "related": []
+  }
+];
+export const playableGames = games.filter(game => game.published);

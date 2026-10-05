@@ -572,3 +572,11 @@ Moving service representatives use a restrained opposing hip/shoulder gait; queu
 ## CT-DEC-30: Source-authored guest anatomy
 
 **Accepted 2026-10-05 by Codex under Dave's CT-DEC-19 delegated authority.** Refine the existing guest silhouette with shaped chest/waist/shoulders, rounded sleeve caps and tapered arms/legs. Keep sixteen shared part batches, all existing animation pivots, reference height, palette, ground contact and representative limits. Use source-owned indexed geometry with a bounded vertex budget; no new textures, imported art or dependencies. This addresses the concrete model12 close-view anatomy gap under FOH-V01e without changing routes, simulation or saves. Final realistic style, physical calibration and supported-device acceptance remain separate.
+
+## Homepage visibility sign-off (2026-10-05)
+
+Dave approved HOME-02 A and explicitly signed off the first playable for the
+MixMash homepage. List Front of House as **Early playable**. This supersedes
+the historical no-hub-card hold, including that portion of earlier phase notes.
+Keep `noindex` and the sitemap exclusion unchanged. This does not approve
+search indexing or certify separate final-art, hardware or performance gates.

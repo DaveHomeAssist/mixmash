@@ -1,5 +1,10 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Homepage release integration
+
+Integrated delivered records3aaaa81 and the concurrent homepage release without changing guest geometry, engine or saves. Preserved both CT-DEC-30 and the homepage visibility sign-off. Homepage assets and offline precache remain intact; cache66 distinguishes the anatomy candidate from the homepage's cache65. Earlier435-test and remote browser evidence retains source1ef69b8 attribution; combined-head CI and hosted acceptance follow.
+
+
 ## 2026-10-05: Runner placement and native setup evidence
 
 The complete twelve-script player regression passed at823db8f. Two full native Mac attempts invalidated their first window on resize during warmup; raw evidence is retained and no new native performance claim is made. Native setup now requires fifteen seconds of stable dimensions, screen, density and focus before importing the fixture, with a sixty-second deadline. Timed resize/focus/context rejection and the ten-second warmup/thirty-second measurement are unchanged. Syntax and seven statistics/evaluator checks pass. A quick setup check completed its fixed sample at59.98Hz with no50ms stalls; the next page closed, so the overall check is incomplete and never counts as full qualification.

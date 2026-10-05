@@ -282,7 +282,9 @@ export const FILE_NOTES = {
   'robots.txt': { description: 'Crawler rules and the sitemap pointer.' },
   'sitemap.xml': { description: 'Public URL list for search engines. The admin index and unlisted routes are deliberately absent.' },
   'vercel.json': { description: 'Vercel configuration for the MarsScape authority project: the www redirect and per-function time limits.' },
+  'docs/HOMEPAGE_STATUS.json': { description: 'Public-safe projection of the approved homepage work in SPRINT_BOARDS.md; delivery evidence is verified separately.' },
   'assets/og-card.png': { description: '1200 × 630 social sharing card for the studio pages.' },
+  'assets/previews/foh.jpg': preview('Front of House'),
   'assets/previews/empires.jpg': preview('EMPIRES'),
   'assets/previews/garden.jpg': preview('Garden OS'),
   'assets/previews/mars.jpg': preview('MarsScape'),
@@ -290,7 +292,7 @@ export const FILE_NOTES = {
   'assets/previews/pitch.jpg': preview('PITCH RIOT'),
   'src/kit/save.js': { description: 'MixKit save codes: encodes and decodes portable save strings that games can share.' },
   'test/kit-save.test.mjs': { description: 'Unit tests for MixKit save-code encoding, decoding and corrupt-input handling.' },
-  'test/landing-smoke.mjs': { description: 'Playwright rail for the landing page at 320 to 1440 px: keyboard order, focus, reduced motion, hit targets, image budgets and contrast (smoke:landing).' },
+  'test/landing-smoke.mjs': { description: 'Playwright rail for the landing page in Chromium and WebKit at 320 to 3840 px: native launch links, details, theme persistence, focus, fallback, hit targets and image budget (smoke:landing).' },
   'test/static-server.mjs': { description: 'Shared static host, Chromium launch options and page-failure tracking used by every Playwright rail.' },
 
   // MIXMASH
