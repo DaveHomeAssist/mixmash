@@ -5,6 +5,7 @@ import { playableGames, studio } from './catalog.mjs';
 const root = new URL('../../', import.meta.url);
 const escape = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const picture = (game, eager = false) => `<img src="/assets/previews/${escape(game.image)}" width="1000" height="650" alt="${escape(game.alt)}" decoding="async"${eager ? ' fetchpriority="high"' : ' loading="lazy"'}>`;
+const cover = game => `<img src="/assets/covers/${escape(game.cover)}" width="1168" height="784" alt="${escape(game.coverAlt)}" decoding="async" loading="lazy">`;
 const cards = playableGames.map((g, i) => `
 <article class="game-card ${g.accent}" data-game="${g.id}" aria-labelledby="title-${g.id}">
   <div class="game-vis">${picture(g, i === 0)}<span class="ticket-number" aria-hidden="true">MM / ${String(i + 1).padStart(2, '0')}</span></div>
@@ -14,7 +15,7 @@ const cards = playableGames.map((g, i) => `
 const details = playableGames.map(g => `
 <section class="view detail-view ${g.accent}" id="game-${g.id}" aria-labelledby="heading-${g.id}" data-game-detail="${g.id}">
   <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">${escape(g.status)}</span></div>
-  <div class="detail-body"><div class="detail-art">${picture(g)}<span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
+  <div class="detail-body"><div class="detail-art">${cover(g)}<span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
     <div class="detail-copy" role="region" aria-label="${escape(g.name)} details" tabindex="0" data-web2-scroll><p class="eyebrow">${escape(g.genre)}</p><h2 id="heading-${g.id}" tabindex="-1">${escape(g.name)}</h2><p class="detail-hook">${escape(g.hook)}</p><p>${escape(g.description)}</p>
     <dl><div><dt>Players</dt><dd>${escape(g.players)}</dd></div><div><dt>Controls</dt><dd>${escape(g.controls)}</dd></div></dl><h3>Saving progress</h3><p>${escape(g.saving)}</p><div class="related-links">${g.related.map(link => `<a href="${escape(link.href)}">${escape(link.title)} ↗</a>`).join('')}</div></div>
   </div><div class="detail-actions"><a class="button primary" href="${g.route}" aria-label="${escape(g.action)}: ${escape(g.name)}">${escape(g.action)} <span aria-hidden="true">↗</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
