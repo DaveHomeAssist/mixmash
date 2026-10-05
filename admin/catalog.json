@@ -302,6 +302,10 @@
         {
           "name": "npm run sim:front-of-house",
           "description": "Regenerate docs/BALANCE_BASELINE.md. CI fails on drift or a FAIL verdict."
+        },
+        {
+          "name": "npm run sim:front-of-house-tiers",
+          "description": "Regenerate the100-seed later-tier career baseline, checking earned progression, held nights, cancellation, cash and continued Festival play."
         }
       ]
     },
@@ -1720,6 +1724,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/TIER_BASELINE.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House tier career baseline",
+      "description": "Generated from the real engine on 100 fixed ordinary-career seeds per strategy. No injected cash, unlocks or relationships.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/TIER_BASELINE.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/WORLD.md",
       "project": "front-of-house",
       "category": "docs",
@@ -2600,6 +2614,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-tier-career.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-tier-career.mjs",
+      "description": "Full ordinary-career actions, replay and continued Festival play; no funded/unlocked fixture.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-tier-career.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test/fixtures/save-v1.json",
       "project": "front-of-house",
       "category": "tests",
@@ -2917,6 +2941,16 @@
       "title": "simulate.mjs",
       "description": "Front of House balance simulator. Runs the real engine (no DOM) and writes front-of-house/docs/BALANCE_BASELINE.md with PASS/FAIL verdicts.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/simulate.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/tiers.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "tiers.mjs",
+      "description": "Deterministic ordinary-career acceptance across all four rooms. No hidden-draw planning.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/tiers.mjs",
       "open": null
     },
     {

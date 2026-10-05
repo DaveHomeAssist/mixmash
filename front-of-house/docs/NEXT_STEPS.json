@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "137db3a release verified; curfew in CI; Club lighting locally verified",
+  "head": "Club lighting PR112 in CI;100-seed tier career verdicts pass locally",
   "lastActivity": "2026-10-04",
   "status": "amber",
-  "statusReason": "Curfew release checks continue on PR110. Included Club lighting is locally verified:425 tests, seven player journeys, exact old-save parity and offline cash/journal proof. CI and hosted Club acceptance remain. Festival VIP/bus infrastructure, whole-career balance and final release/device acceptance remain open.",
+  "statusReason": "Curfew PR110 has passed the complete local browser regression. Club lighting PR112 has passed its targeted local player and offline checks. Both are in required CI. The full-tier simulator passes its100-seed acceptance thresholds and is integrated into CI;427 repository tests, build, docs/catalog and the unchanged Lot baseline pass locally. Festival VIP/bus infrastructure and final release/device/human gates remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed optional 3D Lot, live services and recorded guest movement; remaining performance, guest operations and release gates are in progress."
   },
@@ -304,6 +304,11 @@
     "Physical touch/device, camera/art and human career acceptance pending."
   ],
   "evidence": {
+    "tierCareer": {
+      "baseRevision": "8c8e3c778a38501c40b456d32dcc3803e849c8bf",
+      "checkedOn": "2026-10-04",
+      "localChecks": "The100-seed matched ordinary-career cohort passes all declared automated thresholds:100/100 careful Club and Amphitheater progression,99/100 Festival completion and another settled Festival day for all99; careless Club progression69/100. Failed seeds are retained, including careful Festival seed10. Every reached Club cohort plays at least five shows. Actual one/two/three-night holds, cancellation copies, deferred reputation, cash/journal/signing and normalized receipt checks run throughout. This is current-mechanics regression proof; new Festival VIP/bus infrastructure must rerun it. No gameplay value or goal is retuned."
+    },
     "clubLighting": {
       "baseRevision": "12a501afddb219b2c7a00b1a4ae224f09a4e001d",
       "checkedOn": "2026-10-04",
