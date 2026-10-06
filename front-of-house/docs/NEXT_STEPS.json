@@ -8,7 +8,7 @@
   "head": "Native HUD evidence and release acceptance",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open.",
+  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open. Current-source16-view Walter review packet is audited and prepared; all human/physical/calibration/rights gates remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -37,7 +37,7 @@
   ],
   "nextStep": {
     "title": "Complete final release acceptance",
-    "why": "Available current-source native Lot and paused-Festival diagnostics are recorded, with earlier failures retained. Use the prepared existing RELEASE checklist to obtain remaining supported physical device, current Mac, sustained-workload, human art/camera/career, calibration and original-image rights evidence before full launch.",
+    "why": "Available current-source native diagnostics and the audited16-view art/camera review packet are prepared, with earlier failures and observed visibility limits retained. Use the existing RELEASE checklist to obtain remaining supported physical-device, current-Mac, sustained-workload, human art/camera/career, calibration and original-image rights evidence before full launch.",
     "doneWhen": "Required supported-device targets, final art/camera/career review, physical calibration and provenance satisfy the existing release checks; no automated or screenshot proxy substitutes for missing acceptance.",
     "effort": "L",
     "owner": "either",
@@ -1009,7 +1009,54 @@
       "sourceRevision": "b746258d74278269eb047537294165d1d1e3e0bd",
       "path": "front-of-house/docs/RELEASE.md#4-current-revision-acceptance",
       "status": "prepared; all human/device/calibration/rights acceptance boxes remain open",
-      "scope": "Preserve existing career/save code; eight source-tied art views, yaw37/135/zoom/pitch/reduced motion/touch review; actual desktop/phone Book-to-Done/reload; remaining device matrix, physical calibration, image rights and final launch. D1\u2013D11 settled under CT-DEC-19."
+      "scope": "Preserve existing career/save code; eight source-tied art views, yaw37/135/zoom/pitch/reduced motion/touch review; actual desktop/phone Book-to-Done/reload; remaining device matrix, physical calibration, image rights and final launch. D1\u2013D11 settled under CT-DEC-19.",
+      "reviewPacket": {
+        "checkedOn": "2026-10-05",
+        "capturedAtUTC": "2026-10-06T00:01:55.574Z",
+        "finishedAtUTC": "2026-10-06T00:02:33.001Z",
+        "sourceRevision": "87f8300aac86506179b45c8024b539295a4cc375",
+        "runtimeEquivalentTo": "b746258d74278269eb047537294165d1d1e3e0bd",
+        "modelRevision": "lot-sample-15",
+        "host": "Walter, Windows SSH desktop",
+        "browser": "Microsoft Edge154.0.4258.53",
+        "graphics": "ANGLE NVIDIA GeForce RTX3070Laptop Direct3D11",
+        "viewport": {
+          "width": 1000,
+          "height": 676,
+          "dpr": 1
+        },
+        "gameHudCaptures": 8,
+        "controlledRendererReferences": 8,
+        "presets": [
+          "Wide",
+          "FOH",
+          "Stage",
+          "Plan"
+        ],
+        "lighting": [
+          "daylight Build",
+          "paused Show"
+        ],
+        "controlledGuestCount": 10,
+        "sourceDigestsChecked": 114,
+        "servedDigestsChecked": 43,
+        "imageHashesAndNativeGuardsChecked": 16,
+        "engineFixturesIndependentlyReplayed": 2,
+        "reportSha256": "2fc3260e82f5e56b12df4170ee29ca7c231bf13738fb7f75721be45621b669fc",
+        "helperSha256": "f3ec16a6162562646a4a3d3e93c57bced7d1e8482edaa4cca5372abe1bf64d4b",
+        "observations": [
+          "HUD panels cover parts of close camera views and the bottom of Plan",
+          "Paused Show FOH guests obscure the stage",
+          "Fine anatomy is small in Wide; unlit props have limited night contrast",
+          "Natural Build has no guests; daylight reference guests exist only in controlled renderer"
+        ],
+        "performanceSamplesAdded": 0,
+        "humanAcceptance": "open",
+        "physicalDeviceAcceptance": "open",
+        "calibration": "open",
+        "rights": "open",
+        "runnerReservation": "released; source and artifacts preserved"
+      }
     }
   },
   "decisionState": {
@@ -1166,7 +1213,8 @@
         "status": "technical-delivery-verified-acceptance-open",
         "evidence": [
           "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
-          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained."
+          "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
+          "2026-10-05: Current-source87f8300/model15 private review packet on Walter Edge154.0.4258.53/NVIDIA RTX3070Laptop/D3D11 at native1000x676/DPR1: eight real-game/HUD Wide/FOH/Stage/Plan day-Build and paused-Show views plus eight controlled renderer references with ten guests. All114source/43served canonical Git hashes,16PNG hashes/native guards and two independent exact engine-action fixture replays pass; all16 images inspected. Build naturally has no guests; controlled daylight guests are reference-only. HUD overlap, paused FOH crowd occlusion and limited unlit night detail are retained review observations. No performance sample, physical-device/calibration or human acceptance inferred; existing gates stay open."
         ],
         "slices": [
           {
@@ -2018,7 +2066,8 @@
           "PR120 merged 51a8b9678b08670ccb8fbb4c64adbb8d6fb928bf; Pages built 2026-10-05T05:28:24Z. Final-head general tests and renderer diagnostic repeat pass. All 42 hosted files match before and after the complete player suite; classic/3D journeys, moving/reduced-motion pixels and 3D offline signing/reload pass. The original Intel renderer rejection remains recorded in PERFORMANCE.md.",
           "2026-10-05 name screening covers all 11 current acts and 4 rooms in WORLD.md; retain related-name proximity and bounded-search limitations. Original 40 raster image origins/licences remain unrecorded; no public promotion or asset replacement acceptance inferred.",
           "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
-          "2026-10-05: b746258/model15 native Windows diagnostics: Walter6isolated-renderer windows and Duncan Edge/AMD6running-Lot+6paused-Festival full-HUD windows. Independent source/raw/fixture/adapter hashes, statistics, exact state/overview and actual images verified. First Festival fixed59.7358Hz retained; Chrome setup failures and remaining supported-device/physical/human/calibration/rights gates stay open. Existing RELEASE human checklist prepared with no acceptance inferred."
+          "2026-10-05: b746258/model15 native Windows diagnostics: Walter6isolated-renderer windows and Duncan Edge/AMD6running-Lot+6paused-Festival full-HUD windows. Independent source/raw/fixture/adapter hashes, statistics, exact state/overview and actual images verified. First Festival fixed59.7358Hz retained; Chrome setup failures and remaining supported-device/physical/human/calibration/rights gates stay open. Existing RELEASE human checklist prepared with no acceptance inferred.",
+          "2026-10-05: Current-source87f8300/model15 private review packet on Walter Edge154.0.4258.53/NVIDIA RTX3070Laptop/D3D11 at native1000x676/DPR1: eight real-game/HUD Wide/FOH/Stage/Plan day-Build and paused-Show views plus eight controlled renderer references with ten guests. All114source/43served canonical Git hashes,16PNG hashes/native guards and two independent exact engine-action fixture replays pass; all16 images inspected. Build naturally has no guests; controlled daylight guests are reference-only. HUD overlap, paused FOH crowd occlusion and limited unlit night detail are retained review observations. No performance sample, physical-device/calibration or human acceptance inferred; existing gates stay open."
         ],
         "slices": [
           {

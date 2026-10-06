@@ -1,5 +1,12 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-05: Current source camera review packet prepared
+
+At deployed records revision87f8300/model15, Walter Edge154.0.4258.53/NVIDIA RTX3070Laptop/D3D11 captured eight actual game/HUD views through the real Camera menu and eight controlled renderer references at native1000×676/DPR1. Four presets cover natural daylight Build and paused Show at service minute65. Natural Build has no guests; ten controlled reference guests expose daylight anatomy without changing the actual game fixture. All114source/43served hashes match immutable Git blobs, all16PNG hashes/dimensions/native guards pass, and both game fixtures independently replay exactly from engine actions. All16images inspected and private artifacts retained. Walter's source is clean, original measured sourceb746258 preserved, and this session's claim/reservation released.
+
+The packet retains HUD overlap in close/Plan views, FOH crowd stage occlusion and limited unlit night detail. Static images prepare human review; no walking/gestures, physical calibration, performance/device matrix or human acceptance is inferred. No new timing windows, production runtime/save changes or public images. D1–D11 remain settled. Existing RELEASE checklist and next-step evidence updated; all phase acceptance states and original rights inventory preserved. Scoped record validation, final-head CI, merge, exact Pages and board delivery follow.
+
+
 ## 2026-10-05: Current native diagnostics and release review preparation
 
 PR126 delivery records mergedb746258 after mandatory CI37368795577 attempt3; Pages built22:30:57Z, all44 checked hosted files/eightchanged docs match, and postmergeCI37382914441 passes. No Front of House runtime changed. On Walter the existing complete isolated-renderer protocol records six valid30s model15 windows on Chrome154/NVIDIA RTX3070/D3D11 at1008×673/DPR1, about60Hz. Source/raw hashes match and crowd capture inspected; final crowd uses150distant/0full guests, so this is not full-HUD/close-view/device-matrix qualification.

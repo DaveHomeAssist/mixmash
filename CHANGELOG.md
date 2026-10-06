@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: prepare an independently audited current-source16-view camera review packet, retain HUD/crowd/night visibility limits, and keep human, physical-device, calibration and rights acceptance open.
+
 - Front of House: record current native renderer and full-HUD Lot/Festival diagnostics, retain Chrome setup failures and the below60Hz Festival window, and prepare the existing human/device/calibration/rights release checklist.
 
 - Front of House: record delivered guest anatomy with final CI, independent raw audit and complete hosted/offline/recovery proof; retain earlier failures and open native-device, physical and human acceptance gates.
