@@ -63,6 +63,14 @@ Complete the Lot presentation with the actual fence kit, grid, incident markers 
 
 **Risks / acceptance:** Check finite indexed geometry/normals, bounded total vertex cost, coherent joint attachment, stable bounds and resource disposal. Inspect shoulder/neck overlap and clothing silhouettes in actual rendered captures; preserve static reduced motion, representative counts, picking/recovery and classic/3D settlement parity. Run current-source regression and performance checks. Final art and supported physical-device acceptance remain separate from this technical refinement.
 
+### Classic crowd conservation correction
+
+**Problem / outcome:** The supported unmarked Show path projects200 dots for150 attendees at density1.5. Revalidation at5b443f6 reproduces the earlier522f3f2 finding; integer-density controls already conserve150. Use the existing cumulative whole-guest allocation for every fallback scene, so fractional tile capacity cannot create people.
+
+**Scope / exclusions:** Classic presentation only, retaining the1600-dot cap, tile ordering, picking and equipment. Actual service actor/worker projection is unchanged. Engine attendance, cash, costs, progression, saves, physical calibration, Three geometry and performance targets are unchanged; cachev70 identifies the correction.
+
+**Acceptance / current evidence:** At implementation50ee2de, Dominic Chromium149 renders exactly150 dots for the established seed170 legacy fixture, with integer-density controls and immutable scene input. Both Chromium and WebKit verify42 density/count combinations on cached and direct boards alongside existing pixel/picking, invalidation, resize, fallback and disposal checks.439 repository tests, build, vendor/assets, generated references and unchanged Lot simulation pass. The complete twelve-script player suite also passes. Four Chromium/WebKit1440/375 legacy journeys draw150/150, preserve mid-Show reload, exactly match the frozen5b443f6 complete receipt and signed state in the same browser, and retain3947cash after signed reload. Final-head CI, Pages and hosted behavior remain delivery gates. Preserve the earlier200-dot evidence and all frozen native measurements; no human or physical-device acceptance follows from this correction.
+
 ## FB-02 Distinct venue scenes
 
 **Art decision:** Follow CT-DEC-18's more realistic 3D target after the Lot style sample and renderer pass; the existing simplified archive scenes are references, not approved final assets.
@@ -741,3 +749,9 @@ Tier cohort clarification: both later-tier strategies earn the Lot unlock with t
 #### FOH-V02b15 — Touring player controls and source-authored models
 
 This follows the verified core in PR115. Enable the policy on new player Festival bookings; disclose rentals before booking, append marked Suggested layouts, expose V/U palette controls and exact Site receipt lines, and show a bounded Rider page. Author deck/coach geometry from the supplied reference subjects without importing opaque originals. Preserve all earlier room behavior, normal selection/rotation/undo, and classic fallback. Verify actual orbit/zoom with the new models under GAME-1–GAME-3, plus four rotated footprints, desktop/phone browser controls, compact windows, offline signing and a fresh earned100-seed cohort with support enabled. Final art, physical calibration and human acceptance remain separately evidenced.
+
+### 2026-10-05 integrated correction and available Intel route
+
+Integrated source1b1d82d preserves delivered PR129 HUD/camera/fence/night changes and the whole-guest legacy allocation at cachev71. Dominic passes439 tests, build/vendor/assets/docs/unchanged simulation, Chromium/WebKit floor rails, complete twelve-script player regression,3D/navigation/resolution and four frozen-browser exact legacy reload/full-receipt/signed-state journeys. Final integrated-head CI, Pages and hosted/offline delivery remain pending.
+
+A bounded headless Chromium149.0.7827.55 probe at1000x676/DPR1 confirms Intel HD Graphics630 through Mesa/EGL in the actual3D HUD, with rendered frames, error-free presentation and exact state after camera changes. The earlier Vulkan route failed to create a context; the cached container has no Vulkan ICD manifests but includes Intel OpenGL drivers. Preserve that failure and its classic fallback. This establishes an available hardware route, not a native-display, sustained60/30fps, physical phone/current-Mac or human pass. No timing windows were added. Before measuring this route, extend the existing diagnostic harness deliberately to record the EGL launch options and preserve its established scenes,10s warm-up/30s samples/three repeats, source/fixture/raw digests and all existing CI limits; do not use unrecorded browser-option overrides or relabel old native windows.

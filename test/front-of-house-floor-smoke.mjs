@@ -51,6 +51,24 @@ try {
         assert.equal(result.sameDiagnostics, true, `${label}: picking/paint diagnostics`);
         return result.cache;
       };
+      // Fractional tile capacity must not create extra guests in legacy scenes.
+      const counts = await page.evaluate(() => {
+        const serialize = () => JSON.stringify({ ...scene, clearSet: [...scene.clearSet], blockedSet: [...scene.blockedSet] });
+        const original = serialize();
+        const results = [];
+        for (const density of [0.5, 0.8, 1, 1.5, 2, 3]) {
+          for (const crowd of [0, 1, 2, 3, 149, 150, 151]) {
+            boards.forEach(board => board.draw({ ...scene, density, crowd }));
+            results.push({ density, crowd, dots: boards.map(board => board.info().crowd.length) });
+          }
+        }
+        boards.forEach(board => board.draw(scene));
+        return { results, unchanged: serialize() === original };
+      });
+      for (const { density, crowd, dots } of counts.results) {
+        assert.deepEqual(dots, [crowd, crowd], `${type.name()} density ${density}: ${crowd} guests`);
+      }
+      assert.equal(counts.unchanged, true, 'crowd projection preserves scene input');
       const boxes = await check('pending sprites');
       assert.equal(await page.evaluate(() => boards[0].info().spritesReady), false);
       releaseSprites();
