@@ -206,8 +206,39 @@ try {
   assert.equal(settling.phase, 'settle');
   assert.ok(settling.settlement && Number.isInteger(settling.settlement.net));
   assert.equal(await page.isVisible('#win'), true, 'the settlement opens in its own window');
-  const sheet = await page.textContent('#win');
-  assert.ok(sheet.includes('SECTION A') && sheet.includes('SECTION B') && sheet.includes('SECTION C'), 'the settlement sheet has its three sections');
+  assert.equal(await page.getAttribute('#win-body > .tabbar [aria-selected="true"]', 'data-tab-name'), 'Summary', 'the settlement opens on its calm summary');
+  const summary = await page.textContent('#win');
+  assert.match(summary, new RegExp(`Promoter (profit|loss).*${Math.abs(settling.settlement.net).toLocaleString('en-US')}`, 's'), 'the summary shows the exact promoter result');
+  assert.match(summary, new RegExp(`Attendance.*${settling.settlement.attendance}`, 's'), 'the summary shows exact attendance');
+  assert.match(summary, new RegExp(`Crowd satisfaction.*${settling.settlement.satisfaction}`, 's'), 'the summary shows exact satisfaction');
+  assert.equal(await page.locator('#win .settlement-note').count(), 2, 'the summary has one win and one priority');
+  assert.equal(await page.textContent('#win-foot .primary'), 'Sign & Continue', 'the primary action explains signing and progression');
+  await page.click('#win-body > .tabbar [data-tab-name="Ledger"]');
+  for (const [name, section] of [['Revenue', 'SECTION A'], ['Costs', 'SECTION C'], ['Deal', 'SECTION B'], ['Crowd', 'Crowd satisfaction']]) {
+    await page.click(`#win [data-settlement-page="${name}"]`);
+    assert.match(await page.textContent(`#win [data-settlement-panel="${name}"]`), new RegExp(section), `${name} remains in the detailed ledger`);
+    const fit = await page.evaluate(() => { const body = document.querySelector('#win-body'); return body.scrollHeight - body.clientHeight; });
+    assert.ok(fit <= 1, `${name} ledger page fits without window scrolling (${fit})`);
+  }
+  await page.focus('#win [data-settlement-page="Crowd"]');
+  await page.keyboard.press('Home');
+  assert.equal(await page.getAttribute('#win [data-settlement-page][aria-selected="true"]', 'data-settlement-page'), 'Revenue', 'ledger pages support Home and arrow-key navigation');
+  await page.click('#win-body > .tabbar [data-tab-name="Summary"]');
+  for (const [width, height] of [[1440, 900], [1024, 700], [390, 844], [375, 812], [360, 800]]) {
+    await page.setViewportSize({ width, height });
+    for (const view of ['Summary', 'Ledger']) {
+      await page.click(`#win-body > .tabbar [data-tab-name="${view}"]`);
+      const pages = view === 'Ledger' ? ['Revenue', 'Costs', 'Deal', 'Crowd'] : [null];
+      for (const name of pages) {
+        if (name) await page.click(`#win [data-settlement-page="${name}"]`);
+        const overflow = await page.evaluate(() => { const body = document.querySelector('#win-body'); return body.scrollHeight - body.clientHeight; });
+        assert.ok(overflow <= 1, `${width}x${height} ${name || view} fits without settlement window scrolling (${overflow})`);
+      }
+    }
+    await page.click('#win-body > .tabbar [data-tab-name="Summary"]');
+    if (width === 1440 || width === 360) await page.screenshot({ path: join(output, `settle-${width}.png`) });
+  }
+  await page.setViewportSize({ width: 1280, height: 800 });
   await checkNoScroll(page, 'settle');
   await page.screenshot({ path: join(output, 'settle.png') });
   await page.click('[data-act="accept"]');
@@ -263,7 +294,10 @@ try {
   // The career carries on: the done screen shows the Lot goal, and the next show offers two acts.
   assert.ok(await page.isVisible('.career'), 'the done screen shows the goal that unlocks the Club');
   await page.click('[data-act="last-sheet"]');
-  assert.ok((await page.textContent('#win')).includes('SECTION B'), 'Last settlement reopens the signed sheet');
+  assert.equal(await page.getAttribute('#win-body > .tabbar [aria-selected="true"]', 'data-tab-name'), 'Summary', 'Last settlement reopens on the signed summary');
+  await page.click('#win-body > .tabbar [data-tab-name="Ledger"]');
+  await page.click('#win [data-settlement-page="Deal"]');
+  assert.ok((await page.textContent('#win')).includes('SECTION B'), 'Last settlement retains the detailed deal ledger');
   assert.equal(await page.locator('#win [data-act="accept"]').count(), 0, 'a signed sheet has nothing to sign');
   await page.keyboard.press('Escape');
   await page.click('[data-act="history"]');
@@ -749,6 +783,14 @@ try {
   await page7.locator('#panel .tabbar [role="tab"]', { hasText: 'Problem' }).click();
   await page7.locator('[data-act="respond"]:visible:not([disabled])').first().click();
   await tabsFit('Settle');
+  await page7.locator('#win-body > .tabbar [role="tab"]', { hasText: 'Ledger' }).click();
+  for (const name of ['Revenue', 'Costs', 'Deal', 'Crowd']) {
+    await page7.click(`#win [data-settlement-page="${name}"]`);
+    const ledgerFit = await page7.evaluate(() => { const body = document.querySelector('#win-body'); return body.scrollHeight - body.clientHeight; });
+    assert.ok(ledgerFit <= 1, `phone ${name} ledger page fits without scrolling (${ledgerFit})`);
+  }
+  await page7.locator('#win-body > .tabbar [role="tab"]', { hasText: 'Summary' }).click();
+  await page7.screenshot({ path: join(output, 'settle-phone.png') });
   await page7.click('[data-act="accept"]');
   await tabsFit('Done');
   await page7.setViewportSize({ width: 1280, height: 900 });
@@ -932,7 +974,8 @@ try {
   await pilotMobile.waitForSelector('[data-act="respond"]');
   assert.equal((await game(pilotMobile)).show.pilotCrew, 'gate');
   await pilotMobile.click('[data-act="respond"]:visible:not([disabled])');
-  await pilotMobile.locator('#win-body .tabbar [role="tab"]', { hasText: 'Crowd' }).click();
+  await pilotMobile.locator('#win [data-tab-name="Ledger"]').click();
+  await pilotMobile.locator('#win [data-settlement-page="Crowd"]').click();
   const crowdFit = await pilotMobile.evaluate(() => {
     const body = document.querySelector('#win-body'); return body.scrollHeight - body.clientHeight;
   });

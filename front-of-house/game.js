@@ -50,6 +50,13 @@ const TIPS = {
   flow: 'Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane.',
   incident: 'Incident handling scored lowest. Compare the response cost, crowd result and act payout.',
 };
+const WINS = {
+  sound: 'Sound and lighting met this show’s needs.',
+  sightlines: 'The crowd had a clear view of the stage.',
+  amenities: 'Bars and restrooms kept pace with the crowd.',
+  flow: 'Guests moved through entry without a major loss.',
+  incident: 'The show-night response protected the result.',
+};
 
 const $ = (sel) => document.querySelector(sel);
 const money = (n) => `${n < 0 ? '−' : ''}$${Math.abs(Math.round(n)).toLocaleString('en-US')}`;
@@ -1202,10 +1209,35 @@ function respond(responseId) {
 // ---------------------------------------------------------------------------
 // Settle and done
 
-// The settlement sheet in three columns (revenue and the deal; costs; the crowd and what
-// carries over), with the stamp and the tip kept apart for the window's footer.
+function settlementRevenue(r) {
+  return r.ticketGross + r.bar + (r.foodIncome || 0) + (r.sponsor || 0) + (r.broadcast || 0)
+    + (r.second ? r.second.cash : 0) - (r.ticketing?.fee || 0);
+}
+
+function settlementSummary(r, v) {
+  const keys = Object.keys(WEIGHTS);
+  const strongest = keys.reduce((best, key) => r.parts[key] > r.parts[best] ? key : best, keys[0]);
+  const soldOut = r.attendance === v.capacity;
+  const profitable = r.net >= 0;
+  const crowdHappy = r.satisfaction >= D.PASS_SATISFACTION;
+  const verdict = profitable && crowdHappy ? soldOut ? 'Profitable sellout' : 'Successful show'
+    : !profitable ? 'Show finished at a loss' : 'Crowd result needs work';
+  const line = profitable && crowdHappy
+    ? `A ${soldOut ? 'sold-out' : 'profitable'} show. ${PART_LABELS[strongest]} led the night; ${PART_LABELS[r.weakest].toLowerCase()} is the clearest next improvement.`
+    : !profitable
+      ? `${r.attendance} guests attended, but the night did not cover every show cost and artist payment.`
+      : `The show finished in the black, but crowd satisfaction held the result back.`;
+  const priorityDetail = r.weakest === 'amenities'
+    ? `${v.bars} bars used · guideline ${Math.ceil(r.attendance / D.BAR_RATIO)}; ${v.restrooms} restrooms used · guideline ${Math.ceil(r.attendance / D.RESTROOM_RATIO)}`
+    : r.weakest === 'flow' && r.doorRush
+      ? `${r.doorRush.rushAdmitted}/${r.doorRush.rushArrivals} admitted during the rush · ${r.doorRush.lostWalkups} left`
+      : `${Math.round(r.parts[r.weakest] * 100)}% in this category`;
+  return { strongest, verdict, line, priorityDetail };
+}
+
+// Settlement is a calm summary first and an exact accounting document second. All values
+// still come from settlementFor; this layer only groups and explains them.
 function sheetParts(r, { signed: done }) {
-  const a = artistFor(state.booking.artistId);
   const v = evaluateVenue(state.venue);
   const deal = state.booking.deal;
   const response = findResponse(state.show.incidentId, state.show.responseId);
@@ -1238,20 +1270,12 @@ function sheetParts(r, { signed: done }) {
     return `<div class="sat-row"><span>${PART_LABELS[k]}</span><span class="bar" aria-hidden="true"><span style="width:${pct}%"></span></span><span class="num">${pct}%</span></div>`;
   }).join('');
   const pass = r.result === 'pass';
-  const tip = r.net < 0
-    ? 'The night lost money. Try a door deal, a different ticket price, or fewer rentals.'
-    : r.weakest === 'sound' && roomProfileFor(state.venue)
-      ? 'Use the included house system and lights. A placed portable PA replaces the house sound capacity.' : TIPS[r.weakest];
-  const head = `
-    <div class="sheet-head"><span><span class="live" aria-hidden="true"></span>SHOW SETTLEMENT · SHOW ${String(state.history.length + (done ? 0 : 1)).padStart(3, '0')}</span><span>${r.setTime || state.curfewNotice ? `<button class="receipt-link" data-act="set-time">${r.setTime ? `${clock(r.setTime.end / D.SET_SCHEDULE.close)} SET ENDED` : 'SET TIME UNAVAILABLE'}</button>` : `${clock(1)} CURFEW`}</span></div>
-    <div class="meta-strip">
-      <div><span class="meta-label">Headliner</span><span class="meta-val">${esc(a.name)}</span></div>
-      <div><span class="meta-label">Venue</span><span class="meta-val">${esc(venueSpec(state.venue).name)}</span></div>
-      <div><span class="meta-label">Deal</span><span class="meta-val hl">${deal === 'door' ? `Door (${Math.round(D.DOOR_SPLIT * 100)}%)` : deal === 'sponsor' ? 'Sponsor' : 'Guarantee'}</span></div>
-      <div><span class="meta-label">Attendance</span><span class="meta-val">${r.attendance} / ${v.capacity}</span></div>
-      <div><span class="meta-label">Satisfaction</span><span class="meta-val score">${r.satisfaction}/100</span></div>
-    </div>`;
+  const summary = settlementSummary(r, v);
+  const showNumber = String(state.history.length + (done ? 0 : 1)).padStart(3, '0');
+  const ended = r.setTime ? clock(r.setTime.end / D.SET_SCHEDULE.close) : clock(1);
+  const context = `<p class="settlement-context">Show ${showNumber} · ${r.setTime ? `<button class="receipt-link" data-act="set-time">${ended} set ended</button>` : `${ended} curfew`} · ${deal === 'door' ? `Door ${Math.round(D.DOOR_SPLIT * 100)}%` : deal === 'sponsor' ? 'Sponsor' : 'Guarantee'}</p>`;
   const serviceReceipts = r.services ? `<p class="hint">Prepaid ${money(r.services.prepaidCash)} + walk-ups ${money(r.services.walkupCash)} − refunds ${money(r.services.refunds)} = ${money(r.ticketGross)} ticket receipts. ${r.services.cancelledWalkups} future walk-ups cancelled; ${r.services.abandoned} guests left admission.</p>` : '';
+  const rushReceipt = r.doorRush ? `<p class="hint">Door rush: ${r.doorRush.waiting} queued · ${r.doorRush.lostWalkups} left · bar cap ${r.doorRush.barCapacity}. ${r.doorRush.choice === 'gate' ? 'One bar worker opened a second entry lane.' : 'The full bar crew stayed on service.'}</p>` : '';
   const revenue = `
     <div class="ledger">
       <div class="ledger-title">SECTION A · GROSS REVENUE</div>
@@ -1266,7 +1290,7 @@ function sheetParts(r, { signed: done }) {
           ${r.second ? `<tr><td>${esc(r.second.name)} (second stage)</td><td>${r.second.attendance} people</td><td class="num pos">${money(r.second.cash)}</td></tr>` : ''}
           ${r.food ? `<tr><td><button class="receipt-link" data-act="food-receipt">Food</button></td><td>25% house share</td><td class="num pos">${money(r.foodIncome)}</td></tr>` : '<tr class="faint"><td>Merch</td><td>No merch tent yet</td><td class="num">$0</td></tr>'}
         </tbody>
-        <tfoot><tr><td colspan="2">${r.ticketing ? 'After collection' : 'Total revenue'}</td><td class="num pos">${money(r.ticketGross + r.bar + (r.foodIncome || 0) + (r.sponsor || 0) + (r.broadcast || 0) + (r.second ? r.second.cash : 0) - (r.ticketing?.fee || 0))}</td></tr></tfoot>
+        <tfoot><tr><td colspan="2">${r.ticketing ? 'After collection' : 'Total revenue'}</td><td class="num pos">${money(settlementRevenue(r))}</td></tr></tfoot>
       </table>
     </div>`;
   const productionCategory = category => ['Audio','Lighting','Main stage','Side stage'].includes(category);
@@ -1285,33 +1309,52 @@ function sheetParts(r, { signed: done }) {
       <div class="ledger-title" style="padding:0;background:none;border:0">SECTION B · DEAL</div>
       ${split}${r.stageAccounts ? `<p>Side artist: ${money(r.stageAccounts.second.artistPay)}, withheld at signing.</p><button data-act="stages-open">Stage accounts</button>` : ''}
     </div>`;
-  const payouts = `
-    <div class="payouts" data-tab="Payout">
-      <div class="payout artist"><span class="meta-label">${r.stageAccounts ? 'Both artist payouts' : 'Artist payout'}</span><span class="amount">${money(r.artistTotal ?? r.artistPay)}</span>
-        <p>${r.stageAccounts ? `Main ${money(r.artistPay)} · Side ${money(r.stageAccounts.second.artistPay)}` : r.artistPay >= quotedAsk() ? 'Paid in full. The act leaves happy.' : `They expected ${money(quotedAsk())}.`}</p></div>
-      <div class="payout promoter ${r.net < 0 ? 'loss' : ''}"><span class="meta-label">Promoter net</span><span class="amount">${money(r.net)}</span>
-        <p>${r.doorRush ? `${r.doorRush.waiting} queued · ${r.doorRush.lostWalkups} left · bar cap ${r.doorRush.barCapacity}.` : 'Revenue after every cost and the artist.'}</p></div>
-    </div>`;
   const crowd = `
-    <div data-tab="Crowd">
+    <div>
       <h3>Crowd satisfaction ${r.satisfaction}/100</h3>
-      <div class="meters-sat">${parts}</div>${r.seating ? `<p class="hint">Shared quality ${r.seating.sharedSatisfaction}/100. Seat value ${r.seating.scores.seats}; lawn value ${r.seating.scores.lawn}. Attendance weights the final score.</p>` : ''}${serviceReceipts}
-    </div>
-    <div class="outcomes" data-tab="Payout">
-      <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
-      <div class="outcome"><span class="meta-label">Band relationship</span><span class="stat ${r.relDelta >= 0 ? 'pos' : 'neg'}">${signed(r.relDelta)}</span></div>
-      <div class="outcome"><span class="meta-label">${done && state.history.at(-1)?.cashAfter === undefined ? 'Cash on hand' : 'Cash after signing'}</span><span class="stat">${money(cashAfter)}</span><p class="lede">${done && state.history.at(-1)?.cashAfter === undefined ? 'Historical cash not recorded' : done ? `Started at ${money(cashBefore)}` : `Now ${money(state.cash)} · started at ${money(cashBefore)}`}</p></div>
+      <div class="meters-sat">${parts}</div>${r.seating ? `<p class="hint">Shared quality ${r.seating.sharedSatisfaction}/100. Seat value ${r.seating.scores.seats}; lawn value ${r.seating.scores.lawn}. Attendance weights the final score.</p>` : ''}${rushReceipt}${serviceReceipts}
     </div>`;
+  const financialRows = `
+    <dl class="settlement-bridge">
+      <div><dt>Total revenue</dt><dd class="pos">${money(settlementRevenue(r))}</dd></div>
+      <div><dt>Total show costs</dt><dd class="neg">${money(-r.costs.total)}</dd></div>
+      ${deal === 'door' || r.stageAccounts ? `<div><dt>${r.stageAccounts ? 'Artist payouts at signing' : 'Artist payout at signing'}</dt><dd class="neg">${money(-(r.artistTotal ?? r.artistPay))}</dd></div>` : ''}
+      <div class="settlement-bridge-total"><dt>Promoter result</dt><dd class="${r.net >= 0 ? 'pos' : 'neg'}">${money(r.net)}</dd></div>
+    </dl>`;
+  const summaryView = `
+    <section class="settlement-summary" data-tab="Summary" data-always-tabs>
+      ${context}
+      <div class="settlement-verdict">
+        <div><span class="meta-label">Promoter ${r.net >= 0 ? 'profit' : 'loss'}</span><strong class="settlement-profit ${r.net >= 0 ? 'pos' : 'neg'}">${money(r.net)}</strong></div>
+        <div class="settlement-secondary"><span><small>Attendance</small><strong>${r.attendance} / ${v.capacity}</strong></span><span><small>Crowd satisfaction</small><strong>${r.satisfaction} / 100</strong></span></div>
+        <p>${esc(summary.line)}</p>
+        <span class="settlement-stamp ${pass ? 'pass' : 'retry'}">${esc(summary.verdict)}</span>
+      </div>
+      <div class="settlement-summary-grid">
+        <section aria-labelledby="settlement-financial-heading"><h3 id="settlement-financial-heading">Financial result</h3>${financialRows}</section>
+        <div class="settlement-coaching">
+          <section class="settlement-note positive"><h3>What worked</h3><p>${esc(WINS[summary.strongest])}</p><small>${PART_LABELS[summary.strongest]} · ${Math.round(r.parts[summary.strongest] * 100)}%</small></section>
+          <section class="settlement-note priority"><h3>Next priority: ${esc(PART_LABELS[r.weakest])}</h3><p>${esc(TIPS[r.weakest])}</p><small>${esc(summary.priorityDetail)}</small></section>
+        </div>
+      </div>
+    </section>`;
+  const ledgerView = `
+    <section class="settlement-ledger" data-tab="Ledger" data-always-tabs>
+      ${context}
+      <div class="settlement-ledger-tabs" role="tablist" aria-label="Ledger pages">
+        ${['Revenue', 'Costs', 'Deal', 'Crowd'].map((name, index) => `<button type="button" role="tab" id="settlement-ledger-tab-${name.toLowerCase()}" data-settlement-page="${name}" aria-controls="settlement-ledger-${name.toLowerCase()}" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}">${name}</button>`).join('')}
+      </div>
+      <section id="settlement-ledger-revenue" role="tabpanel" aria-labelledby="settlement-ledger-tab-revenue" data-settlement-panel="Revenue">${revenue}</section>
+      <section id="settlement-ledger-costs" role="tabpanel" aria-labelledby="settlement-ledger-tab-costs" data-settlement-panel="Costs" hidden>${costs}</section>
+      <section id="settlement-ledger-deal" role="tabpanel" aria-labelledby="settlement-ledger-tab-deal" data-settlement-panel="Deal" hidden>${dealPart}</section>
+      <section id="settlement-ledger-crowd" role="tabpanel" aria-labelledby="settlement-ledger-tab-crowd" data-settlement-panel="Crowd" hidden>${crowd}</section>
+    </section>`;
   return {
-    body: `${head}
-      <div class="sheet-cols">
-        ${r.services || r.ticketing || r.seating || r.stageAccounts ? `<div class="sheet-col"><div data-tab="Revenue">${revenue}</div><div data-tab="Deal">${dealPart}</div></div>` : `<div class="sheet-col" data-tab="Revenue">${revenue}${dealPart}</div>`}
-        <div class="sheet-col" data-tab="Costs">${costs}</div>
-        <div class="sheet-col">${payouts}${crowd}</div>
-      </div>`,
+    body: `${summaryView}${ledgerView}`,
     foot: `
-      <span class="stamp ${pass ? 'pass' : 'retry'}">${pass ? 'Show settled' : 'Retry'}<small>${pass ? 'In the black, crowd happy' : r.net < 0 ? 'Net negative' : 'Crowd below 60'}</small></span>
-      <p class="tip"><strong>${pass ? 'For next time:' : 'Why it missed:'}</strong> ${esc(tip)}</p>`,
+      <div class="settlement-change"><span class="meta-label">Venue reputation</span><strong class="${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</strong></div>
+      <div class="settlement-change"><span class="meta-label">Band relationship</span><strong class="${r.relDelta >= 0 ? 'pos' : 'neg'}">${signed(r.relDelta)}</strong></div>
+      <div class="settlement-change cash"><span class="meta-label">${done && state.history.at(-1)?.cashAfter === undefined ? 'Cash on hand' : 'Cash after signing'}</span><strong>${money(cashAfter)}</strong><small>${done && state.history.at(-1)?.cashAfter === undefined ? 'Historical cash not recorded' : `Started at ${money(cashBefore)}`}</small></div>`,
   };
 }
 
@@ -1328,9 +1371,10 @@ function openSettlement(opener, { signed: done = false } = {}) {
   if (!r) return;
   const { body, foot } = sheetParts(r, { signed: done });
   const run = heldRunFor(state);
-  const action = !done && run?.remaining ? '<button type="button" class="primary" data-act="held-run-open">Choose next night</button>'
-    : done ? (state.show?.cancelled ? '<button data-act="held-run-open">Cancellation receipt</button>' : '') : '<button type="button" class="primary" data-act="accept">Sign the settlement</button>';
-  openWindow('settlement', done ? 'Last settlement' : 'Settlement', body, opener, {
+  const action = !done && run?.remaining ? '<button type="button" class="primary" data-act="held-run-open">Sign &amp; Continue</button>'
+    : done ? (state.show?.cancelled ? '<button data-act="held-run-open">Cancellation receipt</button>' : '') : '<button type="button" class="primary" data-act="accept">Sign &amp; Continue</button>';
+  const title = `${done ? 'Last show: ' : ''}${artistFor(state.booking.artistId).name} at ${venueSpec(state.venue).name}`;
+  openWindow('settlement', title, body, opener, {
     wide: true,
     foot: `${foot}${action}`,
   });
@@ -2114,14 +2158,41 @@ function rotate() {
   draw();
 }
 
+function selectSettlementPage(name, { focus = false } = {}) {
+  const root = el.winBody.querySelector('.settlement-ledger');
+  if (!root) return;
+  const buttons = [...root.querySelectorAll('[data-settlement-page]')];
+  const panels = [...root.querySelectorAll('[data-settlement-panel]')];
+  if (!buttons.some(button => button.dataset.settlementPage === name)) return;
+  buttons.forEach(button => {
+    const selected = button.dataset.settlementPage === name;
+    button.setAttribute('aria-selected', String(selected));
+    button.tabIndex = selected ? 0 : -1;
+    if (selected && focus) button.focus();
+  });
+  panels.forEach(panel => { panel.hidden = panel.dataset.settlementPanel !== name; });
+}
+
 el.win.addEventListener('click', event => {
   const preset = event.target.closest('[data-camera-preset]'), orbit = event.target.closest('[data-camera-orbit]');
+  const settlementPage = event.target.closest('[data-settlement-page]');
+  if (settlementPage) selectSettlementPage(settlementPage.dataset.settlementPage);
   if (preset && !preset.disabled) board.preset(preset.dataset.cameraPreset);
   if (orbit && !orbit.disabled) {
     const c = board.camera(), direction = orbit.dataset.cameraOrbit;
     board.setCamera({ yaw: c.yaw + (direction === 'left' ? -15 : direction === 'right' ? 15 : 0), pitch: c.pitch + (direction === 'up' ? 10 : direction === 'down' ? -10 : 0) });
   }
   if (preset || orbit) updateZoomButtons();
+});
+el.win.addEventListener('keydown', event => {
+  const current = event.target.closest('[data-settlement-page]');
+  if (!current || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  const buttons = [...current.closest('[role="tablist"]').querySelectorAll('[data-settlement-page]')];
+  const index = buttons.indexOf(current);
+  const next = event.key === 'Home' ? buttons[0] : event.key === 'End' ? buttons.at(-1)
+    : buttons[(index + (event.key === 'ArrowRight' ? 1 : buttons.length - 1)) % buttons.length];
+  event.preventDefault();
+  selectSettlementPage(next.dataset.settlementPage, { focus: true });
 });
 
 $('#zoom-in').addEventListener('click', () => zoomStep(1));

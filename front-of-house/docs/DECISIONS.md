@@ -578,6 +578,10 @@ Moving service representatives use a restrained opposing hip/shoulder gait; queu
 
 **Accepted 2026-10-05 by Codex under CT-DEC-19 delegated authority.** Keep model14 anatomy and surface detail for close guests. Small figures use the same authored contours, sculpt, materials, joints and poses with fewer radial/sphere subdivisions. Select by conservative projected physical pixel size with80px promotion and64px demotion hysteresis; never by frame rate, runner identity or benchmark detection. Each guest belongs to exactly one detail level. This extends CT-DEC-30's sixteen shared parts into two sets of sixteen instanced batches, bounded at32 allocated batches; attendance and representative limits do not change. Camera-only, resize/DPR and pose updates must refresh detail and shadows correctly. Final art, native/device performance and physical calibration remain separate gates; retain the unchanged paired CI baseline and limits.
 
+## CT-DEC-32: Settlement summary and authoritative ledger
+
+**Accepted 2026-10-06 by Dave through the supplied Front of House Settlement Redesign plan.** Settlement opens on a presentation-only Summary derived from the existing result: one promoter result, attendance, satisfaction, one generated verdict, one strongest dimension and one priority. Exact accounting and receipt links remain authoritative in four contained Ledger pages: Revenue, Costs, Deal and Crowd. The fixed footer carries reputation, relationship, cash after signing and one **Sign & Continue** action. Signed settlements reopen read-only in the same design. Preserve settlement formulas, one-time signing, held-run flow, saves, balance and public APIs.
+
 ## Homepage visibility sign-off (2026-10-05)
 
 Dave approved HOME-02 A and explicitly signed off the first playable for the
