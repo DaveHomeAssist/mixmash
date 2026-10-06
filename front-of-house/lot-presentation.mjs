@@ -169,7 +169,9 @@ export function createLotPresentation(models, { width = 24, depth = 16, pillars 
       }
       details.length = crowdCount; lastTime = t; viewKey = nextViewKey;
     }
-    grid.visible = !input.night || !!input.showClear; fence.material.opacity = input.night ? 0.25 : 0.45;
+    grid.visible = !input.night || !!input.showClear;
+    // Daylight needs a darker, firmer fence to read against the pale sky and the lot edge.
+    fence.material.color.set(input.night ? 0x778185 : 0x3d4549); fence.material.opacity = input.night ? 0.25 : 0.8;
     marker.visible = !!input.incident && input.incident !== 'rain';
     incident = null;
     if (marker.visible) {

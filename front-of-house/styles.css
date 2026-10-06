@@ -130,6 +130,7 @@ body:not([data-phase='build']) #board { cursor: default; }
 /* The camera buttons sit in the top strip; on phones they float over the board. */
 .camera-row { display: flex; gap: 4px; flex: none; }
 .camera-row button { min-width: 44px; padding: 0 10px; font-size: 1rem; }
+.camera-row .renderer-btn { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; }
 
 /* The board's status line: a short toast under the strip, centred on the clear part of
    the board. It fades a few seconds after each change. */
@@ -186,8 +187,10 @@ body .mixnav.is-idle { opacity: 1; }
 }
 body[data-phase='book'] .at-sheet,
 body[data-phase='promote'] .at-sheet { width: clamp(580px, 54vw, 760px); }
-/* The map dims behind the documents; Promote keeps it bright (docs/HUD.md section 4). */
-body[data-phase='book'] #board,
+/* The map dims behind the documents; Promote keeps it bright (docs/HUD.md section 4). Book
+   dims lightly: the empty lot is already dark, and a heavy dim against the light page made
+   it read as an unlit black slab. */
+body[data-phase='book'] #board { filter: brightness(0.85) saturate(0.9); }
 body[data-phase='settle'] #board,
 body[data-phase='done'] #board { filter: brightness(0.55) saturate(0.8); }
 
@@ -507,16 +510,17 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 :root:not([data-theme='dark']) button.danger,
 :root:not([data-theme='dark']) .bad,
 :root:not([data-theme='dark']) .neg { color: #9f1239; }
-:root:not([data-theme='dark']) .checklist { color: #854d0e; }
+:root:not([data-theme='dark']) .checklist,
+:root:not([data-theme='dark']) .readouts .warn { color: #854d0e; }
 :root:not([data-theme='dark']) .checklist.ok,
 :root:not([data-theme='dark']) #fence-btn[aria-pressed='true'],
 :root:not([data-theme='dark']) .pos { color: #166534; }
 :root:not([data-theme='dark']) .win-foot { background: var(--panel-alt); }
 
 /* ---------- Narrower windows ---------- */
-/* The strip makes room for the camera buttons: the game's name is read out but not shown,
-   and the turn button shows only its arrow. */
-@media (max-width: 1439px) {
+/* The strip makes room for the camera buttons and the 2D/3D switch: the game's name is read
+   out but not shown. */
+@media (max-width: 1599px) {
   .brand { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
   .wide-only { display: none; }
 }
@@ -525,7 +529,9 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .stepper li:not([aria-current]) .step-name {
     position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap;
   }
-  .topbar { gap: 8px 14px; }
+  .topbar { gap: 8px 10px; }
+  .stepper li { padding: 6px 8px; }
+  .meters { gap: 10px; }
 }
 @media (max-width: 1100px) {
   .tagline { display: none; }
@@ -573,6 +579,8 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
     padding: 4px; gap: 2px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px;
   }
   .camera-row button { width: 44px; padding: 0; }
+  /* Phones keep four camera buttons beside the sheet controls; 3D stays in Menu, Camera. */
+  .camera-row .renderer-btn { display: none; }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .tiles:has(input[value="vip-deck"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }

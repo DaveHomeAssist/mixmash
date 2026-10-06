@@ -94,7 +94,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | --- | --- |
 | Purpose | Read the night's money and sign it |
 | Arrives from | Show |
-| Shows | A one-line summary (people and promoter net) and **Open the settlement**. The settlement window: header (act, room, deal, attendance, satisfaction), Section A gross revenue, Section B costs, Section C the deal, artist payout, promoter net, the satisfaction parts, reputation and relationship changes, cash on hand, the stamp, the "For next time" tip and **Sign the settlement** |
+| Shows | A one-line summary (people and promoter net) and **Open the settlement**. The settlement window: header (act, room, deal, attendance, satisfaction), Section A gross revenue, Section B the deal, Section C costs, artist payout, promoter net, the satisfaction parts, reputation and relationship changes, cash after signing (with cash now), the stamp, the "For next time" tip and **Sign the settlement** |
 | Controls → engine | Sign → `acceptSettlement`. Close returns to the summary without signing |
 | Phone | Settlement window tabs: Revenue, Costs, Payout, Crowd |
 | Leaves to | Done, or Show for the next night of a run |
@@ -160,7 +160,7 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | Escape | Window/menu first, otherwise Build | Closes the dialog/menu; otherwise cancels placement or bulldozing and returns to Select |
 | 1 to 8 | Build | Picks Stage, PA S, PA M, Lights, Bar, Restroom, Gate, Exit |
 | Arrows | Board, Build | Moves the build cursor |
-| Enter or Space | Board, Build | Places with a placement tool, or inspects the object in Select |
+| Enter or Space | Board, Build | Places with a placement tool, or inspects the object in Select (Space acts on release; held with a drag it pans) |
 | Delete or Backspace | Board, Build | Removes at the cursor |
 | R | Board, Build | Rotates the next object |
 | B | Board, Build | Bulldoze on or off |
@@ -170,7 +170,7 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | + / − / 0 | Board | Zoom in, out, fit |
 | Shift + arrows | Board, zoomed | Pans |
 | Mouse wheel | Board | Zooms |
-| Middle drag (any drag outside Build) | Board, zoomed | Pans |
+| Middle drag, right drag or Space + drag (any drag outside Build) | Board, zoomed | Pans; a right click without a drag removes in Build |
 
 Every key above comes from one table, `front-of-house/controls.mjs`, which both key handlers in `game.js` read. The menu's key list must match it word for word, and `test-engine.mjs` fails on two bindings that one key press could trigger together, or on a key the browser owns (Tab, F1 to F12, Ctrl or Cmd with W, T, N or L).
 
