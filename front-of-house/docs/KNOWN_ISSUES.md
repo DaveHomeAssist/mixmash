@@ -37,7 +37,7 @@ The backup costs $100, earns $37 more at the bar and reduces the artist's door-d
 
 | ID | Fixed in | Issue |
 | --- | --- | --- |
-| FOH-CROWD-REPRESENTATION | Implementation50ee2de; remote count/floor verification passed, delivery pending | Supported legacy scenes now allocate whole guests across fractional tile capacity:150 attendees draw150 dots rather than200. Service actor/worker projection, engine outcomes and saves are unchanged. |
+| FOH-CROWD-REPRESENTATION | Implementation50ee2de; remote count/floor/player/save/sign verification passed, delivery pending | Supported legacy scenes now allocate whole guests across fractional tile capacity:150 attendees draw150 dots rather than200. Service actor/worker projection, engine outcomes and saves are unchanged. |
 | KI-15 | PR117/119, final CI37258873878 and100 hosted compact cases | Deal Help overflow is resolved with unclipped labels and44px touch targets. The original failing CI37255270879 remains historical evidence. |
 | KI-04 | Release copy correction (2026-10-04) | Incident advice now describes the cost/result/payout trade-off without promising that spending saves the night. Sound advice checks the room system before recommending rentals. |
 | KI-05 | Release copy correction (2026-10-04) | Act labels the booked artist; its tooltip and accessible name identify the relationship. |

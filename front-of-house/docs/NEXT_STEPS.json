@@ -8,7 +8,7 @@
   "head": "Classic crowd correction and remaining release acceptance",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open. Current-source16-view Walter review packet is audited and prepared; all human/physical/calibration/rights gates remain open. Confirmed classic crowd-count correction50ee2de is remote count/floor verified; full player regression, final-head CI and Pages delivery remain pending. No full-phase acceptance inferred.",
+  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open. Current-source16-view Walter review packet is audited and prepared; all human/physical/calibration/rights gates remain open. Confirmed classic crowd-count correction50ee2de is remote count/floor verified; full player/save/sign regression passes; final-head CI and Pages delivery remain pending. No full-phase acceptance inferred. PR128 review documentation is exact-Pages verified atef47093 with40matching checked paths.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -33,15 +33,16 @@
     "PR106/PR108: Festival room profile and spatial delays delivered; eight hosted Festival/eight seating journeys,27 source matches and exact offline tower costs/journal at137db3a.",
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.",
     "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
-    "PR126: delivery records mergedb746258; mandatory CI37368795577 attempt3 and postmergeCI37382914441 pass, Pages built2026-10-05T22:30:57Z, all44 checked hosted files/eight changed documents match. Runtime remains the PR122 qualified source."
+    "PR126: delivery records mergedb746258; mandatory CI37368795577 attempt3 and postmergeCI37382914441 pass, Pages built2026-10-05T22:30:57Z, all44 checked hosted files/eight changed documents match. Runtime remains the PR122 qualified source.",
+    "PR128 head5b443f6 passed mandatory CI37393558770 and mergedef47093b203c60701480985e382db3cd3ba921a9. Pages1263033297 built2026-10-06T00:52:54Z; Pages Actions37396257527 succeeded. Exact candidate tree/four changed documents and all40 checked hosted paths match, with runtime byte-identical to qualified PR122. Existing review observations and every human/physical/calibration/rights gate remain open."
   ],
   "nextStep": {
     "title": "Deliver the classic crowd-count correction",
-    "why": "Current5b443f6 reproduces200 dots for150 attendees; implementation50ee2de conserves integer populations and passes remote count/floor checks. Finish player verification and normal CI/Pages delivery before continuing direct release acceptance.",
+    "why": "Current5b443f6 reproduces200 dots for150 attendees; implementation50ee2de conserves integer populations and passes remote count/floor checks. Full player/save/sign checks now pass; finish normal CI/Pages delivery before continuing direct release acceptance.",
     "doneWhen": "Final-head mandatory CI passes, exact Pages/runtime and hosted legacy count/save/settlement checks pass; existing project record/board preserve every remaining human, physical-device, calibration and rights gate.",
     "effort": "S",
     "owner": "agent",
-    "blockedBy": "Full player regression and mandatory delivery checks are pending; D1\u2013D11 remain settled."
+    "blockedBy": "Mandatory final-head CI, merge, Pages and hosted runtime checks remain pending; D1\u2013D11 remain settled."
   },
   "findings": [
     {
@@ -129,7 +130,7 @@
       "type": "bug",
       "sev": "P2",
       "title": "Classic crowd correction verified remotely; delivery pending",
-      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player/CI/Pages/hosted delivery remains pending; original failure evidence is preserved.",
+      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. CI/Pages/hosted delivery remains pending; original failure evidence is preserved.",
       "files": [
         "front-of-house/board.js:612",
         "test/front-of-house-floor-smoke.mjs:54",
@@ -1081,14 +1082,42 @@
         "test/front-of-house-floor-smoke.mjs": "8dbe7b5c92a801c502351a037ad5d6f57dc81aace415cdf57193101efd6f83de"
       },
       "correctedReportSha256": "be4b09dd9a97b29c189298740b5c0905e30f38b15b3ac778b445ef76bbbfa7c2",
-      "checks": "439 repository tests, build/vendor/assets/docs and unchanged Lot simulation; Chromium/WebKit42 density-count combinations on cached/direct boards plus existing floor lifecycle/picking parity passed. Full player verification continues; initial unchanged screenshot timeout retained.",
+      "checks": "439 repository tests, build/vendor/assets/docs/unchanged Lot simulation, Chromium/WebKit42 density-count combinations on cached/direct boards and existing floor lifecycle/picking parity pass. Complete twelve-script player suite passes; initial unchanged30s screenshot timeout retained. Clean27113d5 build/docs pass without drift. Four Chromium/WebKit1440/375 exact frozen-browser legacy count/reload/full-receipt/signed-state journeys pass,3947cash and one history row after signed reload.",
       "delivery": "Final-head CI, merge, Pages and hosted count/save/settlement verification pending.",
       "performanceSamplesAdded": 0,
       "humanAcceptance": "open",
       "physicalDeviceAcceptance": "open",
       "calibration": "open",
       "rights": "open",
-      "actionClient": "Unmodified supplied action client captured Build and established seed170 legacy Show at150 attendees, paused at the incident with no services; canvas/state inspected, no errors. Private CSP-blocked inline setup retained, corrected by external same-origin fixture module."
+      "actionClient": "Unmodified supplied action client captured Build and established seed170 legacy Show at150 attendees, paused at the incident with no services; canvas/state inspected, no errors. Private CSP-blocked inline setup retained, corrected by external same-origin fixture module.",
+      "legacyPlayerProof": {
+        "sourceRevision": "27113d55332e1fcb0c84b3ce17f2d5b433c6944a",
+        "baselineRevision": "5b443f6a4b4ac0416faf7b5665cee872c1f00be9",
+        "cases": 4,
+        "frozenModuleHashesChecked": 15,
+        "reportSha256": "7eee3522b5205c1b54967d289da7a995214b1b472836e1bf36ebcd9a8859f3c0",
+        "fullReceiptAndSignedState": "exact within each browser, preserving derived floating-point values",
+        "screenshots": "Four actual HUD captures inspected. Initial WebKit phone image shows camera controls over the topbar; a separate bounded layout-readiness capture passes correct control placement, unchanged state and no overflow. Earlier overlap cause remains unverified; no physical-phone acceptance inferred.",
+        "failuresPreserved": "Text-summary versus full-receipt mismatch, then Node/browser derived-demand rounding differences; corrected independent same-browser frozen engine comparison."
+      },
+      "webkitPhoneReadiness": {
+        "source": "27113d55332e1fcb0c84b3ce17f2d5b433c6944a",
+        "reportSha256": "5d8d447bb82a67999a1eed1ffc5c77916c7324c703bc515e4bbad9b5e2a7d2c8",
+        "viewport": "375x812 emulated WebKit26.5",
+        "result": "Controls between topbar and sheet; exact unchanged logical state, no overflow, no errors. Stable screenshot inspected; initial overlap retained without a causal claim."
+      }
+    },
+    "reviewPacketDelivery": {
+      "candidate": "5b443f6a4b4ac0416faf7b5665cee872c1f00be9",
+      "merge": "ef47093b203c60701480985e382db3cd3ba921a9",
+      "mandatoryCI": 37393558770,
+      "pagesBuild": 1263033297,
+      "pagesBuiltAt": "2026-10-06T00:52:54Z",
+      "pagesActions": 37396257527,
+      "exactCheckedPaths": 40,
+      "changedDocuments": 4,
+      "candidateTreeMatches": true,
+      "humanAcceptance": "open"
     }
   },
   "decisionState": {
