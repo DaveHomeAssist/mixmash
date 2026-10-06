@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Native HUD evidence and release acceptance",
+  "head": "Classic crowd correction and remaining release acceptance",
   "lastActivity": "2026-10-05",
   "status": "amber",
-  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open. Current-source16-view Walter review packet is audited and prepared; all human/physical/calibration/rights gates remain open.",
+  "statusReason": "Model15 technical runtime delivery remains verified through PR122; PR126 delivery records are merged/deployed atb746258 with all44 checked files/eightchanged docs matching and final/postmerge CI success. Current native evidence: Walter six isolated renderer windows; Duncan Edge/AMD six running-Lot and six paused-Festival full-HUD windows, independently audited hashes/statistics/exact state and inspected images. First Festival fixed window59.7358Hz is retained; no all-window sustained60fps claim. Windows Chrome setup failures, supported phone/low-power/current-Mac/physical-display targets, final human art/camera/career, physical calibration and original image rights remain open. Current-source16-view Walter review packet is audited and prepared; all human/physical/calibration/rights gates remain open. Confirmed classic crowd-count correction50ee2de is remote count/floor verified; full player regression, final-head CI and Pages delivery remain pending. No full-phase acceptance inferred.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -36,12 +36,12 @@
     "PR126: delivery records mergedb746258; mandatory CI37368795577 attempt3 and postmergeCI37382914441 pass, Pages built2026-10-05T22:30:57Z, all44 checked hosted files/eight changed documents match. Runtime remains the PR122 qualified source."
   ],
   "nextStep": {
-    "title": "Complete final release acceptance",
-    "why": "Available current-source native diagnostics and the audited16-view art/camera review packet are prepared, with earlier failures and observed visibility limits retained. Use the existing RELEASE checklist to obtain remaining supported physical-device, current-Mac, sustained-workload, human art/camera/career, calibration and original-image rights evidence before full launch.",
-    "doneWhen": "Required supported-device targets, final art/camera/career review, physical calibration and provenance satisfy the existing release checks; no automated or screenshot proxy substitutes for missing acceptance.",
-    "effort": "L",
-    "owner": "either",
-    "blockedBy": "D1\u2013D11 are settled. Actual human review, physical devices/calibration and original image rights require direct evidence; available Edge diagnostics do not establish the entire supported matrix."
+    "title": "Deliver the classic crowd-count correction",
+    "why": "Current5b443f6 reproduces200 dots for150 attendees; implementation50ee2de conserves integer populations and passes remote count/floor checks. Finish player verification and normal CI/Pages delivery before continuing direct release acceptance.",
+    "doneWhen": "Final-head mandatory CI passes, exact Pages/runtime and hosted legacy count/save/settlement checks pass; existing project record/board preserve every remaining human, physical-device, calibration and rights gate.",
+    "effort": "S",
+    "owner": "agent",
+    "blockedBy": "Full player regression and mandatory delivery checks are pending; D1\u2013D11 remain settled."
   },
   "findings": [
     {
@@ -128,13 +128,14 @@
       "id": "FOH-CROWD-REPRESENTATION",
       "type": "bug",
       "sev": "P2",
-      "title": "Existing board draws 200 dots for the 150-attendee diagnostic",
-      "detail": "Observed in all three frozen show-crowd runs against 522f3f2. crowdPoints draws two dots for each fractional 1.5-person tile allocation. Engine attendance remains 150. Document or correct the representative ratio in a separately scoped runtime task; this preflight preserves existing behavior.",
+      "title": "Classic crowd correction verified remotely; delivery pending",
+      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player/CI/Pages/hosted delivery remains pending; original failure evidence is preserved.",
       "files": [
-        "front-of-house/board.js:563",
+        "front-of-house/board.js:612",
+        "test/front-of-house-floor-smoke.mjs:54",
         "front-of-house/docs/FEATURE_BRIEFS.md"
       ],
-      "evidence": "runtime + code-read",
+      "evidence": "runtime + browser checks",
       "phase": 1
     }
   ],
@@ -275,7 +276,8 @@
     "2026-10-05: audited36-window AMD372788 pass andIntel372800 singleCPU rejection retained. Cache69 removes redundant unchanged camera matrices/colors and animation color writes; same geometry and appearance.20 camera tests and768 exact state snapshots pass onDominic. New paired qualification pending; no limits changed.",
     "Current buffer correction:439 repository tests/build, backend eight views/context/20disposals, actual3D gestures/fallback/reload/settlement, camera-onlydetail/shadow reuse, resolution/DPR and fullFestival venue/legacy/versioned replay checks pass onDominic. FOHshow screenshot inspected. Unchangedgeometry and768 exact presentation snapshots provide behavior-preservation evidence; paired CI still required.",
     "CI37283959269 stopped at asset drift validation before performance measurement. Regenerated the presentation source digest onDominic and passed asset/reference checks; corrected final-source CI remains required. All prior runtime verification remains byte-identical.",
-    "PR122 current-source CI, merge, Pages and full hosted delivery are verified. This supersedes earlier pending engineering statements only. Prior numerical failures and frozen model12 native evidence retain their scope; current human/device/calibration/provenance acceptance remains open."
+    "PR122 current-source CI, merge, Pages and full hosted delivery are verified. This supersedes earlier pending engineering statements only. Prior numerical failures and frozen model12 native evidence retain their scope; current human/device/calibration/provenance acceptance remains open.",
+    "2026-10-05: Review all ten active phases using execution.items rather than historical imported wishes. Six engineering phases delivered; V01/P01/V02 technical-delivery verified with acceptance open; L01 acceptance-open. Confirmed classic crowd correction is the next eligible runtime slice, distinct from unavailable direct human/physical/rights proof."
   ],
   "links": [
     {
@@ -319,7 +321,7 @@
       "release": "PR112 CI37252537214 passed; merged355fe9d7a7c6da050979223cc0defd1bbd102df3; Pages built2026-10-05T02:13:26Z. Ten affected hosted runtime files match; complete hosted journeys/offline proof still running."
     },
     "checkedOn": "2026-10-05",
-    "sourceRevision": "8e723edcce59318024eec25638a355e9fa7235d5",
+    "sourceRevision": "50ee2de05d407c6d88cc5df588b1a1629ba802c1",
     "controlsPR": "https://github.com/DaveHomeAssist/mixmash/pull/49",
     "controlsCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37181521431",
     "humanAcceptance": "Pending",
@@ -334,7 +336,7 @@
     "rendererImplementation": "Explicit Lot preview, source-owned sample, service zones, guest transitions and unchanged-shadow reuse deployed; final art and device acceptance remain open",
     "artAcceptance": "Final model15 realistic style/camera review remains pending; automated images are not human sign-off.",
     "deviceAcceptance": "Current model15 native Edge/AMD Lot and paused-Festival full-HUD diagnostics are independently audited on Duncan; Walter isolated renderer results and Windows Chrome startup failures remain separate. First Festival window59.7358Hz is retained. Supported physical phone/low-power/current-Mac/display and broader sustained targets remain open; earlier Mac/model12 evidence keeps frozen-source attribution.",
-    "preflightDelivery": "Documentation and diagnostics only; the linked PR owns CI/merge history, and Pages deployment is independently verified at delivery. This sourceRevision identifies reviewed production behavior, not a future renderer release.",
+    "preflightDelivery": "Original preflight and all frozen performance/review packets keep their own immutable source attribution. Current sourceRevision identifies the corrective classic-crowd implementation, remotely checked but awaiting final CI/Pages delivery; it is not a deployed or full-acceptance claim.",
     "diagnosticMeasurements": {
       "runs": 18,
       "warmupSeconds": 10,
@@ -1057,6 +1059,36 @@
         "rights": "open",
         "runnerReservation": "released; source and artifacts preserved"
       }
+    },
+    "classicCrowdConservation": {
+      "implementationRevision": "50ee2de05d407c6d88cc5df588b1a1629ba802c1",
+      "reproducedRevision": "5b443f6a4b4ac0416faf7b5665cee872c1f00be9",
+      "reproductionHost": "Walter, native Edge154.0.4258.53, Canvas2D1000x676/DPR1",
+      "before": {
+        "engineAttendance": 150,
+        "dots": 200,
+        "density": 1.5
+      },
+      "verificationHost": "Dominic, Ubuntu container; Node24.17.0; headless Chromium149.0.7827.55; emulated1000x676/DPR1 Canvas2D",
+      "after": {
+        "engineAttendance": 150,
+        "dots": 150,
+        "density": 1.5
+      },
+      "implementationFileSha256": {
+        "front-of-house/board.js": "34d1c7cb48dc2aaca9afcca029d0ad9086819856752d5f424ca81196d49dd4f7",
+        "sw.js": "4aecfc4eb2a8d6ce159d28b66771f96a92e3deaa8bb9ef2267368a1e7b745259",
+        "test/front-of-house-floor-smoke.mjs": "8dbe7b5c92a801c502351a037ad5d6f57dc81aace415cdf57193101efd6f83de"
+      },
+      "correctedReportSha256": "be4b09dd9a97b29c189298740b5c0905e30f38b15b3ac778b445ef76bbbfa7c2",
+      "checks": "439 repository tests, build/vendor/assets/docs and unchanged Lot simulation; Chromium/WebKit42 density-count combinations on cached/direct boards plus existing floor lifecycle/picking parity passed. Full player verification continues; initial unchanged screenshot timeout retained.",
+      "delivery": "Final-head CI, merge, Pages and hosted count/save/settlement verification pending.",
+      "performanceSamplesAdded": 0,
+      "humanAcceptance": "open",
+      "physicalDeviceAcceptance": "open",
+      "calibration": "open",
+      "rights": "open",
+      "actionClient": "Unmodified supplied action client captured Build and established seed170 legacy Show at150 attendees, paused at the incident with no services; canvas/state inspected, no errors. Private CSP-blocked inline setup retained, corrected by external same-origin fixture module."
     }
   },
   "decisionState": {
