@@ -36,24 +36,18 @@ try {
     const responses = [];
     page.on('response', response => responses.push(response));
     await page.goto(origin, { waitUntil: 'networkidle' });
-    // The approved budget covers first load; later detail artwork is measured separately.
     let initialBytes = null, journeyBytes = null;
-    if (width === 1440) {
+    if (width === 1440 && height === 900) {
+      const requested = responses.map(r => r.url());
+      assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
       const initial = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
       initialBytes = 0; for (const response of initial) initialBytes += (await response.body()).length;
+      console.log(`${engine} ${width}×${height} initial homepage transfer: ${initialBytes} bytes`);
       assert.ok(initialBytes <= 500000, `initial homepage transfer budget: ${initialBytes}`);
     }
     assert.equal(await page.title(), studio.title);
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', 'fresh visit defaults light despite system dark');
     assert.equal(await page.locator('.game-card').count(), playableGames.length);
-    if (width === 1440 && height === 900) {
-      const requested = responses.map(r => r.url());
-      assert.ok(!requested.some(url => /\.wasm|\/play\/.*\.js|\/mars\/.*\.js|\/front-of-house\/.*\.js/.test(url)), 'homepage requests no game runtime');
-      const unique = [...new Map(responses.filter(r => r.ok()).map(r => [r.url(), r])).values()];
-      let bytes = 0; for (const response of unique) bytes += (await response.body()).length;
-      console.log(`${engine} ${width}×${height} initial homepage transfer: ${bytes} bytes`);
-      assert.ok(bytes <= 500000, `homepage transfer budget: ${bytes}`);
-    }
     if (noPaging.has(`${width}x${height}`)) {
       assert.ok(await page.locator('#pager').isHidden(), `no paging at ${width}x${height}`);
       const playLinks = await page.locator('.game-card:visible .play-link').evaluateAll(links => links.filter(link => { const r = link.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; }).length);
