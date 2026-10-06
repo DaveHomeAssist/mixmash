@@ -609,7 +609,8 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
     let remaining = Math.min(scene.crowd, 1600);
     for (let i = 0; i < tiles.length && remaining > 0; i += 1) {
       const t = tiles[i];
-      const here = Math.min(scene.services ? Math.floor((i + 1) * cap) - Math.floor(i * cap) : cap, remaining);
+      // Distribute whole guests across fractional tile capacities without adding dots.
+      const here = Math.min(Math.floor((i + 1) * cap) - Math.floor(i * cap), remaining);
       remaining -= here;
       for (let k = 0; k < here; k += 1) {
         const jx = ((t.x * 7 + t.y * 13 + k * 5) % 10) / 14 + 0.15;
