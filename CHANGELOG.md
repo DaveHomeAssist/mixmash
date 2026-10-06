@@ -4,7 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- Front of House: classic legacy crowds use whole-guest tile allocations, correcting200 dots for150 attendees at density1.5. Cachev70 and fractional-density regressions preserve engine outcomes and service representatives; delivery checks remain pending.
+- Front of House: classic legacy crowds use whole-guest tile allocations, correcting200 dots for150 attendees at density1.5. Cachev71 integrates the delivered playtest HUD fixes; fractional-density regressions preserve engine outcomes and service representatives; delivery checks remain pending.
+- Front of House: playtest HUD fixes: explain exit/floor capacity caps, give a reason for every refused placement, show one consistent cash figure, clear toasts between phases, pan with Space+drag or right-drag, match the object keys to the room, send 3D Fit/0 home and reset the camera per show, add a 2D/3D strip button, soften Book's dim, firm up the daytime 3D fence and letter the settlement A revenue, B deal, C costs.
 
 - Front of House: prepare an independently audited current-source16-view camera review packet, retain HUD/crowd/night visibility limits, and keep human, physical-device, calibration and rights acceptance open.
 

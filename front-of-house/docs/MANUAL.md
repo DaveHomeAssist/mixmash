@@ -115,8 +115,9 @@ These board shortcuts require board focus. Text fields and open windows keep the
 | Q | Turn the view |
 | + / − / 0 | Zoom in / out / Fit |
 | Shift + arrows | Pan a zoomed view |
+| Space held + drag, or a middle/right-button drag | Pan the view |
 | Arrows in Build | Move the build cursor |
-| Enter / Space in Build | Place with the selected tool, or inspect in Select |
+| Enter / Space tap in Build | Place with the selected tool, or inspect in Select |
 | R / B / Delete | Rotate next object / toggle bulldozer / remove under cursor |
 | Ctrl+Z or Command+Z | Undo a Build change |
 | Ctrl+Shift+Z, Ctrl+Y or Command+Shift+Z | Redo |

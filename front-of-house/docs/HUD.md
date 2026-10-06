@@ -103,7 +103,7 @@ Today `resize()` fits the lot to the canvas width and grows the canvas downward.
 - **Safe rectangle.** The window minus the top strip, minus an open sheet. Fit and centring use this rectangle, so opening a sheet slides the lot left instead of hiding it.
 - **Fit.** The tile width is the largest that fits the lot's diamond, plus headroom for the tallest prop, inside the safe rectangle, by width and by height. That is about 61 px at 1280 × 800 and 69 px at 1440 × 900, against 39 and 47 today. Wide 16:9 windows are limited by height: about 84 px and 34% of a 1920 × 1080 window.
 - **Zoom.** Fit, then ×1.5, ×2 and ×3. Buttons in the camera group; `=` and `-` and `0` (fit) on the keyboard; the mouse wheel zooms about the pointer. Since step 2 the page never scrolls, so the plain wheel zooms; Ctrl or Cmd with the wheel, and a trackpad pinch, do the same.
-- **Pan.** Drag with the middle button anywhere, or a plain drag outside Build. Space can't be the pan key, because Space places an object in Build. Shift with the arrow keys pans. In Build, the arrow keys still move the build cursor, and the camera follows when the cursor nears an edge. The lot can't be panned out of the window.
+- **Pan.** Drag with the middle or right button anywhere, hold Space and drag, or a plain drag outside Build. A Space tap still places (or inspects in Select) at the build cursor, on release, so Space held with a drag pans instead (2026-10-05 playtest fix); a right click without a drag still removes. Shift with the arrow keys pans. In Build, the arrow keys still move the build cursor, and the camera follows when the cursor nears an edge. The lot can't be panned out of the window.
 - **Turning the view** keeps the zoom and re-centres on what was at the centre.
 - **Contained change.** Every screen position goes through `iso()` and `tileAt()`, so the camera is three fields on `view` (zoom, pan x, pan y). Hit-testing, placement order, markers, beams and the ghost all use `iso()` and follow it.
 - **Rooms.** Split Acre (40 × 24) fits at 44 px a tile on 1440 × 900. Zoom matters most there.
@@ -264,3 +264,20 @@ New Festival bookings disclose the included3,000-person Main system. Build Detai
 The Festival Build palette offers Delay with key D; it quotes675 per tower including the operator. Placement, Select, rotation, remove, undo/redo and keyboard cursor follow existing controls. The Room report adds a Delay page with tower count, extra covered tiles and the total show deployment charge, and explicitly discloses inactive towers when a portable PA or missing profile disables benefit. Stage accounts lists delay deployment within main production; the ordinary Costs page lists it once under Production, beside a separate Site button. Each page retains the full show-cost total; category rows together reconcile to it. The text room probe includes `delays`, `delayTiles`, `delayCost` and `delayActive` when towers exist. Geometry is provisional code art and does not certify a final venue scene.
 
 Outdoor curfew uses the existing incident choices. SET ENDED in the settlement header opens Set time details; the window's Back to settlement restores the signed or unsigned receipt. Timing details use normal compact pagination, avoiding extra rows in production/crowd tables.
+
+### 2026-10-05 playtest fixes
+
+A Lot playtest (Sodium Arcade, $500 guarantee) found these HUD problems; all are presentation-only and change no rule, number or save:
+
+- **Capacity limits are explained.** The Capacity readout names its limit (`permit`, `exit limit`, `floor limit`). When exits or floor space hold capacity under both the permit and the booked act's top draw, Build's readiness line says so and how to fix it (for example "Exits cap capacity at 50; Sodium Arcade can draw up to 130. Add 2 exits on the edge."), Details lists it, and Promote's forecast and message repeat it. The layout can still be locked.
+- **Refused placements always say why**, in the phase card and the board toast, with a hint for the PA limit and edge-only gates and exits. The tool card says where gates, exits and PAs go. A click in Select on empty floor says that Select places nothing. Placing a prop that blocks the stage view says how many more tiles it blocks.
+- **Cash.** The strip always shows cash in the bank; before doors its tooltip gives the amount due at the doors and Costs so far reads "at doors". During Settle the meter reads **Cash now**, and the sheet shows **Cash after signing** with a "Now" line, so the two never disagree.
+- **Toasts are per phase.** The board toast is cleared when the phase changes.
+- **Pan:** Space+drag and right-drag pan (above); the zoom toast and the menu help say how.
+- **Keys:** the menu's object keys list only the keys the room's tiles show (the Lot shows "1 to 9, T").
+- **Booking** by click or Enter books the same way; the Build card then confirms the act and deal and that Back returns to booking.
+- **3D camera:** a tap on the 3D board focuses it so 0, +, − and Q work; 0 and Fit return the 3D camera home (zoom 1 and the default orbit); a new show or new game starts with the camera at home. The daytime 3D fence is drawn darker and firmer, and the 3D night is slightly brighter.
+- **2D/3D switch:** a 3D/2D button sits at the end of the camera group in the strip. To keep the strip from scrolling, the game's name is hidden below 1600px (it was 1440px), the Turn button shows only its arrow, and the strip's gaps tighten below 1280px. Phones keep their four floating camera buttons; there the switch stays in Menu → Camera.
+- **Book** dims the empty lot lightly (85%) instead of to 55%, which made the dark lot read as an unlit black slab on the light page.
+- **Settlement sections** are lettered in reading order: A gross revenue and B the deal (Revenue tab), C production and site costs (Costs tab).
+

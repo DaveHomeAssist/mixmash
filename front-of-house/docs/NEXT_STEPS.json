@@ -34,15 +34,16 @@
     "PR110 passed CI37251718667, merged4dee773b11fca9a201206798b6cd9cb3d3692097; Pages built2026-10-05T02:00:26Z. Nine affected hosted files match. Eight Chromium/WebKit player journeys pass both outdoor rooms, deals/responses, compact sizes/themes and signed replay. Offline appeal preserves148 played minutes,20 lost,400 fee,27752 net and1027752 cash/journal. Actual hosted Set time capture inspected.",
     "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
     "PR126: delivery records mergedb746258; mandatory CI37368795577 attempt3 and postmergeCI37382914441 pass, Pages built2026-10-05T22:30:57Z, all44 checked hosted files/eight changed documents match. Runtime remains the PR122 qualified source.",
-    "PR128 head5b443f6 passed mandatory CI37393558770 and mergedef47093b203c60701480985e382db3cd3ba921a9. Pages1263033297 built2026-10-06T00:52:54Z; Pages Actions37396257527 succeeded. Exact candidate tree/four changed documents and all40 checked hosted paths match, with runtime byte-identical to qualified PR122. Existing review observations and every human/physical/calibration/rights gate remain open."
+    "PR128 head5b443f6 passed mandatory CI37393558770 and mergedef47093b203c60701480985e382db3cd3ba921a9. Pages1263033297 built2026-10-06T00:52:54Z; Pages Actions37396257527 succeeded. Exact candidate tree/four changed documents and all40 checked hosted paths match, with runtime byte-identical to qualified PR122. Existing review observations and every human/physical/calibration/rights gate remain open.",
+    "2026-10-05: playtest HUD/UX fixes (capacity-cap explanations, placement refusal reasons, consistent cash, per-phase toasts, Space/right-drag pan, room-matched keys, 3D Fit/home and per-show camera reset, 2D/3D strip button, softer Book dim, firmer daytime fence, settlement A/B/C order); no rule, balance or save change."
   ],
   "nextStep": {
     "title": "Deliver the classic crowd-count correction",
-    "why": "Current5b443f6 reproduces200 dots for150 attendees; implementation50ee2de conserves integer populations and passes remote count/floor checks. Full player/save/sign checks now pass; finish normal CI/Pages delivery before continuing direct release acceptance.",
+    "why": "Implementation50ee2de conserves integer populations; prior remote player/save/sign proof is retained. PR129 HUD changes merged300c365 with cachev70; integrate both at cachev71 and verify the combined source before normal CI/Pages delivery.",
     "doneWhen": "Final-head mandatory CI passes, exact Pages/runtime and hosted legacy count/save/settlement checks pass; existing project record/board preserve every remaining human, physical-device, calibration and rights gate.",
     "effort": "S",
     "owner": "agent",
-    "blockedBy": "Mandatory final-head CI, merge, Pages and hosted runtime checks remain pending; D1\u2013D11 remain settled."
+    "blockedBy": "Combined-source verification, mandatory final-head CI, merge, Pages and hosted runtime checks remain pending; D1\u2013D11 remain settled."
   },
   "findings": [
     {
@@ -1105,6 +1106,12 @@
         "reportSha256": "5d8d447bb82a67999a1eed1ffc5c77916c7324c703bc515e4bbad9b5e2a7d2c8",
         "viewport": "375x812 emulated WebKit26.5",
         "result": "Controls between topbar and sheet; exact unchanged logical state, no overflow, no errors. Stable screenshot inspected; initial overlap retained without a causal claim."
+      },
+      "integration": {
+        "baseRevision": "300c36538d5ed3bf7eee5053a47d0a6063f3d15e",
+        "basePR": "https://github.com/DaveHomeAssist/mixmash/pull/129",
+        "cacheVersion": "v71",
+        "status": "Combined-source verification and final delivery pending; earlier isolated correction proof retains its original source attribution."
       }
     },
     "reviewPacketDelivery": {
