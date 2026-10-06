@@ -174,6 +174,8 @@ function act(action, { quiet = false } = {}) {
   state = next;
   persist();
   if (!quiet) say('');
+  // A new show starts from the whole lot: zoom, pan and the 3D orbit of the last night don't carry over.
+  if (next.phase === 'book' && before.phase !== 'book') resetCamera();
   render();
   return true;
 }
@@ -204,13 +206,14 @@ function render() {
 }
 
 function renderTop() {
+  syncToolKeys();
   $('#stages-menu').hidden = state.venue.id !== 'festival' && !state.stagesNotice;
   $('#seating-menu').hidden = !(seatingPlanFor(state) || state.seatingNotice || roomProfileFor(state.venue) || state.roomNotice || state.supportNotice || festivalSupportFor(state.venue) || state.venue.objects.some(o => o.type === 'delay'));
   $('#seating-menu').textContent = state.venue.id !== 'amphitheater' ? 'Sound and views' : 'Seats and lawn';
   $('#held-run-menu').hidden = !(state.booking.run || state.show?.run || state.runNotice);
   $('#ticketing-menu').hidden = state.venue.id !== 'club';
   const artist = state.booking.artistId;
-  el.cash.textContent = money(state.cash);
+  renderCash();
   el.rep.textContent = `${state.reputation.venue}/100`;
   el.rel.textContent = signed(state.reputation.artists[artist] || 0);
   const current = state.phase === 'done' ? 'settle' : state.phase;
@@ -223,6 +226,19 @@ function renderTop() {
   });
 }
 
+// The cash meter always shows cash in the bank. Before doors its tooltip says what the show
+// will cost at the door; during Settle it reads "Cash now", matching the sheet's "Now" line
+// beside "Cash after signing", so the strip never contradicts the settlement.
+function renderCash() {
+  const term = el.cash.previousElementSibling;
+  const pending = state.phase === 'settle' ? settlementFor(state) : null;
+  el.cash.textContent = money(state.cash);
+  term.textContent = pending ? 'Cash now' : 'Cash';
+  const due = ['build', 'promote'].includes(state.phase) ? upfrontFor(state) : 0;
+  el.cash.title = pending ? `Cash now, before signing. ${money(state.cash + settlementPayout(pending, state.booking.deal))} after you sign the settlement.`
+    : due ? `Cash in the bank. ${money(due)} is due when the doors open.` : 'Cash in the bank.';
+}
+
 // Build and Show float their controls in the lot's empty corners; the other phases use a
 // sheet on the right (docs/HUD.md sections 3 and 4).
 const HUD_PHASES = ['build', 'show'];
@@ -230,6 +246,8 @@ const HUD_PHASES = ['build', 'show'];
 function mount() {
   const builders = { book: bookPanel, build: buildPanel, promote: promotePanel, show: showPanel, settle: settlePanel, done: donePanel };
   const html = builders[state.phase]();
+  // The status toast belongs to the phase that wrote it; a new phase starts without one.
+  el.boardStatus.textContent = '';
   const hud = HUD_PHASES.includes(state.phase);
   document.body.dataset.layout = hud ? 'hud' : 'sheet';
   el.panel.innerHTML = hud ? html : `<div class="plate at-sheet">${html}</div>`;
@@ -364,6 +382,32 @@ const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights'
 // The rotation as an arrow on screen, in FACING order.
 const ARROWS = ['↙', '↖', '↗', '↘'];
 
+// Whether a tool is offered in this room, and its key (the tile order, or a letter).
+function toolOffered(type) {
+  const t = D.OBJECT_TYPES[type], spec = venueSpec(state.venue);
+  return !(t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival' || t.supportOnly && !festivalSupportFor(state.venue));
+}
+function toolKey(type) {
+  return type === 'trailer' ? 'T' : type === 'delay' ? 'D' : type === 'vip-deck' ? 'V' : type === 'bus-compound' ? 'U' : String(PLACEABLE.indexOf(type) + 1);
+}
+// The menu's key list names only the keys this room's tool tiles show.
+function syncToolKeys() {
+  const dt = document.querySelector('#board-keys-build [data-binding="pick-tool"] dt');
+  if (!dt) return;
+  const keys = PLACEABLE.filter(toolOffered).map(toolKey);
+  const numbers = keys.filter((k) => /^\d$/.test(k)), letters = keys.filter((k) => !/^\d$/.test(k));
+  const text = [numbers.length ? `1 to ${numbers[numbers.length - 1]}` : '', ...letters].filter(Boolean).join(', ');
+  if (dt.textContent !== text) dt.textContent = text;
+}
+
+// Where a tool may go, for the tool card: the rules the engine would otherwise only refuse.
+function toolWhere(type) {
+  const t = D.OBJECT_TYPES[type];
+  if (t.edge) return `Click a tile on the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'} edge.`;
+  if (t.paTier) return 'Click a tile touching the stage.';
+  return 'Click a tile for its top corner.';
+}
+
 function toolFacts(type) {
   const t = D.OBJECT_TYPES[type];
   return `${t.w}×${t.h} · ${COSTS[type]}${t.watts ? ` · ${t.watts / 1000} kW` : ''}`;
@@ -374,10 +418,10 @@ function toolFacts(type) {
 function buildPanel() {
   const spec = venueSpec(state.venue);
   const where = spec.id === 'lot' ? 'lot' : 'room';
-  const tiles = PLACEABLE.map((type, i) => {
+  const tiles = PLACEABLE.map((type) => {
     const t = D.OBJECT_TYPES[type];
-    if (t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival' || t.supportOnly && !festivalSupportFor(state.venue)) return '';
-    const shortcut = type === 'trailer' ? 'T' : type === 'delay' ? 'D' : type === 'vip-deck' ? 'V' : type === 'bus-compound' ? 'U' : i + 1;
+    if (!toolOffered(type)) return '';
+    const shortcut = toolKey(type);
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
@@ -444,24 +488,50 @@ function costsSoFar() {
   return upfrontFor(state) - artistDue - adTotal(state.promotion.ads) + sponsor;
 }
 
+// What holds capacity under the permit, when it keeps out people the booked act could draw:
+// the reason and the fix, for Build's readiness line, Details and Promote. Presentation only;
+// the numbers are evaluateVenue's (RULES.md R-02).
+const LIMIT_SHORT = { permit: 'permit', floor: 'floor limit', exits: 'exit limit' };
+function capacityCap(v = evaluateVenue(state.venue)) {
+  const spec = venueSpec(state.venue);
+  if (!v.capacity || v.capacityLimit === 'permit' || v.capacity >= spec.permit) return null;
+  const artist = state.booking.artistId ? artistFor(state.booking.artistId) : null;
+  const mult = state.booking.terms ? state.booking.terms.drawMult : 1;
+  const draw = artist ? Math.round(artist.drawMax * mult) : spec.permit;
+  const room = Math.floor(v.density * v.openFloorTiles);
+  const target = Math.min(spec.permit, draw, v.capacityLimit === 'exits' ? room : spec.permit);
+  if (target <= v.capacity) return null;
+  const who = artist ? `${artist.name} can draw up to ${draw}` : `the permit allows ${spec.permit}`;
+  if (v.capacityLimit === 'exits') {
+    const add = Math.max(1, Math.ceil(target / (spec.exitCapacity || D.EXIT_CAPACITY)) - v.exits);
+    return { limit: 'exits', capacity: v.capacity, draw, add,
+      short: `Exits cap capacity at ${v.capacity}; ${who}. Add ${add} exit${add === 1 ? '' : 's'} on the edge.`,
+      promote: `Exits cap this show at ${v.capacity} people; ${who}. Go back to Build and add ${add} exit${add === 1 ? '' : 's'} to sell more.` };
+  }
+  return { limit: 'floor', capacity: v.capacity, draw,
+    short: `Floor space caps capacity at ${v.capacity}; ${who}. Free up open floor.`,
+    promote: `Floor space caps this show at ${v.capacity} people; ${who}. Go back to Build and free up open floor to sell more.` };
+}
+
 function updateBuild() {
   const v = evaluateVenue(state.venue);
   const spec = venueSpec(state.venue);
   const wattsCap = spec.watts;
   const density = spec.density || D.FLOOR_DENSITY;
-  const limits = { permit: 'permit', floor: 'floor space', exits: 'exits' };
   const load = Math.min(100, Math.round((v.watts / wattsCap) * 100));
+  const cap = capacityCap(v);
   $('#venue-stats').innerHTML = `
-    <div><dt>Capacity</dt><dd>${v.capacity} <small>${limits[v.capacityLimit]}</small></dd></div>
+    <div><dt>Capacity</dt><dd title="${v.capacityLimit === 'permit' ? `Permit cap ${spec.permit}` : `Limited by ${v.capacityLimit === 'exits' ? 'exits' : 'floor space'}; permit ${spec.permit}`}">${v.capacity} <small class="${cap ? 'warn' : ''}">${LIMIT_SHORT[v.capacityLimit]}</small></dd></div>
     <div><dt>Power</dt><dd class="${v.watts > wattsCap * 0.9 ? 'warn' : ''}">${(v.watts / 1000).toFixed(1)} / ${wattsCap / 1000} kW</dd>
       <span class="bar" aria-hidden="true"><span style="width:${load}%"></span></span></div>
     <div><dt>Clear view</dt><dd>${v.clearTiles} <small>fits ${Math.floor(v.clearTiles * density)}</small></dd></div>
     <div><dt>View blocked</dt><dd class="${v.blockedTiles ? 'bad' : ''}">${v.blockedTiles} tiles</dd></div>
     <div><dt>Staff</dt><dd>${v.staff}</dd></div>
-    <div><dt>Costs so far</dt><dd>${money(costsSoFar())}</dd></div>`;
+    <div><dt>Costs so far</dt><dd title="Paid when the doors open, with the artist and ads">${money(costsSoFar())} <small>at doors</small></dd></div>`;
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
     ? `<p class="checklist"><span>${esc(notes[0])}.</span>${notes.length > 1 ? ` <span class="more">${notes.length - 1} more in Details.</span>` : ''}</p>`
+    : cap ? `<p class="checklist warn">${esc(cap.short)}</p>`
     : roomProfileFor(state.venue) ? `<p class="checklist ${v.soundCapacity < v.capacity ? 'warn' : 'ok'}">Ready · ${v.housePa ? esc(roomProfileFor(state.venue).label) : 'portable PA'} for ${v.soundCapacity} people.</p>`
     : `<p class="checklist ok">✓ The ${spec.id === 'lot' ? 'lot' : 'room'} is ready for a show.</p>`;
   $('#obj-count').textContent = String(state.venue.objects.length);
@@ -485,7 +555,7 @@ function updateBuild() {
   $('#select-btn').classList.toggle('on', selecting);
   $('#tool-info').textContent = selecting ? 'Select: click an object to inspect it. Choose a tool to place; Escape returns here.' : dozing
     ? 'Bulldozing: click or drag across anything you want gone. B places again.'
-    : `Placing the ${label(ui.tool).toLowerCase()}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. Click a tile for its top corner.`;
+    : `Placing the ${label(ui.tool).toLowerCase()}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. ${toolWhere(ui.tool)}`;
   if (win.kind === 'lot') refreshWindow(lotDetailsHtml());
 }
 
@@ -494,6 +564,8 @@ function updateBuild() {
 function lotDetailsHtml() {
   const v = evaluateVenue(state.venue);
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
+  const cap = capacityCap(v);
+  if (cap) notes.push(cap.short);
   const groups = new Map();
   state.venue.objects.forEach((o, i) => {
     if (!groups.has(o.type)) groups.set(o.type, []);
@@ -506,7 +578,7 @@ function lotDetailsHtml() {
   return `
     <section aria-labelledby="ready-title">
       <h3 id="ready-title">Readiness</h3>
-      ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<p class="checklist ok">✓ Ready for a show.</p>'}
+      ${notes.length ? `<ul class="checklist">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>${v.ready ? '<p class="lede">The layout can still be locked.</p>' : ''}` : '<p class="checklist ok">✓ Ready for a show.</p>'}
       ${roomProfileFor(state.venue) || state.venue.objects.some(o => o.type === 'delay') ? '<button data-act="room-open">Sound and views</button>' : ''}
       ${state.roomNotice ? `<p role="status">${esc(state.roomNotice)}</p>` : ''}${state.supportNotice ? `<p role="status">${esc(state.supportNotice)}</p>` : ''}
     </section>
@@ -543,7 +615,7 @@ function inspectAt(tile) {
   ui.selection = index >= 0 ? index : null;
   ui.cursor = tile;
   draw();
-  if (index < 0) { el.boardStatus.textContent = describeTile(tile); return; }
+  if (index < 0) { el.boardStatus.textContent = `${describeTile(tile)} Select places nothing; pick a tool to place.`; return; }
   const object = state.venue.objects[index];
   openWindow('selection', label(object.type),
     '<p class="lede">Tile ' + object.x + ', ' + object.y + ' · ' + esc(toolFacts(object.type)) + '</p>' +
@@ -557,13 +629,34 @@ function ghostAt(tile) {
   return { ...ghost, valid: !problems.some((p) => p.index === state.venue.objects.length) };
 }
 
+// Extra advice for an engine refusal the player can act on at once.
+const REFUSAL_HINTS = [
+  [/^Only one PA/, 'Remove the placed PA first.'],
+  [/boundary$/, 'Use a tile on the outer edge.'],
+];
+function refusalText(error) {
+  const hint = REFUSAL_HINTS.find(([pattern]) => pattern.test(error));
+  return `${error}.${hint ? ` ${hint[1]}` : ''}`;
+}
+
+// Returns whether something was placed. A refused placement always says why, in the card
+// and in the toast over the board, so it never fails silently.
 function placeAt(tile) {
-  if (state.phase !== 'build' || !tile) return;
-  if (ui.tool === 'select') { inspectAt(tile); return; }
-  if (ui.tool === 'bulldoze') { doze(tile); return; }
-  if (act({ type: 'place', object: { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot } }, { quiet: true })) {
-    say(`Placed the ${label(ui.tool).toLowerCase()} at ${tile.x}, ${tile.y}.`);
+  if (state.phase !== 'build' || !tile) return false;
+  if (ui.tool === 'select') { inspectAt(tile); return false; }
+  if (ui.tool === 'bulldoze') { doze(tile); return false; }
+  const type = ui.tool, blockedBefore = sight().blocked.size;
+  const { error } = applyAction(state, { type: 'place', object: { type, x: tile.x, y: tile.y, rot: ui.rot } });
+  if (error) {
+    const text = refusalText(error);
+    say(text, 'error');
+    el.boardStatus.textContent = text;
+    return false;
   }
+  act({ type: 'place', object: { type, x: tile.x, y: tile.y, rot: ui.rot } }, { quiet: true });
+  const blocked = sight().blocked.size - blockedBefore;
+  say(`Placed the ${label(type).toLowerCase()} at ${tile.x}, ${tile.y}.${blocked > 0 ? ` It blocks the stage view from ${blocked} more tile${blocked === 1 ? '' : 's'}.` : ''}`);
+  return true;
 }
 
 function doze(tile) {
@@ -622,6 +715,7 @@ function describeTile(tile) {
 // ---------------------------------------------------------------------------
 // Promote
 
+let capacityNoteShown = null;
 function promotePanel() {
   const spec = venueSpec(state.venue);
   const sponsorPrice = festivalPolicyFor(state)?.sponsorPrice;
@@ -698,8 +792,9 @@ function updatePromote() {
   const highTickets = stageQuote?.ticketGross.high ?? seatingQuote?.high.ticketGross ?? f.high * p.price;
   const upfront = upfrontFor(state);
   const short = state.mode !== 'sandbox' && upfront > state.cash;
+  const cap = seatingQuote || stageQuote ? null : capacityCap();
   $('#promo-stats').innerHTML = `
-    <div><dt>Forecast crowd</dt><dd>${f.low} to ${f.high} <span class="lede">of ${f.capacity}</span></dd></div>
+    <div><dt>Forecast crowd</dt><dd>${f.low} to ${f.high} <span class="lede">of ${f.capacity}${cap ? `, ${LIMIT_SHORT[cap.limit]}` : ''}</span></dd></div>
     <div><dt>Buzz</dt><dd>×${buzz(p.ads).toFixed(2)}</dd></div>
     <div><dt>Ticket money</dt><dd>${money(lowTickets)} to ${money(highTickets)}</dd></div>
     <div><dt>Ad spend</dt><dd>${money(adTotal(p.ads))}</dd></div>
@@ -707,7 +802,9 @@ function updatePromote() {
   $('#confirm-promo').disabled = short;
   const doorOk = termsFor(state.booking.artistId, state.reputation.artists[state.booking.artistId]).doorOk;
   if (short) say(`This show needs ${money(upfront)} before doors and you have ${money(state.cash)}. Cut ads or rentals${state.booking.deal === 'guarantee' && doorOk ? ', or go back and offer a door deal' : ''}.`, 'error');
-  else if ($('#msg').classList.contains('error') && $('#msg').textContent.startsWith('This show needs')) say('');
+  else if (cap) say(cap.promote, 'info');
+  else if ($('#msg').textContent.startsWith('This show needs') || $('#msg').textContent === capacityNoteShown) say('');
+  capacityNoteShown = cap && !short ? cap.promote : null;
 
   // Presale chart: cumulative tickets sold over 14 days for the slowest and strongest draw.
   const totals = [a.drawMin, a.drawMax].map((draw) => {
@@ -1175,7 +1272,7 @@ function sheetParts(r, { signed: done }) {
   const productionCategory = category => ['Audio','Lighting','Main stage','Side stage'].includes(category);
   const costs = `
     <div class="ledger">
-      <div class="ledger-title">SECTION B · PRODUCTION AND SITE COSTS</div>
+      <div class="ledger-title">SECTION C · PRODUCTION AND SITE COSTS</div>
       ${(r.costs.delays || r.costs.vipDeck || r.costs.busCompound) ? '<div class="actions" role="group" aria-label="Cost categories"><button data-act="cost-page" data-cost="site" aria-pressed="true">Site</button><button data-act="cost-page" data-cost="production" aria-pressed="false">Production</button>' + ((r.costs.vipDeck || r.costs.busCompound) ? '<button data-act="cost-page" data-cost="touring" aria-pressed="false">Rider</button>' : '') + '</div>' : ''}
       <table>
         <thead><tr><th scope="col">Line</th><th scope="col">Category</th><th scope="col" class="num">Total</th></tr></thead>
@@ -1185,7 +1282,7 @@ function sheetParts(r, { signed: done }) {
     </div>`;
   const dealPart = `
     <div class="calc">
-      <div class="ledger-title" style="padding:0;background:none;border:0">SECTION C · DEAL</div>
+      <div class="ledger-title" style="padding:0;background:none;border:0">SECTION B · DEAL</div>
       ${split}${r.stageAccounts ? `<p>Side artist: ${money(r.stageAccounts.second.artistPay)}, withheld at signing.</p><button data-act="stages-open">Stage accounts</button>` : ''}
     </div>`;
   const payouts = `
@@ -1203,7 +1300,7 @@ function sheetParts(r, { signed: done }) {
     <div class="outcomes" data-tab="Payout">
       <div class="outcome"><span class="meta-label">Venue reputation</span><span class="stat ${r.repDelta >= 0 ? 'pos' : 'neg'}">${signed(r.repDelta)}</span></div>
       <div class="outcome"><span class="meta-label">Band relationship</span><span class="stat ${r.relDelta >= 0 ? 'pos' : 'neg'}">${signed(r.relDelta)}</span></div>
-      <div class="outcome"><span class="meta-label">${done && state.history.at(-1)?.cashAfter !== undefined ? 'Cash after signing' : 'Cash on hand'}</span><span class="stat">${money(cashAfter)}</span><p class="lede">${done && state.history.at(-1)?.cashAfter === undefined ? 'Historical cash not recorded' : `Started at ${money(cashBefore)}`}</p></div>
+      <div class="outcome"><span class="meta-label">${done && state.history.at(-1)?.cashAfter === undefined ? 'Cash on hand' : 'Cash after signing'}</span><span class="stat">${money(cashAfter)}</span><p class="lede">${done && state.history.at(-1)?.cashAfter === undefined ? 'Historical cash not recorded' : done ? `Started at ${money(cashBefore)}` : `Now ${money(state.cash)} · started at ${money(cashBefore)}`}</p></div>
     </div>`;
   return {
     body: `${head}
@@ -1588,8 +1685,13 @@ function updateRendererStatus(status) {
   if (note && note.textContent !== message) note.textContent = message;
   const toggle = $('[data-act="renderer-toggle"]');
   if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D preview'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
+  const quick = $('#renderer-btn');
+  quick.textContent = status.enabled ? '2D' : '3D';
+  quick.setAttribute('aria-pressed', String(status.enabled));
+  quick.setAttribute('aria-label', status.enabled ? 'Use the classic 2D view' : 'Try the 3D preview');
+  quick.title = status.enabled ? 'Back to the classic 2D view' : 'Try the 3D preview (camera presets are in Menu, Camera)';
   document.querySelectorAll('[data-camera-preset], [data-camera-orbit]').forEach(button => { button.disabled = !status.active; });
-  const help = status.active ? 'Select: tap to inspect, drag to orbit. Place: tap to place; dragging only previews. Two fingers pan and pinch; a middle-button drag pans. Camera controls are in the menu.' : classicBoardHelp;
+  const help = status.active ? 'Select: tap to inspect, drag to orbit. Place: tap to place; dragging only previews. Two fingers pan and pinch; a middle-button drag, or holding Space and dragging, pans. 0 or Fit resets the camera; the 2D button returns to the classic view. Camera presets are in the menu.' : classicBoardHelp;
   if ($('#board-help').textContent !== help) $('#board-help').textContent = help;
   const key = status.state + ':' + status.reason;
   if (key !== rendererStatusKey && status.reason) { cancelLotGesture(); el.boardStatus.textContent = status.reason; }
@@ -1605,6 +1707,18 @@ function openCamera(opener) {
     <button type="button" data-act="camera-mode" aria-pressed="${!!ui.cameraMode}">Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}</button>
     <p class="hint">Select: tap to inspect, drag to orbit. Two fingers pan and pinch. FOH and Stage use provisional authored eye heights.</p>`, el.menuBtn);
   updateRendererStatus(board.status());
+}
+
+// Fit: the whole lot. In 3D it also undoes any orbit, so 0 and Fit always return home.
+function fitView() {
+  if (board.status().active) { board.preset('wide'); showZoom(1); return; }
+  zoomStep(-board.camera().zooms.length);
+}
+// A new show (or a new game) starts with the camera at home in either view.
+function resetCamera() {
+  if (board.status().active) board.preset('wide');
+  else board.zoomBy(-board.camera().zooms.length);
+  updateZoomButtons();
 }
 
 function crowdNow() {
@@ -1747,14 +1861,15 @@ function zoomStep(steps, px, py) {
 function showZoom(zoom) {
   el.boardStatus.textContent = zoom === 1
     ? 'Zoom: the whole lot.'
-    : `Zoom ${zoom}x. Shift and the arrow keys, or a middle-button drag, move the view. 0 shows the whole lot.`;
+    : `Zoom ${zoom}x. Hold Space and drag, drag with the middle or right button, or use Shift and the arrows to move the view. 0 shows the whole lot.`;
   updateZoomButtons();
 }
 
 function updateZoomButtons() {
   const { zoom, zooms } = board.camera();
   $('#zoom-out').disabled = zoom === zooms[0];
-  $('#zoom-fit').disabled = zoom === zooms[0];
+  // An orbited 3D camera can be away from home at zoom 1, so Fit stays available there.
+  $('#zoom-fit').disabled = zoom === zooms[0] && !board.status().active;
   $('#zoom-in').disabled = zoom === zooms[zooms.length - 1];
 }
 
@@ -1782,8 +1897,11 @@ el.canvas.addEventListener('pointerdown', (event) => {
   swallowLotClick = true;
   event.preventDefault(); event.stopImmediatePropagation();
   if (!el.win.hidden || !el.menu.hidden || ![0, 1].includes(event.button)) return;
+  // preventDefault above stops the browser focusing the board; focus it so its keys work.
+  if (document.activeElement !== el.canvas) el.canvas.focus({ preventScroll: true });
+  if (ui.space) ui.space.dragged = true;
   lotPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-  if (lotPointers.size === 1) lotGesture = { x: event.clientX, y: event.clientY, moved: false, multi: false, button: event.button };
+  if (lotPointers.size === 1) lotGesture = { x: event.clientX, y: event.clientY, moved: false, multi: false, button: ui.space ? 1 : event.button };
   else if (lotGesture) { lotGesture.multi = true; lotGesture.moved = true; }
   try { el.canvas.setPointerCapture(event.pointerId); } catch { cancelLotGesture(); }
 }, true);
@@ -1821,11 +1939,23 @@ el.canvas.addEventListener('pointerup', (event) => {
 for (const name of ['pointercancel', 'lostpointercapture']) el.canvas.addEventListener(name, () => { if (board.status().active) cancelLotGesture(); }, true);
 for (const name of ['click', 'contextmenu']) el.canvas.addEventListener(name, (event) => { if (board.status().active || swallowLotClick) { event.preventDefault(); event.stopImmediatePropagation(); if (name === 'click') swallowLotClick = false; } }, true);
 
+const FIT_PAN_NOTE = 'The whole lot is in view. Zoom in (+ or the wheel) to move the view.';
 el.canvas.addEventListener('pointerdown', (e) => {
-  const pan = e.button === 1 || (e.button === 0 && state.phase !== 'build');
+  // Holding Space turns a left drag into a pan, and its click never places or inspects.
+  const spacePan = !!ui.space && e.button === 0;
+  ui.swallowClick = spacePan;
+  if (spacePan) ui.space.dragged = true;
+  const pan = e.button === 1 || spacePan || (e.button === 0 && state.phase !== 'build');
   if (pan && board.camera().zoom !== 1) {
     e.preventDefault();
     ui.pan = { x: e.clientX, y: e.clientY };
+    try { el.canvas.setPointerCapture(e.pointerId); } catch { /* the drag still works inside the canvas */ }
+    return;
+  }
+  if (spacePan) { el.boardStatus.textContent = FIT_PAN_NOTE; return; }
+  // A right drag pans; a right click without a drag still removes (see finishRightClick).
+  if (e.button === 2 && state.phase === 'build') {
+    ui.rdrag = { x: e.clientX, y: e.clientY, start: { clientX: e.clientX, clientY: e.clientY }, moved: false, up: false, menu: false };
     try { el.canvas.setPointerCapture(e.pointerId); } catch { /* the drag still works inside the canvas */ }
     return;
   }
@@ -1842,6 +1972,15 @@ el.canvas.addEventListener('pointercancel', endDrag);
 // A middle-button press would start the browser's autoscroll instead of a pan.
 el.canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
 el.canvas.addEventListener('pointermove', (e) => {
+  if (ui.rdrag && !ui.rdrag.up && (e.buttons & 2)) {
+    if (!ui.rdrag.moved && Math.hypot(e.clientX - ui.rdrag.start.clientX, e.clientY - ui.rdrag.start.clientY) > 6) {
+      ui.rdrag.moved = true;
+      if (board.camera().zoom === 1) el.boardStatus.textContent = FIT_PAN_NOTE;
+    }
+    if (ui.rdrag.moved && board.camera().zoom !== 1) board.panBy(e.clientX - ui.rdrag.x, e.clientY - ui.rdrag.y);
+    ui.rdrag.x = e.clientX; ui.rdrag.y = e.clientY;
+    return;
+  }
   if (ui.pan) {
     board.panBy(e.clientX - ui.pan.x, e.clientY - ui.pan.y);
     ui.pan = { x: e.clientX, y: e.clientY };
@@ -1858,6 +1997,7 @@ el.canvas.addEventListener('pointermove', (e) => {
 });
 el.canvas.addEventListener('pointerleave', () => { ui.hover = null; draw(); });
 el.canvas.addEventListener('click', (e) => {
+  if (ui.swallowClick) { ui.swallowClick = false; return; }
   if (state.phase !== 'build') return;
   const tile = board.tileAt(e.clientX, e.clientY);
   if (tile) ui.cursor = tile;
@@ -1866,10 +2006,29 @@ el.canvas.addEventListener('click', (e) => {
   else if (ui.tool === 'select') { const target = targetAt(e); if (target) inspectAt(target); }
   else if (tile) placeAt(tile);
 });
+// The context menu arrives before the button's release on some systems and after it on
+// others, so a right click removes once both have happened and the pointer did not drag.
+function finishRightClick() {
+  const r = ui.rdrag;
+  if (!r || !r.up || !r.menu) {
+    if (r && r.up && !r.menu) setTimeout(() => { if (ui.rdrag === r) ui.rdrag = null; }, 600);
+    return;
+  }
+  ui.rdrag = null;
+  if (!r.moved && state.phase === 'build') removeUnder(r.start);
+}
+el.canvas.addEventListener('pointerup', (e) => {
+  if (e.button !== 2 || !ui.rdrag) return;
+  ui.rdrag.up = true;
+  finishRightClick();
+});
+el.canvas.addEventListener('pointercancel', () => { ui.rdrag = null; });
 el.canvas.addEventListener('contextmenu', (e) => {
   if (state.phase !== 'build') return;
   e.preventDefault();
-  removeUnder(e);
+  if (!ui.rdrag) { removeUnder(e); return; }
+  ui.rdrag.menu = true;
+  finishRightClick();
 });
 // The page doesn't scroll, so the wheel zooms about the pointer (docs/HUD.md decision 3).
 // Line and page deltas (Firefox's wheel) are scaled to pixels.
@@ -1894,7 +2053,7 @@ el.canvas.addEventListener('keydown', (e) => {
   }
   if (matches('zoom-in', e)) { e.preventDefault(); zoomStep(1); return; }
   if (matches('zoom-out', e)) { e.preventDefault(); zoomStep(-1); return; }
-  if (matches('zoom-fit', e)) { e.preventDefault(); zoomStep(-board.camera().zooms.length); return; }
+  if (matches('zoom-fit', e)) { e.preventDefault(); fitView(); return; }
   const pans = { ArrowUp: [0, 1], ArrowDown: [0, -1], ArrowLeft: [1, 0], ArrowRight: [-1, 0] };
   if (matches('pan', e) && board.camera().zoom !== 1) {
     e.preventDefault();
@@ -1916,8 +2075,9 @@ el.canvas.addEventListener('keydown', (e) => {
     draw();
   } else if (matches('place', e)) {
     e.preventDefault();
-    placeAt(ui.cursor);
-    el.boardStatus.textContent = describeTile(ui.cursor);
+    // Space waits for its release: held with a drag it moves the view instead (see panKeys).
+    if (e.key === ' ') { if (!e.repeat) ui.space = { dragged: false }; return; }
+    placeFromKeys();
   } else if (matches('remove', e)) {
     e.preventDefault();
     removeAt(ui.cursor);
@@ -1930,6 +2090,21 @@ el.canvas.addEventListener('keydown', (e) => {
     toggleBulldoze();
   }
 });
+
+function placeFromKeys() {
+  const tile = ui.cursor;
+  if (placeAt(tile) || ui.tool === 'select' || ui.tool === 'bulldoze') el.boardStatus.textContent = describeTile(tile);
+}
+
+// Space+drag pans (the common convention); a Space tap still places or inspects at the cursor.
+el.canvas.addEventListener('keyup', (e) => {
+  if (e.key !== ' ' || !ui.space) return;
+  const { dragged } = ui.space;
+  ui.space = null;
+  e.preventDefault();
+  if (!dragged && state.phase === 'build' && el.win.hidden && el.menu.hidden) placeFromKeys();
+});
+el.canvas.addEventListener('blur', () => { ui.space = null; });
 
 function rotate() {
   ui.rot = (ui.rot + 1) % 4;
@@ -1951,7 +2126,8 @@ el.win.addEventListener('click', event => {
 
 $('#zoom-in').addEventListener('click', () => zoomStep(1));
 $('#zoom-out').addEventListener('click', () => zoomStep(-1));
-$('#zoom-fit').addEventListener('click', () => zoomStep(-board.camera().zooms.length));
+$('#zoom-fit').addEventListener('click', fitView);
+$('#renderer-btn').addEventListener('click', () => { cancelLotGesture(); void board.setEnabled(!board.status().enabled); });
 $('#turn-view').addEventListener('click', () => {
   const step = board.turnView();
   el.boardStatus.textContent = board.status().active ? `3D view: ${Math.round(board.camera().yaw)} degrees.` : `View quarter ${step + 1} of 4. Props keep the original painted side.`;
@@ -1959,6 +2135,15 @@ $('#turn-view').addEventListener('click', () => {
 
 // ---------------------------------------------------------------------------
 // Panel events
+
+// Click and Enter book the same way; the Build card then confirms what was booked, and Back
+// returns to booking before anything is paid.
+function bookDeal(target, action) {
+  if (!act(action) || state.phase !== 'build') return;
+  const name = artistFor(state.booking.artistId).name;
+  const deal = state.booking.deal === 'door' ? 'a door deal' : state.booking.deal === 'sponsor' ? 'a sponsored show' : `a ${money(quotedAsk())} guarantee`;
+  say(`Booked ${name} on ${deal}. Nothing is paid until the doors open; Back returns to booking.`, 'info');
+}
 
 function onAct(e) {
   const target = e.target.closest('[data-act]');
@@ -2004,7 +2189,7 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') act({ type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1, supportPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') bookDeal(target, { type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1, supportPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2027,6 +2212,7 @@ function onAct(e) {
     resetModeButtons();
     state = mode === 'career' ? createGame(state.seed) : createGame(state.seed, { mode, scenario: 'wet-lot' });
     resetHistory();
+    resetCamera();
     ui.mounted = null;
     persist();
     render();
@@ -2406,6 +2592,7 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
     target.textContent = 'Start a new game';
     state = createGame(freshSeed());
     resetHistory();
+    resetCamera();
     persist();
     stopPlayback();
     ui.play = null;
