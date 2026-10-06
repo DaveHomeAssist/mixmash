@@ -802,7 +802,7 @@ body[data-phase='promote'] .actions button { padding-inline: 8px; }
   #win[data-kind="settlement"] .win-head { padding-left: 10px; }
   #win[data-kind="settlement"] .win-head h2 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .settlement-summary { gap: 4px; }
-  .settlement-verdict { grid-template-columns: minmax(0, 1fr); }
+  .settlement-verdict { grid-template-columns: minmax(105px, 0.7fr) minmax(0, 1.3fr); }
   .settlement-verdict { padding-block: 6px; }
   .settlement-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .settlement-verdict > p { grid-column: 1; }
