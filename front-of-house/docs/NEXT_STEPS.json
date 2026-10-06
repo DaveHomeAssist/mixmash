@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Combined crowd and HUD delivery",
-  "lastActivity": "2026-10-05",
+  "head": "Classic crowd correction delivered",
+  "lastActivity": "2026-10-06",
   "status": "amber",
-  "statusReason": "PR129 HUD/camera/fence/night changes are merged300c365. Integrated correction1b1d82d/cachev71 passes439 repository tests, build/vendor/assets/docs/unchanged simulation, both-browser floor checks, the complete twelve-script player suite,3D/navigation/resolution and four exact frozen-browser legacy save/sign journeys. Final integrated-head CI, Pages and hosted delivery remain pending. Dominic Intel/Mesa EGL hardware renders the actual3D HUD with exact camera/state preservation; this headless context check adds no timing samples or physical/sustained-target acceptance. Earlier b746258 native model15 evidence, the59.7358Hz Festival window and Windows/Intel failures retain frozen attribution. Human art/camera/career, supported physical phone/low-power/current-Mac/display, calibration and40original raster-image rights remain open. PR128 review documentation remains verified atef47093 with40matching checked paths.",
+  "statusReason": "PR129 HUD/camera/fence/night changes are merged300c365. Integrated correction1b1d82d/cachev71 passes439 repository tests, build/vendor/assets/docs/unchanged simulation, both-browser floor checks, the complete twelve-script player suite,3D/navigation/resolution and four exact frozen-browser legacy save/sign journeys. Delivered via PR130 0ba0fca: final-head and post-merge CI, Pages, the hosted twelve-script player retry and exact 49-path deployed parity pass; dedicated offline and 3D-recovery reruns were not performed. Dominic Intel/Mesa EGL hardware renders the actual3D HUD with exact camera/state preservation; this headless context check adds no timing samples or physical/sustained-target acceptance. Earlier b746258 native model15 evidence, the59.7358Hz Festival window and Windows/Intel failures retain frozen attribution. Human art/camera/career, supported physical phone/low-power/current-Mac/display, calibration and40original raster-image rights remain open. PR128 review documentation remains verified atef47093 with40matching checked paths.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -38,12 +38,12 @@
     "2026-10-05: playtest HUD/UX fixes (capacity-cap explanations, placement refusal reasons, consistent cash, per-phase toasts, Space/right-drag pan, room-matched keys, 3D Fit/home and per-show camera reset, 2D/3D strip button, softer Book dim, firmer daytime fence, settlement A/B/C order); no rule, balance or save change."
   ],
   "nextStep": {
-    "title": "Deliver the classic crowd-count correction",
-    "why": "Combined correction1b1d82d preserves PR129 HUD changes and passes full remote regression and exact save/sign proof. Complete mandatory final-head CI and exact Pages/hosted/offline delivery, then use the verified Intel EGL route for properly recorded diagnostics under the existing performance procedure.",
-    "doneWhen": "Final-head mandatory CI passes, exact Pages/runtime and hosted legacy count/save/settlement checks pass; existing project record/board preserve every remaining human, physical-device, calibration and rights gate.",
+    "title": "Record EGL diagnostics under the existing performance procedure",
+    "why": "The classic crowd correction is delivered through PR130. The verified Dominic Intel/Mesa EGL route can now collect properly recorded diagnostics with the existing scenes, sampling procedure and limits, without implying physical or sustained-target acceptance.",
+    "doneWhen": "The prepared optional --gpu=egl harness path runs under the existing procedure, its receipts are recorded separately from physical-device evidence, and the project record and board preserve every remaining human, physical-device, calibration and rights gate.",
     "effort": "S",
     "owner": "agent",
-    "blockedBy": "Mandatory final integrated-head CI, merge, Pages and hosted runtime checks remain pending; D1\u2013D11 remain settled."
+    "blockedBy": "None for automated diagnostics; human art/camera/career, supported physical-device performance, measured venue calibration and asset rights remain open; D1\u2013D11 remain settled."
   },
   "findings": [
     {
@@ -131,7 +131,7 @@
       "type": "bug",
       "sev": "P2",
       "title": "Classic crowd correction delivered (PR130)",
-      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. CI/Pages/hosted delivery remains pending; original failure evidence is preserved. Delivered 2026-10-06: PR130 merged as 0ba0fca with final-head CI 37406356034, post-merge CI 37408444165 and Pages 37408443435 green; the full twelve-script hosted player retry on Dominic passed (28 core checks plus every player journey through curfew) after the retained initial readiness timeout, whose cause remains unverified; exact 49-path deployed-byte parity passed. Dedicated offline and 3D-recovery reruns were not performed.",
+      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. Original failure evidence is preserved. Delivered 2026-10-06: PR130 merged as 0ba0fca with final-head CI 37406356034, post-merge CI 37408444165 and Pages 37408443435 green; the full twelve-script hosted player retry on Dominic passed (28 core checks plus every player journey through curfew) after the retained initial readiness timeout, whose cause remains unverified; exact 49-path deployed-byte parity passed. Dedicated offline and 3D-recovery reruns were not performed.",
       "files": [
         "front-of-house/board.js:612",
         "test/front-of-house-floor-smoke.mjs:54",
