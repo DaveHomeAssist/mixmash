@@ -130,14 +130,14 @@
       "id": "FOH-CROWD-REPRESENTATION",
       "type": "bug",
       "sev": "P2",
-      "title": "Classic crowd correction verified remotely; delivery pending",
-      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. CI/Pages/hosted delivery remains pending; original failure evidence is preserved.",
+      "title": "Classic crowd correction delivered (PR130)",
+      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. CI/Pages/hosted delivery remains pending; original failure evidence is preserved. Delivered 2026-10-06: PR130 merged as 0ba0fca with final-head CI 37406356034, post-merge CI 37408444165 and Pages 37408443435 green; the full twelve-script hosted player retry on Dominic passed (28 core checks plus every player journey through curfew) after the retained initial readiness timeout, whose cause remains unverified; exact 49-path deployed-byte parity passed. Dedicated offline and 3D-recovery reruns were not performed.",
       "files": [
         "front-of-house/board.js:612",
         "test/front-of-house-floor-smoke.mjs:54",
         "front-of-house/docs/FEATURE_BRIEFS.md"
       ],
-      "evidence": "runtime + browser checks",
+      "evidence": "runtime + browser checks + hosted delivery",
       "phase": 1
     }
   ],
