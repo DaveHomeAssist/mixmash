@@ -1031,3 +1031,13 @@ renderers. CT-DEC-34 and FOH-U04 preserve the broader feedback as scoped future
 work rather than implying that open world, story, staff, calendar, alternate
 events or new deal systems already exist. Engine, balance, accounting and save
 schema2 are unchanged. Tests, delivery and live verification remain required.
+
+PR138 head `48d2a6d` passed general CI37605094884 and paired regression attempt2,
+then merged as `3fbe3bbd07839e608a74294561c5eb4871bc63ba`. Pages37611711384 and
+post-merge CI37611712008 pass. Hosted `game.js`, `board.js`,
+`lot-renderer.mjs`, `styles.css`, `version.mjs`, `lot-assets.json` and `sw.js`
+match the merge exactly. Dominic live checks pass classic and3D at1440x900 and
+375x812: v0.1.1 displays, Build shows the grid, Show hides it, the revised cost
+copy renders and no page error occurs. Annotated tag `front-of-house-v0.1.1`
+resolves to the deployed merge. Automated0.1.1 delivery is complete; broader
+proposals and human/device, calibration and rights gates remain separate.
