@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.1.1 playtest clarity candidate; verification and delivery active",
+  "head": "0.1.1 playtest clarity delivered; acceptance open",
   "lastActivity": "2026-10-07",
   "status": "amber",
-  "statusReason": "Front of House0.1.0 remains the delivered release at a3677b8. Dave\u2019s2026-10-07 handwritten playtest feedback is reconciled through CT-DEC-34/FOH-U04. A0.1.1/cachev74 presentation candidate clarifies Show cost so far, guides the first booking toward the editable Suggested layout and hides placement tiles outside Build in classic/3D. Engine, balance, accounting and save schema2 are unchanged. Tests, CI, Pages, deployed parity and live behavior remain required before delivery; human/device/calibration/rights gates remain open.",
+  "statusReason": "Front of House0.1.1/cachev74 is delivered through PR138 at 3fbe3bb. Final-head general CI and paired regression attempt2, Pages, seven-file hosted parity, live Dominic classic/3D desktop/phone behavior, exact-merge post-merge CI and annotated tag front-of-house-v0.1.1 pass. Engine, balance, accounting and save schema2 remain unchanged. No executable automated phase remains in FOH-U04. Human art/camera/career, supported physical devices, measured venue calibration and original-image rights remain open.",
   "activity30d": {
-    "headline": "Front of House0.1.0 is live;0.1.1 playtest clarity is in verification with broader story/staff/calendar/deal feedback preserved as separately scoped proposals."
+    "headline": "Front of House0.1.1 is live with clearer first booking, running show cost and Build-only placement grid; broader story/staff/calendar/deal proposals and human/device/calibration/rights acceptance remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -39,15 +39,16 @@
     "PR130 merged0ba0fca with successful test and FOH regression jobs, delivering the classic whole-guest correction together with PR129's retained HUD changes.",
     "PR132 merged7b99bbc after final-head CI37569431470; post-merge CI37572085279 and Pages37572084871 pass. Hosted game.js/styles.css/sw.js match exactly, and the complete twelve-script Chromium/WebKit player matrix passes on Dominic against mixmash.games, including Summary/Ledger, one-time signing, held runs and read-only reopening.",
     "Clean0585823 records18 valid Dominic Intel/Mesa EGL renderer-only windows under the established protocol; independent fixture/raw digest and statistics checks pass. Full-HUD, native/physical-device, sustained-target and human acceptance remain separate.",
-    "PR136 head2123f1b passed general and paired regression CI and mergeda3677b8. Pages37584561999 and postmergeCI37584562751 pass; five release files match live, Dominic verifies fresh default3D/v0.1.0/persisted2D, and annotated tag front-of-house-v0.1.0 resolves to the release merge. Save schema stays2."
+    "PR136 head2123f1b passed general and paired regression CI and mergeda3677b8. Pages37584561999 and postmergeCI37584562751 pass; five release files match live, Dominic verifies fresh default3D/v0.1.0/persisted2D, and annotated tag front-of-house-v0.1.0 resolves to the release merge. Save schema stays2.",
+    "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge."
   ],
   "nextStep": {
-    "title": "Deliver the bounded0.1.1 playtest clarity patch",
-    "why": "The handwritten notes identify immediate first-play and Show readability problems that can be corrected without changing game rules; broader systems need independent briefs.",
-    "doneWhen": "Targeted and full checks pass on the exact head, the change merges to gh-pages, Pages succeeds, hosted release files match, live classic/3D show grid behavior and first-booking/cost copy are verified, and front-of-house-v0.1.1 resolves to the deployed merge.",
+    "title": "Scope the producer and advisory desk",
+    "why": "The immediate handwritten first-play and Show readability problems are delivered. The next bounded product opportunity is to surface existing ticketing, artist, security/service and relationship evidence through an advisory layer without inventing a new simulation or economy.",
+    "doneWhen": "A reviewed feature brief defines the player problem, existing evidence inputs, smallest useful advisory surface, vocabulary, exclusions, save/API impact and acceptance checks before implementation begins.",
     "effort": "S",
     "owner": "Codex",
-    "blockedBy": "None for the bounded presentation slice. Broader notes remain proposed and do not expand this patch."
+    "blockedBy": "No implementation begins until the scoped brief preserves the separately proposed story, calendar, alternate-event, new-deal, venue-ownership and staff-AI systems."
   },
   "findings": [
     {

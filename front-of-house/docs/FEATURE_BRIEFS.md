@@ -792,6 +792,8 @@ acceptance.
 
 ## FOH-U04 — First-play clarity and show-mode presentation
 
+**Status:** Delivered through PR138 at `3fbe3bb` on 2026-10-07; broader proposals and human/physical acceptance remain separate.
+
 **Authority and source:** Dave's handwritten Front of House playtest notes,
 received 2026-10-07, reconciled under CT-DEC-19 and CT-DEC-34. The notes call
 out the weak introduction and prominence of “Costs so far,” inconsistent
