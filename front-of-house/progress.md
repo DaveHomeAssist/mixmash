@@ -1020,3 +1020,14 @@ an explicit2D choice through reload; the current live capture was inspected.
 Annotated tag `front-of-house-v0.1.0` resolves to the exact release merge.
 Automated delivery is complete; human/device, calibration and rights gates are
 not inferred.
+
+# 2026-10-07 — Handwritten playtest clarity candidate
+
+Dave's two handwritten Front of House feedback pages were reconciled against
+the delivered0.1.0 roadmap. The bounded0.1.1/cachev74 candidate renames and
+emphasizes the Build running cost, guides the first booking toward the complete
+editable Suggested layout and hides placement tiles outside Build in both
+renderers. CT-DEC-34 and FOH-U04 preserve the broader feedback as scoped future
+work rather than implying that open world, story, staff, calendar, alternate
+events or new deal systems already exist. Engine, balance, accounting and save
+schema2 are unchanged. Tests, delivery and live verification remain required.

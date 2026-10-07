@@ -60,7 +60,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | --- | --- |
 | Purpose | Lay out the room until it passes R-18 |
 | Arrives from | Book; Back from Promote |
-| Shows | Full board with sightlines on. Top left: phase card and message. Top right: capacity, power bar, clear view, blocked tiles, staff, costs so far, the readiness line, Fence, Sightlines and Details. Bottom left: Select (the default), tools 1 to 8 with sprites and costs, Bulldoze, Rotate, Undo, Redo. Bottom right: Suggested layout, Clear, Back, **Lock the layout** |
+| Shows | Full board with placement tiles and sightlines on. Top left: phase card and message. Top right: capacity, power bar, clear view, blocked tiles, staff, **Show cost so far** for the venue and placed equipment, the readiness line, Fence, Sightlines and Details. Bottom left: Select (the default), tools 1 to 8 with sprites and costs, Bulldoze, Rotate, Undo, Redo. Bottom right: Suggested layout, Clear, Back, **Lock the layout**. The first booking explains that Suggested layout supplies a complete editable starter. |
 | Controls → engine | With a placement tool, click or Enter on a tile → `place`. In Select, click/touch/Enter → inspect the current object without changing the layout; a dashed footprint marks it. Escape closes dialogs/menu first, then returns a placement tool or bulldozing to Select. Bulldoze or Delete → `remove`. Fence → `place` or `remove` the fence kit. Suggested layout → `setLayout` with the room's starter. Clear → one dialog showing the current object count; confirm → `setLayout` with nothing. Cancel preserves the layout. Details → Lot details window (remove any object by name). Undo or Redo → `setLayout` with the layout from before or after the last change (a bulldozer drag is one change; the list is kept in memory only and clears when the phase changes or a game is started or loaded). Lock the layout → `confirmBuild` (refused with the missing items until ready) |
 | Phone | Peek sheet with tabs Lot, Tools, Actions |
 | Leaves to | Promote, or Book |
@@ -82,7 +82,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | --- | --- |
 | Purpose | Play the night and answer one incident |
 | Arrives from | Promote; signing a night of a multi-night run with nights left |
-| Shows | Night board with beams and crowd. Top left: "Doors are open", the clock (19:00 to 23:00) and the status line. Bottom left: the feed (last four lines). Bottom right: crowd in the room, Skip to the problem. Top right, when the incident arrives: its card with every response, its cost and its consequence, and Locate (centres the PA, gate or stage) |
+| Shows | Night board with beams and crowd; placement tiles are hidden. Top left: "Doors are open", the clock (19:00 to 23:00) and the status line. Bottom left: the feed (last four lines). Bottom right: crowd in the room, Skip to the problem. Top right, when the incident arrives: its card with every response, its cost and its consequence, and Locate (centres the PA, gate or stage) |
 | Controls → engine | A response → `respond` (refused if it costs more than cash). Doors crew card (opt-in trial) → `chooseDoorCrew`. Skip and Locate change only the view |
 | Timing | See section 5. Reduced motion jumps straight to the incident |
 | Phone | Peek sheet with tabs Problem and Night; the incident brings Problem forward |

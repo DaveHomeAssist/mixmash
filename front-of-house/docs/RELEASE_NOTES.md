@@ -5,6 +5,16 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.1.1 — 2026-10-07
+
+- Makes the running Build expense easier to understand as **Show cost so far**,
+  with its venue-and-equipment scope stated directly in the readout.
+- Hides placement tiles outside Build in both the classic and 3D views so Show
+  reads as an event rather than an editor.
+- Guides the first booking toward the complete Suggested layout while keeping
+  Build available for learning and changes.
+- Keeps engine rules, balance, accounting and save schema 2 unchanged.
+
 ## 0.1.0 — 2026-10-07
 
 This is the first explicitly numbered Front of House release, not the first

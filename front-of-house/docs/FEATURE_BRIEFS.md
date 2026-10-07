@@ -789,3 +789,50 @@ source is verified before creating `front-of-house-v0.1.0`.
 **Excludes:** renderer redesign, new art, balance or save changes, public launch,
 retrospective SemVer claims, and human/physical-device/calibration/rights
 acceptance.
+
+## FOH-U04 — First-play clarity and show-mode presentation
+
+**Authority and source:** Dave's handwritten Front of House playtest notes,
+received 2026-10-07, reconciled under CT-DEC-19 and CT-DEC-34. The notes call
+out the weak introduction and prominence of “Costs so far,” inconsistent
+vocabulary, placement tiles during Show, sparse space beyond the playable area,
+first-play guidance, broader venue/equipment ownership, advisory staff, story,
+alternate event uses, a calendar and additional deal types.
+
+**Player problem/outcome:** The first booking asks the player to understand
+promoter language and a blank Build phase before the game has established what
+a workable show looks like. During Show, editor markings compete with the event.
+Make the current loop easier to read before adding another management system.
+
+**Smallest useful slice:** Name the Build total **Show cost so far**, explicitly
+scope it to venue and placed equipment, and give it more visual weight. On the
+first booking, explain that Suggested layout provides a complete editable
+starter rather than skipping Build. Show the placement grid only during Build
+in classic and 3D. Preserve object footprints, picking, camera controls,
+sightlines and every calculation.
+
+**Exclusions:** No automatic phase skip, open world, cutscene engine, narrative
+campaign, imported background image, individually simulated band/crowd, staff
+AI, venue ownership economy, calendar, holiday events, DJ/convention mode,
+contest mechanic or new deal formula. Those ideas require separate rules and
+evidence. Continuous orbit, four venues, representative crowds, equipment
+purchase/rent, venue profiles and current deal systems already exist and must
+be extended rather than rebuilt.
+
+**Rules/data/save/API:** Presentation only. Engine inputs, costs, booking terms,
+settlement, public runtime actions and save schema 2 remain unchanged. The 2D
+and 3D renderers consume one transient `showGrid` presentation field.
+
+**Follow-up order:** First test the guided starter and show readability. Then
+scope a producer/advisory desk that reports venue health using existing
+ticketing, artist, security/service and relationship evidence. Treat procedural
+surroundings as art work with provenance. Consider calendar/alternate-event,
+new-deal and story systems only after their decisions and economy boundaries
+are written.
+
+**Acceptance:** First booking names the starter path; the Build readout names
+and explains the current show cost; grid state is true in Build and false in
+Show/other phases in classic and 3D; phase changes and renderer fallback do not
+alter state; supported viewports remain contained; existing full player,
+renderer, accounting and save checks pass. Human comprehension and final art
+remain separate.
