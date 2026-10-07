@@ -63,7 +63,7 @@ try {
   }
   for (const three of [false, true]) {
     const c = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', serviceWorkers: 'block' }), p = await c.newPage();
-    p.on('pageerror', e => errors.push(e.message)); await p.goto(`${server.origin}/front-of-house/${three ? '?renderer=3d' : ''}`); await p.waitForFunction(() => window.__frontOfHouse);
+    p.on('pageerror', e => errors.push(e.message)); await p.goto(`${server.origin}/front-of-house/?renderer=${three ? '3d' : '2d'}`); await p.waitForFunction(() => window.__frontOfHouse);
     await load(p, fixture()); if (three) await p.waitForFunction(() => __frontOfHouse.rendererStatus().active && __frontOfHouse.board().venue === 'club');
     await p.click('[data-act="confirm-build"]'); await p.click('[data-act="confirm-promo"]');
     assert.equal((await state(p)).phase, 'show'); const before = await state(p); await p.reload(); await p.waitForFunction(() => window.__frontOfHouse);

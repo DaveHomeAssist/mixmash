@@ -18,12 +18,15 @@ import { LOOK } from './board.js';
 import { createSiteMap } from './site-map.mjs';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
+import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
+const rendererQuery = new URLSearchParams(window.location.search).get('renderer');
+const RENDERER_PREFERENCE = 'front_of_house_renderer';
 const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay', 'vip-deck', 'bus-compound'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
@@ -84,6 +87,21 @@ const el = {
   winBody: $('#win-body'),
   winFoot: $('#win-foot'),
 };
+
+$('#game-version').textContent = `v${FRONT_OF_HOUSE_RELEASE.version}`;
+
+function rendererPreference() {
+  if (rendererQuery === '2d' || rendererQuery === '3d') return rendererQuery === '3d';
+  try {
+    const saved = localStorage.getItem(RENDERER_PREFERENCE);
+    if (saved === '2d' || saved === '3d') return saved === '3d';
+  } catch { /* A fresh session still defaults to 3D when storage is unavailable. */ }
+  return true;
+}
+
+function rememberRendererPreference(enabled) {
+  try { localStorage.setItem(RENDERER_PREFERENCE, enabled ? '3d' : '2d'); } catch { /* The view still changes for this session. */ }
+}
 
 const store = window.MixKitSave
   ? window.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: D.SCHEMA_VERSION, migrate: (saved) => migrateSave(saved) })
@@ -1718,7 +1736,7 @@ const classicBoardHelp = $('#board-help').textContent;
 let mapRefreshQueued = false;
 const board = createBoardAdapter(el.canvas, {
   onView: () => { if (!mapRefreshQueued) { mapRefreshQueued = true; queueMicrotask(() => { mapRefreshQueued = false; siteMap.refresh(); }); } },
-  enabled: new URLSearchParams(location.search).get('renderer') === '3d',
+  enabled: rendererPreference(),
   onStatus: updateRendererStatus,
 });
 const siteMap = createSiteMap($('#site-map'), board, draw);
@@ -2198,7 +2216,7 @@ el.win.addEventListener('keydown', event => {
 $('#zoom-in').addEventListener('click', () => zoomStep(1));
 $('#zoom-out').addEventListener('click', () => zoomStep(-1));
 $('#zoom-fit').addEventListener('click', fitView);
-$('#renderer-btn').addEventListener('click', () => { cancelLotGesture(); void board.setEnabled(!board.status().enabled); });
+$('#renderer-btn').addEventListener('click', () => { cancelLotGesture(); const enabled = !board.status().enabled; rememberRendererPreference(enabled); void board.setEnabled(enabled); });
 $('#turn-view').addEventListener('click', () => {
   const step = board.turnView();
   el.boardStatus.textContent = board.status().active ? `3D view: ${Math.round(board.camera().yaw)} degrees.` : `View quarter ${step + 1} of 4. Props keep the original painted side.`;
@@ -2257,8 +2275,8 @@ function onAct(e) {
     return;
   }
   if (a === 'camera-open') { openCamera(target); return; }
-  if (a === 'renderer-toggle') { cancelLotGesture(); void board.setEnabled(!board.status().enabled); return; }
-  if (a === 'renderer-retry') { cancelLotGesture(); void board.retry(); return; }
+  if (a === 'renderer-toggle') { cancelLotGesture(); const enabled = !board.status().enabled; rememberRendererPreference(enabled); void board.setEnabled(enabled); return; }
+  if (a === 'renderer-retry') { cancelLotGesture(); rememberRendererPreference(true); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
   if (a === 'deal') bookDeal(target, { type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1, supportPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
   else if (a === 'venue' || a === 'nights') {

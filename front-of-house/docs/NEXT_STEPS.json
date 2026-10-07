@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Automated phases complete; acceptance open",
+  "head": "0.1.0 default-3D candidate; acceptance open",
   "lastActivity": "2026-10-07",
   "status": "amber",
-  "statusReason": "FOH-U02/cachev72 is delivered through PR132 at7b99bbc with final-head/post-merge CI, Pages, exact hosted source parity and the complete hosted Chromium/WebKit player matrix on Dominic. The prepared EGL diagnostic now has18 valid renderer-only Intel/Mesa windows at clean0585823 under the established10s warm-up/30s sample/three-repeat protocol, with independent fixture/raw digest and statistics checks. No executable automated phase remains in the active plan. Human art/camera/career, supported physical phone/low-power/current-Mac/display, sustained full-HUD targets, calibration and40original raster-image rights remain open.",
+  "statusReason": "CT-DEC-33 candidate makes the existing3D venue view the fresh-session default, preserves explicit2D/3D preferences and classic fallback, and begins independent Front of House0.x numbering at0.1.0/cachev73 with save schema2 unchanged. Automated source/browser/release verification is in progress; no delivery claim is made yet. Human art/camera/career, supported physical phone/low-power/current-Mac/display, sustained full-HUD targets, calibration and40original raster-image rights remain open.",
   "activity30d": {
-    "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
+    "headline": "Four-room early playable with a default3D candidate, independent0.x release metadata, live services and verified prior engineering delivery; current candidate delivery and human/device, physical calibration and provenance acceptance remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -41,12 +41,12 @@
     "Clean0585823 records18 valid Dominic Intel/Mesa EGL renderer-only windows under the established protocol; independent fixture/raw digest and statistics checks pass. Full-HUD, native/physical-device, sustained-target and human acceptance remain separate."
   ],
   "nextStep": {
-    "title": "Complete remaining human and physical acceptance",
-    "why": "All executable automated phases and the prepared EGL diagnostic are complete. Public promotion still requires Dave's art/camera/career acceptance, the supported physical device roster and targets, measured venue calibration and original-image rights review.",
-    "doneWhen": "The exact current revision has explicit human art/camera/career approval, supported phone/low-power/current-Mac/display results, measured venue calibration and resolved rights evidence; RELEASE.md gates are signed without substituting automation for physical or human proof.",
-    "effort": "M",
-    "owner": "Dave",
-    "blockedBy": "Requires Dave and physical devices/venue evidence; automated agents cannot supply human acceptance, physical calibration or rights ownership proof."
+    "title": "Deliver and verify Front of House0.1.0",
+    "why": "Dave accepted default3D and independent0.x product versioning. The candidate must pass explicit default/preference/fallback checks, mandatory CI, Pages, live version/cache readback and an immutable namespaced tag before returning to human and physical acceptance.",
+    "doneWhen": "The exact candidate passes targeted and repository gates, merges, deploys with hosted byte parity, post-merge CI succeeds, front-of-house-v0.1.0 points to the verified release merge and remaining acceptance gates stay explicit.",
+    "effort": "S",
+    "owner": "Codex",
+    "blockedBy": "None for automated delivery; human and physical acceptance remain a separate following gate."
   },
   "findings": [
     {

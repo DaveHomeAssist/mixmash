@@ -21,7 +21,7 @@ try {
   for (const width of [1440, 1024]) for (const three of [false, true]) {
     const c = await browser.newContext({ viewport: { width, height: width === 1024 ? 700 : 900 }, reducedMotion: 'reduce', serviceWorkers: 'block' }), p = await c.newPage();
     const errors = trackPageFailures(p, new URL(url).origin);
-    await p.goto(url + (three ? '?renderer=3d' : '')); await p.waitForFunction(() => window.__frontOfHouse); await p.evaluate(c => __frontOfHouse.importCode(c), code(fixture));
+    await p.goto(url + `?renderer=${three ? '3d' : '2d'}`); await p.waitForFunction(() => window.__frontOfHouse); await p.evaluate(c => __frontOfHouse.importCode(c), code(fixture));
     if (three) await p.waitForFunction(() => __frontOfHouse.rendererStatus().active);
     assert.equal(await p.locator('#site-map').isVisible(), false);
     await p.evaluate(() => __frontOfHouse.boardZoom(2)); await p.waitForFunction(() => __frontOfHouse.siteMap().visible); await noOverlap(p);

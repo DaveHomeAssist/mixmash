@@ -79,7 +79,7 @@ try {
     for (const width of [1440, 375]) for (const three of [false, true]) {
       const c = await browser.newContext({ viewport: { width, height: width === 375 ? 812 : 900 }, reducedMotion: 'reduce', serviceWorkers: 'block' }), p = await c.newPage();
       const errors = trackPageFailures(p, new URL(url).origin);
-      await p.goto(url + (three ? '?renderer=3d' : '')); await p.waitForFunction(() => window.__frontOfHouse); await load(p, fixture(policy)); if (three) await ready(p);
+      await p.goto(url + `?renderer=${three ? '3d' : '2d'}`); await p.waitForFunction(() => window.__frontOfHouse); await load(p, fixture(policy)); if (three) await ready(p);
       await tab(p, 'Actions'); await p.locator('[data-act="confirm-build"]').click(); await p.locator('#confirm-promo').click();
       const opened = await state(p); await p.reload(); await p.waitForFunction(() => window.__frontOfHouse); if (three) await ready(p); assert.deepEqual(await state(p), opened);
       await tab(p, 'Problem'); await p.locator('[data-act="respond"]:not([disabled]):visible').first().click();

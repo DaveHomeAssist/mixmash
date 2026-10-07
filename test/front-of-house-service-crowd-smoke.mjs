@@ -23,7 +23,7 @@ try {
   for (const three of [false, true]) for (const width of [1440, 375]) {
     const context = await browser.newContext({ viewport: { width, height: width === 375 ? 812 : 900 }, reducedMotion: 'reduce', serviceWorkers: 'block' });
     const page = await context.newPage(), errors = trackPageFailures(page, new URL(url).origin);
-    await page.goto(url + (three ? '?renderer=3d' : ''));
+    await page.goto(url + `?renderer=${three ? '3d' : '2d'}`);
     await page.waitForFunction(() => window.__frontOfHouse);
     await page.evaluate(code => __frontOfHouse.importCode(code), code);
     if (three) await page.waitForFunction(() => __frontOfHouse.rendererStatus().active);

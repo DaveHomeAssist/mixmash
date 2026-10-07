@@ -13,7 +13,7 @@ try{for(const[name,launcher]of Object.entries({chromium,webkit})){
  const browser=await launcher.launch(name==='chromium'?launchOptions():{});
  try{for(const[width,height,deal,nights,three=false]of [[1440,900,'guarantee',2],[375,812,'door',1],[1024,700,'guarantee',1],...(name==='chromium'?[[1440,900,'guarantee',2,true],[375,812,'door',1,true]]:[])]){
   const context=await browser.newContext({viewport:{width,height},hasTouch:width===375,reducedMotion:'reduce',serviceWorkers:'block'}),p=await context.newPage();if(width===1024)await p.addInitScript(()=>localStorage.setItem('front_of_house_theme','dark'));
-  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url+(three?'?renderer=3d':''));await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
+  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url+`?renderer=${three?'3d':'2d'}`);await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
   for(const sel of ['#menu-btn','#menu [data-mode="sandbox"]','[data-venue="amphitheater"]',`[data-nights="${nights}"]`])await p.locator(sel).first().click();
   if(three)await p.waitForFunction(()=>__frontOfHouse.rendererStatus().active&&__frontOfHouse.board().venue==='amphitheater');
   await fit(p,'#panel');assert.match(await p.locator('#panel').innerText(),/Seats and lawn sell separately/);await p.locator(`[data-deal="${deal}"]:not([disabled]):visible`).first().click();

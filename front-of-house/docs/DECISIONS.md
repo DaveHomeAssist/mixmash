@@ -582,6 +582,23 @@ Moving service representatives use a restrained opposing hip/shoulder gait; queu
 
 **Accepted 2026-10-06 by Dave through the supplied Front of House Settlement Redesign plan.** Settlement opens on a presentation-only Summary derived from the existing result: one promoter result, attendance, satisfaction, one generated verdict, one strongest dimension and one priority. Exact accounting and receipt links remain authoritative in four contained Ledger pages: Revenue, Costs, Deal and Crowd. The fixed footer carries reputation, relationship, cash after signing and one **Sign & Continue** action. Signed settlements reopen read-only in the same design. Preserve settlement formulas, one-time signing, held-run flow, saves, balance and public APIs.
 
+## CT-DEC-33: Default 3D view and independent 0.x releases
+
+**Accepted by Dave, 2026-10-07.** Fresh sessions open in the existing 3D view.
+The 2D view remains a first-class option, and an explicit 2D or 3D selection is
+remembered independently of the game save. Renderer failure continues to fall
+back to the playable classic board without changing simulation or saved state.
+
+Front of House now uses its own `0.x` product version alongside the shared
+MixMash package. `0.1.0` is the first explicitly numbered early-playable
+release; it is not the first-ever build and does not imply 1.0, public-launch,
+human, device, calibration or rights acceptance. Compatible fixes increment the
+patch number; new player-facing capability increments the minor number while
+the product remains in `0.x`. Save schema and service-worker cache versions are
+separate compatibility and delivery contracts and only change for their own
+reasons. Each numbered release gets dated release notes and an immutable
+`front-of-house-v<version>` tag after the exact deployed merge is verified.
+
 ## Homepage visibility sign-off (2026-10-05)
 
 Dave approved HOME-02 A and explicitly signed off the first playable for the

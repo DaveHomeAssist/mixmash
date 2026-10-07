@@ -19,7 +19,7 @@ const errors = [];
 async function open(three, viewport = { width: 1440, height: 900 }) {
   const context = await browser.newContext({ viewport, deviceScaleFactor: 2, hasTouch: true, reducedMotion: 'reduce', serviceWorkers: 'block' });
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
-  await page.goto(`${server.origin}/front-of-house/${three ? '?renderer=3d' : ''}`);
+  await page.goto(`${server.origin}/front-of-house/?renderer=${three ? '3d' : '2d'}`);
   await page.waitForFunction(() => window.__frontOfHouse);
   await page.evaluate(save => __frontOfHouse.importCode(save), code(fixture));
   if (three) await page.waitForFunction(() => __frontOfHouse.rendererStatus().active);
@@ -27,6 +27,24 @@ async function open(three, viewport = { width: 1440, height: 900 }) {
 }
 const state = page => page.evaluate(() => __frontOfHouse.state());
 try {
+  const preferenceContext = await browser.newContext({ viewport: { width: 1024, height: 700 }, serviceWorkers: 'block' });
+  const preferencePage = await preferenceContext.newPage();
+  await preferencePage.goto(`${server.origin}/front-of-house/`);
+  await preferencePage.waitForFunction(() => window.__frontOfHouse?.rendererStatus().active);
+  assert.equal(await preferencePage.locator('#game-version').innerText(), 'v0.1.0');
+  assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), null, 'implicit 3D default is not mistaken for an explicit choice');
+  await preferencePage.click('#renderer-btn');
+  await preferencePage.waitForFunction(() => !__frontOfHouse.rendererStatus().enabled);
+  assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), '2d');
+  await preferencePage.reload(); await preferencePage.waitForFunction(() => window.__frontOfHouse);
+  assert.equal(await preferencePage.evaluate(() => __frontOfHouse.rendererStatus().enabled), false, 'explicit 2D survives reload');
+  await preferencePage.click('#renderer-btn'); await preferencePage.waitForFunction(() => __frontOfHouse.rendererStatus().active);
+  assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), '3d');
+  await preferencePage.goto(`${server.origin}/front-of-house/?renderer=2d`); await preferencePage.waitForFunction(() => window.__frontOfHouse);
+  assert.equal(await preferencePage.evaluate(() => __frontOfHouse.rendererStatus().enabled), false, 'query override supports deterministic classic journeys');
+  assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), '3d', 'query override does not replace the player preference');
+  await preferencePage.goto(`${server.origin}/front-of-house/`); await preferencePage.waitForFunction(() => __frontOfHouse.rendererStatus().active);
+  await preferenceContext.close();
   const { page, context } = await open(true, { width: 1920, height: 1080 }), baseline = await state(page);
   assert.deepEqual(await page.evaluate(() => { const canvas = document.querySelector('.lot-webgl'); return [canvas.width, canvas.height]; }), [2880, 1620], 'full application uses the documented large-screen backing rule');
   await page.evaluate(() => __frontOfHouse.boardCamera({ yaw: 37, pitch: 48, zoom: 1 }));

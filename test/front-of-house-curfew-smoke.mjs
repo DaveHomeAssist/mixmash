@@ -15,7 +15,7 @@ try{for(const[name,launcher]of Object.entries({chromium,webkit})){
  const browser=await launcher.launch(name==='chromium'?launchOptions():{});
  try{for(const[width,height,room,deal,response]of [[1440,900,'amphitheater','guarantee','obey'],[375,812,'amphitheater','door','appeal'],[1024,700,'festival','sponsor','obey'],[375,812,'festival','guarantee','appeal']]){
   const context=await browser.newContext({viewport:{width,height},reducedMotion:width===1440?'no-preference':'reduce',serviceWorkers:'block'}),p=await context.newPage();const errors=trackPageFailures(p,new URL(url).origin);
-  await p.goto(url);await p.waitForFunction(()=>window.__frontOfHouse);const before=fixture(room,deal),code=Buffer.from(JSON.stringify({ns:D.SAVE_NAMESPACE,v:D.SCHEMA_VERSION,state:before})).toString('base64');assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
+  await p.goto(url+'?renderer=2d');await p.waitForFunction(()=>window.__frontOfHouse);const before=fixture(room,deal),code=Buffer.from(JSON.stringify({ns:D.SAVE_NAMESPACE,v:D.SCHEMA_VERSION,state:before})).toString('base64');assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
   await p.locator('[data-act="deal-help"]').click();await p.locator('#win [data-tab-name="Curfew"]').click();await pages(p);assert.match(await p.locator('#win-body').innerText(),/five more minutes/);await close(p);
   await p.locator(`[data-deal="${deal}"]:visible:not([disabled])`).first().click();assert.equal((await state(p)).booking.curfew.version,1);
   await tab(p,'Actions');await p.locator('[data-act="starter"]').click();await p.locator('[data-act="confirm-build"]').click();await tab(p,'Doors');await p.locator('#confirm-promo').click();

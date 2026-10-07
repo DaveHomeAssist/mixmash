@@ -13,7 +13,7 @@ try{for(const[name,launcher]of Object.entries({chromium,webkit})){
  const browser=await launcher.launch(name==='chromium'?launchOptions():{});
  try{for(const[width,height,deal,three=false]of [[1440,900,'guarantee'],[375,812,'sponsor'],[1024,700,'guarantee'],...(name==='chromium'?[[1440,900,'guarantee',true],[375,812,'sponsor',true]]:[])]){
   const context=await browser.newContext({viewport:{width,height},hasTouch:width===375,reducedMotion:'reduce',serviceWorkers:'block'}),p=await context.newPage();if(width===1024)await p.addInitScript(()=>localStorage.setItem('front_of_house_theme','dark'));
-  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url+(three?'?renderer=3d':''));await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
+  const errors=trackPageFailures(p,new URL(url).origin);await p.goto(url+`?renderer=${three?'3d':'2d'}`);await p.waitForFunction(()=>window.__frontOfHouse);assert.equal(await p.evaluate(c=>__frontOfHouse.importCode(c),code),true);
   for(const sel of ['#menu-btn','#menu [data-mode="sandbox"]','#menu-btn','[data-act="equipment-open"]','[data-act="equipment-enable"]','#win [data-win="close"]','[data-venue="festival"]'])await p.locator(sel).first().click();
   if(three)await p.waitForFunction(()=>__frontOfHouse.rendererStatus().active&&__frontOfHouse.board().venue==='festival');
   await fit(p,'#panel');assert.match(await p.locator('#panel').innerText(),/One site ticket/);await p.locator('#stage-bill').click();await fit(p);assert.equal(await p.locator('#stage-side-select').inputValue(),'hollow-census');
@@ -52,7 +52,7 @@ try{for(const[name,launcher]of Object.entries({chromium,webkit})){
   await p.setViewportSize({width,height});await close(p);await p.locator('[data-act="next"]:visible').first().click();assert.equal((await state(p)).booking.stages,undefined);assert.equal((await state(p)).show,null);await p.locator('#menu-btn').click();assert.equal(await p.locator('#seating-menu').innerText(),'Sound and views');await p.locator('#seating-menu').click();await p.locator('#win [data-tab-name="Room"]').click();await fit(p);assert.match(await p.locator('#win').innerText(),/Main system/);await close(p);assert.deepEqual(errors,[]);console.log(`  ok stages ${name} ${width} ${three?'3D':'classic'} ${deal}: chosen bill, public forecast, stage/site cash, signing and reload`);await context.close();
  }
  const context=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce',serviceWorkers:'block'}),p=await context.newPage(),errors=trackPageFailures(p,new URL(url).origin);
- await p.goto(url);await p.waitForFunction(()=>window.__frontOfHouse);
+ await p.goto(url+'?renderer=2d');await p.waitForFunction(()=>window.__frontOfHouse);
  const act=(s,a)=>{const r=E.applyAction(s,a);assert.equal(r.error,null);return r.state;};
  let trusted=act(E.createGame(8,{mode:'sandbox'}),{type:'chooseVenue',venueId:'festival'});trusted.reputation.artists['salt-ledger']=20;
  while(!E.offersFor(trusted).includes('salt-ledger'))trusted.seed++;
