@@ -244,6 +244,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/performance/2026-10-07-egl.json': { title: 'Dominic Intel/Mesa EGL diagnostics', description: 'Eighteen clean headless renderer-only Intel/Mesa EGL windows under the established Lot protocol, with source, fixture and raw digests; not physical-device or full-HUD acceptance.' },
   'front-of-house/performance/2026-10-04-ci-paired.json': { title: 'Paired CI performance evidence', description: 'Two complete comparisons and a valid measured20ms negative control, with independent raw/source audits and exact source revisions.' },
   'front-of-house/performance/2026-10-04-batched-hud.json': { title: 'Batched native 3D HUD measurements', description: 'Six full native client repeats after render coalescing, with unchanged game-state replay, scene quality and retained timing variation.' },
   'front-of-house/performance/2026-10-04-ci.json': { title: 'CI renderer calibration', description: 'All eighteen Ubuntu24.04 SwiftShader windows with runner/source/fixture/raw digests and separate timing statistics; no hardware FPS claim.' },
