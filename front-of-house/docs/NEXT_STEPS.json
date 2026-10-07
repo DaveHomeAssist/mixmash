@@ -10,7 +10,7 @@
   "status": "amber",
   "statusReason": "Front of House0.1.1/cachev74 is delivered through PR138 at 3fbe3bb. Final-head general CI and paired regression attempt2, Pages, seven-file hosted parity, live Dominic classic/3D desktop/phone behavior, exact-merge post-merge CI and annotated tag front-of-house-v0.1.1 pass. Engine, balance, accounting and save schema2 remain unchanged. No executable automated phase remains in FOH-U04. Human art/camera/career, supported physical devices, measured venue calibration and original-image rights remain open.",
   "activity30d": {
-    "headline": "Front of House0.1.1 is live with clearer first booking, running show cost and Build-only placement grid; broader story/staff/calendar/deal proposals and human/device/calibration/rights acceptance remain open."
+    "headline": "Front of House0.1.1 is live with clearer first booking, running show cost and Build-only placement grid; broader story/staff/calendar/deal proposals and human/device/calibration/rights acceptance remain open. FOH-U05 now scopes a presentation-only advisory desk from inspected existing evidence; no advisor gameplay is implemented."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -43,12 +43,12 @@
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge."
   ],
   "nextStep": {
-    "title": "Scope the producer and advisory desk",
+    "title": "Review the scoped advisory desk brief before implementation",
     "why": "The immediate handwritten first-play and Show readability problems are delivered. The next bounded product opportunity is to surface existing ticketing, artist, security/service and relationship evidence through an advisory layer without inventing a new simulation or economy.",
-    "doneWhen": "A reviewed feature brief defines the player problem, existing evidence inputs, smallest useful advisory surface, vocabulary, exclusions, save/API impact and acceptance checks before implementation begins.",
+    "doneWhen": "FOH-U05 is reconciled with current source and delivered as a planning record; runtime implementation requires its own scoped execution and acceptance evidence.",
     "effort": "S",
     "owner": "Codex",
-    "blockedBy": "No implementation begins until the scoped brief preserves the separately proposed story, calendar, alternate-event, new-deal, venue-ownership and staff-AI systems."
+    "blockedBy": "Runtime remains outside this brief-only task. U05-L1/L2/L3 are later optional choices, not blockers to the brief; human/device/calibration/rights gates remain separate."
   },
   "findings": [
     {
