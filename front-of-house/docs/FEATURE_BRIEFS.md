@@ -838,3 +838,112 @@ Show/other phases in classic and 3D; phase changes and renderer fallback do not
 alter state; supported viewports remain contained; existing full player,
 renderer, accounting and save checks pass. Human comprehension and final art
 remain separate.
+
+## FOH-U05 — Advisory desk and venue health
+
+**Status:** Planning brief drafted 2026-10-07 against source `6cdd8b9` after
+FOH-U04 delivery. This brief authorizes no runtime implementation. October 3
+observations supply product intent; the source inputs below were inspected in
+the current engine and client.
+
+**Player problem and outcome:** Existing booking, production, service and
+settlement evidence lives in separate windows. A player needs one concise
+answer to “What needs attention, why, and where can I act?” without learning
+another simulation. Provide a check-in desk with one current priority and
+specialist pages that explain existing evidence and route to existing controls.
+
+**Smallest slice and flow:** An explicit **Advisory desk** entry opens a
+contained window. Overview shows one priority, its phase and evidence, and one
+**Review** action. Specialist pages are **Ticketing**, **Talent**, and
+**Operations**. These are advice categories, not employed characters. Opening
+or refreshing advice never changes the game. Review opens the relevant existing
+window or phase control and restores focus when returning. A locked decision
+shows its lock reason and a receipt/review action instead of suggesting an
+unavailable edit. In Book, show booking terms and payment timing; in Build,
+show production readiness and current cost; in Promote, show forecast and
+service readiness; in Show, show only currently observable incident/service
+status; in Settle/done, use the recorded result and signed receipt.
+
+**Available source inputs and decisions:**
+
+| Category | Existing source | Player decision or destination |
+| --- | --- | --- |
+| Ticketing | `forecast`, `ticketingPlanFor`, `ticketingForecastFor`, `seatingPlanFor`, `seatingForecastFor`, `stageForecastFor` | Review price/promotion, eligible Club ticketing, seating or Festival bill controls. Forecasts remain labelled ranges, never guaranteed sales. |
+| Talent | `offersFor`, `termsFor`, `upfrontFor`, booking terms, existing artist relationship and `heldRunFor` | Review available artist/deal, payment timing or held-night terms through existing controls. No manager/agent relationship is inferred. |
+| Operations | `evaluateVenue`, `validatePlacement`, `liveAccessFor`, `sanitationPlanFor`, `liveServicesFor` | Review layout, connected facilities, eligible service terms or existing incident response. Connectivity and live-service evidence is conditional on the supported room/pilot. |
+| Result | `settlementFor`; client `settlementSummary` using `parts`, `weakest`, `net`, attendance and satisfaction | Open the existing Summary or corresponding Ledger receipt. Preserve one-time signing and read-only reopening. |
+
+Do not call `rollShow`, inspect hidden seeded draws, or use `showPreview` as a
+pre-show profit prediction. `forecast` explicitly keeps the draw hidden;
+`showPreview` is restricted to show-night playback. No new financial total is
+invented: current production cost, upfront payment and eventual profit remain
+separate, with the same source and timing as their existing owning screens.
+Absent or inapplicable data reads “Not available for this show,” never zero or
+“Ready.” A completed previous show is labelled Last show and never presented as
+current live evidence.
+
+**Priority rules:** Show an existing refusal/readiness reason first when it
+prevents the next allowed action. During Show, prioritize an unanswered current
+incident, then observable service pressure. After the show, reuse the existing
+weakest satisfaction component and its receipt. Otherwise offer the phase's
+next existing decision. Use deterministic ordering and no new numeric health
+score, staffing quality, trust threshold, guaranteed outcome or balance rule.
+Each recommendation contains a source value/reason and a valid destination;
+where no supported signal exists, explain availability without prescribing a
+change. Final presentation rules require implementation verification against
+the engine's actual validation paths.
+
+**Rules, data, saves and APIs:** Presentation-only proposal using existing
+state and exported readers. No persisted desk state, staff entity, hiring,
+assignment, training, save migration, action or public API is required. Advice
+is derived afresh on opening and after relevant existing actions; repainting
+must not advance time, consume randomness or apply settlement. Keep new
+formatting/read-model code local to the browser client.
+
+**Exclusions:** No employees or staff AI, autonomous actions, manager/agent
+relationships, equipment quantity/economy changes, venue ownership, payment
+schedule, calendar, alternate events, story, open world, background assets,
+new simulation, homepage change or public launch acceptance. Existing
+settlement Summary remains the end-of-show reveal; the desk adds no extra
+coaching cards there.
+
+**Dependencies and risks:** Reuse existing window/tab behavior, receipt
+handlers, focus restoration, theme tokens and 44px controls. Fit desktop and
+phone windows through pages; do not add page scroll or a permanent HUD column.
+Main risks are leaking future outcomes, double-counting costs, applying Lot
+signals to other rooms, stale advice, duplicating settlement and offering edits
+after terms lock. Address each with phase/room gating and source-labelled text.
+
+**Narrow implementation acceptance:**
+
+1. Given the same state, opening, changing pages and closing the desk leaves
+   engine state, RNG, cash, history, relationship and save bytes unchanged.
+2. Book/Build/Promote/Show/Settle/done each expose only available evidence;
+   no hidden draw or future incident outcome appears before its allowed phase.
+3. Every displayed amount/range matches its owning existing screen; actual,
+   forecast, committed payment and last-show evidence are clearly distinguished.
+4. Lot, Club, Amphitheater and Festival unsupported/absent evidence stays
+   unavailable; applicable ticketing/seating/stage/service routes remain valid.
+5. One priority resolves deterministically; Review reaches an existing allowed
+   decision or read-only receipt, with useful lock reasons and focus restoration.
+6. Signed settlement reopening remains read-only and cannot apply payout twice.
+7. Keyboard tabs/arrows, screen-reader tab labels, visible focus, light/dark
+   contrast and mobile targets pass. Overview and specialist pages fit at
+   1440×900, 1024×700, 390×844, 375×812 and 360px width without page scroll.
+8. Existing exact settlement, save/reload and player smoke checks remain green;
+   runtime delivery gets its own CI, Pages, hosted and live proof. This brief
+   supplies neither physical-device nor human acceptance.
+
+**Product decisions:** Routine recommendations above follow Dave's autonomous
+planning direction. No answer is required to finish this brief. Preserve these
+future choices as Open until an actual decision is recorded:
+
+- **U05-L1, advisor characterization (later):** A — functional category labels
+  (recommended; clear and no character system); B — named advisor portraits
+  (requires authored assets and narrative scope). Unlocks later visual flavor.
+- **U05-L2, proactive advice (later):** A — explicit check-in only (recommended;
+  no new HUD interruption); B — dismissible phase-transition notice (requires
+  frequency and persistence rules). Unlocks a separately scoped prompt surface.
+- **U05-L3, employee mechanics (separate feature):** A — keep advice independent
+  of employees (recommended); B — paid crew with hiring/training/assignment
+  (requires economy, simulation and save contracts). Unlocks a separate brief.
