@@ -599,6 +599,26 @@ separate compatibility and delivery contracts and only change for their own
 reasons. Each numbered release gets dated release notes and an immutable
 `front-of-house-v<version>` tag after the exact deployed merge is verified.
 
+## CT-DEC-34: Playtest clarity before system expansion
+
+**Accepted by Codex under Dave's autonomous execution direction and CT-DEC-19,
+2026-10-07.** Apply the handwritten playtest feedback in bounded order. First,
+clarify the current show cost, guide the first booking toward the editable
+Suggested layout and limit placement tiles to Build. Keep the established
+Book → Build → Promote → Show → Settle loop; do not silently skip Build or add
+rules to solve an onboarding problem.
+
+Reconcile the remaining notes against shipped systems before expanding them:
+continuous orbit, multiple venues, representative crowds, equipment
+purchase/rent, room profiles and several deal types already exist. The next
+candidate is a producer/advisory desk derived from existing venue-health
+evidence. Open world, cutscenes/story, alternate event uses, calendars,
+additional deal formulas, contest mechanics and individual band/crowd
+simulation remain separately scoped proposals. Background treatment must be
+source-owned or have verified redistribution rights. This decision authorizes
+the bounded presentation patch, not every brainstormed system or full-launch
+acceptance.
+
 ## Homepage visibility sign-off (2026-10-05)
 
 Dave approved HOME-02 A and explicitly signed off the first playable for the

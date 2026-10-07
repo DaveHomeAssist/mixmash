@@ -256,6 +256,8 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 .readouts .warn { color: var(--amber); }
 .readouts .bad { color: #fca5a5; }
 .readouts .bar { display: block; height: 4px; margin-top: 3px; }
+.readouts .cost-readout { padding-left: 6px; border-left: 2px solid var(--amber); background: linear-gradient(90deg, color-mix(in srgb, var(--amber) 10%, transparent), transparent); }
+.readouts .cost-readout dd { color: var(--amber); font-size: 0.95rem; }
 .status-plate .checklist { padding: 0; list-style: none; font-size: 0.8rem; line-height: 1.35; }
 .status-plate .checklist .more { color: var(--text-muted); }
 .status-plate .toggle { min-height: 44px; justify-content: center; font-size: 0.78rem; font-family: var(--font-mono); font-weight: 700; border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0 8px; flex: 0 0 auto; }

@@ -31,7 +31,7 @@ try {
   const preferencePage = await preferenceContext.newPage();
   await preferencePage.goto(`${server.origin}/front-of-house/`);
   await preferencePage.waitForFunction(() => window.__frontOfHouse?.rendererStatus().active);
-  assert.equal(await preferencePage.locator('#game-version').innerText(), 'v0.1.0');
+  assert.equal(await preferencePage.locator('#game-version').innerText(), 'v0.1.1');
   assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), null, 'implicit 3D default is not mistaken for an explicit choice');
   await preferencePage.click('#renderer-btn');
   await preferencePage.waitForFunction(() => !__frontOfHouse.rendererStatus().enabled);
@@ -46,6 +46,7 @@ try {
   await preferencePage.goto(`${server.origin}/front-of-house/`); await preferencePage.waitForFunction(() => __frontOfHouse.rendererStatus().active);
   await preferenceContext.close();
   const { page, context } = await open(true, { width: 1920, height: 1080 }), baseline = await state(page);
+  assert.equal(await page.evaluate(() => __frontOfHouse.board().showGrid), true, 'the 3D placement grid is visible in Build');
   assert.deepEqual(await page.evaluate(() => { const canvas = document.querySelector('.lot-webgl'); return [canvas.width, canvas.height]; }), [2880, 1620], 'full application uses the documented large-screen backing rule');
   await page.evaluate(() => __frontOfHouse.boardCamera({ yaw: 37, pitch: 48, zoom: 1 }));
   const point = await page.evaluate(() => __frontOfHouse.boardClientOf(12.5, 8.5));
@@ -105,6 +106,7 @@ try {
   for (const three of [false, true]) {
     const { page: p, context: c } = await open(three);
     await p.evaluate(() => { __frontOfHouse.act({ type: 'confirmBuild' }); __frontOfHouse.act({ type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 } }); __frontOfHouse.act({ type: 'confirmPromotion' }); });
+    assert.equal(await p.evaluate(() => __frontOfHouse.board().showGrid), false, `${three ? '3D' : 'classic'} placement grid is hidden in Show`);
     if (three) await p.evaluate(() => __frontOfHouse.boardCamera({ yaw: 135, pitch: 85, zoom: 3 }));
     const before = await state(p); await p.reload(); await p.waitForFunction(() => window.__frontOfHouse);
     if (three) await p.waitForFunction(() => __frontOfHouse.rendererStatus().active);

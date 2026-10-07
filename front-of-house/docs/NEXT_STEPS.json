@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.1.0 default 3D delivered; acceptance open",
+  "head": "0.1.1 playtest clarity candidate; verification and delivery active",
   "lastActivity": "2026-10-07",
   "status": "amber",
-  "statusReason": "Front of House0.1.0/cachev73 is delivered through PR136 at a3677b8. Final-head general and paired regression CI, Pages, five-file hosted parity, fresh live Dominic default3D/version/persisted2D behavior, exact-merge postmerge CI and annotated tag front-of-house-v0.1.0 pass. Save schema remains2. No executable automated phase remains in the accepted plan. Human art/camera/career, supported physical phone/low-power/current-Mac/display, sustained full-HUD targets, calibration and40original raster-image rights remain open.",
+  "statusReason": "Front of House0.1.0 remains the delivered release at a3677b8. Dave\u2019s2026-10-07 handwritten playtest feedback is reconciled through CT-DEC-34/FOH-U04. A0.1.1/cachev74 presentation candidate clarifies Show cost so far, guides the first booking toward the editable Suggested layout and hides placement tiles outside Build in classic/3D. Engine, balance, accounting and save schema2 are unchanged. Tests, CI, Pages, deployed parity and live behavior remain required before delivery; human/device/calibration/rights gates remain open.",
   "activity30d": {
-    "headline": "Four-room Front of House0.1.0 early playable with default3D, independent0.x release metadata, live services and verified delivery; human/device, physical calibration and provenance acceptance remain open."
+    "headline": "Front of House0.1.0 is live;0.1.1 playtest clarity is in verification with broader story/staff/calendar/deal feedback preserved as separately scoped proposals."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -42,12 +42,12 @@
     "PR136 head2123f1b passed general and paired regression CI and mergeda3677b8. Pages37584561999 and postmergeCI37584562751 pass; five release files match live, Dominic verifies fresh default3D/v0.1.0/persisted2D, and annotated tag front-of-house-v0.1.0 resolves to the release merge. Save schema stays2."
   ],
   "nextStep": {
-    "title": "Complete remaining human and physical acceptance",
-    "why": "All accepted executable automated phases, the Dominic EGL diagnostic and Front of House0.1.0 delivery are complete. Public promotion still requires Dave art/camera/career acceptance, supported physical devices, measured venue calibration and original-image rights review.",
-    "doneWhen": "The exact current revision has explicit human art/camera/career approval, supported phone/low-power/current-Mac/display results, measured venue calibration and resolved rights evidence; RELEASE.md gates are signed without substituting automation for physical or human proof.",
-    "effort": "M",
-    "owner": "Dave",
-    "blockedBy": "Requires Dave and physical devices/venue evidence; automated agents cannot supply human acceptance, physical calibration or rights ownership proof."
+    "title": "Deliver the bounded0.1.1 playtest clarity patch",
+    "why": "The handwritten notes identify immediate first-play and Show readability problems that can be corrected without changing game rules; broader systems need independent briefs.",
+    "doneWhen": "Targeted and full checks pass on the exact head, the change merges to gh-pages, Pages succeeds, hosted release files match, live classic/3D show grid behavior and first-booking/cost copy are verified, and front-of-house-v0.1.1 resolves to the deployed merge.",
+    "effort": "S",
+    "owner": "Codex",
+    "blockedBy": "None for the bounded presentation slice. Broader notes remain proposed and do not expand this patch."
   },
   "findings": [
     {
@@ -143,6 +143,22 @@
       ],
       "evidence": "runtime + browser checks",
       "phase": 1
+    },
+    {
+      "id": "FOH-PLAYTEST-1007",
+      "type": "feature",
+      "sev": "P1",
+      "title": "First-play clarity and clean Show presentation",
+      "detail": "Dave\u2019s handwritten notes are reconciled against current0.1.0. The accepted bounded slice clarifies and emphasizes the running Build cost, guides the first booking to the editable Suggested layout and hides placement tiles outside Build in both renderers. Continuous orbit, four venues, representative crowds and equipment/room/deal systems are preserved; story, advisory staff, alternate events, calendar and new deal mechanics remain separate proposals.",
+      "files": [
+        "front-of-house/docs/FEATURE_BRIEFS.md",
+        "front-of-house/docs/DECISIONS.md",
+        "front-of-house/game.js",
+        "front-of-house/board.js",
+        "front-of-house/lot-renderer.mjs"
+      ],
+      "evidence": "user playtest + source reconciliation",
+      "phase": 0
     }
   ],
   "phases": [

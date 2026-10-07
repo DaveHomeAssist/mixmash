@@ -1,7 +1,7 @@
 export const FRONT_OF_HOUSE_RELEASE = Object.freeze({
-  version: '0.1.0',
+  version: '0.1.1',
   date: '2026-10-07',
   stage: 'early playable',
-  cache: 'v73',
+  cache: 'v74',
   saveSchema: 2,
 });

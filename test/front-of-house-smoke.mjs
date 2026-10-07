@@ -175,9 +175,12 @@ try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const { page, failures } = await open(context);
   assert.equal((await game(page)).phase, 'book');
+  assert.match(await page.textContent('#panel'), /Suggested layout gives you a complete starter setup/, 'the first booking previews the guided starter layout');
   await checkNoScroll(page, 'book');
   await page.click('[data-deal="guarantee"]');
   assert.equal((await game(page)).phase, 'build');
+  assert.equal((await page.evaluate(() => __frontOfHouse.board().showGrid)), true, 'the placement grid is visible in Build');
+  assert.equal(await page.textContent('#venue-stats .cost-readout dt'), 'Show cost so far', 'Build names the running venue and equipment cost');
   assert.equal(await page.isDisabled('[data-act="confirm-build"]'), true, 'an empty lot cannot be confirmed');
   await page.click('[data-act="starter"]');
   const built = await game(page);
@@ -196,6 +199,7 @@ try {
   assert.equal((await game(page)).promotion.ads.social, AD_STEP);
   await page.click('[data-act="confirm-promo"]');
   assert.equal((await game(page)).phase, 'show');
+  assert.equal((await page.evaluate(() => __frontOfHouse.board().showGrid)), false, 'the placement grid is hidden once the show starts');
   // The countdown can finish while the click waits for stable geometry; answer the incident either way.
   await page.evaluate(() => { const skip = document.querySelector('[data-act="skip"]'); if (skip && skip.getClientRects().length && !skip.disabled) skip.click(); });
   await page.waitForSelector('[data-act="respond"]');

@@ -767,11 +767,12 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       if (scene.showClear && scene.blockedSet && scene.blockedSet.has(`${x},${y}`)) fillDiamond(x, y, 1, 1, COLORS.blocked, 0, g);
     };
 
+    const showGrid = scene.showGrid !== false;
     const paintFloor = (g) => {
       for (let y = 0; y < room.h; y += 1) {
         for (let x = 0; x < room.w; x += 1) {
           const edge = x === 0 || y === 0 || x === room.w - 1 || y === room.h - 1;
-          fillDiamond(x, y, 1, 1, edge ? floor.edge : (x + y) % 2 ? floor.lot : floor.lotAlt, 0, g);
+          fillDiamond(x, y, 1, 1, edge ? floor.edge : showGrid && (x + y) % 2 ? floor.lot : floor.lotAlt, 0, g);
           // A sightline tile in front of a prop is drawn after it, so a sprite that
           // overhangs its footprint cannot hide the tile.
           const { slot } = placement(x + 0.5, y + 0.5, layers);
@@ -779,11 +780,13 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
           else bucket(tilesAt, slot, [x, y]);
         }
       }
-      g.lineWidth = 1;
-      g.strokeStyle = COLORS.grid;
-      for (let i = 0; i <= room.w; i += 1) { g.beginPath(); g.moveTo(...iso(i, 0)); g.lineTo(...iso(i, room.h)); g.stroke(); }
-      for (let j = 0; j <= room.h; j += 1) { g.beginPath(); g.moveTo(...iso(0, j)); g.lineTo(...iso(room.w, j)); g.stroke(); }
-      if (!scene.floor || scene.floor === 'lot') {
+      if (showGrid) {
+        g.lineWidth = 1;
+        g.strokeStyle = COLORS.grid;
+        for (let i = 0; i <= room.w; i += 1) { g.beginPath(); g.moveTo(...iso(i, 0)); g.lineTo(...iso(i, room.h)); g.stroke(); }
+        for (let j = 0; j <= room.h; j += 1) { g.beginPath(); g.moveTo(...iso(0, j)); g.lineTo(...iso(room.w, j)); g.stroke(); }
+      }
+      if (showGrid && (!scene.floor || scene.floor === 'lot')) {
         g.strokeStyle = COLORS.stall;
         for (let x = 3; x < room.w - 1; x += 3) {
           g.beginPath(); g.moveTo(...iso(x, room.h - 4)); g.lineTo(...iso(x, room.h - 1.4)); g.stroke();
@@ -803,7 +806,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
     // Cache only the base paint. Tiles in front of props retain their original slots.
     let copied = false;
     if (cacheFloor && !floorCache.failed) {
-      const key = JSON.stringify([room, scene.floor, scene.objects, scene.pillars, spritesReady,
+      const key = JSON.stringify([room, scene.floor, scene.objects, scene.pillars, spritesReady, showGrid,
         scene.showClear, scene.showClear ? [...scene.clearSet] : null,
         scene.showClear && scene.blockedSet ? [...scene.blockedSet] : null,
         facing, view.tw, view.th, view.ox, view.oy, view.dpr, canvas.width, canvas.height]);
@@ -964,6 +967,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       floorCache: { enabled: cacheFloor && !floorCache.failed, builds: floorCache.builds, hits: floorCache.hits,
         width: floorCache.canvas?.width || 0, height: floorCache.canvas?.height || 0, failed: floorCache.failed },
       spritesReady,
+      showGrid: lastScene?.showGrid !== false,
       facing,
       camera: camera(),
       view: { fitTw: view.fitTw, tw: view.tw, cssW: view.cssW, cssH: view.cssH, dpr: view.dpr, safe: { ...view.safe } },

@@ -379,7 +379,7 @@ function bookPanel() {
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="rooms">${rooms}</div>
     ${nights}
-    <p class="lede">${spec.secondStage ? 'One site ticket; both stage budgets. Choose a main act and deal.' : teach && spec.id === 'lot' ? 'Your first night. Two acts want the date; Sodium Arcade is the safe first booking.' : 'Two acts want this date. Pick one and a deal.'}</p>
+    <p class="lede">${spec.secondStage ? 'One site ticket; both stage budgets. Choose a main act and deal.' : teach && spec.id === 'lot' ? 'Your first night. Sodium Arcade is the safe booking. In Build, Suggested layout gives you a complete starter setup that you can change before locking.' : 'Two acts want this date. Pick one and a deal.'}</p>
     <div class="offers">${cards}</div>`;
 }
 
@@ -552,7 +552,7 @@ function updateBuild() {
     <div><dt>Clear view</dt><dd>${v.clearTiles} <small>fits ${Math.floor(v.clearTiles * density)}</small></dd></div>
     <div><dt>View blocked</dt><dd class="${v.blockedTiles ? 'bad' : ''}">${v.blockedTiles} tiles</dd></div>
     <div><dt>Staff</dt><dd>${v.staff}</dd></div>
-    <div><dt>Costs so far</dt><dd title="Paid when the doors open, with the artist and ads">${money(costsSoFar())} <small>at doors</small></dd></div>`;
+    <div class="cost-readout"><dt>Show cost so far</dt><dd title="Current venue and equipment rentals. The artist and promotion are added when the doors open.">${money(costsSoFar())} <small>rentals</small></dd></div>`;
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
     ? `<p class="checklist"><span>${esc(notes[0])}.</span>${notes.length > 1 ? ` <span class="more">${notes.length - 1} more in Details.</span>` : ''}</p>`
@@ -1827,6 +1827,7 @@ function draw() {
     clearSet: clearSet(),
     blockedSet: sight().blocked,
     showClear: state.phase === 'build' && ui.showClear,
+    showGrid: state.phase === 'build',
     cursor: null,
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
