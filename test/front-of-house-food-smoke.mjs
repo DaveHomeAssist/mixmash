@@ -71,7 +71,8 @@ try {
         await page.locator('[data-act="live-next"]').click();
         const ended = await state(page), receipt = settlementFor(ended);
         assert.ok(receipt.foodIncome > 0); assert.equal(ended.phase, 'settle');
-        if (width < 500) await page.locator('#win [data-tab-name="Revenue"]:visible').click();
+        await page.locator('#win [data-tab-name="Ledger"]').click();
+        await page.locator('#win [data-settlement-page="Revenue"]').click();
         await fit(page); await page.locator('#win [data-act="food-receipt"]').click(); await fit(page);
         await page.locator('[data-act="food-back"]').click();
         await page.locator('[data-act="accept"]').click();

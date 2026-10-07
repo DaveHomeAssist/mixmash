@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Classic crowd correction delivered",
+  "head": "Settlement summary redesign",
   "lastActivity": "2026-10-06",
   "status": "amber",
-  "statusReason": "PR129 HUD/camera/fence/night changes are merged300c365. Integrated correction1b1d82d/cachev71 passes439 repository tests, build/vendor/assets/docs/unchanged simulation, both-browser floor checks, the complete twelve-script player suite,3D/navigation/resolution and four exact frozen-browser legacy save/sign journeys. Delivered via PR130 0ba0fca: final-head and post-merge CI, Pages, the hosted twelve-script player retry and exact 49-path deployed parity pass; dedicated offline and 3D-recovery reruns were not performed. Dominic Intel/Mesa EGL hardware renders the actual3D HUD with exact camera/state preservation; this headless context check adds no timing samples or physical/sustained-target acceptance. Earlier b746258 native model15 evidence, the59.7358Hz Festival window and Windows/Intel failures retain frozen attribution. Human art/camera/career, supported physical phone/low-power/current-Mac/display, calibration and40original raster-image rights remain open. PR128 review documentation remains verified atef47093 with40matching checked paths.",
+  "statusReason": "PR130 delivered the integrated crowd/HUD source at0ba0fca with green CI. FOH-U02/cachev72 redesigns settlement presentation only: Summary leads, Ledger retains exact Revenue/Costs/Deal/Crowd and linked receipts, signed sheets reopen read-only, and Sign & Continue keeps one-time/held-run behavior. On Dominic,439 repository tests, build/vendor/assets/generated references, unchanged11-verdict Lot simulation and the complete twelve-script Chromium/WebKit player matrix pass across desktop, phone, compact, classic and3D paths. CI, merge, Pages and hosted exact-source proof for FOH-U02 remain pending. Human art/camera/career, supported physical phone/low-power/current-Mac/display, calibration and40original raster-image rights remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -35,15 +35,16 @@
     "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
     "PR126: delivery records mergedb746258; mandatory CI37368795577 attempt3 and postmergeCI37382914441 pass, Pages built2026-10-05T22:30:57Z, all44 checked hosted files/eight changed documents match. Runtime remains the PR122 qualified source.",
     "PR128 head5b443f6 passed mandatory CI37393558770 and mergedef47093b203c60701480985e382db3cd3ba921a9. Pages1263033297 built2026-10-06T00:52:54Z; Pages Actions37396257527 succeeded. Exact candidate tree/four changed documents and all40 checked hosted paths match, with runtime byte-identical to qualified PR122. Existing review observations and every human/physical/calibration/rights gate remain open.",
-    "2026-10-05: playtest HUD/UX fixes (capacity-cap explanations, placement refusal reasons, consistent cash, per-phase toasts, Space/right-drag pan, room-matched keys, 3D Fit/home and per-show camera reset, 2D/3D strip button, softer Book dim, firmer daytime fence, settlement A/B/C order); no rule, balance or save change."
+    "2026-10-05: playtest HUD/UX fixes (capacity-cap explanations, placement refusal reasons, consistent cash, per-phase toasts, Space/right-drag pan, room-matched keys, 3D Fit/home and per-show camera reset, 2D/3D strip button, softer Book dim, firmer daytime fence, settlement A/B/C order); no rule, balance or save change.",
+    "PR130 merged0ba0fca with successful test and FOH regression jobs, delivering the classic whole-guest correction together with PR129's retained HUD changes."
   ],
   "nextStep": {
-    "title": "Record EGL diagnostics under the existing performance procedure",
-    "why": "The classic crowd correction is delivered through PR130. The verified Dominic Intel/Mesa EGL route can now collect properly recorded diagnostics with the existing scenes, sampling procedure and limits, without implying physical or sustained-target acceptance.",
-    "doneWhen": "The prepared optional --gpu=egl harness path runs under the existing procedure, its receipts are recorded separately from physical-device evidence, and the project record and board preserve every remaining human, physical-device, calibration and rights gate.",
+    "title": "Deliver the settlement summary redesign",
+    "why": "FOH-U02/cachev72 passes the complete remote repository and player verification matrix without engine, balance, save or public API changes. Complete mandatory CI, merge, Pages and hosted Summary/Ledger/signing proof.",
+    "doneWhen": "Final-head CI passes; Pages serves exact cachev72 source; hosted desktop/phone Summary, Ledger, signing and signed reopening pass while existing human, physical-device, calibration and rights gates remain explicit.",
     "effort": "S",
     "owner": "agent",
-    "blockedBy": "None for automated diagnostics; human art/camera/career, supported physical-device performance, measured venue calibration and asset rights remain open; D1\u2013D11 remain settled."
+    "blockedBy": "Mandatory FOH-U02 CI, merge, Pages and hosted runtime checks remain pending; D1\u2013D11 remain settled."
   },
   "findings": [
     {
@@ -130,14 +131,14 @@
       "id": "FOH-CROWD-REPRESENTATION",
       "type": "bug",
       "sev": "P2",
-      "title": "Classic crowd correction delivered (PR130)",
-      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. Original failure evidence is preserved. Delivered 2026-10-06: PR130 merged as 0ba0fca with final-head CI 37406356034, post-merge CI 37408444165 and Pages 37408443435 green; the full twelve-script hosted player retry on Dominic passed (28 core checks plus every player journey through curfew) after the retained initial readiness timeout, whose cause remains unverified; exact 49-path deployed-byte parity passed. Dedicated offline and 3D-recovery reruns were not performed.",
+      "title": "Classic crowd correction verified remotely; delivery pending",
+      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. CI/Pages/hosted delivery remains pending; original failure evidence is preserved.",
       "files": [
         "front-of-house/board.js:612",
         "test/front-of-house-floor-smoke.mjs:54",
         "front-of-house/docs/FEATURE_BRIEFS.md"
       ],
-      "evidence": "runtime + browser checks + hosted delivery",
+      "evidence": "runtime + browser checks",
       "phase": 1
     }
   ],

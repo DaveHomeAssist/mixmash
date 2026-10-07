@@ -91,7 +91,8 @@ try {
         for (const name of await page.locator('#win [role="tab"]:visible').allTextContents()) {
           await page.locator('#win [role="tab"]').filter({ hasText: new RegExp(`^${name}$`) }).click(); await fit(page);
         }
-        if (await page.locator('#win [data-tab-name="Costs"]:visible').count()) await page.locator('#win [data-tab-name="Costs"]:visible').click();
+        await page.locator('#win [data-tab-name="Ledger"]').click();
+        await page.locator('#win [data-settlement-page="Costs"]').click();
         await fit(page); await page.locator('#win [data-act="sanitation-receipt"]').click(); await fit(page);
         await page.locator('[data-act="food-back"]').click();
         await page.locator('[data-act="accept"]').click();

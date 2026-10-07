@@ -94,9 +94,9 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | --- | --- |
 | Purpose | Read the night's money and sign it |
 | Arrives from | Show |
-| Shows | A one-line summary (people and promoter net) and **Open the settlement**. The settlement window: header (act, room, deal, attendance, satisfaction), Section A gross revenue, Section B the deal, Section C costs, artist payout, promoter net, the satisfaction parts, reputation and relationship changes, cash after signing (with cash now), the stamp, the "For next time" tip and **Sign the settlement** |
+| Shows | A one-line phase summary and **Open the settlement**. The settlement window opens on Summary: contextual act/room/show/time, one promoter result, attendance, satisfaction, one verdict, a compact financial bridge, one win and one next priority. Ledger pages retain Section A revenue, Section C costs, Section B deal, crowd detail and linked receipts. The fixed footer shows reputation, relationship, cash after signing and **Sign & Continue** |
 | Controls → engine | Sign → `acceptSettlement`. Close returns to the summary without signing |
-| Phone | Settlement window tabs: Revenue, Costs, Payout, Crowd |
+| Phone | Top-level Summary and Ledger tabs; Ledger pages: Revenue, Costs, Deal and Crowd. Each page remains contained without window scrolling |
 | Leaves to | Done, or Show for the next night of a run |
 
 ### Done (`done`)
@@ -113,7 +113,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 
 | Window | Opened from | Contents | Notes |
 | --- | --- | --- | --- |
-| Settlement | Settle: Open the settlement | The sheet with Sign in its footer | Signing is the only phase change a window makes |
+| Settlement | Settle: Open the settlement | Summary plus the authoritative paged Ledger, with Sign & Continue in its footer | Signing is the only phase change a window makes |
 | Last settlement | Done | The signed sheet, read-only | Nothing to sign |
 | Show history | Done | Every settled show, newest first | The only window allowed to scroll |
 | How the deals work | Book: Deals (ⓘ) | Guarantee, door deal, and sponsor in Split Acre | |

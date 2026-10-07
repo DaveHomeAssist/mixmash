@@ -16,6 +16,11 @@
   --yellow: #facc15;
   --coral: #f43f5e;
   --teal: #06b6d4;
+  --settlement-paper: #1b1916;
+  --settlement-panel: #242019;
+  --settlement-line: #6f542a;
+  --settlement-ink: #f6e5bd;
+  --settlement-muted: #c3a979;
   --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --radius: 4px;
@@ -50,6 +55,11 @@
   --amber: #854d0e;
   --yellow: #875400;
   --teal: #0e6676;
+  --settlement-paper: #fbf4e5;
+  --settlement-panel: #f2e5cc;
+  --settlement-line: #9b6b24;
+  --settlement-ink: #362713;
+  --settlement-muted: #70552d;
   --plate: #f8fafc;
   --plate-line: #718096;
 }
@@ -443,6 +453,79 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 .incident h3 { color: #fecaca; }
 
 /* ---------- Settlement sheet ---------- */
+#win[data-kind="settlement"] {
+  border-color: var(--settlement-line);
+  background:
+    linear-gradient(105deg, transparent 0 62%, color-mix(in srgb, var(--settlement-line) 5%, transparent) 62% 63%, transparent 63%),
+    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--settlement-line) 9%, transparent), transparent 36%),
+    var(--settlement-paper);
+  color: var(--settlement-ink);
+}
+#win[data-kind="settlement"] .win-head,
+#win[data-kind="settlement"] .win-foot { background: color-mix(in srgb, var(--settlement-paper) 92%, #000); border-color: var(--settlement-line); }
+#win[data-kind="settlement"] .win-head h2 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1rem, 2vw, 1.32rem); color: var(--settlement-ink); }
+#win[data-kind="settlement"] .win-body { overflow: hidden; }
+#win[data-kind="settlement"] .win-body > .tabbar {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; flex: none;
+  order: 0; width: min(300px, 100%); margin-left: auto; padding: 3px;
+  background: color-mix(in srgb, var(--settlement-panel) 72%, transparent); border: 1px solid var(--settlement-line); border-radius: 7px;
+}
+#win[data-kind="settlement"] .win-body > .tabbar button {
+  min-width: 0; min-height: 44px; padding: 6px 14px; color: var(--settlement-muted); border-color: transparent; background: transparent;
+}
+#win[data-kind="settlement"] .win-body > .tabbar [aria-selected="true"] {
+  color: var(--settlement-ink); border-color: var(--settlement-line); background: var(--settlement-panel);
+}
+#win[data-kind="settlement"] .tab-off { display: none !important; }
+.settlement-context { margin: 0 0 6px; color: var(--settlement-muted); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.settlement-context .receipt-link { min-height: 32px; padding: 0; color: inherit; text-transform: inherit; }
+.settlement-summary { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.settlement-verdict {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center;
+  padding: 12px 16px; border: 1px solid var(--settlement-line); border-radius: 7px;
+  background: color-mix(in srgb, var(--settlement-panel) 84%, transparent);
+}
+.settlement-verdict .meta-label { color: var(--settlement-muted); }
+.settlement-profit { display: block; margin-top: 1px; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1; }
+.settlement-secondary { display: grid; grid-template-columns: repeat(2, minmax(116px, 1fr)); gap: 8px; }
+.settlement-secondary span { padding: 7px 10px; border-left: 1px solid var(--settlement-line); }
+.settlement-secondary small { display: block; color: var(--settlement-muted); font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase; }
+.settlement-secondary strong { display: block; margin-top: 2px; font-family: Georgia, 'Times New Roman', serif; font-size: 1.25rem; }
+.settlement-verdict > p { grid-column: 1 / -1; margin: 0; max-width: 74ch; color: var(--settlement-muted); font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; }
+.settlement-stamp { justify-self: end; padding: 4px 9px; border: 2px solid currentColor; border-radius: 4px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; transform: rotate(-2deg); }
+.settlement-stamp.pass { color: var(--green); }
+.settlement-stamp.retry { color: var(--amber); }
+.settlement-summary-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 10px; min-height: 0; }
+.settlement-summary-grid h3 { color: var(--settlement-muted); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; }
+.settlement-bridge { margin: 0; border: 1px solid var(--settlement-line); border-radius: 7px; background: color-mix(in srgb, var(--settlement-panel) 78%, transparent); }
+.settlement-bridge > div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 10px; border-bottom: 1px solid color-mix(in srgb, var(--settlement-line) 55%, transparent); }
+.settlement-bridge > div:last-child { border-bottom: 0; }
+.settlement-bridge dt { color: var(--settlement-muted); }
+.settlement-bridge dd { margin: 0; font-family: var(--font-mono); font-weight: 800; }
+.settlement-bridge-total { background: color-mix(in srgb, var(--settlement-line) 11%, transparent); font-weight: 800; }
+.settlement-coaching { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.settlement-note { display: flex; flex-direction: column; min-width: 0; padding: 9px 11px; border: 1px solid var(--settlement-line); border-radius: 7px; background: color-mix(in srgb, var(--settlement-panel) 78%, transparent); }
+.settlement-note.positive { border-color: color-mix(in srgb, var(--green) 68%, var(--settlement-line)); }
+.settlement-note.priority { border-color: color-mix(in srgb, var(--amber) 68%, var(--settlement-line)); }
+.settlement-note h3 { margin-bottom: 3px; color: var(--settlement-ink); }
+.settlement-note p { margin: 0; color: var(--settlement-ink); font-family: Georgia, 'Times New Roman', serif; font-size: 0.88rem; }
+.settlement-note small { display: block; margin-top: auto; padding-top: 5px; color: var(--settlement-muted); font-size: 0.68rem; }
+.settlement-ledger { min-height: 0; }
+.settlement-ledger-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 0 0 8px; }
+.settlement-ledger-tabs button { min-width: 0; min-height: 44px; padding: 6px; color: var(--settlement-muted); border-color: var(--settlement-line); background: transparent; }
+.settlement-ledger-tabs [aria-selected="true"] { color: var(--settlement-ink); background: var(--settlement-panel); box-shadow: inset 0 -2px var(--amber); }
+#win[data-kind="settlement"] .ledger,
+#win[data-kind="settlement"] .calc { border-color: var(--settlement-line); background: color-mix(in srgb, var(--settlement-panel) 78%, transparent); }
+#win[data-kind="settlement"] .ledger-title,
+#win[data-kind="settlement"] .ledger tfoot td { color: var(--settlement-muted); border-color: var(--settlement-line); background: color-mix(in srgb, var(--settlement-panel) 88%, transparent); }
+#win[data-kind="settlement"] .ledger thead th { color: var(--settlement-muted); border-color: var(--settlement-line); }
+#win[data-kind="settlement"] .win-foot { display: grid; grid-template-columns: auto auto minmax(150px, 1fr) auto; gap: 8px 18px; padding: 8px 14px; }
+#win[data-kind="settlement"] .settlement-change { display: flex; flex-direction: column; justify-content: center; }
+#win[data-kind="settlement"] .settlement-change .meta-label { color: var(--settlement-muted); }
+#win[data-kind="settlement"] .settlement-change strong { font-family: var(--font-mono); font-size: 1rem; }
+#win[data-kind="settlement"] .settlement-change.cash { padding-left: 14px; border-left: 1px solid var(--settlement-line); }
+#win[data-kind="settlement"] .settlement-change.cash small { color: var(--settlement-muted); font-size: 0.65rem; }
+#win[data-kind="settlement"] .win-foot .primary { min-height: 44px; min-width: 150px; color: #171006; background: var(--amber); border-color: color-mix(in srgb, var(--amber) 70%, #000); }
 .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; color: var(--text-muted); }
 .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); margin-right: 6px; }
 .meta-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: var(--radius); }
@@ -692,12 +775,56 @@ body[data-phase='promote'] .actions button { padding-inline: 8px; }
 #win[data-kind="food-settings"] .tabbar { order: 0; }
 
 @media (max-width: 680px), (max-height: 760px) {
-  #win[data-kind="settlement"] .sheet-cols { grid-template-columns: minmax(0, 1fr); }
-  #win[data-kind="settlement"] .tabbar { display: flex; gap: 4px; flex: none; }
-  #win[data-kind="settlement"] .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; }
-  #win[data-kind="settlement"] .tabbar [aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); }
-  #win[data-kind="settlement"] .tab-off { display: none !important; }
-  #win[data-kind="settlement"] .sheet-col:has(> [data-tab]) { display: contents; }
+  #win[data-kind="settlement"] .win-body { padding: 6px 8px 8px; gap: 6px; }
+  #win[data-kind="settlement"] .win-body > .tabbar { width: 100%; }
+  .settlement-summary { gap: 6px; }
+  .settlement-context { margin-bottom: 0; font-size: 0.62rem; }
+  .settlement-verdict { padding: 8px 10px; gap: 5px 10px; }
+  .settlement-profit { font-size: clamp(1.65rem, 9vw, 2.25rem); }
+  .settlement-secondary { gap: 3px; }
+  .settlement-secondary span { padding: 4px 6px; }
+  .settlement-secondary strong { font-size: 1rem; }
+  .settlement-verdict > p { font-size: 0.82rem; line-height: 1.25; }
+  .settlement-stamp { padding: 3px 6px; font-size: 0.58rem; }
+  .settlement-summary-grid { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .settlement-summary-grid h3 { margin-bottom: 3px; }
+  .settlement-bridge > div { padding: 3px 8px; font-size: 0.75rem; }
+  .settlement-note { padding: 6px 8px; }
+  .settlement-note p { font-size: 0.78rem; line-height: 1.2; }
+  .settlement-note small { padding-top: 3px; font-size: 0.6rem; line-height: 1.2; }
+  .settlement-ledger-tabs { margin-bottom: 5px; }
+  #win[data-kind="settlement"] .win-foot { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px 8px; padding: 6px 8px; }
+  #win[data-kind="settlement"] .settlement-change.cash { padding-left: 8px; }
+  #win[data-kind="settlement"] .win-foot .primary { grid-column: 1 / -1; width: 100%; min-width: 0; }
+}
+
+@media (max-width: 480px) {
+  #win[data-kind="settlement"] .win-head { padding-left: 10px; }
+  #win[data-kind="settlement"] .win-head h2 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .settlement-summary { gap: 4px; }
+  .settlement-verdict { grid-template-columns: minmax(105px, 0.7fr) minmax(0, 1.3fr); }
+  .settlement-verdict { padding-block: 6px; }
+  .settlement-secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .settlement-verdict > p { grid-column: 1; }
+  .settlement-stamp { justify-self: start; max-width: 100%; text-align: center; }
+  .settlement-coaching { grid-template-columns: minmax(0, 1fr); }
+  .settlement-summary-grid { gap: 4px; }
+  .settlement-note { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 8px; }
+  .settlement-note h3, .settlement-note p { grid-column: 1; }
+  .settlement-note small { grid-column: 2; grid-row: 1 / span 2; align-self: center; max-width: 128px; text-align: right; }
+}
+
+@media (max-width: 480px) and (max-height: 820px) {
+  #win[data-kind="settlement"] .win-body { gap: 4px; padding-block: 4px; }
+  .settlement-context { font-size: 0.58rem; }
+  .settlement-verdict { gap: 3px 8px; padding-block: 5px; }
+  .settlement-verdict > p { font-size: 0.74rem; line-height: 1.15; }
+  .settlement-summary-grid h3 { font-size: 0.62rem; }
+  .settlement-bridge > div { padding-block: 2px; }
+  .settlement-note { padding-block: 4px; }
+  .settlement-note p { font-size: 0.72rem; line-height: 1.1; }
+  .settlement-note small { font-size: 0.56rem; line-height: 1.1; }
+  #win[data-kind="settlement"] .win-foot { gap: 3px 8px; padding-block: 4px; }
 }
 
 /* Development pages share one contained space at all viewport sizes. */

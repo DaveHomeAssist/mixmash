@@ -39,13 +39,13 @@ try{for(const [name,launcher] of Object.entries({chromium,webkit})){
   await equipment(page);await page.locator('#win [data-tab-name="Asset"]').click();assert.equal(await page.locator('[data-act="equipment-capital"]:enabled').count(),0);await page.locator('#win [data-tab-name="Deploy"]').click();assert.equal(await page.locator('[data-act="equipment-assign"]:enabled').count(),0);await close(page);
   await tab(page,'Controls');await page.locator('[data-act="live-next"]').click();await page.locator('[data-act="respond"]:not([disabled]):visible').first().click();await tab(page,'Controls');await page.locator('[data-act="live-next"]').click();await page.locator('[data-act="live-next"]').click();
   const ended=await state(page),receipt=settlementFor(ended);assert.equal(receipt.costs.pa,0);assert.equal(receipt.costs.equipmentOperation,20);
-  if(await page.locator('#win [data-tab-name="Costs"]').count())await page.locator('#win [data-tab-name="Costs"]').click();assert.match(await page.locator('#win-body').innerText(),/Owned PA operation/);await fit(page);
+  await page.locator('#win [data-tab-name="Ledger"]').click();await page.locator('#win [data-settlement-page="Costs"]').click();assert.match(await page.locator('#win-body').innerText(),/Owned PA operation/);await fit(page);
   await page.locator('[data-act="accept"]').click();const settled=(await state(page)).cash;assert.equal(settled,ended.cash+settlementPayout(receipt,ended.booking.deal));
   await equipment(page);await page.locator('#win [data-tab-name="Asset"]').click();await page.locator('[data-command="sell"]').dblclick();assert.equal((await state(page)).cash,settled+600);assert.equal((await view(page)).equipment.assets.length,0);
   await page.locator('#win [data-tab-name="Cash"]').click();await fit(page);assert.equal((await view(page)).equipment.journal.balance,settled+600);
   await page.locator('#win [data-tab-name="History"]').click();await fit(page);await page.locator('[data-step="1"]').click();await fit(page);await page.locator('[data-step="-1"]').click();await fit(page);
   await page.screenshot({path:join(output,`${name}-${width}-${three?'3d':'classic'}-history.png`)});
-  await close(page);await page.locator('[data-act="last-sheet"]').click();assert.equal(settlementFor(await state(page)).net,receipt.net);assert.equal((await state(page)).history.at(-1).cashAfter,settled);assert.equal(await page.locator('#win .outcome .stat').last().textContent(),'$'+settled.toLocaleString('en-US'));await close(page);
+  await close(page);await page.locator('[data-act="last-sheet"]').click();assert.equal(settlementFor(await state(page)).net,receipt.net);assert.equal((await state(page)).history.at(-1).cashAfter,settled);assert.equal(await page.locator('#win .settlement-change.cash strong').textContent(),'$'+settled.toLocaleString('en-US'));await close(page);
   await page.reload();await page.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(page)).cash,settled+600);assert.equal((await view(page)).equipment.journal.balance,settled+600);assert.deepEqual(errors,[]);
   if(name==='chromium'&&width===1440&&!three){
    for(const theme of ['light','dark']){
