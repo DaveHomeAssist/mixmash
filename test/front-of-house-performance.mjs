@@ -11,8 +11,8 @@ import { summarize, withDeadline } from '../front-of-house/tools/performance-sta
 import { createGame, applyAction, showPreview, venueSpec, sightlineTiles } from '../front-of-house/engine.mjs';
 import { STARTER_LAYOUT, FLOOR_DENSITY, VENUES } from '../front-of-house/data.mjs';
 
-const args = process.argv.slice(2), quick = args.includes('--quick'), gpu = args.includes('--gpu=metal') ? 'metal' : args.includes('--gpu=default') ? 'default' : 'software';
-for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20', '--venue=club', '--venue=amphitheater', '--venue=festival'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
+const args = process.argv.slice(2), quick = args.includes('--quick'), gpu = args.includes('--gpu=metal') ? 'metal' : args.includes('--gpu=egl') ? 'egl' : args.includes('--gpu=default') ? 'default' : 'software';
+for (const arg of args) if (!['--quick', '--gpu=default', '--gpu=software', '--gpu=metal', '--gpu=egl', '--dpr=2', '--large-viewports', '--native-chrome', '--fault-cpu=20', '--venue=club', '--venue=amphitheater', '--venue=festival'].includes(arg)) throw new Error(`Unknown argument: ${arg}`);
 const venue = args.includes('--venue=festival') ? 'festival' : args.includes('--venue=amphitheater') ? 'amphitheater' : args.includes('--venue=club') ? 'club' : 'lot';
 if (args.filter(arg => arg.startsWith('--venue=')).length > 1) throw new Error('Choose one diagnostic room');
 const initial = () => createGame(venue === 'festival' ? 8 : venue === 'amphitheater' ? 3 : 170, venue !== 'lot' ? { mode: 'sandbox' } : {});
@@ -41,14 +41,14 @@ assert.equal(fixtures.crowd.scene.crowd, venue === 'festival' ? 6000 : venue ===
 assert.equal(fixtures.crowd.scene.incident, venue === 'festival' ? 'gate-jam' : venue === 'amphitheater' ? 'rain' : 'pa-dropout');
 const sources = {};
 for (const path of ['package-lock.json', 'front-of-house/lot-assets.json', 'front-of-house/engine.mjs', 'front-of-house/data.mjs', 'front-of-house/lot-camera.mjs', 'front-of-house/lot-models.mjs', 'front-of-house/lot-renderer.mjs', 'front-of-house/lot-presentation.mjs', 'front-of-house/tools/performance-stats.mjs', 'test/front-of-house-performance.mjs', ...(venue === 'festival' ? ['front-of-house/stage-accounts.mjs'] : [])]) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
-const options = gpu === 'software' ? launchOptions() : { headless: true, args: gpu === 'metal' ? ['--use-angle=metal'] : [] };
+const options = gpu === 'software' ? launchOptions() : { headless: true, args: gpu === 'metal' ? ['--use-angle=metal'] : gpu === 'egl' ? ['--use-gl=angle', '--use-angle=gl-egl', '--disable-software-rasterizer'] : [] };
 if (nativeChrome) Object.assign(options, { headless: false, channel: 'chrome' });
 const report = {
   mode: quick ? 'harness validation only' : 'renderer diagnostic baseline', startedAt: new Date().toISOString(),
   source: { commit: command('git', ['rev-parse', 'HEAD']), dirty: command('git', ['status', '--porcelain']).length > 0, sha256: sources },
   ci: process.env.GITHUB_ACTIONS === 'true' ? { provider: 'github-actions', runnerClass: process.env.FOH_PERF_RUNNER_CLASS || 'unknown', os: process.env.RUNNER_OS || 'unknown', architecture: process.env.RUNNER_ARCH || 'unknown', image: process.env.ImageOS || 'unknown', imageVersion: process.env.ImageVersion || 'unknown', runId: process.env.GITHUB_RUN_ID || 'unknown', attempt: process.env.GITHUB_RUN_ATTEMPT || 'unknown' } : null,
   host: { platform: platform(), architecture: arch(), kernel: release(), model: platform() === 'darwin' ? command('sysctl', ['-n', 'hw.model']) : 'unknown', cpu: cpus()[0]?.model || 'unknown', cpuCount: cpus().length, memoryBytes: totalmem(), osVersion: platform() === 'darwin' ? command('sw_vers', ['-productVersion']) : 'unknown', osBuild: platform() === 'darwin' ? command('sw_vers', ['-buildVersion']) : 'unknown', power: platform() === 'darwin' ? command('pmset', ['-g', 'batt']).split('\n')[0] : 'unknown', lowPower: platform() === 'darwin' ? command('pmset', ['-g', 'custom']).split('\n').filter(s => s.includes('lowpowermode')).map(s => s.trim()) : 'unknown', displayRefresh: 'unknown', thermal: 'unknown', otherHostLoad: 'uncontrolled; load averages recorded per run' },
-  protocol: { venue, layer: 'isolated renderer; excludes full game and HUD', warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, requestedDpr: nativeChrome ? 'native' : requestedDpr, viewports, headless: !nativeChrome, requestedBackend: gpu, launchArgs: options.args || [], reducedMotion: 'no-preference', shadows: '1024 PCFSoft', antialias: true, adaptiveQuality: false, gpuTimestampMs: 'unavailable', acceptance: 'descriptive only; no device or statistical pass limits inferred' },
+  protocol: { venue, layer: 'isolated renderer; excludes full game and HUD', warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, requestedDpr: nativeChrome ? 'native' : requestedDpr, viewports, headless: !nativeChrome, requestedBackend: gpu, launchArgs: options.args || [], eglPlatform: gpu === 'egl' ? process.env.EGL_PLATFORM || null : null, reducedMotion: 'no-preference', shadows: '1024 PCFSoft', antialias: true, adaptiveQuality: false, gpuTimestampMs: 'unavailable', acceptance: 'descriptive only; no device or statistical pass limits inferred' },
   fixtureSha256: {}, runs: [], errors: [],
 };
 report.protocol.faultCpuMs = faultCpuMs;
