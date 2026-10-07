@@ -4,7 +4,7 @@ Measured 2026-10-04. **Available-host diagnostic, not completed FOH-P01 or devic
 
 ## Reproduce
 
-Run `npm run perf:front-of-house -- --gpu=metal` on a compatible Metal host. Set `FRONT_OF_HOUSE_PERF_OUTPUT` to a private output directory; omission creates a temporary directory. The default command requests SwiftShader explicitly, matching the existing browser test backend. `--gpu=default` records the browser-selected backend. Always inspect the recorded WebGL renderer. `--quick` uses 1 s warm-up / 2 s sampling / one repeat and is **harness validation only**.
+Run `npm run perf:front-of-house -- --gpu=metal` on a compatible Metal host. Set `FRONT_OF_HOUSE_PERF_OUTPUT` to a private output directory; omission creates a temporary directory. The default command requests SwiftShader explicitly, matching the existing browser test backend. `--gpu=default` records the browser-selected backend. `--gpu=egl` records the Linux ANGLE/OpenGL EGL launch arguments and `EGL_PLATFORM`; set `EGL_PLATFORM=surfaceless` only on a verified headless hardware route. Always inspect the recorded WebGL renderer and reject software fallback from hardware evidence. `--quick` uses 1 s warm-up / 2 s sampling / one repeat and is **harness validation only**.
 
 Close this task's other test browsers and stop local tests/builds before timing. The harness uses isolated loopback pages, fresh contexts and blocked service workers; it does not load production storage. It refuses a nonempty output directory and bounds the timed browser operation with a wall-clock deadline. An incomplete window records its failure and the absence of a complete raw sample. It records every attempted run, including failures, and exits unsuccessfully if a window loses visibility, resizes, loses context, mutates the scene or raises a browser error. Raw arrays, fixtures and review screenshots stay private. The [public summary](../performance/2026-10-04-metal.json) preserves all timing statistics, source/fixture hashes and raw artifact digests.
 
@@ -529,3 +529,11 @@ Current available-host evidence is stronger, but broader sustained 60 fps,
 phone/low-power 30 fps, physical display, current Mac and human acceptance remain
 open. Chrome setup failures and earlier source-specific measurements remain
 separate; Edge results do not repair those failures by proxy.
+
+## Dominic Intel/Mesa EGL renderer diagnostic (2026-10-07)
+
+[All 18 renderer-only windows](../performance/2026-10-07-egl.json) at clean `058582316a1df21a24f84e605e432211b55d2bde` are valid on Dominic: Ubuntu 24.04, Intel Core i7-7820HQ, Chromium 149.0.7827.55 and `ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)`. The explicit `--gpu=egl` mode records `--use-gl=angle`, `--use-angle=gl-egl`, `--disable-software-rasterizer` and `EGL_PLATFORM=surfaceless`. The source commit and clean state are supplied from the verified runner checkout because the isolated Playwright container has no Git executable.
+
+The unchanged Lot fixtures, camera path, DPR1, three viewports, 10-second warm-up, 30-second sample, three repeats, 1024 PCFSoft shadows, antialiasing and disabled adaptive quality are retained. All fixture and raw-sample digests verify independently; recalculated counts, means and nearest-rank p95 values match the report. Cadence ranges 60.0021–60.0025Hz, frame p95 16.7–16.8ms and CPU submission p95 0.5–4.9ms. These descriptive RAF and submission results do not measure GPU completion.
+
+This closes the prepared automated EGL diagnostic only. It is headless renderer evidence without the game HUD or a native display. It does not establish a sustained 60fps desktop or 30fps low-power target, a supported phone/current-Mac/physical-display roster, physical scale, human readability, final art/camera/career acceptance or release approval. The earlier Vulkan context failure and classic fallback remain retained.

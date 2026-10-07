@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Settlement redesign delivered",
+  "head": "Automated phases complete; acceptance open",
   "lastActivity": "2026-10-07",
   "status": "amber",
-  "statusReason": "FOH-U02/cachev72 is delivered through PR132 at7b99bbc. Final-head CI37569431470 and post-merge CI37572085279 pass; Pages run37572084871 deployed the redesign. Hosted game.js, styles.css and sw.js match the merge exactly, and Dominic passed the complete twelve-script Chromium/WebKit player matrix against mixmash.games across desktop, phone, compact, classic and3D paths, including Summary/Ledger, one-time signing, held runs and read-only reopening. Engine, balance, saves and public APIs remain unchanged. Human art/camera/career, supported physical phone/low-power/current-Mac/display, calibration and40original raster-image rights remain open.",
+  "statusReason": "FOH-U02/cachev72 is delivered through PR132 at7b99bbc with final-head/post-merge CI, Pages, exact hosted source parity and the complete hosted Chromium/WebKit player matrix on Dominic. The prepared EGL diagnostic now has18 valid renderer-only Intel/Mesa windows at clean0585823 under the established10s warm-up/30s sample/three-repeat protocol, with independent fixture/raw digest and statistics checks. No executable automated phase remains in the active plan. Human art/camera/career, supported physical phone/low-power/current-Mac/display, sustained full-HUD targets, calibration and40original raster-image rights remain open.",
   "activity30d": {
     "headline": "Four-room playable with deployed model15 guest anatomy, optional3D Lot, live services and verified engineering delivery; human/device, physical calibration and provenance acceptance remain open."
   },
@@ -37,15 +37,16 @@
     "PR128 head5b443f6 passed mandatory CI37393558770 and mergedef47093b203c60701480985e382db3cd3ba921a9. Pages1263033297 built2026-10-06T00:52:54Z; Pages Actions37396257527 succeeded. Exact candidate tree/four changed documents and all40 checked hosted paths match, with runtime byte-identical to qualified PR122. Existing review observations and every human/physical/calibration/rights gate remain open.",
     "2026-10-05: playtest HUD/UX fixes (capacity-cap explanations, placement refusal reasons, consistent cash, per-phase toasts, Space/right-drag pan, room-matched keys, 3D Fit/home and per-show camera reset, 2D/3D strip button, softer Book dim, firmer daytime fence, settlement A/B/C order); no rule, balance or save change.",
     "PR130 merged0ba0fca with successful test and FOH regression jobs, delivering the classic whole-guest correction together with PR129's retained HUD changes.",
-    "PR132 merged7b99bbc after final-head CI37569431470; post-merge CI37572085279 and Pages37572084871 pass. Hosted game.js/styles.css/sw.js match exactly, and the complete twelve-script Chromium/WebKit player matrix passes on Dominic against mixmash.games, including Summary/Ledger, one-time signing, held runs and read-only reopening."
+    "PR132 merged7b99bbc after final-head CI37569431470; post-merge CI37572085279 and Pages37572084871 pass. Hosted game.js/styles.css/sw.js match exactly, and the complete twelve-script Chromium/WebKit player matrix passes on Dominic against mixmash.games, including Summary/Ledger, one-time signing, held runs and read-only reopening.",
+    "Clean0585823 records18 valid Dominic Intel/Mesa EGL renderer-only windows under the established protocol; independent fixture/raw digest and statistics checks pass. Full-HUD, native/physical-device, sustained-target and human acceptance remain separate."
   ],
   "nextStep": {
-    "title": "Record EGL diagnostics under the existing performance procedure",
-    "why": "The settlement redesign and classic crowd correction are delivered. The verified Dominic Intel/Mesa EGL route can collect properly recorded diagnostics with the existing scenes, sampling procedure and limits, without implying physical or sustained-target acceptance.",
-    "doneWhen": "The prepared optional --gpu=egl harness path runs under the existing procedure, its receipts are recorded separately from physical-device evidence, and the project record and board preserve every remaining human, physical-device, calibration and rights gate.",
-    "effort": "S",
-    "owner": "agent",
-    "blockedBy": "None for automated diagnostics; human art/camera/career, supported physical-device performance, measured venue calibration and asset rights remain open; D1\u2013D11 remain settled."
+    "title": "Complete remaining human and physical acceptance",
+    "why": "All executable automated phases and the prepared EGL diagnostic are complete. Public promotion still requires Dave's art/camera/career acceptance, the supported physical device roster and targets, measured venue calibration and original-image rights review.",
+    "doneWhen": "The exact current revision has explicit human art/camera/career approval, supported phone/low-power/current-Mac/display results, measured venue calibration and resolved rights evidence; RELEASE.md gates are signed without substituting automation for physical or human proof.",
+    "effort": "M",
+    "owner": "Dave",
+    "blockedBy": "Requires Dave and physical devices/venue evidence; automated agents cannot supply human acceptance, physical calibration or rights ownership proof."
   },
   "findings": [
     {
@@ -1151,6 +1152,15 @@
       "failureRetained": "Vulkan context could not be created, BindToCurrentSequence failed; classic fallback shown. Cached image inventory has no Vulkan ICD manifests, while Intel OpenGL drivers exist. No installation, driver/service change or unchanged relaunch. EGL is a distinct supported route.",
       "performanceSamplesAdded": 0,
       "limits": "Headless hardware context/application capability only; no native display, sustained60/30fps, supported roster, physical phone/current-Mac, human or calibration acceptance."
+    },
+    "dominicIntelPerformance": {
+      "sourceRevision": "058582316a1df21a24f84e605e432211b55d2bde",
+      "host": "Dominic Ubuntu 24.04; Intel Core i7-7820HQ; headless Chromium149.0.7827.55",
+      "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+      "protocol": "Renderer-only Lot; three viewports; empty/crowd;10s warm-up;30s sample; three repeats; DPR1; shadows1024 PCFSoft; antialiasing on; adaptive quality off",
+      "result": "18/18 valid; cadence60.0021\u201360.0025Hz; frame p9516.7\u201316.8ms; CPU submission p950.5\u20134.9ms; independent fixture/raw digest and statistics checks pass",
+      "report": "front-of-house/performance/2026-10-07-egl.json",
+      "limits": "Headless renderer-only evidence; no GPU completion, full HUD, native display, sustained target, supported phone/low-power/current-Mac, physical calibration, human or release acceptance."
     }
   },
   "decisionState": {
@@ -1509,7 +1519,8 @@
           "Attempt1 on Intel Xeon Platinum 8573C:2560x720 empty CPU p95 2.0ms >1.7ms; crowd frame p95 1000ms >958.25ms. One diagnostic repeat on AMD EPYC 7763 passed all six groups. No source/protocol/limit changes; hardware causality is unproven. All 108 windows across initial, rejected and repeated pairs independently audited.",
           "PR122 merged8e723ed; Pages built2026-10-05T19:27:12Z. Final9ce8a9e CI37359157706 general/renderer and postmergeCI37362776702 pass. Independent raw audit verifies36windows/all18metrics with unchanged limits. On Dominic all42 hosted files match before/after the complete twelve-script player suite,3D offline signing/reload, gestures/context/module recovery, Festival geometry/eight exact settlement replays, four navigation journeys and supplied action/state captures. Four controlled motion scenarios are local fixtures, not hosted journeys. Earlier failures and final human/device/calibration/provenance gates remain retained.",
           "2026-10-05: b746258/model15 native Windows diagnostics: Walter6isolated-renderer windows and Duncan Edge/AMD6running-Lot+6paused-Festival full-HUD windows. Independent source/raw/fixture/adapter hashes, statistics, exact state/overview and actual images verified. First Festival fixed59.7358Hz retained; Chrome setup failures and remaining supported-device/physical/human/calibration/rights gates stay open. Existing RELEASE human checklist prepared with no acceptance inferred.",
-          "2026-10-05: integrated1b1d82d/cachev71 on Dominic headless Chromium149 at1000x676/DPR1 confirms Intel HD Graphics630/Mesa via EGL, actual3D HUD rendering and exact camera/state preservation. Failed Vulkan context/console errors and missing cached ICD inventory are retained. No timing windows, native display, supported-device or60/30fps acceptance inferred. Properly recorded EGL measurements under the existing procedure remain follow-up."
+          "2026-10-05: integrated1b1d82d/cachev71 on Dominic headless Chromium149 at1000x676/DPR1 confirms Intel HD Graphics630/Mesa via EGL, actual3D HUD rendering and exact camera/state preservation. Failed Vulkan context/console errors and missing cached ICD inventory are retained. No timing windows, native display, supported-device or60/30fps acceptance inferred. Properly recorded EGL measurements under the existing procedure remain follow-up.",
+          "Clean0585823:18/18 Dominic Intel/Mesa EGL renderer-only windows pass the established protocol and independent digest/statistics audit; headless evidence does not establish full-HUD, native/physical-device, sustained-target or human acceptance."
         ],
         "deliveryPR": "https://github.com/DaveHomeAssist/mixmash/pull/67",
         "remaining": [

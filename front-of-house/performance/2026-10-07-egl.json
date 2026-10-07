@@ -1,0 +1,4009 @@
+{
+  "startedAt": "2026-10-07T05:06:18.133Z",
+  "finishedAt": "2026-10-07T05:18:25.940Z",
+  "source": {
+    "commit": "058582316a1df21a24f84e605e432211b55d2bde",
+    "dirty": false,
+    "provenance": "verified runner environment",
+    "sha256": {
+      "package-lock.json": "596f61a2c0224f51bd6eb256e33ffe6f61c581ceb55eabe38002a1275c165628",
+      "front-of-house/lot-assets.json": "c4b5fe5318e06ab125dbbe2d15c33a4ca75539a17acd0d92eb45cae72a255adc",
+      "front-of-house/engine.mjs": "c6943ec89a94e9ffa7590e1a1be3824cfe2715a7b8a16f756e7e444d1777fe79",
+      "front-of-house/data.mjs": "9cb38e66d729c9b5f122dfee755ed40ca478c3d18485bb76eb4317839ecec89f",
+      "front-of-house/lot-camera.mjs": "acb439336f7d19fd7e356ec2cc34a4fa233b3fcbff31a9aaab7172f42d6eb13a",
+      "front-of-house/lot-models.mjs": "da887d1cadd33411af60f9ad34463225f411d463875a1ac3b614cad91c49771b",
+      "front-of-house/lot-renderer.mjs": "87785680c54262fb609e165ad2d1724ed745522c9f433190d5c758ab19cd1199",
+      "front-of-house/lot-presentation.mjs": "f3a99c6f1dd83bce492a9000af22e2fc55ac0cc99d68c086d032a135207110c8",
+      "front-of-house/tools/performance-stats.mjs": "d633beceeb4fb5f0c06a76746f9468f0ef9f17487e95df04f82e9a4c561c92bd",
+      "test/front-of-house-performance.mjs": "3c8edf23a236e3e146e7cefdab9dfc61c79e82c07b8d7b72e4df6d2ed7c5c7a2"
+    }
+  },
+  "ci": null,
+  "host": {
+    "platform": "linux",
+    "architecture": "x64",
+    "kernel": "6.8.0-142-generic",
+    "model": "unknown",
+    "cpu": "Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz",
+    "cpuCount": 8,
+    "memoryBytes": 16611307520,
+    "osVersion": "unknown",
+    "osBuild": "unknown",
+    "power": "unknown",
+    "lowPower": "unknown",
+    "displayRefresh": "unknown",
+    "thermal": "unknown",
+    "otherHostLoad": "uncontrolled; load averages recorded per run"
+  },
+  "browser": "149.0.7827.55",
+  "protocol": {
+    "venue": "lot",
+    "layer": "isolated renderer; excludes full game and HUD",
+    "warmupMs": 10000,
+    "measurementMs": 30000,
+    "repeats": 3,
+    "requestedDpr": 1,
+    "viewports": [
+      [
+        1440,
+        900
+      ],
+      [
+        375,
+        812
+      ],
+      [
+        2560,
+        720
+      ]
+    ],
+    "headless": true,
+    "requestedBackend": "egl",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--use-angle=gl-egl",
+      "--disable-software-rasterizer"
+    ],
+    "eglPlatform": "surfaceless",
+    "reducedMotion": "no-preference",
+    "shadows": "1024 PCFSoft",
+    "antialias": true,
+    "adaptiveQuality": false,
+    "gpuTimestampMs": "unavailable",
+    "acceptance": "descriptive only; no device or statistical pass limits inferred",
+    "faultCpuMs": 0
+  },
+  "fixtureSha256": {
+    "empty": "f890242c03ef8aeda9bee1b2f4ccf58f645fd77547bd0cdaa17ec1e1333a3ec0",
+    "crowd": "cac5d4e9792ef0c0e34783e225cc26d9ded9f769335e564a0a515185dc4b6e0c"
+  },
+  "title": "Front of House Dominic Intel/Mesa EGL renderer diagnostic",
+  "originalReportSha256": "ae6bdeb0651fb42a62a989e053bab40c8bdc78925fba032d1a23c46212c4215f",
+  "evidenceBoundary": "Renderer-only headless hardware diagnostic. It does not establish native-display, physical-device, supported phone or low-power, full-HUD, sustained target, human, calibration or release acceptance.",
+  "runs": [
+    {
+      "id": "1440x900-empty-1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.399999999998,
+      "cadenceFps": 60.002532033556115,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.399999999998,
+        "meanMs": 16.66596335369239,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 760,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 737.2000003308058,
+        "meanMs": 0.40932815121088606,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.5999999940395355,
+        "p99Ms": 0.7000000029802322,
+        "maxMs": 0.9000000059604645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "f57b35e8d8380a691174d1a05b08c2f8d78e4728a91b9db4ac61f9a3fedc65c7",
+      "loadBefore": [
+        0.47,
+        0.45,
+        1.18
+      ],
+      "loadAfter": [
+        0.64,
+        0.49,
+        1.16
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 1440,
+            "height": 900
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "1440x900-empty-2",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.4,
+      "cadenceFps": 60.00253203355611,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.4,
+        "meanMs": 16.665963353692394,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 755,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 739.3000000715256,
+        "meanMs": 0.41049416994532234,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.6000000089406967,
+        "p99Ms": 0.7000000029802322,
+        "maxMs": 0.9000000059604645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "f4b426b697b48c7211259ed3d9fb6607dcb9bb28765e2786261e86f5633bfefd",
+      "loadBefore": [
+        0.64,
+        0.49,
+        1.16
+      ],
+      "loadAfter": [
+        0.48,
+        0.47,
+        1.13
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 1440,
+            "height": 900
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "1440x900-empty-3",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.499999999996,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.499999999996,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 768,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 721.8999998271465,
+        "meanMs": 0.40083287053145283,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.5999999940395355,
+        "p99Ms": 0.6000000089406967,
+        "maxMs": 0.7999999970197678,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "5cd427f2295f320164a3ed217ce15a66f9ff82ab149aa6a9d4edddef2550ef15",
+      "loadBefore": [
+        0.48,
+        0.47,
+        1.13
+      ],
+      "loadAfter": [
+        0.77,
+        0.54,
+        1.12
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 1440,
+            "height": 900
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "1440x900-crowd-1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.500000000004,
+      "cadenceFps": 60.00233212840032,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.500000000004,
+        "meanMs": 16.66601887840089,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 764,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 6598.1000001728535,
+        "meanMs": 3.6635757913230727,
+        "p50Ms": 3.5999999940395355,
+        "p95Ms": 4.799999997019768,
+        "p99Ms": 5.799999997019768,
+        "maxMs": 8.700000002980232,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "3f66f153a33fde611e302d6c2b2f30beed5087f6bb17b2e678c4fa07a8099702",
+      "loadBefore": [
+        0.77,
+        0.54,
+        1.12
+      ],
+      "loadAfter": [
+        0.54,
+        0.51,
+        1.09
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 1440,
+            "height": 900
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "1440x900-crowd-2",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.4,
+      "cadenceFps": 60.00253203355611,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.4,
+        "meanMs": 16.665963353692394,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 764,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 6548.49999974668,
+        "meanMs": 3.636035535672782,
+        "p50Ms": 3.5,
+        "p95Ms": 4.700000002980232,
+        "p99Ms": 5.100000008940697,
+        "maxMs": 11,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "eeb3d045cac3b92536c0ed6361a37021945e19ea8b2e5fd51fb0bdf5677c4fcf",
+      "loadBefore": [
+        0.54,
+        0.51,
+        1.09
+      ],
+      "loadAfter": [
+        1.1,
+        0.66,
+        1.11
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 1440,
+            "height": 900
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "1440x900-crowd-3",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.5,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 757,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 6320.100000590086,
+        "meanMs": 3.50921710193786,
+        "p50Ms": 3.5,
+        "p95Ms": 4.5,
+        "p99Ms": 4.799999997019768,
+        "maxMs": 8.400000005960464,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "70bcc637beece60c7df675e012b882d41a95a26706a5c7d9bcf6e5b799d1171d",
+      "loadBefore": [
+        1.1,
+        0.66,
+        1.11
+      ],
+      "loadAfter": [
+        0.56,
+        0.57,
+        1.06
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 1440,
+          "height": 900
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 900
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 1440,
+            "height": 900
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "375x812-empty-1",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.6,
+      "cadenceFps": 60.00213222457655,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.600000000002,
+        "meanMs": 16.666074403109384,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.799999999995634,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 751,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 761.7000002563,
+        "meanMs": 0.4229317047508606,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.5999999940395355,
+        "p99Ms": 0.6000000089406967,
+        "maxMs": 0.7999999970197678,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "12da4ab0a6f273d5c600364a3780f33fdd77bc1ba856f1f657b2d886c144987a",
+      "loadBefore": [
+        0.56,
+        0.57,
+        1.06
+      ],
+      "loadAfter": [
+        0.45,
+        0.54,
+        1.03
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 91.2046766281128,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 375,
+            "height": 812
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "375x812-empty-2",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.4,
+      "cadenceFps": 60.00253203355611,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.4,
+        "meanMs": 16.665963353692394,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.799999999995634,
+        "p99Ms": 16.80000000000109,
+        "maxMs": 16.80000000000291,
+        "above16_7": 765,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 747.9000003486872,
+        "meanMs": 0.41526929502980964,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.6000000089406967,
+        "p99Ms": 0.7000000029802322,
+        "maxMs": 0.9000000059604645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "32cdc87d4bfbf4ad662a0cf996860d0ae50cc360d438d90a4d4dfebd34355d00",
+      "loadBefore": [
+        0.45,
+        0.54,
+        1.03
+      ],
+      "loadAfter": [
+        0.59,
+        0.56,
+        1.01
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 91.2046766281128,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 375,
+            "height": 812
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "375x812-empty-3",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.5,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 766,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 758.3000006079674,
+        "meanMs": 0.4210438648572834,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.6000000089406967,
+        "p99Ms": 0.7000000029802322,
+        "maxMs": 1,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "56a124198f2364d71362e18c985b43cdedc10b59377d0aad75ef788ffa216a2e",
+      "loadBefore": [
+        0.59,
+        0.56,
+        1.01
+      ],
+      "loadAfter": [
+        0.58,
+        0.56,
+        0.99
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 91.2046766281128,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 375,
+            "height": 812
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "375x812-crowd-1",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840032,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.500000000004,
+        "meanMs": 16.66601887840089,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000109,
+        "maxMs": 16.80000000000291,
+        "above16_7": 764,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 5617.400000408292,
+        "meanMs": 3.119044975240584,
+        "p50Ms": 3.1000000089406967,
+        "p95Ms": 3.800000011920929,
+        "p99Ms": 4.5,
+        "maxMs": 5.700000002980232,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "0512ace8b5d60dad5a0c587e519410d6b58c020184a6f18793c453f292b0565f",
+      "loadBefore": [
+        0.58,
+        0.56,
+        0.99
+      ],
+      "loadAfter": [
+        0.74,
+        0.59,
+        0.99
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 91.2046766281128,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 375,
+            "height": 812
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "375x812-crowd-2",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.5,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.799999999995634,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 774,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 5565.2000002115965,
+        "meanMs": 3.0900610772968333,
+        "p50Ms": 3.1000000089406967,
+        "p95Ms": 4,
+        "p99Ms": 4.4000000059604645,
+        "maxMs": 7.899999991059303,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "301bf20922c860e0d2385e065b084045e6a659dca9e2cf35e69b4970f9e38f67",
+      "loadBefore": [
+        0.74,
+        0.59,
+        0.99
+      ],
+      "loadAfter": [
+        0.63,
+        0.57,
+        0.96
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 91.2046766281128,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 375,
+            "height": 812
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "375x812-crowd-3",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.5,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 753,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 5620.299999982119,
+        "meanMs": 3.120655191550316,
+        "p50Ms": 3.199999988079071,
+        "p95Ms": 3.8999999910593033,
+        "p99Ms": 4.299999997019768,
+        "maxMs": 5.5,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "da871602307a342bd80cda1cd4efa14ddaea21a01be2e1496da0b60ca0c885de",
+      "loadBefore": [
+        0.63,
+        0.57,
+        0.96
+      ],
+      "loadAfter": [
+        0.61,
+        0.58,
+        0.95
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 375,
+          "height": 812
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 91.2046766281128,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 375,
+              "h": 812
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 375,
+            "height": 812
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "2560x720-empty-1",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "empty",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.399999999998,
+      "cadenceFps": 60.002532033556115,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.399999999998,
+        "meanMs": 16.66596335369239,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 766,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 686.7000007480383,
+        "meanMs": 0.3812881736524366,
+        "p50Ms": 0.3999999910593033,
+        "p95Ms": 0.5,
+        "p99Ms": 0.6000000089406967,
+        "maxMs": 0.9000000059604645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "34d9c562cc276819acfa7f30cdf5b1c94906857fa335a4772fa2180c21617da3",
+      "loadBefore": [
+        0.61,
+        0.58,
+        0.95
+      ],
+      "loadAfter": [
+        0.43,
+        0.54,
+        0.91
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 2560,
+            "height": 720
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "2560x720-empty-2",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "empty",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.6,
+      "cadenceFps": 60.00213222457655,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.600000000002,
+        "meanMs": 16.666074403109384,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.799999999995634,
+        "p99Ms": 16.80000000000109,
+        "maxMs": 16.80000000000291,
+        "above16_7": 752,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 767.200001001358,
+        "meanMs": 0.42598556413179234,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.6000000089406967,
+        "p99Ms": 0.7000000029802322,
+        "maxMs": 1.4000000059604645,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "e28bf11dad6db846c0366d4e0fa9d376c6cd746754c233805c7e3564d87ad022",
+      "loadBefore": [
+        0.43,
+        0.54,
+        0.91
+      ],
+      "loadAfter": [
+        0.34,
+        0.5,
+        0.89
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 2560,
+            "height": 720
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "2560x720-empty-3",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "empty",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840032,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.500000000004,
+        "meanMs": 16.66601887840089,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000109,
+        "maxMs": 16.80000000000291,
+        "above16_7": 768,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 753.7000007778406,
+        "meanMs": 0.4184897283608221,
+        "p50Ms": 0.4000000059604645,
+        "p95Ms": 0.6000000089406967,
+        "p99Ms": 0.7000000029802322,
+        "maxMs": 0.800000011920929,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "238f10f54917d137a6828f2d6125fbb4bc1757d8d2557e9f15e762ae81165d07",
+      "loadBefore": [
+        0.34,
+        0.5,
+        0.89
+      ],
+      "loadAfter": [
+        0.3,
+        0.47,
+        0.86
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            }
+          },
+          "status": "ready",
+          "objects": [],
+          "representativeGuests": 0,
+          "presentation": {
+            "fencePanels": 0,
+            "gateOpenings": 0,
+            "incident": null,
+            "rain": false,
+            "grid": true,
+            "representativeGuests": 0,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 0
+            },
+            "offsets": []
+          },
+          "motion": true,
+          "representedAttendance": 0,
+          "resources": {
+            "geometries": 2,
+            "textures": 4
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 7,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 2560,
+            "height": 720
+          },
+          "calls": 2,
+          "triangles": 2,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "2560x720-crowd-1",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "crowd",
+      "repeat": 1,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.5,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 752,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 6540.200000450015,
+        "meanMs": 3.6314269852581984,
+        "p50Ms": 3.5999999940395355,
+        "p95Ms": 4.799999997019768,
+        "p99Ms": 5.5999999940395355,
+        "maxMs": 10.5,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "0cb3a4d2c8ef10c1134a27cc639f7773ab4c6a7f2b55ef2375cd8ec78ae4e277",
+      "loadBefore": [
+        0.3,
+        0.47,
+        0.86
+      ],
+      "loadAfter": [
+        0.28,
+        0.44,
+        0.83
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 2560,
+            "height": 720
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "2560x720-crowd-2",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "crowd",
+      "repeat": 2,
+      "valid": true,
+      "elapsedMs": 30015.5,
+      "cadenceFps": 60.00233212840033,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.5,
+        "meanMs": 16.666018878400887,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 777,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 6805.500000074506,
+        "meanMs": 3.778734036687677,
+        "p50Ms": 3.7999999970197678,
+        "p95Ms": 4.9000000059604645,
+        "p99Ms": 5.299999997019768,
+        "maxMs": 9.399999991059303,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "33c95d1817c70eece068d36728026f7667515f7abb870a4213f18c32701990db",
+      "loadBefore": [
+        0.28,
+        0.44,
+        0.83
+      ],
+      "loadAfter": [
+        0.59,
+        0.5,
+        0.83
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 2560,
+            "height": 720
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    },
+    {
+      "id": "2560x720-crowd-3",
+      "viewport": {
+        "width": 2560,
+        "height": 720
+      },
+      "sceneName": "crowd",
+      "repeat": 3,
+      "valid": true,
+      "elapsedMs": 30015.4,
+      "cadenceFps": 60.00253203355611,
+      "frame": {
+        "count": 1801,
+        "elapsedMs": 30015.4,
+        "meanMs": 16.665963353692394,
+        "p50Ms": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "p99Ms": 16.80000000000291,
+        "maxMs": 16.80000000000291,
+        "above16_7": 752,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "cpuSubmission": {
+        "count": 1801,
+        "elapsedMs": 6516.2000002563,
+        "meanMs": 3.6181010551117714,
+        "p50Ms": 3.5999999940395355,
+        "p95Ms": 4.700000002980232,
+        "p99Ms": 5.299999997019768,
+        "maxMs": 9.599999994039536,
+        "above16_7": 0,
+        "above33_3": 0,
+        "above50": 0,
+        "fullStallMs": 0,
+        "excessStallMs": 0
+      },
+      "longTasks": {
+        "count": 0,
+        "fullDurationMs": 0
+      },
+      "rawSha256": "3f44c8c638f221f4d4b443ba083581882a4f039ad336178b3162d2dce8ff70c8",
+      "loadBefore": [
+        0.59,
+        0.5,
+        0.83
+      ],
+      "loadAfter": [
+        0.46,
+        0.48,
+        0.81
+      ],
+      "errors": [],
+      "environment": {
+        "browserDpr": 1,
+        "effectiveDpr": 1,
+        "backing": {
+          "width": 2560,
+          "height": 720
+        },
+        "renderer": "ANGLE (Intel, Mesa Intel(R) HD Graphics 630 (KBL GT2), OpenGL ES 3.2)",
+        "vendor": "Google Inc. (Intel)",
+        "graphics": "Intel hardware via Mesa/EGL",
+        "visibility": "visible",
+        "quality": {
+          "renderer": "three-webgl",
+          "venue": "lot",
+          "grid": {
+            "w": 24,
+            "h": 16
+          },
+          "presentationExtent": {
+            "w": 24,
+            "h": 16
+          },
+          "secondaryStage": null,
+          "permanent": [],
+          "seatingGuides": null,
+          "revision": "lot-sample-15",
+          "provenance": {
+            "author": "Codex for Front of House",
+            "source": "Procedural geometry and materials in lot-models.mjs",
+            "rights": "Newly authored project content; Three.js MIT license retained separately",
+            "units": "logical tiles using the provisional authoring reference",
+            "pivot": "rotated footprint center at ground",
+            "forward": "+Z before rotation",
+            "acceptance": "authored sample candidate; final art and physical review pending",
+            "materials": "procedural grain, explicit roughness/metalness; no external imagery",
+            "reference": {
+              "metresPerTile": 2,
+              "status": "provisional authoring convention; physical calibration pending",
+              "guestHeightMetres": 1.8,
+              "operatorEyeMetres": 1.66,
+              "stageDeckMetres": 1.1,
+              "barCounterMetres": 1.1,
+              "restroomHeightMetres": 2.3
+            }
+          },
+          "camera": {
+            "yaw": 45,
+            "pitch": 48,
+            "zoom": 1,
+            "x": 12,
+            "y": 8,
+            "preset": "wide",
+            "authoredEye": null,
+            "zooms": [
+              1,
+              1.5,
+              2,
+              3
+            ],
+            "distance": 39.22228717803955,
+            "safe": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            },
+            "viewport": {
+              "x": 0,
+              "y": 0,
+              "w": 2560,
+              "h": 720
+            }
+          },
+          "status": "ready",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-m",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 15,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 13,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ],
+          "representativeGuests": 150,
+          "presentation": {
+            "fencePanels": 76,
+            "gateOpenings": 4,
+            "incident": {
+              "id": "pa-dropout",
+              "objectIndex": 2,
+              "type": "pa-m",
+              "position": [
+                8.5,
+                1.4349999999999998,
+                0.5
+              ]
+            },
+            "rain": false,
+            "grid": false,
+            "representativeGuests": 150,
+            "guestBatches": 32,
+            "guestDetail": {
+              "full": 0,
+              "distant": 150
+            },
+            "offsets": [
+              0,
+              0,
+              0
+            ]
+          },
+          "motion": true,
+          "representedAttendance": 150,
+          "resources": {
+            "geometries": 16,
+            "textures": 8
+          },
+          "modelResources": {
+            "geometries": 19,
+            "materials": 29,
+            "textures": 4
+          },
+          "requestedDpr": 1,
+          "dpr": 1,
+          "backing": {
+            "width": 2560,
+            "height": 720
+          },
+          "calls": 165,
+          "triangles": 186210,
+          "renderedFrames": 3,
+          "shadowUpdates": 2,
+          "deferredRendering": false,
+          "pendingRender": false
+        },
+        "gpuTimersAvailable": true
+      }
+    }
+  ]
+}

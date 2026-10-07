@@ -1990,6 +1990,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/performance/2026-10-07-egl.json",
+      "project": "front-of-house",
+      "category": "evidence",
+      "kind": "JSON",
+      "title": "Dominic Intel/Mesa EGL diagnostics",
+      "description": "Eighteen clean headless renderer-only Intel/Mesa EGL windows under the established Lot protocol, with source, fixture and raw digests; not physical-device or full-HUD acceptance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-07-egl.json",
+      "open": null
+    },
+    {
       "path": "assets/previews/foh.jpg",
       "project": "front-of-house",
       "category": "art",

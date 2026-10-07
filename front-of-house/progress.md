@@ -995,3 +995,7 @@ PR132's first CI run37424445984 passed FOH regression,439 tests, build, simulati
 ### 2026-10-07 — Settlement summary redesign delivered
 
 PR132 passed final-head CI37569431470 and merged as7b99bbc. Post-merge CI37572085279 and Pages37572084871 pass. Hosted `game.js`, `styles.css` and `sw.js` match the merge exactly. On Dominic, the complete twelve-script Chromium/WebKit player matrix passes against `https://mixmash.games/front-of-house/`, covering desktop, phone, compact, classic and3D paths plus Summary/Ledger, one-time signing, held runs and read-only reopening. The redesign changes presentation only; engine rules, balance, saves and public APIs remain unchanged. Physical-device, human, calibration and rights acceptance remain separate and open.
+
+### 2026-10-07 — Dominic EGL renderer diagnostic
+
+Harness source `0585823` adds an explicit recorded `--gpu=egl` mode and verified-runner source provenance for isolated containers. A first six-window validation exposed and corrected unknown Git provenance; its timing is not qualification evidence. The final clean run on Dominic records all18 unchanged renderer-only Lot windows with Intel/Mesa EGL,10s warm-up,30s samples and three repeats. Fixture/raw digests and recomputed statistics pass: cadence60.0021–60.0025Hz, frame p9516.7–16.8ms, CPU submission p950.5–4.9ms. This closes the prepared automated diagnostic only; full HUD, native/physical/supported-device, sustained-target, calibration, human and release acceptance remain open.
