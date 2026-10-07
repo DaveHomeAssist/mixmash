@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.1.1 playtest clarity delivered; acceptance open",
+  "head": "0.1.2 QA audit fixes implemented and tested; merge, deploy and human acceptance pending",
   "lastActivity": "2026-10-07",
   "status": "amber",
-  "statusReason": "Front of House0.1.1/cachev74 is delivered through PR138 at 3fbe3bb. Final-head general CI and paired regression attempt2, Pages, seven-file hosted parity, live Dominic classic/3D desktop/phone behavior, exact-merge post-merge CI and annotated tag front-of-house-v0.1.1 pass. Engine, balance, accounting and save schema2 remain unchanged. No executable automated phase remains in FOH-U04. Human art/camera/career, supported physical devices, measured venue calibration and original-image rights remain open.",
+  "statusReason": "Front of House 0.1.2/cache v75 fixes the 2026-10-07 QA audit of production ad03910 (0.1.1): three P1 (Loam Shell seat price above its ceiling after Back and rebook, with a reload removing the paid seat contract; Start over beginning inside a locked room; a Lot food plan blocking Fathom Hall doors) and eight P2/P3 save and state defects. No P0 was found. Runner checks: npm test with test-qa-integrity.mjs (fails on 0.1.1, passes on 0.1.2), version/vendor/asset/performance tests, vercel-build, Lot/tier/career simulations with byte-identical baselines and regenerated CATALOG/STRINGS. PR, CI, merge, Pages and live verification are recorded separately when they exist. Human art/camera/career, physical devices, real Safari, calibration and original-image rights remain open. Front of House0.1.1/cachev74 is delivered through PR138 at 3fbe3bb. Final-head general CI and paired regression attempt2, Pages, seven-file hosted parity, live Dominic classic/3D desktop/phone behavior, exact-merge post-merge CI and annotated tag front-of-house-v0.1.1 pass. Engine, balance, accounting and save schema2 remain unchanged. No executable automated phase remains in FOH-U04. Human art/camera/career, supported physical devices, measured venue calibration and original-image rights remain open.",
   "activity30d": {
-    "headline": "Front of House0.1.1 is live with clearer first booking, running show cost and Build-only placement grid; broader story/staff/calendar/deal proposals and human/device/calibration/rights acceptance remain open. FOH-U05 now scopes a presentation-only advisory desk from inspected existing evidence; no advisor gameplay is implemented."
+    "headline": "Front of House 0.1.2 candidate fixes the QA audit's three P1 and eight P2/P3 integrity defects (reload, Back/rebook, Start over, storage, tabs) with no balance, rule or schema change; 0.1.1 remains the live release until merge. FOH-U05 still scopes a presentation-only advisory desk."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -43,14 +43,21 @@
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge."
   ],
   "nextStep": {
-    "title": "Review the scoped advisory desk brief before implementation",
-    "why": "The immediate handwritten first-play and Show readability problems are delivered. The next bounded product opportunity is to surface existing ticketing, artist, security/service and relationship evidence through an advisory layer without inventing a new simulation or economy.",
-    "doneWhen": "FOH-U05 is reconciled with current source and delivered as a planning record; runtime implementation requires its own scoped execution and acceptance evidence.",
+    "title": "Merge and verify Front of House 0.1.2 QA fixes, then pin Open doors in view at zoomed short heights",
+    "why": "The audit's P1 integrity defects are fixed and tested on the runner; the release needs green PR CI, merge, Pages and live verification before 0.1.2 is live. FOH-QA-012 is the remaining layout item. The previous next step, reviewing the scoped FOH-U05 advisory desk brief before implementation, follows unchanged.",
+    "doneWhen": "0.1.2 is live with green CI, Pages and a live smoke; FOH-QA-012 has a fix with zoomed sizes in the resolution smoke; D12 is answered or left open.",
     "effort": "S",
-    "owner": "Codex",
-    "blockedBy": "Runtime remains outside this brief-only task. U05-L1/L2/L3 are later optional choices, not blockers to the brief; human/device/calibration/rights gates remain separate."
+    "owner": "Claude",
+    "blockedBy": "Nothing for the merge; D12 blocks nothing"
   },
   "findings": [
+    {
+      "id": "FOH-QA-001..014",
+      "type": "qa-audit",
+      "sev": "P1",
+      "title": "QA audit 2026-10-07: 11 fixed in 0.1.2, 3 low items open",
+      "detail": "Fixed: FOH-QA-001 seat price above the Loam Shell ceiling after Back and rebook (reload removed the paid seat contract; net 45,152 vs 41,340 in the repro); 002 Start over inside a locked room; 003 Lot food plan blocking Fathom Hall doors; 004 reload deleting a PA left by a removed stage; 005 no game with storage blocked; 006 inherited-name ids crashing a load; 007 stale tab overwriting newer progress; 008 silent save failures; 009 room settings changing on reload; 010 200-show history renumbered on reload; 011 developer-hook throw. Open: 012 zoomed short viewports hide Open doors below the panel fold; 013 seeded save-and-replay (D12); 014 edited saves in a locked room. Evidence: front-of-house/docs/QA_AUDIT.md."
+    },
     {
       "id": "MXS-06",
       "type": "responsive",
@@ -204,8 +211,26 @@
       "gate": "Recorded design decisions, human career and phone acceptance, asset provenance and release checklist."
     }
   ],
-  "decisionsForDave": [],
+  "decisionsForDave": [
+    {
+      "id": "D12",
+      "question": "Save-and-replay of a seeded night (FOH-QA-013)",
+      "options": {
+        "A": "Accept as single-player freedom; document that a save code restores a night exactly",
+        "B": "Reseed a night reloaded or imported between doors and Settle",
+        "C": "Lock the career after doors until the night is signed"
+      },
+      "recommended": "A",
+      "confidence": "medium",
+      "blocks": "nothing; 0.1.2 ships either way",
+      "source": "front-of-house/docs/DECISION_PACKET.md"
+    }
+  ],
   "files": [
+    {
+      "path": "front-of-house/docs/QA_AUDIT.md",
+      "why": "2026-10-07 adversarial QA audit: methods, FOH-QA defects, release gate and what was not covered"
+    },
     {
       "path": "front-of-house/docs/DECISION_PACKET.md",
       "why": "D1\u2013D11 selections, alternatives, consequences and delegated authority"
@@ -1179,6 +1204,17 @@
       "result": "18/18 valid; cadence60.0021\u201360.0025Hz; frame p9516.7\u201316.8ms; CPU submission p950.5\u20134.9ms; independent fixture/raw digest and statistics checks pass",
       "report": "front-of-house/performance/2026-10-07-egl.json",
       "limits": "Headless renderer-only evidence; no GPU completion, full HUD, native display, sustained target, supported phone/low-power/current-Mac, physical calibration, human or release acceptance."
+    },
+    "qaAudit20261007": {
+      "baseRevision": "ad03910",
+      "checkedOn": "2026-10-07",
+      "release": "0.1.2",
+      "cache": "v75",
+      "engine": "20 reconciled One Real Show variants; 600 adversarial careers, 240,000 actions, 2,002 signed shows reloading unchanged; exact-cash, room rotation, held run, malformed saves, inherited-name ids, geometry edges, 230-show career",
+      "browser": "Chromium 149, Firefox 151 and WebKit 26.5 golden loop with double-clicks and 8 reload checkpoints; Back/Forward; two tabs; storage blocked/full; corrupt saves; keyboard; 6 phases x 15 viewports light and dark",
+      "regression": "front-of-house/test-qa-integrity.mjs fails 7/7 on 0.1.1 and passes 7/7 on 0.1.2",
+      "unchanged": "BALANCE_BASELINE, TIER_BASELINE and CAREER_BASELINE byte-identical; save schema 2",
+      "open": "Human playtest, real Safari and physical devices, real browser zoom, screen readers, 3D camera campaign"
     }
   },
   "decisionState": {
@@ -1270,6 +1306,13 @@
       "decidedBy": "Codex",
       "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
       "answer": "Public promotion after realistic 3D Lot, live-operations pilot and existing release gates"
+    },
+    "D12": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null,
+      "decidedOn": null,
+      "answer": null
     }
   },
   "execution": {

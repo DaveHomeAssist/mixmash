@@ -31,7 +31,7 @@ try {
   const preferencePage = await preferenceContext.newPage();
   await preferencePage.goto(`${server.origin}/front-of-house/`);
   await preferencePage.waitForFunction(() => window.__frontOfHouse?.rendererStatus().active);
-  assert.equal(await preferencePage.locator('#game-version').innerText(), 'v0.1.1');
+  assert.equal(await preferencePage.locator('#game-version').innerText(), 'v0.1.2');
   assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), null, 'implicit 3D default is not mistaken for an explicit choice');
   await preferencePage.click('#renderer-btn');
   await preferencePage.waitForFunction(() => !__frontOfHouse.rendererStatus().enabled);

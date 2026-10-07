@@ -126,8 +126,14 @@ const ui = {
   mounted: null, play: null, raf: 0, sightKey: '', sight: { clear: new Set(), blocked: new Set() }, confirmNew: false,
 };
 
+// A save can fail when the browser blocks or fills site storage. Say so once, rather than let
+// a reload quietly return to an older game; a save code still carries the game elsewhere.
+let saveWarned = false;
 function persist() {
-  if (store) store.save(state);
+  if ((store && store.save(state)) || saveWarned) return;
+  saveWarned = true;
+  setSaveStatus('This browser is not keeping progress. Copy a save code to keep this game.');
+  queueMicrotask(() => say('This browser is not saving progress. Open Menu and copy a save code to keep this game.', 'error'));
 }
 
 function say(text, kind = 'info') {
@@ -2665,7 +2671,8 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
   if (!target) return;
   const kind = target.dataset.save;
   if (kind === 'export') {
-    const code = store ? store.exportCode() : null;
+    const code = (store && store.exportCode()) || (window.MixKitSave
+      ? window.MixKitSave.encodeCode(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, savedAt: new Date().toISOString(), state })) : null);
     el.saveCode.value = code || '';
     el.saveCode.select();
     setSaveStatus(code ? 'Copy this code to move your game to another browser.' : 'Nothing saved yet.');
@@ -2789,6 +2796,24 @@ setTheme(savedTheme);
 $('#theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
 
 persist();
+// Another tab saving this game replaces the copy shown here, so a stale tab cannot sign, book or
+// build over newer progress; a page restored from the back-forward cache reloads the save too.
+function adoptStoredGame(message) {
+  const next = loadState();
+  if (JSON.stringify(next) === JSON.stringify(normalizeState(JSON.parse(JSON.stringify(state)), state.seed))) return;
+  state = next;
+  resetHistory();
+  stopPlayback();
+  ui.play = null;
+  ui.mounted = null;
+  closeWindow();
+  render();
+  say(message);
+}
+window.addEventListener('storage', (e) => {
+  if (store && e.key === store.key && e.newValue) adoptStoredGame('This game changed in another tab. Showing the latest save.');
+});
+window.addEventListener('pageshow', (e) => { if (e.persisted) adoptStoredGame('Showing the latest save.'); });
 window.addEventListener('resize', queueLayout);
 if ('ResizeObserver' in window) {
   const watch = new ResizeObserver(queueLayout);

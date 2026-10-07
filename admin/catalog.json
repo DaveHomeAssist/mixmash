@@ -1690,6 +1690,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/QA_AUDIT.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House QA Audit — 2026-10-07",
+      "description": "The audit tried to make the game lie, lose state, miscalculate, trap the player or pay twice, against one invariant: a booking keeps its act, room, contract, costs, layout, prices, attendance, results, cash, reputation,…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/QA_AUDIT.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/RELEASE_NOTES.md",
       "project": "front-of-house",
       "category": "docs",
@@ -2577,6 +2587,16 @@
       "title": "test-ownership.mjs",
       "description": "Inventory authority preserves identity and capital cash through commands and reloads.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-ownership.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-qa-integrity.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-qa-integrity.mjs",
+      "description": "QA audit regressions (2026-10-07): one booking stays the same booking, reloads never change a career, Back and room switches leave no hidden settings, Start over respects unlocks and hostile ids cannot pass as rooms,…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-qa-integrity.mjs",
       "open": null
     },
     {

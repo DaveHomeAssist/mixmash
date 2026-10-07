@@ -11,12 +11,19 @@
     return Buffer.from(code, 'base64').toString('utf8');
   }
 
+  // Reading window.localStorage throws when the browser blocks site data; play then
+  // continues without saving instead of stopping the page.
+  function defaultStorage() {
+    try { return typeof localStorage !== 'undefined' ? localStorage : null; }
+    catch (e) { return null; }
+  }
+
   // Shared per-game persistence: versioned envelope in localStorage plus
   // portable base64 save codes (the MarsScape relocation format).
   function createSaveStore(namespace, opts) {
     opts = opts || {};
     var version = opts.version || 1;
-    var storage = opts.storage || (typeof localStorage !== 'undefined' ? localStorage : null);
+    var storage = opts.storage || defaultStorage();
     var migrate = opts.migrate || null;
 
     function unwrap(parsed) {

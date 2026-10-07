@@ -1041,3 +1041,11 @@ match the merge exactly. Dominic live checks pass classic and3D at1440x900 and
 copy renders and no page error occurs. Annotated tag `front-of-house-v0.1.1`
 resolves to the deployed merge. Automated0.1.1 delivery is complete; broader
 proposals and human/device, calibration and rights gates remain separate.
+
+## 2026-10-07 — QA audit and 0.1.2 integrity fixes
+
+An adversarial audit of production `ad03910` (0.1.1) tried to break the one-booking invariant from Book to the next booking ([QA_AUDIT.md](docs/QA_AUDIT.md)). An engine harness reconciled 20 fixed-seed shows dollar for dollar against rules recomputed from `data.mjs`, checked that every accepted action in 600 adversarial careers (240,000 actions, 2,002 signed shows) reloads unchanged, and probed exact-cash edges, room rotation, held runs, malformed saves, inherited-name ids, geometry edges and a 230-show career. A browser campaign played the loop in Chromium, Firefox and WebKit with double-clicks and reloads at eight checkpoints, then attacked Back/Forward, two tabs, storage, corrupt saves, keyboard use and 90 phase-by-viewport layouts.
+
+No P0 was found: nothing paid or charged twice, skipped a phase or disagreed with a signed sheet. Three P1 defects were fixed: rebooking after Back pushed the Loam Shell seat price above its ceiling and a reload then removed the paid seat contract; Start over from a later room began the new career inside that locked room; and a Lot food plan carried through a room switch blocked Fathom Hall doors with no control to clear it. Also fixed: a reload deleting a PA left by a removed stage, no game when storage is blocked, inherited-name ids crashing a load, a stale tab overwriting newer progress, silent save failures, and room settings and the 200-show history changing on reload. Open: zoomed short viewports hide Promote's Open doors below the panel fold (FOH-QA-012), seeded save-and-replay (D12, recommendation A) and edited saves in a locked room.
+
+Checks on the Linux runner: `npm test` with the new `test-qa-integrity.mjs` (fails on 0.1.1, passes on 0.1.2), version, vendor, asset and performance tests, `vercel-build`, the Lot, tier and career simulations with byte-identical baselines, and regenerated CATALOG and STRINGS for the three new refusals. Release 0.1.2, cache v75. Human playtest, real Safari and devices remain open.

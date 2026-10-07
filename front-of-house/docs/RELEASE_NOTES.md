@@ -5,6 +5,23 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.1.2 — 2026-10-07
+
+Fixes from the 2026-10-07 [QA audit](QA_AUDIT.md). Save schema 2 is unchanged and
+existing saves load as before.
+
+- Going Back from Promote and rebooking keeps both Loam Shell ticket prices inside
+  the room's range, so a reload no longer drops a paid seat-sales contract.
+- Lot-only Promote settings (live services, food, facilities) stay on the Lot, so
+  they cannot block Open doors in another room.
+- Start over begins the new career on the Lot even when the last show was in a
+  later room; a locked room cannot be booked.
+- A reload keeps every placed object, including a PA left behind when its stage
+  was removed, and the 200-show history keeps its show numbers.
+- The game starts when the browser blocks site storage, says once when progress
+  is not being saved, and still offers a save code.
+- A second tab follows the latest save instead of overwriting newer progress.
+
 ## 0.1.1 — 2026-10-07
 
 - Makes the running Build expense easier to understand as **Show cost so far**,

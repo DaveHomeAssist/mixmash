@@ -29,6 +29,10 @@ const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const isInt = (v) => typeof v === 'number' && Number.isInteger(v);
 const clone = (v) => JSON.parse(JSON.stringify(v));
 const key = (x, y) => `${x},${y}`;
+// Content tables are plain objects; ids from saves and actions must be their own keys, never
+// inherited names such as "constructor".
+const own = (table, id) => typeof id === 'string' && Object.hasOwn(table, id);
+const HISTORY_LIMIT = 200; // signed shows kept in a career, in memory and in saves
 
 // ---------------------------------------------------------------------------
 // Seeded randomness (RULES.md, General conventions)
@@ -49,7 +53,7 @@ export function nextSeed(seed) {
 }
 
 export function artistFor(artistId) {
-  return D.ARTISTS[artistId] || D.ARTISTS[D.DEFAULT_ARTIST];
+  return own(D.ARTISTS, artistId) ? D.ARTISTS[artistId] : D.ARTISTS[D.DEFAULT_ARTIST];
 }
 
 // Draw order is fixed: artist draw, incident type, incident timing.
@@ -115,11 +119,12 @@ export function createGame(seed = 1, opts = {}) {
 }
 
 export function venueSpec(venue) {
-  const id = isObj(venue) && D.VENUES[venue.id] ? venue.id : 'lot';
+  const id = isObj(venue) && own(D.VENUES, venue.id) ? venue.id : 'lot';
   return D.VENUES[id];
 }
 
 function venueUnlocked(state, id) {
+  if (!own(D.VENUES, id)) return false;
   if (id === 'lot') return true;
   if (state.mode === 'sandbox') return true;
   if (id === 'club') return !!(state.unlocks && state.unlocks.club);
@@ -308,7 +313,9 @@ export function festivalSupportFor(venue) {
   return venue?.id === 'festival' && venue.support?.version === 1 ? D.FESTIVAL_SUPPORT : null;
 }
 
-export function validateLayout(objects, venue) {
+// keepDetached keeps objects that fail only the touch-the-stage rule: a stage removed in Build
+// leaves its PA in place, and loading that layout must show the same objects (and problems).
+export function validateLayout(objects, venue, { keepDetached = false } = {}) {
   const spec = venueSpec(venue);
   const grid = spec.grid;
   const accepted = [];
@@ -322,7 +329,7 @@ export function validateLayout(objects, venue) {
   objects.forEach((raw, index) => {
     const reject = (message) => problems.push({ index, type: raw && raw.type, message });
     if (!isObj(raw)) return reject('Not an object');
-    const t = D.OBJECT_TYPES[raw.type];
+    const t = own(D.OBJECT_TYPES, raw.type) ? D.OBJECT_TYPES[raw.type] : null;
     if (!t) return reject(`Unknown object type "${raw.type}"`);
     if (t.festivalOnly && spec.id !== 'festival') return reject(`${t.label} is available only at the Festival`);
     if (t.lotOnly && spec.id !== 'lot') return reject(`${t.label} is available only on the Lot`);
@@ -360,6 +367,7 @@ export function validateLayout(objects, venue) {
         [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => stageTiles.has(key(x + dx, y + dy))));
       if (!touches) {
         problems.push({ index: a.index, type: a.obj.type, message: `${t.label} must touch the stage` });
+        if (keepDetached) final.push(a.obj);
         continue;
       }
     }
@@ -787,7 +795,7 @@ function festivalBookingPolicy(raw, state) {
 
 function stageBookingTerms(raw, state) {
   const terms = festivalTerms(raw), b = state.booking;
-  if (state.venue.id !== 'festival' || !D.ARTISTS[b.secondId] || b.secondId === b.artistId || !b.secondTerms || !b.terms) throw new TypeError('Invalid Festival bill');
+  if (state.venue.id !== 'festival' || !own(D.ARTISTS, b.secondId) || b.secondId === b.artistId || !b.secondTerms || !b.terms) throw new TypeError('Invalid Festival bill');
   return terms;
 }
 
@@ -1231,6 +1239,7 @@ function applyActionCore(state, action) {
     }
     case 'chooseDeal': {
       if ((err = need('book'))) return fail(state, err);
+      if (!venueUnlocked(s, s.venue.id)) return fail(state, 'That room is still locked');
       if (!DEALS.includes(action.deal) && action.deal !== 'sponsor') return fail(state, 'Choose a guarantee or a door deal');
       if (action.deal === 'sponsor' && !venueSpec(s.venue).sponsor) return fail(state, 'This room does not take a sponsor');
       const offers = offersFor(s);
@@ -1244,6 +1253,7 @@ function applyActionCore(state, action) {
       }
       if (artistId !== s.booking.artistId) s.promotion.price = artistFor(artistId).fairPrice;
       const spec = venueSpec(s.venue);
+      s.promotion.price = clamp(s.promotion.price, D.PRICE_MIN, spec.priceMax || D.PRICE_MAX);
       if (action.roomPolicy !== undefined) {
         try { s.venue.profile = roomProfileTerms({ version: action.roomPolicy }, spec.id); }
         catch { return fail(state, 'Choose a supported room profile'); }
@@ -1257,7 +1267,7 @@ function applyActionCore(state, action) {
       const nights = spec.nights.includes(action.nights) ? action.nights : (s.booking.nights || 1);
       let secondId = null;
       let secondTerms = null;
-      if (spec.secondStage && typeof action.secondId === 'string' && action.secondId !== artistId && D.ARTISTS[action.secondId]) {
+      if (spec.secondStage && typeof action.secondId === 'string' && action.secondId !== artistId && own(D.ARTISTS, action.secondId)) {
         const st = termsFor(action.secondId, s.reputation.artists[action.secondId]);
         secondId = action.secondId;
         secondTerms = { ask: st.ask, drawMult: st.drawMult };
@@ -1289,14 +1299,14 @@ function applyActionCore(state, action) {
       }
       if (s.research) s.booking.research = { version: 1, at: s.research.commands.length };
       if (s.equipment) s.booking.equipment = { version: 1, at: s.equipment.commands.length, assetId: null };
-      if (spec.seats) s.promotion.seatPrice = s.promotion.price + 10;
+      if (spec.seats) s.promotion.seatPrice = Math.min(s.promotion.price + 10, spec.priceMax || D.PRICE_MAX);
       s.phase = 'build';
       return { state: s, error: null };
     }
     case 'chooseVenue': {
       if ((err = need('book'))) return fail(state, err);
       const id = action.venueId;
-      if (!D.VENUES[id]) return fail(state, 'Unknown room');
+      if (!own(D.VENUES, id)) return fail(state, 'Unknown room');
       if (!venueUnlocked(s, id)) return fail(state, 'That room is still locked');
       if (s.venue.id !== id) {
         delete s.booking.stages;
@@ -1315,6 +1325,19 @@ function applyActionCore(state, action) {
         s.layouts[s.venue.id] = s.venue.objects;
         const spec = D.VENUES[id];
         s.venue = { id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: s.layouts[id] || [] };
+        // Settings that belong to another room stay behind, as normalizeState drops them, so a
+        // reload never changes the booking and no hidden Lot setting can block the doors elsewhere.
+        const priceMax = spec.priceMax || D.PRICE_MAX;
+        s.promotion.price = clamp(s.promotion.price, D.PRICE_MIN, priceMax);
+        s.promotion.seatPrice = spec.seats ? clamp(isInt(s.promotion.seatPrice) ? s.promotion.seatPrice : s.promotion.price + 10, D.PRICE_MIN, priceMax) : null;
+        if (id !== 'lot') {
+          delete s.promotion.liveServices;
+          delete s.promotion.foodPlan;
+          delete s.promotion.sanitation;
+        }
+        if (!spec.secondStage) { s.booking.secondId = null; s.booking.secondTerms = null; }
+        if (!spec.nights.includes(s.booking.nights)) s.booking.nights = 1;
+        if (s.booking.deal === 'sponsor' && !spec.sponsor) { s.booking.deal = null; s.booking.terms = null; }
       }
       return { state: s, error: null };
     }
@@ -1404,6 +1427,10 @@ function applyActionCore(state, action) {
       if ((err = need('promote'))) return fail(state, err);
       const sponsorPrice = festivalPolicyFor(s)?.sponsorPrice;
       if (sponsorPrice !== undefined && s.promotion.price !== sponsorPrice) return fail(state, `Restore the sponsor ticket price of $${sponsorPrice} before opening`);
+      if (!venueUnlocked(s, s.venue.id)) return fail(state, 'That room is still locked');
+      const room = venueSpec(s.venue), priceMax = room.priceMax || D.PRICE_MAX;
+      const inRange = (price) => isInt(price) && price >= D.PRICE_MIN && price <= priceMax;
+      if (!inRange(s.promotion.price) || (room.seats && !inRange(s.promotion.seatPrice))) return fail(state, `Set ticket prices from $${D.PRICE_MIN} to $${priceMax} before opening`);
       const useServices = action.services === undefined ? s.promotion.liveServices === true : action.services === true;
       if (useServices && (action.pilot === true || s.venue.id !== 'lot' || !evaluateVenue(s.venue).bars)) {
         return fail(state, 'Live services needs the Lot and a bar, without the doors snapshot');
@@ -1511,7 +1538,7 @@ function applyActionCore(state, action) {
       const night = s.show.night || 1;
       const nights = run?.terms.nights || s.booking.nights || 1;
       s.history.push({
-        showId: s.history.length + 1,
+        showId: (s.history.at(-1)?.showId ?? 0) + 1,
         cashAfter: s.cash,
         ...(cancel ? { runCancellation: { terms: run.terms, completed: night } } : {}),
         seed: s.seed,
@@ -1526,6 +1553,7 @@ function applyActionCore(state, action) {
         venueId: s.venue.id,
         night,
       });
+      if (s.history.length > HISTORY_LIMIT) s.history = s.history.slice(-HISTORY_LIMIT);
       const repHold = (s.show.repHold || 0) + r.repDelta;
       const relHold = (s.show.relHold || 0) + r.relDelta;
       if (night < nights && !cancel) {
@@ -1580,7 +1608,6 @@ function applyActionCore(state, action) {
         return { state: createGame(nextSeed(s.seed), { mode: 'scenario', scenario: s.scenario }), error: null };
       }
       const fresh = createGame(nextSeed(s.seed), { mode: s.mode, scenario: s.scenario });
-      fresh.venue = s.venue;
       fresh.layouts = s.layouts || fresh.layouts;
       if (action.type === 'nextShow') {
         fresh.cash = s.cash;
@@ -1594,9 +1621,17 @@ function applyActionCore(state, action) {
         if (s.researchNotice) fresh.researchNotice = s.researchNotice;
         if (s.mode === 'sandbox') fresh.cash = s.cash;
       }
+      // Start over keeps the saved layouts but never a room the new career has not unlocked.
+      if (venueUnlocked(fresh, s.venue.id)) fresh.venue = s.venue;
+      else {
+        fresh.layouts[s.venue.id] = s.venue.objects;
+        fresh.venue = { id: 'lot', grid: { w: D.VENUES.lot.grid.w, h: D.VENUES.lot.grid.h }, objects: fresh.layouts.lot || [] };
+      }
       const first = offersFor(fresh)[0];
       fresh.booking.artistId = first;
       fresh.promotion.price = artistFor(first).fairPrice;
+      const room = venueSpec(fresh.venue);
+      if (room.seats) fresh.promotion.seatPrice = Math.min(fresh.promotion.price + 10, room.priceMax || D.PRICE_MAX);
       return { state: fresh, error: null };
     }
     default:
@@ -1673,7 +1708,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
   s.cash = clamp(intOr(raw.cash, D.START_CASH), -1e9, 1e9);
 
   const rawObjects = isObj(raw.venue) && Array.isArray(raw.venue.objects) ? raw.venue.objects.slice(0, 1000) : [];
-  if (isObj(raw.venue) && D.VENUES[raw.venue.id]) {
+  if (isObj(raw.venue) && own(D.VENUES, raw.venue.id)) {
     const spec = D.VENUES[raw.venue.id];
     s.venue = { id: spec.id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: [] };
   }
@@ -1688,10 +1723,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
   }
   if (typeof raw.roomNotice === 'string' && raw.roomNotice) s.roomNotice ||= 'Earlier room-profile recovery preserved cash; original room conditions may be incomplete';
   s.venue.objects = validateLayout(rawObjects.map((o) => (isObj(o)
-    ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), s.venue).accepted;
+    ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), s.venue, { keepDetached: true }).accepted;
 
   const booking = isObj(raw.booking) ? raw.booking : {};
-  if (typeof booking.artistId === 'string' && D.ARTISTS[booking.artistId]) s.booking.artistId = booking.artistId;
+  if (own(D.ARTISTS, booking.artistId)) s.booking.artistId = booking.artistId;
   s.booking.deal = DEALS.includes(booking.deal) || booking.deal === 'sponsor' ? booking.deal : null;
   // Terms arrived with the Lot career; a booking made before them has none and uses the act's
   // base ask and draw, as it did when it was made. An ask below $1 is dropped the same way:
@@ -1766,7 +1801,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
     } catch { s.runNotice = 'Invalid held-run booking removed; cash was preserved'; }
   }
   if (typeof raw.runNotice === 'string' && raw.runNotice) s.runNotice ||= 'Earlier held-run recovery preserved cash; original terms may be incomplete';
-  if (room.secondStage && typeof booking.secondId === 'string' && D.ARTISTS[booking.secondId]) {
+  if (room.secondStage && own(D.ARTISTS, booking.secondId)) {
     s.booking.secondId = booking.secondId;
     const st = isObj(booking.secondTerms) ? booking.secondTerms : null;
     if (st && isInt(st.ask) && st.ask > 0 && typeof st.drawMult === 'number' && Number.isFinite(st.drawMult)) {
@@ -1788,7 +1823,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
       const spec = D.VENUES[id];
       const asVenue = { id, grid: { w: spec.grid.w, h: spec.grid.h }, objects: [] };
       s.layouts[id] = validateLayout(raw.layouts[id].map((o) => (isObj(o)
-        ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), asVenue).accepted;
+        ? { type: o.type, x: o.x, y: o.y, rot: o.rot === undefined ? 0 : o.rot } : o)), asVenue, { keepDetached: true }).accepted;
     }
   }
 
@@ -1821,8 +1856,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
   for (const id of Object.keys(D.ARTISTS)) s.reputation.artists[id] = clamp(intOr(rel[id], 0), -100, 100);
 
   if (Array.isArray(raw.history)) {
-    s.history = raw.history.filter(isObj).slice(-200).map((h, i) => ({
-      showId: i + 1,
+    let previous = 0;
+    s.history = raw.history.filter(isObj).slice(-HISTORY_LIMIT).map((h) => ({
+      // Show numbers survive the 200-show window; damaged or repeated numbers are renumbered.
+      showId: (previous = Number.isSafeInteger(h.showId) && h.showId > previous ? h.showId : previous + 1),
       ...(Number.isSafeInteger(h.cashAfter) ? { cashAfter: h.cashAfter } : {}),
       ...savedRunCancellation(h.runCancellation),
       seed: isInt(h.seed) ? h.seed >>> 0 : 0,
@@ -1834,7 +1871,7 @@ export function normalizeState(raw, fallbackSeed = 1) {
       result: h.result === 'pass' ? 'pass' : 'retry',
       weakest: typeof h.weakest === 'string' ? h.weakest : null,
       settledAt: typeof h.settledAt === 'string' ? h.settledAt : null,
-      venueId: D.VENUES[h.venueId] ? h.venueId : 'lot',
+      venueId: own(D.VENUES, h.venueId) ? h.venueId : 'lot',
       night: isInt(h.night) && h.night > 0 ? h.night : 1,
     }));
   }
