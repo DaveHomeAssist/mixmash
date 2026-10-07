@@ -1690,6 +1690,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/RELEASE_NOTES.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House Release Notes",
+      "description": "Front of House uses its own early-playable 0.x version line.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/RELEASE_NOTES.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/RELEASE.md",
       "project": "front-of-house",
       "category": "docs",
@@ -3000,6 +3010,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-version.test.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "Front of House version parity",
+      "description": "Checks the independent 0.x version, dated release notes, visible menu hook, service-worker cache and separate save-schema contract.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-version.test.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/sim/career.mjs",
       "project": "front-of-house",
       "category": "tooling",
@@ -3437,6 +3457,16 @@
       "title": "Three.js WebGL 0.184.0",
       "description": "Pinned upstream WebGL browser module with a local core import; no CDN requests.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/vendor/three/three.module.min.js",
+      "open": null
+    },
+    {
+      "path": "front-of-house/version.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "Front of House release metadata",
+      "description": "Single source for the independent Front of House product version, release date, early-playable stage, service-worker cache and save-schema parity.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/version.mjs",
       "open": null
     },
     {

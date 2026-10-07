@@ -999,3 +999,14 @@ PR132 passed final-head CI37569431470 and merged as7b99bbc. Post-merge CI3757208
 ### 2026-10-07 — Dominic EGL renderer diagnostic
 
 Harness source `0585823` adds an explicit recorded `--gpu=egl` mode and verified-runner source provenance for isolated containers. A first six-window validation exposed and corrected unknown Git provenance; its timing is not qualification evidence. The final clean run on Dominic records all18 unchanged renderer-only Lot windows with Intel/Mesa EGL,10s warm-up,30s samples and three repeats. Fixture/raw digests and recomputed statistics pass: cadence60.0021–60.0025Hz, frame p9516.7–16.8ms, CPU submission p950.5–4.9ms. This closes the prepared automated diagnostic only; full HUD, native/physical/supported-device, sustained-target, calibration, human and release acceptance remain open.
+## 2026-10-07 — Default 3D and initial product version candidate
+
+CT-DEC-33 makes the existing 3D venue view the default when the player has not
+chosen a view. Explicit 2D and 3D choices persist in a presentation-only browser
+preference; query overrides support deterministic diagnostics without replacing
+that preference. Missing modules, WebGL failure and unsupported rooms retain the
+classic fallback without changing the show or save. Front of House begins its
+independent `0.x` line at0.1.0/cachev73 with dated release notes and visible menu
+metadata. Save schema remains2; engine, balance, career and accounting are
+unchanged. Final-head CI, Pages, exact live readback and the immutable
+`front-of-house-v0.1.0` tag follow before delivery is claimed.

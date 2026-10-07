@@ -28,7 +28,7 @@ try{
    const context=await browser.newContext({viewport:{width,height},hasTouch:width===375,reducedMotion:'reduce',serviceWorkers:'block'}),page=await context.newPage();
    if(width===1024)await page.addInitScript(()=>localStorage.setItem('front_of_house_theme','dark'));
    const errors=trackPageFailures(page,new URL(url).origin);
-   await page.goto(url+(three?'?renderer=3d':''));await page.waitForFunction(()=>window.__frontOfHouse);
+   await page.goto(url+`?renderer=${three?'3d':'2d'}`);await page.waitForFunction(()=>window.__frontOfHouse);
    await page.evaluate(c=>__frontOfHouse.importCode(c),code);if(three)await page.waitForFunction(()=>__frontOfHouse.rendererStatus().active);
    await page.locator('#panel [data-act="development"]').click();await fit(page);
    await page.locator('[data-act="research-enable"]').click();await fit(page);

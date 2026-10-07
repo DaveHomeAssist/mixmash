@@ -31,7 +31,7 @@ try {
         const context = await browser.newContext({ colorScheme: width === 1024 ? 'dark' : 'light', viewport: { width, height: width === 375 ? 812 : width === 1024 ? 700 : 900 }, hasTouch: width < 500, reducedMotion: 'reduce', serviceWorkers: 'block' });
         const page = await context.newPage(), errors = trackPageFailures(page, new URL(url).origin);
         if (width === 1024) await page.addInitScript(() => localStorage.setItem('front_of_house_theme', 'dark'));
-        await page.goto(url + (three ? '?renderer=3d' : ''));
+        await page.goto(url + `?renderer=${three ? '3d' : '2d'}`);
         await page.waitForFunction(() => window.__frontOfHouse);
         if (width === 1024) assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
         await page.evaluate(c => __frontOfHouse.importCode(c), code);

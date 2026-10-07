@@ -46,7 +46,7 @@ try {
     try {
       const page = await context.newPage(), errors = trackPageFailures(page, server.origin);
       if (cache === 'direct') await page.route('**/front-of-house/board.js', route => route.fulfill({ contentType: 'text/javascript', body: directSource }));
-      await page.goto(`${server.origin}/front-of-house/`); await page.waitForFunction(() => window.__frontOfHouse);
+      await page.goto(`${server.origin}/front-of-house/?renderer=2d`); await page.waitForFunction(() => window.__frontOfHouse);
       assert.equal(await page.evaluate(code => __frontOfHouse.importCode(code), saveCode), true);
       await page.waitForFunction(() => __frontOfHouse.board().spritesReady);
       const loaded = await page.evaluate(() => __frontOfHouse.state()); assert.deepEqual(loaded, state, 'Import preserves exact canonical fixture');

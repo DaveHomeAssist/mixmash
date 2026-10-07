@@ -38,7 +38,7 @@ try {
       for (const viewport of [{ width: 1440, height: 900 }, { width: 375, height: 812 }]) {
         const context = await browser.newContext({ viewport, hasTouch: viewport.width < 500, reducedMotion: browserName === 'webkit' ? 'reduce' : 'no-preference', serviceWorkers: 'block' });
         const page = await context.newPage(), errors = trackPageFailures(page, new URL(url).origin);
-        await page.goto(url);
+        await page.goto(`${url}?renderer=2d`);
         await page.waitForFunction(() => window.__frontOfHouse);
         assert.equal(await page.evaluate(code => window.__frontOfHouse.importCode(code), code), true);
         await page.locator('[data-deal="door"]:visible').first().click();

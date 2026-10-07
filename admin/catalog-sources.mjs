@@ -244,6 +244,8 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/version.mjs': { title: 'Front of House release metadata', description: 'Single source for the independent Front of House product version, release date, early-playable stage, service-worker cache and save-schema parity.' },
+  'test/front-of-house-version.test.mjs': { title: 'Front of House version parity', description: 'Checks the independent 0.x version, dated release notes, visible menu hook, service-worker cache and separate save-schema contract.' },
   'front-of-house/performance/2026-10-07-egl.json': { title: 'Dominic Intel/Mesa EGL diagnostics', description: 'Eighteen clean headless renderer-only Intel/Mesa EGL windows under the established Lot protocol, with source, fixture and raw digests; not physical-device or full-HUD acceptance.' },
   'front-of-house/performance/2026-10-04-ci-paired.json': { title: 'Paired CI performance evidence', description: 'Two complete comparisons and a valid measured20ms negative control, with independent raw/source audits and exact source revisions.' },
   'front-of-house/performance/2026-10-04-batched-hud.json': { title: 'Batched native 3D HUD measurements', description: 'Six full native client repeats after render coalescing, with unchanged game-state replay, scene quality and retained timing variation.' },

@@ -38,7 +38,7 @@ const ok = (name) => { checks.push(name); console.log(`  ok  ${name}`); };
 async function open(context) {
   const page = await context.newPage();
   const failures = trackPageFailures(page, appOrigin);
-  await page.goto(url);
+  await page.goto(`${url}?renderer=2d`);
   await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
   return { page, failures };
 }
@@ -928,7 +928,7 @@ try {
   const pilotDesktop = await browser.newContext({ viewport: { width: 1024, height: 700 }, reducedMotion: 'reduce' });
   const pilotPage = await pilotDesktop.newPage();
   const pilotFailures = trackPageFailures(pilotPage, appOrigin);
-  await pilotPage.goto(`${url}?night-slice=1`);
+  await pilotPage.goto(`${url}?renderer=2d&night-slice=1`);
   await pilotPage.waitForFunction(() => typeof window.render_game_to_text === 'function');
   await loadCode(pilotPage, Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state: createGame(paSeed) })).toString('base64'));
   await pilotPage.click('[data-deal="guarantee"]');
@@ -954,7 +954,7 @@ try {
   const pilotPhone = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const pilotMobile = await pilotPhone.newPage();
   const pilotPhoneFailures = trackPageFailures(pilotMobile, appOrigin);
-  await pilotMobile.goto(`${url}?night-slice=1`);
+  await pilotMobile.goto(`${url}?renderer=2d&night-slice=1`);
   await pilotMobile.waitForFunction(() => typeof window.render_game_to_text === 'function');
   await pilotMobile.locator('[data-deal="guarantee"]:visible').first().click();
   await pilotMobile.locator('#panel .tabbar [role="tab"]', { hasText: 'Actions' }).click();

@@ -763,3 +763,29 @@ A bounded headless Chromium149.0.7827.55 probe at1000x676/DPR1 confirms Intel HD
 **Scope:** Summary opens by default with contextual show identity, one promoter result, attendance, satisfaction, one generated sentence, one status stamp, a four-line financial bridge, one strongest result and one priority. Ledger owns Revenue, Costs, Deal and Crowd pages with every current value and receipt link. The fixed footer owns reputation, relationship, cash after signing and **Sign & Continue**. Signed settlements reopen read-only. Presentation derives from `settlementFor`; no engine, save, balance, progression or public API change.
 
 **Acceptance:** Exact Summary/result parity before and after signing; signing applies once and held runs enter their existing continuation choice; every Ledger line and linked receipt survives. Summary and each Ledger page remain contained at1440×900,1024×700,390×844,375×812 and360px. Preserve tab semantics, arrow-key navigation, focus, visible focus,44px targets, both themes, contrast, save/reload and the complete player regression suite.
+
+## FOH-U03 — Default 3D and numbered early-playable releases
+
+**Status:** Accepted by Dave on 2026-10-07; implementation and delivery evidence remain separate.
+
+Fresh sessions use the existing 3D venue view. The Camera control keeps 2D and
+3D available and remembers an explicit choice outside the game save. A renderer
+or module failure shows the unchanged classic board and keeps the game playable;
+retrying 3D never changes simulation state.
+
+Front of House owns a separate `0.x` version source, dated release notes and
+namespaced immutable Git tags. The first number is `0.1.0`, described as initial
+numbering rather than a first-ever build or 1.0 acceptance. Patch versions carry
+compatible fixes and minor versions carry new player-facing capability during
+`0.x`. The shared MixMash package version stays untouched. Save schema and PWA
+cache versions remain independent and change only for migration or delivery.
+
+**Acceptance:** fresh/no-choice entry activates 3D; explicit 2D and 3D survive
+reload; a deterministic query can select either view without overwriting the
+preference; missing-module and context recovery preserve state; the visible
+version, release notes, cache and source metadata agree; exact merged/deployed
+source is verified before creating `front-of-house-v0.1.0`.
+
+**Excludes:** renderer redesign, new art, balance or save changes, public launch,
+retrospective SemVer claims, and human/physical-device/calibration/rights
+acceptance.
