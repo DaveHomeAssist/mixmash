@@ -1010,3 +1010,13 @@ independent `0.x` line at0.1.0/cachev73 with dated release notes and visible men
 metadata. Save schema remains2; engine, balance, career and accounting are
 unchanged. Final-head CI, Pages, exact live readback and the immutable
 `front-of-house-v0.1.0` tag follow before delivery is claimed.
+
+PR136 head `2123f1b` passed general CI37581857021 and its paired calibrated
+regression job, then merged as `a3677b858cc0c22be260417cc8f9d5e2890ff11d`.
+Pages37584561999 and post-merge CI37584562751 pass. Hosted `game.js`,
+`index.html`, `version.mjs`, `RELEASE_NOTES.md` and `sw.js` match the merge
+exactly. A fresh live Dominic session opens active3D, displays v0.1.0 and keeps
+an explicit2D choice through reload; the current live capture was inspected.
+Annotated tag `front-of-house-v0.1.0` resolves to the exact release merge.
+Automated delivery is complete; human/device, calibration and rights gates are
+not inferred.

@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.1.0 default-3D candidate; acceptance open",
+  "head": "0.1.0 default 3D delivered; acceptance open",
   "lastActivity": "2026-10-07",
   "status": "amber",
-  "statusReason": "CT-DEC-33 candidate makes the existing3D venue view the fresh-session default, preserves explicit2D/3D preferences and classic fallback, and begins independent Front of House0.x numbering at0.1.0/cachev73 with save schema2 unchanged. Automated source/browser/release verification is in progress; no delivery claim is made yet. Human art/camera/career, supported physical phone/low-power/current-Mac/display, sustained full-HUD targets, calibration and40original raster-image rights remain open.",
+  "statusReason": "Front of House0.1.0/cachev73 is delivered through PR136 at a3677b8. Final-head general and paired regression CI, Pages, five-file hosted parity, fresh live Dominic default3D/version/persisted2D behavior, exact-merge postmerge CI and annotated tag front-of-house-v0.1.0 pass. Save schema remains2. No executable automated phase remains in the accepted plan. Human art/camera/career, supported physical phone/low-power/current-Mac/display, sustained full-HUD targets, calibration and40original raster-image rights remain open.",
   "activity30d": {
-    "headline": "Four-room early playable with a default3D candidate, independent0.x release metadata, live services and verified prior engineering delivery; current candidate delivery and human/device, physical calibration and provenance acceptance remain open."
+    "headline": "Four-room Front of House0.1.0 early playable with default3D, independent0.x release metadata, live services and verified delivery; human/device, physical calibration and provenance acceptance remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -38,15 +38,16 @@
     "2026-10-05: playtest HUD/UX fixes (capacity-cap explanations, placement refusal reasons, consistent cash, per-phase toasts, Space/right-drag pan, room-matched keys, 3D Fit/home and per-show camera reset, 2D/3D strip button, softer Book dim, firmer daytime fence, settlement A/B/C order); no rule, balance or save change.",
     "PR130 merged0ba0fca with successful test and FOH regression jobs, delivering the classic whole-guest correction together with PR129's retained HUD changes.",
     "PR132 merged7b99bbc after final-head CI37569431470; post-merge CI37572085279 and Pages37572084871 pass. Hosted game.js/styles.css/sw.js match exactly, and the complete twelve-script Chromium/WebKit player matrix passes on Dominic against mixmash.games, including Summary/Ledger, one-time signing, held runs and read-only reopening.",
-    "Clean0585823 records18 valid Dominic Intel/Mesa EGL renderer-only windows under the established protocol; independent fixture/raw digest and statistics checks pass. Full-HUD, native/physical-device, sustained-target and human acceptance remain separate."
+    "Clean0585823 records18 valid Dominic Intel/Mesa EGL renderer-only windows under the established protocol; independent fixture/raw digest and statistics checks pass. Full-HUD, native/physical-device, sustained-target and human acceptance remain separate.",
+    "PR136 head2123f1b passed general and paired regression CI and mergeda3677b8. Pages37584561999 and postmergeCI37584562751 pass; five release files match live, Dominic verifies fresh default3D/v0.1.0/persisted2D, and annotated tag front-of-house-v0.1.0 resolves to the release merge. Save schema stays2."
   ],
   "nextStep": {
-    "title": "Deliver and verify Front of House0.1.0",
-    "why": "Dave accepted default3D and independent0.x product versioning. The candidate must pass explicit default/preference/fallback checks, mandatory CI, Pages, live version/cache readback and an immutable namespaced tag before returning to human and physical acceptance.",
-    "doneWhen": "The exact candidate passes targeted and repository gates, merges, deploys with hosted byte parity, post-merge CI succeeds, front-of-house-v0.1.0 points to the verified release merge and remaining acceptance gates stay explicit.",
-    "effort": "S",
-    "owner": "Codex",
-    "blockedBy": "None for automated delivery; human and physical acceptance remain a separate following gate."
+    "title": "Complete remaining human and physical acceptance",
+    "why": "All accepted executable automated phases, the Dominic EGL diagnostic and Front of House0.1.0 delivery are complete. Public promotion still requires Dave art/camera/career acceptance, supported physical devices, measured venue calibration and original-image rights review.",
+    "doneWhen": "The exact current revision has explicit human art/camera/career approval, supported phone/low-power/current-Mac/display results, measured venue calibration and resolved rights evidence; RELEASE.md gates are signed without substituting automation for physical or human proof.",
+    "effort": "M",
+    "owner": "Dave",
+    "blockedBy": "Requires Dave and physical devices/venue evidence; automated agents cannot supply human acceptance, physical calibration or rights ownership proof."
   },
   "findings": [
     {
