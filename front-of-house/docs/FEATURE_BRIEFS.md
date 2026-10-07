@@ -766,7 +766,7 @@ A bounded headless Chromium149.0.7827.55 probe at1000x676/DPR1 confirms Intel HD
 
 ## FOH-U03 — Default 3D and numbered early-playable releases
 
-**Status:** Accepted by Dave on 2026-10-07; implementation and delivery evidence remain separate.
+**Status:** Delivered through PR136 at `a3677b8` on 2026-10-07; remaining human and physical acceptance stays separate.
 
 Fresh sessions use the existing 3D venue view. The Camera control keeps 2D and
 3D available and remembers an explicit choice outside the game save. A renderer
