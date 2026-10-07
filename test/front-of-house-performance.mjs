@@ -26,6 +26,10 @@ await mkdir(output, { recursive: true });
 if ((await readdir(output)).length) throw new Error('Output directory must be empty; choose a new directory to preserve previous attempts');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const command = (name, args) => { try { return execFileSync(name, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return 'unknown'; } };
+const detectedCommit = command('git', ['rev-parse', 'HEAD']);
+const detectedStatus = command('git', ['status', '--porcelain']);
+const sourceCommit = process.env.FOH_PERF_SOURCE_COMMIT || detectedCommit;
+const sourceDirty = process.env.FOH_PERF_SOURCE_DIRTY === undefined ? detectedStatus === 'unknown' || detectedStatus.length > 0 : process.env.FOH_PERF_SOURCE_DIRTY === 'true';
 const actions = [...(venue !== 'lot' ? [{ type: 'chooseVenue', venueId: venue }] : []), { type: 'chooseDeal', deal: venue === 'festival' ? 'guarantee' : 'door', artistId: venue === 'festival' ? 'paper-voltage' : venue !== 'lot' ? VENUES[venue].defaultArtist : 'sodium-arcade', ...(venue === 'festival' ? { secondId: 'hollow-census', stagePolicy: 1 } : {}) }];
 const step = (s, a) => { const r = applyAction(s, a); assert.equal(r.error, null); return r.state; };
 const empty = actions.reduce(step, initial());
@@ -45,7 +49,7 @@ const options = gpu === 'software' ? launchOptions() : { headless: true, args: g
 if (nativeChrome) Object.assign(options, { headless: false, channel: 'chrome' });
 const report = {
   mode: quick ? 'harness validation only' : 'renderer diagnostic baseline', startedAt: new Date().toISOString(),
-  source: { commit: command('git', ['rev-parse', 'HEAD']), dirty: command('git', ['status', '--porcelain']).length > 0, sha256: sources },
+  source: { commit: sourceCommit, dirty: sourceDirty, provenance: process.env.FOH_PERF_SOURCE_COMMIT ? 'verified runner environment' : 'local Git', sha256: sources },
   ci: process.env.GITHUB_ACTIONS === 'true' ? { provider: 'github-actions', runnerClass: process.env.FOH_PERF_RUNNER_CLASS || 'unknown', os: process.env.RUNNER_OS || 'unknown', architecture: process.env.RUNNER_ARCH || 'unknown', image: process.env.ImageOS || 'unknown', imageVersion: process.env.ImageVersion || 'unknown', runId: process.env.GITHUB_RUN_ID || 'unknown', attempt: process.env.GITHUB_RUN_ATTEMPT || 'unknown' } : null,
   host: { platform: platform(), architecture: arch(), kernel: release(), model: platform() === 'darwin' ? command('sysctl', ['-n', 'hw.model']) : 'unknown', cpu: cpus()[0]?.model || 'unknown', cpuCount: cpus().length, memoryBytes: totalmem(), osVersion: platform() === 'darwin' ? command('sw_vers', ['-productVersion']) : 'unknown', osBuild: platform() === 'darwin' ? command('sw_vers', ['-buildVersion']) : 'unknown', power: platform() === 'darwin' ? command('pmset', ['-g', 'batt']).split('\n')[0] : 'unknown', lowPower: platform() === 'darwin' ? command('pmset', ['-g', 'custom']).split('\n').filter(s => s.includes('lowpowermode')).map(s => s.trim()) : 'unknown', displayRefresh: 'unknown', thermal: 'unknown', otherHostLoad: 'uncontrolled; load averages recorded per run' },
   protocol: { venue, layer: 'isolated renderer; excludes full game and HUD', warmupMs: quick ? 1000 : 10000, measurementMs: quick ? 2000 : 30000, repeats: quick ? 1 : 3, requestedDpr: nativeChrome ? 'native' : requestedDpr, viewports, headless: !nativeChrome, requestedBackend: gpu, launchArgs: options.args || [], eglPlatform: gpu === 'egl' ? process.env.EGL_PLATFORM || null : null, reducedMotion: 'no-preference', shadows: '1024 PCFSoft', antialias: true, adaptiveQuality: false, gpuTimestampMs: 'unavailable', acceptance: 'descriptive only; no device or statistical pass limits inferred' },
@@ -81,7 +85,7 @@ try {
         window.canvas = document.querySelector('canvas'); window.backend = createLotRenderer(canvas, { venue: scene.floor }); window.input = scene;
         backend.draw(scene); backend.preset('wide');
         const gl = canvas.getContext('webgl2'), debug = gl.getExtension('WEBGL_debug_renderer_info'), renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-        return { browserDpr: devicePixelRatio, effectiveDpr: backend.info().dpr, backing: { width: canvas.width, height: canvas.height }, renderer, vendor: debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR), graphics: /swiftshader|llvmpipe|software/i.test(renderer) ? 'software' : /ANGLE Metal Renderer: Apple/.test(renderer) ? 'Apple hardware via Metal' : 'unverified hardware backend', visibility: document.visibilityState, quality: backend.info(), gpuTimersAvailable: !!gl.getExtension('EXT_disjoint_timer_query_webgl2') };
+        return { browserDpr: devicePixelRatio, effectiveDpr: backend.info().dpr, backing: { width: canvas.width, height: canvas.height }, renderer, vendor: debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR), graphics: /swiftshader|llvmpipe|software/i.test(renderer) ? 'software' : /ANGLE Metal Renderer: Apple/.test(renderer) ? 'Apple hardware via Metal' : /Mesa Intel/i.test(renderer) ? 'Intel hardware via Mesa/EGL' : 'unverified hardware backend', visibility: document.visibilityState, quality: backend.info(), gpuTimersAvailable: !!gl.getExtension('EXT_disjoint_timer_query_webgl2') };
       }, input.scene);
       record.coldLoadMs = performance.now() - coldStart;
       // Screenshots and diagnostics are outside the warm-up / timed sample window.
