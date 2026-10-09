@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
-  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
+  careerProgress, completedShows, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
 import { heldRunQuote } from './held-run.mjs';
@@ -127,8 +127,14 @@ const ui = {
   mounted: null, play: null, raf: 0, sightKey: '', sight: { clear: new Set(), blocked: new Set() }, confirmNew: false,
 };
 
+// A save can fail when the browser blocks or fills site storage. Say so once, rather than let
+// a reload quietly return to an older game; a save code still carries the game elsewhere.
+let saveWarned = false;
 function persist() {
-  if (store) store.save(state);
+  if ((store && store.save(state)) || saveWarned) return;
+  saveWarned = true;
+  setSaveStatus('This browser is not keeping progress. Copy a save code to keep this game.');
+  queueMicrotask(() => say('This browser is not saving progress. Open Menu and copy a save code to keep this game.', 'error'));
 }
 
 function say(text, kind = 'info') {
@@ -372,7 +378,7 @@ function bookPanel() {
   return `
     <div class="sheet-top">
       <div>
-        <p class="eyebrow">Show ${state.history.length + 1} · ${esc(spec.name)}</p>
+        <p class="eyebrow">Show ${completedShows(state) + 1} · ${esc(spec.name)}</p>
         <h2>Book the act</h2>
       </div>
       <button type="button" class="info-btn" data-act="deal-help" aria-label="How the deals work">ⓘ Deals</button>
@@ -1292,7 +1298,7 @@ function sheetParts(r, { signed: done }) {
   }).join('');
   const pass = r.result === 'pass';
   const summary = settlementSummary(r, v);
-  const showNumber = String(state.history.length + (done ? 0 : 1)).padStart(3, '0');
+  const showNumber = String(completedShows(state) + (done ? 0 : 1)).padStart(3, '0');
   const ended = r.setTime ? clock(r.setTime.end / D.SET_SCHEDULE.close) : clock(1);
   const context = `<p class="settlement-context">Show ${showNumber} · ${r.setTime ? `<button class="receipt-link" data-act="set-time">${ended} set ended</button>` : `${ended} curfew`} · ${deal === 'door' ? `Door ${Math.round(D.DOOR_SPLIT * 100)}%` : deal === 'sponsor' ? 'Sponsor' : 'Guarantee'}</p>`;
   const serviceReceipts = r.services ? `<p class="hint">Prepaid ${money(r.services.prepaidCash)} + walk-ups ${money(r.services.walkupCash)} − refunds ${money(r.services.refunds)} = ${money(r.ticketGross)} ticket receipts. ${r.services.cancelledWalkups} future walk-ups cancelled; ${r.services.abandoned} guests left admission.</p>` : '';
@@ -2751,7 +2757,8 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
   if (!target) return;
   const kind = target.dataset.save;
   if (kind === 'export') {
-    const code = store ? store.exportCode() : null;
+    const code = (store && store.exportCode()) || (window.MixKitSave
+      ? window.MixKitSave.encodeCode(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, savedAt: new Date().toISOString(), state })) : null);
     el.saveCode.value = code || '';
     el.saveCode.select();
     setSaveStatus(code ? 'Copy this code to move your game to another browser.' : 'Nothing saved yet.');
@@ -2875,6 +2882,24 @@ setTheme(savedTheme);
 $('#theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
 
 persist();
+// Another tab saving this game replaces the copy shown here, so a stale tab cannot sign, book or
+// build over newer progress; a page restored from the back-forward cache reloads the save too.
+function adoptStoredGame(message) {
+  const next = loadState();
+  if (JSON.stringify(next) === JSON.stringify(normalizeState(JSON.parse(JSON.stringify(state)), state.seed))) return;
+  state = next;
+  resetHistory();
+  stopPlayback();
+  ui.play = null;
+  ui.mounted = null;
+  closeWindow();
+  render();
+  say(message);
+}
+window.addEventListener('storage', (e) => {
+  if (store && e.key === store.key && e.newValue) adoptStoredGame('This game changed in another tab. Showing the latest save.');
+});
+window.addEventListener('pageshow', (e) => { if (e.persisted) adoptStoredGame('Showing the latest save.'); });
 window.addEventListener('resize', queueLayout);
 if ('ResizeObserver' in window) {
   const watch = new ResizeObserver(queueLayout);

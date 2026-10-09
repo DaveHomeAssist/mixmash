@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.0 Advisory desk implemented; delivery checks in progress",
+  "head": "0.2.0 Advisory desk reconciled with 0.1.2 QA integrity; final delivery checks pending",
   "lastActivity": "2026-10-09",
   "status": "amber",
-  "statusReason": "Approved FOH-U05 Advisory desk in PR142 is source- and browser-verified on basead039109. Duncan passes six source tests,48 Advisory checks (all phases/rooms, seven viewports including844x390/320x256, both themes, compact parts, return/focus and computed contrast) and the twelve existing player scripts. Build/version/assets/unchanged simulator and local offline signing/reload pass; savedAt refresh is preserved. Review corrections are in final-source verification. Earlier Linux CI source/build/docs passed before superseded runs were cancelled; final-head CI/merge/Pages/hosted checks remain. Windows Mars SQLite cleanup EBUSY is retained as platform evidence. PR141 QA and human/device/calibration/rights gates remain separate.",
+  "statusReason": "Approved FOH-U05 Advisory desk in PR142 is source- and browser-verified on basead039109. Duncan passes six source tests,48 Advisory checks (all phases/rooms, seven viewports including844x390/320x256, both themes, compact parts, return/focus and computed contrast) and the twelve existing player scripts. Build/version/assets/unchanged simulator and local offline signing/reload pass; savedAt refresh is preserved. Review corrections are in final-source verification. Earlier Linux CI source/build/docs passed before superseded runs were cancelled; final-head CI/merge/Pages/hosted checks remain. Windows Mars SQLite cleanup EBUSY is retained as platform evidence. PR141 QA and human/device/calibration/rights gates remain separate. Integration candidate retains PR141 QA engine/save fixes and cumulative show numbering with both regression suites; PR141 final-head CI and merge still pending, followed by integrated PR142 CI and all original delivery gates.",
   "activity30d": {
     "headline": "Approved Advisory desk implemented and browser-verified; PR142 delivery gates in progress. Broader staff/story/calendar/deal proposals and physical/human/calibration/rights acceptance remain open."
   },
@@ -43,14 +43,21 @@
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge."
   ],
   "nextStep": {
-    "title": "Complete PR142 CI and hosted delivery",
+    "title": "Finish PR141 verification and merge, then verify integrated PR142 delivery",
     "why": "The desk connects existing evidence to existing controls without adding economics or simulation.",
-    "doneWhen": "Source, responsive browser and existing regression checks pass; final-head CI, merge, Pages and hosted parity are verified.",
+    "doneWhen": "Source, responsive browser and existing regression checks pass; final-head CI, merge, Pages and hosted parity are verified. PR141 QA fixes and cumulative numbering are included; both projects retain their acceptance requirements.",
     "effort": "S",
     "owner": "Codex",
-    "blockedBy": "No product answer required. Final-source CI and hosted delivery remain; Windows Mars cleanup failure is preserved. Physical/human acceptance stays separate."
+    "blockedBy": "PR141 final-head CI/merge, then integrated PR142 CI and hosted acceptance. Physical/human gates remain separate."
   },
   "findings": [
+    {
+      "id": "FOH-QA-001..014",
+      "type": "qa-audit",
+      "sev": "P1",
+      "title": "QA audit 2026-10-07: 11 fixed in 0.1.2, 3 low items open",
+      "detail": "Fixed: FOH-QA-001 seat price above the Loam Shell ceiling after Back and rebook (reload removed the paid seat contract; net 45,152 vs 41,340 in the repro); 002 Start over inside a locked room; 003 Lot food plan blocking Fathom Hall doors; 004 reload deleting a PA left by a removed stage; 005 no game with storage blocked; 006 inherited-name ids crashing a load; 007 stale tab overwriting newer progress; 008 silent save failures; 009 room settings changing on reload; 010 200-show history renumbered on reload; 011 developer-hook throw. Open: 012 zoomed short viewports hide Open doors below the panel fold; 013 seeded save-and-replay (D12); 014 edited saves in a locked room. Evidence: front-of-house/docs/QA_AUDIT.md."
+    },
     {
       "id": "MXS-06",
       "type": "responsive",
@@ -204,8 +211,26 @@
       "gate": "Recorded design decisions, human career and phone acceptance, asset provenance and release checklist."
     }
   ],
-  "decisionsForDave": [],
+  "decisionsForDave": [
+    {
+      "id": "D12",
+      "question": "Save-and-replay of a seeded night (FOH-QA-013)",
+      "options": {
+        "A": "Accept as single-player freedom; document that a save code restores a night exactly",
+        "B": "Reseed a night reloaded or imported between doors and Settle",
+        "C": "Lock the career after doors until the night is signed"
+      },
+      "recommended": "A",
+      "confidence": "medium",
+      "blocks": "nothing; 0.1.2 ships either way",
+      "source": "front-of-house/docs/DECISION_PACKET.md"
+    }
+  ],
   "files": [
+    {
+      "path": "front-of-house/docs/QA_AUDIT.md",
+      "why": "2026-10-07 adversarial QA audit: methods, FOH-QA defects, release gate and what was not covered"
+    },
     {
       "path": "front-of-house/docs/DECISION_PACKET.md",
       "why": "D1\u2013D11 selections, alternatives, consequences and delegated authority"
@@ -1179,6 +1204,17 @@
       "result": "18/18 valid; cadence60.0021\u201360.0025Hz; frame p9516.7\u201316.8ms; CPU submission p950.5\u20134.9ms; independent fixture/raw digest and statistics checks pass",
       "report": "front-of-house/performance/2026-10-07-egl.json",
       "limits": "Headless renderer-only evidence; no GPU completion, full HUD, native display, sustained target, supported phone/low-power/current-Mac, physical calibration, human or release acceptance."
+    },
+    "qaAudit20261007": {
+      "baseRevision": "ad03910",
+      "checkedOn": "2026-10-07",
+      "release": "0.1.2",
+      "cache": "v75",
+      "engine": "20 reconciled One Real Show variants; 600 adversarial careers, 240,000 actions, 2,002 signed shows reloading unchanged; exact-cash, room rotation, held run, malformed saves, inherited-name ids, geometry edges, 230-show career",
+      "browser": "Chromium 149, Firefox 151 and WebKit 26.5 golden loop with double-clicks and 8 reload checkpoints; Back/Forward; two tabs; storage blocked/full; corrupt saves; keyboard; 6 phases x 15 viewports light and dark",
+      "regression": "front-of-house/test-qa-integrity.mjs fails 7/7 on 0.1.1 and passes 7/7 on 0.1.2",
+      "unchanged": "BALANCE_BASELINE, TIER_BASELINE and CAREER_BASELINE byte-identical; save schema 2",
+      "open": "Human playtest, real Safari and physical devices, real browser zoom, screen readers, 3D camera campaign"
     }
   },
   "decisionState": {
@@ -1270,6 +1306,13 @@
       "decidedBy": "Codex",
       "authority": "Dave explicitly delegated autonomous decision making; CT-DEC-19",
       "answer": "Public promotion after realistic 3D Lot, live-operations pilot and existing release gates"
+    },
+    "D12": {
+      "status": "open",
+      "recommended": "A",
+      "selected": null,
+      "decidedOn": null,
+      "answer": null
     }
   },
   "execution": {
@@ -2209,5 +2252,13 @@
         ]
       }
     ]
+  },
+  "numberingReview20261009": {
+    "pr": "https://github.com/DaveHomeAssist/mixmash/pull/141",
+    "change": "Booking, signed/unsigned receipts and career total derive from latest signed showId; retained history stays capped at 200. No accounting, schema or normalization change.",
+    "coverage": "203 actual settlements with exact reload and payout checks; browser bookings and receipts 200 through 205 and next booking 206.",
+    "verification": "446 repository tests and build pass locally; engine regression signs 203 shows with exact reload/payout checks. Final-head CI including browser regression pending. Local browser blocked by socket restrictions after download fallback.",
+    "integration": "PR142 integrated with exact QA head 787aa222; PR141 merge remains gated by final-head CI. PR142 must retain its final CI, Pages and hosted acceptance before release.",
+    "syncGap": "Shared workspace rules, communications page and Next Steps Board/updater unavailable in this environment."
   }
 }
