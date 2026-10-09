@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.1.1 playtest clarity delivered; acceptance open",
-  "lastActivity": "2026-10-07",
+  "head": "0.2.0 Advisory desk implemented; delivery checks in progress",
+  "lastActivity": "2026-10-09",
   "status": "amber",
-  "statusReason": "Front of House0.1.1/cachev74 is delivered through PR138 at 3fbe3bb. Final-head general CI and paired regression attempt2, Pages, seven-file hosted parity, live Dominic classic/3D desktop/phone behavior, exact-merge post-merge CI and annotated tag front-of-house-v0.1.1 pass. Engine, balance, accounting and save schema2 remain unchanged. No executable automated phase remains in FOH-U04. Human art/camera/career, supported physical devices, measured venue calibration and original-image rights remain open.",
+  "statusReason": "Dave approved FOH-U05 runtime implementation on 2026-10-09. A presentation-only Advisory desk is implemented on gh-pages base ad039109 using existing Ticketing, Talent and Operations evidence. Source tests pass on Duncan; browser, full regression, CI and hosted delivery are in progress. PR141 engine/save QA remains separately owned. Human/device/calibration/rights acceptance remains open.",
   "activity30d": {
-    "headline": "Front of House0.1.1 is live with clearer first booking, running show cost and Build-only placement grid; broader story/staff/calendar/deal proposals and human/device/calibration/rights acceptance remain open. FOH-U05 now scopes a presentation-only advisory desk from inspected existing evidence; no advisor gameplay is implemented."
+    "headline": "Dave approved FOH-U05 runtime implementation on 2026-10-09. A presentation-only Advisory desk is implemented on gh-pages base ad039109 using existing Ticketing, Talent and Operations evidence. Source tests pass on Duncan; browser, full regression, CI and hosted delivery are in progress. PR141 engine/save QA remains separately owned. Human/device/calibration/rights acceptance remains open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -43,12 +43,12 @@
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge."
   ],
   "nextStep": {
-    "title": "Review the scoped advisory desk brief before implementation",
-    "why": "The immediate handwritten first-play and Show readability problems are delivered. The next bounded product opportunity is to surface existing ticketing, artist, security/service and relationship evidence through an advisory layer without inventing a new simulation or economy.",
-    "doneWhen": "FOH-U05 is reconciled with current source and delivered as a planning record; runtime implementation requires its own scoped execution and acceptance evidence.",
+    "title": "Verify and deliver the approved Advisory desk",
+    "why": "The desk connects existing evidence to existing controls without adding economics or simulation.",
+    "doneWhen": "Source, responsive browser and existing regression checks pass; final-head CI, merge, Pages and hosted parity are verified.",
     "effort": "S",
     "owner": "Codex",
-    "blockedBy": "Runtime remains outside this brief-only task. U05-L1/L2/L3 are later optional choices, not blockers to the brief; human/device/calibration/rights gates remain separate."
+    "blockedBy": "No product answer required. CI and delivery verification remain; physical/human acceptance stays separate."
   },
   "findings": [
     {
@@ -328,7 +328,7 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
-  "kickoffPrompt": "Continue the active Front of House phase execution goal until no phases remain. Read ROADMAP active execution, NEXT_STEPS.execution and accepted decisions; reconcile current Git and delivery evidence. Pick the next eligible item, update its scoped brief, implement and verify actual player behavior, commit/push/merge/deploy, then update the project record and existing board. Make routine decisions autonomously; D2 B and all other D1\u2013D11 A are settled. Preserve unrelated work, saves and release evidence. Never substitute automated evidence for unavailable human or physical-device acceptance.",
+  "kickoffPrompt": "Continue the approved FOH-U05 presentation-only Advisory desk from its current branch. Complete source, responsive browser, regression, CI and hosted delivery checks. Preserve separately owned PR141 engine/save QA and remaining human/device/calibration/rights gates.",
   "confidence": "medium",
   "unknowns": [
     "Final realistic art and physical scale/operator-eye calibration remain unaccepted.",

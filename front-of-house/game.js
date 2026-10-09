@@ -19,6 +19,7 @@ import { createSiteMap } from './site-map.mjs';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
+import { advisoryFor } from './advisory.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
@@ -226,6 +227,7 @@ function render() {
     mount();
   }
   update();
+  if (win.kind === 'advisory') refreshAdvisory();
   if (state.show?.serviceRecovered && state.phase !== 'show') say('Recovered an invalid service timeline. Recorded career cash and signed history were retained.', 'error');
   draw();
 }
@@ -1178,7 +1180,8 @@ function reachIncident() {
   syncTabs(el.panel, 'show', 'Problem');
   const skip = $('#skip-btn'); if (skip) skip.hidden = true;
   const first = el.panel.querySelector('[data-act="respond"]:not([disabled])');
-  if (first) first.focus();
+  if (first && win.kind !== 'advisory') first.focus();
+  if (win.kind === 'advisory') refreshAdvisory();
   draw();
 }
 
@@ -2239,6 +2242,10 @@ function onAct(e) {
   const target = e.target.closest('[data-act]');
   if (!target || target.disabled) return;
   const a = target.dataset.act;
+  if (a === 'advisory-open') { openAdvisory(target); return; }
+  if (a === 'advisory-refresh') { refreshAdvisory(); return; }
+  if (a === 'advisory-review') { reviewAdvisory(target.dataset.advisoryCategory); return; }
+  if (a === 'advisory-back') { const opener = advisoryReturn; advisoryReturn = null; openAdvisory(opener, { returning: true }); return; }
   if (a === 'stages-open') { openStages(target); return; }
   if (a === 'stage-select') {
     ui.mounted = null;
@@ -2491,6 +2498,7 @@ function syncTabs(root, key, pick) {
     tab.textContent = name;
     bar.append(tab);
     groups.filter((g) => g.dataset.tab === name).forEach((g) => {
+      if (key === 'win:advisory') { g.id = `advisory-panel-${name.toLowerCase()}`; tab.setAttribute('aria-controls', g.id); }
       g.setAttribute('role', 'tabpanel');
       g.setAttribute('aria-labelledby', tab.id);
       g.classList.toggle('tab-off', name !== current);
@@ -2531,6 +2539,66 @@ phoneQuery.addEventListener('change', () => {
 // Close button or a click outside closes it, and focus goes back to what opened it.
 
 const win = { kind: null, opener: null };
+let advisoryReturn = null;
+
+function currentAdvice() {
+  return advisoryFor(state, {
+    incidentPrompt: state.phase === 'show' && !$('#incident-box')?.hidden ? $('#incident-title')?.textContent : null,
+    liveServicesEnabled: state.venue.id === 'lot' && (state.promotion.liveServices ?? liveServicesPilot),
+  });
+}
+
+function advisoryHtml(model) {
+  const page = (name, section, category) => `<section class="advisory-page" data-tab="${name}" data-always-tabs>
+    <p class="advisory-context">${model.previous ? 'Last show' : esc(state.phase === 'settle' ? 'Awaiting signature' : model.phase)} · ${esc(model.venue)}</p>
+    ${name === 'Overview' ? `<span class="meta-label">Current priority · ${category}</span>` : ''}
+    <h3>${esc(section.title)}</h3><p class="advisory-detail">${esc(section.detail)}</p>
+    ${section.rows.length ? `<dl class="advisory-evidence">${section.rows.map(r => `<div><dt>${esc(r.label)}</dt><dd>${esc(r.value)}</dd></div>`).join('')}</dl>` : ''}
+    ${section.lock ? `<p class="advisory-lock">${esc(section.lock)}</p>` : ''}
+    ${section.action ? `<button type="button" class="primary" data-act="advisory-review" data-advisory-category="${category}">${esc(section.action.label)}</button>` : ''}
+  </section>`;
+  return page('Overview', model.priority, model.priority.category) + Object.entries(model.sections).map(([name, section]) => page(name, section, name)).join('');
+}
+
+function openAdvisory(opener, { returning = false } = {}) {
+  if (!returning) ui.tabs['win:advisory'] = 'Overview';
+  advisoryReturn = null;
+  const origin = opener && el.menu.contains(opener) ? el.menuBtn : opener;
+  openWindow('advisory', 'Advisory desk', advisoryHtml(currentAdvice()), origin,
+    { foot: '<button type="button" data-act="advisory-refresh">Refresh advice</button>' });
+}
+
+function refreshAdvisory() {
+  if (win.kind !== 'advisory') return;
+  const active = document.activeElement;
+  const tab = active?.dataset.tabName, category = active?.dataset.advisoryCategory;
+  el.winBody.innerHTML = advisoryHtml(currentAdvice());
+  syncTabs(el.winBody, 'win:advisory');
+  const next = tab ? el.winBody.querySelector(`[data-tab-name="${CSS.escape(tab)}"]`)
+    : category ? el.winBody.querySelector(`.advisory-page:not(.tab-off) [data-advisory-category="${CSS.escape(category)}"]`) : null;
+  next?.focus();
+}
+
+function reviewAdvisory(category) {
+  const section = currentAdvice().sections[category];
+  if (!section?.action) return;
+  const opener = win.opener, target = section.action.target;
+  if (target === 'phase') {
+    closeWindow();
+    focusHeading();
+    const control = state.phase === 'show' ? $('#incident-box button:not([disabled])')
+      : state.phase === 'promote' ? $('#price') : state.phase === 'build' ? $('#details-btn') : null;
+    control?.focus();
+    return;
+  }
+  advisoryReturn = opener;
+  if (target === 'deals') openWindow('deals', 'Deal terms', dealHelpHtml(), opener);
+  else if (target === 'held-run') openHeldRun(opener);
+  else if (target === 'ticketing') openTicketing(opener);
+  else if (target === 'seating') openSeating(opener);
+  else if (target === 'stages') openStages(opener);
+  else if (target === 'settlement') openSettlement(opener, { signed: state.phase === 'done' });
+}
 window.addEventListener('resize', () => {
   if (el.win.hidden) return;
   if (win.kind === 'equipment') openEquipment(win.opener);
@@ -2540,6 +2608,7 @@ window.addEventListener('resize', () => {
   if (win.kind === 'stages') openStages(win.opener);
   if (win.kind === 'set-time') openWindow('set-time', 'Set time', setTimeHtml(setTimeFor(state)), win.opener);
   if (win.kind === 'deals') openWindow('deals', 'Deal terms', dealHelpHtml(), win.opener);
+  if (win.kind === 'advisory') refreshAdvisory();
 });
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
@@ -2560,6 +2629,10 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.winBody.scrollTop = 0;
   syncTabs(el.winBody, `win:${kind}`);
   if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(kind)) paginateCompactWindow();
+  if (advisoryReturn && kind !== 'advisory') {
+    el.winFoot.insertAdjacentHTML('afterbegin', '<button type="button" data-act="advisory-back">Back to advisory</button>');
+    el.winFoot.hidden = false;
+  }
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
 }
 
@@ -2577,6 +2650,7 @@ function refreshWindow(html) {
 function closeWindow({ focus = true } = {}) {
   if (el.win.hidden) return;
   el.win.hidden = true;
+  advisoryReturn = null;
   win.kind = null;
   el.winBody.innerHTML = '';
   el.winFoot.innerHTML = '';

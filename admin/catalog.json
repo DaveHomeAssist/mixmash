@@ -624,6 +624,10 @@
           "description": "node front-of-house/tools/vendor-three.mjs --check"
         },
         {
+          "name": "npm run smoke:front-of-house-advisory",
+          "description": "node test/front-of-house-advisory-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-floor",
           "description": "node test/front-of-house-floor-smoke.mjs"
         },
@@ -2460,6 +2464,16 @@
       "open": "/front-of-house/sprites/stage.png"
     },
     {
+      "path": "front-of-house/test-advisory.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-advisory.mjs",
+      "description": "Advisory evidence, hidden-outcome boundaries and immutable presentation reads.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-advisory.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-career-ledger.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2747,6 +2761,16 @@
       "title": "front-of-house-3d-smoke.mjs",
       "description": "Full application integration: safe gestures, renderer recovery and identical saved-show outcomes.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-3d-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-advisory-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-advisory-smoke.mjs",
+      "description": "Real Advisory desk controls, immutable reads, phase/room routing and contained layouts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-advisory-smoke.mjs",
       "open": null
     },
     {
@@ -3067,6 +3091,16 @@
       "title": "tiers.mjs",
       "description": "Deterministic ordinary-career acceptance across all four rooms. No hidden-draw planning.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/tiers.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/advisory.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "advisory.mjs",
+      "description": "Presentation-only Advisory desk. Readers never consume a draw or change a show.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/advisory.mjs",
       "open": null
     },
     {

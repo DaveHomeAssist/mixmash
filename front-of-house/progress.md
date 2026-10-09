@@ -1041,3 +1041,9 @@ match the merge exactly. Dominic live checks pass classic and3D at1440x900 and
 copy renders and no page error occurs. Annotated tag `front-of-house-v0.1.1`
 resolves to the deployed merge. Automated0.1.1 delivery is complete; broader
 proposals and human/device, calibration and rights gates remain separate.
+
+## 2026-10-09: Approved Advisory desk implementation
+
+FOH-U05 is explicitly approved after the PR140 brief. Base ad039109; Menu → Advisory desk provides one deterministic current priority and Ticketing/Talent/Operations pages using existing engine readers. Review routes and Back to advisory reuse existing windows. Forecasts, visible incidents/services and signed Last show receipts remain phase-gated; no engine, save schema, economics or simulation change. Separate PR141 QA ownership is preserved.
+
+Duncan verifies six source tests and35 browser checks across all phases/rooms, five viewports and both themes, immutable state/save bytes, focus/tab behavior and one-time signing. Phone Operations label spacing is corrected after actual capture review. Generated docs and catalog pass after normalizing the isolated Windows clone to canonical LF. Initial Node20 broad checks lacked node:sqlite; portable checksum-verified Node22.20.0 resolves those assertions. Node22 broad suite has445 passing tests and one unrelated Windows SQLite cleanup EBUSY hook; Linux CI remains the full-suite delivery gate. Build, final responsive/contrast, existing player regressions, CI/Pages and hosted verification continue. No physical-device or human acceptance inferred.

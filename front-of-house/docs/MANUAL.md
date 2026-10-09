@@ -13,6 +13,12 @@ Run a concert, settle its money, and build a career from Oak St. Lot to Split Ac
 
 A good crowd and a profitable show are different results. Judge the complete settlement rather than ticket income alone. A forecast is a range, not a promised outcome.
 
+## Check the Advisory desk
+
+Open **Menu → Advisory desk** for one current priority, then choose **Ticketing**, **Talent** or **Operations** to inspect its source evidence. **Review** opens the existing control or receipt; **Back to advisory** returns to your selected page. **Refresh advice** reads the current show again without changing it.
+
+Before doors, crowd numbers are forecasts and the opening bill is separate from final profit. During Show, advice uses only the visible incident or current live-service counts. After signing, **Last show** advice opens the signed settlement read-only. Locked terms show their reason; the desk does not hire staff, advance time or act for you.
+
 ## Choose a deal
 
 | Deal | What to check |

@@ -332,6 +332,31 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 .win-body { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; overflow-y: auto; overscroll-behavior: contain; }
 .win-body h3 { margin: 0 0 6px; font-size: 0.95rem; }
 .win-body .checklist { margin: 0; }
+
+/* The desk is one deliberate check-in, with a contained page per specialist. */
+#win[data-kind="advisory"] .win { width: min(640px, 100%); }
+#win[data-kind="advisory"] .win-body { overflow: hidden; }
+#win[data-kind="advisory"] .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
+#win[data-kind="advisory"] .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 8px 4px; }
+#win[data-kind="advisory"] .tabbar [aria-selected="true"] { color: var(--cyan); border-color: var(--cyan); background: var(--panel); }
+#win[data-kind="advisory"] .tab-off { display: none !important; }
+.advisory-page { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.advisory-page p { margin: 0; line-height: 1.45; }
+.advisory-context { color: var(--text-muted); font-size: 0.8rem; text-transform: capitalize; }
+.advisory-page h3 { font-size: 1.2rem; }
+.advisory-evidence { margin: 0; padding: 10px 12px; background: var(--panel-alt); border: 1px solid var(--border); border-radius: var(--radius); }
+.advisory-evidence div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; }
+.advisory-evidence dt { color: var(--text-muted); }
+.advisory-evidence dd { margin: 0; text-align: right; font-weight: 650; overflow-wrap: anywhere; }
+.advisory-lock { padding-left: 10px; border-left: 2px solid var(--border-strong); color: var(--text-muted); font-size: 0.85rem; }
+.advisory-page button { align-self: flex-start; min-height: 44px; }
+@media (max-width: 680px) {
+  #win[data-kind="advisory"] .tabbar { order: 2; }
+  #win[data-kind="advisory"] .tabbar button { font-size: 0.75rem; padding-inline: 2px; }
+  .advisory-page { gap: 8px; }
+  .advisory-evidence div { gap: 8px; }
+  .advisory-evidence dd { max-width: 60%; }
+}
 .obj-groups { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .obj-groups li { display: grid; grid-template-columns: 160px 1fr; gap: 8px; align-items: start; }
 .obj-name { font-size: 0.85rem; padding-top: 8px; }

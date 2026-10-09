@@ -841,8 +841,7 @@ remain separate.
 
 ## FOH-U05 — Advisory desk and venue health
 
-**Status:** Planning brief drafted 2026-10-07 against source `6cdd8b9` after
-FOH-U04 delivery. This brief authorizes no runtime implementation. October 3
+**Status:** Runtime implementation explicitly approved by Dave on 2026-10-09, following the PR140 planning brief. The presentation-only desk is implemented on base `ad039109`; source, browser, CI and hosted delivery checks are in progress. No delivery or human acceptance is inferred. October 3
 observations supply product intent; the source inputs below were inspected in
 the current engine and client.
 

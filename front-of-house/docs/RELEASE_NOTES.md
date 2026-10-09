@@ -5,6 +5,13 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.2.0 — 2026-10-09
+
+- Adds an explicit Advisory desk check-in with Overview, Ticketing, Talent and Operations pages.
+- Explains one current priority using existing evidence, phase/room availability and existing decision or receipt routes. Forecasts, current observations and signed results remain distinct.
+- Preserves engine, economics, RNG, save schema 2 and settlement signing. No employees, payroll, autonomous actions or new simulation.
+- Uses cache v76, reserved separately from the independent QA candidate v75. Delivery verification is recorded in the maintained project record.
+
 ## 0.1.1 — 2026-10-07
 
 - Makes the running Build expense easier to understand as **Show cost so far**,
