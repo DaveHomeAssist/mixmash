@@ -47,7 +47,7 @@ async function fit() {
       labels: [...body.querySelectorAll('.tabbar button')].filter(n => {
         const style = getComputedStyle(n), text = document.createElement('span');
         text.textContent = n.textContent;
-        Object.assign(text.style, { position: 'absolute', width: 'max-content', whiteSpace: 'nowrap', font: style.font, letterSpacing: style.letterSpacing });
+        Object.assign(text.style, { position: 'absolute', width: 'max-content', whiteSpace: 'nowrap', fontFamily: style.fontFamily, fontSize: style.fontSize, fontWeight: style.fontWeight, fontStyle: style.fontStyle, letterSpacing: style.letterSpacing });
         document.body.append(text);
         const width = text.getBoundingClientRect().width; text.remove();
         return width > n.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) + 1;

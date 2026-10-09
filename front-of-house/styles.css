@@ -933,7 +933,5 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   #win[data-kind="settlement"] [data-act="advisory-back"] { grid-column: 3; width: 100%; min-width: 0; padding-inline: 4px; }
 }
 @media (max-width: 360px) {
-  #win[data-kind="advisory"] .tabbar button { font-family: var(--font-ui); }
-  #win[data-kind="advisory"] .tabbar button[data-tab-name="Talent"] { flex: 0.8; }
-  #win[data-kind="advisory"] .tabbar button[data-tab-name="Operations"] { flex: 1.2; }
+  #win[data-kind="advisory"] .tabbar button { font-family: var(--font-ui); flex: 1 0 auto; }
 }
