@@ -145,8 +145,10 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | --- | --- |
 | Reload or return later | The save is migrated and validated (`migrateSave`, `normalizeState`) and the game reopens in the last phase its contents support. A reload in Show restarts that night's playback; the incident is re-derived from the seed, so it is the same one |
 | Save code | Menu → Save and load. A code from another game or a damaged code is refused and changes nothing; a version 1 code converts |
+| Two tabs on one game | When another tab saves, this tab switches to the latest save and says so, so a stale tab cannot sign, book or build over newer progress. A page restored with the browser's Back button reloads the save the same way |
+| Storage blocked or full | The game still starts. The message line and Menu → Save and load say once that progress is not being saved; Copy code still produces a save code from the game in memory |
 | New game while one is under way | Career, Sandbox or Wet lot asks for a second press before erasing |
-| Out of money | Done disables Book the next show and names the amount needed; Start over stays open |
+| Out of money | Done disables Book the next show and names the amount needed; Start over stays open . Start over from a room the new career has not unlocked begins on the Lot |
 | Multi-night run (Loam Shell) | Each night settles on its own. If the next night is unaffordable, the run ends at Done |
 | A refused action | The engine's message appears in the message line; nothing changes |
 | Reduced motion | Show skips the playback to the incident |
