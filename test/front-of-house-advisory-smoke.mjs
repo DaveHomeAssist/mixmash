@@ -38,15 +38,22 @@ async function openDesk() {
 async function fit() {
   const bad = await page.evaluate(() => {
     const root = document.documentElement, body = document.querySelector('#win-body');
-    const nodes = [...body.querySelectorAll('.advisory-page:not(.tab-off) button, .tabbar button, .advisory-page:not(.tab-off) dt, .advisory-page:not(.tab-off) dd')];
-    const rect = body.getBoundingClientRect();
+    const nodes = [...body.querySelectorAll('.advisory-page:not(.tab-off) button, .tabbar button, .advisory-page:not(.tab-off) dt, .advisory-page:not(.tab-off) dd')].filter(n => n.getClientRects().length);
+    const rect = body.getBoundingClientRect(), windowRect = document.querySelector('#win .win').getBoundingClientRect();
+    const controls = [...document.querySelectorAll('#win button')].filter(n => n.getClientRects().length);
     return { root: [root.scrollWidth - root.clientWidth, root.scrollHeight - root.clientHeight],
       overflow: [body.scrollWidth - body.clientWidth, body.scrollHeight - body.clientHeight],
       clipped: nodes.filter(n => { const r = n.getBoundingClientRect(); return r.left < rect.left - 1 || r.right > rect.right + 1 || r.top < rect.top - 1 || r.bottom > rect.bottom + 1 || n.scrollWidth > n.clientWidth + 1; }).map(n => n.textContent),
-      small: nodes.filter(n => n.tagName === 'BUTTON' && n.getBoundingClientRect().height < 44).map(n => n.textContent) };
+      labels: [...body.querySelectorAll('.tabbar button')].filter(n => {
+        const range = document.createRange(); range.selectNodeContents(n);
+        const style = getComputedStyle(n);
+        return range.getBoundingClientRect().width > n.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) + 1;
+      }).map(n => n.textContent),
+      outside: controls.filter(n => { const r = n.getBoundingClientRect(); return r.left < windowRect.left - 1 || r.right > windowRect.right + 1 || r.top < windowRect.top - 1 || r.bottom > windowRect.bottom + 1; }).map(n => n.textContent),
+      small: controls.filter(n => n.getBoundingClientRect().height < 44).map(n => n.textContent) };
   });
   assert.deepEqual(bad.root, [0, 0]); assert.ok(bad.overflow.every(n => n <= 1), JSON.stringify(bad));
-  assert.deepEqual(bad.clipped, []); assert.deepEqual(bad.small, []);
+  assert.deepEqual(bad.clipped, []); assert.deepEqual(bad.outside, []); assert.deepEqual(bad.labels, []); assert.deepEqual(bad.small, []);
 }
 async function contrast() {
   const failures = await page.evaluate(() => {
@@ -58,13 +65,32 @@ async function contrast() {
       return color.slice(0, 3).map((n, i) => n * alpha + behind[i] * (1 - alpha));
     };
     const lum = values => values.slice(0, 3).map(n => n / 255).map(n => n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4).reduce((a, n, i) => a + n * [.2126, .7152, .0722][i], 0);
-    return [...document.querySelectorAll('#win .advisory-page:not(.tab-off) p, #win .advisory-page:not(.tab-off) h3, #win .advisory-page:not(.tab-off) dt, #win .advisory-page:not(.tab-off) dd, #win .advisory-page:not(.tab-off) button, #win .tabbar button')].flatMap(node => {
+    return [...document.querySelectorAll('#win .advisory-page:not(.tab-off) p, #win .advisory-page:not(.tab-off) h3, #win .advisory-page:not(.tab-off) dt, #win .advisory-page:not(.tab-off) dd, #win .advisory-page:not(.tab-off) button, #win .tabbar button')].filter(n => n.getClientRects().length).flatMap(node => {
       const fg = lum(rgb(getComputedStyle(node).color)), bg = lum(backgroundFor(node));
       const ratio = (Math.max(fg, bg) + .05) / (Math.min(fg, bg) + .05);
       return ratio < 4.5 ? [{ text: node.textContent, ratio }] : [];
     });
   });
   assert.deepEqual(failures, []);
+}
+async function eachPart(visit) {
+  const panel = page.locator('.advisory-page:not(.tab-off)'), seen = new Set();
+  let part = 0;
+  do {
+    await visit(part++);
+    for (const index of await panel.evaluate(n => [...n.children].flatMap((e, i) => e.getClientRects().length ? [i] : []))) seen.add(index);
+    const more = page.locator('#win [data-act="window-part"][data-step="1"]');
+    if (!await more.count() || !await more.isEnabled()) break;
+    assert.ok(part < 20, 'Compact pager must finish'); await more.click();
+  } while (true);
+  assert.equal(seen.size, await panel.locator(':scope > *').count(), 'Every advice atom remains reachable');
+}
+async function reviewOnCurrentPage() {
+  const review = page.locator('.advisory-page:not(.tab-off) [data-act="advisory-review"]');
+  for (let i = 0; !await review.isVisible(); i++) {
+    assert.ok(i < 20); await page.locator('#win [data-act="window-part"][data-step="1"]').click();
+  }
+  await review.click();
 }
 const act = (s, a) => { const r = E.applyAction(s, a); assert.equal(r.error, null, r.error); return r.state; };
 function roomStates(room) {
@@ -131,7 +157,7 @@ try {
       await page.setViewportSize({ width, height });
       for (const tab of ['Overview', 'Ticketing', 'Talent', 'Operations']) {
         await page.locator(`#win [role="tab"][data-tab-name="${tab}"]`).click();
-        await fit();
+        await eachPart(() => fit());
         const label = await page.locator(`#win [role="tab"][data-tab-name="${tab}"]`).getAttribute('aria-controls');
         assert.equal(await page.locator(`#${label}`).getAttribute('role'), 'tabpanel');
         const text = await page.locator('.advisory-page:not(.tab-off)').innerText();
@@ -147,16 +173,37 @@ try {
     await page.click('#menu-btn');
     if (await page.evaluate(() => document.documentElement.dataset.theme) !== theme) await page.click('#theme-toggle');
     await page.click('#menu-close');
-    for (const [width, height] of [[1440,900], [1024,700], [390,844], [375,812], [360,780]]) {
+    for (const [width, height] of [[1440,900], [1024,700], [390,844], [375,812], [360,780], [844,390], [320,256]]) {
       await page.setViewportSize({ width, height }); await openDesk();
       for (const tab of ['Overview', 'Ticketing', 'Talent', 'Operations']) {
-        await page.locator(`#win [role="tab"][data-tab-name="${tab}"]`).click(); await fit(); await contrast();
-        await page.screenshot({ path: join(output, `${theme}-${width}-${tab}.png`) });
+        await page.locator(`#win [role="tab"][data-tab-name="${tab}"]`).click();
+        await eachPart(async part => { await fit(); await contrast(); await page.screenshot({ path: join(output, `${theme}-${width}-${tab}${part ? `-part${part+1}` : ''}.png`) }); });
       }
       await page.locator('#win [role="tab"][data-tab-name="Overview"]').click();
       await page.keyboard.press('ArrowRight'); assert.equal(await page.locator('#win [role="tab"][aria-selected="true"]').innerText(), 'Ticketing');
       await page.keyboard.press('ArrowLeft'); assert.equal(await page.locator('#win [role="tab"][aria-selected="true"]').innerText(), 'Overview');
       await page.keyboard.press('Escape'); ok(`${theme} ${width}x${height}: every page fits; 44px targets and arrow navigation`);
+    }
+  }
+  // Linked compact receipts keep their return action through both tab and part changes.
+  for (const [width, height] of [[844,390], [320,256]]) {
+    await page.setViewportSize({ width, height });
+    for (const [room, phase, category, target] of [['lot',0,'Talent','deals'], ['club',2,'Ticketing','ticketing'], ['amphitheater',2,'Ticketing','seating'], ['festival',2,'Ticketing','stages']]) {
+      await load(roomStates(room)[phase]); const before = await snapshot(); await openDesk();
+      await page.locator(`#win [role="tab"][data-tab-name="${category}"]`).click();
+      await eachPart(() => fit()); await reviewOnCurrentPage();
+      assert.equal(await page.locator('#win').getAttribute('data-kind'), target);
+      const tabs = page.locator('#win [role="tab"]'); if (await tabs.count()) await tabs.last().click();
+      const more = page.locator('#win [data-act="window-part"][data-step="1"]');
+      if (await more.count() && await more.isEnabled()) await more.click();
+      const back = page.getByRole('button', { name: 'Back to advisory', exact: true });
+      assert.equal(await back.count(), 1); await back.click();
+      assert.equal(await page.locator('#win [role="tab"][aria-selected="true"]').innerText(), category);
+      assert.equal(await page.locator('#win [role="tab"][aria-selected="true"]').evaluate(n => n === document.activeElement), true);
+      await page.getByRole('button', { name: 'Refresh advice', exact: true }).click(); await fit();
+      assert.equal(await page.getByRole('button', { name: 'Refresh advice', exact: true }).evaluate(n => n === document.activeElement), true);
+      await page.keyboard.press('Escape'); assert.deepEqual(await snapshot(), before);
+      ok(`${width}x${height} ${target}: paged return, selected category, Refresh focus and save unchanged`);
     }
   }
   assert.deepEqual(errors, []);

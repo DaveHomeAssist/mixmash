@@ -8,7 +8,7 @@
   "head": "0.2.0 Advisory desk implemented; delivery checks in progress",
   "lastActivity": "2026-10-09",
   "status": "amber",
-  "statusReason": "FOH-U05 Advisory desk is committed and pushed as PR142 source0892459 on basead039109. Duncan verifies six source tests,36 browser checks across all phases/rooms including360px, five sizes/both themes, computed contrast, unchanged state/save bytes, incident focus and one-time signing. Build/version/assets/unchanged simulator pass. Existing player suite and final-head Linux CI, merge/Pages/hosted checks continue. The Windows broad suite retains one unrelated Mars SQLite cleanup EBUSY hook with445 passing tests. PR141 QA ownership and human/device/calibration/rights gates remain separate.",
+  "statusReason": "Approved FOH-U05 Advisory desk in PR142 is source- and browser-verified on basead039109. Duncan passes six source tests,48 Advisory checks (all phases/rooms, seven viewports including844x390/320x256, both themes, compact parts, return/focus and computed contrast) and the twelve existing player scripts. Build/version/assets/unchanged simulator and local offline signing/reload pass; savedAt refresh is preserved. Review corrections are in final-source verification. Earlier Linux CI source/build/docs passed before superseded runs were cancelled; final-head CI/merge/Pages/hosted checks remain. Windows Mars SQLite cleanup EBUSY is retained as platform evidence. PR141 QA and human/device/calibration/rights gates remain separate.",
   "activity30d": {
     "headline": "Approved Advisory desk implemented and browser-verified; PR142 delivery gates in progress. Broader staff/story/calendar/deal proposals and physical/human/calibration/rights acceptance remain open."
   },
@@ -48,7 +48,7 @@
     "doneWhen": "Source, responsive browser and existing regression checks pass; final-head CI, merge, Pages and hosted parity are verified.",
     "effort": "S",
     "owner": "Codex",
-    "blockedBy": "No product answer required. CI, player regression and hosted delivery remain; a platform-specific Windows Mars cleanup failure is preserved. Physical/human acceptance stays separate."
+    "blockedBy": "No product answer required. Final-source CI and hosted delivery remain; Windows Mars cleanup failure is preserved. Physical/human acceptance stays separate."
   },
   "findings": [
     {

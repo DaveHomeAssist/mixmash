@@ -1658,7 +1658,7 @@ function cashReference(entry) {
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
 function paginateCompactWindow(step = 0) {
-  if (!['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(win.kind) || innerHeight > 560) return;
+  if (!['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(win.kind) || innerHeight > 560) return;
   el.winBody.scrollTop = 0;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
   if (!panel._compactAtoms) {
@@ -1672,15 +1672,18 @@ function paginateCompactWindow(step = 0) {
   atoms.forEach(e => { e.hidden = false; });
   const bottom = el.winBody.getBoundingClientRect().bottom - parseFloat(getComputedStyle(el.winBody).paddingBottom);
   const height = bottom - (panel === el.winBody ? el.winBody.getBoundingClientRect().top + parseFloat(getComputedStyle(el.winBody).paddingTop) : panel.getBoundingClientRect().top);
+  const gap = win.kind === 'advisory' ? parseFloat(getComputedStyle(panel).rowGap) || 0 : 0;
   const pages = [[]]; let used = 0;
   for (const atom of atoms) {
     const style = getComputedStyle(atom), size = atom.getBoundingClientRect().height + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-    if (used && used + size > height) { pages.push([]); used = 0; }
-    pages.at(-1).push(atom); used += size;
+    if (used && used + gap + size > height) { pages.push([]); used = 0; }
+    pages.at(-1).push(atom); used += size + (used ? gap : 0);
   }
   panel._compactPage = Math.min(pages.length - 1, Math.max(0, (panel._compactPage || 0) + step));
   atoms.forEach(e => { e.hidden = !pages[panel._compactPage].includes(e); });
   el.winFoot.innerHTML = `<button data-act="window-part" data-step="-1" ${panel._compactPage ? '' : 'disabled'}>Back</button><span>Part ${panel._compactPage+1} / ${pages.length}</span><button data-act="window-part" data-step="1" ${panel._compactPage+1<pages.length ? '' : 'disabled'}>More</button>`;
+  if (win.kind === 'advisory') el.winFoot.insertAdjacentHTML('beforeend', '<button data-act="advisory-refresh" aria-label="Refresh advice">Refresh</button>');
+  else if (advisoryReturn) el.winFoot.insertAdjacentHTML('beforeend', advisoryBackButton(true));
 }
 
 function openEquipment(opener) {
@@ -2522,7 +2525,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(win.kind)) paginateCompactWindow();
+  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2540,6 +2543,9 @@ phoneQuery.addEventListener('change', () => {
 
 const win = { kind: null, opener: null };
 let advisoryReturn = null;
+function advisoryBackButton(compact = false) {
+  return `<button type="button" data-act="advisory-back" aria-label="Back to advisory">${compact ? 'Advisory' : 'Back to advisory'}</button>`;
+}
 
 function currentAdvice() {
   return advisoryFor(state, {
@@ -2566,16 +2572,22 @@ function openAdvisory(opener, { returning = false } = {}) {
   const origin = opener && el.menu.contains(opener) ? el.menuBtn : opener;
   openWindow('advisory', 'Advisory desk', advisoryHtml(currentAdvice()), origin,
     { foot: '<button type="button" data-act="advisory-refresh">Refresh advice</button>' });
+  if (returning) el.winBody.querySelector('[role="tab"][aria-selected="true"]')?.focus();
 }
 
 function refreshAdvisory() {
   if (win.kind !== 'advisory') return;
   const active = document.activeElement;
-  const tab = active?.dataset.tabName, category = active?.dataset.advisoryCategory;
+  const part = el.winBody.querySelector('.advisory-page:not(.tab-off)')?._compactPage || 0;
+  const tab = active?.dataset.tabName, category = active?.dataset.advisoryCategory, refresh = active?.dataset.act === 'advisory-refresh';
   el.winBody.innerHTML = advisoryHtml(currentAdvice());
   syncTabs(el.winBody, 'win:advisory');
+  if (part && innerHeight <= 560) { el.winBody.querySelector('.advisory-page:not(.tab-off)')._compactPage = part; paginateCompactWindow(); }
   const next = tab ? el.winBody.querySelector(`[data-tab-name="${CSS.escape(tab)}"]`)
-    : category ? el.winBody.querySelector(`.advisory-page:not(.tab-off) [data-advisory-category="${CSS.escape(category)}"]`) : null;
+    : category ? el.winBody.querySelector(`.advisory-page:not(.tab-off) [data-advisory-category="${CSS.escape(category)}"]`) : refresh ? el.winFoot.querySelector('[data-act="advisory-refresh"]') : null;
+  if (category && next && innerHeight <= 560) {
+    while (!next.getClientRects().length && el.winFoot.querySelector('[data-step="1"]:not([disabled])')) paginateCompactWindow(1);
+  }
   next?.focus();
 }
 
@@ -2619,7 +2631,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -2628,9 +2640,9 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.hidden = false;
   el.winBody.scrollTop = 0;
   syncTabs(el.winBody, `win:${kind}`);
-  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals'].includes(kind)) paginateCompactWindow();
-  if (advisoryReturn && kind !== 'advisory') {
-    el.winFoot.insertAdjacentHTML('afterbegin', '<button type="button" data-act="advisory-back">Back to advisory</button>');
+  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(kind)) paginateCompactWindow();
+  if (advisoryReturn && kind !== 'advisory' && !el.winFoot.querySelector('[data-act="advisory-back"]')) {
+    el.winFoot.insertAdjacentHTML('beforeend', advisoryBackButton(innerHeight <= 560 || kind === 'settlement' && (innerWidth <= 680 || innerHeight <= 760)));
     el.winFoot.hidden = false;
   }
   (el.winFoot.querySelector('.primary') || el.win.querySelector('[data-win="close"]')).focus();
