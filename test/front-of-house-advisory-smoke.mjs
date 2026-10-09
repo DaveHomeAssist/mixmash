@@ -45,9 +45,12 @@ async function fit() {
       overflow: [body.scrollWidth - body.clientWidth, body.scrollHeight - body.clientHeight],
       clipped: nodes.filter(n => { const r = n.getBoundingClientRect(); return r.left < rect.left - 1 || r.right > rect.right + 1 || r.top < rect.top - 1 || r.bottom > rect.bottom + 1 || n.scrollWidth > n.clientWidth + 1; }).map(n => n.textContent),
       labels: [...body.querySelectorAll('.tabbar button')].filter(n => {
-        const range = document.createRange(); range.selectNodeContents(n);
-        const style = getComputedStyle(n);
-        return range.getBoundingClientRect().width > n.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) + 1;
+        const style = getComputedStyle(n), text = document.createElement('span');
+        text.textContent = n.textContent;
+        Object.assign(text.style, { position: 'absolute', width: 'max-content', whiteSpace: 'nowrap', font: style.font, letterSpacing: style.letterSpacing });
+        document.body.append(text);
+        const width = text.getBoundingClientRect().width; text.remove();
+        return width > n.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) + 1;
       }).map(n => n.textContent),
       outside: controls.filter(n => { const r = n.getBoundingClientRect(); return r.left < windowRect.left - 1 || r.right > windowRect.right + 1 || r.top < windowRect.top - 1 || r.bottom > windowRect.bottom + 1; }).map(n => n.textContent),
       small: controls.filter(n => n.getBoundingClientRect().height < 44).map(n => n.textContent) };
