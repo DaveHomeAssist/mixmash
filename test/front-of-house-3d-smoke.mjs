@@ -4,6 +4,7 @@ import { chromium } from 'playwright';
 import { startStaticServer, launchOptions } from './static-server.mjs';
 import { createGame, applyAction } from '../front-of-house/engine.mjs';
 import { STARTER_LAYOUT, SAVE_NAMESPACE, SCHEMA_VERSION } from '../front-of-house/data.mjs';
+import { FRONT_OF_HOUSE_RELEASE } from '../front-of-house/version.mjs';
 import { mkdir, mkdtemp } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -31,7 +32,7 @@ try {
   const preferencePage = await preferenceContext.newPage();
   await preferencePage.goto(`${server.origin}/front-of-house/`);
   await preferencePage.waitForFunction(() => window.__frontOfHouse?.rendererStatus().active);
-  assert.equal(await preferencePage.locator('#game-version').innerText(), 'v0.1.1');
+  assert.equal(await preferencePage.locator('#game-version').innerText(), `v${FRONT_OF_HOUSE_RELEASE.version}`);
   assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), null, 'implicit 3D default is not mistaken for an explicit choice');
   await preferencePage.click('#renderer-btn');
   await preferencePage.waitForFunction(() => !__frontOfHouse.rendererStatus().enabled);
