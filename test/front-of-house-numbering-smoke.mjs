@@ -23,6 +23,8 @@ try {
       MixKitSave.encodeCode(JSON.stringify({ ns, v, savedAt: new Date().toISOString(), state }))
     ), { state, ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION }), true);
     assert.deepEqual(await page.evaluate(() => __frontOfHouse.state()), state);
+    // Loading Settle opens its receipt automatically; close it before testing the opener.
+    if (await page.locator('#win').isVisible()) await page.keyboard.press('Escape');
   };
   let s = E.createGame(2026, { mode: 'sandbox' });
   for (let number = 1; number <= 205; number += 1) {
@@ -50,6 +52,7 @@ try {
       await page.click('[data-act="last-sheet"]');
       assert.match(await page.locator('.settlement-context').textContent(), new RegExp(`Show ${String(number).padStart(3, '0')} ·`));
       assert.equal(E.careerProgress(signed).shows, number);
+      assert.equal(await page.evaluate(() => JSON.parse(render_game_to_text()).career.shows), number);
       assert.equal(signed.history.at(-1).showId, number);
       assert.equal(signed.history.length, 200);
     }
