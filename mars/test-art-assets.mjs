@@ -466,8 +466,8 @@ test('the art audit uses only the five requested classifications and accounts fo
   const audit = readFileSync(new URL('./docs/ART_AUDIT.md', import.meta.url), 'utf8');
   const allowed = new Set(['Production-ready', 'Adaptable', 'Reference-only', 'Replace', 'Missing']);
   const systemSection = audit.split('## System audit\n')[1].split('## Asset inventory\n')[0];
-  const runtimeSection = audit.split('## Asset inventory\n')[1].split('## Missing golden-slice art\n')[0];
-  const missingSection = audit.split('## Missing golden-slice art\n')[1].split('## PR #8 disposition\n')[0];
+  const runtimeSection = audit.split('## Asset inventory\n')[1].split('## Candidate and missing golden-slice art\n')[0];
+  const inventorySection = audit.split('## Candidate and missing golden-slice art\n')[1].split('## PR #8 disposition\n')[0];
 
   for (const row of markdownRows(systemSection)) {
     assert.ok(allowed.has(row[1]), `${row[0]} uses an unsupported classification: ${row[1]}`);
@@ -475,13 +475,15 @@ test('the art audit uses only the five requested classifications and accounts fo
   for (const row of markdownRows(runtimeSection)) {
     assert.ok(allowed.has(row[2]), `${row[0]} uses an unsupported classification: ${row[2]}`);
   }
-  for (const row of markdownRows(missingSection)) {
-    assert.equal(row[2], 'Missing', `${row[0]} must stay Missing until commissioned evidence exists`);
+  for (const row of markdownRows(inventorySection)) {
+    assert.ok(allowed.has(row[2]), `${row[0]} uses an unsupported classification: ${row[2]}`);
   }
 
   const manifest = loadArtManifest();
   for (const asset of manifest.assets) {
-    assert.ok(missingSection.includes('`' + asset.id + '`'), `${asset.family}:${asset.id} is not classified in the missing-art inventory`);
+    const row = markdownRows(inventorySection).find((entry) => entry[1].includes('`' + asset.id + '`'));
+    assert.ok(row, `${asset.family}:${asset.id} is not classified in the art inventory`);
+    assert.equal(row[2], asset.artistTest ? 'Adaptable' : 'Missing', `${asset.family}:${asset.id} has the wrong candidate classification`);
   }
 });
 

@@ -10,26 +10,14 @@
   "counts": {
     "assets": 26,
     "expectedExports": 108,
-    "presentExports": 0,
-    "missingExports": 108,
-    "editableSources": 0,
+    "presentExports": 8,
+    "missingExports": 100,
+    "editableSources": 4,
     "errors": 0,
-    "warnings": 145
+    "warnings": 132
   },
   "errors": [],
   "warnings": [
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "terrain:base_soil",
-      "message": "sprites/terrain/base_soil__active__f01.png is missing.",
-      "response": "Render procedural:terrain and log a warning."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "terrain:base_soil",
-      "message": "art/sources/terrain/base_soil.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
-    },
     {
       "code": "MISSING_SPRITE",
       "asset": "terrain:rocky_soil",
@@ -93,26 +81,8 @@
     {
       "code": "MISSING_SPRITE",
       "asset": "building:habitat",
-      "message": "sprites/building/habitat__active__f01.png is missing.",
-      "response": "Render procedural:building and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "building:habitat",
       "message": "sprites/building/habitat__disabled__f01.png is missing.",
       "response": "Render procedural:building and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "building:habitat",
-      "message": "sprites/building/habitat__damaged__f01.png is missing.",
-      "response": "Render procedural:building and log a warning."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "building:habitat",
-      "message": "art/sources/building/habitat.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -249,36 +219,6 @@
     {
       "code": "MISSING_SPRITE",
       "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f01.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f02.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f03.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
-      "message": "sprites/actor/astronaut__active__f04.png is missing.",
-      "response": "Render procedural:actor and log a warning."
-    },
-    {
-      "code": "BROKEN_ANIMATION",
-      "asset": "actor:astronaut",
-      "message": "active is missing 4 of 4 frames.",
-      "response": "Use procedural:actor because frame 01 is absent."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "actor:astronaut",
       "message": "sprites/actor/astronaut__disabled__f01.png is missing.",
       "response": "Render procedural:actor and log a warning."
     },
@@ -305,12 +245,6 @@
       "asset": "actor:astronaut",
       "message": "damaged is missing 3 of 3 frames.",
       "response": "Use procedural:actor because frame 01 is absent."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "actor:astronaut",
-      "message": "art/sources/actor/astronaut.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
@@ -537,12 +471,6 @@
     {
       "code": "MISSING_SPRITE",
       "asset": "resource:blue_crystal",
-      "message": "sprites/resource/blue_crystal__active__f01.png is missing.",
-      "response": "Render procedural:resource and log a warning."
-    },
-    {
-      "code": "MISSING_SPRITE",
-      "asset": "resource:blue_crystal",
       "message": "sprites/resource/blue_crystal__disabled__f01.png is missing.",
       "response": "Render procedural:resource and log a warning."
     },
@@ -551,12 +479,6 @@
       "asset": "resource:blue_crystal",
       "message": "sprites/resource/blue_crystal__damaged__f01.png is missing.",
       "response": "Render procedural:resource and log a warning."
-    },
-    {
-      "code": "MISSING_EDITABLE_SOURCE",
-      "asset": "resource:blue_crystal",
-      "message": "art/sources/resource/blue_crystal.aseprite is missing.",
-      "response": "Provide the declared editable source; block final asset approval."
     },
     {
       "code": "MISSING_SPRITE",
