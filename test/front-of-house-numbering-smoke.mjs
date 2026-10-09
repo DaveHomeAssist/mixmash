@@ -26,6 +26,11 @@ try {
     // Loading Settle opens its receipt automatically; close it before testing the opener.
     if (await page.locator('#win').isVisible()) await page.keyboard.press('Escape');
   };
+  const checkReceipt = async (number) => {
+    const labels = await page.locator('.settlement-context').allTextContents();
+    assert.equal(labels.length, 2, 'Summary and Ledger both carry the receipt number');
+    for (const label of labels) assert.match(label, new RegExp(`Show ${String(number).padStart(3, '0')} ·`));
+  };
   let s = E.createGame(2026, { mode: 'sandbox' });
   for (let number = 1; number <= 205; number += 1) {
     if (number >= 200) {
@@ -41,16 +46,16 @@ try {
     if (number >= 200) {
       await load(s);
       await page.click('[data-act="open-settlement"]');
-      assert.match(await page.locator('.settlement-context').textContent(), new RegExp(`Show ${String(number).padStart(3, '0')} ·`));
+      await checkReceipt(number);
       await page.click('[data-act="accept"]');
       assert.deepEqual(await page.evaluate(() => __frontOfHouse.state()), signed, 'UI signing preserves exact engine accounting and history');
       await page.click('[data-act="last-sheet"]');
-      assert.match(await page.locator('.settlement-context').textContent(), new RegExp(`Show ${String(number).padStart(3, '0')} ·`));
+      await checkReceipt(number);
       await page.reload();
       await page.waitForFunction(() => !!window.__frontOfHouse);
       assert.deepEqual(await page.evaluate(() => __frontOfHouse.state()), signed, 'stored career reloads unchanged');
       await page.click('[data-act="last-sheet"]');
-      assert.match(await page.locator('.settlement-context').textContent(), new RegExp(`Show ${String(number).padStart(3, '0')} ·`));
+      await checkReceipt(number);
       assert.equal(E.careerProgress(signed).shows, number);
       assert.equal(await page.evaluate(() => JSON.parse(render_game_to_text()).career.shows), number);
       assert.equal(signed.history.at(-1).showId, number);

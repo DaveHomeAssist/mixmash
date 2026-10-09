@@ -2257,8 +2257,8 @@
     "pr": "https://github.com/DaveHomeAssist/mixmash/pull/141",
     "change": "Booking, signed/unsigned receipts and career total derive from latest signed showId; retained history stays capped at 200. No accounting, schema or normalization change.",
     "coverage": "203 actual settlements with exact reload and payout checks; browser bookings and receipts 200 through 205 and next booking 206.",
-    "verification": "446 repository tests/build and all three byte-identical simulator baselines pass locally. CI37906819706 and integrated CI37906847789 pass all twelve original player scripts, then reject an ambiguous booking selector in the new numbering harness. Narrow it to the Book sheet heading and run the numbering regression first; preserve these failed runs. Final-head CI remains required.",
-    "integration": "PR142 incorporates exact QA head db8e555 including the corrected numbering harness; QA merge and both projects final-head CI/delivery gates remain required.",
+    "verification": "446 repository tests, build and all three byte-identical simulator baselines pass locally. Compatible headless Chromium149 passes the full focused browser regression: bookings200 through205, both Summary/Ledger copies of unsigned/signed receipts, exact UI signing, stored career reloads and totals, then booking206. CI37906819706/37906847789 passed all twelve original player scripts before the new ambiguous booking selector; CI37908932107 exposed the tab-wrapper assumption. Both selector corrections and the duplicate Summary/Ledger labels are now covered in the locally passing harness. Failed runs are retained; clean final-head CI remains required. The same focused numbering browser regression also passes on the combined Advisory source.",
+    "integration": "PR142 includes exact QA head5ca2def and both QA/Advisory suites. Combined452 source tests/build and the focused numbering browser regression pass. QA merge and Advisory final-head CI, Pages and hosted acceptance remain required.",
     "syncGap": "Shared workspace rules, communications page and Next Steps Board/updater unavailable in this environment."
   }
 }
