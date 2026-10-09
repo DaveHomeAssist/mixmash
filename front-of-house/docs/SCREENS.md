@@ -120,6 +120,7 @@ Windows (Deals, Lot details, Object inspection, Clear confirmation, Last settlem
 | Lot details | Build: Details | Every placed object with a remove button | Keyboard route to removing by name |
 | Object inspection | Build: Select, then click/touch/Enter on an object | Name, coordinates, footprint, rental cost and Remove | Never places; removal uses existing Undo and returns focus to the canvas. Selection is transient and clears after layout/phase/load/history changes. A 3D tap's following click is consumed even if the new dialog covers its position; a fresh tap operates the dialog normally |
 | Clear confirmation | Build: Clear | Object count, Cancel and Clear all objects | One confirmation, one undo step; cancel returns focus to Clear |
+| Advisory desk | Menu → Advisory desk, every phase | Overview with one current priority; Ticketing, Talent and Operations evidence pages | Review opens existing controls/receipts; Back to advisory returns to the selected page; Refresh advice reads current state without actions |
 | Menu | Menu button or ? | Dark controls, full screen, source link, New game (Career, Sandbox, Wet lot), keys help, Save and load | New game asks for a second press when a game is under way |
 
 All windows are modal dialogs: focus moves in, Tab stays inside, Escape or Close returns focus to the button that opened them.
@@ -219,3 +220,9 @@ New Festival bookings disclose the combined touring rental, with a Rider page in
 ### Release wording correction (2026-10-04)
 
 The top-strip relationship is labeled Act, with an explicit relationship tooltip and accessible name. The non-live Show card uses Show night while its clock/status owns timing. Settlement advice describes response trade-offs and asks players to check room sound/lighting before hiring gear. The Done screen calls its affordability figure a basic no-ad estimate and discloses that kept rentals can cost more. Rules, prices, timers and saved results are unchanged.
+
+### Advisory desk (FOH-U05)
+
+Overview opens by default at every width. All four pages reuse arrow-key tabs, labelled tab panels,44px controls and the existing modal focus loop. Ticketing uses pre-door forecast ranges and booked prices, current observed admission counts, or recorded Last show totals according to phase. Talent uses available acts, booked payment terms and the existing relationship/held-night receipt. Operations uses existing layout/doors refusals, current visible incident/service evidence, then the recorded weakest satisfaction dimension. Unsupported evidence reads unavailable. Advice never reads a hidden future draw or response outcome.
+
+Review opens Deals, Ticketing, Seats and lawn, Stage accounts, Held nights or the existing settlement where supported; otherwise it closes the desk and focuses the relevant current phase control. Back to advisory preserves the selected category. Closing restores the original menu trigger. A newly visible incident refreshes the open desk without focusing a response behind the modal. Signed settlement has no signing action. No new engine action, timer, economics or saved desk state is introduced.

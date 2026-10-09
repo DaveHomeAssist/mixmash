@@ -619,6 +619,12 @@ source-owned or have verified redistribution rights. This decision authorizes
 the bounded presentation patch, not every brainstormed system or full-launch
 acceptance.
 
+## CT-DEC-35: Explicit Advisory desk from existing evidence
+
+**Accepted by Dave, 2026-10-09.** Implement the recommended FOH-U05 desk after its PR140 brief. Use functional Overview, Ticketing, Talent and Operations pages, explicit check-in and one deterministic current priority. Review routes to the existing control or receipt and returns focus. Forecasts remain forecasts; Show reveals only observable incidents/services; signed results are Last show and reopen read-only.
+
+Keep this a presentation layer with no new economics, simulation, staff entity, payroll, portraits, proactive interruption, manager relationships, saved desk state or public API. Broader staff/story/calendar/open-world/deal proposals remain separate. Existing settlement and game rules remain authoritative. Version0.2.0 follows the new-capability policy in CT-DEC-33; cachev76 and save schema2 are independent. Separate PR141 engine/save QA remains under its owner. Automated delivery does not accept physical devices, human review, calibration or rights.
+
 ## Homepage visibility sign-off (2026-10-05)
 
 Dave approved HOME-02 A and explicitly signed off the first playable for the

@@ -8,9 +8,9 @@
   "head": "0.2.0 Advisory desk implemented; delivery checks in progress",
   "lastActivity": "2026-10-09",
   "status": "amber",
-  "statusReason": "Dave approved FOH-U05 runtime implementation on 2026-10-09. A presentation-only Advisory desk is implemented on gh-pages base ad039109 using existing Ticketing, Talent and Operations evidence. Source tests pass on Duncan; browser, full regression, CI and hosted delivery are in progress. PR141 engine/save QA remains separately owned. Human/device/calibration/rights acceptance remains open.",
+  "statusReason": "FOH-U05 Advisory desk is committed and pushed as PR142 source0892459 on basead039109. Duncan verifies six source tests,36 browser checks across all phases/rooms including360px, five sizes/both themes, computed contrast, unchanged state/save bytes, incident focus and one-time signing. Build/version/assets/unchanged simulator pass. Existing player suite and final-head Linux CI, merge/Pages/hosted checks continue. The Windows broad suite retains one unrelated Mars SQLite cleanup EBUSY hook with445 passing tests. PR141 QA ownership and human/device/calibration/rights gates remain separate.",
   "activity30d": {
-    "headline": "Dave approved FOH-U05 runtime implementation on 2026-10-09. A presentation-only Advisory desk is implemented on gh-pages base ad039109 using existing Ticketing, Talent and Operations evidence. Source tests pass on Duncan; browser, full regression, CI and hosted delivery are in progress. PR141 engine/save QA remains separately owned. Human/device/calibration/rights acceptance remains open."
+    "headline": "Approved Advisory desk implemented and browser-verified; PR142 delivery gates in progress. Broader staff/story/calendar/deal proposals and physical/human/calibration/rights acceptance remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -43,12 +43,12 @@
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge."
   ],
   "nextStep": {
-    "title": "Verify and deliver the approved Advisory desk",
+    "title": "Complete PR142 CI and hosted delivery",
     "why": "The desk connects existing evidence to existing controls without adding economics or simulation.",
     "doneWhen": "Source, responsive browser and existing regression checks pass; final-head CI, merge, Pages and hosted parity are verified.",
     "effort": "S",
     "owner": "Codex",
-    "blockedBy": "No product answer required. CI and delivery verification remain; physical/human acceptance stays separate."
+    "blockedBy": "No product answer required. CI, player regression and hosted delivery remain; a platform-specific Windows Mars cleanup failure is preserved. Physical/human acceptance stays separate."
   },
   "findings": [
     {
