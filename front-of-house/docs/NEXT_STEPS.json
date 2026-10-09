@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.0 Advisory desk reconciled with merged 0.1.2 QA integrity; final delivery checks pending",
+  "head": "0.2.0 Advisory desk merged and hosted verified; physical and human acceptance open",
   "lastActivity": "2026-10-09",
   "status": "amber",
-  "statusReason": "PR141 QA integrity and cumulative numbering merged d483314 after final-head CI37910081639 attempt2 passed; paired attempt1 rejection remains retained. Combined Advisory runtime14f3337 passed CI37910097749,452 source tests/build, full existing player and numbering regression,48 Advisory browser checks and paired performance. Production ancestry and delivery records are reconciled without runtime changes. PR142 remains open with current-head CI, merge, Pages and hosted acceptance required. Original physical-device, screen-reader/human, calibration and image-rights gates remain open. Earlier harness corrections, Linux narrow-label failure, stale3D version expectation and Windows Mars SQLite EBUSY evidence remain retained.",
+  "statusReason": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized.",
   "activity30d": {
-    "headline": "Approved Advisory desk implemented and browser-verified; PR142 delivery gates in progress. Broader staff/story/calendar/deal proposals and physical/human/calibration/rights acceptance remain open."
+    "headline": "Advisory desk0.2.0 is hosted and browser-verified; broader proposals and physical/human/calibration/rights gates remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -41,15 +41,16 @@
     "Clean0585823 records18 valid Dominic Intel/Mesa EGL renderer-only windows under the established protocol; independent fixture/raw digest and statistics checks pass. Full-HUD, native/physical-device, sustained-target and human acceptance remain separate.",
     "PR136 head2123f1b passed general and paired regression CI and mergeda3677b8. Pages37584561999 and postmergeCI37584562751 pass; five release files match live, Dominic verifies fresh default3D/v0.1.0/persisted2D, and annotated tag front-of-house-v0.1.0 resolves to the release merge. Save schema stays2.",
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge.",
-    "PR141 QA integrity head5ca2def passed CI37910081639 attempt2 and merged d483314 with the exact tested tree. Cumulative numbering remains consistent beyond200 retained shows; record IDs/accounting/save schema and retention semantics are preserved. Earlier test harness failures and paired attempt1 rejection remain recorded. Pages/postmerge/hosted QA delivery checks remain pending; Advisory release is separate."
+    "PR141 QA integrity head5ca2def passed CI37910081639 attempt2 and merged d483314 with the exact tested tree. Cumulative numbering remains consistent beyond200 retained shows; record IDs/accounting/save schema and retention semantics are preserved. Earlier test harness failures and paired attempt1 rejection remain recorded. Pages/postmerge/hosted QA delivery checks remain pending; Advisory release is separate.",
+    "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized."
   ],
   "nextStep": {
-    "title": "Verify reconciled PR142 final delivery before releasing Advisory desk",
-    "why": "The desk connects existing evidence to existing controls without adding economics or simulation.",
-    "doneWhen": "Source, responsive browser and existing regression checks pass; final-head CI, merge, Pages and hosted parity are verified. PR141 QA fixes and cumulative numbering are included; both projects retain their acceptance requirements.",
-    "effort": "S",
-    "owner": "Codex",
-    "blockedBy": "Current reconciled PR142 head CI, merge, Pages and hosted acceptance. Physical/human/calibration/rights gates remain separate."
+    "title": "Complete the existing physical and human release acceptance",
+    "why": "Automated Advisory delivery is verified; browser evidence does not establish physical devices, screen readers, calibration, art, camera, career or image rights.",
+    "doneWhen": "Attach direct evidence to the existing RELEASE acceptance checklist and preserve remaining unknowns; verify the active postmerge CI result separately.",
+    "effort": "M",
+    "owner": "Dave and existing Front of House executor",
+    "blockedBy": "Direct physical/human/calibration/rights evidence; postmerge CI result is not yet recorded."
   },
   "findings": [
     {
@@ -354,7 +355,7 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
-  "kickoffPrompt": "Continue the approved FOH-U05 presentation-only Advisory desk from its current branch. Complete source, responsive browser, regression, CI and hosted delivery checks. Preserve separately owned PR141 engine/save QA and remaining human/device/calibration/rights gates.",
+  "kickoffPrompt": "Continue Front of House from delivered Advisory0.2.0 at94c69a5. Reconcile CI37928178712 and the existing RELEASE human/device/calibration/rights checklist. Reuse sufficient passed runtime proof; do not repeat shipped Advisory or QA work, start new systems or infer missing acceptance.",
   "confidence": "medium",
   "unknowns": [
     "Final realistic art and physical scale/operator-eye calibration remain unaccepted.",
@@ -2259,7 +2260,38 @@
     "change": "Booking, signed/unsigned receipts and career total derive from latest signed showId; retained history stays capped at 200. No accounting, schema or normalization change.",
     "coverage": "203 actual settlements with exact reload and payout checks; browser bookings and receipts 200 through 205 and next booking 206.",
     "verification": "446 repository tests, build and all three byte-identical simulator baselines pass locally. Compatible headless Chromium149 passes the full focused browser regression: bookings200 through205, both Summary/Ledger copies of unsigned/signed receipts, exact UI signing, stored career reloads and totals, then booking206. CI37906819706/37906847789 passed all twelve original player scripts before the new ambiguous booking selector; CI37908932107 exposed the tab-wrapper assumption. Both selector corrections and the duplicate Summary/Ledger labels are now covered in the locally passing harness. Failed runs are retained; clean final-head CI remains required. The same focused numbering browser regression also passes on the combined Advisory source. Final QA head5ca2def passes CI37910081639: general/source/build/player/numbering checks succeed and paired attempt2 validates36 windows/all18 metrics with unchanged limits. Attempt1 rejected widescreen crowd CPU p95 8.6ms against8.25ms; retained artifact11607227857 and independent local raw/source/fixture audit reproduce that rejection. Single retry artifact11608754092 passes; widescreen crowd baseline6.5ms/candidate7.1ms/limit9.75ms. No waiver or renderer change. P2 review thread resolved.",
-    "integration": "PR141 merged d483314fdb1f547adcdcd0ae4c98bb792407f79d with tree cfcafbbb85dfd011f8f71099a6ecd0d7f76c7f9b, identical to tested QA head5ca2def. PR142 includes the exact QA engine/save implementation and both QA/Advisory suites. Combined452 source tests/build and focused browser numbering regression pass; exact runtime head14f3337 passes CI37910097749 including48 Advisory checks, all original player scripts, numbering and paired performance. Production merge ancestry and delivery records are reconciled without runtime changes. PR142 remains open: current-head CI, merge, Pages and hosted acceptance are still required; all original human/device/screen-reader/calibration/rights gates remain open.",
+    "integration": "PR141 merged d483314fdb1f547adcdcd0ae4c98bb792407f79d with tree cfcafbbb85dfd011f8f71099a6ecd0d7f76c7f9b, identical to tested QA head5ca2def. PR142 includes the exact QA engine/save implementation and both QA/Advisory suites. Combined452 source tests/build and focused browser numbering regression pass; exact runtime head14f3337 passes CI37910097749 including48 Advisory checks, all original player scripts, numbering and paired performance. Production merge ancestry and delivery records are reconciled without runtime changes. PR142 final-head CI37916548234 passed and merged94c69a5. Pages37928177752 and71-file hosted parity/48 Advisory checks/offline signing and reload pass. All original human/device/screen-reader/calibration/rights gates remain open; postmerge CI37928178712 is active at this timestamp.",
     "syncGap": "Shared workspace rules, communications page and Next Steps Board/updater unavailable in this environment."
+  },
+  "advisoryRelease20261009": {
+    "source": "cf2c8e02736a6b908a59f93b526f04ed7b1d118b",
+    "merge": "94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6",
+    "pr": "https://github.com/DaveHomeAssist/mixmash/pull/142",
+    "ci": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37916548234",
+    "pages": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37928177752",
+    "postmergeCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37928178712",
+    "postmergeStatus": "in_progress",
+    "tag": "front-of-house-v0.2.0",
+    "runtime": "https://mixmash.games/front-of-house/",
+    "hostedFiles": 71,
+    "advisoryChecks": 48,
+    "offlineCash": 999458,
+    "offlineHistory": 1,
+    "runner": "Duncan",
+    "resources": "Bounded owned claim released; no owned browser/server/test job remains.",
+    "retainedFailures": [
+      "Original010 performance rejection8.2ms versus8.1ms, unchanged retry success; raw artifacts retained.",
+      "PeerQA attempt1 rejection and unchanged retry retained in existing QA record.",
+      "Archive timestamp extraction and unsupported folder junction failed before test execution; corrected isolated setup and71-file hash check passed.",
+      "Earlier Linux narrow-label/stale3D version assertion and Windows unrelated SQLite cleanup failures retained."
+    ],
+    "remaining": [
+      "physical devices",
+      "screen reader and human acceptance",
+      "venue calibration",
+      "art, camera and career acceptance",
+      "image rights",
+      "private Next Steps Board unavailable"
+    ]
   }
 }
