@@ -30,7 +30,7 @@ try {
   for (let number = 1; number <= 205; number += 1) {
     if (number >= 200) {
       await load(s);
-      assert.match(await page.locator('#panel .eyebrow').textContent(), new RegExp(`Show ${number} ·`));
+      assert.match(await page.locator('#panel .at-sheet > .eyebrow').textContent(), new RegExp(`Show ${number} ·`));
     }
     s = act(s, { type: 'chooseDeal', artistId: E.offersFor(s)[0], deal: 'guarantee' });
     s = act(s, { type: 'setLayout', objects: D.STARTER_LAYOUT });
@@ -59,7 +59,7 @@ try {
     s = act(signed, { type: 'nextShow' });
   }
   await load(s);
-  assert.match(await page.locator('#panel .eyebrow').textContent(), /Show 206 ·/);
+  assert.match(await page.locator('#panel .at-sheet > .eyebrow').textContent(), /Show 206 ·/);
   assert.deepEqual(failures, []);
   console.log('PASS: shows 200–205 booking, unsigned/signed receipts, exact signing and saved history; next booking 206');
 } finally {
