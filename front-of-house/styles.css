@@ -332,6 +332,31 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 .win-body { display: flex; flex-direction: column; gap: 14px; padding: 14px 16px 16px; overflow-y: auto; overscroll-behavior: contain; }
 .win-body h3 { margin: 0 0 6px; font-size: 0.95rem; }
 .win-body .checklist { margin: 0; }
+
+/* The desk is one deliberate check-in, with a contained page per specialist. */
+#win[data-kind="advisory"] .win { width: min(640px, 100%); }
+#win[data-kind="advisory"] .win-body { overflow: hidden; }
+#win[data-kind="advisory"] .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
+#win[data-kind="advisory"] .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 8px 4px; }
+#win[data-kind="advisory"] .tabbar [aria-selected="true"] { color: var(--cyan); border-color: var(--cyan); background: var(--panel); }
+#win[data-kind="advisory"] .tab-off { display: none !important; }
+.advisory-page { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.advisory-page p { margin: 0; line-height: 1.45; }
+.advisory-context { color: var(--text-muted); font-size: 0.8rem; text-transform: capitalize; }
+.advisory-page h3 { font-size: 1.2rem; }
+.advisory-evidence { margin: 0; padding: 10px 12px; background: var(--panel-alt); border: 1px solid var(--border); border-radius: var(--radius); }
+.advisory-evidence div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; }
+.advisory-evidence dt { color: var(--text-muted); }
+.advisory-evidence dd { margin: 0; text-align: right; font-weight: 650; overflow-wrap: anywhere; }
+.advisory-lock { padding-left: 10px; border-left: 2px solid var(--border-strong); color: var(--text-muted); font-size: 0.85rem; }
+.advisory-page button { align-self: flex-start; min-height: 44px; }
+@media (max-width: 680px) {
+  #win[data-kind="advisory"] .tabbar { order: 2; }
+  #win[data-kind="advisory"] .tabbar button { font-size: 0.75rem; padding-inline: 2px; }
+  .advisory-page { gap: 8px; }
+  .advisory-evidence div { gap: 8px; }
+  .advisory-evidence dd { max-width: 60%; }
+}
 .obj-groups { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .obj-groups li { display: grid; grid-template-columns: 160px 1fr; gap: 8px; align-items: start; }
 .obj-name { font-size: 0.85rem; padding-top: 8px; }
@@ -830,11 +855,11 @@ body[data-phase='promote'] .actions button { padding-inline: 8px; }
 }
 
 /* Development pages share one contained space at all viewport sizes. */
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .tabbar [aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .tab-off { display: none !important; }
-#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) [data-tab] > p { margin: 8px 0; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .tabbar { display: flex; gap: 4px; flex: none; order: 0; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .tabbar button { flex: 1; min-width: 0; min-height: 44px; padding: 6px 4px; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .tabbar [aria-selected="true"] { border-color: var(--cyan); color: var(--cyan); }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .tab-off { display: none !important; }
+#win:is([data-kind="development"], [data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) [data-tab] > p { margin: 8px 0; }
 .development-summary { margin: 0; font-family: var(--font-mono); font-size: 0.85rem; }
 body[data-phase='done'] .row.tight { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px; font-size: 0.75rem; }
@@ -843,26 +868,26 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 .equipment-events li { padding: 6px 0; border-bottom: 1px solid var(--border); }
 .equipment-events small { display: block; overflow-wrap: anywhere; }
 
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) [hidden] { display: none !important; }
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) button { min-height: 44px; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) [hidden] { display: none !important; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) button { min-height: 44px; }
 @media (max-height: 560px) {
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) { padding: 4px; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win { height: 100%; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win-head { padding: 0 6px; flex: none; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win-body { flex: 1; min-height: 0; padding: 4px 8px; gap: 4px; overflow: hidden; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win-body > [data-tab] { flex: none; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win-body p { font-size: 0.85rem; line-height: 1.3; margin: 4px 0; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win-foot { flex: none; justify-content: space-between; padding: 0 6px; gap: 4px; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .win-foot span { font-size: 0.8rem; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .live-readouts div { padding: 2px 0; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) { padding: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win { height: 100%; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win-head { padding: 0 6px; flex: none; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win-body { flex: 1; min-height: 0; padding: 4px 8px; gap: 4px; overflow: hidden; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win-body > [data-tab] { flex: none; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win-body p { font-size: 0.85rem; line-height: 1.3; margin: 4px 0; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win-foot { flex: none; justify-content: space-between; padding: 0 6px; gap: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .win-foot span { font-size: 0.8rem; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .live-readouts div { padding: 2px 0; }
 }
 @media (max-height: 560px) {
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) [data-tab="Deploy"] .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) [data-tab="Deploy"] .actions button { min-width: 0; padding: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) [data-tab="Deploy"] .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  #win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) [data-tab="Deploy"] .actions button { min-width: 0; padding: 4px; }
 }
 
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .capital-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"]) .capital-actions button { min-width: 0; padding-inline: 4px; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .capital-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+#win:is([data-kind="equipment"], [data-kind="ticketing"], [data-kind="held-run"], [data-kind="seating"], [data-kind="stages"], [data-kind="set-time"], [data-kind="deals"], [data-kind="advisory"]) .capital-actions button { min-width: 0; padding-inline: 4px; }
 .stage-choice { display: flex; flex-direction: column; gap: 6px; }
 .stage-choice select { width: 100%; min-height: 44px; padding: 8px; font: inherit; color: var(--text); background: var(--panel); border: 1px solid var(--border-strong); border-radius: var(--radius); }
 
@@ -885,4 +910,28 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 
 #win [data-act="cost-page"][aria-pressed="true"] {
   border-color: var(--cyan); color: var(--cyan); background: rgba(0, 240, 255, 0.08);
+}
+
+@media (max-width: 680px) and (min-height: 561px) {
+  #win[data-kind="advisory"] .tabbar { order: 2; }
+}
+@media (max-height: 560px) {
+  #win[data-kind="advisory"] .advisory-page { gap: 4px; }
+  #win[data-kind="advisory"] .advisory-evidence { padding: 4px 8px; }
+  #win[data-kind="advisory"] .advisory-evidence div { padding: 2px 0; }
+  #win [data-act="advisory-back"] { padding-inline: 6px; }
+}
+
+@media (max-width: 680px) {
+  #win[data-kind="advisory"] .tabbar button { padding-inline: 2px; }
+}
+
+#win[data-kind="settlement"] .win-foot:has([data-act="advisory-back"]) { grid-template-columns: 1fr 1fr 1.25fr auto auto; }
+@media (max-width: 680px), (max-height: 760px) {
+  #win[data-kind="settlement"] .win-foot:has([data-act="advisory-back"]) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #win[data-kind="settlement"] .win-foot:has([data-act="advisory-back"]) .primary { grid-column: 1 / 3; }
+  #win[data-kind="settlement"] [data-act="advisory-back"] { grid-column: 3; width: 100%; min-width: 0; padding-inline: 4px; }
+}
+@media (max-width: 360px) {
+  #win[data-kind="advisory"] .tabbar button { font-family: var(--font-ui); flex: 1 0 auto; }
 }

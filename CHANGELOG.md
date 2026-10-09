@@ -4,6 +4,9 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House: add the approved presentation-only Advisory desk with one current priority and Ticketing, Talent and Operations pages. Routes reuse existing controls and recorded receipts; engine, accounting and save schema remain unchanged. Version0.2.0/cachev76.
+
+
 - Front of House 0.1.2: QA audit fixes. Rebooking after Back keeps Loam Shell prices in range so a reload keeps the paid seat contract; Start over begins on the Lot instead of a locked room; Lot-only settings no longer block doors in other rooms; reloads keep a PA left by a removed stage, room settings and the 200-show history; the game starts with storage blocked, warns when saves fail and follows the latest save across tabs. No balance, rule or schema change. Audit: `front-of-house/docs/QA_AUDIT.md`. Cache v75.
 - Front of House 0.1.1: clarify the running Build cost, guide the first booking toward the editable Suggested layout and hide placement tiles outside Build in classic and 3D. Delivered through PR138 (`3fbe3bb`) with final-head CI, paired regression retry, post-merge CI, Pages, seven-file hosted parity, live Dominic desktop/phone behavior and annotated tag `front-of-house-v0.1.1`. No engine, balance, accounting or save change. Cachev74.
 - Front of House 0.1.0: begin independent early-playable versioning and make the existing 3D venue view the default for fresh sessions. Explicit 2D/3D choices persist separately from save schema2; classic fallback remains available when 3D cannot start. Cachev73. Delivered through PR136 (`a3677b8`) with final-head and post-merge CI, Pages, exact hosted release-file parity, live Dominic behavior and annotated tag `front-of-house-v0.1.0`. This is initial numbering, not first-ever release or 1.0 acceptance.

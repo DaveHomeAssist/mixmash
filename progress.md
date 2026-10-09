@@ -30,3 +30,7 @@ Original prompt: Implement the verified MixMash count correction on gh-pages. Up
 - `admin/build-catalog.mjs` generates `admin/catalog.json` from `git ls-files` plus `admin/catalog-sources.mjs`; titles and summaries come from each file's heading, title or leading comment, with notes for files that do not describe themselves.
 - Status is not copied into the page; each game lists the files where its status is recorded.
 - Added `test/admin-catalog.test.mjs` to `npm test` (coverage, classification, references, privacy) and `smoke:admin` to CI (six widths, no page scroll, themes, keyboard tabs, filters, deep links, search, copy, contrast).
+
+## Front of House Advisory desk · 2026-10-09
+
+Dave authorized the existing FOH-U05 brief through the project controller. Base ad039109; additive presentation-only read model and explicit Overview/Ticketing/Talent/Operations window implemented. Independent PR141 engine/save QA ownership is preserved. Duncan is the isolated command/browser runner; no sustained Dominic load or heavy Mac fallback. Verification and delivery are in progress; initial unit pass found a missing-result Talent row that was corrected before rerun.
