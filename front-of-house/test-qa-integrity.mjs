@@ -79,10 +79,20 @@ test('prototype names are not rooms, acts or objects', () => {
 
 test('the 200-show window is the same in memory and after a reload, and show numbers stay put', () => {
   let s = E.createGame(2026, { mode: 'sandbox' });
+  assert.equal(E.completedShows(s), 0);
   for (let i = 0; i < 203; i += 1) {
+    assert.equal(E.completedShows(s) + 1, i + 1, 'next booking uses the cumulative number');
     s = act(s, { type: 'chooseDeal', artistId: E.offersFor(s)[0], deal: 'guarantee' });
     s = act(act(s, { type: 'setLayout', objects: D.STARTER_LAYOUT }), { type: 'confirmBuild' });
-    s = act(respond(act(s, { type: 'confirmPromotion' })), { type: 'acceptSettlement' });
+    s = respond(act(s, { type: 'confirmPromotion' }));
+    const cashBefore = s.cash, payout = E.settlementPayout(E.settlementFor(s), s.booking.deal);
+    s = act(s, { type: 'acceptSettlement' });
+    assert.equal(s.cash, cashBefore + payout, 'signing accounting is unchanged');
+    assert.equal(E.completedShows(s), i + 1);
+    assert.equal(E.careerProgress(s).shows, i + 1, 'career reports the cumulative total');
+    assert.equal(s.history.at(-1).showId, i + 1);
+    assert.equal(s.history.length, Math.min(i + 1, 200));
+    assert.deepEqual(reload(s), s, 'every signed career reloads unchanged');
     if (i < 202) s = act(s, { type: 'nextShow' });
   }
   assert.equal(s.history.length, 200);

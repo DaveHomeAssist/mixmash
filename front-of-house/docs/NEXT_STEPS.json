@@ -6,7 +6,7 @@
     "DaveHomeAssist/mixmash"
   ],
   "head": "0.1.2 QA audit fixes implemented and tested; merge, deploy and human acceptance pending",
-  "lastActivity": "2026-10-07",
+  "lastActivity": "2026-10-09",
   "status": "amber",
   "statusReason": "Front of House 0.1.2/cache v75 fixes the 2026-10-07 QA audit of production ad03910 (0.1.1): three P1 (Loam Shell seat price above its ceiling after Back and rebook, with a reload removing the paid seat contract; Start over beginning inside a locked room; a Lot food plan blocking Fathom Hall doors) and eight P2/P3 save and state defects. No P0 was found. Runner checks: npm test with test-qa-integrity.mjs (fails on 0.1.1, passes on 0.1.2), version/vendor/asset/performance tests, vercel-build, Lot/tier/career simulations with byte-identical baselines and regenerated CATALOG/STRINGS. PR, CI, merge, Pages and live verification are recorded separately when they exist. Human art/camera/career, physical devices, real Safari, calibration and original-image rights remain open. Front of House0.1.1/cachev74 is delivered through PR138 at 3fbe3bb. Final-head general CI and paired regression attempt2, Pages, seven-file hosted parity, live Dominic classic/3D desktop/phone behavior, exact-merge post-merge CI and annotated tag front-of-house-v0.1.1 pass. Engine, balance, accounting and save schema2 remain unchanged. No executable automated phase remains in FOH-U04. Human art/camera/career, supported physical devices, measured venue calibration and original-image rights remain open.",
   "activity30d": {
@@ -2252,5 +2252,13 @@
         ]
       }
     ]
+  },
+  "numberingReview20261009": {
+    "pr": "https://github.com/DaveHomeAssist/mixmash/pull/141",
+    "change": "Booking, signed/unsigned receipts and career total derive from latest signed showId; retained history stays capped at 200. No accounting, schema or normalization change.",
+    "coverage": "203 actual settlements with exact reload and payout checks; browser bookings and receipts 200 through 205 and next booking 206.",
+    "verification": "446 repository tests and build pass locally; engine regression signs 203 shows with exact reload/payout checks. Final-head CI including browser regression pending. Local browser blocked by socket restrictions after download fallback.",
+    "integration": "Merge #141 only after final-head CI; reconcile #142 with merged QA fixes, preserve all Advisory delivery and acceptance gates.",
+    "syncGap": "Shared workspace rules, communications page and Next Steps Board/updater unavailable in this environment."
   }
 }

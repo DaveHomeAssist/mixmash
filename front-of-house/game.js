@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import {
   applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
-  careerProgress, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
+  careerProgress, completedShows, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
 import { heldRunQuote } from './held-run.mjs';
@@ -376,7 +376,7 @@ function bookPanel() {
   return `
     <div class="sheet-top">
       <div>
-        <p class="eyebrow">Show ${state.history.length + 1} · ${esc(spec.name)}</p>
+        <p class="eyebrow">Show ${completedShows(state) + 1} · ${esc(spec.name)}</p>
         <h2>Book the act</h2>
       </div>
       <button type="button" class="info-btn" data-act="deal-help" aria-label="How the deals work">ⓘ Deals</button>
@@ -1295,7 +1295,7 @@ function sheetParts(r, { signed: done }) {
   }).join('');
   const pass = r.result === 'pass';
   const summary = settlementSummary(r, v);
-  const showNumber = String(state.history.length + (done ? 0 : 1)).padStart(3, '0');
+  const showNumber = String(completedShows(state) + (done ? 0 : 1)).padStart(3, '0');
   const ended = r.setTime ? clock(r.setTime.end / D.SET_SCHEDULE.close) : clock(1);
   const context = `<p class="settlement-context">Show ${showNumber} · ${r.setTime ? `<button class="receipt-link" data-act="set-time">${ended} set ended</button>` : `${ended} curfew`} · ${deal === 'door' ? `Door ${Math.round(D.DOOR_SPLIT * 100)}%` : deal === 'sponsor' ? 'Sponsor' : 'Guarantee'}</p>`;
   const serviceReceipts = r.services ? `<p class="hint">Prepaid ${money(r.services.prepaidCash)} + walk-ups ${money(r.services.walkupCash)} − refunds ${money(r.services.refunds)} = ${money(r.ticketGross)} ticket receipts. ${r.services.cancelledWalkups} future walk-ups cancelled; ${r.services.abandoned} guests left admission.</p>` : '';

@@ -2910,6 +2910,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-numbering-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-numbering-smoke.mjs",
+      "description": "Cumulative booking and receipt numbering survives the 200-record save window.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-numbering-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-performance-gate.test.mjs",
       "project": "front-of-house",
       "category": "tests",

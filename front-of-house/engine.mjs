@@ -206,6 +206,12 @@ function showCost(spec, deal, ask) {
   }).upfront;
 }
 
+// History is a retained window; its latest signed ID is the cumulative show count.
+// Use existing IDs so numbering needs no new saved counter or migration.
+export function completedShows(state) {
+  return state.history.at(-1)?.showId ?? 0;
+}
+
 // R-20: progress toward the Lot goal that unlocks the Club.
 export function careerProgress(state) {
   const lotShows = state.history.filter((h) => !h.venueId || h.venueId === 'lot');
@@ -219,7 +225,7 @@ export function careerProgress(state) {
   };
   const tierMet = tierGoals(state);
   return {
-    shows: state.history.length,
+    shows: completedShows(state),
     sellouts,
     venueRep: state.reputation.venue,
     cash: state.cash,
