@@ -138,24 +138,11 @@ export const GAMES = [
 // XPASS (delete that config from the entry; a failure with SMOKE_STRICT_XPASS=1).
 const AUDIT = 'AUD | MixMash Studio | Mobile & Tablet Audit | 2026-10-03';
 const ALL_CONFIGS = CONFIGS.map((c) => c.id);
-const IPADS = ALL_CONFIGS.filter((id) => id.startsWith('ipad'));
 export const EXPECTED_FAIL = [
-  {
-    game: 'empires', check: 'targets-game',
-    configs: ['iphone-max-430x932-portrait', ...IPADS],
-    finding: `${AUDIT}, P0 4 (Age of Dave is not playable by touch; its start button and first-visit controls guide use 38 px buttons). Fixed in Phase 4.`,
-  },
   {
     game: 'front-of-house', check: 'targets-game',
     configs: ALL_CONFIGS,
     finding: `${AUDIT}, coverage grid Front of House checkpoint 3 (touch, partial); the "Oak St. Lot" and "How the deals work" buttons are 40 px. Phase 3b covers the Book and Promote phone sheet.`,
-  },
-  {
-    game: 'mars', check: 'targets-playing',
-    // Measured on every run at these nine configs (35x31 map nodes on phones in portrait, 29 px
-    // skill rows on tablets). At iphone-390x844-portrait the begin hook also times out on some runs.
-    configs: ['iphone-390x844-portrait', 'iphone-max-430x932-portrait', 'android-360x800-portrait', ...IPADS],
-    finding: `${AUDIT}, P1 MarsScape (map nodes 35x31 px on phones in portrait, skill rows 29 px, Reset view 27 px). Fixed in Phase 3b.`,
   },
 ];
 

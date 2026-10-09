@@ -157,6 +157,12 @@ binary is not rebuilt.
 - EM-105 wraps the `AudioContext` constructor rather than reaching into SDL's
   glue, and only resumes contexts it suspended — a deliberately muted context
   stays muted.
+- Mobile phase 4 (2026-10-09): the start hint, guide, Controls and capability
+  buttons are 44 px, and on touch screens an **Order** switch (right edge)
+  replays a canvas tap as a right click so touch can move, attack, gather and
+  cancel placement; switched off, a tap selects as before. Still needing an
+  `aoe2-clone` engine change: lobby civ/player choice is keyboard-only, and
+  there are no control groups.
 
 ---
 
@@ -264,6 +270,6 @@ motion. The homepage defers initial offline-worker registration to the first
 played game, avoiding downloads of game runtimes while browsing the catalog.
 Existing workers and game routes keep the same offline storage contract.
 
-Next: run the required CI against the candidate, advance gh-pages directly on success,
-then verify Pages and the live homepage. Provider evidence supplies final delivery status.
+Delivered: the six-game homepage is live on mixmash.games and the served
+`index.html` matches gh-pages (checked 2026-10-09; gh-pages CI run 37933620344 green).
 Real physical-device/controller acceptance is separate.

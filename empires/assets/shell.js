@@ -19,6 +19,8 @@ function showStartHint() {
   // guide itself on a player's first visit — before their first skirmish.
   var pill = document.getElementById('help-pill');
   if (pill) pill.classList.add('is-visible');
+  var order = document.getElementById('order-toggle');
+  if (order) order.classList.add('is-visible');
   if (window.__empiresShortcuts && !window.__empiresShortcuts.seen()) {
     window.__empiresShortcuts.open();
   }
@@ -339,6 +341,89 @@ function setupShortcutGuide() {
   return { open: open, seen: seen };
 }
 
+// ---------------------------------------------------------------------------
+// Mobile phase 4: touch orders. SDL turns a tap into a left click, so touch
+// can select but never issue the right-click commands (move, attack, gather,
+// rally, cancel placement). While the Order switch is on, a tap on the canvas
+// is withheld from SDL and replayed as a right click at the same point; drags
+// and multi-finger touches are still swallowed so they cannot box-select by
+// accident. The engine itself is unchanged.
+// ---------------------------------------------------------------------------
+function setupTouchOrders() {
+  var toggle = document.getElementById('order-toggle');
+  var canvas = document.getElementById('canvas');
+  if (!toggle || !canvas) return;
+
+  var armed = false;
+  var start = null;
+  var TAP_SLOP = 12;
+
+  function setArmed(value) {
+    armed = !!value;
+    toggle.setAttribute('aria-pressed', armed ? 'true' : 'false');
+    toggle.textContent = armed ? 'Order: on' : 'Order';
+  }
+
+  function rightClickAt(x, y) {
+    var base = { clientX: x, clientY: y, screenX: x, screenY: y, bubbles: true, cancelable: true, view: window };
+    canvas.dispatchEvent(new MouseEvent('mousemove', Object.assign({}, base, { button: 0, buttons: 0 })));
+    canvas.dispatchEvent(new MouseEvent('mousedown', Object.assign({}, base, { button: 2, buttons: 2 })));
+    canvas.dispatchEvent(new MouseEvent('mouseup', Object.assign({}, base, { button: 2, buttons: 0 })));
+  }
+
+  function withhold(e) {
+    if (!armed || e.target !== canvas) return false;
+    if (e.pointerType && e.pointerType !== 'touch') return false;
+    e.stopImmediatePropagation();
+    if (e.cancelable) e.preventDefault();
+    return true;
+  }
+
+  // Capture on window runs before SDL's listeners on the canvas.
+  window.addEventListener('touchstart', function (e) {
+    if (!withhold(e)) return;
+    var t = e.touches.length === 1 ? e.touches[0] : null;
+    start = t ? { id: t.identifier, x: t.clientX, y: t.clientY, moved: false } : null;
+  }, { capture: true, passive: false });
+  window.addEventListener('touchmove', function (e) {
+    if (!withhold(e) || !start) return;
+    for (var i = 0; i < e.touches.length; i++) {
+      var t = e.touches[i];
+      if (t.identifier === start.id && Math.hypot(t.clientX - start.x, t.clientY - start.y) > TAP_SLOP) start.moved = true;
+    }
+    if (e.touches.length > 1) start.moved = true;
+  }, { capture: true, passive: false });
+  window.addEventListener('touchend', function (e) {
+    if (!withhold(e)) return;
+    var s = start;
+    start = null;
+    if (!s || s.moved || e.touches.length) return;
+    for (var i = 0; i < e.changedTouches.length; i++) {
+      var t = e.changedTouches[i];
+      if (t.identifier === s.id) { rightClickAt(t.clientX, t.clientY); return; }
+    }
+  }, { capture: true, passive: false });
+  window.addEventListener('touchcancel', function (e) {
+    if (withhold(e)) start = null;
+  }, { capture: true, passive: false });
+  ['pointerdown', 'pointermove', 'pointerup', 'pointercancel'].forEach(function (type) {
+    window.addEventListener(type, withhold, { capture: true });
+  });
+
+  toggle.addEventListener('click', function () {
+    setArmed(!armed);
+    // Hand the keyboard (and SDL's focus) back to the game, not the switch.
+    toggle.blur();
+    if (canvas.focus) canvas.focus();
+  });
+
+  setArmed(false);
+  window.__empiresTouch = {
+    armed: function () { return armed; },
+    setArmed: setArmed,
+  };
+}
+
 // SDL_CreateWindow("AoE2 Clone", ...) sets document.title on the web backend,
 // clobbering the page's own <title>; force it back after the app takes over.
 setTimeout(function () { document.title = 'EMPIRES — MixMash Studio'; }, 500);
@@ -351,6 +436,7 @@ window.addEventListener('DOMContentLoaded', function () {
   checkCapabilities();
   setupTelemetry();
   setupShortcutGuide();
+  setupTouchOrders();
 
   var hint = document.getElementById('start-hint');
   if (!hint) return;

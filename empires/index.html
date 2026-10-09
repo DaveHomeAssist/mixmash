@@ -86,6 +86,7 @@
       .shortcuts-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
       .shortcuts-actions button {
         flex: 1 1 auto;
+        min-height: 44px;
         padding: 11px 18px; border: none; border-radius: 999px; cursor: pointer;
         font-family: inherit; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
         color: #111; background: #39FF8E;
@@ -98,6 +99,7 @@
       #help-pill {
         position: fixed; left: 14px; bottom: 14px; z-index: 11;
         display: none;
+        min-height: 44px;
         padding: 7px 14px; border-radius: 999px; cursor: pointer;
         border: 1px solid rgba(255, 255, 255, 0.14);
         background: rgba(6, 6, 14, 0.72);
@@ -105,6 +107,31 @@
         letter-spacing: 0.1em; text-transform: uppercase; color: #F0F0F8;
       }
       #help-pill.is-visible { display: block; }
+
+      /* Mobile phase 4: touch has no right button. On a touch screen the Order
+         switch turns the next taps on the map into right-clicks (move, attack,
+         gather, rally, cancel placement); switched off, taps select as before. */
+      #order-toggle {
+        position: fixed; z-index: 11;
+        right: max(14px, env(safe-area-inset-right), var(--safe-right, 0px));
+        top: 50%; transform: translateY(-50%);
+        display: none;
+        min-width: 44px; min-height: 44px;
+        padding: 8px 14px; border-radius: 999px; cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(6, 6, 14, 0.78);
+        font-family: 'Space Mono', monospace; font-size: 11px;
+        letter-spacing: 0.1em; text-transform: uppercase; color: #F0F0F8;
+        touch-action: manipulation;
+      }
+      #order-toggle[aria-pressed="true"] {
+        color: #111; background: #FFB020; border-color: #FFB020;
+      }
+      .touch-only { display: none; }
+      @media (pointer: coarse) {
+        #order-toggle.is-visible { display: block; }
+        .shortcuts-card .touch-only { display: block; }
+      }
 
       /* EM-103: performance telemetry overlay */
       #telemetry {
@@ -133,7 +160,7 @@
       #capability-notice.is-visible { display: block; }
       #capability-notice b { display: block; margin-bottom: 4px; color: #ffb020; }
       #capability-notice button {
-        margin-top: 10px; padding: 6px 12px; cursor: pointer;
+        margin-top: 10px; min-height: 44px; padding: 6px 12px; cursor: pointer;
         border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 999px;
         background: transparent; color: #ffdca8;
         font-family: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
@@ -141,7 +168,7 @@
       #start-hint button {
         font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: 0.08em;
         text-transform: uppercase; color: #111; background: #39FF8E;
-        border: none; border-radius: 999px; padding: 12px 28px; cursor: pointer;
+        border: none; border-radius: 999px; min-height: 44px; padding: 12px 28px; cursor: pointer;
         box-shadow: 0 6px 24px rgba(57,255,142,0.35);
         animation: start-pulse 1.6s ease-in-out infinite;
       }
@@ -197,6 +224,8 @@
           <dd>Toggle the game's own in-match help panel.</dd>
           <dt><kbd>F3</kbd></dt>
           <dd>Toggle the performance overlay.</dd>
+          <dt class="touch-only">Touch</dt>
+          <dd class="touch-only">Tap to select. Turn on <b>Order</b> (right edge) and tap the map to move, attack, gather, or cancel a placement. Lobby civ choice still needs a keyboard.</dd>
         </dl>
         <div class="shortcuts-actions">
           <button id="shortcuts-start" type="button">&#9654; Start skirmish</button>
@@ -206,6 +235,7 @@
     </div>
 
     <button id="help-pill" type="button">? Controls</button>
+    <button id="order-toggle" type="button" aria-pressed="false" aria-label="Order mode: taps on the map give orders">Order</button>
     <div id="telemetry" role="status" aria-live="off"></div>
 
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>

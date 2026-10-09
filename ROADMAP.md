@@ -1,6 +1,6 @@
 # MIXMASH Product Upgrade Roadmap
 
-Updated 2026-07-06. Scope: the MIXMASH fighter at `/play/`. Studio hub pages and the other games in this repo are tracked separately unless a roadmap item explicitly names them.
+Updated 2026-10-09. Scope: the MIXMASH fighter at `/play/`. Studio hub pages and the other games in this repo are tracked separately unless a roadmap item explicitly names them; a short studio snapshot and the open decisions are recorded below so this file is not read as the whole picture.
 
 Cross-catalog UX/mobile/performance polish for every game — including `/play/` tickets MM-101 through MM-105 — is tracked separately in [`docs/SPRINT_BOARDS.md`](docs/SPRINT_BOARDS.md).
 
@@ -9,10 +9,25 @@ Cross-catalog UX/mobile/performance polish for every game — including `/play/`
 - Browser platform fighter with 14 fighters, 11 stages, stock, time, training, Platform Rush, keyboard, gamepad, CPU, pause, fullscreen, DOM command menu, options/config persistence, local progression, and shareable URL presets.
 - Active match resume snapshots are live through `mixmash_active_match_snapshot`, with schema/storage constants and validation in `play/snapshot-data.js` plus `play/core.js`.
 - Combat math has a pure testable core in `src/combat.js`; stage data, fighter data, input binding data, mode rules, snapshot schema, seed/share validation, and catalog tests are now split from `play/index.html` while the renderer/game loop remains a static page.
-- Tests available today: `npm test`, `npm run smoke:play`, and `npm run vercel-build`. `npm test` covers combat math, extracted play core/catalog/system modules, and MarsScape API/engine rails. `npm run smoke:play` covers the `/play/` browser flow through title, menu, controls, training, resume, Platform Rush, progression, share links, content pack, and async ghost behavior.
-- This repo is a multi-game studio (fighter at `/play/`, plus MarsScape, Garden, Empires) and already ships serverless functions on Vercel (`vercel.json`, `api/**`) alongside the GitHub Pages deploy.
-- CI runs `npm test`, `npm run vercel-build`, installs Chromium, and runs `npm run smoke:play` on pull requests, manual dispatch, and pushes to `gh-pages`. The push trigger includes `play/**`, `mars/**`, `api/**`, package files, and the workflow itself, so fighter and backend changes are no longer skipped on the deploy path.
+- Fighter rails: `npm test` (combat math, extracted play core/catalog/system modules, alongside the MarsScape, Front of House, hub and admin catalog suites), `npm run smoke:play` (title, menu, controls, training, resume, Platform Rush, progression, share links, content pack, async ghosts), and `npm run smoke:mobile` (touch start and on-screen pad on phone and tablet configs).
+- This repo is a multi-game studio and also ships serverless functions on Vercel (`vercel.json`, `api/**`) alongside the GitHub Pages deploy.
+- CI (`.github/workflows/ci.yml`) runs on every push to `gh-pages` with no path filter (the admin catalog check covers every tracked file), on every pull request, and on manual dispatch. The `test` job runs `npm ci`, the Front of House vendor/asset checks, `npm test`, `npm run vercel-build`, the MarsScape art validate/report/contact-sheet drift checks, the MarsScape and Front of House simulation and docs drift checks, then installs Chromium and WebKit and runs the landing, Front of House, art visual, play, catalog, zelda2mario, admin and mobile touch smokes. Separate jobs handle Front of House performance calibration (manual) and paired performance regression (pull requests that touch the renderer).
 - Live host: `https://mixmash.games/play/`.
+
+## Studio Snapshot (2026-10-09)
+
+- The homepage at `https://mixmash.games/` is the six-game festival catalog (`src/hub/catalog.mjs`): MIXMASH (Released), Pitch Riot (Released), Front of House (Early playable; noindex, out of the sitemap), MarsScape, Garden OS: Story Mode and Age of Dave (Playable preview).
+- Mobile and tablet fix program (`test/mobile-touch-smoke.mjs`, 12 phone/tablet configs in WebKit and Chromium): MarsScape map nodes, skill rows and Reset view now give a 44 px touch target (phase 3b), and Age of Dave's start, guide and Controls buttons are 44 px with an Order switch that turns a tap into the right-click command on touch screens (phase 4). The only remaining expected failure is the Front of House 40 px buttons.
+- Age of Dave touch limits that need an `aoe2-clone` C++ change rather than a page change: the lobby civ/player choice is keyboard-only, there are no numbered control groups, and box-select by touch drag is unverified on real devices.
+- Physical phones, tablets, controllers and two-person local play are not certified by browser emulation.
+
+## Open Decisions for Dave
+
+| Decision | State | Where |
+|---|---|---|
+| Real DJ/festival names | Open. The base roster and the Encore content (Printworks, Electric Forest, Flume, Zomboy) use real DJ/festival names as parody; whether to keep them or rename is not decided (see D1). | `/play/` fighter and stage data |
+| PR #11 art review (DEC-79 paid-test candidate) | Open, not merged. The PR itself says not to merge until Dave reviews the paid-test scene in game at 1.0x, completes the seven acceptance checks, and records the receipt in `mars/docs/DECISIONS.md`. | `dec79-paid-test-candidate` |
+| Age of Dave control groups | Open. No control-group binding exists in the shipped WASM build; adding one is an engine change in the `aoe2-clone` repo, not this one. | `docs/SPRINT_BOARDS.md` EMPIRES notes |
 
 ## Product Direction
 
@@ -22,7 +37,7 @@ MIXMASH should move from "impressive browser fighter demo" to "replayable browse
 
 | Gate | Status | Decision Needed | Why It Matters |
 |------|--------|-----------------|----------------|
-| D1: Character and venue identity | Re-themed 2026-07-07 | Encore content re-skinned to match the DJ/festival roster: Printworks and Electric Forest stages, Flume and Zomboy fighters. Same real-name parody basis as the base roster. | Prioritizes thematic cohesion; likeness exposure now consistent with the rest of the roster. |
+| D1: Character and venue identity | Re-themed 2026-07-07; real-name decision open | Encore content re-skinned to match the DJ/festival roster: Printworks and Electric Forest stages, Flume and Zomboy fighters. Same real-name parody basis as the base roster. Whether to keep real DJ/festival names is still Dave's call. | Prioritizes thematic cohesion; likeness exposure now consistent with the rest of the roster. |
 | D2: Hosting security model | Resolved for GitHub Pages | `/play/index.html` now includes a JS frame guard and exposes its state through `render_game_to_text()`. Real `frame-ancestors` headers still require a future Vercel-hosted `/play/` move. | Gives the current static host a practical frame defense without a hosting rewrite. |
 | D3: Online scope | Resolved as async local ghost | No real-time network multiplayer in this pass. Platform Rush records and replays local ghosts keyed by deterministic stage/seed. | Adds replayable async behavior without latency/backend risk. |
 | D4: Progression storage | Resolved as local-only | `mixmash_profile` stores versioned local stats, challenge completions, best Rush times, and ghost data with corruption recovery and reset. | Adds repeat-play progression without cloud privacy or account scope. |
@@ -31,7 +46,7 @@ MIXMASH should move from "impressive browser fighter demo" to "replayable browse
 
 ### P0: Roadmap Cleanup and Verification Rails
 
-Status: Implemented locally; verified 2026-07-06.
+Status: Shipped. CI later dropped the push path filter entirely, so every push to `gh-pages` runs the full suite (see Current Baseline).
 
 Definition of done:
 - `ROADMAP.md` matches current repo reality.
@@ -41,9 +56,9 @@ Definition of done:
 
 Implementation plan:
 1. Keep this roadmap current as product scope changes.
-2. (Done) Widen the `.github/workflows/ci.yml` push path filter to include `play/**`, `mars/**`, and `api/**` so fighter/backend pushes to `gh-pages` actually trigger CI.
-3. Expand `.github/workflows/ci.yml` from `npm test` to also run `npm run vercel-build`. Remember `vercel-build` only checks `api/**`/`mars/**`, so it is a backend rail, not a fighter rail.
-4. Promote `npm run smoke:play` to a required CI step — it is the fighter's only end-to-end rail — behind a cached Playwright browser install rather than treating it as optional.
+2. (Done, then superseded) Widen the `.github/workflows/ci.yml` push path filter; the filter has since been removed so every `gh-pages` push runs CI.
+3. (Done) CI runs `npm run vercel-build`. It syntax-checks the API, MarsScape, Front of House, admin and hub scripts, so it is a backend/build rail, not a fighter rail.
+4. (Done) `npm run smoke:play` is a CI step, together with `npm run smoke:mobile` for the touch path.
 5. Add a short verification section to future PRs and commits: commands run, live URL checked, known gaps.
 
 Verification:
@@ -53,7 +68,7 @@ Verification:
 
 ### P1: First Session and Controls Upgrade
 
-Status: Implemented locally; verified 2026-07-06.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06.
 
 Definition of done:
 - A first-time player can start a match in under 30 seconds without reading external docs.
@@ -76,7 +91,7 @@ Verification:
 
 ### P2: Training Lab and Combat Readability
 
-Status: Implemented locally; verified 2026-07-06.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06.
 
 Definition of done:
 - Training mode exposes useful combat feedback: damage, hitstun, shield state, attack state, launch vector, and recent hit events.
@@ -98,7 +113,7 @@ Verification:
 
 ### P3: Platform Rush Solo Mode
 
-Status: Implemented locally; verified 2026-07-06.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06.
 
 Definition of done:
 - New mode is selectable from mode select.
@@ -122,7 +137,7 @@ Verification:
 
 ### P4: Encore Content Pack
 
-Status: Implemented locally; verified 2026-07-06. Encore content re-themed 2026-07-07 to real DJ/festival identities (Printworks, Electric Forest, Flume, Zomboy) for cohesion with the base roster.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06. Encore content re-themed 2026-07-07 to real DJ/festival identities (Printworks, Electric Forest, Flume, Zomboy) for cohesion with the base roster.
 
 Definition of done:
 - Two new stages ship, bringing the fighter stage count from 9 to 11.
@@ -146,7 +161,7 @@ Verification:
 
 ### P5: Local Progression and Challenges
 
-Status: Implemented locally; verified 2026-07-06. D4 is resolved as local-only storage.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06. D4 is resolved as local-only storage.
 
 Definition of done:
 - Local profile tracks match count, wins, KOs, favorite fighter, best Platform Rush times, and challenge completions.
@@ -169,7 +184,7 @@ Verification:
 
 ### P6: Shareable Party Layer
 
-Status: Implemented locally; verified 2026-07-06. Cloud leaderboards remain out of scope because D4 is local-only.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06. Cloud leaderboards remain out of scope because D4 is local-only.
 
 Definition of done:
 - Match presets can be shared by URL: fighters, stage, mode, CPU, hazards, and seed.
@@ -191,7 +206,7 @@ Verification:
 
 ### P7: Online Multiplayer Prototype
 
-Status: Implemented locally; verified 2026-07-06. D3 is resolved as async local ghosts, not real-time multiplayer.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06. D3 is resolved as async local ghosts, not real-time multiplayer.
 
 Definition of done:
 - Product decision selects one path: no online, async only, WebRTC prototype, or backend authoritative multiplayer.
@@ -213,7 +228,7 @@ Verification:
 
 ### P8: Engine Modularization and Maintainability
 
-Status: Implemented locally; verified 2026-07-06.
+Status: Shipped to `gh-pages` (live at `/play/`); verified 2026-07-06.
 
 Definition of done:
 - Combat, stage data, fighter data, input mapping, snapshot persistence, and mode rules are separable modules.

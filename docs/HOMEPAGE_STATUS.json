@@ -1,18 +1,18 @@
 {
   "id": "mixmash",
   "name": "MixMash Studio (other games)",
-  "status": "amber",
-  "head": "Homepage candidate based on bb44ccb",
-  "lastActivity": "2026-10-05",
-  "statusReason": "Approved homepage implemented and locally verified. CI, direct gh-pages delivery and live readback have separate provider evidence. Other game audit findings are outside this update.",
+  "status": "green",
+  "head": "gh-pages 49709e7 (six-game homepage live)",
+  "lastActivity": "2026-10-09",
+  "statusReason": "The six-game festival homepage is live on mixmash.games; the served index.html is byte-identical to gh-pages. CI on gh-pages 49709e7 (run 37933620344) passed, including the landing, catalog and mobile touch smokes. Physical-device acceptance and the open decisions below are outside this homepage update.",
   "nextStep": {
-    "title": "Complete direct homepage release and verify the public result",
-    "doneWhen": "Required CI passes, the same candidate reaches gh-pages, Pages succeeds and live catalog behavior is verified.",
-    "owner": "Codex"
+    "title": "No homepage release step is pending; resolve the open decisions when Dave is ready",
+    "doneWhen": "Dave decides on real DJ/festival names, reviews PR #11 (DEC-79 art candidate) in game, and decides whether Age of Dave control groups get an aoe2-clone engine ticket.",
+    "owner": "Dave"
   },
   "evidence": {
-    "checkedOn": "2026-10-05",
-    "sourceRevision": "bb44ccb245e6d89bc2f6e7cfaf9b65f6a8be5acd plus homepage candidate"
+    "checkedOn": "2026-10-09",
+    "sourceRevision": "49709e7 on gh-pages; live https://mixmash.games/index.html matched the tracked index.html on 2026-10-09"
   },
   "findings": [],
   "phases": [
@@ -25,7 +25,7 @@
         "HOME-03 A accepted: Pick for me",
         "Catalog, artwork, layout, integration and local verification implemented"
       ],
-      "gate": "Required CI before direct gh-pages delivery, then Pages and live readback"
+      "gate": "Done: homepage is on gh-pages, later gh-pages CI is green, and the live homepage matches the source"
     }
   ],
   "files": [
@@ -50,7 +50,11 @@
       "why": "Six-game public catalog"
     }
   ],
-  "decisionsForDave": [],
+  "decisionsForDave": [
+    "Real DJ/festival names: keep the real-name parody basis for the /play/ roster and Encore stages (Printworks, Electric Forest, Flume, Zomboy) or rename (ROADMAP.md D1).",
+    "PR #11 art review: DEC-79 paid-test candidate is open and must not merge until Dave reviews it in game at 1.0x, completes the seven acceptance checks and records the receipt in mars/docs/DECISIONS.md.",
+    "Age of Dave control groups: not in the shipped WASM build; adding them is a C++ change in the aoe2-clone repo."
+  ],
   "context": [
     "Projection of the homepage section in SPRINT_BOARDS.md.",
     "Accepted HOME-01, HOME-02 and HOME-03 decisions remain settled.",

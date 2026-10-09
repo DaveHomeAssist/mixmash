@@ -912,14 +912,34 @@ a:focus-visible {
     --base-scale: 0.47;
   }
 
+  /* Phase 3b: the board is drawn at --base-scale 0.47 here, so a 4.6rem piece
+     reached the finger at ~35x31 px. Pad the hit box out to 6rem (45 px after
+     scaling) while the padding keeps the label and charge bar at their old
+     4.6rem width and position (the -48% anchor keeps the content centred). */
   .map-piece {
-    width: 4.6rem;
+    width: 6rem;
+    min-height: 6rem;
+    padding: 0.95rem 0.7rem;
   }
 
   /* Two columns, not a five-button stack — the footer must stay shallow for
      the page to hold one viewport. */
   .footer-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Phase 3b: on touch screens every tappable row and the map's Reset view
+   control get a 44 px hit area. Desktop (fine pointer) keeps the compact rows. */
+@media (pointer: coarse) {
+  .skill-row--expandable {
+    min-height: 2.75rem;
+  }
+
+  .view-reset {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0.4rem 0.85rem;
   }
 }
 
