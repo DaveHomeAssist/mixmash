@@ -175,7 +175,7 @@
       "type": "balance",
       "sev": "P2",
       "title": "Venue-scale bars and restrooms (0.3.0): implemented, in review",
-      "detail": "Dave reported on 2026-10-12 that bar and restroom logic looked flawed: a sold-out Split Acre settlement asked for 47 bars and 146 restrooms because every venue used the Lot rates (125 and 40 guests per unit). Meeting that guideline would push Split Acre below its 6,000 permit and Loam Shell below 700. Implemented per D13-D16 (CT-DEC-36): Bar tent (3x2, serves 1,000) and Restroom block (2x2, serves 500) at Loam Shell and Split Acre; guideline-meeting Suggested layouts above the Lot (Fathom Hall 94%, Loam Shell and Split Acre 100% at permit capacity); venue-correct settlement gap; CT-DEC-26 careless guard moved to the Festival. Branch commit fd8952c passes 455 unit tests, vendor/asset/docs/build checks and all three simulators on Dominic; Lot BALANCE_BASELINE unchanged. Remaining: PR CI, merge, Pages, hosted check, tag, and Dave's balance/readability review.",
+      "detail": "Dave reported on 2026-10-12 that bar and restroom logic looked flawed: a sold-out Split Acre settlement asked for 47 bars and 146 restrooms because every venue used the Lot rates (125 and 40 guests per unit). Meeting that guideline would push Split Acre below its 6,000 permit and Loam Shell below 700. Implemented per D13-D16 (CT-DEC-36): Bar tent (3x2, serves 1,000) and Restroom block (2x2, serves 500) at Loam Shell and Split Acre; guideline-meeting Suggested layouts above the Lot (Fathom Hall 94%, Loam Shell and Split Acre 100% at permit capacity); venue-correct settlement gap; CT-DEC-26 careless guard moved to the Festival. PR146 head 92fd3f5 passes 455 unit tests, vendor/asset/docs/build checks, all three simulators and all eleven Front of House smoke groups on Dominic; Lot BALANCE_BASELINE unchanged. A Dominic Playwright check confirms the tools, A/W keys, Lot exclusion and the settlement line 'Bar service 375 of 6,000 \u00b7 add 6 bar tents; restroom service 400 of 6,000 \u00b7 add 12 restroom blocks'. Remaining: PR CI, Dave's merge approval, Pages, hosted check, tag, and Dave's balance/readability review.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/DECISIONS.md",
@@ -2326,17 +2326,18 @@
     "cache": "v78",
     "saveSchema": 2,
     "branch": "claude/foh-amenity-scale-1012",
-    "commit": "fd8952c638baa190ce7b90d2d2fbc27fa0584a9d",
+    "commit": "92fd3f54643406aab3e853f786a5785dbbe6353d",
+    "pullRequest": "https://github.com/DaveHomeAssist/mixmash/pull/146",
     "decisions": "CT-DEC-36 (D13-D16), CT-DEC-26 amended",
     "brief": "FOH-V02b16",
-    "verification": "Dominic Playwright container (Node 24): npm test 455/455, vendor/asset/perf/build checks, sim (Lot baseline unchanged), tiers and career simulators regenerated, docs regenerated with Mac parity.",
+    "verification": "Dominic Playwright container (Node 24): npm test 455/455, vendor/asset/perf/build checks, sim (Lot baseline unchanged), tiers and career simulators regenerated, docs regenerated with Mac parity, all eleven CI Front of House smoke groups pass, and a Playwright check of tools, keys, Lot exclusion, phone fit and the settlement gap line at 1440 and 375 px.",
     "tierCohort": {
       "careful": "Lot 100, Club 100, Amphitheater 100, Festival 99 (unchanged)",
       "careless": "Club 100 (was 69), Amphitheater 100 (was 69), Festival 91 (was 66)"
     },
     "pending": [
-      "Browser smokes and visual check on Dominic",
-      "PR CI, merge, Pages and hosted check",
+      "PR146 CI",
+      "Dave approves merge; then Pages and hosted check",
       "Tag front-of-house-v0.3.0 after deployed merge",
       "Dave's balance and readability review"
     ],
