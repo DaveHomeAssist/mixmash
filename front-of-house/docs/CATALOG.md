@@ -205,9 +205,11 @@ Each show has one incident (R-11). *Window* is when it can happen, as a share of
 | `bus-compound` | Bus compound | 6 × 3 | 6 kW | $900 | — | max 1, blocks sightlines | no |
 | `lights` | Light tower | 1 × 1 | 8 kW | $175 | — | max 1, blocks sightlines | yes |
 | `bar` | Bar | 2 × 1 | 1.5 kW | $100 | 2 bar | blocks sightlines | yes |
+| `bar-tent` | Bar tent | 3 × 2 | 4 kW | $500 | 6 bar | blocks sightlines, Loam Shell and Split Acre only | no |
 | `food` | Food stall | 2 × 1 | — | Vendor funded | — | max 1, blocks sightlines | no |
 | `trailer` | Facility trailer | 3 × 2 | 1.5 kW | $240 + optional cleaner/utilities | — | max 1, blocks sightlines | no |
 | `restroom` | Restroom unit | 1 × 1 | — | $60 | — | blocks sightlines | yes |
+| `restroom-block` | Restroom block | 2 × 2 | — | $600 | — | blocks sightlines, Loam Shell and Split Acre only | no |
 | `gate` | Entry gate | 1 × 1 | — | Free | 1 door | on the boundary | yes |
 | `exit` | Exit | 1 × 1 | — | Free | — | on the boundary | yes |
 | `fence` | Fence kit | — | — | $150 | — | max 1, site-wide kit | no |

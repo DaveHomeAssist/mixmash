@@ -51,13 +51,17 @@ const PROPS = {
   delay: { box: { top: '#536271', side: '#344250', front: '#162532', height: 4, thin: true } },
   lights: { box: { top: '#9ca3af', side: '#6b7280', front: '#4b5563', height: 2.6, thin: true }, sprite: { w: 0.62, foot: 0.98, lamp: 0.1 } },
   bar: { box: { top: '#f43f5e', side: '#a8263c', front: '#7f1d2e', height: 0.8 }, sprite: { w: 1.35, foot: 0.94 } },
+  'bar-tent': { box: { top: '#fda4af', side: '#be123c', front: '#881337', height: 1.5 } },
   trailer: { box: { top: '#b6a5c8', side: '#806997', front: '#514164', height: 1.4 } },
   food: { box: { top: '#5faf92', side: '#32785e', front: '#1f5742', height: 1.1 } },
   restroom: { box: { top: '#3b82f6', side: '#1d4ed8', front: '#1e3a8a', height: 1.3 }, sprite: { w: 0.72, foot: 0.97 } },
+  'restroom-block': { box: { top: '#93c5fd', side: '#1d4ed8', front: '#1e3a8a', height: 1.3 } },
   gate: { box: { top: '#84cc16', side: '#4d7c0f', front: '#3f6212', height: 0.25 }, sprite: { w: 1.15, foot: 0.96 } },
   exit: { box: { top: '#ef4444', side: '#b91c1c', front: '#7f1d1d', height: 0.25 }, sprite: { w: 1.05, foot: 0.96 } },
 };
 
+// Words printed on props drawn only as boxes, so they read apart from each other.
+const BOX_LABELS = { food: 'FOOD', trailer: 'FACILITIES', 'bar-tent': 'BAR', 'restroom-block': 'WC' };
 // Box colours and heights, exported so the panel's palette swatches match the board.
 export const LOOK = Object.fromEntries(Object.entries(PROPS).map(([id, p]) => [id, p.box]));
 // Sprite fit per prop, exported for the asset manifest (docs/ASSETS.md, tools/docs.mjs).
@@ -868,9 +872,9 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       else box(o.x, o.y, d.w, d.h, lookOf(o).height, lookOf(o), flickerOf(o));
       hits.push(g.r ? { o, d, r: g.r } : { o, d, poly: g.poly });
       if (o.type === 'stage' && !repaint) drawStageFacing(o);
-      if (o.type === 'food' || o.type === 'trailer') {
+      if (BOX_LABELS[o.type]) {
         const [x, y] = iso(o.x + d.w / 2, o.y + d.h / 2, LOOK[o.type].height);
-        ctx.save(); ctx.fillStyle = '#102b21'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(o.type === 'food' ? 'FOOD' : 'FACILITIES', x, y); ctx.restore();
+        ctx.save(); ctx.fillStyle = '#102b21'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(BOX_LABELS[o.type], x, y); ctx.restore();
       }
       (tilesAt.get(i) || []).forEach(([x, y]) => overlay(x, y));
       drawCrowd(crowdAt.get(i) || [], scene.t);

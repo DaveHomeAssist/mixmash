@@ -72,6 +72,10 @@ New Split Acre bookings require one **VIP deck** and one **Buses** compound befo
 
 The **Rider** page in Deal terms, Sound and views and Stage accounts explains these requirements. Settlement Costs separates Rider rentals from other site and production costs. Older unmarked bookings retain their original rules.
 
+### Bars and restrooms at larger venues
+
+Every bar and restroom serves a set number of guests, shown on its Build tool. A bar serves 125 and a restroom unit 40. Loam Shell and Split Acre also offer a **Bar tent** (key A: 3×2 tiles, serves 1,000, $500 plus 6 bar staff, 4kW) and a **Restroom block** (key W: 2×2 tiles, serves 500, $600). Small and large units add together. Bars and restrooms score fully when each covers the whole crowd; the settlement names how many more of the room's largest unit would close a gap. Suggested layouts above the Lot provide this service at full capacity, except Fathom Hall, where the floor fits about 94% without losing tickets.
+
 ### Included Club lights
 
 New Fathom Hall bookings include house lights in the room rent. Suggested layout omits an unnecessary lighting tower. An extra tower still costs rental money and uses power; it adds no lighting quality bonus. Pillars still block views, and a placed portable PA replaces house sound coverage. Older unmarked bookings keep their original lighting terms.

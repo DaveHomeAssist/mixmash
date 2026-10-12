@@ -5,6 +5,13 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.0 — 2026-10-12
+
+- Adds a Bar tent (3×2, serves 1,000) and Restroom block (2×2, serves 500) at Loam Shell and Split Acre, keys A and W. They add to the existing bar and restroom service, so a full house at either venue can now meet its amenity guideline without losing tickets.
+- Suggested layouts above the Lot now provide that service at permit capacity: Fathom Hall 94% (its floor limit), Loam Shell and Split Acre 100%.
+- Build tools show how many guests each bar or restroom serves. The settlement names the gap and how many of the room's largest unit would close it, instead of quoting Lot rates at every venue.
+- Small-unit rates, every Lot result and every layout without the new objects are unchanged. Save schema 2 is unchanged. Uses cache v78, reserved separately from the open v77 candidate.
+
 ## 0.2.0 — 2026-10-09
 
 - Adds an explicit Advisory desk check-in with Overview, Ticketing, Talent and Operations pages.

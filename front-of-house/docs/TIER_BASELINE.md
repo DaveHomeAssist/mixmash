@@ -13,9 +13,9 @@ This validates the current mechanics. Festival VIP/bus requirements are included
 | careful | amphitheater | 100/100 | 100 | None |
 | careful | festival | 99/100 | 100 | 10 |
 | careless | lot | 100/100 | 100 | None |
-| careless | club | 69/100 | 100 | 1, 2, 3, 4, 11, 12, 16, 18, 27, 30, 33, 35, 37, 43, 47, 48, 54, 56, 65, 67, 72, 75, 76, 77, 80, 85, 88, 92, 93, 97, 98 |
-| careless | amphitheater | 69/100 | 69 | 1, 2, 3, 4, 11, 12, 16, 18, 27, 30, 33, 35, 37, 43, 47, 48, 54, 56, 65, 67, 72, 75, 76, 77, 80, 85, 88, 92, 93, 97, 98 |
-| careless | festival | 66/100 | 69 | 1, 2, 3, 4, 11, 12, 16, 18, 27, 30, 33, 35, 37, 39, 43, 47, 48, 54, 56, 61, 65, 67, 69, 72, 75, 76, 77, 80, 85, 88, 92, 93, 97, 98 |
+| careless | club | 100/100 | 100 | None |
+| careless | amphitheater | 100/100 | 100 | None |
+| careless | festival | 91/100 | 100 | 9, 14, 18, 26, 33, 39, 56, 75, 93 |
 
 ## Verdicts
 
@@ -23,6 +23,6 @@ This validates the current mechanics. Festival VIP/bus requirements are included
 - PASS: Careful club progression
 - PASS: Careful amphitheater progression
 - PASS: Careful festival progression
-- PASS: Careless Club progression among reached Club careers is not universal
+- PASS: Careless Festival progression among attempted Festival careers is not universal
 - PASS: Every reached Club cohort plays at least five carried shows
 - PASS: Careful completed careers can settle another Festival day

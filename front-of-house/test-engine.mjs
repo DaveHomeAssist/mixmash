@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import * as D from './data.mjs';
 import {
-  applyAction, buzz, careerProgress, cheapestShowCost, createGame, doorRushPilot, evaluateShow, evaluateVenue, forecast, migrateSave,
+  amenitySupply, applyAction, buzz, careerProgress, cheapestShowCost, createGame, doorRushPilot, evaluateShow, evaluateVenue, forecast, migrateSave,
   nextSeed, nextShowCost, normalizeState, offersFor, termsFor, liveServicesFor, liveIncidentMinute,
   presaleSplit, priceFactor, rollShow, incidentAtFor, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
@@ -979,4 +979,52 @@ test('new Club placement and replacement layouts reject fixed pillars without al
   assert.deepEqual(normalizeState(old), old, 'existing saves retain their exact layout');
   assert.deepEqual(evaluateVenue(normalizeState(old).venue), evaluateVenue(old.venue));
   assert.equal(applyAction(old, { type: 'place', object: { type: 'restroom', x: 4, y: 12, rot: 0 } }).error, null, 'a legacy overlap does not block unrelated safe editing');
+});
+
+// CT-DEC-36: venue-scale bars and restrooms.
+test('venue-scale amenities: bar tents and restroom blocks are offered only at Loam Shell and Split Acre', () => {
+  const tent = { type: 'bar-tent', x: 2, y: 4, rot: 0 }, block = { type: 'restroom-block', x: 0, y: 6, rot: 0 };
+  for (const id of ['lot', 'club']) {
+    const { accepted, problems } = validateLayout([tent, block], { id });
+    assert.equal(accepted.length, 0);
+    assert.deepEqual(problems.map((p) => p.message),
+      ['Bar tent is available only at Loam Shell and Split Acre', 'Restroom block is available only at Loam Shell and Split Acre']);
+  }
+  for (const id of ['amphitheater', 'festival']) {
+    const turned = { ...tent, x: 10, y: 10, rot: 1 };
+    assert.deepEqual(validateLayout([tent, block, turned], { id }).problems, []);
+    assert.equal(evaluateVenue({ id, objects: [tent, block, turned] }).openFloorTiles, D.VENUES[id].grid.w * D.VENUES[id].grid.h - 16);
+    assert.match(validateLayout([tent, { ...block, x: 3, y: 5 }], { id }).problems[0].message, /overlaps/);
+  }
+});
+
+test('venue-scale amenities: supply, bar sales, staff and costs add small and large units', () => {
+  const venue = { capacity: 6000, clearTiles: 750, density: 8, paTier: 'M', soundCapacity: 6000, lights: 1, gates: 20, exits: 4,
+    bars: 2, barTents: 1, restrooms: 5, restroomBlocks: 1 };
+  assert.deepEqual(amenitySupply(venue), { bar: 2 * D.BAR_RATIO + D.BAR_TENT.serves, restroom: 5 * D.RESTROOM_RATIO + D.RESTROOM_BLOCK.serves });
+  assert.deepEqual(amenitySupply({ bars: 1, restrooms: 4 }), { bar: D.BAR_RATIO, restroom: 4 * D.RESTROOM_RATIO });
+  const r = evaluateShow({ ...WORKED_EXAMPLE, venue, draw: 9000, incidentId: null });
+  const { bar, restroom } = amenitySupply(venue);
+  assert.ok(r.attendance > bar && r.attendance > restroom, 'the crowd outnumbers both supplies');
+  assert.equal(r.parts.amenities, (bar / r.attendance + restroom / r.attendance) / 2);
+  assert.equal(r.bar, Math.round(D.BAR_NET_PER_HEAD * (r.satisfaction / 100) * (bar + (r.attendance - bar) * D.BAR_SHORTFALL)));
+  assert.equal(r.costs.bars, 2 * D.BAR_SETUP + D.BAR_TENT.setup);
+  assert.equal(r.costs.restrooms, 5 * D.RESTROOM_UNIT + D.RESTROOM_BLOCK.rent);
+  assert.equal(r.costs.staff, (Math.ceil(6000 / D.SECURITY_PER) + 20 * D.DOOR_STAFF_PER_GATE + 2 * D.BAR_STAFF_PER_BAR + D.BAR_TENT.staff) * D.STAFF_RATE);
+});
+
+test('venue-scale amenities: Suggested layouts above the Lot meet the guideline at permit capacity where the floor allows', () => {
+  const floor = { club: (1 + 8 * D.RESTROOM_RATIO / 360) / 2, amphitheater: 1, festival: 1 };
+  for (const id of ['club', 'amphitheater', 'festival']) {
+    const spec = D.VENUES[id];
+    const venues = [{ id, objects: spec.starter, profile: { version: 1 } }];
+    if (id === 'festival') venues.push({ ...venues[0], objects: [...spec.starter, ...D.FESTIVAL_SUPPORT_LAYOUT], support: { version: 1 } });
+    for (const venue of venues) {
+      const v = evaluateVenue(venue), s = amenitySupply(v);
+      assert.equal(v.capacity, spec.permit, id);
+      assert.ok(v.ready, id);
+      assert.deepEqual(v.problems, [], id);
+      assert.equal((Math.min(1, s.bar / v.capacity) + Math.min(1, s.restroom / v.capacity)) / 2, floor[id], id);
+    }
+  }
 });

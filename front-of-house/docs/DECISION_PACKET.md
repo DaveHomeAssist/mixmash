@@ -58,6 +58,15 @@ Nothing waits on this answer; 0.1.2 ships either way.
 | --- | --- | --- | --- | --- | --- |
 | D12 | Save-and-replay of a seeded night ([FOH-QA-013](QA_AUDIT.md)). A save code or second tab taken before doors shows how the night goes, so the player can replay it with a different response. No cash is duplicated | **Accept it as single-player freedom**; keep nights seeded and reproducible, and say in the manual that a save code restores a night exactly | Reseed a night that is reloaded or imported between Open doors and Settle, so its draw and incident change. Ends informed replays; breaks the exact replay that tests and save repair rely on | Lock the career after doors: refuse imports and tab switches until the night is signed. Strongest integrity, most friction, still bypassable by editing storage | **A / medium**. The game has no scores or competition to protect, the career already carries on after a bad night (R-21), and B and C cost reproducibility or convenience for little gain |
 
+## Settled 2026-10-12: venue-scale bars and restrooms
+
+Dave reported that bar and restroom logic looked flawed at Split Acre: the settlement asked for 47 bars and 146 restrooms. Every venue used the Lot's rates, so a full house above the Lot could not meet the guideline. The options were presented as multiple choice; selected answers are in bold. Scope is in [FOH-V02b16](FEATURE_BRIEFS.md#foh-v02b16--venue-scale-bars-and-restrooms).
+
+- **D13, how service scales at larger venues:** A — per-venue rates for the existing objects (recommended); B — scale rates by each venue's crowd density; **C — new festival-size Bar tent and Restroom block objects**; D — keep the rule and fix only the text.
+- **D14, Suggested layouts:** A — leave them unchanged (recommended); B — update Split Acre only; **C — update every venue above the Lot to meet its guideline**.
+- **D15, where the new objects are offered** (asked because Loam Shell cannot meet its guideline at full capacity with small units): **A — Loam Shell and Split Acre; Fathom Hall gets as close as its floor allows (recommended)**; B — Split Acre only, below the guideline; C — Split Acre only, below permit capacity; D — every venue above the Lot.
+- **D16, the careless-Club guard** (asked because careless play now unlocks Fathom Hall on all 100 seeds, which fails [CT-DEC-26](DECISIONS.md#ct-dec-26-tier-simulator-acceptance)): **A — move the guard to careless Festival play, now 91/100 (recommended)**; B — keep Fathom Hall's old Suggested layout; C — drop the guard.
+
 ## Recorded answers
 
 - **D1 = A, accepted 2026-10-04:** Dave selected “3D Lot prototype first, then live operations.” This settles sequence. Art, crowd implementation, performance thresholds and public release remain open; this answer is not a blanket instruction to implement all briefs. Recorded in [CT-DEC-14](DECISIONS.md#ct-dec-14-expansion-sequence).
@@ -68,6 +77,8 @@ Nothing waits on this answer; 0.1.2 ships either way.
 - Dave initially requested “d2, explain a vs b, accept A for d3 d4 d5”, then explicitly answered “Choose B — more realistic 3D”. **D2 = B, accepted 2026-10-04**, recorded in [CT-DEC-18](DECISIONS.md#ct-dec-18-realistic-3d-art-direction).
 
 - **D6–D11 = A, accepted 2026-10-04:** Codex selected all six under Dave’s explicit delegation to decide autonomously. These are delegated selections, not six literal letter answers from Dave. Scope and rationale are recorded in [CT-DEC-19](DECISIONS.md#ct-dec-19-delegated-milestone-decisions).
+
+- **D13 = C, D14 = C, D15 = A, D16 = A, accepted 2026-10-12:** Dave chose “New festival-size objects”, “Update every venue above the Lot”, “Loam Shell + Split Acre (Recommended)” and “Move the check to Split Acre (Recommended)”. Recorded in [CT-DEC-36](DECISIONS.md#ct-dec-36-venue-scale-bars-and-restrooms).
 
 ## Execution sequence
 
