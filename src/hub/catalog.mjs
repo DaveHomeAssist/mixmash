@@ -47,7 +47,7 @@ export const games = [
     "description": "Make show night pay. Book an act, build a venue, promote the show and settle the money. Start with a parking lot and earn your next room.",
     "image": "foh.jpg",
     "alt": "A concert venue being built for show night in Front of House.",
-    "cover": "foh-venue.jpg",
+    "cover": "foh.jpg",
     "coverAlt": "Front of House 3D Build view: a parking-lot venue with a stage, facilities, and build controls.",
     "players": "Solo",
     "controls": "Mouse or keyboard",

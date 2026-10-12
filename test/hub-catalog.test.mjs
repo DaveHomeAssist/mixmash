@@ -39,16 +39,16 @@ test('FOH approval affects discovery only, not indexing or game saves', async ()
   const sw = await read('sw.js');
   for (const file of ['src/hub/style.css', 'src/hub/app.js', ...playableGames.map(g => `assets/previews/${g.image}`)]) assert.ok(sw.includes(`'./${file}'`));
 });
-
-test('Front of House detail uses its gameplay image instead of the mislabeled fighter poster', async () => {
-  const game = playableGames.find(g => g.id === 'front-of-house');
-  assert.equal(game.cover, 'foh-venue.jpg');
-  assert.match(game.coverAlt, /Front of House 3D Build view/);
-  const image = await readFile(new URL(`assets/covers/${game.cover}`, root));
-  const wrong = await readFile(new URL('assets/covers/foh.jpg', root));
-  assert.notDeepEqual(image, wrong);
+test('detail artwork resolves from each game record without using another game cover', async () => {
   const html = await read('index.html');
-  const detail = html.match(/<section class="view detail-view[^>]*data-game-detail="front-of-house"[\s\S]*?<\/section>/)?.[0];
-  assert.ok(detail?.includes('src="/assets/covers/foh-venue.jpg"'));
-  assert.ok(detail?.includes('href="/front-of-house/"'));
+  for (const game of playableGames) {
+    const asset = `/assets/covers/${game.cover}`;
+    assert.ok((await stat(new URL(asset.slice(1), root))).size > 0, `${game.name}: detail artwork exists`);
+    const section = html.match(new RegExp(`<section class="view detail-view[^>]*data-game-detail="${game.id}"[\\s\\S]*?</section>`))?.[0];
+    assert.ok(section?.includes(`src="${asset}"`), `${game.name}: detail artwork follows its record`);
+    assert.ok(section.includes(`href="${game.route}"`), `${game.name}: play destination follows its record`);
+  }
+  const frontOfHouse = playableGames.find(game => game.id === 'front-of-house');
+  assert.equal(frontOfHouse.cover, 'foh.jpg');
+  assert.match(frontOfHouse.coverAlt, /Front of House 3D Build view/);
 });

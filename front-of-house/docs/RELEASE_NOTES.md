@@ -9,7 +9,7 @@ requires migration.
 
 - Adds original illustrated band lineups for all eleven acts, venue artwork in booking, and matching illustrations in Promote and Menu.
 - Keeps compact artist headers on shorter desktop screens and preserves accessible deal controls in both themes.
-- Corrects the catalog detail image: Front of House gameplay replaces the mislabeled MixMash fighter poster, with a new asset URL and uncropped presentation.
+- Corrects the catalog detail image: Front of House gameplay replaces the mislabeled MixMash fighter poster, using the canonical PR145 cover and uncropped presentation.
 - Uses cache v77. Existing game rules, economics, 3D world and save schema 2 remain unchanged.
 
 ## 0.2.0 — 2026-10-09

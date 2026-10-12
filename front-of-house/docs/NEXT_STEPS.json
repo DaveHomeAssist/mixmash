@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.1 menu artwork and corrected Front of House catalog image in verification",
+  "head": "0.2.1 menu artwork integrated with PR145 detail repair; CI pending",
   "lastActivity": "2026-10-12",
   "status": "amber",
-  "statusReason": "Original menu illustrations cover eleven acts and four venues. Booking, Promote and Menu share artist identity; short desktop windows use compact artist headers. No engine, economics, save schema or 3D world changes. Duncan passes focused artwork checks and all 28 existing game smoke checks, including all-room compact layouts, contrast, saves and signing. CI and hosted delivery remain pending. The private Next Steps Board is unavailable. Existing human and physical acceptance gates remain open. User screenshot confirmed the old FOH cover contained MixMash fighter art. A real FOH Build capture now has a distinct catalog filename. Initial Linux CI rejected Festival Promote overflow; the short-screen illustration was reduced and the gate is being rerun. CI38285947920 passed paired regression but failed 375px held-run booking containment. Compact phone artist rows now pass eight held-run journeys on Duncan and all four rooms at390/375/360px, including every booking tab and44px tab targets. PR145 owns the catalog cover and detail layout; reconcile PR144 after that merge without rewriting published history.",
+  "statusReason": "PR144 preserves PR145 catalog cover and detail layout, including tall-phone scroll restoration. Eleven band identities and four venue illustrations remain presentation only. Duncan passes all-room phone booking checks at390/375/360px and eight held-run journeys; full integrated CI and hosted checks remain pending. No engine, balance or save changes. Private Next Steps Board unavailable; existing human/device/rights gates remain open.",
   "activity30d": {
     "headline": "Menu artwork 0.2.1 in verification; Advisory 0.2.0 delivered, broader acceptance gates remain open."
   },
@@ -2293,5 +2293,10 @@
       "image rights",
       "private Next Steps Board unavailable"
     ]
+  },
+  "detailPageIntegration": {
+    "pullRequest": 145,
+    "revision": "3d0ba9e9c1671af0b6b5245e4825ac544008d64b",
+    "evidence": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized. Review follow-up reproduced mobile detail-body scroll loss at375x812 (50px reset to0) and375x700 (162px reset to0). Both positions now restore exactly on Duncan; the existing short-phone copy scroller remains supported. Expanded landing smoke exercises both phone scroll containers. Required refreshed-head CI and hosted checks remain pending."
   }
 }
