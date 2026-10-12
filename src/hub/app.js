@@ -91,7 +91,8 @@ function showView(moveFocus = true) {
     if (moveFocus && leaving.startsWith('game-')) document.getElementById(`details-${lastDetail}`)?.focus();
   } else {
     if (moveFocus) target.querySelector('h2')?.focus({ preventScroll: true });
-    const panel = target.querySelector('[data-web2-scroll]');
+    const panels = [...target.querySelectorAll('[data-web2-scroll]')];
+    const panel = panels.find(element => element.scrollHeight > element.clientHeight && getComputedStyle(element).overflowY === 'auto') || panels[0];
     if (panel) panel.scrollTop = Number(stored(`scroll.${target.id}`)) || 0;
   }
 }
@@ -122,8 +123,9 @@ for (const image of document.images) {
   if (image.complete && !image.naturalWidth) image.classList.add('image-failed');
 }
 for (const view of views) {
-  const panel = view.querySelector('[data-web2-scroll]');
-  if (panel && view.id !== 'games') panel.addEventListener('scroll', () => save(`scroll.${view.id}`, String(panel.scrollTop)), { passive: true });
+  for (const panel of view.querySelectorAll('[data-web2-scroll]')) {
+    if (view.id !== 'games') panel.addEventListener('scroll', () => save(`scroll.${view.id}`, String(panel.scrollTop)), { passive: true });
+  }
 }
 root.classList.add('enhanced');
 showView(false);

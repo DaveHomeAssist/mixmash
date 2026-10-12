@@ -40,6 +40,7 @@ html,body {
 body {
   position:fixed;
   inset:0;
+  overflow:clip;
   background:var(--paper);
   color:var(--ink);
   line-height:1.45
@@ -511,7 +512,7 @@ body:has(.view:not(#games):target) .hero {
   display:none
 }
 .detail-view {
-  grid-template-rows:auto minmax(0,1fr) auto;
+  grid-template-rows:auto minmax(0,1fr);
   gap:16px;
   padding:20px 0
 }
@@ -523,20 +524,29 @@ body:has(.view:not(#games):target) .hero {
 .detail-body {
   display:grid;
   grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  align-items:start;
   min-height:0;
   gap:32px
 }
 .detail-art {
+  grid-column:1;
+  grid-row:1;
   position:relative;
-  min-height:0;
   overflow:hidden;
+  aspect-ratio:3 / 2;
   border-radius:12px;
   background:var(--wash)
 }
 .detail-art img {
   width:100%;
   height:100%;
-  object-fit:cover
+  object-fit:contain
+}
+.detail-view.orange .detail-art {
+  aspect-ratio:8 / 5
+}
+.detail-view.orange .detail-stamp {
+  display:none
 }
 .detail-stamp {
   position:absolute;
@@ -550,8 +560,11 @@ body:has(.view:not(#games):target) .hero {
   letter-spacing:.08em
 }
 .detail-copy {
+  grid-column:2;
+  grid-row:1;
   overflow:auto;
   min-height:0;
+  max-height:100%;
   padding:5px 10px 5px 3px;
   scrollbar-color:var(--muted) var(--wash)
 }
@@ -593,7 +606,9 @@ body:has(.view:not(#games):target) .hero {
 }
 .detail-actions {
   display:flex;
-  gap:12px
+  flex-wrap:wrap;
+  gap:12px;
+  margin:18px 0
 }
 .detail-actions .primary {
   min-width:150px
@@ -901,9 +916,19 @@ body:has(.view:not(#games):target) .hero {
     gap:10px
   }
   .detail-body {
-    grid-template-columns:1fr;
-    grid-template-rows:120px minmax(0,1fr);
+    display:flex;
+    flex-direction:column;
+    overflow:auto;
     gap:12px
+  }
+  .detail-copy {
+    flex:none;
+    max-height:none;
+    overflow:visible
+  }
+  .detail-art {
+    flex:none;
+    width:100%
   }
   .detail-art img {
     object-position:center 40%
@@ -1012,7 +1037,10 @@ body:has(.view:not(#games):target) .hero {
   }
   .detail-body {
     grid-template-columns:1fr;
-    grid-template-rows:1fr
+    grid-template-rows:minmax(0,1fr)
+  }
+  .detail-copy {
+    grid-column:1
   }
   .detail-view {
     padding:8px 0;
@@ -1040,6 +1068,12 @@ body:has(.view:not(#games):target) .hero {
 @media(max-width:700px) and (max-height:650px) {
   .hero {
     display:none
+  }
+  .detail-copy {
+    flex:1 1 auto;
+    min-height:0;
+    max-height:100%;
+    overflow:auto
   }
   .game-body h3 {
     font-size:14px

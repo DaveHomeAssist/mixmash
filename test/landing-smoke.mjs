@@ -115,15 +115,16 @@ try {
     results.push({ engine,width,height,initialBytes,journeyBytes,passed:true }); console.log(`${engine} ${width}×${height} passed`); await context.close();
    }
    // A direct detail link must return to its card even before catalog capacity was measured.
-   {
-    const context = await browser.newContext({ viewport: { width:375, height:500 }, serviceWorkers:'block' });
+   for (const height of [500,812]) {
+    const context = await browser.newContext({ viewport: { width:375, height }, serviceWorkers:'block' });
     const page = await context.newPage();
     await page.goto(new URL('#game-mars', origin).href);
     await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
-    const panel = page.locator('#game-mars .detail-copy');
+    const selector = height > 650 ? '#game-mars .detail-body' : '#game-mars .detail-copy';
+    const panel = page.locator(selector);
     await panel.hover(); await page.mouse.wheel(0,600);
     // Wait for the wheel's final pixel before sampling the position to restore.
-    await page.waitForFunction(() => { const e = document.querySelector('#game-mars .detail-copy'); return e.scrollTop > 0 && e.scrollTop >= e.scrollHeight - e.clientHeight; });
+    await page.waitForFunction(selector => { const e = document.querySelector(selector); return e.scrollTop > 0 && e.scrollTop >= e.scrollHeight - e.clientHeight; }, selector);
     const scroll = await panel.evaluate(e => e.scrollTop);
     await page.locator('#game-mars .back-link').click();
     await page.waitForFunction(() => !document.getElementById('games').hidden);
