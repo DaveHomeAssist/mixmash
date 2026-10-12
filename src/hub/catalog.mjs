@@ -48,7 +48,7 @@ export const games = [
     "image": "foh.jpg",
     "alt": "A concert venue being built for show night in Front of House.",
     "cover": "foh.jpg",
-    "coverAlt": "Front of House cover: an isometric parking-lot stage with truss, cases, and a title panel.",
+    "coverAlt": "Front of House 3D Build view: a parking-lot venue with a stage, facilities, and build controls.",
     "players": "Solo",
     "controls": "Mouse or keyboard",
     "saving": "Your career saves in this browser. Export a save code from the game menu to keep a backup or move it to another device.",

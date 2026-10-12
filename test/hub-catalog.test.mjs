@@ -39,3 +39,16 @@ test('FOH approval affects discovery only, not indexing or game saves', async ()
   const sw = await read('sw.js');
   for (const file of ['src/hub/style.css', 'src/hub/app.js', ...playableGames.map(g => `assets/previews/${g.image}`)]) assert.ok(sw.includes(`'./${file}'`));
 });
+test('detail artwork resolves from each game record without using another game cover', async () => {
+  const html = await read('index.html');
+  for (const game of playableGames) {
+    const asset = `/assets/covers/${game.cover}`;
+    assert.ok((await stat(new URL(asset.slice(1), root))).size > 0, `${game.name}: detail artwork exists`);
+    const section = html.match(new RegExp(`<section class="view detail-view[^>]*data-game-detail="${game.id}"[\\s\\S]*?</section>`))?.[0];
+    assert.ok(section?.includes(`src="${asset}"`), `${game.name}: detail artwork follows its record`);
+    assert.ok(section.includes(`href="${game.route}"`), `${game.name}: play destination follows its record`);
+  }
+  const frontOfHouse = playableGames.find(game => game.id === 'front-of-house');
+  assert.equal(frontOfHouse.cover, 'foh.jpg');
+  assert.match(frontOfHouse.coverAlt, /Front of House 3D Build view/);
+});
