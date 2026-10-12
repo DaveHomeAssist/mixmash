@@ -36,6 +36,7 @@ try {
     let state = E.applyAction(E.createGame(8, {mode:'sandbox'}), {type:'chooseVenue',venueId:room}).state;
     await page.setViewportSize({width:1024,height:700});
     await page.click('#menu-btn');
+    assert.equal(await page.locator('#menu-art .venue-art').count(),1, 'Unbooked menu shows the venue');
     if (!await page.locator('#save-menu').evaluate(e=>e.open)) await page.click('#save-menu summary');
     await page.fill('#save-code', Buffer.from(JSON.stringify({ns:SAVE_NAMESPACE,v:SCHEMA_VERSION,state})).toString('base64'));
     await page.click('[data-save="import"]');

@@ -2688,7 +2688,7 @@ function resetModeButtons() {
 function setMenu(open, { focus = true } = {}) {
   if (open === !el.menu.hidden) return;
   if (!open) resetModeButtons();
-  if (open) { cancelLotGesture(); $('#menu-art').innerHTML = state.booking.artistId ? bandArt(state.booking.artistId) : venueArt(state.venue.id); }
+  if (open) { cancelLotGesture(); $('#menu-art').innerHTML = state.phase !== 'book' && state.booking.deal ? bandArt(state.booking.artistId) : venueArt(state.venue.id); }
   el.menu.hidden = !open;
   el.menuBtn.setAttribute('aria-expanded', String(open));
   if (!focus) return;
