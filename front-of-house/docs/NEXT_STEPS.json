@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.0 Advisory desk merged and hosted verified; physical and human acceptance open",
-  "lastActivity": "2026-10-09",
+  "head": "0.2.1 menu artwork browser verified; CI and hosted delivery pending",
+  "lastActivity": "2026-10-12",
   "status": "amber",
-  "statusReason": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized.",
+  "statusReason": "Original menu illustrations cover eleven acts and four venues. Booking, Promote and Menu share artist identity; short desktop windows use compact artist headers. No engine, economics, save schema or 3D world changes. Duncan passes focused artwork checks and all 28 existing game smoke checks, including all-room compact layouts, contrast, saves and signing. CI and hosted delivery remain pending. The private Next Steps Board is unavailable. Existing human and physical acceptance gates remain open.",
   "activity30d": {
-    "headline": "Advisory desk0.2.0 is hosted and browser-verified; broader proposals and physical/human/calibration/rights gates remain open."
+    "headline": "Menu artwork 0.2.1 in verification; Advisory 0.2.0 delivered, broader acceptance gates remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -45,12 +45,12 @@
     "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized."
   ],
   "nextStep": {
-    "title": "Complete the existing physical and human release acceptance",
+    "title": "Finish menu artwork delivery, then resume existing human acceptance",
     "why": "Automated Advisory delivery is verified; browser evidence does not establish physical devices, screen readers, calibration, art, camera, career or image rights.",
-    "doneWhen": "Attach direct evidence to the existing RELEASE acceptance checklist and preserve remaining unknowns; verify the active postmerge CI result separately.",
+    "doneWhen": "Exact-source smoke, CI, merge, Pages and hosted menu checks pass; physical/human acceptance remains separate.",
     "effort": "M",
     "owner": "Dave and existing Front of House executor",
-    "blockedBy": "Direct physical/human/calibration/rights evidence; postmerge CI result is not yet recorded."
+    "blockedBy": "No implementation blocker; CI and hosted proof pending."
   },
   "findings": [
     {

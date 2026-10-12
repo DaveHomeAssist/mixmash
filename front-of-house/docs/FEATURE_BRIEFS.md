@@ -946,3 +946,13 @@ future choices as Open until an actual decision is recorded:
 - **U05-L3, employee mechanics (separate feature):** A — keep advice independent
   of employees (recommended); B — paid crew with hiring/training/assignment
   (requires economy, simulation and save contracts). Unlocks a separate brief.
+
+## FOH-V12 — Menu artwork and band identity (2026-10-12)
+
+Requested: a visual improvement pass with more menu imagery and band sprites.
+Problem: booking presents distinct fictional acts as nearly identical text cards.
+Outcome: original illustrated lineups make acts recognizable; venue silhouettes distinguish progression; a compact artist mark follows the booked act into Promote and the menu.
+Flow: choose a venue, compare illustrated acts, book using unchanged terms, see the same act identity while promoting.
+Smallest slice: presentation-only SVG artwork for all eleven existing acts and four venues, with no external assets, dependencies, animation, additional requests or save changes. These are illustrated menu sprites, not new world actors. Existing gameplay, economy, 3D camera and settlement remain unchanged.
+Risks: decoration reducing room for deal controls; artwork mistaken for simulation. Keep decorative SVG hidden from assistive technology and free of numbers; retain adjacent authoritative text. Compact layouts reduce illustration height and preserve paging.
+Acceptance: all acts resolve to distinct stable artwork, both themes and narrow/short/wide viewports remain contained, deal actions and keyboard flow work, save state is unaffected, and browser console stays clean. Original code-authored artwork does not resolve older asset-rights gates elsewhere.
