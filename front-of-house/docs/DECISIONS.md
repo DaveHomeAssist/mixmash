@@ -550,6 +550,8 @@ Status: Accepted validation decision by Codex under CT-DEC-19,2026-10-04; verdic
 
 Use100 deterministic ordinary-career seeds, preserve the existing Lot baseline, and require90% careful later-tier progression within20 Club shows,12 Amphitheater holds and8 Festival days. Exercise at least five Club shows with carried state, each hold length, cancellation, stage/site/cash conservation and booking after completion. Careless Club play must not unlock on every seed. Strategies use public ranges before doors and only visible incidents afterward. Record all failed seeds and cohort limits. Do not tune thresholds after observing the cohort or call missing Festival infrastructure complete. Physical/human acceptance remains independent.
 
+Amended by Dave, 2026-10-12 ([CT-DEC-36](#ct-dec-36-venue-scale-bars-and-restrooms), D16): the careless-play guard now reads "Careless Festival play must not unlock on every seed." The Club Suggested layout meets its amenity guideline, so careless Club play unlocks on every seed; the other requirements and limits are unchanged.
+
 Tier cohort clarification: both later-tier strategies earn the Lot unlock with the same existing careful plan, then diverge at Club. The ten-seed diagnostic showed that carrying only survivors of careless Lot play selected unusually strong starting reputations. Matched, genuinely earned starts isolate later-tier choices without injecting money or unlocks; the original Lot report retains its own careless cohort. The declared thresholds and show limits are unchanged.
 
 ## CT-DEC-27: Festival touring support on the existing grid
@@ -624,6 +626,17 @@ acceptance.
 **Accepted by Dave, 2026-10-09.** Implement the recommended FOH-U05 desk after its PR140 brief. Use functional Overview, Ticketing, Talent and Operations pages, explicit check-in and one deterministic current priority. Review routes to the existing control or receipt and returns focus. Forecasts remain forecasts; Show reveals only observable incidents/services; signed results are Last show and reopen read-only.
 
 Keep this a presentation layer with no new economics, simulation, staff entity, payroll, portraits, proactive interruption, manager relationships, saved desk state or public API. Broader staff/story/calendar/open-world/deal proposals remain separate. Existing settlement and game rules remain authoritative. Version0.2.0 follows the new-capability policy in CT-DEC-33; cachev76 and save schema2 are independent. Separate PR141 engine/save QA remains under its owner. Automated delivery does not accept physical devices, human review, calibration or rights.
+
+## CT-DEC-36: Venue-scale bars and restrooms
+
+**Accepted by Dave, 2026-10-12**, in answer to D13–D15 after he reported that "the bathroom logic and bar logic seem a bit flawed". The Lot's service rates (one bar per 125 guests, one restroom unit per 40) applied at every venue, so a sold-out Split Acre could never meet its amenity guideline and Loam Shell could not meet it at full capacity.
+
+- **D13 = C:** add festival-size objects rather than per-venue rates, density scaling or a text-only fix. A Bar tent (3×2, serves 1,000, $500 plus 6 bar staff, 4 kW) and a Restroom block (2×2, serves 500, $600) add to the existing supply. Small-unit rates and every existing layout's result stay unchanged.
+- **D14 = C:** update the Suggested layout of every venue above the Lot to provide its guideline supply.
+- **D15 = A:** offer the new objects at Loam Shell and Split Acre. Fathom Hall keeps small units; its Suggested layout gets as close as its floor allows without losing capacity (about 94%).
+- **D16 = A:** with the new Suggested layouts, careless play in the 100-seed tier cohort unlocks Fathom Hall on every seed (was 69), Loam Shell on every seed (was 69) and Split Acre on 91 (was 66); careful play is unchanged. Rather than keep a weaker Club layout or drop the guard, CT-DEC-26's careless-play guard moves from the Club to the Festival. Difficulty for Fathom Hall and Loam Shell that comes from player decisions rather than a weak Suggested layout is a separate follow-up.
+
+Scope and acceptance are in [FOH-V02b16](FEATURE_BRIEFS.md#foh-v02b16--venue-scale-bars-and-restrooms). Object values are experimental gameplay values in `data.mjs`. This is new player-facing capability, so it takes the next minor version under CT-DEC-33; save schema 2 is unchanged. Human balance review, final art and device acceptance remain separate.
 
 ## Homepage visibility sign-off (2026-10-05)
 

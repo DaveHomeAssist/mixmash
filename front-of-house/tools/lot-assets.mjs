@@ -20,8 +20,9 @@ function describe(type) {
     materialRevision: MODEL_REVISION, lod: type === 'guest' ? 'projected pixel size: full above80, distant below64; sixteen instanced parts per detail level' : 'fixed source detail',
     contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], three: '0.184.0', type, footprint: spec ? [spec.w, spec.h] : null })) };
 }
-const assets = [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && !OBJECT_TYPES[id].festivalOnly), 'guest'].map(describe);
-const venueAssets = Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && OBJECT_TYPES[id].festivalOnly).map(id => ({ ...describe(id), venues: ['festival'] }));
+const venuesOf = id => OBJECT_TYPES[id].festivalOnly ? ['festival'] : OBJECT_TYPES[id].venues || null;
+const assets = [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && !venuesOf(id)), 'guest'].map(describe);
+const venueAssets = Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && venuesOf(id)).map(id => ({ ...describe(id), venues: venuesOf(id) }));
 const rooms = ['club', 'amphitheater', 'festival'].map(id => {
   const venue = VENUES[id], room = models.room(venue);
   return { id, grid: venue.grid, housePa: venue.housePa, pillars: venue.pillars,

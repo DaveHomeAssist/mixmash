@@ -2,7 +2,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-15';
+export const MODEL_REVISION = 'lot-sample-16';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -215,16 +215,37 @@ export function createLotModels() {
       b([0.7, 0.95, 0.035], [0.7, 0.72, -0.84], 0x806997);
       b([0.75, 0.12, 0.2], [-0.88, 0.12, 0.86], COLORS.aluminium, 0.6);
       for (const x of [-0.95, 0.95]) for (const z of [-0.62, 0.62]) b([0.28, 0.28, 0.16], [x, 0.14, z], 0x171b20, 0, 'sphere');
-    } else if (object.type === 'restroom') {
-      b([0.57, 1.04, 0.62], [0, 0.55, 0], COLORS.plastic);
-      b([0.61, 0.08, 0.66], [0, 1.11, 0], COLORS.trim);
-      b([0.45, 0.91, 0.018], [0, 0.51, 0.322], 0x537b8b);
-      b([0.022, 0.1, 0.023], [0.17, 0.58, 0.34], COLORS.trim);
-      for (let x = -0.19; x <= 0.2; x += 0.076) b([0.035, 0.05, 0.01], [x, 0.98, 0.326], 0x253a43);
-      b([0.64, 0.06, 0.68], [0, 0.03, 0], COLORS.steel);
-      b([0.12, 0.13, 0.014], [0, 0.79, 0.342], 0xd0d8cf);
-      b([0.025, 0.06, 0.015], [0, 0.785, 0.352], 0x253a43);
-      b([0.02, 0.02, 0.01], [0, 0.823, 0.357], 0x253a43, 0, 'sphere');
+    } else if (object.type === 'bar-tent') {
+      // A frame tent over a serving counter, back bar and coolers; roof panels stay inside the footprint.
+      b([w - 0.06, 0.04, h - 0.06], [0, 0.02, 0], 0x5c5348);
+      for (const x of [-w / 2 + 0.08, w / 2 - 0.08]) for (const z of [-h / 2 + 0.08, h / 2 - 0.08]) b([0.06, 1.45, 0.06], [x, 0.725, z], COLORS.aluminium, 0.7, 'cylinder');
+      for (const side of [-1, 1]) {
+        const roof = b([w, 0.04, h / 2], [0, 1.6, side * h / 4], 0xe9e4d8); roof.rotation.x = side * 0.3;
+        b([w, 0.2, 0.02], [0, 1.37, side * (h / 2 - 0.03)], 0xb3263d);
+      }
+      b([w - 0.4, 0.5, 0.42], [0, 0.29, h / 2 - 0.45], COLORS.wood);
+      b([w - 0.3, 0.05, 0.56], [0, 0.565, h / 2 - 0.42], COLORS.steel, 0.2);
+      for (const x of [-0.9, -0.3, 0.3, 0.9]) b([0.06, 0.16, 0.06], [x, 0.67, h / 2 - 0.5], COLORS.aluminium, 0.7, 'cylinder');
+      b([w - 0.5, 0.85, 0.32], [0, 0.445, -h / 2 + 0.3], COLORS.steel, 0.3);
+      for (const x of [-0.85, 0, 0.85]) b([0.7, 0.55, 0.015], [x, 0.5, -h / 2 + 0.47], 0x9fb6bd, 0.4);
+    } else if (object.type === 'restroom' || object.type === 'restroom-block') {
+      // One portable unit; a block is six in two back-to-back rows of three on a shared pad.
+      const unit = (x, z, d) => {
+        b([0.57, 1.04, 0.62], [x, 0.55, z], COLORS.plastic);
+        b([0.61, 0.08, 0.66], [x, 1.11, z], COLORS.trim);
+        b([0.45, 0.91, 0.018], [x, 0.51, z + d * 0.322], 0x537b8b);
+        b([0.022, 0.1, 0.023], [x + d * 0.17, 0.58, z + d * 0.34], COLORS.trim);
+        for (let i = -0.19; i <= 0.2; i += 0.076) b([0.035, 0.05, 0.01], [x + i, 0.98, z + d * 0.326], 0x253a43);
+        b([0.64, 0.06, 0.68], [x, 0.03, z], COLORS.steel);
+        b([0.12, 0.13, 0.014], [x, 0.79, z + d * 0.342], 0xd0d8cf);
+        b([0.025, 0.06, 0.015], [x, 0.785, z + d * 0.352], 0x253a43);
+        b([0.02, 0.02, 0.01], [x, 0.823, z + d * 0.357], 0x253a43, 0, 'sphere');
+      };
+      if (object.type === 'restroom') unit(0, 0, 1);
+      else {
+        b([w - 0.04, 0.04, h - 0.04], [0, 0.02, 0], COLORS.steel);
+        for (const x of [-0.65, 0, 0.65]) for (const d of [-1, 1]) unit(x, d * 0.42, d);
+      }
     } else if (object.type === 'vip-deck') {
       // Touring hospitality reference: modular deck, guardrails, stairs and edge trim.
       b([w - 0.12, 0.15, h - 0.12], [0, 0.875, 0], COLORS.steel);

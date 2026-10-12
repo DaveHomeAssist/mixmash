@@ -110,7 +110,7 @@ export function tierReport(count=SEEDS){
   return [room,{reached:reached.length,attempted:attempted.length,total:count,failedSeeds:cohort.filter(r=>!r.tiers[room]?.reached).map(r=>r.seed)}];
  }))]));
  const checks=Object.keys(LIMITS).map(room=>({name:`Careful ${room} progression`,pass:stats.careful[room].reached/count>=.9}));
- checks.push({name:'Careless Club progression among reached Club careers is not universal',pass:stats.careless.club.attempted>0&&stats.careless.club.reached<stats.careless.club.attempted});
+ checks.push({name:'Careless Festival progression among attempted Festival careers is not universal',pass:stats.careless.festival.attempted>0&&stats.careless.festival.reached<stats.careless.festival.attempted});
  checks.push({name:'Every reached Club cohort plays at least five carried shows',pass:rows.every(r=>!r.tiers.club?.reached||r.tiers.club.nights>=5)});
  checks.push({name:'Careful completed careers can settle another Festival day',pass:rows.filter(r=>r.style==='careful'&&r.tiers.festival?.reached).every(r=>r.continued)});
  return {seeds:count,limits:LIMITS,stats,checks,rows};

@@ -162,6 +162,7 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | ? | Anywhere outside a text field | Opens or closes the menu |
 | Escape | Window/menu first, otherwise Build | Closes the dialog/menu; otherwise cancels placement or bulldozing and returns to Select |
 | 1 to 8 | Build | Picks Stage, PA S, PA M, Lights, Bar, Restroom, Gate, Exit |
+| A, W | Build at Loam Shell and Split Acre | Picks Bar tent (A) and Restroom block (W) |
 | Arrows | Board, Build | Moves the build cursor |
 | Enter or Space | Board, Build | Places with a placement tool, or inspects the object in Select (Space acts on release; held with a drag it pans) |
 | Delete or Backspace | Board, Build | Removes at the cursor |

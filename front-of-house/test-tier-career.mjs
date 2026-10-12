@@ -12,8 +12,10 @@ test('an earned career carries through every hold length and plays after complet
  assert.deepEqual(runTierCareer(1),first,'seeded career replay');
 });
 test('careless later-tier choices use the same genuinely earned Lot starting career',()=>{
- const careful=runTierCareer(1),careless=runTierCareer(1,false);
+ // Seed 9: careful play completes the Festival; careless play does not (CT-DEC-26 as amended by CT-DEC-36).
+ const careful=runTierCareer(9),careless=runTierCareer(9,false);
  assert.deepEqual(careless.tiers.lot,careful.tiers.lot);
- assert.equal(careless.tiers.club.reached,false);
+ assert.equal(careful.tiers.festival.reached,true);
+ assert.equal(careless.tiers.festival.reached,false);
  assert.ok(careless.tiers.club.nights>=5);
 });

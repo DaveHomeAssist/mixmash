@@ -946,3 +946,33 @@ future choices as Open until an actual decision is recorded:
 - **U05-L3, employee mechanics (separate feature):** A — keep advice independent
   of employees (recommended); B — paid crew with hiring/training/assignment
   (requires economy, simulation and save contracts). Unlocks a separate brief.
+
+## FOH-V02b16 — Venue-scale bars and restrooms
+
+**Status:** Scope accepted by Dave on 2026-10-12 ([CT-DEC-36](DECISIONS.md#ct-dec-36-venue-scale-bars-and-restrooms), D13–D16 in the [decision packet](DECISION_PACKET.md#settled-2026-10-12-venue-scale-bars-and-restrooms)). Implementation, CI, deployment and human balance review are separate evidence.
+
+**Player problem and outcome:** Every venue uses the Lot's service rates: one bar per 125 guests and one restroom unit per 40. A sold-out Split Acre therefore asks for 48 bars and 150 restroom units, 246 of its 960 tiles. Placing them pushes floor capacity below the 6,000 permit and blocks views, so a full house can never score full amenities. Loam Shell has 14 spare tiles at full capacity and needs 30. The Suggested layouts above the Lot score 57%, 29% and 4.5% for amenities, and the retry tip quotes the Lot rates and unreachable counts. Outcome: at both outdoor venues a player can meet the amenity guideline at full capacity, and the settlement names an achievable next step.
+
+**Smallest slice and flow:** Two placeable objects at Loam Shell and Split Acre only. A **Bar tent** is 3×2 tiles, serves 1,000 guests, costs $500 to set up plus 6 bar staff and draws 4 kW. A **Restroom block** is 2×2 tiles, serves 500 guests and costs $600. Both block views like the bar and restroom unit. They appear in the Build palette (keys A and W) with the existing placement, rotation, selection and undo. Bar and restroom supply add small and large units together. The Suggested layouts for Fathom Hall, Loam Shell and Split Acre provide that supply at permit capacity where the floor allows. The settlement priority and retry tip show service against attendance and how many of the venue's largest unit would close the gap.
+
+**Rules, data and saves:**
+
+- R-09 amenities becomes the average of `min(1, barSupply / attendance)` and `min(1, restroomSupply / attendance)`. `barSupply = bars × BAR_RATIO + barTents × BAR_TENT.serves`; `restroomSupply = restrooms × RESTROOM_RATIO + restroomBlocks × RESTROOM_BLOCK.serves`.
+- R-10 bar revenue and the Lot doors pilot use `barSupply`. R-13 staff adds `barTents × BAR_TENT.staff`. Tent setup joins the bar cost line; block rent joins the restroom line.
+- Small-unit rates do not change. Every layout without the new objects, including every Lot show and signed history, replays exactly.
+- Values live in `data.mjs`. They are gameplay values, not venue engineering or sanitation guidance.
+- Save schema stays 2: layouts keep the existing object format. An older client drops object types it does not know, so a layout with the new objects loses them there; this follows earlier object additions.
+- Fathom Hall keeps small units. Its floor fits 14 amenity tiles at full capacity, so its Suggested layout reaches about 94% for amenities without losing tickets.
+
+**Exclusions:** No live-service queue or stall model for the new objects (the Lot pilot is unchanged), research unlock, Lot or Fathom Hall availability, change to small-unit rates, sound or sightline retune, or new satisfaction weight.
+
+**Dependencies and risks:** The new footprints use floor and block views alongside the Festival touring fixtures. Per guest, the large units cost less than small ones; floor space and placement are the trade-off. New Suggested layouts change the tier and career baselines, which are regenerated and compared, not tuned to a target. Careless play now unlocks Fathom Hall and Loam Shell on every cohort seed; CT-DEC-26's careless-play guard moves to the Festival (D16).
+
+**Acceptance:**
+
+1. Placement works at Loam Shell and Split Acre, with bounds, overlap, rotation and power checks. The Lot and Fathom Hall refuse both objects with a clear reason, and the palette hides them there.
+2. Hand-calculated amenities, bar revenue, staff and costs with mixed units. The Lot reference results and the worked example do not change.
+3. Suggested layouts are valid and ready. Loam Shell and Split Acre reach full amenities at permit capacity; Fathom Hall reaches at least 94% at permit capacity.
+4. The settlement priority and tip use venue-correct numbers; the Split Acre case reads as a number of bar tents and restroom blocks.
+5. Both objects have 2D board looks and source-authored 3D models; the asset manifest and generated docs are current.
+6. Unit tests, smoke tests, baselines, CI, Pages and the hosted game pass. Human balance and readability review remains separate.

@@ -693,7 +693,8 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .camera-row .renderer-btn { display: none; }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-  .tiles:has(input[value="vip-deck"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tiles:has(input[value="bar-tent"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tiles:has(input[value="vip-deck"]) { grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
   .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .win-layer { padding: calc(var(--strip-h) + 4px) 4px 4px; }
