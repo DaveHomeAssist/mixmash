@@ -963,3 +963,11 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 @media (min-width: 601px) and (max-height: 800px) {
   .show-art-heading .band-art-small { width: 61px; height: 32px; }
 }
+
+/* Keep held-run booking art compact without shrinking its touch controls. */
+@media (max-width: 600px) {
+  .artist-identity { flex-direction: row; align-items: center; gap: 8px; }
+  .artist-identity .band-art { width: 68px; height: 37px; }
+  .artist-identity .artist-name { font-size: 1.1rem; }
+  .tabbar [role='tab'] { min-height: 44px; flex-shrink: 0; }
+}

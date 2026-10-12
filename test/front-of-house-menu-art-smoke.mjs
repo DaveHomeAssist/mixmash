@@ -43,6 +43,17 @@ try {
     const overflow = await page.locator('.at-sheet').evaluate(e=>e.scrollHeight-e.clientHeight);
     assert.ok(overflow<=1, `${room} booking overflow ${overflow}`);
     await page.screenshot({path:`${output}/${room}-1024.png`});
+    for (const width of [390,375,360]) {
+      await page.setViewportSize({width,height:812});
+      const tabs = page.locator('#panel .tabbar [role="tab"]');
+      for (let i=0;i<await tabs.count();i++) {
+        await tabs.nth(i).click();
+        const bad = await page.locator('#panel').evaluate(panel => [panel,...panel.querySelectorAll('button')].filter(e=>e.getClientRects().length).filter(e=>e.scrollHeight>e.clientHeight+1||e.scrollWidth>e.clientWidth+1||e.getBoundingClientRect().bottom>innerHeight+1).map(e=>({text:e.textContent.slice(0,60),height:[e.scrollHeight,e.clientHeight],bottom:e.getBoundingClientRect().bottom})));
+        assert.deepEqual(bad,[], `${room} booking at ${width}px`);
+        assert.ok((await tabs.nth(i).boundingBox()).height>=44);
+      }
+      await page.screenshot({path:`${output}/${room}-${width}.png`});
+    }
   }
   await page.click('#menu-btn');
   if (!await page.locator('#save-menu').evaluate(e=>e.open)) await page.click('#save-menu summary');
