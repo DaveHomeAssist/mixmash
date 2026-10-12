@@ -4334,6 +4334,16 @@
       "open": "/assets/covers/empires.jpg"
     },
     {
+      "path": "assets/covers/foh-venue.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "Front of House gameplay cover",
+      "description": "Actual 3D Build view used by the Front of House catalog detail; replaces the mislabeled fighter poster. Capture provenance is in assets/covers/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/foh-venue.jpg",
+      "open": "/assets/covers/foh-venue.jpg"
+    },
+    {
       "path": "assets/covers/foh.jpg",
       "project": "studio",
       "category": "art",

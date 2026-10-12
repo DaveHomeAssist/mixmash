@@ -1226,3 +1226,7 @@ body:has(.view:not(#games):target) .site-shell {
   .play-link { flex-direction:row; border-left:0; border-top:1px dashed var(--line); margin:0 10px; padding:6px 4px; }
   .play-link span:last-child { font-size:18px; }
 }
+
+/* Keep the Front of House gameplay cover intact rather than cropping it like a poster. */
+[data-game-detail="front-of-house"] .detail-art img { object-fit: contain; }
+[data-game-detail="front-of-house"] .detail-stamp { display: none; }

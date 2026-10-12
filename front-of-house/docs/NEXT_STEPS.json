@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.1 menu artwork browser verified; CI and hosted delivery pending",
+  "head": "0.2.1 menu artwork and corrected Front of House catalog image in verification",
   "lastActivity": "2026-10-12",
   "status": "amber",
-  "statusReason": "Original menu illustrations cover eleven acts and four venues. Booking, Promote and Menu share artist identity; short desktop windows use compact artist headers. No engine, economics, save schema or 3D world changes. Duncan passes focused artwork checks and all 28 existing game smoke checks, including all-room compact layouts, contrast, saves and signing. CI and hosted delivery remain pending. The private Next Steps Board is unavailable. Existing human and physical acceptance gates remain open.",
+  "statusReason": "Original menu illustrations cover eleven acts and four venues. Booking, Promote and Menu share artist identity; short desktop windows use compact artist headers. No engine, economics, save schema or 3D world changes. Duncan passes focused artwork checks and all 28 existing game smoke checks, including all-room compact layouts, contrast, saves and signing. CI and hosted delivery remain pending. The private Next Steps Board is unavailable. Existing human and physical acceptance gates remain open. User screenshot confirmed the old FOH cover contained MixMash fighter art. A real FOH Build capture now has a distinct catalog filename. Initial Linux CI rejected Festival Promote overflow; the short-screen illustration was reduced and the gate is being rerun.",
   "activity30d": {
     "headline": "Menu artwork 0.2.1 in verification; Advisory 0.2.0 delivered, broader acceptance gates remain open."
   },

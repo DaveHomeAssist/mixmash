@@ -244,6 +244,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'assets/covers/foh-venue.jpg': { title: 'Front of House gameplay cover', description: 'Actual 3D Build view used by the Front of House catalog detail; replaces the mislabeled fighter poster. Capture provenance is in assets/covers/README.md.' },
   'front-of-house/version.mjs': { title: 'Front of House release metadata', description: 'Single source for the independent Front of House product version, release date, early-playable stage, service-worker cache and save-schema parity.' },
   'test/front-of-house-version.test.mjs': { title: 'Front of House version parity', description: 'Checks the independent 0.x version, dated release notes, visible menu hook, service-worker cache and separate save-schema contract.' },
   'front-of-house/performance/2026-10-07-egl.json': { title: 'Dominic Intel/Mesa EGL diagnostics', description: 'Eighteen clean headless renderer-only Intel/Mesa EGL windows under the established Lot protocol, with source, fixture and raw digests; not physical-device or full-HUD acceptance.' },
