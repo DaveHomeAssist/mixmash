@@ -6,7 +6,7 @@
 
 import * as D from './data.mjs';
 import {
-  applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
+  amenitySupply, applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, completedShows, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
@@ -29,7 +29,7 @@ const liveServicesPilot = new URLSearchParams(window.location.search).get('live-
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
 const rendererQuery = new URLSearchParams(window.location.search).get('renderer');
 const RENDERER_PREFERENCE = 'front_of_house_renderer';
-const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay', 'vip-deck', 'bus-compound'];
+const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
 const AD_LABELS = { flyers: 'Flyers and posters', social: 'Social ads', radio: 'Local radio' };
@@ -51,7 +51,7 @@ const RESPONSE_TEXT = {
 const TIPS = {
   sound: 'Sound and light scored lowest. Check room coverage and lighting before renting extra gear.',
   sightlines: 'Sightlines scored lowest. Keep bars, restrooms and the light tower out of the cone in front of the stage.',
-  amenities: `Bars and restrooms scored lowest. Plan one bar for every ${D.BAR_RATIO} people and one restroom for every ${D.RESTROOM_RATIO}.`,
+  amenities: 'Bars and restrooms scored lowest. Add service until both cover the whole crowd; each tool lists how many guests it serves.',
   flow: 'Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane.',
   incident: 'Incident handling scored lowest. Compare the response cost, crowd result and act payout.',
 };
@@ -403,26 +403,33 @@ const COSTS = {
   'pa-m': money(D.PA_RENTAL.M),
   lights: money(D.LIGHTS_RENTAL),
   bar: `${money(D.BAR_SETUP)} + ${D.BAR_STAFF_PER_BAR} staff`,
+  'bar-tent': `${money(D.BAR_TENT.setup)} + ${D.BAR_TENT.staff} staff`,
   delay: `${money(D.FESTIVAL_DELAYS.rental + D.FESTIVAL_DELAYS.operator)} including operator`,
   trailer: `${money(D.SANITATION_COSTS.trailer)} + optional cleaner/utilities`,
   food: 'Vendor supplies staff and power',
   restroom: money(D.RESTROOM_UNIT),
+  'restroom-block': money(D.RESTROOM_BLOCK.rent),
   gate: `${D.DOOR_STAFF_PER_GATE} door staff`,
   exit: 'free',
 };
 
 // Short names for the tool tiles; the full label, size and cost are read out with each.
-const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer', delay: 'Delay', 'vip-deck': 'VIP deck', 'bus-compound': 'Buses' };
+const SHORT = { stage: 'Stage', 'pa-s': 'PA S', 'pa-m': 'PA M', lights: 'Lights', bar: 'Bar', restroom: 'Toilet', gate: 'Gate', exit: 'Exit', food: 'Food', trailer: 'Trailer', delay: 'Delay', 'vip-deck': 'VIP deck', 'bus-compound': 'Buses', 'bar-tent': 'Bar tent', 'restroom-block': 'Toilets' };
+// Guests each bar or restroom serves (R-09), shown with the tool and used for the settlement gap.
+const SERVES = { bar: D.BAR_RATIO, 'bar-tent': D.BAR_TENT.serves, restroom: D.RESTROOM_RATIO, 'restroom-block': D.RESTROOM_BLOCK.serves };
 // The rotation as an arrow on screen, in FACING order.
 const ARROWS = ['↙', '↖', '↗', '↘'];
 
 // Whether a tool is offered in this room, and its key (the tile order, or a letter).
 function toolOffered(type) {
   const t = D.OBJECT_TYPES[type], spec = venueSpec(state.venue);
-  return !(t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival' || t.supportOnly && !festivalSupportFor(state.venue));
+  return !(t.lotOnly && spec.id !== 'lot' || t.festivalOnly && spec.id !== 'festival' || t.venues && !t.venues.includes(spec.id)
+    || t.supportOnly && !festivalSupportFor(state.venue));
 }
+// Tools past the ninth use a letter; A and W are the venue-scale bar tent and restroom (WC) block.
+const TOOL_LETTERS = { trailer: 'T', delay: 'D', 'vip-deck': 'V', 'bus-compound': 'U', 'bar-tent': 'A', 'restroom-block': 'W' };
 function toolKey(type) {
-  return type === 'trailer' ? 'T' : type === 'delay' ? 'D' : type === 'vip-deck' ? 'V' : type === 'bus-compound' ? 'U' : String(PLACEABLE.indexOf(type) + 1);
+  return TOOL_LETTERS[type] || String(PLACEABLE.indexOf(type) + 1);
 }
 // The menu's key list names only the keys this room's tool tiles show.
 function syncToolKeys() {
@@ -444,7 +451,7 @@ function toolWhere(type) {
 
 function toolFacts(type) {
   const t = D.OBJECT_TYPES[type];
-  return `${t.w}×${t.h} · ${COSTS[type]}${t.watts ? ` · ${t.watts / 1000} kW` : ''}`;
+  return `${t.w}×${t.h} · ${COSTS[type]}${t.watts ? ` · ${t.watts / 1000} kW` : ''}${SERVES[type] ? ` · serves ${SERVES[type].toLocaleString('en-US')}` : ''}`;
 }
 
 // The Build HUD: the phase card top left, the lot's readouts top right, the tools bottom
@@ -459,7 +466,7 @@ function buildPanel() {
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
-        ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
+        ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
         <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}</span>
       </label>`;
@@ -1242,6 +1249,18 @@ function settlementRevenue(r) {
     + (r.second ? r.second.cash : 0) - (r.ticketing?.fee || 0);
 }
 
+// The service each placed bar/restroom supply gives against the crowd, and how many of the
+// room's largest unit would close the gap.
+function amenityGap(attendance, v) {
+  const supply = amenitySupply(v), count = (n) => n.toLocaleString('en-US');
+  const line = (name, served, unit) => {
+    if (served >= attendance) return `${name} service covers all ${count(attendance)} guests`;
+    const n = Math.ceil((attendance - served) / SERVES[unit]), label = D.OBJECT_TYPES[unit].label.toLowerCase();
+    return `${name} service ${count(served)} of ${count(attendance)} · add ${n} ${label}${n === 1 ? '' : 's'}`;
+  };
+  return `${line('Bar', supply.bar, toolOffered('bar-tent') ? 'bar-tent' : 'bar')}; ${line('restroom', supply.restroom, toolOffered('restroom-block') ? 'restroom-block' : 'restroom')}`;
+}
+
 function settlementSummary(r, v) {
   const keys = Object.keys(WEIGHTS);
   const strongest = keys.reduce((best, key) => r.parts[key] > r.parts[best] ? key : best, keys[0]);
@@ -1256,7 +1275,7 @@ function settlementSummary(r, v) {
       ? `${r.attendance} guests attended, but the night did not cover every show cost and artist payment.`
       : `The show finished in the black, but crowd satisfaction held the result back.`;
   const priorityDetail = r.weakest === 'amenities'
-    ? `${v.bars} bars used · guideline ${Math.ceil(r.attendance / D.BAR_RATIO)}; ${v.restrooms} restrooms used · guideline ${Math.ceil(r.attendance / D.RESTROOM_RATIO)}`
+    ? amenityGap(r.attendance, v)
     : r.weakest === 'flow' && r.doorRush
       ? `${r.doorRush.rushAdmitted}/${r.doorRush.rushArrivals} admitted during the rush · ${r.doorRush.lostWalkups} left`
       : `${Math.round(r.parts[r.weakest] * 100)}% in this category`;
@@ -1281,8 +1300,8 @@ function sheetParts(r, { signed: done }) {
     r.equipment ? ['Owned PA operation', 'Audio', r.costs.equipmentOperation] : [`PA rental (${v.paTier === 'M' ? 'medium' : 'small'})`, 'Audio', r.costs.pa],
     ['Light tower', 'Lighting', r.costs.lights],
     ...(r.costs.delays ? [[`Delays + operators (${v.delays})`, 'Main stage', r.costs.delays]] : []),
-    [`Bars (${v.bars})`, 'Hospitality', r.costs.bars],
-    r.facilities ? ['Facilities', 'Sanitation', r.costs.restrooms + r.costs.facilities] : [`Restrooms (${v.restrooms})`, 'Site', r.costs.restrooms],
+    [`Bars (${v.bars}${v.barTents ? ` + ${v.barTents} tent${v.barTents === 1 ? '' : 's'}` : ''})`, 'Hospitality', r.costs.bars],
+    r.facilities ? ['Facilities', 'Sanitation', r.costs.restrooms + r.costs.facilities] : [`Restrooms (${v.restrooms}${v.restroomBlocks ? ` + ${v.restroomBlocks} block${v.restroomBlocks === 1 ? '' : 's'}` : ''})`, 'Site', r.costs.restrooms],
     [`Crew (${v.staff} staff)`, 'Labour', r.costs.staff],
     ...(r.stageAccounts ? [['Main production crew (2)', 'Main stage', r.costs.mainCrew], ['Side PA, lights and crew', 'Side stage', r.costs.secondProduction]] : []),
     ['Ads', 'Promotion', r.costs.ads],
@@ -2721,9 +2740,8 @@ document.addEventListener('keydown', (e) => {
   if (matches('close', e)) { e.preventDefault(); selectTool(); return; }
   if (matches('pick-tool', e)) {
     e.preventDefault();
-    const tool = e.key.toLowerCase() === 't' ? 'trailer' : e.key.toLowerCase() === 'd' ? 'delay' : e.key.toLowerCase() === 'v' ? 'vip-deck' : e.key.toLowerCase() === 'u' ? 'bus-compound' : PLACEABLE[Number(e.key) - 1];
-    const type = D.OBJECT_TYPES[tool];
-    if ((!type.lotOnly || state.venue.id === 'lot') && (!type.festivalOnly || state.venue.id === 'festival') && (!type.supportOnly || festivalSupportFor(state.venue))) pickTool(tool);
+    const tool = Object.keys(TOOL_LETTERS).find(type => TOOL_LETTERS[type] === e.key.toUpperCase()) || PLACEABLE[Number(e.key) - 1];
+    if (toolOffered(tool)) pickTool(tool);
   } else if (matches('undo', e)) {
     e.preventDefault();
     undoLayout();

@@ -339,6 +339,7 @@ export function validateLayout(objects, venue, { keepDetached = false } = {}) {
     if (!t) return reject(`Unknown object type "${raw.type}"`);
     if (t.festivalOnly && spec.id !== 'festival') return reject(`${t.label} is available only at the Festival`);
     if (t.lotOnly && spec.id !== 'lot') return reject(`${t.label} is available only on the Lot`);
+    if (t.venues && !t.venues.includes(spec.id)) return reject(`${t.label} is available only at ${t.venues.map(id => D.VENUES[id].name).join(' and ')}`);
     const obj = { type: raw.type, x: t.kit ? 0 : raw.x, y: t.kit ? 0 : raw.y, rot: t.kit ? 0 : raw.rot };
     if (!t.kit) {
       if (!isInt(obj.x) || !isInt(obj.y) || !isInt(obj.rot) || obj.rot < 0 || obj.rot > 3) {
@@ -473,7 +474,9 @@ export function evaluateVenue(venue) {
     paTier: placedPa ? D.OBJECT_TYPES[placedPa.type].paTier : spec.housePa,
     lights: count('lights'),
     bars: count('bar'),
+    barTents: count('bar-tent'),
     restrooms: count('restroom'),
+    restroomBlocks: count('restroom-block'),
     gates: count('gate'),
     exits: count('exit'),
     fence: count('fence'),
@@ -543,7 +546,16 @@ export function evaluateVenue(venue) {
 export function staffFor(stats) {
   return Math.ceil(stats.capacity / D.SECURITY_PER)
     + stats.gates * D.DOOR_STAFF_PER_GATE
-    + stats.bars * D.BAR_STAFF_PER_BAR;
+    + stats.bars * D.BAR_STAFF_PER_BAR
+    + (stats.barTents || 0) * D.BAR_TENT.staff;
+}
+
+// R-09/R-10 guests served by the placed bars and restrooms; venue-scale units add to the same supply.
+export function amenitySupply(stats) {
+  return {
+    bar: (stats.bars || 0) * D.BAR_RATIO + (stats.barTents || 0) * D.BAR_TENT.serves,
+    restroom: (stats.restrooms || 0) * D.RESTROOM_RATIO + (stats.restroomBlocks || 0) * D.RESTROOM_BLOCK.serves,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -586,7 +598,7 @@ export function doorRushPilot(venue, attendance, presale, choice) {
   return {
     choice, rushArrivals: attendance, rushAdmitted: Math.min(attendance, rushCapacity), waiting,
     lostWalkups, admitted: attendance - lostWalkups,
-    barCapacity: Math.max(0, venue.bars * D.BAR_RATIO - (choice === 'gate' ? Math.ceil(D.BAR_RATIO * D.LOT_PILOT_BAR_CAPACITY_LOSS) : 0)),
+    barCapacity: Math.max(0, amenitySupply(venue).bar - (choice === 'gate' ? Math.ceil(D.BAR_RATIO * D.LOT_PILOT_BAR_CAPACITY_LOSS) : 0)),
   };
 }
 
@@ -623,12 +635,13 @@ export function evaluateShow(inputs) {
   const seated = zoneSales ? zoneSales.seats.attendance : v.seats ? Math.min(v.seats, attendance) : 0;
   const ticketGross = live ? live.ticketCash : inputs.stageSales ? inputs.stageSales.ticketGross : zoneSales ? zoneSales.ticketGross : seated * seatPrice + (attendance - seated) * inputs.price;
   const per = (supply) => (attendance > 0 ? Math.min(1, supply / attendance) : 1);
+  const supply = amenitySupply(v);
   const sanitation = live?.sanitation;
-  const restroomScore = sanitation ? (sanitation.totals.requested ? sanitation.totals.served / sanitation.totals.requested : 1) : per(v.restrooms * D.RESTROOM_RATIO);
+  const restroomScore = sanitation ? (sanitation.totals.requested ? sanitation.totals.served / sanitation.totals.requested : 1) : per(supply.restroom);
   const parts = {
     sound: v.paTier ? per(v.soundCapacity ?? D.PA_COVERAGE[v.paTier]) * (v.lights ? 1 : D.NO_LIGHTS_MULT) : 0,
     sightlines: per(v.clearTiles * (v.density || D.FLOOR_DENSITY)),
-    amenities: (per(live ? live.barServed : doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO) + restroomScore) / 2,
+    amenities: (per(live ? live.barServed : doorRush ? doorRush.barCapacity : supply.bar) + restroomScore) / 2,
     flow: (live ? (live.arrived ? live.admitted / live.arrived : 1) : doorRush ? (doorRush.rushArrivals ? doorRush.rushAdmitted / doorRush.rushArrivals : 1)
       : per(v.gates * D.GATE_RATE * D.DOORS_MINUTES)) * (!live && response && response.flowMult !== undefined ? response.flowMult : 1),
     incident: inputs.incidentId ? (response ? response.score : 0) : 1,
@@ -641,7 +654,7 @@ export function evaluateShow(inputs) {
     (weights[k] * (1 - parts[k]) > weights[worst] * (1 - parts[worst]) ? k : worst), 'sound');
 
   // R-10, R-13, R-14, R-15
-  const served = Math.min(attendance, doorRush ? doorRush.barCapacity : v.bars * D.BAR_RATIO);
+  const served = Math.min(attendance, doorRush ? doorRush.barCapacity : supply.bar);
   const bar = live ? live.barCash : Math.round(D.BAR_NET_PER_HEAD * (satisfaction / 100)
     * (served + (attendance - served) * D.BAR_SHORTFALL) * (inputs.setTime?.barMult ?? 1));
   const adSpend = D.AD_CHANNELS.reduce((s, c) => s + ((inputs.ads && inputs.ads[c]) || 0), 0);
@@ -650,8 +663,8 @@ export function evaluateShow(inputs) {
     permit: typeof v.permitFee === 'number' ? v.permitFee : D.PERMIT,
     pa: inputs.equipment || v.housePa ? 0 : (v.paTier ? D.PA_RENTAL[v.paTier] : 0),
     lights: (v.rentedLights ?? v.lights) ? D.LIGHTS_RENTAL : 0,
-    bars: v.bars * D.BAR_SETUP,
-    restrooms: v.restrooms * D.RESTROOM_UNIT,
+    bars: v.bars * D.BAR_SETUP + (v.barTents || 0) * D.BAR_TENT.setup,
+    restrooms: v.restrooms * D.RESTROOM_UNIT + (v.restroomBlocks || 0) * D.RESTROOM_BLOCK.rent,
     fence: D.FENCE_KIT,
     staff: staffFor(v) * D.STAFF_RATE,
     ads: adSpend,
@@ -887,7 +900,9 @@ function secondStage(state) {
     permitFee: 0,
     lights: 0,
     bars: 0,
+    barTents: 0,
     restrooms: 0,
+    restroomBlocks: 0,
     fence: 0,
     gates: 1,
     exits: 1,

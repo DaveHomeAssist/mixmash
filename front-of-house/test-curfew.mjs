@@ -42,7 +42,7 @@ test('aggregate walk-ups and bar use time with one rounding; presales, cost and 
  const r=E.evaluateShow(inputs),legacy=E.evaluateShow({...inputs,setTime:undefined});
  assert.equal(r.presale,legacy.presale);assert.equal(r.walkupAfterIncident,Math.round(r.walkup*.9));assert.equal(legacy.walkupAfterIncident,Math.round(r.walkup*.7));
  assert.equal(r.attendance,Math.min(v.capacity,r.presale+Math.round(r.walkup*.9)));
- const served=Math.min(r.attendance,v.bars*D.BAR_RATIO);
+ const served=Math.min(r.attendance,E.amenitySupply(v).bar);
  assert.equal(r.bar,Math.round(D.BAR_NET_PER_HEAD*r.satisfaction/100*(served+(r.attendance-served)*D.BAR_SHORTFALL)*6/7));
  assert.deepEqual(r.costs,legacy.costs);assert.equal(r.artistPay,500);assert.equal(r.upfront,legacy.upfront);
 });

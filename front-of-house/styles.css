@@ -693,7 +693,8 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   .camera-row .renderer-btn { display: none; }
   .wide-only { display: none; }
   .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-  .tiles:has(input[value="vip-deck"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tiles:has(input[value="bar-tent"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tiles:has(input[value="vip-deck"]) { grid-template-columns: repeat(7, minmax(0, 1fr)); }
   .offers, .cols, .sheet-cols { grid-template-columns: minmax(0, 1fr); }
   .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .win-layer { padding: calc(var(--strip-h) + 4px) 4px 4px; }
@@ -970,4 +971,6 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   .artist-identity .band-art { width: 68px; height: 37px; }
   .artist-identity .artist-name { font-size: 1.1rem; }
   .tabbar [role='tab'] { min-height: 44px; flex-shrink: 0; }
+  /* Two rows of venue buttons on phones: keep the room art as a short band so the act tabs stay on screen. */
+  .venue-art { height: 20px; }
 }

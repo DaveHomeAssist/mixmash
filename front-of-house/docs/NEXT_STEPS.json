@@ -169,6 +169,36 @@
       ],
       "evidence": "user playtest + source reconciliation",
       "phase": 0
+    },
+    {
+      "id": "FOH-AMEN-01",
+      "type": "balance",
+      "sev": "P2",
+      "title": "Venue-scale bars and restrooms (0.3.0): implemented, in review",
+      "detail": "Dave reported on 2026-10-12 that bar and restroom logic looked flawed: a sold-out Split Acre settlement asked for 47 bars and 146 restrooms because every venue used the Lot rates (125 and 40 guests per unit). Meeting that guideline would push Split Acre below its 6,000 permit and Loam Shell below 700. Implemented per D13-D16 (CT-DEC-36): Bar tent (3x2, serves 1,000) and Restroom block (2x2, serves 500) at Loam Shell and Split Acre; guideline-meeting Suggested layouts above the Lot (Fathom Hall 94%, Loam Shell and Split Acre 100% at permit capacity); venue-correct settlement gap; CT-DEC-26 careless guard moved to the Festival. PR146 head 92fd3f5 passes 455 unit tests, vendor/asset/docs/build checks, all three simulators and all eleven Front of House smoke groups on Dominic; Lot BALANCE_BASELINE unchanged. A Dominic Playwright check confirms the tools, A/W keys, Lot exclusion and the settlement line 'Bar service 375 of 6,000 \u00b7 add 6 bar tents; restroom service 400 of 6,000 \u00b7 add 12 restroom blocks'. Remaining: PR CI, Dave's merge approval, Pages, hosted check, tag, and Dave's balance/readability review.",
+      "files": [
+        "front-of-house/docs/FEATURE_BRIEFS.md",
+        "front-of-house/docs/DECISIONS.md",
+        "front-of-house/data.mjs",
+        "front-of-house/engine.mjs",
+        "front-of-house/game.js",
+        "front-of-house/lot-models.mjs"
+      ],
+      "evidence": "Dominic container tests and simulators at fd8952c",
+      "phase": 2
+    },
+    {
+      "id": "FOH-FLOW-01",
+      "type": "balance",
+      "sev": "P2",
+      "title": "Proposed: entry flow has the same scale problem at Split Acre",
+      "detail": "Found while verifying FOH-AMEN-01. One gate admits GATE_RATE 5 x DOORS_MINUTES 60 = 300 guests, so the Split Acre Suggested layout (one gate) scores about 5% for entry flow at 6,000 guests and the retry tip says 'Add a gate' when about 20 are needed. Unlike amenities this is achievable on the boundary, but the Suggested layout is far below it. Not changed in 0.3.0. Needs a product choice (for example a festival entry plaza object, per-venue gate rates, or more gates in the Suggested layout) before any brief.",
+      "files": [
+        "front-of-house/data.mjs",
+        "front-of-house/engine.mjs"
+      ],
+      "evidence": "engine fixture: weak Split Acre night flow part 0.03-0.05",
+      "phase": 2
     }
   ],
   "phases": [
@@ -1315,6 +1345,42 @@
       "selected": null,
       "decidedOn": null,
       "answer": null
+    },
+    "D13": {
+      "status": "accepted",
+      "recommended": "A",
+      "selected": "C",
+      "decidedOn": "2026-10-12",
+      "decidedBy": "Dave",
+      "authority": "Direct answer in session",
+      "answer": "New festival-size Bar tent and Restroom block objects"
+    },
+    "D14": {
+      "status": "accepted",
+      "recommended": "A",
+      "selected": "C",
+      "decidedOn": "2026-10-12",
+      "decidedBy": "Dave",
+      "authority": "Direct answer in session",
+      "answer": "Update every venue above the Lot to meet its amenity guideline"
+    },
+    "D15": {
+      "status": "accepted",
+      "recommended": "A",
+      "selected": "A",
+      "decidedOn": "2026-10-12",
+      "decidedBy": "Dave",
+      "authority": "Direct answer in session",
+      "answer": "Offer the new objects at Loam Shell and Split Acre; Fathom Hall as close as its floor allows"
+    },
+    "D16": {
+      "status": "accepted",
+      "recommended": "A",
+      "selected": "A",
+      "decidedOn": "2026-10-12",
+      "decidedBy": "Dave",
+      "authority": "Direct answer in session",
+      "answer": "Move CT-DEC-26's careless-play guard from the Club to the Festival"
     }
   },
   "execution": {
@@ -2254,6 +2320,28 @@
         ]
       }
     ]
+  },
+  "amenityScale20261012": {
+    "version": "0.3.0",
+    "cache": "v78",
+    "saveSchema": 2,
+    "branch": "claude/foh-amenity-scale-1012",
+    "commit": "92fd3f54643406aab3e853f786a5785dbbe6353d",
+    "pullRequest": "https://github.com/DaveHomeAssist/mixmash/pull/146",
+    "decisions": "CT-DEC-36 (D13-D16), CT-DEC-26 amended",
+    "brief": "FOH-V02b16",
+    "verification": "Dominic Playwright container (Node 24): npm test 455/455, vendor/asset/perf/build checks, sim (Lot baseline unchanged), tiers and career simulators regenerated, docs regenerated with Mac parity, all eleven CI Front of House smoke groups pass, and a Playwright check of tools, keys, Lot exclusion, phone fit and the settlement gap line at 1440 and 375 px.",
+    "tierCohort": {
+      "careful": "Lot 100, Club 100, Amphitheater 100, Festival 99 (unchanged)",
+      "careless": "Club 100 (was 69), Amphitheater 100 (was 69), Festival 91 (was 66)"
+    },
+    "pending": [
+      "PR146 CI",
+      "Dave approves merge; then Pages and hosted check",
+      "Tag front-of-house-v0.3.0 after deployed merge",
+      "Dave's balance and readability review"
+    ],
+    "cacheNote": "Open PR144 uses cache v77; this release reserves v78."
   },
   "numberingReview20261009": {
     "pr": "https://github.com/DaveHomeAssist/mixmash/pull/141",

@@ -44,7 +44,7 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | --- | --- |
 | `sound` | Sound and light scored lowest. Check room coverage and lighting before renting extra gear. |
 | `sightlines` | Sightlines scored lowest. Keep bars, restrooms and the light tower out of the cone in front of the stage. |
-| `amenities` | Bars and restrooms scored lowest. Plan one bar for every 125 people and one restroom for every 40. |
+| `amenities` | Bars and restrooms scored lowest. Add service until both cover the whole crowd; each tool lists how many guests it serves. |
 | `flow` | Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane. |
 | `incident` | Incident handling scored lowest. Compare the response cost, crowd result and act payout. |
 
@@ -77,10 +77,12 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `pa-m` | $450 |
 | `lights` | $175 |
 | `bar` | $100 + 2 staff |
+| `bar-tent` | $500 + 6 staff |
 | `delay` | $675 including operator |
 | `trailer` | $240 + optional cleaner/utilities |
 | `food` | Vendor supplies staff and power |
 | `restroom` | $60 |
+| `restroom-block` | $600 |
 | `gate` | 1 door staff |
 | `exit` | free |
 
@@ -101,6 +103,8 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `delay` | Delay |
 | `vip-deck` | VIP deck |
 | `bus-compound` | Buses |
+| `bar-tent` | Bar tent |
+| `restroom-block` | Toilets |
 
 ### `FACING`: Rotation directions (Build)
 
@@ -125,9 +129,11 @@ Names the engine, the board and the settlement sheet all use. Act names and genr
 | Object | `bus-compound` | Bus compound |
 | Object | `lights` | Light tower |
 | Object | `bar` | Bar |
+| Object | `bar-tent` | Bar tent |
 | Object | `food` | Food stall |
 | Object | `trailer` | Facility trailer |
 | Object | `restroom` | Restroom unit |
+| Object | `restroom-block` | Restroom block |
 | Object | `gate` | Entry gate |
 | Object | `exit` | Exit |
 | Object | `fence` | Fence kit |

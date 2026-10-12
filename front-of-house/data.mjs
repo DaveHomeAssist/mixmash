@@ -48,6 +48,10 @@ export const PA_COVERAGE = { S: 100, M: 250 };
 export const NO_LIGHTS_MULT = 0.8; // the production score without a light rig
 export const BAR_RATIO = 125;
 export const RESTROOM_RATIO = 40;
+// Venue-scale amenities (CT-DEC-36). Each large unit adds to the same bar or restroom supply.
+// Gameplay values, not venue engineering or sanitation guidance.
+export const BAR_TENT = Object.freeze({ serves: 1000, setup: 500, staff: 6 });
+export const RESTROOM_BLOCK = Object.freeze({ serves: 500, rent: 600 });
 export const GATE_RATE = 5; // people per minute per gate
 export const DOORS_MINUTES = 60;
 // Opt-in Lot doors experiment only. These are trial values, not new balance defaults.
@@ -92,7 +96,8 @@ export const REL_MAX_STEP = 10;
 
 // Placeable objects (R-18). Footprints are for rotation 0; rotations 1 and 3 swap w and h.
 // `group` caps how many of a kind may be placed; `edge` objects sit on the lot boundary;
-// `nextToStage` objects must touch the stage; `blocksSight` objects block sightlines (R-03).
+// `nextToStage` objects must touch the stage; `blocksSight` objects block sightlines (R-03);
+// `venues` lists the only rooms that offer an object.
 export const OBJECT_TYPES = {
   stage: { label: 'Stage', w: 6, h: 3, watts: 0, group: 'stage', max: 1 },
   'pa-s': { label: 'PA (small)', w: 1, h: 1, watts: 3000, group: 'pa', max: 1, nextToStage: true, paTier: 'S' },
@@ -102,9 +107,11 @@ export const OBJECT_TYPES = {
   'bus-compound': { label: 'Bus compound', w: 6, h: 3, watts: 6000, group: 'bus-compound', max: 1, blocksSight: true, festivalOnly: true, supportOnly: true },
   lights: { label: 'Light tower', w: 1, h: 1, watts: 8000, group: 'lights', max: 1, blocksSight: true },
   bar: { label: 'Bar', w: 2, h: 1, watts: 1500, blocksSight: true },
+  'bar-tent': { label: 'Bar tent', w: 3, h: 2, watts: 4000, blocksSight: true, venues: ['amphitheater', 'festival'] },
   food: { label: 'Food stall', w: 2, h: 1, watts: 0, group: 'food', max: 1, blocksSight: true, lotOnly: true },
   trailer: { label: 'Facility trailer', w: 3, h: 2, watts: 1500, group: 'trailer', max: 1, blocksSight: true, lotOnly: true },
   restroom: { label: 'Restroom unit', w: 1, h: 1, watts: 0, blocksSight: true },
+  'restroom-block': { label: 'Restroom block', w: 2, h: 2, watts: 0, blocksSight: true, venues: ['amphitheater', 'festival'] },
   gate: { label: 'Entry gate', w: 1, h: 1, watts: 0, edge: true },
   exit: { label: 'Exit', w: 1, h: 1, watts: 0, edge: true },
   fence: { label: 'Fence kit', kit: true, watts: 0, group: 'fence', max: 1 },
@@ -213,10 +220,15 @@ export const CLUB_STARTER = [
   { type: 'lights', x: 14, y: 0, rot: 0 },
   { type: 'bar', x: 1, y: 6, rot: 0 },
   { type: 'bar', x: 16, y: 6, rot: 0 },
+  { type: 'bar', x: 1, y: 9, rot: 0 },
   { type: 'restroom', x: 1, y: 12, rot: 0 },
   { type: 'restroom', x: 2, y: 12, rot: 0 },
   { type: 'restroom', x: 17, y: 12, rot: 0 },
   { type: 'restroom', x: 18, y: 12, rot: 0 },
+  { type: 'restroom', x: 1, y: 13, rot: 0 },
+  { type: 'restroom', x: 2, y: 13, rot: 0 },
+  { type: 'restroom', x: 17, y: 13, rot: 0 },
+  { type: 'restroom', x: 18, y: 13, rot: 0 },
   { type: 'gate', x: 10, y: 13, rot: 0 },
   { type: 'exit', x: 0, y: 7, rot: 0 },
   { type: 'exit', x: 19, y: 7, rot: 0 },
@@ -231,12 +243,9 @@ export const AMP_STARTER = [
   { type: 'fence', x: 0, y: 0, rot: 0 },
   { type: 'stage', x: 11, y: 0, rot: 0 },
   { type: 'lights', x: 18, y: 0, rot: 0 },
-  { type: 'bar', x: 2, y: 8, rot: 0 },
-  { type: 'bar', x: 22, y: 8, rot: 0 },
-  { type: 'restroom', x: 2, y: 16, rot: 0 },
-  { type: 'restroom', x: 3, y: 16, rot: 0 },
-  { type: 'restroom', x: 24, y: 16, rot: 0 },
-  { type: 'restroom', x: 25, y: 16, rot: 0 },
+  { type: 'bar-tent', x: 2, y: 4, rot: 0 },
+  { type: 'restroom-block', x: 0, y: 6, rot: 0 },
+  { type: 'restroom-block', x: 26, y: 6, rot: 0 },
   { type: 'gate', x: 14, y: 17, rot: 0 },
   { type: 'exit', x: 0, y: 9, rot: 0 },
   { type: 'exit', x: 27, y: 9, rot: 0 },
@@ -252,13 +261,26 @@ export const FEST_STARTER = [
   { type: 'fence', x: 0, y: 0, rot: 0 },
   { type: 'stage', x: 16, y: 0, rot: 0 },
   { type: 'lights', x: 24, y: 0, rot: 0 },
-  { type: 'bar', x: 2, y: 10, rot: 0 },
-  { type: 'bar', x: 34, y: 10, rot: 0 },
-  { type: 'bar', x: 18, y: 14, rot: 0 },
-  { type: 'restroom', x: 2, y: 22, rot: 0 },
-  { type: 'restroom', x: 3, y: 22, rot: 0 },
-  { type: 'restroom', x: 36, y: 22, rot: 0 },
-  { type: 'restroom', x: 37, y: 22, rot: 0 },
+  // Bar tents and restroom blocks fill the side wings, outside the view from the stage. The
+  // right wing starts below row 6 so the VIP deck can still turn in place.
+  { type: 'bar-tent', x: 0, y: 6, rot: 0 },
+  { type: 'bar-tent', x: 3, y: 6, rot: 0 },
+  { type: 'bar-tent', x: 6, y: 6, rot: 0 },
+  { type: 'bar-tent', x: 31, y: 7, rot: 0 },
+  { type: 'bar-tent', x: 34, y: 7, rot: 0 },
+  { type: 'bar-tent', x: 37, y: 7, rot: 0 },
+  { type: 'restroom-block', x: 0, y: 4, rot: 0 },
+  { type: 'restroom-block', x: 2, y: 4, rot: 0 },
+  { type: 'restroom-block', x: 4, y: 4, rot: 0 },
+  { type: 'restroom-block', x: 6, y: 4, rot: 0 },
+  { type: 'restroom-block', x: 0, y: 8, rot: 0 },
+  { type: 'restroom-block', x: 2, y: 8, rot: 0 },
+  { type: 'restroom-block', x: 4, y: 8, rot: 0 },
+  { type: 'restroom-block', x: 6, y: 8, rot: 0 },
+  { type: 'restroom-block', x: 32, y: 9, rot: 0 },
+  { type: 'restroom-block', x: 34, y: 9, rot: 0 },
+  { type: 'restroom-block', x: 36, y: 9, rot: 0 },
+  { type: 'restroom-block', x: 38, y: 9, rot: 0 },
   { type: 'gate', x: 20, y: 23, rot: 0 },
   { type: 'exit', x: 0, y: 12, rot: 0 },
   { type: 'exit', x: 39, y: 12, rot: 0 },
@@ -318,13 +340,13 @@ export const ROOM_PROFILES = Object.freeze({
     version: 1, venueId: 'amphitheater', label: 'Shell system', soundCapacity: 700,
     lawnStart: 10, lawnEnd: 16, risePerTile: 0.18, sightDegrees: 120, sightRange: 40,
     eyeHeight: 0.83, performerHeight: 1.38,
-    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15 }),
+    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15, 'bar-tent': 1.5, 'restroom-block': 1.15 }),
   }),
   festival: Object.freeze({
     version: 1, venueId: 'festival', label: 'Main system', soundCapacity: 3000,
     lawnStart: 0, lawnEnd: 0, risePerTile: 0, sightDegrees: 120, sightRange: 60,
     eyeHeight: 0.83, performerHeight: 2.38,
-    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15, 'vip-deck': 1.6, 'bus-compound': 1.8 }),
+    obstacleHeights: Object.freeze({ lights: 4, delay: 4, bar: 0.55, restroom: 1.15, 'bar-tent': 1.5, 'restroom-block': 1.15, 'vip-deck': 1.6, 'bus-compound': 1.8 }),
   }),
 });
 

@@ -40,6 +40,7 @@ The total power drawn by placed objects (`OBJECT_TYPES[type].watts`) must not ex
 - Gates and exits (`edge`) must sit on the lot boundary.
 - The PA (`nextToStage`) must touch the stage along a tile edge.
 - At most one stage, one PA (small or medium), one light tower and one fence kit (`max` per `group`).
+- An object with a `venues` list is offered only in those rooms. The Bar tent and Restroom block (CT-DEC-36) are offered at Loam Shell and Split Acre; elsewhere they are refused with the rooms named.
 - **To confirm Build:** a stage, a PA, the fence kit, at least one gate, at least one exit, no invalid objects, and a capacity above 0.
 
 ## Demand and attendance
@@ -86,7 +87,7 @@ walkup       = round(demand) − presale
 | --- | --- |
 | `sound` | `min(1, PA_COVERAGE[paTier] / attendance)`, × `NO_LIGHTS_MULT` without a light tower; 0 with no PA |
 | `sightlines` | R-03 |
-| `amenities` | the average of `min(1, bars × BAR_RATIO / attendance)` and `min(1, restrooms × RESTROOM_RATIO / attendance)` |
+| `amenities` | the average of `min(1, barSupply / attendance)` and `min(1, restroomSupply / attendance)`, where `barSupply = bars × BAR_RATIO + barTents × BAR_TENT.serves` and `restroomSupply = restrooms × RESTROOM_RATIO + restroomBlocks × RESTROOM_BLOCK.serves` |
 | `flow` | `min(1, gates × GATE_RATE × DOORS_MINUTES / attendance) × flowMult`, where `flowMult` comes from the incident response and is 1 otherwise |
 | `incident` | the chosen response's `score`; 1 if nothing went wrong |
 
@@ -95,7 +96,7 @@ The weights sum to 100. The settlement sheet names the **weakest** part (the lar
 ### R-10: Bar revenue
 
 ```
-served = min(attendance, bars × BAR_RATIO)
+served = min(attendance, barSupply)
 bar    = round(BAR_NET_PER_HEAD × satisfaction / 100 × (served + (attendance − served) × BAR_SHORTFALL))
 ```
 
@@ -115,7 +116,7 @@ The additional prompt under `?night-slice=1` uses the current Lot, show seed, ve
 
 - The player chooses `bar` or `gate` once before the usual seeded incident. `gate` temporarily assigns one bar worker to the existing admission gate. No extra employee is hired, no new gate appears, and staffing cost remains unchanged. A pending choice blocks the incident response. The optional choice is saved as described in [SAVE_FORMAT.md](SAVE_FORMAT.md#opt-in-lot-show-experiment-on-schema-2).
 - For this trial only, `rushCapacity = gates * GATE_RATE * LOT_PILOT_RUSH_MINUTES * (gate choice ? LOT_PILOT_GATE_MULT : 1)`; `waiting = max(0, plannedAttendance - rushCapacity)`. Only walk-ups can leave: `lostWalkups = min(max(0, plannedAttendance - presale), floor(waiting * LOT_PILOT_WALKUP_LOSS))`. Actual attendance is `plannedAttendance - lostWalkups`. Ticket holders wait but retain their tickets.
-- The `gate` choice lowers one bar's service capacity by `ceil(BAR_RATIO * LOT_PILOT_BAR_CAPACITY_LOSS)`. Otherwise capacity remains `bars * BAR_RATIO`. R-09's amenities part and R-10's bar sales use this adjusted capacity; its entry flow part uses `rushAdmitted / rushArrivals`, multiplied by any existing incident flow effect. At zero arrivals, flow is 1. Everything else uses the existing show math, including pay, rent, artist compensation and settlement.
+- The `gate` choice lowers one bar's service capacity by `ceil(BAR_RATIO * LOT_PILOT_BAR_CAPACITY_LOSS)`. Otherwise capacity remains `barSupply` (R-09). R-09's amenities part and R-10's bar sales use this adjusted capacity; its entry flow part uses `rushAdmitted / rushArrivals`, multiplied by any existing incident flow effect. At zero arrivals, flow is 1. Everything else uses the existing show math, including pay, rent, artist compensation and settlement.
 - The card displays a forecast before the incident. The signed sheet shows the actual queue and sales after the incident. The aggregate rush is a snapshot, not a pathfinding or per-person simulation. Balance tuning and the 12-second playback are unchanged for normal shows.
 
 ## Money
@@ -128,9 +129,9 @@ The additional prompt under `?night-slice=1` uses the current Lot, show seed, ve
 
 ### R-13: Show costs
 
-`showCosts = LOT_RENTAL + PERMIT + PA_RENTAL[paTier] + (lights ? LIGHTS_RENTAL : 0) + bars × BAR_SETUP + restrooms × RESTROOM_UNIT + FENCE_KIT + staff × STAFF_RATE + Σ adSpend + incidentResponseCost`
+`showCosts = LOT_RENTAL + PERMIT + PA_RENTAL[paTier] + (lights ? LIGHTS_RENTAL : 0) + bars × BAR_SETUP + barTents × BAR_TENT.setup + restrooms × RESTROOM_UNIT + restroomBlocks × RESTROOM_BLOCK.rent + FENCE_KIT + staff × STAFF_RATE + Σ adSpend + incidentResponseCost`
 
-Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + bars × BAR_STAFF_PER_BAR`.
+Required staff: `ceil(capacity / SECURITY_PER) + gates × DOOR_STAFF_PER_GATE + bars × BAR_STAFF_PER_BAR + barTents × BAR_TENT.staff`.
 
 ### R-14: Artist payment
 
