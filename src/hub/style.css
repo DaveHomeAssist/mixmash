@@ -40,6 +40,7 @@ html,body {
 body {
   position:fixed;
   inset:0;
+  overflow:clip;
   background:var(--paper);
   color:var(--ink);
   line-height:1.45
@@ -563,6 +564,7 @@ body:has(.view:not(#games):target) .hero {
   grid-row:1;
   overflow:auto;
   min-height:0;
+  max-height:100%;
   padding:5px 10px 5px 3px;
   scrollbar-color:var(--muted) var(--wash)
 }
@@ -921,6 +923,7 @@ body:has(.view:not(#games):target) .hero {
   }
   .detail-copy {
     flex:none;
+    max-height:none;
     overflow:visible
   }
   .detail-art {
@@ -1034,7 +1037,10 @@ body:has(.view:not(#games):target) .hero {
   }
   .detail-body {
     grid-template-columns:1fr;
-    grid-template-rows:1fr
+    grid-template-rows:minmax(0,1fr)
+  }
+  .detail-copy {
+    grid-column:1
   }
   .detail-view {
     padding:8px 0;
@@ -1062,6 +1068,12 @@ body:has(.view:not(#games):target) .hero {
 @media(max-width:700px) and (max-height:650px) {
   .hero {
     display:none
+  }
+  .detail-copy {
+    flex:1 1 auto;
+    min-height:0;
+    max-height:100%;
+    overflow:auto
   }
   .game-body h3 {
     font-size:14px
