@@ -972,5 +972,6 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   .artist-identity .artist-name { font-size: 1.1rem; }
   .tabbar [role='tab'] { min-height: 44px; flex-shrink: 0; }
   /* Two rows of venue buttons on phones: keep the room art as a short band so the act tabs stay on screen. */
-  .venue-art { height: 20px; }
+  .venue-art { height: 12px; }
+  .rooms button > span { padding-top: 3px; }
 }
