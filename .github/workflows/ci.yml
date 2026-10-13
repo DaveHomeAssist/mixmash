@@ -53,6 +53,8 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run smoke:landing
       - run: npm run smoke:front-of-house
+      - run: node --test test/front-of-house-version.test.mjs
+      - run: node test/front-of-house-menu-art-smoke.mjs
       - run: npm run smoke:front-of-house-advisory
       - run: npm run smoke:front-of-house-floor
       - run: npm run smoke:front-of-house-batching

@@ -2914,6 +2914,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-menu-art-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-menu-art-smoke.mjs",
+      "description": "Menu illustration coverage, actual booking controls and responsive containment.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-menu-art-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-native-hud-performance.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3301,6 +3311,16 @@
       "title": "lot-renderer.mjs",
       "description": "Lot, Club, amphitheater and Festival preview WebGL backend. Scene snapshots are presentation inputs, never simulation authority.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lot-renderer.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/menu-art.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "menu-art.mjs",
+      "description": "Original, code-authored concert illustrations. Decorative only; no game state or remote assets.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/menu-art.mjs",
       "open": null
     },
     {

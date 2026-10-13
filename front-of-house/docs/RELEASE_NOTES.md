@@ -5,6 +5,13 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.1 — 2026-10-12
+
+- Adds original illustrated band lineups for all eleven acts, venue artwork in booking, and matching illustrations in Promote and Menu.
+- Keeps compact artist headers on shorter desktop screens and preserves accessible deal controls in both themes.
+- Corrects the catalog detail image: Front of House gameplay replaces the mislabeled MixMash fighter poster, using the canonical PR145 cover and uncropped presentation.
+- Uses cache v79. Existing game rules, economics, 3D world and save schema 2 remain unchanged; 0.3.0 venue-scale amenities are retained.
+
 ## 0.3.0 — 2026-10-12
 
 - Adds a Bar tent (3×2, serves 1,000) and Restroom block (2×2, serves 500) at Loam Shell and Split Acre, keys A and W. They add to the existing bar and restroom service, so a full house at either venue can now meet its amenity guideline without losing tickets.

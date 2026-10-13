@@ -20,6 +20,7 @@ import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
 import { advisoryFor } from './advisory.mjs';
+import { bandArt, venueArt } from './menu-art.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
@@ -340,7 +341,7 @@ function bookPanel() {
     const v = D.VENUES[id];
     const open = id === 'lot' || state.mode === 'sandbox' || state.unlocks[id];
     const on = state.venue.id === id;
-    return `<button type="button" data-act="venue" data-venue="${id}" ${on ? 'class="primary"' : ''} ${open ? '' : 'disabled'}>${esc(v.name)}${open ? '' : ' <small>(locked)</small>'}</button>`;
+    return `<button type="button" data-act="venue" data-venue="${id}" ${on ? 'class="primary"' : ''} ${open ? '' : 'disabled'}>${venueArt(id)}<span>${esc(v.name)}${open ? '' : ' <small>(locked)</small>'}</span></button>`;
   }).join('');
   const nights = spec.nights.length > 1 ? `<div class="row tight nights">${spec.nights.map((n) =>
     `<button type="button" data-act="nights" data-nights="${n}" ${(state.booking.nights || 1) === n ? 'class="primary"' : ''}>${n} night${n > 1 ? 's' : ''}</button>`).join('')}</div>` : '';
@@ -365,7 +366,7 @@ function bookPanel() {
     return `
     <section class="card offer" aria-label="${esc(a.name)}" data-tab="${esc(a.name)}">
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
-      <p class="artist-name">${esc(a.name)}</p>
+      <div class="artist-identity">${bandArt(id)}<p class="artist-name">${esc(a.name)}</p></div>
       <p class="facts">${esc(a.genre)} · draws ${lo} to ${hi} · usually ${money(a.fairPrice)}</p>
       <p class="lede">Asks ${money(t.ask)}${t.ask !== a.ask ? ` (${money(a.ask)} to a promoter they don't know)` : ''}.${spec.id === 'amphitheater' ? ' Seats and lawn sell separately. Shell rig included.' : spec.id === 'festival' ? ` Main sound included. Touring rentals: ${money(D.FESTIVAL_SUPPORT.vipDeck + D.FESTIVAL_SUPPORT.busCompound)}.` : spec.id === 'club' ? ' House PA and lights included.' : ''}</p>
       ${spec.id === 'amphitheater' && state.booking.nights > 1 ? `<p class="lede">Cancel after a night: ${money(Math.round(t.ask/4))} for each unplayed night (25% of ask).</p>` : ''}
@@ -773,7 +774,7 @@ function promotePanel() {
     <p class="lede">${seatingPlanFor(state) ? 'Each zone sells independently.' : `${spec.seats} seats sell first, then the lawn at the lawn price.`}</p>` : '';
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
-    <h2>Promote the show</h2>
+    <div class="show-art-heading">${bandArt(state.booking.artistId, 'band-art-small')}<h2>Promote the show</h2></div>
     <p class="lede">${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="cols">
@@ -2706,7 +2707,7 @@ function resetModeButtons() {
 function setMenu(open, { focus = true } = {}) {
   if (open === !el.menu.hidden) return;
   if (!open) resetModeButtons();
-  if (open) cancelLotGesture();
+  if (open) { cancelLotGesture(); $('#menu-art').innerHTML = state.phase !== 'book' && state.booking.deal ? bandArt(state.booking.artistId) : venueArt(state.venue.id); }
   el.menu.hidden = !open;
   el.menuBtn.setAttribute('aria-expanded', String(open));
   if (!focus) return;

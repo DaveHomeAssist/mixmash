@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.0 Advisory desk merged and hosted verified; physical and human acceptance open",
+  "head": "0.2.1 menu artwork integrated with PR145 detail repair; CI pending",
   "lastActivity": "2026-10-12",
   "status": "amber",
-  "statusReason": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized. Review follow-up reproduced mobile detail-body scroll loss at375x812 (50px reset to0) and375x700 (162px reset to0). Both positions now restore exactly on Duncan; the existing short-phone copy scroller remains supported. Expanded landing smoke exercises both phone scroll containers. Required refreshed-head CI and hosted checks remain pending.",
+  "statusReason": "PR144 preserves PR145 catalog cover and detail layout, including tall-phone scroll restoration. Eleven band identities and four venue illustrations remain presentation only. Duncan passes all-room phone booking checks at390/375/360px and eight held-run journeys; full integrated CI and hosted checks remain pending. No engine, balance or save changes. Private Next Steps Board unavailable; existing human/device/rights gates remain open.",
   "activity30d": {
-    "headline": "Studio Front of House detail page fix pairs a real 3D Build capture with proportionate media and actions beside the game information; source tests and local desktop/tablet/mobile browser checks pass. Advisory desk0.2.0 is hosted and browser-verified; broader proposals and physical/human/calibration/rights gates remain open."
+    "headline": "Menu artwork 0.2.1 in verification; Advisory 0.2.0 delivered, broader acceptance gates remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -45,12 +45,12 @@
     "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized."
   ],
   "nextStep": {
-    "title": "Complete the existing physical and human release acceptance",
+    "title": "Finish menu artwork delivery, then resume existing human acceptance",
     "why": "Automated Advisory delivery is verified; browser evidence does not establish physical devices, screen readers, calibration, art, camera, career or image rights.",
-    "doneWhen": "Attach direct evidence to the existing RELEASE acceptance checklist and preserve remaining unknowns; verify the active postmerge CI result separately.",
+    "doneWhen": "Exact-source smoke, CI, merge, Pages and hosted menu checks pass; physical/human acceptance remains separate.",
     "effort": "M",
     "owner": "Dave and existing Front of House executor",
-    "blockedBy": "Direct physical/human/calibration/rights evidence; postmerge CI result is not yet recorded."
+    "blockedBy": "No implementation blocker; CI and hosted proof pending."
   },
   "findings": [
     {
@@ -2381,5 +2381,10 @@
       "image rights",
       "private Next Steps Board unavailable"
     ]
+  },
+  "detailPageIntegration": {
+    "pullRequest": 145,
+    "revision": "3d0ba9e9c1671af0b6b5245e4825ac544008d64b",
+    "evidence": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized. Review follow-up reproduced mobile detail-body scroll loss at375x812 (50px reset to0) and375x700 (162px reset to0). Both positions now restore exactly on Duncan; the existing short-phone copy scroller remains supported. Expanded landing smoke exercises both phone scroll containers. Required refreshed-head CI and hosted checks remain pending."
   }
 }
