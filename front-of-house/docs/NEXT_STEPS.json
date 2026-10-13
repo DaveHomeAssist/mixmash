@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.2.1 menu artwork integrated with PR145 detail repair; CI pending",
-  "lastActivity": "2026-10-12",
+  "head": "0.3.1 menu artwork delivered; PR145 cover/layout preserved",
+  "lastActivity": "2026-10-13",
   "status": "amber",
-  "statusReason": "PR144 preserves PR145 catalog cover and detail layout, including tall-phone scroll restoration. Eleven band identities and four venue illustrations remain presentation only. Duncan passes all-room phone booking checks at390/375/360px and eight held-run journeys; full integrated CI and hosted checks remain pending. No engine, balance or save changes. Private Next Steps Board unavailable; existing human/device/rights gates remain open.",
+  "statusReason": "PR144 e37dbb9 passes CI38327150693 general and measured paired regression. Merged50d495c after PR145 d9110ed and the independently delivered0.3.0 amenities base. Pages38350747856 published the exact merge. Duncan verifies12 hosted files, correct catalog cover at three sizes, offline cachev79 reload with exact state and eight hosted Chromium/WebKit held-run journeys including375px classic/3D. Menu artwork introduces no engine, balance or save changes relative to the0.3.0 base. Optional manual performance calibration was not requested; required baseline/candidate audit passed. Private Next Steps Board unavailable. Broader physical/human/provenance gates remain open.",
   "activity30d": {
-    "headline": "Menu artwork 0.2.1 in verification; Advisory 0.2.0 delivered, broader acceptance gates remain open."
+    "headline": "Menu artwork0.3.1 and detail repair delivered; existing broader acceptance gates remain open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -42,7 +42,8 @@
     "PR136 head2123f1b passed general and paired regression CI and mergeda3677b8. Pages37584561999 and postmergeCI37584562751 pass; five release files match live, Dominic verifies fresh default3D/v0.1.0/persisted2D, and annotated tag front-of-house-v0.1.0 resolves to the release merge. Save schema stays2.",
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge.",
     "PR141 QA integrity head5ca2def passed CI37910081639 attempt2 and merged d483314 with the exact tested tree. Cumulative numbering remains consistent beyond200 retained shows; record IDs/accounting/save schema and retention semantics are preserved. Earlier test harness failures and paired attempt1 rejection remain recorded. Pages/postmerge/hosted QA delivery checks remain pending; Advisory release is separate.",
-    "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized."
+    "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized.",
+    "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes."
   ],
   "nextStep": {
     "title": "Finish menu artwork delivery, then resume existing human acceptance",
