@@ -185,13 +185,29 @@ function hasWasmSimd() {
   }
 }
 
+// Probe on a throwaway canvas, then release the context straight away so the
+// page keeps a single live WebGL context (the game's) instead of two.
+function releaseContext(gl) {
+  try {
+    var ext = gl && gl.getExtension('WEBGL_lose_context');
+    if (ext) ext.loseContext();
+  } catch (e) { /* best effort */ }
+}
+
 function detectWebgl() {
   var probe = document.createElement('canvas');
+  probe.width = probe.height = 1;
   var gl = null;
+  var kind = null;
   try { gl = probe.getContext('webgl2'); } catch (e) { /* fall through to webgl1 */ }
-  if (gl) return 'webgl2';
-  try { gl = probe.getContext('webgl') || probe.getContext('experimental-webgl'); } catch (e) { gl = null; }
-  return gl ? 'webgl' : null;
+  if (gl) {
+    kind = 'webgl2';
+  } else {
+    try { gl = probe.getContext('webgl') || probe.getContext('experimental-webgl'); } catch (e) { gl = null; }
+    if (gl) kind = 'webgl';
+  }
+  releaseContext(gl);
+  return kind;
 }
 
 function checkCapabilities() {
@@ -269,14 +285,38 @@ function setupTelemetry() {
       worst = 0;
       lastSample = now;
     }
-    requestAnimationFrame(sample);
+    if (visible && !document.hidden) {
+      rafId = requestAnimationFrame(sample);
+    } else {
+      rafId = 0;
+    }
   }
-  requestAnimationFrame(sample);
+
+  // The sampler only runs while the F3 panel is open and the tab is visible,
+  // so a closed panel costs no per-frame work.
+  var rafId = 0;
+  function startSampling() {
+    if (rafId || !visible || document.hidden) return;
+    frames = 0; worst = 0; lastSample = 0; lastFrame = 0;
+    rafId = requestAnimationFrame(sample);
+  }
+  function stopSampling() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = 0;
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stopSampling(); else startSampling();
+  });
 
   function toggle() {
     visible = !visible;
     panel.classList.toggle('is-visible', visible);
-    if (visible) panel.textContent = 'FPS —\nsampling...';
+    if (visible) {
+      panel.textContent = 'FPS —\nsampling...';
+      startSampling();
+    } else {
+      stopSampling();
+    }
   }
 
   window.addEventListener('keydown', function (e) {
@@ -432,8 +472,28 @@ setTimeout(function () { document.title = 'EMPIRES — MixMash Studio'; }, 500);
 // clickable DOM button, which isn't discoverable on the web. Give people an
 // obvious button that sends the same key, and get out of the way once
 // they've engaged with the game by any means.
+// Pause the engine's main loop while the tab is hidden (browsers throttle rAF
+// but do not stop it in every case, e.g. background iframes or occluded
+// windows) and resume when it comes back.
+function setupVisibilityPause() {
+  var paused = false;
+  document.addEventListener('visibilitychange', function () {
+    var M = window.Module;
+    if (!M || typeof M.pauseMainLoop !== 'function') return;
+    if (document.hidden && !paused) {
+      M.pauseMainLoop();
+      paused = true;
+    } else if (!document.hidden && paused) {
+      M.resumeMainLoop();
+      paused = false;
+    }
+  });
+  window.__empiresVisibility = { paused: function () { return paused; } };
+}
+
 window.addEventListener('DOMContentLoaded', function () {
   checkCapabilities();
+  setupVisibilityPause();
   setupTelemetry();
   setupShortcutGuide();
   setupTouchOrders();
