@@ -3604,6 +3604,16 @@
       "open": "/assets/previews/empires.jpg"
     },
     {
+      "path": "empires/assets/aoe2-clone.data",
+      "project": "empires",
+      "category": "source",
+      "kind": "TXT",
+      "title": "aoe2-clone.data",
+      "description": "Emscripten preload package holding the aoe2-clone sprite atlases (assets/sprites). Replace it only together with a fresh .js/.wasm build.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/assets/aoe2-clone.data",
+      "open": null
+    },
+    {
       "path": "empires/assets/shell.js",
       "project": "empires",
       "category": "source",
