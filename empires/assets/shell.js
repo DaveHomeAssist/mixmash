@@ -272,6 +272,15 @@ function setupTelemetry() {
   if (!panel) return;
 
   var visible = false;
+  var narrow = window.matchMedia('(max-width: 599px)');
+  function syncDock() {
+    var docked = visible && narrow.matches;
+    if (document.body.classList.contains('telemetry-docked') === docked) return;
+    document.body.classList.toggle('telemetry-docked', docked);
+    // Let SDL/emscripten pick up the new canvas size.
+    window.dispatchEvent(new Event('resize'));
+  }
+  if (narrow.addEventListener) narrow.addEventListener('change', syncDock);
   var frames = 0;
   var worst = 0;
   var lastSample = 0;
@@ -292,7 +301,11 @@ function setupTelemetry() {
       var elapsed = now - lastSample;
       fps = (frames * 1000) / elapsed;
       avgMs = frames ? elapsed / frames : 0;
-      if (visible) {
+      if (visible && narrow.matches) {
+        panel.textContent =
+          'FPS ' + fps.toFixed(0) + ' · ' + avgMs.toFixed(1) + ' ms (peak ' + worst.toFixed(1) + ') · ' +
+          (window.__empiresCapabilities ? window.__empiresCapabilities.webgl || 'none' : '?') + ' · local sim';
+      } else if (visible) {
         panel.textContent =
           'FPS ' + fps.toFixed(0) +
           '\nframe ' + avgMs.toFixed(1) + ' ms (peak ' + worst.toFixed(1) + ')' +
@@ -330,8 +343,9 @@ function setupTelemetry() {
   function toggle() {
     visible = !visible;
     panel.classList.toggle('is-visible', visible);
+    syncDock();
     if (visible) {
-      panel.textContent = 'FPS —\nsampling...';
+      panel.textContent = narrow.matches ? 'FPS — sampling...' : 'FPS —\nsampling...';
       startSampling();
     } else {
       stopSampling();
