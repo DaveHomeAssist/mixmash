@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- EMPIRES: fresh `aoe2-clone` web build with the 2x realistic sprite pass. The shipped snapshot still drew flat procedural boxes and grid tiles; it now ships the 16 external atlases (`empires/assets/aoe2-clone.data`): layered grass, caustic water, clumped canopies, faceted rocks, plaster and mossy-roof buildings with lit windows, cloth-textured units with rim light and baked contact shadows, all at twice the on-screen resolution so zooming stays sharp. Page shell unchanged.
+
 - Front of House 0.3.0: venue-scale bars and restrooms (CT-DEC-36). Loam Shell and Split Acre add a Bar tent (serves 1,000) and Restroom block (serves 500); Suggested layouts above the Lot meet their amenity guideline at full capacity where the floor allows; the settlement names an achievable gap instead of Lot rates. Lot and existing-layout results unchanged; tier and career baselines regenerated, and CT-DEC-26's careless-play guard moves to the Festival. Cache v78.
 
 - Front of House: add the approved presentation-only Advisory desk with one current priority and Ticketing, Talent and Operations pages. Routes reuse existing controls and recorded receipts; engine, accounting and save schema remain unchanged. Version0.2.0/cachev76.

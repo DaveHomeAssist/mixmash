@@ -101,6 +101,10 @@ function sendSpaceKey() {
 
 var Module = {
   canvas: document.getElementById('canvas'),
+  // The sprite atlases ship as an Emscripten preloaded package
+  // (aoe2-clone.data). The generated glue resolves it relative to the page
+  // unless told otherwise; everything of ours lives under ./assets/.
+  locateFile: function (path) { return './assets/' + path; },
   print: function (text) { console.log(text); },
   printErr: function (text) { console.error(text); },
   setStatus: function (text) {
