@@ -135,7 +135,9 @@
 
       /* EM-103: performance telemetry overlay */
       #telemetry {
-        position: fixed; right: 14px; bottom: 14px; z-index: 11;
+        /* Top-right, under the HUD top bar and status banner, so it never
+           covers the minimap or action panel in the bottom corners. */
+        position: fixed; right: 14px; top: 150px; z-index: 11;
         display: none;
         padding: 8px 12px; border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.14);
@@ -144,6 +146,19 @@
         color: #9A9ABB; white-space: pre;
       }
       #telemetry.is-visible { display: block; }
+      /* Phones: the map fills the screen, so instead of floating over it the
+         panel docks as a one-line strip below the canvas, which shrinks to
+         make room (the engine re-reads the canvas size on resize). */
+      @media (max-width: 599px) {
+        #telemetry {
+          top: auto; left: 0; right: 0; bottom: 0; height: 24px;
+          padding: 0 10px; border-radius: 0; border-width: 1px 0 0;
+          background: #06060e; font-size: 10px; line-height: 23px;
+          overflow: hidden; text-overflow: ellipsis;
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+        body.telemetry-docked #canvas { height: calc(100% - 24px - env(safe-area-inset-bottom)); }
+      }
 
       /* EM-104: capability warning */
       #capability-notice {

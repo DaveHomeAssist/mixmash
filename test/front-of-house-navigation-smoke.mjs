@@ -14,6 +14,15 @@ for (const a of [{ type: 'chooseVenue', venueId: 'festival' }, { type: 'chooseDe
 const code = s => Buffer.from(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, state: s })).toString('base64');
 const outcomes = [];
 const saved = p => p.evaluate(() => __frontOfHouse.state());
+// Camera turns/poses and the overview redraw land over a few animation frames;
+// a fixed 20 ms sleep raced them on slow CI runners. Wait until camera and
+// overview geometry are identical across two consecutive frames.
+async function settle(p) {
+  await p.waitForFunction(() => new Promise(done => {
+    const snap = () => JSON.stringify([__frontOfHouse.boardCamera(), __frontOfHouse.siteMap().navigation]);
+    const a = snap(); requestAnimationFrame(() => requestAnimationFrame(() => done(snap() === a)));
+  }), null, { timeout: 5000 });
+}
 async function noOverlap(p) {
   assert.deepEqual(await p.evaluate(() => { const m = document.querySelector('#site-map').getBoundingClientRect(); return [...document.querySelectorAll('#panel .plate, #panel .at-sheet, .topbar')].filter(e => e.getClientRects().length).map(e => e.getBoundingClientRect()).filter(r => r.left < m.right && r.right > m.left && r.top < m.bottom && r.bottom > m.top).map(r => [r.x, r.y, r.width, r.height]); }), []);
 }
@@ -29,11 +38,12 @@ try {
     for (const turn of [0, 1, 2, 3]) {
       if (three) await p.evaluate(turn => __frontOfHouse.boardCamera({ yaw: [37, 135, 37, 135][turn], pitch: [15, 48, 85, 48][turn], zoom: turn === 2 ? 3 : 2 }), turn);
       else if (turn) await p.locator('#turn-view').click();
-      await p.waitForTimeout(20);
+      await settle(p);
       const info = await p.evaluate(() => __frontOfHouse.siteMap()), camera = await p.evaluate(() => __frontOfHouse.boardCamera()), nav = info.navigation;
       assert.equal(nav.width, three ? 52 : 40); assert.ok(nav.footprint.length >= 3);
       const map = overviewTransform(nav.width, nav.depth, nav.rotation), target = { x: three && turn % 2 ? 46 : 17, y: 10 }, q = map.project(target.x, target.y), rect = await p.locator('#site-map canvas').boundingBox();
       await p.keyboard.press('5'); await p.mouse.click(rect.x + q.x, rect.y + q.y);
+      await p.waitForFunction(t => { const c = __frontOfHouse.boardCamera(); return Math.abs(c.x - t.x) < 0.05 && Math.abs(c.y - t.y) < 0.05; }, target, { timeout: 2000 }).catch(() => {});
       const moved = await p.evaluate(() => __frontOfHouse.boardCamera()); assert.ok(Math.abs(moved.x - target.x) < 0.05 && Math.abs(moved.y - target.y) < 0.05); assert.equal(moved.zoom, camera.zoom);
       assert.deepEqual(await saved(p), before, 'overview never places a bar or changes a save');
       await p.keyboard.press('ArrowLeft'); assert.notEqual((await p.evaluate(() => __frontOfHouse.boardCamera())).x, moved.x); assert.deepEqual(await saved(p), before);

@@ -17,7 +17,7 @@ Original prompt: Restore /empires/ as Age of Dave backed by the real aoe2-clone 
 
 ## 2026-10-14
 
-- Replaced the shipped WASM snapshot, which still drew the flat procedural boxes and grid tiles from before the sprite pipeline, with a fresh `aoe2-clone` web build that ships the 16 external sprite atlases as `assets/aoe2-clone.data` (Emscripten preloaded virtual file system, mounted at `/assets/sprites`).
-- The atlases come from the new 2x "sourceScale" art pass in `aoe2-clone` (`tools/generate_sprite_atlases.py`): layered grass, caustic water, clumped tree canopies, faceted rocks, plaster and mossy-roof buildings with lit windows, cloth-textured units with rim light and baked contact shadows, one shared filmic grade. Sprites keep their on-screen footprint and stay sharp when zoomed.
-- Verified in headless Chromium: lobby loads, Space starts the skirmish, the map renders with the new tiles and sprites, no page errors.
-- Rebuild recipe is unchanged: run `tools/build_web.sh` in `aoe2-clone`, then copy `aoe2-clone.js`, `aoe2-clone.wasm` and `aoe2-clone.data` into `empires/assets/`.
+- Published aoe2-clone `main` at `338a61b` (PRs #2–#7): shaded 2.5D sprite atlases now ship in the web build (`aoe2-clone.data`, 812 KB preloaded), primitives batched (in-match draws/frame 1,462 → 63 desktop, 438 → 39 mobile), HiDPI canvas capped at 2x, narrow-screen HUD (menu clearance, wrapped resource grid, hints hidden < 600 px).
+- Shell: `locateFile` points side files at `./assets/`, `devicePixelRatio` capped at 2, F3 panel moved top-right.
+- Publish = `tools/build_web.sh` in aoe2-clone, then copy `build-web/src/app/aoe2-clone.{js,wasm,data}` into `empires/assets/`.
+- Later the same day: replaced the `338a61b` build with the 2x realistic sprite pass from aoe2-clone PR #13 (branch `claude/sprites-2x-realistic-1014`): atlases authored at twice the on-screen resolution (`sourceScale` 2, `aoe2-clone.data` 2.3 MB), layered grass without the per-tile repeat, caustic water, clumped canopies, faceted rocks, plaster and mossy-roof buildings with lit windows, cloth-textured units with rim light and baked contact shadows, and sprites for the shallows, hills and road tiles that still rendered as grey diamonds. Shell unchanged. Verified in headless Chromium: lobby, Space to skirmish, no page errors.

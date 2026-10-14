@@ -127,7 +127,7 @@ The configs, games and checks are exported tables in the file: later phases add 
 
 **This means the old redeploy recipe (`marsscape` repo → `npm run build` → copy `dist/index.html` into `mixmash/mars/`) is obsolete and would destroy this architecture if run.** The `marsscape` GitHub repo continues to exist as an independent single-file-build project; the two `/mars/` implementations have diverged and are not currently reconciled.
 
-`/empires/` is a manual Emscripten build snapshot copied in from the `aoe2-clone` repo (`tools/build_web.sh` there produces `aoe2-clone.js`/`.wasm`/`.data`, the last being the preloaded sprite atlases; copy all three into `mixmash/empires/assets/` alongside the existing `index.html`/`shell.js`). `/garden/` needs no redeploy — it's a live iframe.
+`/empires/` is a manual Emscripten build snapshot copied in from the `aoe2-clone` repo (`tools/build_web.sh` there produces `aoe2-clone.js`/`.wasm`/`.data` (sprite atlases); copy all three into `mixmash/empires/assets/` alongside the existing `index.html`/`shell.js`). `/garden/` needs no redeploy — it's a live iframe.
 
 ## Conventions
 
