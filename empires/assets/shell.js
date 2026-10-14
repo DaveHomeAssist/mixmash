@@ -99,8 +99,27 @@ function sendSpaceKey() {
   };
 })();
 
+// Cap the canvas backbuffer density at 2x: SDL's HiDPI path reads
+// window.devicePixelRatio, and 3x phones would otherwise pay 2.25x the fill
+// cost for detail nobody can see.
+(function capDevicePixelRatio() {
+  try {
+    var desc = Object.getOwnPropertyDescriptor(window, 'devicePixelRatio') ||
+               Object.getOwnPropertyDescriptor(Object.getPrototypeOf(window), 'devicePixelRatio');
+    if (!desc || !desc.get) return;
+    var realGet = desc.get;
+    Object.defineProperty(window, 'devicePixelRatio', {
+      configurable: true,
+      get: function () { return Math.min(2, realGet.call(window) || 1); },
+    });
+  } catch (e) { /* leave native value */ }
+})();
+
 var Module = {
   canvas: document.getElementById('canvas'),
+  // The glue resolves side files (aoe2-clone.data sprite package) against the
+  // page URL; they live next to the script in ./assets/.
+  locateFile: function (path) { return './assets/' + path; },
   print: function (text) { console.log(text); },
   printErr: function (text) { console.error(text); },
   setStatus: function (text) {

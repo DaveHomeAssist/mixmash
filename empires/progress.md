@@ -14,3 +14,9 @@ Original prompt: Restore /empires/ as Age of Dave backed by the real aoe2-clone 
 - Replaced this launcher page with the real build: `empires/index.html` now loads `assets/aoe2-clone.js`/`.wasm` onto a full-bleed canvas; the game draws its own lobby/HUD, so the launcher's DOM status panel and sprite atlases are no longer used and were removed.
 - Verified in an actual Chrome window: the civ-selection lobby renders correctly (not the old placeholder, not this launcher). Fixed one real browser-compat bug along the way — `ALLOW_MEMORY_GROWTH` backs wasm memory with a "resizable" `ArrayBuffer`, which this Chrome version's `TextDecoder.decode()` rejects outright; switched to a fixed `INITIAL_MEMORY` instead.
 - Current truth: local skirmish vs AI works in the browser build; LAN/internet multiplayer remains desktop-only (SDL3 native app).
+
+## 2026-10-14
+
+- Published aoe2-clone `main` at `338a61b` (PRs #2–#7): shaded 2.5D sprite atlases now ship in the web build (`aoe2-clone.data`, 812 KB preloaded), primitives batched (in-match draws/frame 1,462 → 63 desktop, 438 → 39 mobile), HiDPI canvas capped at 2x, narrow-screen HUD (menu clearance, wrapped resource grid, hints hidden < 600 px).
+- Shell: `locateFile` points side files at `./assets/`, `devicePixelRatio` capped at 2, F3 panel moved top-right.
+- Publish = `tools/build_web.sh` in aoe2-clone, then copy `build-web/src/app/aoe2-clone.{js,wasm,data}` into `empires/assets/`.
