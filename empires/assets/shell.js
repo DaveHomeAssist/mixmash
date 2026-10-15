@@ -115,7 +115,24 @@ function sendSpaceKey() {
   } catch (e) { /* leave native value */ }
 })();
 
+// Optional match setup from the URL. `?mapSize=medium` (or `large`) asks the
+// app for a bigger skirmish map; medium and up include the shallows crossing
+// so the shore autotiles are visible. Anything else keeps the small default.
+var empiresArguments = (function () {
+  var args = [];
+  try {
+    var size = (new URLSearchParams(window.location.search).get('mapSize') || '').toLowerCase();
+    if (size === 'small' || size === 'medium' || size === 'large') {
+      args.push('--map-size', size);
+    }
+  } catch (err) {
+    // URLSearchParams missing or a malformed query: run with defaults.
+  }
+  return args;
+})();
+
 var Module = {
+  arguments: empiresArguments,
   canvas: document.getElementById('canvas'),
   // The glue resolves side files (aoe2-clone.data sprite package) against the
   // page URL; they live next to the script in ./assets/.
