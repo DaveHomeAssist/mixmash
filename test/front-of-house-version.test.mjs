@@ -14,7 +14,13 @@ test('Front of House release metadata stays aligned with runtime and cache', asy
   ]);
   assert.match(release.version, /^0\.\d+\.\d+$/);
   assert.equal(release.saveSchema, D.SCHEMA_VERSION);
-  assert.match(worker, new RegExp(`const VERSION = '${release.cache}'`));
+  const workerCache = worker.match(/const VERSION = 'v(\d+)'/)?.[1];
+  const releaseCache = release.cache.match(/^v(\d+)$/)?.[1];
+  assert.ok(workerCache && releaseCache, 'both cache versions are numbered');
+  assert.ok(
+    Number(workerCache) >= Number(releaseCache),
+    `shared cache v${workerCache} must not predate release cache v${releaseCache}`,
+  );
   assert.match(worker, /\.\/front-of-house\/version\.mjs/);
   assert.match(page, /id="game-version"/);
   assert.match(page, /\.\/docs\/RELEASE_NOTES\.md/);

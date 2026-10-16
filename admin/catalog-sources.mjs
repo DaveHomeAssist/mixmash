@@ -94,6 +94,20 @@ export const PROJECTS = [
     ],
   },
   {
+    id: 'horseshoes',
+    name: 'Backyard Horseshoes',
+    kind: 'Physics practice prototype',
+    lifecycle: 'Unlisted prototype',
+    route: '/horseshoes/',
+    summary: 'A single-shoe Three.js and Rapier practice prototype with an open compound collider, fixed 120 Hz physics, mouse, keyboard and touch throws, two cameras, diagnostics and repeatable launch presets. It is an isolated static build from the curling-simulator repository.',
+    pinned: ['horseshoes/README.md', 'horseshoes/index.html'],
+    statusSources: ['horseshoes/README.md'],
+    references: [
+      { label: 'Play Backyard Horseshoes', url: '/horseshoes/', kind: 'live route', note: 'noindex; no hub card.' },
+      { label: 'Source repository', url: 'https://github.com/DaveHomeAssist/curling-simulator', kind: 'repository' },
+    ],
+  },
+  {
     id: 'pitch',
     name: 'PITCH RIOT',
     kind: 'Arcade soccer',
@@ -229,6 +243,13 @@ const vercelFn = (route, what) => ({ description: `Vercel function for ${route}:
 // Notes for families of files that describe themselves only by name, such as a sprite
 // library. A file's own entry in FILE_NOTES wins over a pattern.
 export const PATTERN_NOTES = [
+  {
+    match: /^horseshoes\/assets\/(.+)\.(js|css)$/,
+    note: ([, name, type]) => ({
+      title: `Horseshoes production ${type.toUpperCase()}`,
+      description: `Generated ${type.toUpperCase()} bundle for the Backyard Horseshoes prototype (${name}); source and locked dependencies live in DaveHomeAssist/curling-simulator.`,
+    }),
+  },
   {
     match: /^assets\/covers\/([a-z]+)\.jpg$/,
     note: ([, game]) => ({ description: `Canonical ${game} cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.` }),
