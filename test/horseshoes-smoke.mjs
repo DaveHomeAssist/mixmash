@@ -198,6 +198,16 @@ fs.mkdirSync(output, { recursive: true });
       await activate('#score-tab');
       await page.screenshot({ path: `${output}/${width}-complete.png` });
       assert.equal(await page.locator('#history li').count(), 21);
+      if (!touch) {
+        await page.locator('#score-tab').focus();
+        await page.keyboard.press('Tab');
+        assert.equal(await page.evaluate(() => document.activeElement.id), 'score-panel', 'Tab enters the selected score panel');
+        const strengthBefore = (await state()).controls.strength;
+        await page.keyboard.press('ArrowDown');
+        await page.keyboard.press('End');
+        await page.waitForFunction(() => document.querySelector('#score-panel').scrollTop > 0);
+        assert.equal((await state()).controls.strength, strengthBefore, 'history navigation must not change throw controls');
+      }
       await activate('#settings-tab');
       await activate('#restart-button');
       assert.equal((await state()).match.history.length, 0);
