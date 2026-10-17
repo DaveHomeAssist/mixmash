@@ -46,12 +46,12 @@
     "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes."
   ],
   "nextStep": {
-    "title": "Finish menu artwork delivery, then resume existing human acceptance",
-    "why": "Automated Advisory delivery is verified; browser evidence does not establish physical devices, screen readers, calibration, art, camera, career or image rights.",
-    "doneWhen": "Exact-source smoke, CI, merge, Pages and hosted menu checks pass; physical/human acceptance remains separate.",
-    "effort": "M",
-    "owner": "Dave and existing Front of House executor",
-    "blockedBy": "No implementation blocker; CI and hosted proof pending."
+    "title": "Complete PA equipment visual release, then resume human acceptance",
+    "why": "PA models and cards passed runner verification; CI, merge and hosted proof remain separate gates.",
+    "doneWhen": "PR168 passes required CI, merges, deploys and matches hosted PA/card screenshots and save checks.",
+    "effort": "S",
+    "owner": "Current Front of House executor",
+    "blockedBy": "Required CI in progress."
   },
   "findings": [
     {

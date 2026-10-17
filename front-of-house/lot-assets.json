@@ -114,7 +114,7 @@
       "pickProxy": "opaque rendered mesh surfaces",
       "materialRevision": "lot-sample-17",
       "lod": "fixed source detail",
-      "contentDigest": "b3b540f8bed2425a969827749229f110eb94b395847522bfce6c12d45c318c47"
+      "contentDigest": "7cd50f95e7541631b322cf9425623ee8aeadbe7fd4a2424c2ea7aea74296a157"
     },
     {
       "id": "pa-m",
@@ -140,7 +140,7 @@
       "pickProxy": "opaque rendered mesh surfaces",
       "materialRevision": "lot-sample-17",
       "lod": "fixed source detail",
-      "contentDigest": "e99598c61a6026e2cca1c39167fda29212df1ac8fa119446232f66f86c4a0726"
+      "contentDigest": "8e57931a664a4c952d8c92d0f52405fdb3f8048b32dc07f684b3556dbe96b1d8"
     },
     {
       "id": "lights",
