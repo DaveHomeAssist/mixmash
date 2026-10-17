@@ -3595,8 +3595,8 @@
       "project": "horseshoes",
       "category": "surface",
       "kind": "HTML",
-      "title": "Backyard Horseshoes — Physics Practice",
-      "description": "A small physics-driven horseshoes practice prototype.",
+      "title": "Backyard Horseshoes — Local Match",
+      "description": "A provisional local two-player horseshoes game and practice court.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/index.html",
       "open": "/horseshoes/"
     },
@@ -3605,8 +3605,8 @@
       "project": "horseshoes",
       "category": "docs",
       "kind": "MD",
-      "title": "Backyard Horseshoes prototype",
-      "description": "An isolated static build of the Phase 1 physics practice mode from DaveHomeAssist/curling-simulator commit d855db8.",
+      "title": "Backyard Horseshoes — local match prototype",
+      "description": "Phase 2 of the Three.js / Rapier prototype, built from the readable source in DaveHomeAssist/curling-simulator commit 1feaf16.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -3626,38 +3626,38 @@
       "category": "tests",
       "kind": "MJS",
       "title": "horseshoes-smoke.mjs",
-      "description": "Browser regression for the isolated Horseshoes practice deployment.",
+      "description": "Browser regression for local two-player Horseshoes and practice.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-smoke.mjs",
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-0f9e3a1ec466.js",
-      "project": "horseshoes",
-      "category": "build",
-      "kind": "JS",
-      "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-0f9e3a1ec466); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-0f9e3a1ec466.js",
-      "open": null
-    },
-    {
-      "path": "horseshoes/assets/horseshoes-6ca27762ca54.css",
+      "path": "horseshoes/assets/horseshoes-BhPQmhKY.css",
       "project": "horseshoes",
       "category": "build",
       "kind": "CSS",
       "title": "Horseshoes production CSS",
-      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-6ca27762ca54); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-6ca27762ca54.css",
+      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BhPQmhKY); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BhPQmhKY.css",
       "open": null
     },
     {
-      "path": "horseshoes/assets/three.module-CodsIs8O.js",
+      "path": "horseshoes/assets/horseshoes-Oo9PH4Y8.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-CodsIs8O); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-CodsIs8O.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-Oo9PH4Y8); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-Oo9PH4Y8.js",
+      "open": null
+    },
+    {
+      "path": "horseshoes/assets/three.module-C-m0I5S8.js",
+      "project": "horseshoes",
+      "category": "build",
+      "kind": "JS",
+      "title": "Horseshoes production JS",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-C-m0I5S8); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-C-m0I5S8.js",
       "open": null
     },
     {
