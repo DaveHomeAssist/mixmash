@@ -3606,7 +3606,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit 28330bbda511300f72c13db4bc2ec0b931e7e661 (source PR6).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit 28330bbda511300f72c13db4bc2ec0b931e7e661 (source PR6, merged as d206cceb6b494d1778eebabfa12597fbd2bde799).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
