@@ -3800,7 +3800,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit f9a97adfba4ccb8c1a2ab25357d6a207b37adc8a (source PR9).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit 7b1c6f27b8640497d3e36412da0ce07584f8e698 (source PR10).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -3875,13 +3875,13 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-BSAAfdvZ.js",
+      "path": "horseshoes/assets/horseshoes-D-M_dac7.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-BSAAfdvZ); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BSAAfdvZ.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-D-M_dac7); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-D-M_dac7.js",
       "open": null
     },
     {

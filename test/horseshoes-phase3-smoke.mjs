@@ -114,6 +114,7 @@ fs.mkdirSync(output, { recursive: true });
       }
       const complete = await state(); assert.equal(complete.match.phase, 'complete'); assert.equal(complete.match.winner, 1);
       assert.ok(complete.match.scores[1] >= 21); assert.ok(searches.length >= 2);
+      assert.match(await page.locator('#flight-readout').textContent(), /restart from Menu/);
       await page.screenshot({ path: `${output}/${width}-solo-complete.png` });
       await press('#settings-tab'); await press('#restart-button');
       assert.equal((await state()).replay.available, false); assert.deepEqual((await state()).match.scores, [0,0]);
