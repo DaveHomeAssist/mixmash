@@ -9,13 +9,19 @@ Read `~/Code/ops-hub/90-governance/WORKSPACE_OPERATING_RULES.md` before project 
 Name work with one string everywhere (chat status title, session title, Notion
 Status Check Runs "Human Name"):
 
-`Project | 🚦 | Phase | Title → state, reason | MM-DD`
+`<icon> <PROJECT> | <light> | <phase> | <title> | <mm-dd hh:mm>`
 
-- 🚦: 🟢 complete and verified · 🟡 partial · 🔴 not started, blocked or failed · ⚪ unverifiable.
+Example: `🏰 EMPIRES | 🟢 | Build | 2x Sprites Shipped | 10-17 09:23`
+
+- icon: the project's fixed emoji, always first (🏰 is EMPIRES). PROJECT in caps.
+- light: 🟢 complete and verified · 🟡 partial · 🔴 not started, blocked or failed · ⚪ unverifiable.
   Add ⏳ scheduled, 🙋 awaiting Dave or 🚧 blocked to 🟡/🔴/⚪, never to 🟢.
-- Phase: Research, Design, Build, Audit or Scheduled. MM-DD: date of the latest light change.
+- phase: Research, Design, Build, Audit or Scheduled.
+- title: 2 to 6 words, 30 characters or fewer, outcome not activity. Reason goes in the body.
+- mm-dd hh:mm: date and 24h time of the latest light change.
 - Every light change gets a new name: a `RENAME:` line in chat and the Notion row updated.
-- Canonical source: https://github.com/DaveHomeAssist/skills/blob/master/status-naming.md
+- Full rule and what it superseded: ops-hub `90-governance/SESSION_NAMING_FORMAT_2026-10-17.md`.
+- Older canonical source (pre-2026-10-17 form, pending update): https://github.com/DaveHomeAssist/skills/blob/master/status-naming.md
 
 ## Admin index
 

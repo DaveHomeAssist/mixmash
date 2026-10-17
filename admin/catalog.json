@@ -1430,7 +1430,7 @@
       "category": "tooling",
       "kind": "MJS",
       "title": "author-paid-test.mjs",
-      "description": "Reproducible DEC-79 paid-test candidate. The source art is drawn in independent layers, then exported both as native Aseprite documents and flat runtime PNGs.",
+      "description": "Reproducible generator for the DEC-79 paid-test candidate: draws the four test assets in independent layers and exports layered Aseprite sources plus flat runtime PNGs.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/author-paid-test.mjs",
       "open": null
     },
