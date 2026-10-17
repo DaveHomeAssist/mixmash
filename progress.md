@@ -56,3 +56,9 @@ User requested lighting rigs and equipment cards with unchanged rules/saves and 
 Lighting review follow-up: combined house+tower status and visible Menu focus restored. CI exposed Lighting tab text clipping at320px; scoped narrow Equipment tab typography/padding now fits with44px targets. Expanded browser regression covers compact pages and button bounds; release checks rerunning.
 
 Linux CI retained a60px Lighting label in a54px button at320px. Shortened the equipment tab to Lights (same Build vocabulary), preserving card title and44px targets; Windows browser pass alone was insufficient for Linux font fit.
+
+## 2026-10-17 lighting release closure
+
+- PR171 source3990130 merged1bcc10a after general CI39075354548 and paired CI39073920410 attempt2. Both paired raw36-window artifacts independently audited; first CPU rejection8.7ms/8.1ms retained, unchanged retry passes. WebKit ticketing timeout retained; full unchanged general retry passes.
+- Pages built23:08:44Z; Walter verifies15 live byte matches, eight light/dark lighting cases, exact reload, keyboard/focus, compact/ultrawide paging and screenshot captures. Final source also passes warmed-cache offline state/model/preview.
+- Rules, engine, economy, save schema2 and shared service worker/cachev83 unchanged. Public next-steps record reconciled; existing private board refreshed separately. Human/physical/calibration acceptance remains open.
