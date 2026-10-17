@@ -46,3 +46,21 @@ introduced. Keep source, CI, deployment, gameplay and human acceptance distinct.
 Physical calibration, physical-device testing and human visual acceptance remain
 open. Other MixMash games retain their own behavior and require an explicit
 adapter before equipment integration.
+
+## Lighting adapter — 0.3.5
+
+The lighting slice adapts J-Six and Vertigo Tri LED procedural exteriors from
+producer8a857717391e82b0518dd7d17dfbe06a34cbdb7a (definitions0.1.0).
+The existing aggregate light tower retains its game identity, footprint, height
+convention, rental and power/quality rules. These effect fixtures are visual
+references, not physical-output equivalence or control capability claims.
+Lighting cards and Build previews use the same geometry. Existing network-first
+service-worker caching is retained without global publisher changes.
+
+Lighting source `3990130` passed general CI39075354548 and paired regression
+CI39073920410 attempt2, then PR171 merged `1bcc10a`. Pages published the merge
+on2026-10-17 at23:08:44Z. Walter matched15 hosted files and passed eight
+light/dark responsive, keyboard, focus and exact-state/reload cases. Warmed
+v83 offline model/preview/state checks also pass. The original WebKit reload
+timeout and paired CPU rejection8.7ms versus8.1ms are retained; independent
+raw audits reproduce both paired verdicts without changing limits.
