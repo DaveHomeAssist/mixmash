@@ -89,3 +89,11 @@ Original prompt: Implement the MIXMASH Product Upgrade Roadmap for the `/play/` 
 - Ran live desktop/mobile QA for Quick Fight, Platform Rush, Progress, share links, and Encore stage entry points.
 - Found a mobile command-menu reachability issue: `.menu-panels` had `overflow: auto`, but as a CSS grid child it lacked `min-height: 0`, so lower Progress and onboarding controls could sit below the visible `.mix-menu` with no scroll movement on a 390x844 viewport.
 - Patched `.menu-panels` with `min-height: 0` and contained overscroll so the existing panel-level scrolling works on constrained mobile viewports.
+
+### 2026-10-17 touch and mouse fighter selection
+
+- Restored a visible Choose Fighters entry with native controls for both fighters, CPU/local opponent, difficulty, arena and rules. Start Match uses and persists the selected setup; Quick Fight and the keyboard canvas picker remain available.
+- Added a persisted light/dark command-menu toggle with a fresh light default and compact mobile tabs.
+- Verification: all 456 Node tests and vercel-build passed. Existing play resume smoke passed separately. New picker smoke passed at 1440x900, 375x812, 812x375, 1180x820 and 3840x1080 in both themes, including touch launch, CPU/local toggle, selected-match state, persistence, control hit testing, no page overflow and no page errors. Desktop and phone screenshots inspected.
+- Headless software rendering initially timed out during continuous-canvas screenshots; the test now closes the previous page and throttles canvas frames only during menu capture. No game animation behavior was changed.
+- Delivery: feature branch PR; live publication remains separate. Next: verify PR checks and the public picker after normal release.

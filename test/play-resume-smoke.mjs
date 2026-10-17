@@ -87,6 +87,7 @@ try {
     await page.screenshot({ path: join(screenshotDir, name), fullPage: true });
   }
 
+  if (!process.env.SMOKE_PICKER_ONLY) {
   const title = await readState();
   assert.equal(title.mode, 'title');
   assert.equal(title.titleActions.quickFight, 'KeyQ');
@@ -645,6 +646,84 @@ try {
   await screenshot('14-share-challenge.png');
   await press('Escape');
   assert.equal((await readState()).mode, 'title');
+  }
+  await page.close();
+
+  // The DOM setup must be usable without the keyboard-only canvas picker.
+  for (const [width, height, touch] of [[1440, 900, false], [375, 812, true], [812, 375, true], [1180, 820, true], [3840, 1080, false]]) {
+    console.log(`Picker viewport: ${width}x${height}`);
+    const context = await browser.newContext({ viewport: { width, height }, hasTouch: touch, isMobile: touch });
+    const setupPage = await context.newPage();
+    const setupErrors = [];
+    setupPage.on('pageerror', error => setupErrors.push(String(error)));
+    await setupPage.goto(playUrl);
+    await setupPage.waitForFunction(() => typeof window.render_game_to_text === 'function');
+    if (touch) {
+      await setupPage.locator('#game').tap();
+      await setupPage.waitForTimeout(400); // synthetic click guard after opening by touch
+      await setupPage.locator('#menu-choose-fighters').tap();
+    } else {
+      await setupPage.keyboard.press('KeyO');
+      await setupPage.getByRole('button', { name: 'Choose Fighters', exact: true }).click();
+    }
+    assert.equal(await setupPage.locator('#match-p1 option').count(), 14);
+    assert.equal(await setupPage.locator('#match-p2 option').count(), 14);
+    assert.equal(await setupPage.locator('#match-stage option').count(), 11);
+    assert.equal(await setupPage.locator('#menu-overlay').getAttribute('data-theme'), 'light');
+    await setupPage.locator('#match-p1').selectOption('flume');
+    await setupPage.locator('#match-p2').selectOption('zomboy');
+    await setupPage.locator('#match-stage').selectOption('electricForest');
+    await setupPage.locator('#match-mode').selectOption('training');
+    await setupPage.locator('#match-opponent').selectOption('human');
+    assert.equal(await setupPage.locator('#match-level').isEnabled(), false);
+    await setupPage.locator('#match-opponent').selectOption('cpu');
+    await setupPage.locator('#match-level').selectOption('5');
+    // Throttle canvas animation during menu screenshots so software rendering
+    // leaves time for headless capture and pointer hit testing.
+    await setupPage.evaluate(() => {
+      window.__smokeRaf = window.requestAnimationFrame;
+      window.requestAnimationFrame = callback => setTimeout(() => window.__smokeRaf(callback), 100);
+    });
+    await setupPage.waitForTimeout(100);
+    for (const theme of ['light', 'dark']) {
+      if (theme === 'dark') await setupPage.locator('#menu-theme').click();
+      const fits = await setupPage.evaluate(() => {
+        const root = document.documentElement;
+        return root.scrollWidth <= root.clientWidth && root.scrollHeight <= root.clientHeight;
+      });
+      assert.equal(fits, true, `setup has no page scroll at ${width}x${height} in ${theme}`);
+      await setupPage.locator('#menu-start-match').scrollIntoViewIfNeeded();
+      const hit = await setupPage.locator('#menu-start-match').evaluate(el => {
+        const r = el.getBoundingClientRect();
+        return document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2) === el;
+      });
+      assert.equal(hit, true, 'Start Match is reachable');
+      await setupPage.screenshot({ path: join(screenshotDir, `picker-${width}-${height}-${theme}.png`), timeout: 60000 });
+    }
+    await setupPage.evaluate(() => {
+      window.requestAnimationFrame = window.__smokeRaf;
+
+    });
+    await setupPage.locator('#menu-start-match')[touch ? 'tap' : 'click']();
+    await setupPage.waitForFunction(() => JSON.parse(window.render_game_to_text()).mode === 'training');
+    const selected = await setupPage.evaluate(() => JSON.parse(window.render_game_to_text()));
+    assert.equal(selected.players[0].fighter, 'flume');
+    assert.equal(selected.players[1].fighter, 'zomboy');
+    assert.equal(selected.players[1].cpuLevel, 5);
+    assert.equal(selected.players[1].controlType, 'cpu');
+    assert.equal(selected.stage, 'electricForest');
+    assert.equal(selected.domMenu.open, false);
+
+    await setupPage.reload();
+    await setupPage.keyboard.press('KeyO');
+    await setupPage.locator('#tab-match').click();
+    assert.equal(await setupPage.locator('#match-p1').inputValue(), 'flume');
+    assert.equal(await setupPage.locator('#match-stage').inputValue(), 'electricForest');
+    assert.equal(await setupPage.locator('#menu-overlay').getAttribute('data-theme'), 'dark');
+    assert.deepEqual(setupErrors, []);
+    await context.close();
+  }
+  console.log(`Play smoke passed; screenshots: ${screenshotDir}`);
   assert.deepEqual(errors, []);
 } finally {
   if (browser) await browser.close();
