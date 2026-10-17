@@ -209,6 +209,7 @@ export const PROJECTS = [
 // npm scripts: which project each belongs to and what it does. A script that
 // is missing here still appears under Studio, described by its command.
 export const COMMAND_NOTES = {
+  'smoke:horseshoes': { project: 'horseshoes', description: 'Desktop and emulated touch practice flow, native keyboard controls, stable physics, viewport fit and return links.' },
   test: { project: 'studio', description: 'Every unit test in the repo with Node\'s built-in runner, including this index\'s coverage check.' },
   'vercel-build': { project: 'studio', description: 'Syntax-check the API, MarsScape server, Front of House client and admin scripts (what Vercel\'s build runs).' },
   'smoke:catalog': { project: 'studio', description: 'Playwright rail for /pitch/, /mars/, the /empires/ shell, the hub and the shared nav.' },
@@ -265,6 +266,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  '.github/workflows/horseshoes.yml': { title: 'Horseshoes smoke workflow', description: 'Browser regression for Horseshoes assets, native keyboard controls, touch, throwing, retry and stable physics.' },
   'front-of-house/version.mjs': { title: 'Front of House release metadata', description: 'Single source for the independent Front of House product version, release date, early-playable stage, service-worker cache and save-schema parity.' },
   'test/front-of-house-version.test.mjs': { title: 'Front of House version parity', description: 'Checks the independent 0.x version, dated release notes, visible menu hook, service-worker cache and separate save-schema contract.' },
   'front-of-house/performance/2026-10-07-egl.json': { title: 'Dominic Intel/Mesa EGL diagnostics', description: 'Eighteen clean headless renderer-only Intel/Mesa EGL windows under the established Lot protocol, with source, fixture and raw digests; not physical-device or full-HUD acceptance.' },

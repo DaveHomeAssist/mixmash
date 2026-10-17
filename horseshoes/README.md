@@ -47,3 +47,23 @@ determinism is not promised.
 The `/horseshoes/` route loads without console or request errors, launches a
 shoe through mouse, keyboard, and touch input, supports immediate retry, keeps
 the shoe mouth open in collision geometry, and reaches a stable rest state.
+
+## Mixmash integration corrections
+
+The deployed bundle includes a narrow integration patch over the recorded Phase 1
+build: Curling links to its existing GitHub Pages game, Mixmash links to the
+existing homepage, and the global keyboard shortcuts defer to focused native
+controls and modified browser shortcuts. The application asset was fingerprinted
+again so cached clients receive the correction. Physics is unchanged. The mobile
+court height now leaves room for utility controls at 375 × 812 without page
+scrolling. Retry also clears the previous throw’s hit banner immediately.
+The recorded source commit is provenance from PR #154; it was not available from
+the source repository during this verification, so this is an explicit deployment
+patch rather than a claim of a new source build. Preserve these corrections when
+replacing the static bundle from source.
+
+Run `npm run smoke:horseshoes` for the local browser regression. Set
+`HORSESHOES_BASE_URL=https://mixmash.games/horseshoes/` to exercise publication.
+The smoke covers assets, mouse and emulated touch, native keyboard activation,
+throw/retry, presets, stable rest, and return navigation. Physical device and
+human play acceptance remain separate.

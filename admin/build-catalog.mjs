@@ -37,6 +37,7 @@ const PROJECT_RULES = [
   [/^(src\/combat\.js|ROADMAP\.md|docs\/PLAYER_GUIDE\.md)$/, 'mixmash'],
   [/^docs\/rfc-\d+-garden-os/, 'garden'],
   [/^test\/(combat|play-|public-counts)/, 'mixmash'],
+  [/^test\/horseshoes-/, 'horseshoes'],
   [/^test\/zelda2mario-/, 'zelda2mario'],
   [/^test\/front-of-house-/, 'front-of-house'],
 ];

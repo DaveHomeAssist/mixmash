@@ -1,0 +1,30 @@
+name: Horseshoes smoke
+on:
+  pull_request:
+    paths:
+      - 'horseshoes/**'
+      - 'test/horseshoes-smoke.mjs'
+      - 'test/static-server.mjs'
+      - 'package*.json'
+      - '.github/workflows/horseshoes.yml'
+  push:
+    branches: [gh-pages]
+    paths:
+      - 'horseshoes/**'
+      - 'test/horseshoes-smoke.mjs'
+      - 'test/static-server.mjs'
+      - 'package*.json'
+      - '.github/workflows/horseshoes.yml'
+jobs:
+  horseshoes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:horseshoes
