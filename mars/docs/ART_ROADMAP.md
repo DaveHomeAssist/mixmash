@@ -11,7 +11,7 @@ DEC-79 resolves the endpoint: full isometric pixel art on the playable board, el
 | 2. Audit and production contract | Complete | `ART_AUDIT.md`, `ART_DIRECTION.md`, and DEC-79. |
 | 3. Golden vertical slice specification | Complete | `golden-slice.json`, `golden-scene.json`, the generated contact sheet, and `/mars/golden-scene.html`. |
 | 4. Asset validation pipeline | Complete | Filename, PNG, alpha, anchor, footprint, animation, missing asset, source, runtime-index, contact-sheet, screenshot, and performance tooling are executable and CI-gated. |
-| 5. Paid artist test | Blocked on artist deliverables and human review | The scoped gate expects four assets, eight PNG exports, four editable sources, and approval inside the renderer; none are present yet. |
+| 5. Paid artist test | Machine-ready candidate; artist provenance and human review open | A Codex-authored candidate supplies four assets, eight PNG exports, and four layered sources, and passes `art:approve`. It is not evidence of a paid artist delivery or Dave's in-renderer approval. |
 | 6. Golden scene approval | Blocked on Phase 5 and complete golden exports | Machine review is available, but approval requires all 108 exports, 26 editable sources, the full package-bound multi-zoom/lighting/fallback/motion/performance ledger, and Dave's final review at 1.0 gameplay zoom. |
 | 7. Production scale | Not started | Starts only after Phase 6 approval. |
 
@@ -62,6 +62,8 @@ Every line below requires current evidence at normal gameplay zoom:
 - Reduced-motion mode uses static frames and keeps selection, warning, and repair state legible.
 
 ## Paid artist test
+
+The current candidate was authored from the September 23 reference ZIPs by Codex using `mars/art/author-paid-test.mjs`. Its eight exports and four layered Aseprite sources pass the strict machine gate, but the package is not a commissioned artist submission. No human approval receipt has been recorded. Treat its passing report as renderer integration evidence only.
 
 The first paid package is deliberately small:
 

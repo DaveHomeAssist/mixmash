@@ -8,7 +8,7 @@
  */
 import assert from 'node:assert/strict';
 import { dirname, join } from 'node:path';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright';
 import { assetPath, RENDER_CONTRACT } from '../mars/render-contract.mjs';
@@ -340,10 +340,11 @@ try {
       bitmaps: Number(board.dataset.spriteBitmaps),
     }));
     assert.equal(pixelBoard.mode, 'pixel', 'pixel art is the default renderer');
+    const commissionedIndex = JSON.parse(readFileSync(new URL('../mars/assets/commissioned/index.json', import.meta.url), 'utf8'));
     assert.equal(
       pixelBoard.bitmaps,
-      spriteIds().length,
-      'all registered sprites are cached as ImageBitmap assets',
+      spriteIds().length + commissionedIndex.availableExports,
+      'all code-owned and commissioned sprites are cached as ImageBitmap assets',
     );
     assert.ok(pixelBoard.sprites > 0, 'supported board entities render through drawSprite');
     record('MarsScape board renders cached ImageBitmap sprites');
