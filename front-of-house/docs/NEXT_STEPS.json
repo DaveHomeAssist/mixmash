@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.1 menu artwork delivered; PR145 cover/layout preserved",
-  "lastActivity": "2026-10-13",
+  "head": "0.3.4 PA equipment models and cards in verification",
+  "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "PR144 e37dbb9 passes CI38327150693 general and measured paired regression. Merged50d495c after PR145 d9110ed and the independently delivered0.3.0 amenities base. Pages38350747856 published the exact merge. Duncan verifies12 hosted files, correct catalog cover at three sizes, offline cachev79 reload with exact state and eight hosted Chromium/WebKit held-run journeys including375px classic/3D. Menu artwork introduces no engine, balance or save changes relative to the0.3.0 base. Optional manual performance calibration was not requested; required baseline/candidate audit passed. Private Next Steps Board unavailable. Broader physical/human/provenance gates remain open.",
+  "statusReason": "PA visual adapter and matching equipment cards implemented against 772e2af. Dominic passed the game/unit suite (471 tests plus the six admin checks rerun after correcting disposable-container ownership), build, manifest, seven Chromium/WebKit equipment journeys, responsive light/dark cards and exact owned/assigned save continuity after a warmed-cache offline reload. Short landscape inspection layout corrected. Rules and save source unchanged. PR168 CI, merge and deployment pending. Private Next Steps Board unavailable; broader human and physical acceptance remain separate.",
   "activity30d": {
-    "headline": "Menu artwork0.3.1 and detail repair delivered; existing broader acceptance gates remain open."
+    "headline": "PA equipment visual slice implemented; release verification in progress."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -46,12 +46,12 @@
     "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes."
   ],
   "nextStep": {
-    "title": "Finish menu artwork delivery, then resume existing human acceptance",
-    "why": "Automated Advisory delivery is verified; browser evidence does not establish physical devices, screen readers, calibration, art, camera, career or image rights.",
-    "doneWhen": "Exact-source smoke, CI, merge, Pages and hosted menu checks pass; physical/human acceptance remains separate.",
-    "effort": "M",
-    "owner": "Dave and existing Front of House executor",
-    "blockedBy": "No implementation blocker; CI and hosted proof pending."
+    "title": "Complete PA equipment visual release, then resume human acceptance",
+    "why": "PA models and cards passed runner verification; CI, merge and hosted proof remain separate gates.",
+    "doneWhen": "PR168 passes required CI, merges, deploys and matches hosted PA/card screenshots and save checks.",
+    "effort": "S",
+    "owner": "Current Front of House executor",
+    "blockedBy": "Required CI in progress."
   },
   "findings": [
     {

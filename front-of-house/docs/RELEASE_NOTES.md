@@ -5,6 +5,13 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.4 — 2026-10-17
+
+- Portable PA rigs use optimized ZLX speaker and EKX subwoofer equipment models.
+- Equipment quotes, assignment, Build tools and placed PA inspection share matching model previews.
+- Existing placement, purchase, rental, power, capacity, settlement and save rules are unchanged.
+- Equipment illustrations are approximate reconstructions, not physical specifications or endorsed configurations.
+
 ## 0.3.3 — 2026-10-17
 
 - Fixes FOH-QA-015. The booking confirmation is now a toast over the board that fades, instead of a line in Build's card. At 1024 × 700 the HUD again covers no more than 2% of the lot right after booking. "Nothing is paid until you open the doors" stays on Build's Back button and in Promote beside **Open doors**. Uses cache v82.

@@ -1,6 +1,6 @@
 // Browser proof for the isolated Lot backend; this does not claim game integration or final art acceptance.
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
@@ -11,6 +11,7 @@ const output = process.env.FRONT_OF_HOUSE_LOT_OUTPUT || await mkdtemp(join(tmpdi
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const paRoof = JSON.parse(await readFile(new URL('../front-of-house/lot-assets.json', import.meta.url), 'utf8')).assets.find(a => a.id === 'pa-m').visualBounds.max[1];
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
@@ -64,15 +65,15 @@ try {
     }, yaw);
     assert.deepEqual(result, { tile: { x: 12, y: 8 }, unchanged: true });
   }
-  // Plan exposes each roof: depth picks the current logical object and ignores guests/overlays.
-  const picked = await page.evaluate(() => {
+  // Project the PA at its measured roof, not the previous artwork height. Plan depth picks the current logical object and ignores guests/overlays.
+  const picked = await page.evaluate(paRoof => {
     backend.preset('plan');
     return input.objects.filter(o => ['stage', 'pa-m', 'bar', 'restroom'].includes(o.type)).map(o => {
-      const d = o.type === 'stage' ? [3, 1.5, 0.57] : o.type === 'bar' ? [1, 0.5, 0.87] : [0.5, 0.5, 1.65];
+      const d = o.type === 'stage' ? [3, 1.5, 0.57] : o.type === 'bar' ? [1, 0.5, 0.87] : [0.5, 0.5, o.type === 'pa-m' ? paRoof : 1.65];
       const p = backend.clientOf(o.x + d[0], o.y + d[1], d[2]);
       return [o.type, backend.objectAt(p.x, p.y)?.type];
     });
-  });
+  }, paRoof);
   for (const [expected, actual] of picked) assert.equal(actual, expected);
   const cues = await page.evaluate(() => {
     const initial = backend.info().presentation;

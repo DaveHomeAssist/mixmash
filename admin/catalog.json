@@ -739,6 +739,14 @@
         {
           "name": "npm run hub:social",
           "description": "node src/hub/social.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-pa",
+          "description": "node test/front-of-house-pa-smoke.mjs"
+        },
+        {
+          "name": "npm run assets:front-of-house-pa",
+          "description": "node front-of-house/tools/pa-previews.mjs"
         }
       ]
     }
@@ -2225,6 +2233,26 @@
       "open": "/assets/previews/foh.jpg"
     },
     {
+      "path": "front-of-house/assets/equipment/pa-m.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "pa-m.png",
+      "description": "Medium PA equipment card preview rendered from the shared ZLX and EKX game models.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/pa-m.png",
+      "open": "/front-of-house/assets/equipment/pa-m.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/pa-s.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "pa-s.png",
+      "description": "Small PA equipment card preview rendered from the shared ZLX and EKX game models.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/pa-s.png",
+      "open": "/front-of-house/assets/equipment/pa-s.png"
+    },
+    {
       "path": "front-of-house/docs/hud/hud-build.jpg",
       "project": "front-of-house",
       "category": "art",
@@ -2805,6 +2833,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-pa-models.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-pa-models.mjs",
+      "description": "PA visual adapter: bounds, component identity, invalid input and unchanged game state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-pa-models.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-prefs.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3162,6 +3200,16 @@
       "title": "front-of-house-numbering-smoke.mjs",
       "description": "Cumulative booking and receipt numbering survives the 200-record save window.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-numbering-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-pa-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-pa-smoke.mjs",
+      "description": "PA cards share model previews and never mutate an imported game; capture responsive gameplay.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-pa-smoke.mjs",
       "open": null
     },
     {
@@ -3565,6 +3613,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/pa-models.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "pa-models.mjs",
+      "description": "FOH presentation adapter for the FMP ZLX-15BT / EKX-15SP equipment models. Approximate exterior geometry only; no manufacturer specification is a game rule.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/pa-models.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/prefs.mjs",
       "project": "front-of-house",
       "category": "source",
@@ -3722,6 +3780,16 @@
       "title": "lot-assets.mjs",
       "description": "Generate/check the source-owned Lot sample manifest with measured bounds and source digests.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/lot-assets.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/tools/pa-previews.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "pa-previews.mjs",
+      "description": "Render menu previews from the runtime PA adapter. Run from the repository root on a browser runner.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/pa-previews.mjs",
       "open": null
     },
     {
