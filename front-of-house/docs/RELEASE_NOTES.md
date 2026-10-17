@@ -5,6 +5,13 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.5 — 2026-10-17
+
+- Rental light towers use equipment-library J-Six and Vertigo fixture exteriors.
+- Build tools, tower inspection and the Equipment Lighting page share a rendered fixture preview.
+- Existing lighting rental, power, quality, house-light behavior and saves are unchanged.
+- Fixture appearance is illustrative; it does not establish physical output or control capabilities.
+
 ## 0.3.4 — 2026-10-17
 
 - Portable PA rigs use optimized ZLX speaker and EKX subwoofer equipment models.

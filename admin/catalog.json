@@ -745,6 +745,14 @@
           "description": "node test/front-of-house-pa-smoke.mjs"
         },
         {
+          "name": "npm run smoke:front-of-house-lighting",
+          "description": "node test/front-of-house-lighting-smoke.mjs"
+        },
+        {
+          "name": "npm run assets:front-of-house-lighting",
+          "description": "node front-of-house/tools/lighting-previews.mjs"
+        },
+        {
           "name": "npm run assets:front-of-house-pa",
           "description": "node front-of-house/tools/pa-previews.mjs"
         }
@@ -2233,6 +2241,16 @@
       "open": "/assets/previews/foh.jpg"
     },
     {
+      "path": "front-of-house/assets/equipment/lights.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "lights.png",
+      "description": "Lighting card preview rendered from the shared J-Six and Vertigo fixture models.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/lights.png",
+      "open": "/front-of-house/assets/equipment/lights.png"
+    },
+    {
       "path": "front-of-house/assets/equipment/pa-m.png",
       "project": "front-of-house",
       "category": "art",
@@ -2813,6 +2831,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-lighting-models.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-lighting-models.mjs",
+      "description": "Lighting visual adapter: bounds, component identity, invalid input and unchanged game state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-lighting-models.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-lot-camera.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3140,6 +3168,16 @@
       "title": "front-of-house-hud-performance.mjs",
       "description": "Full client diagnostics: identical live-show saves with direct/cached classic floors.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-hud-performance.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-lighting-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-lighting-smoke.mjs",
+      "description": "Lighting previews and inspection preserve state across themes, layouts and reload.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-lighting-smoke.mjs",
       "open": null
     },
     {
@@ -3543,6 +3581,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/lighting-models.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "lighting-models.mjs",
+      "description": "FOH exterior adapter for the equipment library's J-Six and Vertigo Tri LED. Fixture appearance is independent of the game's aggregate lighting rules.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/lighting-models.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/lot-assets.json",
       "project": "front-of-house",
       "category": "source",
@@ -3770,6 +3818,16 @@
       "title": "docs.mjs",
       "description": "Front of House reference generator: writes docs/ASSETS.md, docs/CATALOG.md and docs/STRINGS.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/docs.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/tools/lighting-previews.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "lighting-previews.mjs",
+      "description": "Render menu previews from the runtime lighting adapter. Run from the repository root on a browser runner.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/lighting-previews.mjs",
       "open": null
     },
     {

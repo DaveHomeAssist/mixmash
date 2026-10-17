@@ -533,7 +533,7 @@ function buildPanel() {
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
-        ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="${type.startsWith('pa-') ? `./assets/equipment/${type}.png` : `./sprites/${type}.png`}" alt="" decoding="async" />`}
+        ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="${(type.startsWith('pa-') || type === 'lights') ? `./assets/equipment/${type}.png` : `./sprites/${type}.png`}" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
         <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}<span class="tile-note"></span></span>
       </label>`;
@@ -764,7 +764,7 @@ function inspectAt(tile) {
   if (index < 0) { el.boardStatus.textContent = `${describeTile(tile)} Select places nothing; pick a tool to place.`; return; }
   const object = state.venue.objects[index];
   openWindow('selection', label(object.type),
-    (object.type.startsWith('pa-') ? paEquipmentCard(object.type) : '') +
+    (object.type === 'lights' ? lightingEquipmentCard() : object.type.startsWith('pa-') ? paEquipmentCard(object.type) : '') +
     '<p class="lede">Tile ' + object.x + ', ' + object.y + ' · ' + esc(toolFacts(object.type)) + '</p>' +
     '<p>Removal can be undone while you remain in Build.</p>', el.canvas,
     { foot: '<button type="button" data-act="remove-selected">Remove object</button><button type="button" class="primary" data-win="close">Done</button>' });
@@ -1852,14 +1852,23 @@ function paEquipmentCard(type = 'pa-s') {
   return `<figure class="pa-equipment-card"><img src="./assets/equipment/${type}.png" width="640" height="400" alt="${medium ? 'Four subwoofers and two pole-mounted speaker tops' : 'Two subwoofers and two pole-mounted speaker tops'}" decoding="async"><figcaption><span class="pa-card-eyebrow">Portable sound</span><h3>${medium ? 'Medium PA' : 'Small PA'}</h3><span>ZLX tops · EKX subs</span><small>Equipment model illustration</small></figcaption></figure>`;
 }
 
+function lightingEquipmentCard() {
+  return `<figure class="pa-equipment-card"><img src="./assets/equipment/lights.png" width="640" height="400" alt="Lighting crossbar with two twin-lens J-Six fixtures and a central Vertigo effect fixture" decoding="async"><figcaption><span class="pa-card-eyebrow">Rental lighting</span><h3>Light tower</h3><span>J-Six · Vertigo Tri LED</span><small>Equipment model illustration</small></figcaption></figure>`;
+}
+function lightingEquipmentPage() {
+  const placed = state.venue.objects.some(o => o.type === 'lights');
+  const house = !!roomProfileFor(state.venue)?.houseLights;
+  return `<section data-tab="Lighting" data-always-tabs>${lightingEquipmentCard()}<dl class="live-readouts"><div><dt>Tower rental / show</dt><dd>${money(D.LIGHTS_RENTAL)}</dd></div><div><dt>Power / tower</dt><dd>${D.OBJECT_TYPES.lights.watts / 1000} kW</dd></div><div><dt>This venue</dt><dd>${house ? 'House lights included' : placed ? 'Tower placed' : 'No tower placed'}</dd></div></dl><p>Place a light tower from the Build toolbar. Lighting remains rental equipment.</p><p class="hint">${house ? 'An extra tower adds rental and power use, with no extra quality bonus.' : 'The existing lighting quality and rental rules apply.'}</p></section>`;
+}
+
 function openEquipment(opener) {
   const owned = equipmentFor(state), editable = ['book', 'done'].includes(state.phase);
   if (!owned) {
     const allowed = editable && (state.history.length > 0 || state.mode === 'sandbox');
-    openWindow('equipment', 'Equipment', `${paEquipmentCard()}<p>Buy one small PA, then assign it to a placed small system in Build. Rentals and house rigs remain available.</p>
+    openWindow('equipment', 'Equipment', `<section data-tab="Asset" data-always-tabs>${paEquipmentCard()}<p>Buy one small PA, then assign it to a placed small system in Build. Rentals and house rigs remain available.</p>
       <p>Purchase $1,200 · resale $600 · operation $20 per assigned night. Buying does not place equipment.</p>
       <p>${allowed ? 'Enable to open a cash journal at your current balance. Earlier shows stay in Show history.' : 'Settle your first show, then return between bookings.'}</p>
-      <button data-act="equipment-enable" ${allowed ? '' : 'disabled'}>Enable equipment</button>`, opener);
+      <button data-act="equipment-enable" ${allowed ? '' : 'disabled'}>Enable equipment</button></section>${lightingEquipmentPage()}`, opener);
     return;
   }
   const asset = owned.assets[0], rule = D.OWNED_EQUIPMENT['small-pa'], journal = careerLedgerFor(state);
@@ -1884,6 +1893,7 @@ function openEquipment(opener) {
       <div class="actions"><button data-act="equipment-assign" data-owned="yes" ${canAssign && !plan ? '' : 'disabled'}>Use owned PA</button>
       <button data-act="equipment-assign" data-owned="no" ${state.phase === 'build' && plan ? '' : 'disabled'}>Return to rental</button></div>
       <p class="hint">Power, staff, placement and capacity rules still apply. An unused owned PA has no nightly charge.</p></section>
+    ${lightingEquipmentPage()}
     <section data-tab="Cash" data-always-tabs><h3>Cash reconciliation</h3>
       <dl class="live-readouts">${field('Opening cash',journal.openingCash)}${Object.entries(journal.totals).map(([key,value])=>field(CASH_LABELS[key],value)).join('')}${field('Available cash',journal.balance)}</dl>
       <p class="hint">Opening plus all movements equals available cash. Show opening includes any sponsor credit.</p></section>

@@ -4,11 +4,12 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { Box3 } from '../vendor/three/three.module.min.js';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA, AUTHORING_REFERENCE, FESTIVAL_SCENE } from '../lot-models.mjs';
+import { LIGHTING_MODEL_SOURCE } from '../lighting-models.mjs';
 import { PA_MODEL_SOURCE } from '../pa-models.mjs';
 import { OBJECT_TYPES, VENUES } from '../data.mjs';
 const root = new URL('../', import.meta.url), hash = b => createHash('sha256').update(b).digest('hex');
 const sources = {};
-for (const file of ['assets/equipment/pa-s.png', 'assets/equipment/pa-m.png', 'pa-models.mjs', 'lot-models.mjs', 'lot-camera.mjs', 'site-map-geometry.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs', 'service-crowd.mjs', 'service-guests.mjs', 'guest-flow.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
+for (const file of ['assets/equipment/lights.png', 'lighting-models.mjs', 'assets/equipment/pa-s.png', 'assets/equipment/pa-m.png', 'pa-models.mjs', 'lot-models.mjs', 'lot-camera.mjs', 'site-map-geometry.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs', 'service-crowd.mjs', 'service-guests.mjs', 'guest-flow.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
 const models = createLotModels(), round = n => Math.round(n * 100000) / 100000;
 function describe(type) {
   const model = type === 'guest' ? models.guest() : models.create({ type, x: 0, y: 0, rot: 0 });
@@ -19,7 +20,7 @@ function describe(type) {
     visualBounds: { min: bounds.min.toArray().map(round), max: bounds.max.toArray().map(round) },
     meshCount, pickProxy: type === 'guest' ? 'not selectable; representative decoration' : type.startsWith('pa-') ? 'non-rendering rig envelope; one logical PA object' : 'opaque rendered mesh surfaces',
     materialRevision: MODEL_REVISION, lod: type === 'guest' ? 'projected pixel size: full above80, distant below64; sixteen instanced parts per detail level' : 'fixed source detail',
-    contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], equipmentSource: type.startsWith('pa-') ? sources['pa-models.mjs'] : undefined, three: '0.184.0', type, footprint: spec ? [spec.w, spec.h] : null })) };
+    contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], equipmentSource: type === 'lights' ? sources['lighting-models.mjs'] : type.startsWith('pa-') ? sources['pa-models.mjs'] : undefined, three: '0.184.0', type, footprint: spec ? [spec.w, spec.h] : null })) };
 }
 const venuesOf = id => OBJECT_TYPES[id].festivalOnly ? ['festival'] : OBJECT_TYPES[id].venues || null;
 const assets = [...Object.keys(OBJECT_TYPES).filter(id => !OBJECT_TYPES[id].kit && !venuesOf(id)), 'guest'].map(describe);
@@ -37,7 +38,7 @@ const rooms = ['club', 'amphitheater', 'festival'].map(id => {
   }), contentDigest: hash(JSON.stringify({ source: sources['lot-models.mjs'], venue: venue.id, grid: venue.grid, pillars: venue.pillars, housePa: venue.housePa, seats: venue.seats })) };
 });
 models.dispose();
-const manifest = { revision: MODEL_REVISION, provenance: MODEL_METADATA, equipmentSource: PA_MODEL_SOURCE, authoringReference: AUTHORING_REFERENCE, sources, assets, venueAssets, rooms,
+const manifest = { revision: MODEL_REVISION, provenance: MODEL_METADATA, equipmentSource: PA_MODEL_SOURCE, lightingEquipmentSource: LIGHTING_MODEL_SOURCE, authoringReference: AUTHORING_REFERENCE, sources, assets, venueAssets, rooms,
   acceptance: { technical: 'See automated camera, footprint, scene and lifecycle tests', visual: 'Human review pending', physicalCalibration: 'Not performed', physicalDevices: 'Not accepted by this manifest' } };
 const target = new URL('lot-assets.json', root), text = JSON.stringify(manifest, null, 2) + '\n';
 if (process.argv.includes('--check')) assert.equal(await readFile(target, 'utf8'), text, 'Lot manifest is stale; regenerate after source changes');

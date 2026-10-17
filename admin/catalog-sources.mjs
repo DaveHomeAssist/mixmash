@@ -266,6 +266,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/assets/equipment/lights.png': { description: 'Lighting card preview rendered from the shared J-Six and Vertigo fixture models.' },
   'front-of-house/assets/equipment/pa-s.png': { description: 'Small PA equipment card preview rendered from the shared ZLX and EKX game models.' },
   'front-of-house/assets/equipment/pa-m.png': { description: 'Medium PA equipment card preview rendered from the shared ZLX and EKX game models.' },
   '.github/workflows/horseshoes.yml': { title: 'Horseshoes smoke workflow', description: 'Browser regression for Horseshoes assets, native keyboard controls, touch, throwing, retry and stable physics.' },

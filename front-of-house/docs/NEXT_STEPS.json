@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.4 PA equipment models and cards released",
+  "head": "0.3.5 lighting equipment presentation in verification",
   "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "PR168 source4945433 passed required CI39057828540 and merged8b5ae09. Pages published the merge; 13 hosted runtime files match. Dominic passed all eight live light/dark card viewport cases, exact inspection/reload state and four inspection sizes down320x256. Existing equipment, Lot/3D, Club, Shell and Festival settlement/save checks and warmed-cache offline proof passed. Rules and saves unchanged. Private Next Steps Board unavailable; human/device/physical acceptance remains separate.",
+  "statusReason": "Lighting adapter and cards implemented; source bounds/identity tests and eight light/dark card and exact reload checks pass on Walter. Existing rules and saves unchanged. CI and deployment pending. Global service worker unchanged; existing network-first caching retained.",
   "activity30d": {
-    "headline": "PA model visuals and equipment cards released and verified live."
+    "headline": "Lighting equipment models and menu cards in release verification."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -47,12 +47,12 @@
     "PR168: 0.3.4 PA rigs and matching equipment cards, source4945433, merged8b5ae09, required CI39057828540 passed; Pages and13 hosted byte matches plus eight live responsive/save checks passed."
   ],
   "nextStep": {
-    "title": "Review PA visuals in actual play, then scope the next equipment slice",
-    "why": "The authorized PA/card slice is deployed; further equipment behavior remains outside this visual change.",
-    "doneWhen": "Human visual acceptance is recorded and any next slice has a scoped brief preserving game and save boundaries.",
+    "title": "Complete lighting visual release",
+    "why": "User requested lighting rigs and cards after PA delivery.",
+    "doneWhen": "Required CI, hosted parity and live screenshots pass.",
     "effort": "S",
-    "owner": "Front of House product owner",
-    "blockedBy": "No blocker for the delivered PA slice; broader human acceptance remains open."
+    "owner": "Current FOH executor",
+    "blockedBy": "Release verification in progress."
   },
   "findings": [
     {

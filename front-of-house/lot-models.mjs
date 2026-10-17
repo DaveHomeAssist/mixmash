@@ -1,9 +1,10 @@
 // Source-authored Lot samples. The dimensional reference is provisional, not field calibration.
 import * as T from './vendor/three/three.module.min.js';
+import { addLightingRig } from './lighting-models.mjs';
 import { addPaRig } from './pa-models.mjs';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-17';
+export const MODEL_REVISION = 'lot-sample-18';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -281,10 +282,7 @@ export function createLotModels() {
       for (const x of [-2.8, 2.8]) for (const z of [-1.4, 1.4]) b([0.045, 0.62, 0.045], [x, 0.31, z], COLORS.aluminium, 0.7);
       b([5.6, 0.035, 0.035], [0, 0.6, 1.4], COLORS.aluminium, 0.7);
     } else if (object.type === 'lights') {
-      b([0.7, 0.08, 0.7], [0, 0.04, 0], COLORS.steel);
-      b([0.055, 2.8, 0.055], [0, 1.4, 0], COLORS.aluminium, 0.8, 'cylinder');
-      b([0.85, 0.06, 0.06], [0, 2.8, 0], COLORS.aluminium, 0.8);
-      for (const x of [-0.3, 0, 0.3]) b([0.17, 0.18, 0.22], [x, 2.69, 0], COLORS.steel);
+      addLightingRig(g, part, AUTHORING_REFERENCE.metresPerTile);
     } else {
       const color = object.type === 'gate' ? 0x789b65 : 0xad554b;
       for (const x of [-w / 2 + 0.06, w / 2 - 0.06]) b([0.055, 1.1, 0.055], [x, 0.55, 0], COLORS.aluminium, 0.6, 'cylinder');
