@@ -6,6 +6,8 @@
 
 ## Storage
 
+> **Device preferences live outside the save.** View choices (3D or 2D, Dark controls), phone tabs, hint counters and the player's recent per-act deal, price and ads, per-incident response and per-room tool are stored under a separate key, `front_of_house_prefs` (`prefs.mjs`, version 1, at most 2 KB, specified in [ANTICIPATORY_UX.md](ANTICIPATORY_UX.md#3-local-stored-data-model)). That key is not part of this schema, the save envelope or save codes. `normalizeState`, migrations and fixtures never read it. Start a new game and Start over keep it, and **Save and load → Forget suggestions & view settings** removes it, plus the older `front_of_house_renderer` and `front_of_house_theme` keys it replaced, without touching `front_of_house_v1`. Everything career-derived that the suggestions show (last night's weakest part, relationships, the next offers) is read from this save, never copied into preferences.
+
 Saves use the shared studio store in `src/kit/save.js`:
 
 ```js

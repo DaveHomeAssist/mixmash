@@ -21,6 +21,8 @@ const COLORS = {
   fence: '#9ca3af',
   cursor: '#facc15',
   invalid: '#ef4444',
+  legal: 'rgba(250,204,21,0.9)',
+  legalFill: 'rgba(250,204,21,0.16)',
   crowd: ['#06b6d4', '#f43f5e', '#84cc16', '#fef08a', '#8b5cf6', '#f1f5f9'],
   rain: 'rgba(160,200,255,0.35)',
   night: 'rgba(11,15,25,0.74)',
@@ -911,6 +913,20 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       scene.objects.filter((o) => o.type === 'gate').forEach(markAbove);
     }
 
+    // Tiles where the chosen gate, exit or PA would be accepted: a tint and an outline, so the
+    // rule reads without colour alone. Drawn before the ghost, which stays on top.
+    stats.legalTiles = 0;
+    if (scene.legalSet && scene.legalSet.size) {
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = COLORS.legal;
+      for (const key of scene.legalSet) {
+        const [x, y] = key.split(',').map(Number);
+        fillDiamond(x, y, 1, 1, COLORS.legalFill);
+        diamond(x, y, 1, 1);
+        ctx.stroke();
+        stats.legalTiles += 1;
+      }
+    }
     if (scene.ghost) {
       const g = scene.ghost;
       const t = D.OBJECT_TYPES[g.type];
@@ -978,6 +994,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       spriteRedraws: stats.spriteRedraws,
       drawn: drawn.map(({ o, r }) => ({ type: o.type, x: o.x, y: o.y, rot: o.rot, rect: r, top: zAbove(o, r.y) })),
       markers: stats.markers,
+      legalTiles: stats.legalTiles || 0,
       washSource: stats.washSource,
       hitStack: hits.map(({ o, d, r, poly }) => {
         const faces = poly ? visibleFaces(o.x, o.y, o.x + d.w, o.y + d.h).map((f) => f[2]) : null;

@@ -1,5 +1,13 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-17: Anticipatory suggestions (0.3.2)
+
+Dave asked for anticipatory UX: predict intent, pre-fill common inputs, highlight likely selections and keep preferences in local storage, all without a backend. He approved the spec ([ANTICIPATORY_UX.md](docs/ANTICIPATORY_UX.md)) and its build order. `prefs.mjs` adds one versioned device key, `front_of_house_prefs`, outside the save: validated on read, at most 2 KB, cleared from the menu, and absorbing the renderer and theme keys. `anticipate.mjs` holds pure readers that dry-run engine actions on the current state and discard the result.
+
+The client outlines legal gate, exit and PA tiles in both renderers, and adds Pick Exit to the readiness line when exits cap capacity. It names last night's weakest part and rings the tools that answer it, marks the last deal and short guarantees in Book, offers Same as last time in Promote, marks the last incident response, previews the next offers on Done and remembers phone tabs. No suggestion books, places, opens doors, responds or signs.
+
+Measuring the plan against CT-DEC-12 changed two placements (see the spec's As built section). The weakest-part line uses the Select hint instead of new buttons, and the next-show preview shares the result line. This also found a pre-existing HUD overflow from PR 129's booking message at 1024 × 700 (FOH-QA-015). Rules, balance and save schema 2 are unchanged. Cache v81.
+
 ## 2026-10-12: Venue-scale bars and restrooms (0.3.0)
 
 Dave reported that bar and restroom logic looked flawed: a sold-out Split Acre asked for 47 bars and 146 restrooms. Every venue used the Lot's rates (125 and 40 guests per unit), so meeting the guideline would have pushed Split Acre below its 6,000 permit and Loam Shell below 700. Dave chose D13–D16 (CT-DEC-36): a Bar tent and Restroom block at Loam Shell and Split Acre, guideline-meeting Suggested layouts above the Lot, and moving CT-DEC-26's careless-play guard to the Festival. Amenity supply now adds small and large units (R-09, R-10, R-13); the Build tools list guests served and the settlement priority names the remaining gap in the room's largest unit. Lot and existing-layout outcomes are unchanged. Tier cohort: careful play unchanged; careless play now passes Fathom Hall and Loam Shell on all 100 seeds and Split Acre on 91.

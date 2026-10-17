@@ -280,3 +280,15 @@ A Lot playtest (Sodium Arcade, $500 guarantee) found these HUD problems; all are
 - **2D/3D switch:** a 3D/2D button sits at the end of the camera group in the strip. To keep the strip from scrolling, the game's name is hidden below 1600px (it was 1440px), the Turn button shows only its arrow, and the strip's gaps tighten below 1280px. Phones keep their four floating camera buttons; there the switch stays in Menu → Camera.
 - **Book** dims the empty lot lightly (85%) instead of to 55%, which made the dark lot read as an unlit black slab on the light page.
 - **Settlement sections** are lettered in reading order: A gross revenue and B the deal (Revenue tab), C production and site costs (Costs tab).
+
+### 2026-10-17 anticipatory suggestions (0.3.2)
+
+[ANTICIPATORY_UX.md](ANTICIPATORY_UX.md) is the spec. Suggestions only highlight, pre-fill on a press or pick a tool; they never book, place, open doors, respond or sign. None of them adds a plate or a row to a Build or Show plate.
+
+- **Build:** with Gate, Exit or a PA chosen, every tile the engine would accept is tinted and outlined, in classic view and in 3D (an inset square, distinct from the sightline tint). When exits cap capacity, the readiness line carries a **Pick Exit** button (44 px). On Build entry after a signed show, the Select hint line names last night's weakest part, and the tools that answer it are ringed in the palette. Otherwise the last tool used in the room is ringed.
+- **Book:** the deal used last time with an act carries a **Last time** badge. A guarantee that would leave the doors short reads **short $X at doors**, and a door deal that fits gets **Fits your cash**. Focus still moves to the heading.
+- **Promote:** the lede becomes **Same as last time: price · ads [Apply]**, and the sliders carry tick marks at the remembered values. When exits cap the forecast, Back reads **Back to Build: add exits** and opens Build with Exit picked.
+- **Show:** the response chosen last time for this incident carries **Your last choice**. Focus stays on the first affordable response.
+- **Done:** the result line ends with the next show's offers and asks.
+- **Phones:** each phase reopens the tab used last (Book, Build, Promote, Done; never Show, which an incident controls). The first three Build entries on a phone say where the 3D/2D switch is. Every suggestion uses an existing line, and `test/front-of-house-suggestions-smoke.mjs` checks 390 × 844 for scrolling and clipped controls.
+- **Menu:** **Suggestions: On/Off** sits beside Dark controls, and **Save and load → Forget suggestions & view settings** clears the preferences.

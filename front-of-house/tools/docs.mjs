@@ -453,6 +453,7 @@ const COPY_TABLES = [
   ['COSTS', 'Tool costs (Build)'],
   ['SHORT', 'Tool tile names (Build)'],
   ['FACING', 'Rotation directions (Build)'],
+  ['SUGGEST_TEXT', 'Suggestion copy: badges, hints and buttons (all phases, Menu)'],
 ];
 
 function extractConst(src, name) {
