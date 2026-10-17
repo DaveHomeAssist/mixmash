@@ -47,5 +47,11 @@ export function addPaRig(group, part, type, metresPerTile) {
     add(`${id}.panel`, [260,230,10], [x,bottom+300,-192], 0x111619, 'rounded');
     add(`${id}.badge`, [40,22,10], [x,bottom+65,200], 0xbdc6bf);
   }
+  // A rig is one selectable game object. Its central gap must not become a dead spot.
+  // Invisible meshes remain raycastable in Three.js, but never draw or cast shadows.
+  const height = medium ? 2072 : 1872;
+  const pick = add('foh.pa.selection', [1546, height, 568], [0, height / 2, 3], 0x25292d);
+  pick.visible = false; pick.castShadow = false; pick.receiveShadow = false;
+  pick.userData.pickProxy = true;
   group.userData.equipmentRepresentation = { revision: PA_MODEL_REVISION, type };
 }

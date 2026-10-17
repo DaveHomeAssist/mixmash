@@ -1,7 +1,7 @@
 // PA visual adapter: bounds, component identity, invalid input and unchanged game state.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Box3, Group } from './vendor/three/three.module.min.js';
+import { Box3, Group, Raycaster, Vector3 } from './vendor/three/three.module.min.js';
 import { createLotModels } from './lot-models.mjs';
 import { addPaRig } from './pa-models.mjs';
 import { createGame, settlementFor } from './engine.mjs';
@@ -15,6 +15,11 @@ test('PA representations stay inside their existing footprint and preserve game 
     assert.ok(bounds.min.y >= -0.001 && bounds.max.y > .9);
     assert.equal(new Set(ids).size, ids.length);
     assert.ok(ids.includes('left.zlx.cabinet') && ids.includes('right.sub1.ekx.cabinet'));
+    const pick = model.getObjectByName('foh.pa.selection');
+    model.updateMatrixWorld(true);
+    const ray = new Raycaster(new Vector3(.5, 3, .5), new Vector3(0, -1, 0));
+    assert.equal(ray.intersectObject(pick).length > 0, true, 'the gap remains selectable from above');
+    assert.ok(pick?.userData.pickProxy); assert.equal(pick.visible, false); assert.equal(pick.castShadow, false);
     assert.equal(JSON.stringify(object), original);
   }
   assert.equal(JSON.stringify(state), before);

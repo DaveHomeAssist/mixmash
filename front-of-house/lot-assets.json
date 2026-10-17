@@ -53,7 +53,7 @@
   "sources": {
     "assets/equipment/pa-s.png": "8e1ce15543a751f0583fd2bc22f82e7cd9c8c078177097561ae9309d17dc1d57",
     "assets/equipment/pa-m.png": "e4a0bd85bb5e1d8fd2db359a8e490ef3aa083aa0082d3288fd0bc2f64a69e1f7",
-    "pa-models.mjs": "77d96c93dbfdfaef2bbeedd317a19e111d2e06cb77eee654e7f358f195048154",
+    "pa-models.mjs": "3ef0545f7ff958c6aa3ab422d9c5ab8de64d6f20db7305b8c22c6b3a8e1d4eab",
     "lot-models.mjs": "df87c45add51bea899b6c1ef0d493b55e7b61480c7ea9af20e93b2ce4c173445",
     "lot-camera.mjs": "acb439336f7d19fd7e356ec2cc34a4fa233b3fcbff31a9aaab7172f42d6eb13a",
     "site-map-geometry.mjs": "496d0f9695ab7939e8228039dbf8e98ebd5be8a403ea7f8280215d444bd1aa3a",
@@ -110,11 +110,11 @@
           0.6435
         ]
       },
-      "meshCount": 40,
-      "pickProxy": "opaque rendered mesh surfaces",
+      "meshCount": 41,
+      "pickProxy": "non-rendering rig envelope; one logical PA object",
       "materialRevision": "lot-sample-17",
       "lod": "fixed source detail",
-      "contentDigest": "7cd50f95e7541631b322cf9425623ee8aeadbe7fd4a2424c2ea7aea74296a157"
+      "contentDigest": "92f7b5942f9b29ca1561b8fe77e8eb154f4a3caf2817dd7cf20b427ac4ebe2b6"
     },
     {
       "id": "pa-m",
@@ -136,11 +136,11 @@
           0.6435
         ]
       },
-      "meshCount": 60,
-      "pickProxy": "opaque rendered mesh surfaces",
+      "meshCount": 61,
+      "pickProxy": "non-rendering rig envelope; one logical PA object",
       "materialRevision": "lot-sample-17",
       "lod": "fixed source detail",
-      "contentDigest": "8e57931a664a4c952d8c92d0f52405fdb3f8048b32dc07f684b3556dbe96b1d8"
+      "contentDigest": "d1f403b01ac16858170e9f08073d087f3892e43b6185a3a7b9397de9e5964287"
     },
     {
       "id": "lights",
