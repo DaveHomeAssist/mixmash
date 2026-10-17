@@ -1858,10 +1858,12 @@ function lightingEquipmentCard() {
 function lightingEquipmentPage() {
   const placed = state.venue.objects.some(o => o.type === 'lights');
   const house = !!roomProfileFor(state.venue)?.houseLights;
-  return `<section data-tab="Lighting" data-always-tabs>${lightingEquipmentCard()}<dl class="live-readouts"><div><dt>Tower rental / show</dt><dd>${money(D.LIGHTS_RENTAL)}</dd></div><div><dt>Power / tower</dt><dd>${D.OBJECT_TYPES.lights.watts / 1000} kW</dd></div><div><dt>This venue</dt><dd>${house ? 'House lights included' : placed ? 'Tower placed' : 'No tower placed'}</dd></div></dl><p>Place a light tower from the Build toolbar. Lighting remains rental equipment.</p><p class="hint">${house ? 'An extra tower adds rental and power use, with no extra quality bonus.' : 'The existing lighting quality and rental rules apply.'}</p></section>`;
+  return `<section data-tab="Lighting" data-always-tabs>${lightingEquipmentCard()}<dl class="live-readouts"><div><dt>Tower rental / show</dt><dd>${money(D.LIGHTS_RENTAL)}</dd></div><div><dt>Power / tower</dt><dd>${D.OBJECT_TYPES.lights.watts / 1000} kW</dd></div><div><dt>This venue</dt><dd>${house ? placed ? 'House lights + tower placed' : 'House lights included' : placed ? 'Tower placed' : 'No tower placed'}</dd></div></dl><p>Place a light tower from the Build toolbar. Lighting remains rental equipment.</p><p class="hint">${house ? 'An extra tower adds rental and power use, with no extra quality bonus.' : 'The existing lighting quality and rental rules apply.'}</p></section>`;
 }
 
 function openEquipment(opener) {
+  // The menu closes behind this window; return to its visible toggle.
+  if (opener && el.menu.contains(opener)) opener = el.menuBtn;
   const owned = equipmentFor(state), editable = ['book', 'done'].includes(state.phase);
   if (!owned) {
     const allowed = editable && (state.history.length > 0 || state.mode === 'sandbox');

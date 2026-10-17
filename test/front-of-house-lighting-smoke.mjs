@@ -4,7 +4,7 @@ import {mkdir} from 'node:fs/promises';
 import {chromium} from 'playwright';
 import {startStaticServer,launchOptions,trackPageFailures} from './static-server.mjs';
 import {createGame,applyAction} from '../front-of-house/engine.mjs';
-import {STARTER_LAYOUT,SAVE_NAMESPACE,SCHEMA_VERSION} from '../front-of-house/data.mjs';
+import {STARTER_LAYOUT,VENUES,SAVE_NAMESPACE,SCHEMA_VERSION} from '../front-of-house/data.mjs';
 const output=process.env.FOH_LIGHTING_OUTPUT || 'qa-lighting';
 await mkdir(output,{recursive:true});
 const server=await startStaticServer(),browser=await chromium.launch(launchOptions());
@@ -19,11 +19,15 @@ try {
   await page.goto(origin+'?renderer=3d');await page.waitForFunction(()=>window.__frontOfHouse?.rendererStatus().active);
   let state=createGame(3);state.mode='sandbox';
   if(theme==='dark')state=act(state,{type:'enableEquipment'});
-  state=act(state,{type:'chooseDeal',deal:'guarantee'});state=act(state,{type:'setLayout',objects:STARTER_LAYOUT});
+  const house=theme==='dark'&&width===1440;
+  if(house)state=act(state,{type:'chooseVenue',venueId:'club'});
+  state=act(state,{type:'chooseDeal',deal:'guarantee',...(house?{roomPolicy:1,artistId:VENUES.club.defaultArtist}:{})});state=act(state,{type:'setLayout',objects:house?VENUES.club.starter:STARTER_LAYOUT});
   assert.equal(await page.evaluate(c=>__frontOfHouse.importCode(c),code(state)),true);
   const before=await page.evaluate(()=>__frontOfHouse.state());
   await page.locator('#menu-btn').click();await page.locator('#menu [data-act="equipment-open"]').click();
-  await page.locator('#win [data-tab-name="Lighting"]').click();
+  if(theme==='dark'){await page.locator('#win [data-tab-name="Deploy"]').click();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('#win [data-tab-name="Lighting"]').getAttribute('aria-selected'),'true');}
+  else await page.locator('#win [data-tab-name="Lighting"]').click();
+  if(house){assert.match(await page.locator('#win-body').innerText(),/House lights \+ tower placed/);assert.match(await page.locator('#win-body').innerText(),/no extra quality bonus/);}
   const image=page.locator('#win .pa-equipment-card:visible img');await image.evaluate(i=>i.decode());
   assert.equal(await image.evaluate(i=>i.naturalWidth),640);
   assert.match(await page.locator('#win').innerText(),/8 kW/);assert.match(await page.locator('#win').innerText(),/\$175/);
@@ -31,6 +35,7 @@ try {
   await page.screenshot({path:`${output}/lighting-${theme}-${width}.png`});
   assert.deepEqual(await page.evaluate(()=>__frontOfHouse.state()),before);
   await page.locator('#win [data-win="close"]').first().click();
+  assert.ok(await page.locator('#menu-btn').evaluate(e=>e===document.activeElement),'Equipment close restores visible menu focus');
   if(width===1440&&theme==='light') {
    const tower=state.venue.objects.find(o=>o.type==='lights');
    await page.evaluate(o=>__frontOfHouse.boardCamera({yaw:25,pitch:38,zoom:3,x:o.x,y:o.y}),tower);
