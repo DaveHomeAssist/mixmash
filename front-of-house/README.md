@@ -5,6 +5,10 @@ The name was decided on 2026-10-01 ([CT-DEC-06](docs/DECISIONS.md#ct-dec-06-name
 
 Front of House is a management game in the tradition of RollerCoaster Tycoon and Zoo Tycoon, set in concert promotion and live production. The player builds a venue, books an artist, sells the show, gets through show night and settles the money. A career starts with a rented parking lot and a PA, and ends with the player running their own festival grounds.
 
+Equipment/model work follows the [ECP-1.0 contract](../docs/EQUIPMENT_PLATFORM_CONTRACT.md)
+and [FOH adapter guidance](docs/EQUIPMENT_PLATFORM_ADAPTER.md).
+Instruction adoption does not implement asset reuse or change gameplay.
+
 ## Documents
 
 Start new feature planning with the [multiple-choice decision packet](docs/DECISION_PACKET.md), [feature briefs](docs/FEATURE_BRIEFS.md), and [next steps record](docs/NEXT_STEPS.json). D1–D11 are settled; CT-DEC-19 delegates subsequent routine choices to Codex.

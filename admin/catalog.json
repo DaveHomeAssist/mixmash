@@ -1765,6 +1765,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/EQUIPMENT_PLATFORM_ADAPTER.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Equipment asset adapter guidance",
+      "description": "Front of House consumes purpose-specific visual representations of equipment.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/EQUIPMENT_PLATFORM_ADAPTER.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/FEATURE_BRIEFS.md",
       "project": "front-of-house",
       "category": "docs",
@@ -4572,6 +4582,16 @@
       "title": "MixMash Claude instructions",
       "description": "Read and follow AGENTS.md before editing. It owns execution, feature brief and Next Steps Board maintenance rules for this repository. Use the shared workspace contract when available; do not duplicate its private paths…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/CLAUDE.md",
+      "open": null
+    },
+    {
+      "path": "docs/EQUIPMENT_PLATFORM_CONTRACT.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Equipment Platform Compatibility Contract",
+      "description": "Develop reusable equipment definitions with purpose-specific representations and explicit application adapters.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/EQUIPMENT_PLATFORM_CONTRACT.md",
       "open": null
     },
     {

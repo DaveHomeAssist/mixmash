@@ -4,6 +4,14 @@
 
 Read `~/Code/ops-hub/90-governance/WORKSPACE_OPERATING_RULES.md` before project rules, including COMMS (one entry on the shared Agent Communications Page per session).
 
+## Equipment compatibility
+
+For equipment definitions, models, rig/lesson integration or shared game assets,
+read the pinned [ECP-1.0 contract](docs/EQUIPMENT_PLATFORM_CONTRACT.md).
+Front of House also reads its
+[equipment adapter guidance](front-of-house/docs/EQUIPMENT_PLATFORM_ADAPTER.md).
+Other games retain their own behavior and require their own explicit adapter.
+
 ## Status naming
 
 Name work with one string everywhere (chat status title, session title, Notion
