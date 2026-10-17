@@ -34,3 +34,13 @@ Original prompt: Implement the verified MixMash count correction on gh-pages. Up
 ## Front of House Advisory desk · 2026-10-09
 
 Dave authorized the existing FOH-U05 brief through the project controller. Base ad039109; additive presentation-only read model and explicit Overview/Ticketing/Talent/Operations window implemented. Independent PR141 engine/save QA ownership is preserved. Duncan is the isolated command/browser runner; no sustained Dominic load or heavy Mac fallback. Verification and delivery are in progress; initial unit pass found a missing-result Talent row that was corrected before rerun.
+
+## PA equipment presentation — 2026-10-17
+
+User request: Implement the PA rig and equipment menu cards using equipment models; keep game rules and saves intact and provide screenshots. Scoped brief added; isolated from concurrent work. Verification pending.
+
+- Dominic: targeted PA/ownership/integration tests (16), seven existing equipment journeys and eight light/dark viewport cases passed. Preview framing corrected after visual inspection. Rules/data/save files unchanged. CI and deployment pending.
+
+- Full runner suite: 471 passed; one admin test-file failure was Docker Git ownership, with all six admin tests passing on rerun as the checkout owner. Build and manifest passed. Warmed-cache offline reload preserves exact owned/assigned save and loads 3D/cards. Short landscape PA inspection now compacts; optional illustration yields below 300px height. PR168 opened; release checks pending.
+
+- CI19dc1f9 found a Lot picking probe using the former PA artwork height. Added a non-rendering rig envelope so the central gap remains selectable, and derived the roof probe from measured asset bounds. Dedicated raycast unit and Lot backend smoke now pass; complete 3D/venue checks and refreshed CI follow. No engine or save changes.

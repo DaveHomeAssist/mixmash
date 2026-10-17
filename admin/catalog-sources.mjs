@@ -266,6 +266,8 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/assets/equipment/pa-s.png': { description: 'Small PA equipment card preview rendered from the shared ZLX and EKX game models.' },
+  'front-of-house/assets/equipment/pa-m.png': { description: 'Medium PA equipment card preview rendered from the shared ZLX and EKX game models.' },
   '.github/workflows/horseshoes.yml': { title: 'Horseshoes smoke workflow', description: 'Browser regression for Horseshoes assets, native keyboard controls, touch, throwing, retry and stable physics.' },
   'front-of-house/version.mjs': { title: 'Front of House release metadata', description: 'Single source for the independent Front of House product version, release date, early-playable stage, service-worker cache and save-schema parity.' },
   'test/front-of-house-version.test.mjs': { title: 'Front of House version parity', description: 'Checks the independent 0.x version, dated release notes, visible menu hook, service-worker cache and separate save-schema contract.' },
