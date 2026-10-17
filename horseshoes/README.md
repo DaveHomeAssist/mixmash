@@ -1,69 +1,51 @@
-# Backyard Horseshoes prototype
+# Backyard Horseshoes — local match prototype
 
-An isolated static build of the Phase 1 physics practice mode from
-`DaveHomeAssist/curling-simulator` commit `d855db8`.
-
-## Player problem
-
-Provide a quick, readable way to aim and throw one physically simulated
-horseshoe without changing or replacing the original curling game.
+Phase 2 of the Three.js / Rapier prototype, built from the readable source in
+DaveHomeAssist/curling-simulator commit `1feaf16dbbd4d44b4795f64cea1cfa7ae5897a61`, merged by source
+[PR2](https://github.com/DaveHomeAssist/curling-simulator/pull/2) as
+`2773cb4a79dea95c8bbd0efd502e31481fc281f4`. Replaces the Phase 1 practice-only
+bundle while retaining practice mode and the PR155 navigation/keyboard fixes.
 
 ## Player flow
 
-Choose aim, strength, arc, and flip or turn delivery; throw; watch the rigid
-body simulation settle; then retry immediately. Close camera and collider
-diagnostics are optional.
+Two local players pitch two consecutive shoes each. All four shoes share the
+physics world and can displace earlier shoes. Final resting geometry decides
+cancellation scoring: ringers 3, closest eligible shoes within six inches 1,
+leaners no extra bonus. Outside-ground contact is latched as a foul even after a
+bounce into the pit. Foul bodies are removed before the next delivery. The
+scoring player leads the next inning; tied innings retain the previous leader.
+Ends reverse each inning. First to 21 after a complete inning wins.
 
-## Smallest release scope
+Score shows the reason for each shoe and the inning history. Counted shoes glow
+in close view. Options contains restart, practice, repeatable presets, fullscreen
+and collider diagnostics. Drag to orbit, wheel/pinch to zoom. Aim and strength
+use sliders; keyboard shortcuts defer to focused controls. Light/dark modes are
+available; light is the first-use default. The page fits desktop and mobile
+viewports; long history/options scroll inside their panels.
 
-The route contains one practice court, one inclined stake, one compound
-collider shoe with an open mouth, desktop and touch controls, fixed 120 Hz
-Rapier stepping, render interpolation, diagnostics, and repeatable presets.
+## Boundaries
 
-## Exclusions
+The route stays unlisted and `noindex, nofollow`. Original Curling and the Mixmash
+homepage are unchanged. No AI, online play, audio, replay or saved matches.
+Only theme preference is stored locally. Rigid-body materials and tilted/stacked
+scoring remain provisional, not tournament adjudication. No wind, stake flex or
+deformable soil. Rapier 0.21.0 and Three.js 0.180.0 are locked in source.
 
-No full innings, scoring, opponent, deformable soil, aerodynamic model, wind,
-stake vibration, online play, magnetic stake behavior, or post-release steering.
+## Build and verification
 
-## Rules, data, and saves
+Source build: `npx vite build --base /horseshoes/`. Copy `dist/horseshoes.html` to
+this directory's `index.html` and its referenced assets only. Do not patch the
+minified bundle; make future changes in the source repository.
 
-This prototype does not adjudicate regulation scoring and stores no player data
-or saved game state.
-
-## Dependencies
-
-The static bundle contains Three.js 0.180.0 and
-`@dimforge/rapier3d-compat` 0.21.0. Source dependency versions are locked in the
-source repository's `package-lock.json`.
-
-## Risks
-
-Physical parameters remain provisional. Browser and device performance can vary,
-and the first load includes the bundled Rapier runtime. Cross-platform bitwise
-determinism is not promised.
-
-## Acceptance
-
-The `/horseshoes/` route loads without console or request errors, launches a
-shoe through mouse, keyboard, and touch input, supports immediate retry, keeps
-the shoe mouth open in collision geometry, and reaches a stable rest state.
-
-## Mixmash integration corrections
-
-The deployed bundle includes a narrow integration patch over the recorded Phase 1
-build: Curling links to its existing GitHub Pages game, Mixmash links to the
-existing homepage, and the global keyboard shortcuts defer to focused native
-controls and modified browser shortcuts. The application asset was fingerprinted
-again so cached clients receive the correction. Physics is unchanged. The mobile
-court height now leaves room for utility controls at 375 × 812 without page
-scrolling. Retry also clears the previous throw’s hit banner immediately.
-The recorded source commit is provenance from PR #154; it was not available from
-the source repository during this verification, so this is an explicit deployment
-patch rather than a claim of a new source build. Preserve these corrections when
-replacing the static bundle from source.
-
-Run `npm run smoke:horseshoes` for the local browser regression. Set
+71 source tests and production build passed on the Linux runner. Browser smoke
+completed 84-throw matches at 1440×900, 375×812 and 667×375, covering mouse,
+emulated touch, keyboard, orbit/zoom, both themes, practice, retry, stable rest,
+scoring, end reversal, match completion and restart. Physical-device/human
+acceptance remains separate. Run `npm run smoke:horseshoes`; set
 `HORSESHOES_BASE_URL=https://mixmash.games/horseshoes/` to exercise publication.
-The smoke covers assets, mouse and emulated touch, native keyboard activation,
-throw/retry, presets, stable rest, and return navigation. Physical device and
-human play acceptance remain separate.
+
+Phase 1 full postmerge CI38989410478 passed at published merge2c417b3.
+Phase 2 release CI and live verification are pending this PR's publication.
+Next: verify the published match, then gather physical-device play feedback.
+Phase 3 AI/audio/replay remains deferred. Source planning and release records:
+`docs/HORSESHOES_PHASE2_BRIEF.md`, `docs/HORSESHOES_RELEASE.md` in the source repo.
