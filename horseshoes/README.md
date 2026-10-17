@@ -1,20 +1,20 @@
 # Backyard Horseshoes — Phase 3 prototype
 
-Built from DaveHomeAssist/curling-simulator commit `b16d2ffe6df47d0416a89f3b67fe951590047455` ([source PR7](https://github.com/DaveHomeAssist/curling-simulator/pull/7)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
+Built from DaveHomeAssist/curling-simulator commit `f9a97adfba4ccb8c1a2ab25357d6a207b37adc8a` ([source PR9](https://github.com/DaveHomeAssist/curling-simulator/pull/9)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
 
 ## Play
 
-Options offers local two-player, solo versus computer, and practice. Each player pitches two shoes; all four share one physical world. Final resting geometry determines cancellation scoring: ringers 3, closest eligible shoes within six inches 1, no leaner bonus. Fouls remain invalid after a bounce into the pit. Scoring player leads the next inning; ends reverse. First to at least 21 after a complete inning wins.
+The arrival menu offers local two-player, solo versus computer, and practice. Each player pitches two shoes; all four share one physical world. Final resting geometry determines cancellation scoring: ringers 3, closest eligible shoes within six inches 1, no leaner bonus. Fouls remain invalid after a bounce into the pit. Scoring player leads the next inning; ends reverse. First to at least 21 after a complete inning wins.
 
-Solo gives Player 2 to a computer. Easy searches 6 candidates and Normal 12 in cloned Rapier worlds with identical materials, launch resolution, existing shoes and scoring. Search runs in a worker; it does not steer after release. Advance innings manually to inspect the score. Restart or changing mode/difficulty cancels pending search.
+Solo gives Player 2 to a computer. Easy searches 6 candidates and Normal 12 in cloned Rapier worlds with identical materials, launch resolution, existing shoes and scoring. Search runs in a worker; it does not steer after release. Advance innings manually to inspect the score. Opening Menu pauses physics, AI and replay. Mode/difficulty choices apply only after Start new game; Resume preserves the current match. Starting a new game cancels pending search.
 
-Sound starts off. Enable it in Options and adjust volume. Stake, shoe and ground contacts have distinct procedural sounds, aggregated across compound colliders with resting-contact suppression. Replay is silent. Sound is optional when unavailable.
+Sound starts off. Enable it in Menu and adjust volume. Stake, shoe and ground contacts have distinct procedural sounds, aggregated across compound colliders with resting-contact suppression. Replay is silent. Sound is optional when unavailable.
 
 After a settled throw, replay the last or best throw in the current match/practice run. Pause, scrub and exit from Controls. Replay displays recorded transforms, including displaced shoes; it never changes the live score or world. Restart clears recordings.
 
-Controls, Score and Options use neutral tab navigation above the deck. Throw is the primary colored action, avoiding confusion with the former Play tab.
+Controls and Score use neutral tab navigation above the deck. Aim/arc are blue, delivery violet and strength warm; Throw has its own orange accent. The separate Menu button opens grouped game, sound, display and help settings with keyboard focus containment and Escape to resume.
 
-Drag to orbit and wheel/pinch to zoom. Keyboard shortcuts defer to focused controls. Light/dark modes remain available, light by default. The page stays within the viewport; history/options scroll inside bounded panels. Ultrawide screens place controls beside the court.
+Drag to orbit and wheel/pinch to zoom. Keyboard shortcuts defer to focused controls. Light/dark modes remain available, light by default. The page stays within the viewport; history/menu content scroll inside bounded panels. Ultrawide screens place controls beside the court.
 
 ## Preservation and limits
 
@@ -22,8 +22,14 @@ The route stays unlisted with `noindex, nofollow`. Original Curling and Mixmash 
 
 ## Build and verification
 
-Run `npx vite build --base /horseshoes/` in source. Copy `dist/horseshoes.html` to `horseshoes/index.html` plus its referenced JS/CSS, shared Three.js chunk and AI worker chunk. Never patch generated bundles directly.
+Run `npx vite build --base /horseshoes/` in source. Copy `dist/horseshoes.html` to `horseshoes/index.html` plus its referenced JS/CSS, shared Three.js chunk, AI worker chunk and FMP venue JSON. Never patch generated bundles directly.
 
 78 source tests/build passed on the Linux runner. Browser checks completed local matches (84 throws per viewport) and solo matches (24 throws/six innings, both difficulties), plus audio output/mute, replay preservation, stale AI cancellation, native keys, emulated touch and return links. Maximum observed candidate search was about 0.8 seconds on that runner; device performance varies. No human acceptance is implied.
 
-Run `npm run smoke:horseshoes` for both local and solo regression suites. Set `HORSESHOES_BASE_URL=https://mixmash.games/horseshoes/` to test publication. Exact CI/merge/deployment/live evidence belongs to the pull request and source release record. Next: physical-device play feedback and confirmed corrections only.
+Run `npm run smoke:horseshoes` for local, solo and menu regression suites. Set `HORSESHOES_BASE_URL=https://mixmash.games/horseshoes/` to test publication. Exact CI/merge/deployment/live evidence belongs to the pull request and source release record. Next: physical-device play feedback and confirmed corrections only.
+
+## FMP setting
+
+The decorative lawn, pavilion and seating are reused from DaveHomeAssist/system-by-dave’s FMP camera simulator at revision `18a1a4e165f326aa8f7a0ae9505b29b67db575ac`, with Dave Robertson’s explicit authorization. Copyright (c) 2026 Dave Robertson. All rights reserved. Geometry/materials only; no operational camera records or network data. The level game patch is an adaptation of an approximate venue model, not a surveyed court. Source provenance and reproducible export instructions live in `src/horseshoes/assets/README.md` in curling-simulator.
+
+Menu pause/focus, explicit new-game choices, both themes and distinct control colors passed at desktop, phone, short landscape and ultrawide sizes on Dominic. Venue likeness and physical-device acceptance remain human follow-ups; exact candidate CI and published checks remain release gates.

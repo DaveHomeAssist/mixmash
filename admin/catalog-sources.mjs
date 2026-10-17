@@ -245,7 +245,7 @@ const vercelFn = (route, what) => ({ description: `Vercel function for ${route}:
 // library. A file's own entry in FILE_NOTES wins over a pattern.
 export const PATTERN_NOTES = [
   {
-    match: /^horseshoes\/assets\/(.+)\.(js|css)$/,
+    match: /^horseshoes\/assets\/(.+)\.(js|css|json)$/,
     note: ([, name, type]) => ({
       title: `Horseshoes production ${type.toUpperCase()}`,
       description: `Generated ${type.toUpperCase()} bundle for the Backyard Horseshoes prototype (${name}); source and locked dependencies live in DaveHomeAssist/curling-simulator.`,
