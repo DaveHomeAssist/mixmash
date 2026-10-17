@@ -1,8 +1,9 @@
 // Source-authored Lot samples. The dimensional reference is provisional, not field calibration.
 import * as T from './vendor/three/three.module.min.js';
+import { addPaRig } from './pa-models.mjs';
 import { OBJECT_TYPES } from './data.mjs';
 
-export const MODEL_REVISION = 'lot-sample-16';
+export const MODEL_REVISION = 'lot-sample-17';
 export const FESTIVAL_SCENE = Object.freeze({ width: 52, depth: 24, annex: Object.freeze({ x: 40, y: 0, w: 12, h: 16 }), stage: Object.freeze({ x: 43, y: 1, w: 6, h: 3 }) });
 export const AUTHORING_REFERENCE = Object.freeze({
   metresPerTile: 2, status: 'provisional authoring convention; physical calibration pending',
@@ -62,7 +63,17 @@ export function createLotModels() {
     geometry.userData.contours = rings;
     return geometry;
   }
+  // Rounded cabinet cross-section, matching the equipment explorer's extrusion approach.
+  const outline = new T.Shape();
+  const r = 0.06;
+  outline.moveTo(-.5+r,-.5); outline.lineTo(.5-r,-.5); outline.quadraticCurveTo(.5,-.5,.5,-.5+r);
+  outline.lineTo(.5,.5-r); outline.quadraticCurveTo(.5,.5,.5-r,.5);
+  outline.lineTo(-.5+r,.5); outline.quadraticCurveTo(-.5,.5,-.5,.5-r);
+  outline.lineTo(-.5,-.5+r); outline.quadraticCurveTo(-.5,-.5,-.5+r,-.5);
+  const cabinet = new T.ExtrudeGeometry(outline, { depth: 1, bevelEnabled: false, curveSegments: 2 });
+  cabinet.rotateX(Math.PI / 2); cabinet.translate(0, .5, 0);
   const shape = {
+    rounded: cabinet,
     box: new T.BoxGeometry(1, 1, 1), sphere: new T.SphereGeometry(1, 16, 12),
     cylinder: new T.CylinderGeometry(0.5, 0.5, 1, 12),
     // The collar rises inside the neck; outer shoulders slope into the sleeve caps.
@@ -163,18 +174,7 @@ export function createLotModels() {
       for (let x = -w / 2 + 0.15; x <= w / 2 - 0.1; x += 1.9) b([0.035, 0.52, 0.035], [x, 0.81, -h / 2 + 0.08], COLORS.aluminium, 0.7, 'cylinder');
       b([w - 0.2, 0.035, 0.035], [0, 1.06, -h / 2 + 0.08], COLORS.aluminium, 0.7);
     } else if (object.type.startsWith('pa-')) {
-      const medium = object.type === 'pa-m';
-      b([0.6, 0.45, 0.52], [0, 0.225, 0], 0x171b20);
-      b([0.54, 0.38, 0.015], [0, 0.225, 0.27], 0x39424a, 0.3);
-      const boxes = medium ? 4 : 1;
-      for (let i = 0; i < boxes; i++) {
-        const y = 0.48 + i * 0.205;
-        b([0.45, 0.19, 0.35], [0, y + 0.095, 0], 0x171b20);
-        b([0.4, 0.16, 0.012], [0, y + 0.095, 0.181], 0x39424a, 0.25);
-        for (let row = 0; row < 5; row++) b([0.38, 0.006, 0.006], [0, y + 0.035 + row * 0.027, 0.191], 0x101419);
-        b([0.012, 0.1, 0.1], [0.232, y + 0.1, 0], COLORS.aluminium, 0.6);
-      }
-      b([0.11, 0.09, 0.02], [0, 0.22, -0.27], COLORS.aluminium, 0.6);
+      addPaRig(g, part, object.type, AUTHORING_REFERENCE.metresPerTile);
     } else if (object.type === 'delay') {
       // One logical tower, including its support and speakers, stays inside one cell.
       b([0.9, 0.12, 0.9], [0, 0.06, 0], COLORS.steel, 0.3);

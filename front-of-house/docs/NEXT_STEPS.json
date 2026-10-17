@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.1 menu artwork delivered; PR145 cover/layout preserved",
-  "lastActivity": "2026-10-13",
+  "head": "0.3.4 PA equipment models and cards in verification",
+  "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "PR144 e37dbb9 passes CI38327150693 general and measured paired regression. Merged50d495c after PR145 d9110ed and the independently delivered0.3.0 amenities base. Pages38350747856 published the exact merge. Duncan verifies12 hosted files, correct catalog cover at three sizes, offline cachev79 reload with exact state and eight hosted Chromium/WebKit held-run journeys including375px classic/3D. Menu artwork introduces no engine, balance or save changes relative to the0.3.0 base. Optional manual performance calibration was not requested; required baseline/candidate audit passed. Private Next Steps Board unavailable. Broader physical/human/provenance gates remain open.",
+  "statusReason": "PA visual adapter and matching equipment cards implemented against 772e2af. Dominic passed 16 targeted unit tests, seven Chromium/WebKit equipment journeys and eight light/dark viewport screenshot cases. Rules and save source unchanged. CI, merge and deployment pending. Private Next Steps Board unavailable; broader human and physical acceptance remain separate.",
   "activity30d": {
-    "headline": "Menu artwork0.3.1 and detail repair delivered; existing broader acceptance gates remain open."
+    "headline": "PA equipment visual slice implemented; release verification in progress."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",

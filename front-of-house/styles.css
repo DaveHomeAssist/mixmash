@@ -988,3 +988,22 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.03em; color: var(--amber); white-space: nowrap; vertical-align: middle;
 }
 .tile.ring:not(:has(input:checked)) { box-shadow: inset 0 0 0 2px var(--amber); }
+
+/* Equipment cards use the runtime PA model renders, with no independent scene or animation. */
+.pa-equipment-card { display: grid; grid-template-columns: minmax(100px, 42%) minmax(0, 1fr); align-items: center; gap: 16px; margin: 0 0 12px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel-alt); }
+.pa-equipment-card img { display: block; width: 100%; height: 132px; object-fit: contain; background: #d5d8d1; border-radius: 6px; }
+.pa-equipment-card figcaption { display: grid; gap: 5px; min-width: 0; overflow-wrap: anywhere; }
+.pa-equipment-card h3 { margin: 0; color: var(--text); font-size: 1.35rem; line-height: 1.15; }
+.pa-card-eyebrow { font: 0.65rem var(--font-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+.pa-equipment-card small { color: var(--text-muted); font-size: .72rem; }
+@media (max-width: 600px), (max-height: 700px) {
+  .pa-equipment-card { padding: 8px; gap: 10px; margin-bottom: 8px; }
+  .pa-equipment-card img { height: 88px; }
+  .pa-equipment-card h3 { margin: 0; color: var(--text); font-size: 1.1rem; }
+  .pa-equipment-card figcaption { font-size: .8rem; gap: 3px; }
+}
+@media (max-height: 400px) {
+  .pa-equipment-card img { height: 56px; }
+  .pa-equipment-card { margin: 0; padding: 4px; }
+  .pa-equipment-card small, .pa-card-eyebrow { display: none; }
+}
