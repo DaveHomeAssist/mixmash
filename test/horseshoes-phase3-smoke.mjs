@@ -20,8 +20,15 @@ fs.mkdirSync(output, { recursive: true });
       page.on('response', (r) => { if (r.status() >= 400) errors.push(`${r.status()} ${r.url()}`); });
       await page.goto(url, { waitUntil: 'networkidle' });
       await page.waitForFunction(() => window.__horseshoes);
+      await page.locator('#menu-resume').click();
       const state = () => page.evaluate(() => __horseshoes.getState());
-      const press = (id) => touch ? page.locator(id).tap() : page.locator(id).click();
+      const press = async (selector) => {
+        const open = await page.locator('#game-menu').evaluate(d => d.open);
+        if (selector === '#settings-tab' && open) return;
+        if (open && !await page.locator(selector).evaluate(e => !!e.closest('#game-menu'))) await page.locator('#menu-resume').click();
+        if (selector.startsWith('[data-preset')) await page.locator('.menu-help').evaluate(e => e.open = true);
+        await (touch ? page.locator(selector).tap() : page.locator(selector).click());
+      };
       const range = async (id, value) => { await page.locator(id).fill(String(value)); await page.locator(id).dispatchEvent('input'); };
       const advance = (ms = 13000) => page.evaluate((ms) => advanceTime(ms), ms);
       for (const panel of ['play','settings','score']) {
@@ -54,10 +61,10 @@ fs.mkdirSync(output, { recursive: true });
       await press('#replay-best'); await advance(14000); assert.equal((await state()).replay.paused, true); await press('#replay-exit');
       await press('#settings-tab'); await press('#sound-button'); await page.waitForTimeout(500);
       assert.equal((await state()).audio.enabled, false); assert.ok((await state()).audio.energy < 0.0001);
-      await page.locator('#mode').selectOption('solo');
+      await page.locator('#mode').selectOption('solo'); await page.locator('#restart-button').click();
       await range('#strength', 0); // Range remains in hidden play panel; next actions use visible controls.
       const difficulty = width === 375 ? 'easy' : 'normal';
-      await press('#settings-tab'); await page.locator('#difficulty').selectOption(difficulty);
+      await press('#settings-tab'); await page.locator('#difficulty').selectOption(difficulty); await page.locator('#restart-button').click();
       await page.evaluate(() => { window.__testFrames = 0; const tick = () => { window.__testFrames++; requestAnimationFrame(tick); }; requestAnimationFrame(tick); });
       let attempts = 0, searches = [], throws = 0;
       while ((await state()).match.phase !== 'complete' && attempts++ < 180) {
@@ -93,9 +100,9 @@ fs.mkdirSync(output, { recursive: true });
     await limited.addInitScript(() => { window.AudioContext = undefined; window.webkitAudioContext = undefined; });
     const p = await limited.newPage();
     await p.goto(url); await p.waitForFunction(() => window.__horseshoes);
-    await p.locator('#settings-tab').click(); await p.locator('#sound-button').click();
+     await p.locator('#sound-button').click();
     assert.equal(await p.evaluate(() => __horseshoes.getState().audio.unavailable), true);
-    await p.locator('#play-tab').click(); await p.locator('#throw-button').click();
+    await p.locator('#menu-resume').click(); await p.locator('#throw-button').click();
     await p.evaluate(() => advanceTime(13000));
     assert.equal(await p.evaluate(() => __horseshoes.getState().match.delivered), 1);
     await limited.close();
