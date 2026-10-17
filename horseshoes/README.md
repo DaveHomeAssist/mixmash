@@ -1,6 +1,6 @@
 # Backyard Horseshoes — Phase 3 prototype
 
-Built from DaveHomeAssist/curling-simulator commit `7c28a798c402a990997947314e474d2bf4c963c7` ([source PR11](https://github.com/DaveHomeAssist/curling-simulator/pull/11)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
+Built from DaveHomeAssist/curling-simulator commit `03cdf57d0d92bac08c39e67b6f20f32352bf06d5` ([source PR13](https://github.com/DaveHomeAssist/curling-simulator/pull/13)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
 
 ## Play
 
@@ -33,3 +33,9 @@ Run `npm run smoke:horseshoes` for local, solo and menu regression suites. Set `
 The decorative lawn, pavilion and seating are reused from DaveHomeAssist/system-by-dave’s FMP camera simulator at revision `18a1a4e165f326aa8f7a0ae9505b29b67db575ac`, with Dave Robertson’s explicit authorization. Copyright (c) 2026 Dave Robertson. All rights reserved. Geometry/materials only; no operational camera records or network data. The level game patch is an adaptation of an approximate venue model, not a surveyed court. Source provenance and reproducible export instructions live in `src/horseshoes/assets/README.md` in curling-simulator.
 
 Menu pause/focus, explicit new-game choices, both themes and distinct control colors passed at desktop, phone, short landscape and ultrawide sizes on Dominic. Venue likeness and physical-device acceptance remain human follow-ups; exact candidate CI and published checks remain release gates.
+
+## Pavilion broadcast
+
+Four schematic lawn delay monitors show a silent instant replay of each settled throw, while the next throw remains available. The feed holds its final frame; menu/hidden page pause it, and a new game clears it. The intro is a six-second camera pass with Skip, Escape, pointer or throw cancellation; reduced motion skips it. Menu offers Tour venue and View delay screens. Throwing from the optional screen view returns to the court.
+
+The Horseshoes adapter consumes the existing pinned FMP geometry under ECP-1.0; D1–D4 lawn delay anchor names and source demo dimensions remain unchanged. It adds only a simulated screen feed, with no hardware connection or producer changes. Source brief: docs/HORSESHOES_BROADCAST_BRIEF.md. Release verification pending; source release record owns next steps.
