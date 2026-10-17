@@ -50,9 +50,6 @@ async function run({ three, width, height, phone }) {
   // The corner HUD rule (docs/HUD.md section 11): the plates cover at most 2% of the lot at the fit.
   async function hudCover(label) {
     if (phone || three) return;
-    // The booking confirmation in the message line predates this feature and is measured by the
-    // main smoke rail; clear it so this check measures only what the suggestions add.
-    await page.evaluate(() => { const msg = document.querySelector('#msg'); if (msg) msg.textContent = ''; });
     const cover = await page.evaluate(([W, H]) => {
       const poly = [[0, 0], [W, 0], [W, H], [0, H]].map(([x, y]) => window.__frontOfHouse.boardClientOf(x, y)).map((p) => [p.x, p.y]);
       const inPoly = (x, y) => poly.reduce((inside, [xi, yi], i) => {
@@ -185,6 +182,15 @@ async function run({ three, width, height, phone }) {
   await press(rebook ? '[data-act="deal"][data-artist="sodium-arcade"][data-deal="guarantee"]' : '[data-act="deal"][data-deal="guarantee"]');
   const build = await game();
   assert.equal(build.phase, 'build');
+
+  // FOH-QA-015: the booking confirmation is a board toast, so Build fits right after booking, and
+  // 'nothing is paid' stays on Back.
+  assert.match(await page.textContent('#board-status'), /^Booked Sodium Arcade on a \$\d+ guarantee\. Nothing is paid until the doors open; Back returns to booking\.$/, `${tag}: the booking toast confirms the act and deal`);
+  assert.equal((await page.textContent('#msg')).trim(), '', `${tag}: the card plate holds no booking line`);
+  assert.match(await page.getAttribute('[data-act="back"]', 'aria-label'), /Nothing is paid until you open the doors/, `${tag}: Back says nothing is paid yet`);
+  await hudCover('Build right after booking');
+  await noScroll('Build right after booking');
+  ok(`${tag}: Build fits right after booking`);
 
   // Build entry: last night's weakest part, with a tool press that places nothing.
   const weakest = (await suggestions()).build.weakest;

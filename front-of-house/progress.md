@@ -1,5 +1,9 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
+## 2026-10-17: Booking confirmation as a toast (0.3.3)
+
+Fixes FOH-QA-015. The booking confirmation is now a board toast that fades, instead of a line in Build's card plate. At 1024 × 700, Build covers 0.4% of the lot right after booking, down from 4.3%. Adding a persistent 'nothing is paid' line to the Actions plate measured 2.6% in the main smoke's Build state, so that text sits on Back's label and in Promote's lede beside Open doors instead. The suggestions smoke now asserts at most 2% right after a booking press, and no longer clears the message line before measuring.
+
 ## 2026-10-17: Anticipatory suggestions (0.3.2)
 
 Dave asked for anticipatory UX: predict intent, pre-fill common inputs, highlight likely selections and keep preferences in local storage, all without a backend. He approved the spec ([ANTICIPATORY_UX.md](docs/ANTICIPATORY_UX.md)) and its build order. `prefs.mjs` adds one versioned device key, `front_of_house_prefs`, outside the save: validated on read, at most 2 KB, cleared from the menu, and absorbing the renderer and theme keys. `anticipate.mjs` holds pure readers that dry-run engine actions on the current state and discard the result.

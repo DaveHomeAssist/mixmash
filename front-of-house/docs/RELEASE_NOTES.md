@@ -5,6 +5,10 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.3 — 2026-10-17
+
+- Fixes FOH-QA-015. The booking confirmation is now a toast over the board that fades, instead of a line in Build's card. At 1024 × 700 the HUD again covers no more than 2% of the lot right after booking. "Nothing is paid until you open the doors" stays on Build's Back button and in Promote beside **Open doors**. Uses cache v82.
+
 ## 0.3.2 — 2026-10-17
 
 - Adds anticipatory suggestions that never act for the player. Build outlines the tiles where a gate, exit or PA can go (in 2D and 3D), offers **Pick Exit** when exits cap capacity, names last night's weakest part and rings the tools that help. Book marks the deal used last time and warns about a short guarantee. Promote offers **Same as last time** for price and ads, applied only on a press. Show marks the last response to the same incident, and Done previews the next offers.
