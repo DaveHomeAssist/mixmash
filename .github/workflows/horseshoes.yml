@@ -4,6 +4,7 @@ on:
     paths:
       - 'horseshoes/**'
       - 'test/horseshoes-smoke.mjs'
+      - 'test/horseshoes-phase3-smoke.mjs'
       - 'test/static-server.mjs'
       - 'package*.json'
       - '.github/workflows/horseshoes.yml'
@@ -12,13 +13,14 @@ on:
     paths:
       - 'horseshoes/**'
       - 'test/horseshoes-smoke.mjs'
+      - 'test/horseshoes-phase3-smoke.mjs'
       - 'test/static-server.mjs'
       - 'package*.json'
       - '.github/workflows/horseshoes.yml'
 jobs:
   horseshoes:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

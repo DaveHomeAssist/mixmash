@@ -316,10 +316,10 @@
     {
       "id": "horseshoes",
       "name": "Backyard Horseshoes",
-      "kind": "Physics practice prototype",
+      "kind": "Solo and local match prototype",
       "lifecycle": "Unlisted prototype",
       "route": "/horseshoes/",
-      "summary": "A single-shoe Three.js and Rapier practice prototype with an open compound collider, fixed 120 Hz physics, mouse, keyboard and touch throws, two cameras, diagnostics and repeatable launch presets. It is an isolated static build from the curling-simulator repository.",
+      "summary": "A Three.js and Rapier horseshoes prototype with local two-player matches, simulation-backed solo AI, procedural impact audio, transform replay and practice. It is an unlisted isolated static build from the curling-simulator repository.",
       "pinned": [
         "horseshoes/README.md",
         "horseshoes/index.html"
@@ -346,7 +346,7 @@
       "commands": [
         {
           "name": "npm run smoke:horseshoes",
-          "description": "Desktop and emulated touch practice flow, native keyboard controls, stable physics, viewport fit and return links."
+          "description": "Local and solo matches, audio output/mute, replay state preservation, AI cancellation, keyboard, emulated touch, stable physics and return links."
         }
       ]
     },
@@ -3595,8 +3595,8 @@
       "project": "horseshoes",
       "category": "surface",
       "kind": "HTML",
-      "title": "Backyard Horseshoes — Local Match",
-      "description": "A provisional local two-player horseshoes game and practice court.",
+      "title": "Backyard Horseshoes — Solo and Local Match",
+      "description": "A provisional horseshoes game with solo AI, local matches, impact audio, replay and practice.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/index.html",
       "open": "/horseshoes/"
     },
@@ -3605,8 +3605,8 @@
       "project": "horseshoes",
       "category": "docs",
       "kind": "MD",
-      "title": "Backyard Horseshoes — local match prototype",
-      "description": "Phase 2 of the Three.js / Rapier prototype, built from the readable source in DaveHomeAssist/curling-simulator commit 1feaf16dbbd4d44b4795f64cea1cfa7ae5897a61, merged by source PR2 as…",
+      "title": "Backyard Horseshoes — Phase 3 prototype",
+      "description": "Built from DaveHomeAssist/curling-simulator commit 28330bbda511300f72c13db4bc2ec0b931e7e661 (source PR6).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -3621,6 +3621,16 @@
       "open": null
     },
     {
+      "path": "test/horseshoes-phase3-smoke.mjs",
+      "project": "horseshoes",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "horseshoes-phase3-smoke.mjs",
+      "description": "Production smoke for solo AI, replay isolation, audio and responsive controls.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-phase3-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/horseshoes-smoke.mjs",
       "project": "horseshoes",
       "category": "tests",
@@ -3631,23 +3641,33 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-C5KUXT_c.js",
+      "path": "horseshoes/assets/ai.worker-BamGaX81.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-C5KUXT_c); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-C5KUXT_c.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (ai.worker-BamGaX81); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/ai.worker-BamGaX81.js",
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-COnBwzaV.css",
+      "path": "horseshoes/assets/horseshoes-BfMR5BHe.css",
       "project": "horseshoes",
       "category": "build",
       "kind": "CSS",
       "title": "Horseshoes production CSS",
-      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-COnBwzaV); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-COnBwzaV.css",
+      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BfMR5BHe); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BfMR5BHe.css",
+      "open": null
+    },
+    {
+      "path": "horseshoes/assets/horseshoes-ccr9x5yI.js",
+      "project": "horseshoes",
+      "category": "build",
+      "kind": "JS",
+      "title": "Horseshoes production JS",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-ccr9x5yI); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-ccr9x5yI.js",
       "open": null
     },
     {

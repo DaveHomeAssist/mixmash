@@ -96,10 +96,10 @@ export const PROJECTS = [
   {
     id: 'horseshoes',
     name: 'Backyard Horseshoes',
-    kind: 'Physics practice prototype',
+    kind: 'Solo and local match prototype',
     lifecycle: 'Unlisted prototype',
     route: '/horseshoes/',
-    summary: 'A single-shoe Three.js and Rapier practice prototype with an open compound collider, fixed 120 Hz physics, mouse, keyboard and touch throws, two cameras, diagnostics and repeatable launch presets. It is an isolated static build from the curling-simulator repository.',
+    summary: 'A Three.js and Rapier horseshoes prototype with local two-player matches, simulation-backed solo AI, procedural impact audio, transform replay and practice. It is an unlisted isolated static build from the curling-simulator repository.',
     pinned: ['horseshoes/README.md', 'horseshoes/index.html'],
     statusSources: ['horseshoes/README.md'],
     references: [
@@ -209,7 +209,7 @@ export const PROJECTS = [
 // npm scripts: which project each belongs to and what it does. A script that
 // is missing here still appears under Studio, described by its command.
 export const COMMAND_NOTES = {
-  'smoke:horseshoes': { project: 'horseshoes', description: 'Desktop and emulated touch practice flow, native keyboard controls, stable physics, viewport fit and return links.' },
+  'smoke:horseshoes': { project: 'horseshoes', description: 'Local and solo matches, audio output/mute, replay state preservation, AI cancellation, keyboard, emulated touch, stable physics and return links.' },
   test: { project: 'studio', description: 'Every unit test in the repo with Node\'s built-in runner, including this index\'s coverage check.' },
   'vercel-build': { project: 'studio', description: 'Syntax-check the API, MarsScape server, Front of House client and admin scripts (what Vercel\'s build runs).' },
   'smoke:catalog': { project: 'studio', description: 'Playwright rail for /pitch/, /mars/, the /empires/ shell, the hub and the shared nav.' },
