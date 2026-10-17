@@ -44,3 +44,7 @@ User request: Implement the PA rig and equipment menu cards using equipment mode
 - Full runner suite: 471 passed; one admin test-file failure was Docker Git ownership, with all six admin tests passing on rerun as the checkout owner. Build and manifest passed. Warmed-cache offline reload preserves exact owned/assigned save and loads 3D/cards. Short landscape PA inspection now compacts; optional illustration yields below 300px height. PR168 opened; release checks pending.
 
 - CI19dc1f9 found a Lot picking probe using the former PA artwork height. Added a non-rendering rig envelope so the central gap remains selectable, and derived the roof probe from measured asset bounds. Dedicated raycast unit and Lot backend smoke now pass; complete 3D/venue checks and refreshed CI follow. No engine or save changes.
+
+## 2026-10-17 PA equipment release closure
+
+PR168 final4945433 passed required CI39057828540 and merged8b5ae09. Pages built the merge at18:59:06Z. Thirteen hosted files match; Dominic passed eight live light/dark card cases with unchanged state/reload and inspection sizes down320x256. PA models/cards are presentation-only; rules and saves unchanged. Concurrent PR169 ECP guidance preserved and reconciled. Private board unavailable; human/device/calibration acceptance remains open.

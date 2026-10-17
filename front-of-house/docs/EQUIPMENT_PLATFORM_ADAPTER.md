@@ -18,25 +18,31 @@ a physical venue measurement. Preserve current cameras, classic fallback, asset
 ownership/disposal and save compatibility. Selection and visual inspection are
 inert; imported geometry cannot change PA coverage or economy by implication.
 
-## Proposed reuse proof
+## Released PA visual adapter
 
-One ZLX visual test prop with a detailed-reference link is the next bounded
-candidate, not an implemented asset or approved gameplay change. It must not
-silently replace the game's aggregate PA rental. Start from the existing
-[feature brief and decision workflow](FEATURE_BRIEFS.md), pin source equipment
-and representation revisions, and define the ID/selection adapter explicitly.
-No common engine or migration is required.
+PR #168 implements the user-approved PA rig and equipment-card slice in 0.3.4
+(cache v83). It adapts ZLX-15BT tops and EKX-15SP subs from producer revision
+`ca438504fe5e09879d106e668529bd21b3d992f0`, representation revision 0.1.0.
+`pa-models.mjs` supplies lightweight exterior geometry; the menu previews render
+that same geometry. Small and medium PA keep their existing aggregate game IDs,
+1x1 logical footprints, prices, power, coverage and ownership rules. Save schema
+2 and engine/economy/save implementation remain unchanged.
 
-## Next proof
+The manifest records source hashes, dimensions, axes, pivot and component IDs.
+An invisible picking envelope spans the rig's central gap without casting a
+shadow or changing its logical footprint. Models are approximate reconstructions
+at the existing provisional game scale, not physically calibrated inventory.
 
-Before sharing an asset, verify rights, hashes, axes, scale, pivots, bounds,
-stable component mappings, picking and repeated-instance cost for this consumer.
-Exercise valid, invalid and unknown references; preserve save/export/reload IDs,
-inert selection and existing fallback. Use the normal release checks for any
-runtime change. Keep source checks, CI, deployment, actual gameplay, physical
-calibration and human visual acceptance separate.
+## Verification and remaining acceptance
 
-At handoff record ECP revision, producer/consumer revisions, changed interfaces
-and gaps. Instruction discovery is not an independent agent-loading receipt;
-runtime reuse and physical acceptance remain pending. Other MixMash games keep
-their own behavior and need an explicit adapter before equipment integration.
+Final source `494543314955a5f5f658364f244fca29526f1eab` passed required CI
+39057828540, including paired renderer regression. PR #168 merged as
+`8b5ae096bf1e35d16908e9de8331c1a9f39fbdf4`; Pages published that merge.
+Dominic verified source bounds/IDs/picking, classic/3D settlement and reload,
+seven equipment journeys, responsive cards and warmed-cache offline continuity.
+The deployed runtime and imagery match source. No common engine or migration was
+introduced. Keep source, CI, deployment, gameplay and human acceptance distinct.
+
+Physical calibration, physical-device testing and human visual acceptance remain
+open. Other MixMash games retain their own behavior and require an explicit
+adapter before equipment integration.

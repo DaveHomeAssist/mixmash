@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.4 PA equipment models and cards in verification",
+  "head": "0.3.4 PA equipment models and cards released",
   "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "PA visual adapter and matching equipment cards implemented against 772e2af. Dominic passed the game/unit suite (471 tests plus the six admin checks rerun after correcting disposable-container ownership), build, manifest, seven Chromium/WebKit equipment journeys, responsive light/dark cards and exact owned/assigned save continuity after a warmed-cache offline reload. Short landscape inspection layout corrected. Rules and save source unchanged. PR168 CI, merge and deployment pending. Private Next Steps Board unavailable; broader human and physical acceptance remain separate.",
+  "statusReason": "PR168 source4945433 passed required CI39057828540 and merged8b5ae09. Pages published the merge; 13 hosted runtime files match. Dominic passed all eight live light/dark card viewport cases, exact inspection/reload state and four inspection sizes down320x256. Existing equipment, Lot/3D, Club, Shell and Festival settlement/save checks and warmed-cache offline proof passed. Rules and saves unchanged. Private Next Steps Board unavailable; human/device/physical acceptance remains separate.",
   "activity30d": {
-    "headline": "PA equipment visual slice implemented; release verification in progress."
+    "headline": "PA model visuals and equipment cards released and verified live."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -43,15 +43,16 @@
     "PR138 head48d2a6d passed general CI37605094884 and paired regression attempt2, then merged3fbe3bb. Pages37611711384 and postmergeCI37611712008 pass; seven release files match live, Dominic verifies v0.1.1 and classic/3D Build-to-Show grid behavior at desktop/phone sizes, and annotated tag front-of-house-v0.1.1 resolves to the deployed merge.",
     "PR141 QA integrity head5ca2def passed CI37910081639 attempt2 and merged d483314 with the exact tested tree. Cumulative numbering remains consistent beyond200 retained shows; record IDs/accounting/save schema and retention semantics are preserved. Earlier test harness failures and paired attempt1 rejection remain recorded. Pages/postmerge/hosted QA delivery checks remain pending; Advisory release is separate.",
     "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized.",
-    "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes."
+    "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes.",
+    "PR168: 0.3.4 PA rigs and matching equipment cards, source4945433, merged8b5ae09, required CI39057828540 passed; Pages and13 hosted byte matches plus eight live responsive/save checks passed."
   ],
   "nextStep": {
-    "title": "Complete PA equipment visual release, then resume human acceptance",
-    "why": "PA models and cards passed runner verification; CI, merge and hosted proof remain separate gates.",
-    "doneWhen": "PR168 passes required CI, merges, deploys and matches hosted PA/card screenshots and save checks.",
+    "title": "Review PA visuals in actual play, then scope the next equipment slice",
+    "why": "The authorized PA/card slice is deployed; further equipment behavior remains outside this visual change.",
+    "doneWhen": "Human visual acceptance is recorded and any next slice has a scoped brief preserving game and save boundaries.",
     "effort": "S",
-    "owner": "Current Front of House executor",
-    "blockedBy": "Required CI in progress."
+    "owner": "Front of House product owner",
+    "blockedBy": "No blocker for the delivered PA slice; broader human acceptance remains open."
   },
   "findings": [
     {
@@ -401,8 +402,8 @@
       "sourceRevision": "772e2afa49747c6e32fa976e9ad8211bad10d608 instruction baseline; contract SHA256 42ffeaccc711e81b150f7149d358c228b2262a5e730000a3d66dc6cd0c82877e",
       "scope": "Instruction-only adoption; gameplay, assets, saves and other evidence unchanged",
       "adapter": "front-of-house/docs/EQUIPMENT_PLATFORM_ADAPTER.md",
-      "next": "Scope one ZLX visual test prop/reference adapter through the existing brief workflow; preserve aggregate PA rules",
-      "remaining": "Independent consumer instruction loading, runtime asset integration and acceptance remain pending"
+      "next": "PA adapter released under current explicit user scope; review human acceptance before another equipment slice.",
+      "remaining": "Original instruction adoption remains recorded; runtime integration is superseded by paEquipment evidence. Physical and human acceptance remain pending."
     },
     "clubLighting": {
       "baseRevision": "12a501afddb219b2c7a00b1a4ae224f09a4e001d",
@@ -1257,6 +1258,23 @@
       "regression": "front-of-house/test-qa-integrity.mjs fails 7/7 on 0.1.1 and passes 7/7 on 0.1.2",
       "unchanged": "BALANCE_BASELINE, TIER_BASELINE and CAREER_BASELINE byte-identical; save schema 2",
       "open": "Human playtest, real Safari and physical devices, real browser zoom, screen readers, 3D camera campaign"
+    },
+    "paEquipment": {
+      "source": "494543314955a5f5f658364f244fca29526f1eab",
+      "merge": "8b5ae096bf1e35d16908e9de8331c1a9f39fbdf4",
+      "pullRequest": "https://github.com/DaveHomeAssist/mixmash/pull/168",
+      "ci": "https://github.com/DaveHomeAssist/mixmash/actions/runs/39057828540",
+      "pagesBuiltAt": "2026-10-17T18:59:06Z",
+      "hostedFiles": 13,
+      "liveCases": 8,
+      "runner": "Dominic, bounded Playwright container",
+      "saveSchema": 2,
+      "rulesChanged": false,
+      "remaining": [
+        "Human visual acceptance",
+        "Physical device and calibration acceptance",
+        "Private Next Steps Board unavailable"
+      ]
     }
   },
   "decisionState": {
