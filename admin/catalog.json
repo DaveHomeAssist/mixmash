@@ -343,7 +343,12 @@
           "kind": "repository"
         }
       ],
-      "commands": []
+      "commands": [
+        {
+          "name": "npm run smoke:horseshoes",
+          "description": "Desktop and emulated touch practice flow, native keyboard controls, stable physics, viewport fit and return links."
+        }
+      ]
     },
     {
       "id": "pitch",
@@ -618,10 +623,6 @@
         {
           "name": "npm test",
           "description": "Every unit test in the repo with Node's built-in runner, including this index's coverage check."
-        },
-        {
-          "name": "npm run smoke:horseshoes",
-          "description": "node test/horseshoes-smoke.mjs"
         },
         {
           "name": "npm run smoke:mobile",
@@ -4824,8 +4825,8 @@
       "project": "studio",
       "category": "ops",
       "kind": "YAML",
-      "title": "horseshoes.yml",
-      "description": null,
+      "title": "Horseshoes smoke workflow",
+      "description": "Browser regression for Horseshoes assets, native keyboard controls, touch, throwing, retry and stable physics.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/horseshoes.yml",
       "open": null
     },
