@@ -48,3 +48,11 @@ User request: Implement the PA rig and equipment menu cards using equipment mode
 ## 2026-10-17 PA equipment release closure
 
 PR168 final4945433 passed required CI39057828540 and merged8b5ae09. Pages built the merge at18:59:06Z. Thirteen hosted files match; Dominic passed eight live light/dark card cases with unchanged state/reload and inspection sizes down320x256. PA models/cards are presentation-only; rules and saves unchanged. Concurrent PR169 ECP guidance preserved and reconciled. Private board unavailable; human/device/calibration acceptance remains open.
+
+## 2026-10-17 lighting equipment slice
+
+User requested lighting rigs and equipment cards with unchanged rules/saves and screenshots. Added source-derived J-Six/Vertigo exteriors and shared Lighting preview/page. Verification and delivery pending. No engine/data/save/ownership changes.
+
+Lighting review follow-up: combined house+tower status and visible Menu focus restored. CI exposed Lighting tab text clipping at320px; scoped narrow Equipment tab typography/padding now fits with44px targets. Expanded browser regression covers compact pages and button bounds; release checks rerunning.
+
+Linux CI retained a60px Lighting label in a54px button at320px. Shortened the equipment tab to Lights (same Build vocabulary), preserving card title and44px targets; Windows browser pass alone was insufficient for Linux font fit.
