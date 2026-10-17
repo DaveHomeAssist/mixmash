@@ -665,6 +665,10 @@
           "description": "node test/front-of-house-advisory-smoke.mjs"
         },
         {
+          "name": "npm run smoke:front-of-house-suggestions",
+          "description": "node test/front-of-house-suggestions-smoke.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-floor",
           "description": "node test/front-of-house-floor-smoke.mjs"
         },
@@ -1181,6 +1185,86 @@
       "open": null
     },
     {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f01.png",
+      "description": "DEC-79 paid-test candidate: astronaut walk frame 1 of 4, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f02.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f02.png",
+      "description": "DEC-79 paid-test candidate: astronaut walk frame 2 of 4, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f02.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f02.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f03.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f03.png",
+      "description": "DEC-79 paid-test candidate: astronaut walk frame 3 of 4, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f03.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f03.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f04.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f04.png",
+      "description": "DEC-79 paid-test candidate: astronaut walk frame 4 of 4, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f04.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f04.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/building/habitat__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "habitat__active__f01.png",
+      "description": "DEC-79 paid-test candidate: habitat, active state, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/building/habitat__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/building/habitat__active__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/building/habitat__damaged__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "habitat__damaged__f01.png",
+      "description": "DEC-79 paid-test candidate: habitat, damaged state, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/building/habitat__damaged__f01.png",
+      "open": "/mars/assets/commissioned/sprites/building/habitat__damaged__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/resource/blue_crystal__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "blue_crystal__active__f01.png",
+      "description": "DEC-79 paid-test candidate: blue crystal resource, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/resource/blue_crystal__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/resource/blue_crystal__active__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/terrain/base_soil__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "base_soil__active__f01.png",
+      "description": "DEC-79 paid-test candidate: base soil terrain tile, exported by author-paid-test.mjs. Not approved art.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/terrain/base_soil__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/terrain/base_soil__active__f01.png"
+    },
+    {
       "path": "mars/assets/manifest.json",
       "project": "mars",
       "category": "art",
@@ -1341,6 +1425,16 @@
       "open": null
     },
     {
+      "path": "mars/art/author-paid-test.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "author-paid-test.mjs",
+      "description": "Reproducible DEC-79 paid-test candidate. The source art is drawn in independent layers, then exported both as native Aseprite documents and flat runtime PNGs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/author-paid-test.mjs",
+      "open": null
+    },
+    {
       "path": "mars/art/validate-assets.mjs",
       "project": "mars",
       "category": "tooling",
@@ -1408,6 +1502,46 @@
       "title": "art-spec.js",
       "description": "Script for the render-contract proof page: projection, footprints and every cached sprite map.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art-spec.js",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/actor/astronaut.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "astronaut.aseprite",
+      "description": "Layered Aseprite source for the DEC-79 paid-test astronaut candidate, written by author-paid-test.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/actor/astronaut.aseprite",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/building/habitat.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "habitat.aseprite",
+      "description": "Layered Aseprite source for the DEC-79 paid-test habitat candidate, written by author-paid-test.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/building/habitat.aseprite",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/resource/blue_crystal.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "blue_crystal.aseprite",
+      "description": "Layered Aseprite source for the DEC-79 paid-test blue crystal candidate, written by author-paid-test.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/resource/blue_crystal.aseprite",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/terrain/base_soil.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "base_soil.aseprite",
+      "description": "Layered Aseprite source for the DEC-79 paid-test base soil candidate, written by author-paid-test.mjs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/terrain/base_soil.aseprite",
       "open": null
     },
     {
@@ -1569,6 +1703,16 @@
       "description": "Front of House is a concert-promotion management game. Book a band, build the room, sell the show, get through show night and settle the money. The career runs from a parking lot to a festival field. Early playable.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/index.html",
       "open": "/front-of-house/"
+    },
+    {
+      "path": "front-of-house/docs/ANTICIPATORY_UX.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House: anticipatory UX spec",
+      "description": "Ground rule. Predict what this player wants from what they just did and what they did last time. Never solve the game for them. A suggestion may highlight, pre-fill on tap or move focus. It never dispatches a…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/ANTICIPATORY_UX.md",
+      "open": null
     },
     {
       "path": "front-of-house/docs/ART_DIRECTION.md",
@@ -2521,6 +2665,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-anticipate.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-anticipate.mjs",
+      "description": "Suggestions (anticipate.mjs) read state and never commit money or choices.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-anticipate.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-career-ledger.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -2638,6 +2792,16 @@
       "title": "test-ownership.mjs",
       "description": "Inventory authority preserves identity and capital cash through commands and reloads.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-ownership.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/test-prefs.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-prefs.mjs",
+      "description": "Device preferences (prefs.mjs): load, validation, size cap, clear and the legacy key fold.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-prefs.mjs",
       "open": null
     },
     {
@@ -3101,6 +3265,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-suggestions-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-suggestions-smoke.mjs",
+      "description": "Anticipatory suggestions (front-of-house/docs/ANTICIPATORY_UX.md) in the real client, in 2D and 3D at desktop and phone sizes: the legal-tile outline, Pick Exit, remembered deals, prices, ads and responses, the device…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-suggestions-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-ticketing-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3178,6 +3352,16 @@
       "title": "advisory.mjs",
       "description": "Presentation-only Advisory desk. Readers never consume a draw or change a show.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/advisory.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/anticipate.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "anticipate.mjs",
+      "description": "Presentation-only suggestions (docs/ANTICIPATORY_UX.md). Readers never commit a choice: every applyAction call here runs on the current state as a dry run and its result is discarded (the engine never changes its…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/anticipate.mjs",
       "open": null
     },
     {
@@ -3368,6 +3552,16 @@
       "title": "ownership.mjs",
       "description": "Replayable one-family inventory and capital movements; placement belongs to the career adapter.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/ownership.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/prefs.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "prefs.mjs",
+      "description": "Front of House device preferences (docs/ANTICIPATORY_UX.md section 3).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/prefs.mjs",
       "open": null
     },
     {

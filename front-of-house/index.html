@@ -101,6 +101,7 @@
     <button type="button" data-act="held-run-open" id="held-run-menu" hidden>Held nights</button>
     <button type="button" data-act="ticketing-open" id="ticketing-menu" hidden>Ticketing</button>
     <button type="button" id="theme-toggle" aria-pressed="false">Dark controls</button>
+    <button type="button" id="suggest-toggle" aria-pressed="true">Suggestions: On</button>
     <div class="row">
       <button type="button" id="fullscreen" aria-pressed="false">Full screen</button>
       <a class="button" href="https://github.com/DaveHomeAssist/mixmash" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
@@ -147,6 +148,7 @@
         <div class="row">
           <button type="button" data-save="export">Show my save code</button>
           <button type="button" data-save="new" class="danger">Start a new game</button>
+          <button type="button" data-save="forget-prefs" id="forget-prefs">Forget suggestions &amp; view settings</button>
         </div>
         <label for="save-code">Save code</label>
         <textarea id="save-code" rows="3" spellcheck="false" autocomplete="off"></textarea>

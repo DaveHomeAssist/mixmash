@@ -42,6 +42,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     if (!ownedOverlayMaterials.has(key)) ownedOverlayMaterials.set(key, new T.MeshBasicMaterial({ color, opacity, transparent: opacity < 1, depthWrite: false, side: T.DoubleSide }));
     return ownedOverlayMaterials.get(key);
   }
+  let legalShown = 0;
   function clearOverlays() { for (const child of [...overlays.children]) { child.geometry.dispose(); overlays.remove(child); } }
   function cell(x, y, w, h, color, opacity = 0.25) {
     const mesh = new T.Mesh(new T.PlaneGeometry(w, h), overlayMaterial(color, opacity));
@@ -100,13 +101,16 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     const key = JSON.stringify(input.objects || []);
     if (key !== layoutKey) { rebuildObjects(input.objects || []); layoutKey = key; }
     stageAudience = festival ? stageRepresentatives(input.crowd, input.stageAudience) : null;
-    const nextOverlay = JSON.stringify([key, input.showClear, [...(input.clearSet || [])], [...(input.blockedSet || [])], input.cursor, input.cursorColor, input.selection, input.ghost]);
+    const nextOverlay = JSON.stringify([key, input.showClear, [...(input.clearSet || [])], [...(input.blockedSet || [])], input.cursor, input.cursorColor, input.selection, input.ghost, [...(input.legalSet || [])]]);
     if (nextOverlay !== overlayKey) {
       clearOverlays();
       if (input.showClear) {
         for (const s of input.clearSet || []) { const [x, y] = s.split(',').map(Number); cell(x, y, 1, 1, 0x31bec2, 0.2); }
         for (const s of input.blockedSet || []) { const [x, y] = s.split(',').map(Number); cell(x, y, 1, 1, 0xf17e72, 0.35); }
       }
+      // Tiles a gate, exit or PA would be accepted at: an inset square, distinct from sightline tint.
+      legalShown = 0;
+      for (const s of input.legalSet || []) { const [x, y] = s.split(',').map(Number); cell(x + 0.15, y + 0.15, 0.7, 0.7, 0xfacc15, 0.5); legalShown += 1; }
       if (input.selection) outline(input.selection, 0xfacc15);
       if (input.ghost) outline(input.ghost, input.ghost.valid ? 0x79d4a2 : 0xf26d63);
       if (input.cursor) outline({ ...input.cursor, rot: 0 }, input.cursorColor || 0xffffff);
@@ -182,6 +186,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

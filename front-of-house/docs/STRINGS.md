@@ -115,6 +115,28 @@ Where the player-facing words live, so copy can be reviewed and changed in one p
 | `2` | the upper right |
 | `3` | the lower right |
 
+### `SUGGEST_TEXT`: Suggestion copy: badges, hints and buttons (all phases, Menu)
+
+| Key | Text |
+| --- | --- |
+| `lastDeal` | Last time |
+| `fitsCash` | Fits your cash |
+| `lastResponse` | Your last choice |
+| `lastTool` | last used |
+| `weakTool` | answers last night’s weakest part |
+| `weakest` | Last night’s weakest: |
+| `pickExit` | Pick Exit |
+| `repeat` | Same as last time: |
+| `apply` | Apply |
+| `applied` | Applied last show’s price and ads. Nothing is paid until you open the doors. |
+| `backAddExits` | Back to Build: add exits |
+| `legalTiles` | Outlined tiles accept it; nothing is placed until you click one. |
+| `phoneRenderer` | Switch between 3D and 2D in Menu → Camera. |
+| `nextShow` | Next: |
+| `forgot` | Forgot suggestions and view settings. Your game is unchanged. |
+| `suggestOn` | Suggestions: On |
+| `suggestOff` | Suggestions: Off |
+
 ## 2. Labels in `data.mjs`
 
 Names the engine, the board and the settlement sheet all use. Act names and genres are in [CATALOG.md](CATALOG.md#9-acts) and their name checks in [WORLD.md](WORLD.md).
@@ -161,4 +183,4 @@ The messages shown when an action is refused are listed by action in [CATALOG.md
 
 ## 4. Not covered here
 
-Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 430 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Headings, buttons, feed lines and sentences built inside `game.js`'s render functions are written inline, not in a table: about 460 string literals with words in them. Moving them into tables (and so into this file) is listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).

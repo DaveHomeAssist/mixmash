@@ -21,6 +21,8 @@ import { binding, matches } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
 import { advisoryFor } from './advisory.mjs';
 import { bandArt, venueArt } from './menu-art.mjs';
+import { bumpHint, clearPrefs, defaultPrefs, loadPrefs, rememberAct, rememberIncident, rememberRoom, rememberTab, savePrefs, setSuggest, setView, TAB_PHASES } from './prefs.mjs';
+import { bookSuggestions, buildSuggestion, hasPlacementRule, incidentSuggestion, legalTiles, nextShowPreview, promoteSuggestion } from './anticipate.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
 const AFTER_SECONDS = 3; // playback after the incident is answered
@@ -28,7 +30,6 @@ const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
 const rendererQuery = new URLSearchParams(window.location.search).get('renderer');
-const RENDERER_PREFERENCE = 'front_of_house_renderer';
 const PLACEABLE = ['stage', 'pa-s', 'pa-m', 'lights', 'bar', 'restroom', 'gate', 'exit', 'food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'];
 // Screen directions for each stage rotation (rotation 0 faces +y, the lower left on screen).
 const FACING = ['the lower left', 'the upper left', 'the upper right', 'the lower right'];
@@ -54,6 +55,27 @@ const TIPS = {
   amenities: 'Bars and restrooms scored lowest. Add service until both cover the whole crowd; each tool lists how many guests it serves.',
   flow: 'Entry flow scored lowest. Add a gate, or answer a gate jam by opening a second lane.',
   incident: 'Incident handling scored lowest. Compare the response cost, crowd result and act payout.',
+};
+// Suggestion copy (docs/ANTICIPATORY_UX.md). Suggestions highlight or pre-fill on a press; none
+// books, places, opens doors, responds or signs.
+const SUGGEST_TEXT = {
+  lastDeal: 'Last time',
+  fitsCash: 'Fits your cash',
+  lastResponse: 'Your last choice',
+  lastTool: 'last used',
+  weakTool: 'answers last night’s weakest part',
+  weakest: 'Last night’s weakest:',
+  pickExit: 'Pick Exit',
+  repeat: 'Same as last time:',
+  apply: 'Apply',
+  applied: 'Applied last show’s price and ads. Nothing is paid until you open the doors.',
+  backAddExits: 'Back to Build: add exits',
+  legalTiles: 'Outlined tiles accept it; nothing is placed until you click one.',
+  phoneRenderer: 'Switch between 3D and 2D in Menu → Camera.',
+  nextShow: 'Next:',
+  forgot: 'Forgot suggestions and view settings. Your game is unchanged.',
+  suggestOn: 'Suggestions: On',
+  suggestOff: 'Suggestions: Off',
 };
 const WINS = {
   sound: 'Sound and lighting met this show’s needs.',
@@ -92,17 +114,23 @@ const el = {
 
 $('#game-version').textContent = `v${FRONT_OF_HOUSE_RELEASE.version}`;
 
+// Device preferences and the player's recent habits (prefs.mjs, docs/ANTICIPATORY_UX.md). They
+// live outside the career save; a browser that blocks storage simply plays without them.
+const prefsStorage = (() => { try { return window.localStorage; } catch { return null; } })();
+let prefs = loadPrefs(prefsStorage);
+function updatePrefs(next) {
+  prefs = next;
+  savePrefs(prefsStorage, prefs);
+}
+
 function rendererPreference() {
   if (rendererQuery === '2d' || rendererQuery === '3d') return rendererQuery === '3d';
-  try {
-    const saved = localStorage.getItem(RENDERER_PREFERENCE);
-    if (saved === '2d' || saved === '3d') return saved === '3d';
-  } catch { /* A fresh session still defaults to 3D when storage is unavailable. */ }
-  return true;
+  // A fresh session still defaults to 3D; only an explicit choice is stored.
+  return prefs.view.renderer ? prefs.view.renderer === '3d' : true;
 }
 
 function rememberRendererPreference(enabled) {
-  try { localStorage.setItem(RENDERER_PREFERENCE, enabled ? '3d' : '2d'); } catch { /* The view still changes for this session. */ }
+  updatePrefs(setView(prefs, { renderer: enabled ? '3d' : '2d' }));
 }
 
 const store = window.MixKitSave
@@ -278,6 +306,11 @@ function renderCash() {
 const HUD_PHASES = ['build', 'show'];
 
 function mount() {
+  if (state.phase === 'build') {
+    ui.buildSuggest = true;
+    const room = prefs.rooms[state.venue.id];
+    if (prefs.suggest && typeof room?.sightlines === 'boolean') ui.showClear = room.sightlines;
+  }
   const builders = { book: bookPanel, build: buildPanel, promote: promotePanel, show: showPanel, settle: settlePanel, done: donePanel };
   const html = builders[state.phase]();
   // The status toast belongs to the phase that wrote it; a new phase starts without one.
@@ -291,6 +324,14 @@ function mount() {
   if (heading) heading.setAttribute('tabindex', '-1');
   if (state.phase === 'settle') openSettlement($('#open-settlement'));
   syncTabs(el.panel, state.phase);
+  if (state.phase === 'build' && ui.pendingTool) {
+    const type = ui.pendingTool;
+    ui.pendingTool = null;
+    if (toolOffered(type)) pickTool(type);
+  } else if (state.phase === 'build' && phoneQuery.matches && prefs.hints.rendererSwitch < 3) {
+    el.boardStatus.textContent = SUGGEST_TEXT.phoneRenderer;
+    updatePrefs(bumpHint(prefs, 'rendererSwitch'));
+  }
   if (state.phase === 'show') startPlayback();
   else if (state.phase !== 'settle') endPlayback();
   queueLayout();
@@ -332,9 +373,24 @@ function dealHelpHtml() {
     ${['amphitheater','festival'].includes(spec.id) ? '<section data-tab="Curfew"><h3>Set time</h3><p>Doors 19:00. Set 20:12 to 23:00.</p><p>A noise curfew can end the set early.</p><p>End now for free, or pay $400 for five more minutes.</p><p>Closing early reduces walk-ups and bar income.</p><p>Presales and the quoted guarantee stay paid.</p></section>' : ''}`;
 }
 
+// The action a Book deal button sends; the suggestions dry-run the same action.
+function bookOpener() {
+  const eligible = stageOpenersFor(state);
+  return venueSpec(state.venue).secondStage ? (eligible.includes(state.booking.secondId) ? state.booking.secondId : eligible[0]) : null;
+}
+function dealAction(artistId, deal, secondId = bookOpener() || undefined) {
+  const room = state.venue.id;
+  return { type: 'chooseDeal', deal, artistId, secondId, nights: state.booking.nights || 1,
+    ...(room === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1, supportPolicy: 1 } : {}),
+    ...(room === 'club' ? { roomPolicy: 1 } : {}),
+    ...(room === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}),
+    ...(room === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) };
+}
+
 function bookPanel() {
   const spec = venueSpec(state.venue);
   const offers = offersFor(state);
+  const hints = Object.fromEntries(bookSuggestions(state, prefs, (id, deal) => dealAction(id, deal)).map((h) => [h.artistId, h]));
   // The first show of a career (or the wet lot) teaches; Sandbox and later shows don't.
   const teach = state.history.length === 0 && state.mode !== 'sandbox';
   const rooms = D.VENUE_ORDER.map((id) => {
@@ -358,11 +414,17 @@ function bookPanel() {
     const eligible = stageOpenersFor(state);
     const opener = spec.secondStage ? (eligible.includes(state.booking.secondId) ? state.booking.secondId : eligible[0]) : null;
     const extra = opener ? ` data-second="${opener}"` : '';
-    const deal = (kind, title, cost, note, disabled = false) => `
-      <button type="button" class="choice" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled || (spec.secondStage && (!opener || opener === id)) ? 'disabled' : ''}${extra}>
-        <span class="choice-head"><strong>${title}</strong> <span class="cost">${cost}</span></span>
+    const hint = hints[id];
+    // Highlights only: the remembered deal, and a deal that fits the cash when the guarantee would not.
+    const deal = (kind, title, cost, note, disabled = false) => {
+      const last = hint?.lastDeal === kind, fits = kind === 'door' && hint?.highlightDoor && !last;
+      const short = hint?.short[kind] > 0 ? ` · short ${money(hint.short[kind])} at doors` : '';
+      return `
+      <button type="button" class="choice${last || fits ? ' suggested' : ''}" data-act="deal" data-deal="${kind}" data-artist="${id}" ${disabled || (spec.secondStage && (!opener || opener === id)) ? 'disabled' : ''}${extra}>
+        <span class="choice-head"><strong>${title}</strong>${last ? ` <span class="hint-badge">${SUGGEST_TEXT.lastDeal}</span>` : fits ? ` <span class="hint-badge">${SUGGEST_TEXT.fitsCash}</span>` : ''} <span class="cost">${cost}${short}</span></span>
         ${note ? `<span class="choice-text">${note}</span>` : ''}
       </button>`;
+    };
     return `
     <section class="card offer" aria-label="${esc(a.name)}" data-tab="${esc(a.name)}">
       <p class="eyebrow">Relationship ${signed(rel)} · ${mood}</p>
@@ -468,7 +530,7 @@ function buildPanel() {
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
         ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="./sprites/${type}.png" alt="" decoding="async" />`}
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
-        <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}</span>
+        <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}<span class="tile-note"></span></span>
       </label>`;
   }).join('');
   return `
@@ -572,7 +634,7 @@ function updateBuild() {
   const notes = [...v.missing, ...v.problems.map((p) => p.message)];
   $('#venue-check').innerHTML = notes.length
     ? `<p class="checklist"><span>${esc(notes[0])}.</span>${notes.length > 1 ? ` <span class="more">${notes.length - 1} more in Details.</span>` : ''}</p>`
-    : cap ? `<p class="checklist warn">${esc(cap.short)}</p>`
+    : cap ? `<p class="checklist warn">${esc(cap.short)}${cap.limit === 'exits' && toolOffered('exit') ? ` <button type="button" class="suggest-btn" data-act="suggest-tool" data-tool="exit" id="pick-exit">${SUGGEST_TEXT.pickExit}</button>` : ''}</p>`
     : roomProfileFor(state.venue) ? `<p class="checklist ${v.soundCapacity < v.capacity ? 'warn' : 'ok'}">Ready · ${v.housePa ? esc(roomProfileFor(state.venue).label) : 'portable PA'} for ${v.soundCapacity} people.</p>`
     : `<p class="checklist ok">✓ The ${spec.id === 'lot' ? 'lot' : 'room'} is ready for a show.</p>`;
   $('#obj-count').textContent = String(state.venue.objects.length);
@@ -597,7 +659,45 @@ function updateBuild() {
   $('#tool-info').textContent = selecting ? 'Select: click an object to inspect it. Choose a tool to place; Escape returns here.' : dozing
     ? 'Bulldozing: click or drag across anything you want gone. B places again.'
     : `Placing the ${label(ui.tool).toLowerCase()}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. ${toolWhere(ui.tool)}`;
+  updateBuildSuggest();
   if (win.kind === 'lot') refreshWindow(lotDetailsHtml());
+}
+
+// Last night's weakest part replaces the Select hint on Build entry and rings the tools that
+// answer it; otherwise the last tool used in this room is ringed. Pressing a ringed tile is the
+// ordinary tool choice: nothing is placed. The text reuses the hint line, so the phase card
+// gains no row (CT-DEC-12: the HUD covers at most 2% of the lot).
+function buildHint() {
+  const hint = ui.buildSuggest && ui.tool === 'select' && !history.undo.length && !history.redo.length ? buildSuggestion(state, prefs) : null;
+  if (!hint) return null;
+  return { ...hint, tools: hint.tools.filter((type) => toolOffered(type)).slice(0, 2) };
+}
+function updateBuildSuggest() {
+  const info = $('#tool-info');
+  if (!info) return;
+  const hint = buildHint();
+  if (hint) {
+    const answer = hint.weakest === 'sightlines' ? (ui.showClear ? 'The Sightlines overlay shows blocked tiles.' : 'Turn on Sightlines to see blocked tiles.')
+      : hint.tools.length ? `Ringed: ${hint.tools.map((type) => `${SHORT[type]} (${toolKey(type)})`).join(', ')}.` : '';
+    info.textContent = `${SUGGEST_TEXT.weakest} ${PART_LABELS[hint.weakest]}. ${answer}`.trim();
+  }
+  const last = prefs.suggest ? prefs.rooms[state.venue.id]?.lastTool : null;
+  const ringed = hint ? hint.tools : last ? [last] : [];
+  const note = hint ? SUGGEST_TEXT.weakTool : SUGGEST_TEXT.lastTool;
+  el.panel.querySelectorAll('.tools-plate label.tile').forEach((tile) => {
+    const on = ringed.includes(tile.querySelector('input').value);
+    tile.classList.toggle('ring', on);
+    tile.querySelector('.tile-note').textContent = on ? `, ${note}` : '';
+  });
+}
+
+// The tiles a gate, exit or PA would be accepted at, for the board's outline overlay.
+let legalCache = { key: '', tiles: null };
+function legalSet() {
+  if (state.phase !== 'build' || !hasPlacementRule(ui.tool)) return null;
+  const key = JSON.stringify([state.venue.id, state.venue.profile || null, state.venue.objects, ui.tool, ui.rot]);
+  if (legalCache.key !== key) legalCache = { key, tiles: legalTiles(state.venue, ui.tool, ui.rot) };
+  return legalCache.tiles;
 }
 
 // The Details window: everything the lot still needs, and every placed object by type, with
@@ -761,10 +861,14 @@ function promotePanel() {
   const spec = venueSpec(state.venue);
   const sponsorPrice = festivalPolicyFor(state)?.sponsorPrice;
   const priceMax = spec.priceMax || D.PRICE_MAX;
+  // Tick marks at the values last opened with this act; a mark is a reminder, never a setting.
+  const memory = prefs.suggest ? prefs.acts[state.booking.artistId] : null;
+  const tick = (id, value) => (Number.isInteger(value) ? `<datalist id="${id}-memory"><option value="${value}"></option></datalist>` : '');
+  const listed = (id, value) => (Number.isInteger(value) ? ` list="${id}-memory"` : '');
   const sliders = D.AD_CHANNELS.map((c) => `
     <div class="slider">
       <label for="ad-${c}">${AD_LABELS[c]} <output id="ad-${c}-out" for="ad-${c}"></output></label>
-      <input type="range" id="ad-${c}" min="0" max="${D.AD_SLIDER_MAX}" step="${D.AD_STEP}" data-input="ad" data-channel="${c}" />
+      <input type="range" id="ad-${c}" min="0" max="${D.AD_SLIDER_MAX}" step="${D.AD_STEP}" data-input="ad" data-channel="${c}"${listed(`ad-${c}`, memory?.ads?.[c] || null)} />${tick(`ad-${c}`, memory?.ads?.[c] || null)}
     </div>`).join('');
   const seats = spec.seats ? `
     <div class="slider">
@@ -775,13 +879,13 @@ function promotePanel() {
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <div class="show-art-heading">${bandArt(state.booking.artistId, 'band-art-small')}<h2>Promote the show</h2></div>
-    <p class="lede">${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}</p>
+    <p class="lede" id="promo-lede" data-default="${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}">${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="cols">
       <div class="col" data-tab="Price and ads">
         <div class="slider">
           <label for="price">${sponsorPrice !== undefined ? 'Sponsor ticket price' : spec.seats ? 'Lawn price' : 'Ticket price'} <output id="price-out" for="price"></output></label>
-          <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" ${sponsorPrice !== undefined ? 'disabled' : ''} />
+          <input type="range" id="price" min="${D.PRICE_MIN}" max="${priceMax}" step="1" data-input="price" ${sponsorPrice !== undefined ? 'disabled' : ''}${sponsorPrice === undefined ? listed('price', memory?.price) : ''} />${sponsorPrice === undefined ? tick('price', memory?.price) : ''}
         </div>
         ${seats}
         <fieldset><legend>Ad spend</legend>${sliders}</fieldset>
@@ -795,7 +899,7 @@ function promotePanel() {
       </div>
     </div>
     <div class="actions">
-      <button type="button" data-act="back">Back to Build</button>
+      <button type="button" data-act="back" id="promo-back">Back to Build</button>
       ${spec.id === 'lot' ? '<button type="button" data-act="live-settings" id="live-settings">Live services: Off</button>' : ''}
       ${seatingPlanFor(state) ? '<button type="button" data-act="seating-open" id="seating-settings">Seats and lawn</button>' : ''}
       ${stagePlanFor(state) ? '<button type="button" data-act="stages-open" id="stage-settings">Stage accounts</button>' : ''}
@@ -846,6 +950,11 @@ function updatePromote() {
   else if (cap) say(cap.promote, 'info');
   else if ($('#msg').textContent.startsWith('This show needs') || $('#msg').textContent === capacityNoteShown) say('');
   capacityNoteShown = cap && !short ? cap.promote : null;
+  const back = $('#promo-back');
+  const addExits = cap?.limit === 'exits';
+  back.textContent = addExits ? SUGGEST_TEXT.backAddExits : 'Back to Build';
+  back.dataset.tool = addExits ? 'exit' : '';
+  updatePromoteSuggest();
 
   // Presale chart: cumulative tickets sold over 14 days for the slowest and strongest draw.
   const totals = [a.drawMin, a.drawMax].map((draw) => {
@@ -868,6 +977,19 @@ function updatePromote() {
   }
   $('#presale').innerHTML = `<line x1="4" y1="88" x2="276" y2="88" stroke="#475569" />${bars.join('')}`;
   $('#presale-cap').textContent = `Presales by show day: ${totals[0]} tickets on a slow draw, up to ${totals[1]} on a strong one. Walk-up sales come on the night.`;
+}
+
+// The remembered price and ads for this act replace the lede, with one Apply press. The press
+// sends one setPromotion; nothing is paid until the doors open.
+function updatePromoteSuggest() {
+  const lede = $('#promo-lede');
+  if (!lede) return;
+  const hint = promoteSuggestion(state, prefs);
+  const html = hint
+    ? `${SUGGEST_TEXT.repeat} ${money(hint.price)} · ads ${money(hint.adTotal)} <button type="button" class="suggest-btn" data-act="promo-repeat">${SUGGEST_TEXT.apply}</button>`
+    : esc(lede.dataset.default);
+  lede.classList.toggle('suggest', !!hint);
+  if (lede.innerHTML !== html) lede.innerHTML = html;
 }
 
 // ---------------------------------------------------------------------------
@@ -1175,13 +1297,14 @@ function reachIncident() {
     return bits.join(' · ');
   };
   const box = $('#incident-box');
+  const lastResponse = incidentSuggestion(state, prefs);
   box.innerHTML = `
     <div class="incident" role="group" aria-labelledby="incident-title">
       <h3 id="incident-title">${esc(incident.label)}</h3>
       <p>${esc(INCIDENT_TEXT[id] || incident.label)}</p>
       ${incident.responses.map((r) => `
-        <button type="button" class="choice" data-act="respond" data-response="${r.id}" ${r.cost > state.cash ? 'disabled' : ''}>
-          <span class="choice-head"><strong>${esc(r.label)}</strong> <span class="cost">${r.cost ? money(r.cost) : 'free'}${r.cost > state.cash ? ' · not enough cash' : ''}</span></span>
+        <button type="button" class="choice${r.id === lastResponse ? ' suggested' : ''}" data-act="respond" data-response="${r.id}" ${r.cost > state.cash ? 'disabled' : ''}>
+          <span class="choice-head"><strong>${esc(r.label)}</strong>${r.id === lastResponse ? ` <span class="hint-badge">${SUGGEST_TEXT.lastResponse}</span>` : ''} <span class="cost">${r.cost ? money(r.cost) : 'free'}${r.cost > state.cash ? ' · not enough cash' : ''}</span></span>
           <span class="choice-effect">${effect(r)}</span>
         </button>`).join('')}
     </div>`;
@@ -1223,7 +1346,9 @@ function locateIncident() {
 
 function respond(responseId) {
   const play = ui.play;
+  const incidentId = state.show?.incidentId;
   if (!act({ type: 'respond', responseId })) return;
+  updatePrefs(rememberIncident(prefs, incidentId, responseId));
   stopPlayback();
   if (play?.live) {
     play.paused = true;
@@ -1487,6 +1612,9 @@ function donePanel() {
     : p.canAffordAShow
     ? '<button type="button" class="primary" data-act="next">Book the next show</button>'
     : `<button type="button" class="primary" disabled>Book the next show</button>`;
+  const preview = p.canAffordAShow && !needsVenue ? nextShowPreview(state) : null;
+  // Shares the result line, so the Done sheet gains no row (CT-DEC-12: no panel scrolls).
+  const previewText = preview?.length ? `<span id="next-preview" title="${esc(preview.map((o) => `${o.name}: relationship ${signed(o.relationship)}`).join(' · '))}">${SUGGEST_TEXT.nextShow} ${preview.map((o) => `${esc(o.name)} ${money(o.ask)}`).join(' · ')}</span>` : '';
   const result = last ? `Show ${last.showId}${last.night > 1 ? ` night ${last.night}` : ''}: ${last.deal === 'door' ? 'door deal' : last.deal === 'sponsor' ? 'sponsor' : 'guarantee'} · ${last.attendance} people · net ${money(last.net)} · ${last.result === 'pass' ? 'pass' : 'retry'}` : '';
   return `
     <h2>${pass ? `A good night at ${esc(venueSpec(state.venue).name)}` : 'A rough night'}</h2>
@@ -1500,7 +1628,7 @@ function donePanel() {
       <button type="button" data-act="retry">Start over</button>${next}
     </div>
     ${careerHtml()}
-    ${result ? `<p class="result-line">${esc(result)}</p>` : ''}
+    ${result || previewText ? `<p class="result-line">${esc(result)}${result && previewText ? '. ' : ''}${previewText}</p>` : ''}
     <div class="row tight">
       <button type="button" data-act="last-sheet" ${r ? '' : 'disabled'}>Last settlement</button>
       <button type="button" data-act="history">Show history (${state.history.length})</button>
@@ -1860,6 +1988,7 @@ function draw() {
     blockedSet: sight().blocked,
     showClear: state.phase === 'build' && ui.showClear,
     showGrid: state.phase === 'build',
+    legalSet: legalSet(),
     cursor: null,
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
@@ -2315,7 +2444,12 @@ function onAct(e) {
   if (a === 'renderer-toggle') { cancelLotGesture(); const enabled = !board.status().enabled; rememberRendererPreference(enabled); void board.setEnabled(enabled); return; }
   if (a === 'renderer-retry') { cancelLotGesture(); rememberRendererPreference(true); void board.retry(); return; }
   if (a === 'camera-mode') { ui.cameraMode = !ui.cameraMode; target.setAttribute('aria-pressed', String(ui.cameraMode)); target.textContent = `Drag camera while placing: ${ui.cameraMode ? 'on' : 'off'}`; return; }
-  if (a === 'deal') bookDeal(target, { type: 'chooseDeal', deal: target.dataset.deal, artistId: target.dataset.artist, secondId: target.dataset.second, nights: state.booking.nights || 1, ...(state.venue.id === 'festival' ? { stagePolicy: 1, festivalPolicy: 1, roomPolicy: 1, curfewPolicy: 1, supportPolicy: 1 } : {}), ...(state.venue.id === 'club' ? { roomPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' ? { seatingPolicy: 1, roomPolicy: 1, curfewPolicy: 1 } : {}), ...(state.venue.id === 'amphitheater' && state.booking.nights > 1 ? { runPolicy: 1 } : {}) });
+  if (a === 'deal') bookDeal(target, dealAction(target.dataset.artist, target.dataset.deal, target.dataset.second));
+  else if (a === 'suggest-tool' && state.phase === 'build') { if (toolOffered(target.dataset.tool)) pickTool(target.dataset.tool); }
+  else if (a === 'promo-repeat' && state.phase === 'promote') {
+    const hint = promoteSuggestion(state, prefs);
+    if (hint && act({ type: 'setPromotion', price: hint.price, ads: hint.ads }, { quiet: true })) { say(SUGGEST_TEXT.applied); $('#price')?.focus(); }
+  }
   else if (a === 'venue' || a === 'nights') {
     // The Book panel lists the room's own acts and nights, so it is rebuilt; focus
     // returns to the button that was pressed.
@@ -2377,9 +2511,18 @@ function onAct(e) {
     const i = Number(target.dataset.index);
     const type = state.venue.objects[i] && state.venue.objects[i].type;
     if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${label(type).toLowerCase()}.`);
-  } else if (a === 'back') act({ type: 'back' });
+  } else if (a === 'back') {
+    // Promote's Back can carry the Exit tool into Build when exits cap the show; it picks, never places.
+    if (state.phase === 'promote' && target.dataset.tool) ui.pendingTool = target.dataset.tool;
+    if (!act({ type: 'back' })) ui.pendingTool = null;
+  }
   else if (a === 'confirm-build') act({ type: 'confirmBuild' });
-  else if (a === 'confirm-promo') { const services = state.venue.id === 'lot' && (state.promotion.liveServices ?? liveServicesPilot); act({ type: 'confirmPromotion', services, ...(services ? { flow: 1 } : {}), pilot: lotNightSlice && !services }); }
+  else if (a === 'confirm-promo') {
+    const services = state.venue.id === 'lot' && (state.promotion.liveServices ?? liveServicesPilot);
+    const opened = { artistId: state.booking.artistId, deal: state.booking.deal, price: state.promotion.price, ads: { ...state.promotion.ads } };
+    // Remembered only once the player opens the doors, so an abandoned plan is never suggested.
+    if (act({ type: 'confirmPromotion', services, ...(services ? { flow: 1 } : {}), pilot: lotNightSlice && !services })) updatePrefs(rememberAct(prefs, opened.artistId, opened));
+  }
   else if (a === 'skip') skipToIncident();
   else if (a === 'live-settings' && state.phase === 'promote') {
     const access = liveAccessFor(state), placed = evaluateVenue(state.venue);
@@ -2443,6 +2586,8 @@ el.panel.addEventListener('change', (e) => {
   else if (t.dataset.input === 'tool') pickTool(t.value);
   else if (t.dataset.input === 'clear') {
     ui.showClear = t.checked;
+    if (prefs.suggest) updatePrefs(rememberRoom(prefs, state.venue.id, { sightlines: t.checked }));
+    updateBuildSuggest();
     draw();
   }
 });
@@ -2451,8 +2596,12 @@ function pickTool(type) {
   ui.selection = null;
   ui.tool = type;
   ui.placeTool = type;
+  ui.buildSuggest = false;
   document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === type; });
-  el.boardStatus.textContent = `Placing: ${label(type)}.`;
+  const outlined = hasPlacementRule(type) && prefs.hints.legalTiles < 3;
+  el.boardStatus.textContent = `Placing: ${label(type)}.${outlined ? ` ${SUGGEST_TEXT.legalTiles}` : ''}`;
+  if (outlined) updatePrefs(bumpHint(prefs, 'legalTiles'));
+  if (prefs.suggest && state.phase === 'build') updatePrefs(rememberRoom(prefs, state.venue.id, { lastTool: type }));
   updateBuild();
   draw();
 }
@@ -2464,7 +2613,7 @@ function pickTool(type) {
 
 const phoneQuery = window.matchMedia('(max-width: 680px)');
 const shortWindowQuery = window.matchMedia('(max-height: 760px)');
-ui.tabs = {};
+ui.tabs = { ...prefs.phone.tabs };
 
 function setSheetSize(size) {
   document.body.dataset.sheetSize = size;
@@ -2533,9 +2682,11 @@ function syncTabs(root, key, pick) {
       g.classList.toggle('tab-off', name !== current);
     });
   });
+  const keep = (name) => { if (root === el.panel && TAB_PHASES.includes(key)) updatePrefs(rememberTab(prefs, key, name)); };
   bar.addEventListener('click', (e) => {
     const tab = e.target.closest('[role="tab"]');
     if (!tab) return;
+    keep(tab.dataset.tabName);
     syncTabs(root, key, tab.dataset.tabName);
     const again = root.querySelector(`.tabbar [data-tab-name="${CSS.escape(tab.dataset.tabName)}"]`);
     if (again) again.focus();
@@ -2545,6 +2696,7 @@ function syncTabs(root, key, pick) {
     e.preventDefault();
     const i = names.indexOf(current);
     const next = names[(i + (e.key === 'ArrowRight' ? 1 : names.length - 1)) % names.length];
+    keep(next);
     syncTabs(root, key, next);
     const again = root.querySelector(`.tabbar [data-tab-name="${CSS.escape(next)}"]`);
     if (again) again.focus();
@@ -2781,6 +2933,13 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
     el.saveCode.value = code || '';
     el.saveCode.select();
     setSaveStatus(code ? 'Copy this code to move your game to another browser.' : 'Nothing saved yet.');
+  } else if (kind === 'forget-prefs') {
+    clearPrefs(prefsStorage);
+    prefs = defaultPrefs();
+    ui.tabs = {};
+    syncSuggestToggle();
+    rerenderPanel();
+    setSaveStatus(SUGGEST_TEXT.forgot);
   } else if (kind === 'import') {
     importCode(el.saveCode.value);
   } else if (kind === 'new') {
@@ -2867,10 +3026,26 @@ window.render_game_to_text = () => {
     development: state.research ? { ...researchFor(state), booked: researchEffectsFor(state).learned } : null,
     settlement: r ? { attendance: r.attendance, satisfaction: r.satisfaction, net: r.net, result: r.result, doorRush: r.doorRush } : null,
     history: state.history.length,
+    suggestions: suggestionsSnapshot(),
   });
 };
+
+// What the suggestions show now, for the smoke rail; reading it changes nothing.
+function suggestionsSnapshot() {
+  const legal = legalSet();
+  return {
+    enabled: prefs.suggest,
+    book: state.phase === 'book' ? bookSuggestions(state, prefs, (id, deal) => dealAction(id, deal)) : null,
+    build: state.phase === 'build' ? { weakest: buildSuggestion(state, prefs), shown: !!buildHint(), ringed: [...el.panel.querySelectorAll('.tools-plate label.tile.ring input')].map((i) => i.value), pickExit: !!$('#pick-exit'), legalTiles: legal ? legal.size : null } : null,
+    promote: state.phase === 'promote' ? promoteSuggestion(state, prefs) : null,
+    incident: state.phase === 'show' ? incidentSuggestion(state, prefs) : null,
+    next: state.phase === 'done' ? nextShowPreview(state) : null,
+  };
+}
 window.__frontOfHouse = {
   state: () => JSON.parse(JSON.stringify(state)),
+  prefs: () => JSON.parse(JSON.stringify(prefs)),
+  suggestions: () => suggestionsSnapshot(),
   act: (action) => act(action),
   skip: () => skipToIncident(),
   importCode,
@@ -2890,15 +3065,31 @@ window.__frontOfHouse = {
 // ---------------------------------------------------------------------------
 // Boot
 
-function setTheme(theme) {
+function setTheme(theme, { remember = true } = {}) {
   document.documentElement.dataset.theme = theme;
   $('#theme-toggle').setAttribute('aria-pressed', String(theme === 'dark'));
-  try { localStorage.setItem('front_of_house_theme', theme); } catch { /* Play remains available without storage. */ }
+  if (remember) updatePrefs(setView(prefs, { theme }));
 }
-let savedTheme = 'light';
-try { if (localStorage.getItem('front_of_house_theme') === 'dark') savedTheme = 'dark'; } catch { /* Use the default. */ }
-setTheme(savedTheme);
+setTheme(prefs.view.theme, { remember: false });
 $('#theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+// Suggestions on or off (off also forgets the remembered deals, prices, ads, tools and responses).
+function syncSuggestToggle() {
+  const button = $('#suggest-toggle');
+  button.setAttribute('aria-pressed', String(prefs.suggest));
+  button.textContent = prefs.suggest ? SUGGEST_TEXT.suggestOn : SUGGEST_TEXT.suggestOff;
+}
+function rerenderPanel() {
+  if (state.phase === 'show') { update(); draw(); return; } // never restart show-night playback
+  ui.mounted = null;
+  render();
+}
+syncSuggestToggle();
+$('#suggest-toggle').addEventListener('click', () => {
+  updatePrefs(setSuggest(prefs, !prefs.suggest));
+  syncSuggestToggle();
+  rerenderPanel();
+});
 
 persist();
 // Another tab saving this game replaces the copy shown here, so a stale tab cannot sign, book or
