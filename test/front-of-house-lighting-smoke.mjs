@@ -25,8 +25,8 @@ try {
   assert.equal(await page.evaluate(c=>__frontOfHouse.importCode(c),code(state)),true);
   const before=await page.evaluate(()=>__frontOfHouse.state());
   await page.locator('#menu-btn').click();await page.locator('#menu [data-act="equipment-open"]').click();
-  if(theme==='dark'){await page.locator('#win [data-tab-name="Deploy"]').click();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('#win [data-tab-name="Lighting"]').getAttribute('aria-selected'),'true');}
-  else await page.locator('#win [data-tab-name="Lighting"]').click();
+  if(theme==='dark'){await page.locator('#win [data-tab-name="Deploy"]').click();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('#win [data-tab-name="Lights"]').getAttribute('aria-selected'),'true');}
+  else await page.locator('#win [data-tab-name="Lights"]').click();
   if(house){assert.match(await page.locator('#win-body').innerText(),/House lights \+ tower placed/);assert.match(await page.locator('#win-body').innerText(),/no extra quality bonus/);}
   const image=page.locator('#win .pa-equipment-card:visible img');await image.evaluate(i=>i.decode());
   assert.equal(await image.evaluate(i=>i.naturalWidth),640);
