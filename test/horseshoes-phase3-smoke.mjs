@@ -100,7 +100,7 @@ fs.mkdirSync(output, { recursive: true });
       let attempts = 0, searches = [], throws = 0;
       while ((await state()).match.phase !== 'complete' && attempts++ < 180) {
         const s = await state(); assert.equal(s.ai.error, '');
-        if (s.match.phase === 'inning') { await press('#next-button'); continue; }
+        if (s.match.phase === 'inning') { assert.match(await page.locator('#flight-readout').textContent(), /continue from Controls/); await press('#next-button'); continue; }
         if (s.match.phase === 'ready' && s.match.player === 0) { await press('#throw-button'); throws++; }
         await advance();
         if ((await state()).ai.busy) {
