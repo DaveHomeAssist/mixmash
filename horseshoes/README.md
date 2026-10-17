@@ -56,7 +56,7 @@ existing homepage, and the global keyboard shortcuts defer to focused native
 controls and modified browser shortcuts. The application asset was fingerprinted
 again so cached clients receive the correction. Physics is unchanged. The mobile
 court height now leaves room for utility controls at 375 × 812 without page
-scrolling.
+scrolling. Retry also clears the previous throw’s hit banner immediately.
 The recorded source commit is provenance from PR #154; it was not available from
 the source repository during this verification, so this is an explicit deployment
 patch rather than a claim of a new source build. Preserve these corrections when

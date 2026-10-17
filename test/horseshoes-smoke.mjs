@@ -52,6 +52,7 @@ try {
       assert.deepEqual(later.shoe.position, rested.shoe.position, 'rest is stable');
       results.push({ width, preset, shoe: rested.shoe });
       await activate('#retry-button');
+      assert.equal(await page.locator('#stake-flash').isVisible(), false, 'retry clears the previous hit banner');
     }
     await activate('#camera-button'); await activate('#debug-button');
     assert.equal((await state(page)).camera, 'close');
