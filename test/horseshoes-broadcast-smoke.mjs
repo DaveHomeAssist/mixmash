@@ -46,6 +46,12 @@ const context=await browser.newContext({reducedMotion:'reduce'}),page=await cont
 const delayed=await browser.newContext();delayed.setDefaultTimeout(30000);const slow=await delayed.newPage();let release;
 await slow.route('**/fmp-venue*.json',async route=>{await new Promise(resolve=>{release=resolve;});await route.continue();});
 await slow.goto(url,{waitUntil:'domcontentloaded'});await slow.waitForFunction(()=>window.__horseshoes);
-await slow.locator('#monitors-button').click();const before=await slow.evaluate(()=>__horseshoes.getState());assert.equal(before.broadcast.screens,0);assert.equal(before.camera,'monitors');release();
-await slow.waitForFunction(()=>__horseshoes.getState().broadcast.screens===4);const after=await slow.evaluate(()=>__horseshoes.getState());assert.notDeepEqual(after.cameraPose,before.cameraPose);await delayed.close();
+assert.equal(await slow.locator('#monitors-button').isDisabled(),true);assert.equal(await slow.locator('#tour-button').isDisabled(),true);release();
+await slow.waitForFunction(()=>!document.querySelector('#monitors-button').disabled);await slow.locator('#monitors-button').click();const after=await slow.evaluate(()=>__horseshoes.getState());assert.equal(after.camera,'monitors');assert.equal(after.broadcast.screens,4);await delayed.close();
+for(const broken of ['failed','unsupported']) {
+ const context=await browser.newContext();context.setDefaultTimeout(30000);const p=await context.newPage();
+ await p.route('**/fmp-venue*.json',async route=>{if(broken==='failed')return route.abort();const response=await route.fetch();const data=await response.json();const visit=o=>{if(o.name==='D1 lawn delay')o.name='unknown display';for(const child of o.children||[])visit(child);};visit(data.object);await route.fulfill({json:data});});
+ await p.goto(url);await p.waitForFunction(()=>document.querySelector('#venue-status')?.textContent.includes('unavailable'));
+ assert.equal(await p.locator('#tour-button').isDisabled(),true);assert.equal(await p.locator('#monitors-button').isDisabled(),true);await p.locator('#menu-resume').click();assert.equal((await p.evaluate(()=>__horseshoes.getState())).tour.active,false);await p.locator('#throw-button').click();assert.equal((await p.evaluate(()=>__horseshoes.getState())).shoe.status,'flying');await context.close();
+}
 fs.writeFileSync(`${output}/report.json`,JSON.stringify({url,results,reducedMotion:true},null,2));console.log(JSON.stringify(results));}finally{await browser.close();await server?.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

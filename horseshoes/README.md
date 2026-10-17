@@ -1,6 +1,6 @@
 # Backyard Horseshoes — Phase 3 prototype
 
-Built from DaveHomeAssist/curling-simulator commit `03cdf57d0d92bac08c39e67b6f20f32352bf06d5` ([source PR13](https://github.com/DaveHomeAssist/curling-simulator/pull/13)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
+Built from DaveHomeAssist/curling-simulator commit `78a16b5a458c8d1f5dd4bb40af4ef8698e96fbbf` ([source PR14](https://github.com/DaveHomeAssist/curling-simulator/pull/14)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
 
 ## Play
 
@@ -39,3 +39,5 @@ Menu pause/focus, explicit new-game choices, both themes and distinct control co
 Four schematic lawn delay monitors show a silent instant replay of each settled throw, while the next throw remains available. The feed holds its final frame; menu/hidden page pause it, and a new game clears it. The intro is a six-second camera pass with Skip, Escape, pointer or throw cancellation; reduced motion skips it. Menu offers Tour venue and View delay screens. Throwing from the optional screen view returns to the court.
 
 The Horseshoes adapter consumes the existing pinned FMP geometry under ECP-1.0; D1–D4 lawn delay anchor names and source demo dimensions remain unchanged. It adds only a simulated screen feed, with no hardware connection or producer changes. Source brief: docs/HORSESHOES_BROADCAST_BRIEF.md. Release verification pending; source release record owns next steps.
+
+Venue views stay disabled while loading or if the four named screen anchors are unavailable, with a visible menu status. The court remains playable. The replay camera tracks the recorded shoe in flight and at the landing.
