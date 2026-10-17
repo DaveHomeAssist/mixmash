@@ -73,6 +73,29 @@
   canvas.menu-captured { pointer-events: none; filter: saturate(0.7) brightness(0.48); }
   button, input, select { font: inherit; }
   .menu-overlay[hidden] { display: none; }
+  .menu-overlay[data-theme="light"] {
+    --mix-panel-strong: #ffffff;
+    --mix-text: #18263c;
+    --mix-muted: #42536b;
+    --mix-orange: #9b3900;
+    --mix-cyan: #006478;
+    --mix-focus: #006478;
+    color-scheme: light;
+  }
+  .menu-overlay[data-theme="light"] .mix-menu { background: #f5f7fb; }
+  .menu-overlay[data-theme="light"] .menu-card,
+  .menu-overlay[data-theme="light"] .menu-action.secondary,
+  .menu-overlay[data-theme="light"] .menu-tab:not([aria-selected="true"]),
+  .menu-overlay[data-theme="light"] .rebind-button,
+  .menu-overlay[data-theme="light"] .menu-close { background: #fff; border-color: #a8b4c4; }
+  .menu-overlay[data-theme="light"] .menu-action:not(.secondary) { color: #fff; background: #006478; }
+  .menu-overlay[data-theme="light"] .menu-tab[aria-selected="true"] { color: #fff; background: #9b3900; }
+  .menu-overlay[data-theme="dark"] { color-scheme: dark; }
+  .menu-header-actions { display: flex; gap: 8px; }
+  #menu-theme { padding: 0 10px; white-space: nowrap; }
+  .match-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .match-fields label { display: grid; gap: 6px; color: var(--mix-muted); font-size: 13px; }
+  .match-fields select { width: 100%; min-width: 0; min-height: 44px; padding: 8px; color: var(--mix-text); background: var(--mix-panel-strong); border: 1px solid #8492a6; border-radius: 6px; }
   .menu-overlay {
     position: fixed;
     inset: 0;
@@ -517,7 +540,10 @@
   @media (max-width: 760px) {
     .mix-menu { max-height: calc(100vh - 16px); }
     .mix-menu__header { padding: 16px; }
-    .menu-tabs { grid-template-columns: 1fr; }
+    .menu-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .menu-tab { padding: 0 4px; font-size: 11px; }
+    .mix-menu h1 { font-size: 22px; }
+    .mix-menu__summary { display: none; }
     .menu-panels { padding: 14px; }
     .panel-grid,
     .mechanics-grid,
@@ -554,10 +580,14 @@
         <h1 id="menu-title">Setup, Controls, Audio, Progress</h1>
         <p id="menu-summary" class="mix-menu__summary">Configure a match without leaking inputs into the canvas. Opening this menu pauses active play and captures keyboard focus until it closes.</p>
       </div>
-      <button id="menu-close" class="menu-close" type="button" aria-label="Close menu">×</button>
+      <div class="menu-header-actions">
+        <button id="menu-theme" class="menu-action secondary" type="button">Dark</button>
+        <button id="menu-close" class="menu-close" type="button" aria-label="Close menu">×</button>
+      </div>
     </header>
     <nav class="menu-tabs" role="tablist" aria-label="Menu sections">
       <button id="tab-onboarding" class="menu-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-onboarding" data-menu-tab="onboarding">Onboarding</button>
+      <button id="tab-match" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-match" data-menu-tab="match">Fighters</button>
       <button id="tab-controls" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-controls" data-menu-tab="controls">Controls</button>
       <button id="tab-audio" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-audio" data-menu-tab="audio">Audio</button>
       <button id="tab-progress" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-progress" data-menu-tab="progress">Progress</button>
@@ -570,7 +600,8 @@
             <p>Quick Fight starts a clean P1 versus CPU stock match. Sandbox opens Training with hitboxes enabled and no scoring pressure.</p>
             <div class="menu-actions">
               <button id="menu-resume-match" class="menu-action" type="button" hidden>Resume Saved Match</button>
-              <button id="menu-quick-fight" class="menu-action" type="button">Start Quick Fight</button>
+              <button id="menu-choose-fighters" class="menu-action" type="button">Choose Fighters</button>
+              <button id="menu-quick-fight" class="menu-action secondary" type="button">Start Quick Fight</button>
               <button id="menu-sandbox" class="menu-action secondary" type="button">Enter Sandbox</button>
               <button id="menu-copy-match" class="menu-action secondary" type="button">Copy Match Link</button>
               <button id="menu-copy-challenge" class="menu-action secondary" type="button">Copy Daily Challenge</button>
@@ -590,6 +621,21 @@
             </div>
             <p id="mechanics-empty" class="mechanics-empty" role="status" hidden>No mechanics match that filter.</p>
           </div>
+        </div>
+      </section>
+      <section id="panel-match" class="menu-panel" role="tabpanel" aria-labelledby="tab-match" data-menu-panel="match" hidden>
+        <div class="menu-card">
+          <h2>Choose your fighters</h2>
+          <div class="match-fields">
+            <label>Player 1<select id="match-p1"></select></label>
+            <label>Player 2<select id="match-p2"></select></label>
+            <label>Opponent<select id="match-opponent"><option value="cpu">CPU</option><option value="human">Local player</option></select></label>
+            <label>CPU difficulty<select id="match-level"><option value="1">Easy</option><option value="3">Normal</option><option value="5">Hard</option></select></label>
+            <label>Arena<select id="match-stage"></select></label>
+            <label>Rules<select id="match-mode"><option value="stock">Stock</option><option value="time">Timed</option><option value="training">Training</option></select></label>
+          </div>
+          <div class="menu-actions"><button id="menu-start-match" class="menu-action" type="button">Start Match</button></div>
+          <p>Your choices become the next Quick Fight setup. Player 1 uses your controls.</p>
         </div>
       </section>
       <section id="panel-controls" class="menu-panel" role="tabpanel" aria-labelledby="tab-controls" data-menu-panel="controls" hidden>
@@ -1968,12 +2014,35 @@ function renderAudioTrackOptions() {
   audioTrackSelect.value = current;
 }
 
+function renderMatchSetup() {
+  const fill = (id, keys, catalog, value) => {
+    const select = document.getElementById(id);
+    if (!select.options.length) {
+      for (const key of keys) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = catalog[key].name;
+        select.appendChild(option);
+      }
+    }
+    select.value = value;
+  };
+  fill('match-p1', FIGHTER_KEYS, FIGHTER_DEFS, quickFightSetup.p1Fighter);
+  fill('match-p2', FIGHTER_KEYS, FIGHTER_DEFS, quickFightSetup.p2Fighter);
+  fill('match-stage', STAGE_KEYS, STAGES, quickFightSetup.selectedStage);
+  document.getElementById('match-opponent').value = quickFightSetup.p2Cpu ? 'cpu' : 'human';
+  document.getElementById('match-level').value = String(quickFightSetup.p2CpuLevel);
+  document.getElementById('match-level').disabled = !quickFightSetup.p2Cpu;
+  document.getElementById('match-mode').value = quickFightSetup.matchType;
+}
+
 function updateMenuFormState() {
   // Resume is offered from the title only: mid-match it would overwrite the live match.
   if (menuResumeBtn) menuResumeBtn.hidden = !(snapshotAvailable && state.mode === 'title');
   renderControlBindings();
   renderAudioTrackOptions();
   renderProfilePanel();
+  renderMatchSetup();
   if (audioMasterInput) audioMasterInput.value = String(Math.round(mixmashConfig.audio.master_volume * 100));
   if (audioMusicInput) audioMusicInput.value = String(Math.round(mixmashConfig.audio.music_volume * 100));
   if (audioSfxInput) audioSfxInput.value = String(Math.round(mixmashConfig.audio.sfx_volume * 100));
@@ -2107,6 +2176,42 @@ function startSandboxFromMenu() {
 
 function setupDomMenu() {
   if (!menuOverlay) return;
+  let menuTheme = 'light';
+  try { if (localStorage.getItem('mixmash_menu_theme') === 'dark') menuTheme = 'dark'; } catch {}
+  const themeButton = document.getElementById('menu-theme');
+  const applyMenuTheme = () => {
+    menuOverlay.dataset.theme = menuTheme;
+    themeButton.textContent = menuTheme === 'light' ? 'Dark' : 'Light';
+    themeButton.setAttribute('aria-label', `Switch to ${themeButton.textContent.toLowerCase()} theme`);
+  };
+  applyMenuTheme();
+  themeButton.addEventListener('click', () => {
+    menuTheme = menuTheme === 'light' ? 'dark' : 'light';
+    try { localStorage.setItem('mixmash_menu_theme', menuTheme); } catch {}
+    applyMenuTheme();
+  });
+  document.getElementById('menu-choose-fighters').addEventListener('click', () => {
+    setMenuTab('match');
+    document.getElementById('match-p1').focus();
+  });
+  document.getElementById('match-opponent').addEventListener('change', () => {
+    document.getElementById('match-level').disabled = document.getElementById('match-opponent').value !== 'cpu';
+  });
+  document.getElementById('menu-start-match').addEventListener('click', () => {
+    initAudio();
+    applyQuickFightSetup({
+      ...quickFightSetup,
+      p1Fighter: document.getElementById('match-p1').value,
+      p2Fighter: document.getElementById('match-p2').value,
+      p1Cpu: false,
+      p2Cpu: document.getElementById('match-opponent').value === 'cpu',
+      p2CpuLevel: Number(document.getElementById('match-level').value),
+      selectedStage: document.getElementById('match-stage').value,
+      matchType: document.getElementById('match-mode').value,
+    });
+    closeDomMenu({ resume: false });
+    startMatch();
+  });
   menuOverlay.addEventListener('keydown', handleMenuKeydown, true);
   if (menuCloseBtn) menuCloseBtn.addEventListener('click', () => closeDomMenu());
   for (const btn of document.querySelectorAll('[data-menu-tab]')) {

@@ -3606,7 +3606,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — local match prototype",
-      "description": "Phase 2 of the Three.js / Rapier prototype, built from the readable source in DaveHomeAssist/curling-simulator commit 1feaf16.",
+      "description": "Phase 2 of the Three.js / Rapier prototype, built from the readable source in DaveHomeAssist/curling-simulator commit 1feaf16dbbd4d44b4795f64cea1cfa7ae5897a61, merged by source PR2 as…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
