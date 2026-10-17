@@ -275,7 +275,7 @@ A Lot playtest (Sodium Arcade, $500 guarantee) found these HUD problems; all are
 - **Toasts are per phase.** The board toast is cleared when the phase changes.
 - **Pan:** Space+drag and right-drag pan (above); the zoom toast and the menu help say how.
 - **Keys:** the menu's object keys list only the keys the room's tiles show (the Lot shows "1 to 9, T").
-- **Booking** by click or Enter books the same way; the Build card then confirms the act and deal and that Back returns to booking.
+- **Booking** by click or Enter books the same way. A board toast confirms the act and deal and that Back returns to booking, then fades, so the card plate never grows (FOH-QA-015). Back's label and Promote's lede say nothing is paid until the doors open.
 - **3D camera:** a tap on the 3D board focuses it so 0, +, − and Q work; 0 and Fit return the 3D camera home (zoom 1 and the default orbit); a new show or new game starts with the camera at home. The daytime 3D fence is drawn darker and firmer, and the 3D night is slightly brighter.
 - **2D/3D switch:** a 3D/2D button sits at the end of the camera group in the strip. To keep the strip from scrolling, the game's name is hidden below 1600px (it was 1440px), the Turn button shows only its arrow, and the strip's gaps tighten below 1280px. Phones keep their four floating camera buttons; there the switch stays in Menu → Camera.
 - **Book** dims the empty lot lightly (85%) instead of to 55%, which made the dark lot read as an unlit black slab on the light page.

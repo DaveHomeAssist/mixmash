@@ -58,6 +58,11 @@ const TIPS = {
 };
 // Suggestion copy (docs/ANTICIPATORY_UX.md). Suggestions highlight or pre-fill on a press; none
 // books, places, opens doors, responds or signs.
+// Build's booking confirmation (docs/HUD.md, FOH-QA-015): a board toast, not a card line.
+const BOOKED_TEXT = {
+  booked: 'Booked {act} on {deal}. Nothing is paid until the doors open; Back returns to booking.',
+  unpaid: 'Nothing is paid until you open the doors.',
+};
 const SUGGEST_TEXT = {
   lastDeal: 'Last time',
   fitsCash: 'Fits your cash',
@@ -572,7 +577,7 @@ function buildPanel() {
         <button type="button" data-act="clear-lot" aria-label="Clear the ${where}">Clear</button>
       </div>
       <div class="row tight">
-        <button type="button" data-act="back" aria-label="Back to booking">Back</button>
+        <button type="button" data-act="back" aria-label="Back to booking. ${esc(BOOKED_TEXT.unpaid)}" title="Back to booking. ${esc(BOOKED_TEXT.unpaid)}">Back</button>
         <button type="button" class="primary" data-act="confirm-build" id="confirm-build">Lock the layout</button>
       </div>
     </div>`;
@@ -879,7 +884,7 @@ function promotePanel() {
   return `
     <p class="eyebrow">14 days out · ${esc(artistFor(state.booking.artistId).name)} · ${esc(spec.name)}</p>
     <div class="show-art-heading">${bandArt(state.booking.artistId, 'band-art-small')}<h2>Promote the show</h2></div>
-    <p class="lede" id="promo-lede" data-default="${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}">${sponsorPrice !== undefined ? 'The sponsor fixes ticket price. Set the ads and check the forecast.' : 'Set the price and the ads. The forecast shows the likely range.'}</p>
+    <p class="lede" id="promo-lede" data-default="${sponsorPrice !== undefined ? `The sponsor fixes ticket price. Set the ads. ${BOOKED_TEXT.unpaid}` : `Set the price and the ads. ${BOOKED_TEXT.unpaid}`}">${sponsorPrice !== undefined ? `The sponsor fixes ticket price. Set the ads. ${BOOKED_TEXT.unpaid}` : `Set the price and the ads. ${BOOKED_TEXT.unpaid}`}</p>
     <p id="msg" class="message" aria-live="polite"></p>
     <div class="cols">
       <div class="col" data-tab="Price and ads">
@@ -2393,7 +2398,10 @@ function bookDeal(target, action) {
   if (!act(action) || state.phase !== 'build') return;
   const name = artistFor(state.booking.artistId).name;
   const deal = state.booking.deal === 'door' ? 'a door deal' : state.booking.deal === 'sponsor' ? 'a sponsored show' : `a ${money(quotedAsk())} guarantee`;
-  say(`Booked ${name} on ${deal}. Nothing is paid until the doors open; Back returns to booking.`, 'info');
+  // The confirmation is a board toast that fades, so it never grows the card plate (FOH-QA-015);
+  // Back's label keeps the 'nothing is paid' line in Build, and Promote's lede states it beside
+  // Open doors, where the money is spent.
+  el.boardStatus.textContent = BOOKED_TEXT.booked.replace('{act}', name).replace('{deal}', deal);
 }
 
 function onAct(e) {
