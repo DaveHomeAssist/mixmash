@@ -395,6 +395,15 @@
     "Human camera, visual and career acceptance remain pending."
   ],
   "evidence": {
+    "equipmentPlatform": {
+      "checkedOn": "2026-10-17",
+      "contract": "ECP-1.0 revision 1.0",
+      "sourceRevision": "772e2afa49747c6e32fa976e9ad8211bad10d608 instruction baseline; contract SHA256 42ffeaccc711e81b150f7149d358c228b2262a5e730000a3d66dc6cd0c82877e",
+      "scope": "Instruction-only adoption; gameplay, assets, saves and other evidence unchanged",
+      "adapter": "front-of-house/docs/EQUIPMENT_PLATFORM_ADAPTER.md",
+      "next": "Scope one ZLX visual test prop/reference adapter through the existing brief workflow; preserve aggregate PA rules",
+      "remaining": "Independent consumer instruction loading, runtime asset integration and acceptance remain pending"
+    },
     "clubLighting": {
       "baseRevision": "12a501afddb219b2c7a00b1a4ae224f09a4e001d",
       "checkedOn": "2026-10-04",
