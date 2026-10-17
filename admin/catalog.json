@@ -1181,6 +1181,86 @@
       "open": null
     },
     {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f01.png",
+      "description": "DEC-79 paid-test astronaut, active animation frame 1 of 4, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f02.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f02.png",
+      "description": "DEC-79 paid-test astronaut, active animation frame 2 of 4, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f02.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f02.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f03.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f03.png",
+      "description": "DEC-79 paid-test astronaut, active animation frame 3 of 4, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f03.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f03.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/actor/astronaut__active__f04.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "astronaut__active__f04.png",
+      "description": "DEC-79 paid-test astronaut, active animation frame 4 of 4, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/actor/astronaut__active__f04.png",
+      "open": "/mars/assets/commissioned/sprites/actor/astronaut__active__f04.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/building/habitat__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "habitat__active__f01.png",
+      "description": "DEC-79 paid-test habitat in its active state, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/building/habitat__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/building/habitat__active__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/building/habitat__damaged__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "habitat__damaged__f01.png",
+      "description": "DEC-79 paid-test habitat in its damaged state, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/building/habitat__damaged__f01.png",
+      "open": "/mars/assets/commissioned/sprites/building/habitat__damaged__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/resource/blue_crystal__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "blue_crystal__active__f01.png",
+      "description": "DEC-79 paid-test blue crystal resource node, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/resource/blue_crystal__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/resource/blue_crystal__active__f01.png"
+    },
+    {
+      "path": "mars/assets/commissioned/sprites/terrain/base_soil__active__f01.png",
+      "project": "mars",
+      "category": "art",
+      "kind": "PNG",
+      "title": "base_soil__active__f01.png",
+      "description": "DEC-79 paid-test base soil terrain tile, flat runtime export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/assets/commissioned/sprites/terrain/base_soil__active__f01.png",
+      "open": "/mars/assets/commissioned/sprites/terrain/base_soil__active__f01.png"
+    },
+    {
       "path": "mars/assets/manifest.json",
       "project": "mars",
       "category": "art",
@@ -1341,6 +1421,16 @@
       "open": null
     },
     {
+      "path": "mars/art/author-paid-test.mjs",
+      "project": "mars",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "author-paid-test.mjs",
+      "description": "Reproducible generator for the DEC-79 paid-test candidate: draws the four test assets in independent layers and exports layered Aseprite sources plus flat runtime PNGs.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/author-paid-test.mjs",
+      "open": null
+    },
+    {
       "path": "mars/art/validate-assets.mjs",
       "project": "mars",
       "category": "tooling",
@@ -1408,6 +1498,46 @@
       "title": "art-spec.js",
       "description": "Script for the render-contract proof page: projection, footprints and every cached sprite map.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art-spec.js",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/actor/astronaut.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "astronaut.aseprite",
+      "description": "Layered Aseprite source for the paid-test astronaut (four active frames); the editable original behind the commissioned PNG exports.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/actor/astronaut.aseprite",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/building/habitat.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "habitat.aseprite",
+      "description": "Layered Aseprite source for the paid-test habitat (active and damaged states); the editable original behind the commissioned PNG exports.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/building/habitat.aseprite",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/resource/blue_crystal.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "blue_crystal.aseprite",
+      "description": "Layered Aseprite source for the paid-test blue crystal resource node; the editable original behind the commissioned PNG export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/resource/blue_crystal.aseprite",
+      "open": null
+    },
+    {
+      "path": "mars/art/sources/terrain/base_soil.aseprite",
+      "project": "mars",
+      "category": "source",
+      "kind": "TXT",
+      "title": "base_soil.aseprite",
+      "description": "Layered Aseprite source for the paid-test base soil terrain tile; the editable original behind the commissioned PNG export.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/art/sources/terrain/base_soil.aseprite",
       "open": null
     },
     {
