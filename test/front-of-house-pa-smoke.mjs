@@ -47,6 +47,18 @@ try {
    assert.match(await page.locator('#win .pa-equipment-card:visible').innerText(),/Medium PA/);
    await page.locator('#win .pa-equipment-card:visible img').evaluate(i=>i.decode());
    await page.screenshot({path:`${output}/medium-deploy.png`});
+   await page.locator('#win [data-win="close"]').first().click();
+   await page.evaluate(()=>__frontOfHouse.boardCamera({yaw:0,pitch:90,zoom:3,x:10,y:3}));
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   const point=await page.evaluate(()=>__frontOfHouse.boardClientOf(8.25,.5));
+   await page.mouse.click(point.x,point.y);
+   assert.equal(await page.locator('#win-title').innerText(),'PA (medium)');
+   for(const [w,h] of [[1440,900],[375,812],[844,390],[320,256]]) {
+    await page.setViewportSize({width:w,height:h});
+    const fits=await page.locator('#win .win-body').evaluate(e=>e.scrollHeight<=e.clientHeight+1 && e.scrollWidth<=e.clientWidth+1);
+    assert.ok(fits,`PA inspection fits ${w}x${h}`);
+    await page.screenshot({path:`${output}/inspection-${w}.png`});
+   }
   }
   assert.deepEqual(errors,[]);await context.close();console.log(`PA cards ${theme} ${width}x${height}: fit, image, state and reload passed`);
  }

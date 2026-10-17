@@ -40,3 +40,5 @@ Dave authorized the existing FOH-U05 brief through the project controller. Base 
 User request: Implement the PA rig and equipment menu cards using equipment models; keep game rules and saves intact and provide screenshots. Scoped brief added; isolated from concurrent work. Verification pending.
 
 - Dominic: targeted PA/ownership/integration tests (16), seven existing equipment journeys and eight light/dark viewport cases passed. Preview framing corrected after visual inspection. Rules/data/save files unchanged. CI and deployment pending.
+
+- Full runner suite: 471 passed; one admin test-file failure was Docker Git ownership, with all six admin tests passing on rerun as the checkout owner. Build and manifest passed. Warmed-cache offline reload preserves exact owned/assigned save and loads 3D/cards. Short landscape PA inspection now compacts; optional illustration yields below 300px height. PR168 opened; release checks pending.

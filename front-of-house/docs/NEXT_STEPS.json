@@ -8,7 +8,7 @@
   "head": "0.3.4 PA equipment models and cards in verification",
   "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "PA visual adapter and matching equipment cards implemented against 772e2af. Dominic passed 16 targeted unit tests, seven Chromium/WebKit equipment journeys and eight light/dark viewport screenshot cases. Rules and save source unchanged. CI, merge and deployment pending. Private Next Steps Board unavailable; broader human and physical acceptance remain separate.",
+  "statusReason": "PA visual adapter and matching equipment cards implemented against 772e2af. Dominic passed the game/unit suite (471 tests plus the six admin checks rerun after correcting disposable-container ownership), build, manifest, seven Chromium/WebKit equipment journeys, responsive light/dark cards and exact owned/assigned save continuity after a warmed-cache offline reload. Short landscape inspection layout corrected. Rules and save source unchanged. PR168 CI, merge and deployment pending. Private Next Steps Board unavailable; broader human and physical acceptance remain separate.",
   "activity30d": {
     "headline": "PA equipment visual slice implemented; release verification in progress."
   },

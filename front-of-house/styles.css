@@ -1007,3 +1007,13 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   .pa-equipment-card { margin: 0; padding: 4px; }
   .pa-equipment-card small, .pa-card-eyebrow { display: none; }
 }
+@media (max-height: 560px) {
+  #win[data-kind="selection"] { padding: 4px; }
+  #win[data-kind="selection"] .win-body { gap: 4px; padding: 8px; }
+  #win[data-kind="selection"] .win-body > p { margin: 0; font-size: .85rem; line-height: 1.3; }
+  #win[data-kind="selection"] .pa-equipment-card { margin: 0; }
+  #win[data-kind="selection"] .pa-equipment-card img { height: 64px; }
+}
+@media (max-height: 300px) {
+  #win[data-kind="selection"] .pa-equipment-card { display: none; }
+}
