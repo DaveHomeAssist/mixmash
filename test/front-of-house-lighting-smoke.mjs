@@ -31,8 +31,17 @@ try {
   const image=page.locator('#win .pa-equipment-card:visible img');await image.evaluate(i=>i.decode());
   assert.equal(await image.evaluate(i=>i.naturalWidth),640);
   assert.match(await page.locator('#win').innerText(),/8 kW/);assert.match(await page.locator('#win').innerText(),/\$175/);
-  const fits=await page.evaluate(()=>[document.documentElement,document.querySelector('#win .win-body')].every(e=>e.scrollWidth<=e.clientWidth+1&&e.scrollHeight<=e.clientHeight+1));assert.ok(fits,`${theme} ${width} fits`);
+  const fits=await page.evaluate(()=>[document.documentElement,document.querySelector('#win .win-body'),...document.querySelectorAll('#win .tabbar button')].every(e=>e.scrollWidth<=e.clientWidth+1&&e.scrollHeight<=e.clientHeight+1));assert.ok(fits,`${theme} ${width} fits`);
   await page.screenshot({path:`${output}/lighting-${theme}-${width}.png`});
+  if(house)for(const [w,h] of [[844,390],[320,256],[3840,1080]]) {
+   await page.setViewportSize({width:w,height:h});
+   await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+   for(let part=0;part<20;part++) {
+    const fit=await page.evaluate(()=>[document.documentElement,document.querySelector('#win .win-body'),...document.querySelectorAll('#win .tabbar button')].every(e=>e.scrollWidth<=e.clientWidth+1&&e.scrollHeight<=e.clientHeight+1));assert.ok(fit,`Lighting page/buttons fit ${w}x${h}`);
+    assert.ok(await page.locator('#win .tabbar button').evaluateAll(es=>es.every(e=>e.getBoundingClientRect().height>=44)));
+    const next=page.locator('#win-foot [data-step="1"]');if(!await next.count()||!await next.isEnabled())break;assert.ok(part<19);await next.click();
+   }
+  }
   assert.deepEqual(await page.evaluate(()=>__frontOfHouse.state()),before);
   await page.locator('#win [data-win="close"]').first().click();
   assert.ok(await page.locator('#menu-btn').evaluate(e=>e===document.activeElement),'Equipment close restores visible menu focus');

@@ -1017,3 +1017,8 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 @media (max-height: 300px) {
   #win[data-kind="selection"] .pa-equipment-card { display: none; }
 }
+
+/* Five Equipment tabs stay legible without clipping in narrow windows. */
+@media (max-width: 600px) {
+  #win[data-kind="equipment"] .tabbar button { font-family: var(--font-ui); font-size: .75rem; letter-spacing: 0; padding-inline: 2px; }
+}

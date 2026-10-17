@@ -52,3 +52,5 @@ PR168 final4945433 passed required CI39057828540 and merged8b5ae09. Pages built 
 ## 2026-10-17 lighting equipment slice
 
 User requested lighting rigs and equipment cards with unchanged rules/saves and screenshots. Added source-derived J-Six/Vertigo exteriors and shared Lighting preview/page. Verification and delivery pending. No engine/data/save/ownership changes.
+
+Lighting review follow-up: combined house+tower status and visible Menu focus restored. CI exposed Lighting tab text clipping at320px; scoped narrow Equipment tab typography/padding now fits with44px targets. Expanded browser regression covers compact pages and button bounds; release checks rerunning.
