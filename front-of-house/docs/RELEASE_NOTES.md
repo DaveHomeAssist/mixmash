@@ -5,6 +5,12 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.2 — 2026-10-17
+
+- Adds anticipatory suggestions that never act for the player. Build outlines the tiles where a gate, exit or PA can go (in 2D and 3D), offers **Pick Exit** when exits cap capacity, names last night's weakest part and rings the tools that help. Book marks the deal used last time and warns about a short guarantee. Promote offers **Same as last time** for price and ads, applied only on a press. Show marks the last response to the same incident, and Done previews the next offers.
+- Adds the device preferences key `front_of_house_prefs` (version 1, at most 2 KB), which absorbs the 3D/2D and Dark controls choices. Adds **Suggestions: On/Off** and **Forget suggestions & view settings** to the menu. Phones remember the last tab per phase.
+- Game rules, economics, balance baselines and save schema 2 are unchanged; preferences are outside the save. Uses cache v81.
+
 ## 0.3.1 — 2026-10-12
 
 - Adds original illustrated band lineups for all eleven acts, venue artwork in booking, and matching illustrations in Promote and Menu.

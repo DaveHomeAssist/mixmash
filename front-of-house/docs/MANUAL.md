@@ -19,6 +19,18 @@ Open **Menu → Advisory desk** for one current priority, then choose **Ticketin
 
 Before doors, crowd numbers are forecasts and the opening bill is separate from final profit. During Show, advice uses only the visible incident or current live-service counts. After signing, **Last show** advice opens the signed settlement read-only. Locked terms show their reason; the desk does not hire staff, advance time or act for you.
 
+## Suggestions
+
+The game remembers a few of your own choices in this browser and points at them. It never acts for you:
+
+- **Book** marks the deal you used last time with an act (**Last time**). It warns when a guarantee would leave you short at the doors, and marks a door deal that fits your cash.
+- **Build** outlines every tile where the chosen gate, exit or PA can go. When exits cap capacity, **Pick Exit** in the readiness line picks the Exit tool. After a show, the hint line names last night's weakest part and rings the tools that help. Otherwise the last tool you used is ringed.
+- **Promote** offers **Same as last time** for the act's price and ads. **Apply** only sets the sliders; nothing is paid until you open the doors.
+- **Show** marks the response you chose last time for the same incident.
+- **Done** previews the next show's acts and asks.
+
+Turn them off with **Menu → Suggestions**. **Menu → Save and load → Forget suggestions & view settings** removes everything remembered, including the 3D/2D and Dark controls choices. Your game is not affected. These preferences stay in this browser: they are not in save codes and are never sent anywhere.
+
 ## Choose a deal
 
 | Deal | What to check |
