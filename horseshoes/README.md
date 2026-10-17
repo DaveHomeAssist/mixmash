@@ -45,7 +45,15 @@ acceptance remains separate. Run `npm run smoke:horseshoes`; set
 `HORSESHOES_BASE_URL=https://mixmash.games/horseshoes/` to exercise publication.
 
 Phase 1 full postmerge CI38989410478 passed at published merge2c417b3.
-Phase 2 release CI and live verification are pending this PR's publication.
-Next: verify the published match, then gather physical-device play feedback.
+Phase 2 CI, publication and live verification are recorded in the owning pull
+requests and source release record. Next: gather physical-device play feedback.
 Phase 3 AI/audio/replay remains deferred. Source planning and release records:
 `docs/HORSESHOES_PHASE2_BRIEF.md`, `docs/HORSESHOES_RELEASE.md` in the source repo.
+
+## Keyboard history correction
+
+Source commit `c06f8a6` places tabs before their panels in keyboard order, gives
+score history a focus target/ring, and preserves native scrolling keys. The
+expanded smoke reproduces the old failure and checks Tab into history plus
+ArrowDown/End scrolling without changing throw strength. Physics/scoring and
+all existing game routes remain unchanged.
