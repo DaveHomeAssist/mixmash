@@ -14,7 +14,20 @@ async function fit(page){await page.evaluate(()=>new Promise(r=>requestAnimation
 async function pages(page){for(let i=0;i<20;i++){await fit(page);const next=page.locator('#win-foot [data-step="1"]');if(!await next.count()||!await next.isEnabled())return;await next.click();}assert.fail('Paginator did not finish');}
 try {for(const [name,launcher] of Object.entries({chromium,webkit})){
  const browser=await launcher.launch(name==='chromium'?launchOptions():{});
- try{for(const theme of ['light','dark'])for(const [width,height]of name==='chromium'?[[1440,900],[375,812],[360,800],[1024,700],[844,390],[320,256],[3840,1080]]:[[1440,900],[375,812]]){
+ try{
+ // A hub-only install must support the first FOH visit offline, before runtime warming.
+ if(name==='chromium'){
+  const context=await browser.newContext({viewport:{width:1440,height:900}}),page=await context.newPage();
+  const root=new URL('../',origin).href;
+  await page.goto(root+'offline.html');await page.evaluate(async()=>{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;});
+  await context.setOffline(true);await page.goto(origin+'?renderer=2d');await page.waitForFunction(()=>window.__frontOfHouse);
+  const before=await page.evaluate(()=>__frontOfHouse.state());
+  await page.locator('#menu-btn').click();await page.locator('#menu [data-act="site-equipment-open"]').click();
+  for(const type of SITE_CARD_TYPES){await page.locator('[data-input="equipment-model"]').selectOption(type);await page.locator('#win .pa-equipment-card img').evaluate(i=>i.decode());}
+  assert.deepEqual(await page.evaluate(()=>__frontOfHouse.state()),before);await page.reload();await page.waitForFunction(()=>window.__frontOfHouse);assert.deepEqual(await page.evaluate(()=>__frontOfHouse.state()),before);
+  await context.close();console.log('Cold hub install: first FOH visit, twelve previews and exact reload pass offline');
+ }
+ for(const theme of ['light','dark'])for(const [width,height]of name==='chromium'?[[1440,900],[375,812],[360,800],[1024,700],[844,390],[320,256],[3840,1080]]:[[1440,900],[375,812]]){
   const context=await browser.newContext({viewport:{width,height},reducedMotion:'reduce',serviceWorkers:'block'}),page=await context.newPage(),errors=trackPageFailures(page,new URL(origin).origin);
   await page.addInitScript(t=>localStorage.setItem('front_of_house_theme',t),theme);await page.goto(origin+'?renderer=3d');await page.waitForFunction(()=>window.__frontOfHouse);assert.equal(await page.evaluate(c=>__frontOfHouse.importCode(c),code),true);
   const before=await page.evaluate(()=>__frontOfHouse.state()),receipt=settlementFor(before);

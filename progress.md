@@ -67,3 +67,4 @@ Linux CI retained a60px Lighting label in a54px button at320px. Shortened the eq
 
 - User requested stages and remaining equipment cards using equipment models, with rules/saves intact and screenshots. Reuse twelve existing FOH equipment models; producer catalog has no separate stage/site assets. Runtime geometry unchanged. Added inert single-card catalog, matching Build and inspection previews.
 - Dominic cached Playwright1.61.1 selected after1.64 image lacked pinned browser. Short-screen hidden-atom rules extended to the new catalog; initial desktop/phone state and receipt checks passed. Full final matrix/CI/live delivery pending.
+- PR172 review found the new static module missing from the hub precache. Cache v84 now includes the module and all remaining card imagery; a cold hub-only install test verifies first FOH visit, twelve decoded previews and exact reload while offline.

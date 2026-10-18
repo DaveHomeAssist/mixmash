@@ -11,6 +11,7 @@ requires migration.
 - Twelve remaining placeable models now have matching Build and inspection previews.
 - Browse Stage & site equipment from the menu or Equipment without placing or buying anything.
 - Existing geometry, rules, prices, accounting and save schema remain unchanged.
+- Cache v84 includes the card module and previews for the first offline visit after hub installation.
 
 ## 0.3.5 — 2026-10-17
 

@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v83';
+const VERSION = 'v84';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -84,6 +84,20 @@ const PRECACHE = [
   './front-of-house/prefs.mjs',
   './front-of-house/anticipate.mjs',
   './front-of-house/menu-art.mjs',
+  './front-of-house/equipment-cards.mjs',
+  './front-of-house/assets/equipment/lights.png',
+  './front-of-house/assets/equipment/stage.png',
+  './front-of-house/assets/equipment/delay.png',
+  './front-of-house/assets/equipment/vip-deck.png',
+  './front-of-house/assets/equipment/bus-compound.png',
+  './front-of-house/assets/equipment/bar.png',
+  './front-of-house/assets/equipment/bar-tent.png',
+  './front-of-house/assets/equipment/food.png',
+  './front-of-house/assets/equipment/trailer.png',
+  './front-of-house/assets/equipment/restroom.png',
+  './front-of-house/assets/equipment/restroom-block.png',
+  './front-of-house/assets/equipment/gate.png',
+  './front-of-house/assets/equipment/exit.png',
   './front-of-house/pa-models.mjs',
   './front-of-house/assets/equipment/pa-s.png',
   './front-of-house/assets/equipment/pa-m.png',
