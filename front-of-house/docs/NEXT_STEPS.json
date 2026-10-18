@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.5 lighting equipment models and cards delivered",
+  "head": "0.3.6 stage and site equipment cards in verification",
   "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "Lighting equipment presentation delivered through PR171, required general CI and paired renderer retry, Pages and hosted source/browser checks. Game rules and save schema unchanged. Human visual, physical-device and calibration acceptance remain separate.",
+  "statusReason": "Twelve remaining placeable model previews, catalog and Build/inspection cards implemented. Responsive and save checks underway; CI and deployed proof pending. Geometry, rules and saves unchanged.",
   "activity30d": {
     "headline": "PA and lighting equipment models and matching cards released; existing human acceptance remains open."
   },
@@ -48,12 +48,12 @@
     "PR171: 0.3.5 J-Six and Vertigo lighting rig/cards, source3990130, merged1bcc10a. General CI39075354548 and paired CI39073920410 attempt2 pass; Pages and15 hosted byte matches plus eight light/dark live responsive/save checks pass. Earlier compact-tab failures, WebKit timeout and paired attempt1 rejection retained."
   ],
   "nextStep": {
-    "title": "Review delivered PA and lighting visuals against existing acceptance checklist",
-    "why": "The requested equipment visual slices are deployed and automatically verified; human and physical acceptance remain separate.",
-    "doneWhen": "Existing human visual, physical-device and calibration evidence is recorded without inferring acceptance from browser tests.",
+    "title": "Complete stage and site card release verification",
+    "why": "User requested the remaining equipment visual pass.",
+    "doneWhen": "Responsive cards, exact saves, required CI and deployed screenshots pass.",
     "effort": "S",
-    "owner": "Dave and existing Front of House executor",
-    "blockedBy": "No implementation blocker; acceptance not yet recorded."
+    "owner": "Current FOH executor",
+    "blockedBy": "Verification in progress"
   },
   "findings": [
     {

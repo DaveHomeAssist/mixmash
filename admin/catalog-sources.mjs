@@ -266,6 +266,18 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/assets/equipment/stage.png': { description: 'Equipment card preview rendered from the existing FOH stage model.' },
+  'front-of-house/assets/equipment/delay.png': { description: 'Equipment card preview rendered from the existing FOH delay model.' },
+  'front-of-house/assets/equipment/vip-deck.png': { description: 'Equipment card preview rendered from the existing FOH vip-deck model.' },
+  'front-of-house/assets/equipment/bus-compound.png': { description: 'Equipment card preview rendered from the existing FOH bus-compound model.' },
+  'front-of-house/assets/equipment/bar.png': { description: 'Equipment card preview rendered from the existing FOH bar model.' },
+  'front-of-house/assets/equipment/bar-tent.png': { description: 'Equipment card preview rendered from the existing FOH bar-tent model.' },
+  'front-of-house/assets/equipment/food.png': { description: 'Equipment card preview rendered from the existing FOH food model.' },
+  'front-of-house/assets/equipment/trailer.png': { description: 'Equipment card preview rendered from the existing FOH trailer model.' },
+  'front-of-house/assets/equipment/restroom.png': { description: 'Equipment card preview rendered from the existing FOH restroom model.' },
+  'front-of-house/assets/equipment/restroom-block.png': { description: 'Equipment card preview rendered from the existing FOH restroom-block model.' },
+  'front-of-house/assets/equipment/gate.png': { description: 'Equipment card preview rendered from the existing FOH gate model.' },
+  'front-of-house/assets/equipment/exit.png': { description: 'Equipment card preview rendered from the existing FOH exit model.' },
   'front-of-house/assets/equipment/lights.png': { description: 'Lighting card preview rendered from the shared J-Six and Vertigo fixture models.' },
   'front-of-house/assets/equipment/pa-s.png': { description: 'Small PA equipment card preview rendered from the shared ZLX and EKX game models.' },
   'front-of-house/assets/equipment/pa-m.png': { description: 'Medium PA equipment card preview rendered from the shared ZLX and EKX game models.' },

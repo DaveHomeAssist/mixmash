@@ -755,6 +755,14 @@
         {
           "name": "npm run assets:front-of-house-pa",
           "description": "node front-of-house/tools/pa-previews.mjs"
+        },
+        {
+          "name": "npm run previews:front-of-house-site",
+          "description": "node front-of-house/tools/site-equipment-previews.mjs"
+        },
+        {
+          "name": "npm run smoke:front-of-house-site-equipment",
+          "description": "node test/front-of-house-site-equipment-smoke.mjs"
         }
       ]
     }
@@ -2241,6 +2249,76 @@
       "open": "/assets/previews/foh.jpg"
     },
     {
+      "path": "front-of-house/assets/equipment/bar-tent.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "bar-tent.png",
+      "description": "Equipment card preview rendered from the existing FOH bar-tent model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/bar-tent.png",
+      "open": "/front-of-house/assets/equipment/bar-tent.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/bar.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "bar.png",
+      "description": "Equipment card preview rendered from the existing FOH bar model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/bar.png",
+      "open": "/front-of-house/assets/equipment/bar.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/bus-compound.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "bus-compound.png",
+      "description": "Equipment card preview rendered from the existing FOH bus-compound model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/bus-compound.png",
+      "open": "/front-of-house/assets/equipment/bus-compound.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/delay.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "delay.png",
+      "description": "Equipment card preview rendered from the existing FOH delay model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/delay.png",
+      "open": "/front-of-house/assets/equipment/delay.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/exit.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "exit.png",
+      "description": "Equipment card preview rendered from the existing FOH exit model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/exit.png",
+      "open": "/front-of-house/assets/equipment/exit.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/food.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "food.png",
+      "description": "Equipment card preview rendered from the existing FOH food model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/food.png",
+      "open": "/front-of-house/assets/equipment/food.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/gate.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "gate.png",
+      "description": "Equipment card preview rendered from the existing FOH gate model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/gate.png",
+      "open": "/front-of-house/assets/equipment/gate.png"
+    },
+    {
       "path": "front-of-house/assets/equipment/lights.png",
       "project": "front-of-house",
       "category": "art",
@@ -2269,6 +2347,56 @@
       "description": "Small PA equipment card preview rendered from the shared ZLX and EKX game models.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/pa-s.png",
       "open": "/front-of-house/assets/equipment/pa-s.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/restroom-block.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "restroom-block.png",
+      "description": "Equipment card preview rendered from the existing FOH restroom-block model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/restroom-block.png",
+      "open": "/front-of-house/assets/equipment/restroom-block.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/restroom.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "restroom.png",
+      "description": "Equipment card preview rendered from the existing FOH restroom model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/restroom.png",
+      "open": "/front-of-house/assets/equipment/restroom.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/stage.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "stage.png",
+      "description": "Equipment card preview rendered from the existing FOH stage model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/stage.png",
+      "open": "/front-of-house/assets/equipment/stage.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/trailer.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "trailer.png",
+      "description": "Equipment card preview rendered from the existing FOH trailer model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/trailer.png",
+      "open": "/front-of-house/assets/equipment/trailer.png"
+    },
+    {
+      "path": "front-of-house/assets/equipment/vip-deck.png",
+      "project": "front-of-house",
+      "category": "art",
+      "kind": "PNG",
+      "title": "vip-deck.png",
+      "description": "Equipment card preview rendered from the existing FOH vip-deck model.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/assets/equipment/vip-deck.png",
+      "open": "/front-of-house/assets/equipment/vip-deck.png"
     },
     {
       "path": "front-of-house/docs/hud/hud-build.jpg",
@@ -3341,6 +3469,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-site-equipment-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-site-equipment-smoke.mjs",
+      "description": "Stage/site model cards are inert, responsive and reachable by keyboard; saves remain exact.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-site-equipment-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3548,6 +3686,16 @@
       "title": "engine.mjs",
       "description": "Front of House rules engine. Pure and deterministic: no DOM access, no Math.random, no clock. Every function takes state (or plain inputs) and returns new state or derived numbers, so the browser client, the tests and…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/engine.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/equipment-cards.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "equipment-cards.mjs",
+      "description": "Presentation-only references to the existing equipment models; no game state or rules.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/equipment-cards.mjs",
       "open": null
     },
     {
@@ -3868,6 +4016,16 @@
       "title": "performance-stats.mjs",
       "description": "Descriptive measurements only: these bins are not device acceptance gates.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/performance-stats.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/tools/site-equipment-previews.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "site-equipment-previews.mjs",
+      "description": "Render the remaining menu previews from the exact venue models, without modifying geometry.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/tools/site-equipment-previews.mjs",
       "open": null
     },
     {

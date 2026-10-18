@@ -55,7 +55,9 @@
     "smoke:front-of-house-pa": "node test/front-of-house-pa-smoke.mjs",
     "smoke:front-of-house-lighting": "node test/front-of-house-lighting-smoke.mjs",
     "assets:front-of-house-lighting": "node front-of-house/tools/lighting-previews.mjs",
-    "assets:front-of-house-pa": "node front-of-house/tools/pa-previews.mjs"
+    "assets:front-of-house-pa": "node front-of-house/tools/pa-previews.mjs",
+    "previews:front-of-house-site": "node front-of-house/tools/site-equipment-previews.mjs",
+    "smoke:front-of-house-site-equipment": "node test/front-of-house-site-equipment-smoke.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

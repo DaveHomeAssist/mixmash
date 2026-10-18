@@ -5,6 +5,7 @@
 // MixKit store under SAVE_NAMESPACE and are validated with normalizeState on load.
 
 import * as D from './data.mjs';
+import { equipmentCardInfo, SITE_CARD_TYPES } from './equipment-cards.mjs';
 import {
   amenitySupply, applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, completedShows, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
@@ -533,7 +534,7 @@ function buildPanel() {
     return `<label class="tile" title="${esc(t.label)} · ${esc(toolFacts(type))} · key ${shortcut}">
         <input type="radio" name="tool" value="${type}" data-input="tool" ${ui.tool === type ? 'checked' : ''} />
         <span class="tile-key" aria-hidden="true">${shortcut}</span>
-        ${['food', 'trailer', 'delay', 'vip-deck', 'bus-compound', 'bar-tent', 'restroom-block'].includes(type) ? '<span class="food-icon" aria-hidden="true">▱</span>' : `<img src="${(type.startsWith('pa-') || type === 'lights') ? `./assets/equipment/${type}.png` : `./sprites/${type}.png`}" alt="" decoding="async" />`}
+        <img src="./assets/equipment/${type}.png" alt="" decoding="async" />
         <span class="tile-name" aria-hidden="true">${SHORT[type]}</span>
         <span class="sr-only">${esc(t.label)}, ${esc(toolFacts(type))}, key ${shortcut}<span class="tile-note"></span></span>
       </label>`;
@@ -764,7 +765,7 @@ function inspectAt(tile) {
   if (index < 0) { el.boardStatus.textContent = `${describeTile(tile)} Select places nothing; pick a tool to place.`; return; }
   const object = state.venue.objects[index];
   openWindow('selection', label(object.type),
-    (object.type === 'lights' ? lightingEquipmentCard() : object.type.startsWith('pa-') ? paEquipmentCard(object.type) : '') +
+    (object.type === 'lights' ? lightingEquipmentCard() : object.type.startsWith('pa-') ? paEquipmentCard(object.type) : siteEquipmentCard(object.type)) +
     '<p class="lede">Tile ' + object.x + ', ' + object.y + ' · ' + esc(toolFacts(object.type)) + '</p>' +
     '<p>Removal can be undone while you remain in Build.</p>', el.canvas,
     { foot: '<button type="button" data-act="remove-selected">Remove object</button><button type="button" class="primary" data-win="close">Done</button>' });
@@ -1818,7 +1819,7 @@ function cashReference(entry) {
 let equipmentPage = 0;
 // Short windows page ordinary content instead of turning the dialog into a scroll area.
 function paginateCompactWindow(step = 0) {
-  if (!['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(win.kind) || innerHeight > 560) return;
+  if (!['equipment', 'site-equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(win.kind) || innerHeight > 560) return;
   el.winBody.scrollTop = 0;
   const panel = el.winBody.querySelector('[data-tab]:not(.tab-off)') || el.winBody;
   if (!panel._compactAtoms) {
@@ -1832,7 +1833,7 @@ function paginateCompactWindow(step = 0) {
   atoms.forEach(e => { e.hidden = false; });
   const bottom = el.winBody.getBoundingClientRect().bottom - parseFloat(getComputedStyle(el.winBody).paddingBottom);
   const height = bottom - (panel === el.winBody ? el.winBody.getBoundingClientRect().top + parseFloat(getComputedStyle(el.winBody).paddingTop) : panel.getBoundingClientRect().top);
-  const gap = win.kind === 'advisory' ? parseFloat(getComputedStyle(panel).rowGap) || 0 : 0;
+  const gap = ['advisory', 'site-equipment'].includes(win.kind) ? parseFloat(getComputedStyle(panel).rowGap) || 0 : 0;
   const pages = [[]]; let used = 0;
   for (const atom of atoms) {
     const style = getComputedStyle(atom), size = atom.getBoundingClientRect().height + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
@@ -1861,13 +1862,30 @@ function lightingEquipmentPage() {
   return `<section data-tab="Lights" data-always-tabs>${lightingEquipmentCard()}<dl class="live-readouts"><div><dt>Tower rental / show</dt><dd>${money(D.LIGHTS_RENTAL)}</dd></div><div><dt>Power / tower</dt><dd>${D.OBJECT_TYPES.lights.watts / 1000} kW</dd></div><div><dt>This venue</dt><dd>${house ? placed ? 'House lights + tower placed' : 'House lights included' : placed ? 'Tower placed' : 'No tower placed'}</dd></div></dl><p>Place a light tower from the Build toolbar. Lighting remains rental equipment.</p><p class="hint">${house ? 'An extra tower adds rental and power use, with no extra quality bonus.' : 'The existing lighting quality and rental rules apply.'}</p></section>`;
 }
 
+let siteEquipmentType = 'stage';
+function siteEquipmentCard(type) {
+  const card = equipmentCardInfo(type);
+  if (!card) return '';
+  return `<figure class="pa-equipment-card"><img src="${card.image}" width="640" height="400" alt="${esc(card.label)} equipment model"><figcaption><span class="pa-card-eyebrow">Stage & site</span><h3>${esc(card.label)}</h3><span>${esc(card.role)}</span></figcaption></figure>`;
+}
+function openSiteEquipment(opener) {
+  if (!SITE_CARD_TYPES.includes(siteEquipmentType)) siteEquipmentType = 'stage';
+  const card = equipmentCardInfo(siteEquipmentType);
+  const available = card.venues.includes(state.venue.id);
+  openWindow('site-equipment', 'Stage & site equipment',
+    `<section data-tab="Catalog"><label class="equipment-model-choice">Equipment model<select data-input="equipment-model">${SITE_CARD_TYPES.map(type => `<option value="${type}" ${type === siteEquipmentType ? 'selected' : ''}>${esc(D.OBJECT_TYPES[type].label)}</option>`).join('')}</select></label>
+    ${siteEquipmentCard(siteEquipmentType)}
+    <dl class="live-readouts"><div><dt>Footprint</dt><dd>${card.footprint.join(' × ')} tiles</dd></div><div><dt>Power</dt><dd>${card.watts / 1000} kW</dd></div><div><dt>Venues</dt><dd>${card.venues.map(id => esc(D.VENUES[id].name)).join(' · ')}</dd></div></dl>
+    <p>${available ? 'Use the existing Build controls to place this equipment.' : 'This equipment is for other venues in your career.'}</p><p class="hint">Browsing does not place, purchase or rent equipment.</p></section>`, el.menuBtn);
+}
+
 function openEquipment(opener) {
   // The menu closes behind this window; return to its visible toggle.
   if (opener && el.menu.contains(opener)) opener = el.menuBtn;
   const owned = equipmentFor(state), editable = ['book', 'done'].includes(state.phase);
   if (!owned) {
     const allowed = editable && (state.history.length > 0 || state.mode === 'sandbox');
-    openWindow('equipment', 'Equipment', `<section data-tab="Asset" data-always-tabs>${paEquipmentCard()}<p>Buy one small PA, then assign it to a placed small system in Build. Rentals and house rigs remain available.</p>
+    openWindow('equipment', 'Equipment', `<section data-tab="Asset" data-always-tabs>${paEquipmentCard()}<button data-act="site-equipment-open">Stage & site equipment</button><p>Buy one small PA, then assign it to a placed small system in Build. Rentals and house rigs remain available.</p>
       <p>Purchase $1,200 · resale $600 · operation $20 per assigned night. Buying does not place equipment.</p>
       <p>${allowed ? 'Enable to open a cash journal at your current balance. Earlier shows stay in Show history.' : 'Settle your first show, then return between bookings.'}</p>
       <button data-act="equipment-enable" ${allowed ? '' : 'disabled'}>Enable equipment</button></section>${lightingEquipmentPage()}`, opener);
@@ -1889,7 +1907,7 @@ function openEquipment(opener) {
       <p class="hint">Capital is separate from show costs and artist deductions. House and medium systems cannot use this asset.</p>
       <div class="actions capital-actions"><button data-act="equipment-capital" data-command="buy" data-transaction="${id}" ${editable && !full && !asset && state.cash >= rule.purchase ? '' : 'disabled'}>Buy for ${money(rule.purchase)}</button><button data-act="equipment-capital" data-command="sell" data-transaction="${id}" ${editable && !full && asset ? '' : 'disabled'}>Sell for ${money(rule.resale)}</button></div>
       <p class="hint">${full ? 'Equipment transaction history is full.' : !editable ? 'Buy and sell between bookings.' : !asset && state.cash < rule.purchase ? 'Not enough cash. Rental remains available.' : 'Closing this quote costs nothing.'}</p></section>
-    <section data-tab="Deploy" data-always-tabs><h3>This show</h3>${!venue.housePa && ['S', 'M'].includes(venue.paTier) ? paEquipmentCard(venue.paTier === 'M' ? 'pa-m' : 'pa-s') : ''}
+    <section data-tab="Deploy" data-always-tabs><button data-act="site-equipment-open">Stage & site equipment</button><h3>This show</h3>${!venue.housePa && ['S', 'M'].includes(venue.paTier) ? paEquipmentCard(venue.paTier === 'M' ? 'pa-m' : 'pa-s') : ''}
       <p>${plan ? `Owned PA assigned · ${money(plan.cost)} operation per night.` : venue.housePa ? 'House PA included with this room.' : 'PA rental applies until an owned unit is assigned.'}</p>
       <p>${state.phase === 'build' ? canAssign ? 'The placed small PA can use your owned unit.' : 'Buy between bookings and place a small PA before assigning it.' : 'Assignment is available in Build. Doors lock it for the full run.'}</p>
       <div class="actions"><button data-act="equipment-assign" data-owned="yes" ${canAssign && !plan ? '' : 'disabled'}>Use owned PA</button>
@@ -2450,6 +2468,7 @@ function onAct(e) {
     if (act({ type: 'setPromotion', ticketing: { version: 1, plan: target.dataset.plan } })) { openTicketing($('#ticketing-settings')); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); }
     return;
   }
+  if (a === 'site-equipment-open') { openSiteEquipment(target); return; }
   if (a === 'equipment-open') { equipmentPage = 0; openEquipment(target); return; }
   if (a === 'window-part') { paginateCompactWindow(Number(target.dataset.step)); const button = el.winFoot.querySelector(`[data-step="${target.dataset.step}"]`); (button.disabled ? el.winFoot.querySelector('button:not(:disabled)') : button)?.focus(); return; }
   if (a === 'equipment-page') { equipmentPage += Number(target.dataset.step); openEquipment(el.menuBtn); el.winBody.querySelector('[role=tab][aria-selected=true]')?.focus(); return; }
@@ -2596,6 +2615,7 @@ el.panel.addEventListener('input', (e) => {
 });
 
 el.win.addEventListener('change', e => {
+  if (e.target.dataset.input === 'equipment-model') { siteEquipmentType = e.target.value; openSiteEquipment(el.menuBtn); el.winBody.querySelector('[data-input=equipment-model]')?.focus(); return; }
   if (e.target.dataset.input === 'services') act({ type: 'setPromotion', services: e.target.checked }, { quiet: true });
   else if (e.target.dataset.input === 'food-plan') act({ type: 'setPromotion', foodPlan: e.target.value || null }, { quiet: true });
   else if (e.target.dataset.input === 'sanitation') {
@@ -2730,7 +2750,7 @@ function syncTabs(root, key, pick) {
   });
   const first = groups[0];
   (first.parentElement === root ? first : first.parentElement).before(bar);
-  if (root === el.winBody && ['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(win.kind)) paginateCompactWindow();
+  if (root === el.winBody && ['equipment', 'site-equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(win.kind)) paginateCompactWindow();
 }
 
 shortWindowQuery.addEventListener('change', () => {
@@ -2819,6 +2839,7 @@ function reviewAdvisory(category) {
 window.addEventListener('resize', () => {
   if (el.win.hidden) return;
   if (win.kind === 'equipment') openEquipment(win.opener);
+  if (win.kind === 'site-equipment') openSiteEquipment(win.opener);
   if (win.kind === 'ticketing') openTicketing(win.opener);
   if (win.kind === 'held-run') openHeldRun(win.opener);
   if (win.kind === 'seating') openSeating(win.opener);
@@ -2836,7 +2857,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   win.opener = opener || document.activeElement;
   el.winTitle.textContent = title;
   el.winBody.innerHTML = html;
-  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
+  if (['equipment', 'site-equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(kind) && innerHeight <= 560) foot = '<button disabled>Back</button><span>Part 1</span><button>More</button>';
   el.winFoot.innerHTML = foot;
   el.winFoot.hidden = !foot;
   el.win.dataset.kind = kind;
@@ -2845,7 +2866,7 @@ function openWindow(kind, title, html, opener, { foot = '', wide = false, scroll
   el.win.hidden = false;
   el.winBody.scrollTop = 0;
   syncTabs(el.winBody, `win:${kind}`);
-  if (['equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(kind)) paginateCompactWindow();
+  if (['equipment', 'site-equipment', 'ticketing', 'held-run', 'seating', 'stages', 'set-time', 'deals', 'advisory'].includes(kind)) paginateCompactWindow();
   if (advisoryReturn && kind !== 'advisory' && !el.winFoot.querySelector('[data-act="advisory-back"]')) {
     el.winFoot.insertAdjacentHTML('beforeend', advisoryBackButton(innerHeight <= 560 || kind === 'settlement' && (innerWidth <= 680 || innerHeight <= 760)));
     el.winFoot.hidden = false;
