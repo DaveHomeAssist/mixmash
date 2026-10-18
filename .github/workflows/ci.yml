@@ -8,6 +8,10 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
+      hosted:
+        description: 'Run on GitHub-hosted ubuntu-latest instead of the self-hosted box runner (spends hosted minutes)'
+        type: boolean
+        default: false
       foh_performance:
         description: 'Collect a full Front of House CI calibration (at least 12 minutes)'
         type: boolean
@@ -21,9 +25,53 @@ on:
         type: boolean
         default: true
 
+# Runner routing: the test job runs on the self-hosted box runner
+# (/home/box/actions-runner-mixmash, labels self-hosted/Linux/X64/mixmash).
+# It falls back to GitHub-hosted ubuntu-latest only when dispatched by hand with
+# hosted: true, or for pull requests from forks, which must never reach the box.
+# foh-performance and foh-regression stay on hosted ubuntu-24.04 on purpose:
+# performance-gate.mjs requires runnerClass ubuntu-24.04 and its limits are
+# calibrated on that image, not on the shared box.
 jobs:
+  scope:
+    # A push that only merges an already-tested pull request touching nothing
+    # outside front-of-house/ skips the duplicate post-merge run. Direct pushes,
+    # and merges touching anything else, always run the full job.
+    if: github.event_name == 'push'
+    runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.hosted) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)) && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","mixmash"]') }}
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
+    steps:
+      - name: Select changes that need the full job
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -u
+          run=true
+          merged=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '[.[] | select(.merged_at != null)] | length' 2>/dev/null || echo 0)
+          if [ "${merged:-0}" -gt 0 ] && [ -n "${BEFORE//0/}" ]; then
+            if files=$(gh api "repos/$REPO/compare/$BEFORE...$SHA" --jq '.files[].filename' 2>/dev/null) \
+              && [ -n "$files" ] && [ "$(wc -l <<< "$files")" -lt 300 ] \
+              && ! grep -qv '^front-of-house/' <<< "$files"; then
+              run=false
+            fi
+          fi
+          echo "merged PRs: $merged; full job: $run"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   test:
-    runs-on: ubuntu-latest
+    needs: scope
+    if: ${{ !cancelled() && (needs.scope.result != 'success' || needs.scope.outputs.run == 'true') }}
+    runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.hosted) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)) && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","mixmash"]') }}
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,6 +123,18 @@ jobs:
       - run: npm run smoke:zelda2mario
       - run: npm run smoke:admin
       - run: npm run smoke:mobile
+      - name: Clean up browser and server processes left by this job (self-hosted)
+        if: always() && runner.environment == 'self-hosted'
+        run: |
+          # Only processes carrying this run's GITHUB_RUN_ID, so other agents'
+          # browsers and the aoe2 runner on the shared box are never touched.
+          for e in $(grep -lzx "GITHUB_RUN_ID=${GITHUB_RUN_ID}" /proc/[0-9]*/environ 2>/dev/null); do
+            pid=${e#/proc/}; pid=${pid%/environ}
+            [ "$pid" = "$$" ] || [ "$pid" = "$PPID" ] && continue
+            case "$(cat "/proc/$pid/comm" 2>/dev/null)" in Runner.*) continue ;; esac
+            kill "$pid" 2>/dev/null || true
+          done
+          rm -rf "${RUNNER_TEMP:?}"/playwright* 2>/dev/null || true
 
   foh-performance:
     if: github.event_name == 'workflow_dispatch' && inputs.foh_performance

@@ -21,9 +21,17 @@ on:
       - 'test/static-server.mjs'
       - 'package*.json'
       - '.github/workflows/horseshoes.yml'
+  workflow_dispatch:
+    inputs:
+      hosted:
+        description: 'Run on GitHub-hosted ubuntu-latest instead of the self-hosted box runner (spends hosted minutes)'
+        type: boolean
+        default: false
+# Self-hosted box runner by default; hosted only for a manual hosted: true run
+# or a pull request from a fork (forks must never reach the box).
 jobs:
   horseshoes:
-    runs-on: ubuntu-latest
+    runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.hosted) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)) && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","mixmash"]') }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -34,3 +42,12 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run smoke:horseshoes
+      - name: Clean up browser and server processes left by this job (self-hosted)
+        if: always() && runner.environment == 'self-hosted'
+        run: |
+          for e in $(grep -lzx "GITHUB_RUN_ID=${GITHUB_RUN_ID}" /proc/[0-9]*/environ 2>/dev/null); do
+            pid=${e#/proc/}; pid=${pid%/environ}
+            [ "$pid" = "$$" ] || [ "$pid" = "$PPID" ] && continue
+            case "$(cat "/proc/$pid/comm" 2>/dev/null)" in Runner.*) continue ;; esac
+            kill "$pid" 2>/dev/null || true
+          done
