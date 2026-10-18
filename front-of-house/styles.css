@@ -721,7 +721,12 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
   body[data-layout='hud'] .card-plate .hint { display: none; }
   body[data-layout='hud'] .card-plate { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
   body[data-layout='hud'] .card-plate .message { flex-basis: 100%; padding: 6px 10px; font-size: 0.82rem; }
-  body[data-layout='hud'] .card-plate .timecode { font-size: 1.2rem; }
+  /* The padless phone header sizes to its line boxes, so the clock's line box must hold the
+     font's whole ascent and descent (about 1.32em in JetBrains Mono) or it overflows the plate. */
+  body[data-layout='hud'] .card-plate .timecode { font-size: 1.2rem; line-height: 1.4; }
+  /* A long cost ("$125 · not enough cash") beside its label filled a 375px row to within a few
+     pixels and wrapped the choice onto a second line; a smaller cost keeps one line with room. */
+  body[data-layout='hud'] .incident-plate .choice .cost { font-size: 0.8rem; }
 
   /* Book, Promote, Settle and Done: the sheet takes the height under the strip. */
   body[data-layout='sheet'] .panel { top: calc(var(--strip-h) + 8px); height: auto; padding: 12px; }
