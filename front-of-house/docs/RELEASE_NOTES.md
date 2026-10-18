@@ -5,6 +5,13 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.6 — 2026-10-17
+
+- Stage and site-equipment cards use the same models as the 3D venue.
+- Twelve remaining placeable models now have matching Build and inspection previews.
+- Browse Stage & site equipment from the menu or Equipment without placing or buying anything.
+- Existing geometry, rules, prices, accounting and save schema remain unchanged.
+
 ## 0.3.5 — 2026-10-17
 
 - Rental light towers use equipment-library J-Six and Vertigo fixture exteriors.

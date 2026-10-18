@@ -64,3 +64,16 @@ light/dark responsive, keyboard, focus and exact-state/reload cases. Warmed
 v83 offline model/preview/state checks also pass. The original WebKit reload
 timeout and paired CPU rejection8.7ms versus8.1ms are retained; independent
 raw audits reproduce both paired verdicts without changing limits.
+
+## Stage and site cards — 0.3.6
+
+The remaining twelve placeable equipment previews render the existing FOH
+`lot-models.mjs` factories directly. The producer library has no corresponding
+stage/site definitions; these remain source-owned FOH representations, not
+manufacturer equipment or verified inventory. `equipment-cards.mjs` maps existing
+game type IDs to preview paths and reads footprint, power and venue eligibility
+from current data. Browsing does not invoke an engine action or persist a new
+selection. The catalog, Build icons and inspection cards share these previews.
+Runtime geometry, cameras, settlement and save schema are unchanged. The fence
+kit is a site-wide rule toggle, not a placeable model, and retains its existing
+control. Verification and hosted delivery are pending for this slice.

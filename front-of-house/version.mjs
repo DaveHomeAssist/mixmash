@@ -1,5 +1,5 @@
 export const FRONT_OF_HOUSE_RELEASE = Object.freeze({
-  version: '0.3.5',
+  version: '0.3.6',
   date: '2026-10-17',
   stage: 'early playable',
   cache: 'v83',

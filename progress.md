@@ -62,3 +62,8 @@ Linux CI retained a60px Lighting label in a54px button at320px. Shortened the eq
 - PR171 source3990130 merged1bcc10a after general CI39075354548 and paired CI39073920410 attempt2. Both paired raw36-window artifacts independently audited; first CPU rejection8.7ms/8.1ms retained, unchanged retry passes. WebKit ticketing timeout retained; full unchanged general retry passes.
 - Pages built23:08:44Z; Walter verifies15 live byte matches, eight light/dark lighting cases, exact reload, keyboard/focus, compact/ultrawide paging and screenshot captures. Final source also passes warmed-cache offline state/model/preview.
 - Rules, engine, economy, save schema2 and shared service worker/cachev83 unchanged. Public next-steps record reconciled; existing private board refreshed separately. Human/physical/calibration acceptance remains open.
+
+## 2026-10-17 stage and site cards
+
+- User requested stages and remaining equipment cards using equipment models, with rules/saves intact and screenshots. Reuse twelve existing FOH equipment models; producer catalog has no separate stage/site assets. Runtime geometry unchanged. Added inert single-card catalog, matching Build and inspection previews.
+- Dominic cached Playwright1.61.1 selected after1.64 image lacked pinned browser. Short-screen hidden-atom rules extended to the new catalog; initial desktop/phone state and receipt checks passed. Full final matrix/CI/live delivery pending.
