@@ -50,12 +50,12 @@
     "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged."
   ],
   "nextStep": {
-    "title": "Reconcile the missing 0.3.0 release tag",
-    "why": "PR146 is merged and its required CI passed, but front-of-house-v0.3.0 was not found on 2026-10-18. Resolve historical release provenance before creating any immutable tag. Human balance review remains separate.",
-    "doneWhen": "The release checklist records the verified intended revision and the missing-tag disposition; no runtime or save changes.",
+    "title": "Complete PR176 delivery when existing CI returns",
+    "why": "0.3.0 provenance is resolved: the absent tag belongs to PR146 merge d28656b. This packet excludes tag mutation. The documentation PR still requires final-head CI before merge.",
+    "doneWhen": "Required final-head checks pass, PR176 merges, Pages and all changed hosted documentation files are verified, and the existing board is refreshed.",
     "effort": "S",
-    "owner": "Current FOH executor",
-    "blockedBy": "Historical release-target verification before any tag mutation"
+    "owner": "Current FOH executor and existing CI runner owner",
+    "blockedBy": "Existing MixMash CI runners offline; do not bypass or launch a replacement workflow."
   },
   "findings": [
     {
@@ -2419,7 +2419,7 @@
       "careless": "Club 100 (was 69), Amphitheater 100 (was 69), Festival 91 (was 66)"
     },
     "pending": [
-      "front-of-house-v0.3.0 tag not found on 2026-10-18; verify historical target before resolving",
+      "front-of-house-v0.3.0 absent; intended target confirmed as d28656b707a03bf8a288ec81a468fe8c897ea1d7. Tag mutation excluded from provenance-only pass.",
       "Dave's balance and readability review"
     ],
     "cacheNote": "Historical reservation: PR144 used v77 and this release used v78. Current 0.3.9 uses v87.",
@@ -2493,7 +2493,23 @@
       "implementationCommit": "24570cc690940d9873f16bed089fb87963928d56",
       "status": "Pushed; merge and deployment blocked by offline CI runners.",
       "evidence": "At 2026-10-18T23:28:11Z, both configured MixMash runners were offline. CI39176604795 regression scope check succeeded; required test remained queued. Six local catalog checks passed; no runtime change.",
-      "next": "Restore an existing CI runner through its owner; obtain required checks on the final head, then merge and verify Pages and the four hosted documentation files."
+      "next": "Obtain required checks on the final head after the existing runner route returns, then merge and verify Pages and every changed documentation file."
     }
+  },
+  "releaseTagProvenance20261018": {
+    "tag": "front-of-house-v0.3.0",
+    "disposition": "Absent remotely; intended target confirmed; no tag mutation",
+    "target": "d28656b707a03bf8a288ec81a468fe8c897ea1d7",
+    "authority": "CT-DEC-33: tag the exact deployed merge",
+    "sourceBase": "b99cdd5db4674c354460086ee4d1ec16f1cc77ca",
+    "version": "0.3.0 / v78 / schema2",
+    "mergeTime": "2026-10-12T23:17:53Z",
+    "postmergeCI": 38321390702,
+    "pagesRun": 38321389955,
+    "deployment": 7026119815,
+    "deploymentSuccessTime": "2026-10-12T23:18:22Z",
+    "record": "front-of-house/docs/RELEASE.md section5",
+    "limits": "Provider deployment provenance only; no historical live browser or human/device acceptance inferred. No runtime, rules, saves, tags or services changed.",
+    "remaining": "PR176 final-head CI, merge and Pages are pending. Tag repair is outside this packet. QA013/D12, conditional QA014, Proposed FLOW01 and human/device/calibration/rights gates remain separate."
   }
 }
