@@ -12,16 +12,26 @@ try {
   for (const artistId of ['sodium-arcade', 'tin-relay', 'amber-turnout', 'paper-voltage']) for (const [width, height] of [[1440, 900], [375, 812]]) {
     const venueId = artistId === 'paper-voltage' ? 'festival' : artistId === 'tin-relay' ? 'club' : artistId === 'amber-turnout' ? 'amphitheater' : 'lot';
     let state;
-    for (let seed = 1; seed < 100; seed++) { state = createGame(seed, { mode: 'sandbox' }); if (venueId !== 'lot') state = applyAction(state, { type: 'chooseVenue', venueId }).state; if (offersFor(state).includes(artistId)) break; }
-    for (const action of [{ type: 'chooseDeal', deal: 'guarantee', artistId, ...(venueId === 'festival' ? { secondId: 'hollow-census' } : {}) }, { type: 'setLayout', objects: venueId === 'festival' ? FEST_STARTER : venueId === 'club' ? CLUB_STARTER : venueId === 'amphitheater' ? AMP_STARTER : STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 } }, { type: 'confirmPromotion' }]) {
-      const r = applyAction(state, action); assert.equal(r.error, null); state = r.state;
+    for (let seed = 1; seed < 1000; seed++) {
+      state = createGame(seed, { mode: 'sandbox' });
+      if (venueId !== 'lot') state = applyAction(state, { type: 'chooseVenue', venueId }).state;
+      if (!offersFor(state).includes(artistId)) continue;
+      for (const action of [{ type: 'chooseDeal', deal: 'guarantee', artistId, ...(venueId === 'festival' ? { secondId: 'hollow-census' } : {}) }, { type: 'setLayout', objects: venueId === 'festival' ? FEST_STARTER : venueId === 'club' ? CLUB_STARTER : venueId === 'amphitheater' ? AMP_STARTER : STARTER_LAYOUT }, { type: 'confirmBuild' }, { type: 'setPromotion', price: 20, ads: { flyers: 0, social: 150, radio: 150 } }, { type: 'confirmPromotion' }]) {
+        const r = applyAction(state, action); assert.equal(r.error, null); state = r.state;
+      }
+      if (state.show.incidentId === 'pa-dropout') break;
     }
-    const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce', serviceWorkers: 'block' });
+    assert.equal(state.show.incidentId, 'pa-dropout');
+    const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'no-preference', serviceWorkers: 'block' });
     const page = await context.newPage(), errors = trackPageFailures(page, new URL(origin).origin);
     await page.goto(origin + '?renderer=3d'); await page.waitForFunction(() => window.__frontOfHouse);
     const code = Buffer.from(JSON.stringify({ ns: SAVE_NAMESPACE, v: SCHEMA_VERSION, savedAt: 0, state })).toString('base64');
     assert.equal(await page.evaluate(c => __frontOfHouse.importCode(c), code), true);
     await page.waitForFunction(() => __frontOfHouse.rendererStatus().active);
+    assert.equal((await page.evaluate(() => __frontOfHouse.board())).performers.count, 0, 'doors open before the set starts');
+    await page.locator('#skip-btn').click();
+    await page.waitForFunction(() => __frontOfHouse.board().performers.count > 0);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     const before = await page.evaluate(() => __frontOfHouse.state());
     assert.equal((await page.evaluate(() => __frontOfHouse.board())).performers.artist, artistId);
     assert.ok((await page.evaluate(() => __frontOfHouse.board())).performers.count > 0);

@@ -2036,7 +2036,7 @@ function draw() {
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
     crowd: night ? crowdNow() : 0,
     artistId: state.booking.artistId,
-    performing: state.phase === 'show',
+    performing: state.phase === 'show' && (ui.play?.p ?? 0) >= D.ACT_ON_STAGE_AT,
     ...(state.venue.id === 'festival' ? { stageAudience: night ? stageAudienceForScene() : null, secondaryStage: { artistId: state.booking.secondId, booked: !!state.booking.secondId, artist: state.booking.secondId ? artistFor(state.booking.secondId).name : null } } : {}),
     serviceProgress: state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(1, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 1,
     serviceMinute: services ? services.minute + (state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(0.999, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 0) : 0,
