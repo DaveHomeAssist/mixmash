@@ -44,6 +44,7 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
 }
 </style>
 <script src="/src/kit/pwa.js" defer></script>
+<script src="/assets/last-game.js" data-game="garden" defer></script>
 </head>
 <body>
 <script src="../src/kit/nav.js" data-nav-collapse="off"></script>
@@ -117,8 +118,32 @@ function adoptNav() {
     }
   }, true);
 }
-if (window.__mixmashNav) adoptNav();
-else document.addEventListener('DOMContentLoaded', adoptNav, { once: true });
+// Mute All remembers its setting in mm.prefs ({"muteAll": true}). Restore it once
+// the nav exists, then record every change the button (or setMuted) makes.
+function readPrefs() {
+  try {
+    const prefs = JSON.parse(localStorage.getItem('mm.prefs'));
+    return prefs && typeof prefs === 'object' && !Array.isArray(prefs) ? prefs : {};
+  } catch (e) { return {}; }
+}
+function restoreMute() {
+  try {
+    const nav = window.__mixmashNav;
+    if (!nav) return;
+    const saved = readPrefs().muteAll;
+    if (typeof saved === 'boolean' && nav.isMuted() !== saved) nav.setMuted(saved);
+    window.addEventListener('mixmash:mute', (event) => {
+      try {
+        const prefs = readPrefs();
+        prefs.muteAll = !!(event.detail && event.detail.muted);
+        localStorage.setItem('mm.prefs', JSON.stringify(prefs));
+      } catch (e) {}
+    });
+  } catch (e) {}
+}
+function initNav() { adoptNav(); restoreMute(); }
+if (window.__mixmashNav) initNav();
+else document.addEventListener('DOMContentLoaded', initNav, { once: true });
 </script>
 </body>
 </html>

@@ -1260,3 +1260,45 @@ body:has(.view:not(#games):target) .site-shell {
   .play-link { flex-direction:row; border-left:0; border-top:1px dashed var(--line); margin:0 10px; padding:6px 4px; }
   .play-link span:last-child { font-size:18px; }
 }
+
+/* "Continue" marks the game played last: a text tag on the art plus an accent ring. Never reorders. */
+.game-card.is-last-played {
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px var(--accent),var(--shadow)
+}
+.continue-tag {
+  position:absolute;
+  right:10px;
+  top:9px;
+  background:var(--accent);
+  color:var(--card);
+  font:700 11px/1.2 system-ui,sans-serif;
+  letter-spacing:.04em;
+  padding:4px 8px;
+  border-radius:4px;
+  white-space:nowrap
+}
+@media(max-width:700px) {
+  .continue-tag {
+    left:4px;
+    right:auto;
+    width:57px;
+    top:auto;
+    bottom:3px;
+    text-align:center;
+    font-size:10px;
+    letter-spacing:0;
+    padding:2px 0
+  }
+}
+/* Short landscape hides the art, so the tag sits at the end of the status line, clear of Play. */
+@media(max-height:400px) {
+  .continue-tag {
+    left:auto;
+    right:96px;
+    top:auto;
+    bottom:9px;
+    width:auto;
+    padding:2px 6px
+  }
+}
