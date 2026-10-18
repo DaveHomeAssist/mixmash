@@ -5,6 +5,11 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.8 — 2026-10-18
+
+- Fixes FOH-QA-012. In a zoomed or short desktop window below 1024 × 700 (for example 150% or 200% zoom on 1440 × 900 or 1366 × 768), Promote keeps its action row, including **Open doors**, pinned to the bottom of the sheet. Book lists the acts first and puts each deal button straight under the act's name; the room choice, the intro line and the act details follow below. On very short windows the deal notes shorten to one line and the act art is hidden. Layout only: rules, money, balance and save schema 2 are unchanged.
+- Cache v86.
+
 ## 0.3.7 — 2026-10-18
 
 - Booked acts now perform on stage with distinct instrumental lineups and existing band colors. The 3D view adds guitars, basses, drums, microphones and keyboards; classic view uses matching performer sprites.

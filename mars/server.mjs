@@ -217,7 +217,7 @@ async function serveStatic(response, pathname) {
 function sharedStaticPath(pathname) {
   const path = decodeURIComponent(pathname).replace(/^\/+/, '');
   if (path.startsWith('src/kit/')) return path;
-  if (['manifest.webmanifest', 'sw.js', 'offline.html'].includes(path)) return path;
+  if (['manifest.webmanifest', 'sw.js', 'offline.html', 'assets/last-game.js'].includes(path)) return path;
   return '';
 }
 
