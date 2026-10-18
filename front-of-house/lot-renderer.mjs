@@ -3,6 +3,7 @@ import * as T from './vendor/three/three.module.min.js';
 import { createLotCamera, LOT_ZOOMS } from './lot-camera.mjs';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA, FESTIVAL_SCENE } from './lot-models.mjs';
 import { createLotPresentation, stageRepresentatives } from './lot-presentation.mjs';
+import { createPerformers } from './performers.mjs';
 import { OBJECT_TYPES, VENUES } from './data.mjs';
 
 export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false, venue = 'lot' } = {}) {
@@ -16,6 +17,9 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models, { width, depth, pillars: spec.pillars, indoor: venue === 'club' }), room = models.room(spec);
   const sidePresentation = festival ? createLotPresentation(models, { width: FESTIVAL_SCENE.annex.w, depth: FESTIVAL_SCENE.annex.h, indoor: true }) : null;
   if (sidePresentation) sidePresentation.group.position.x = FESTIVAL_SCENE.annex.x;
+  const performers = createPerformers(), sidePerformers = festival ? createPerformers() : null;
+  world.add(performers.group);
+  if (sidePerformers) world.add(sidePerformers.group);
   let stageAudience = null;
   const media = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   let motion = reducedMotion === null ? !media?.matches : !reducedMotion;
@@ -78,6 +82,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
         const input = lastScene, view = { camera: camera.camera, pixelHeight: canvas.height };
         presentation.update(stageAudience ? { ...input, crowd: stageAudience.displayed.main } : input, objects, objectHeights, motion, stageAudience?.representatives.main, view);
         if (sidePresentation) sidePresentation.update({ ...input, crowd: stageAudience.displayed.second, incident: input.incident === 'rain' ? 'rain' : null, showClear: false }, [{ type: 'stage', x: 3, y: 1, rot: 0 }], [0.55], motion, stageAudience.representatives.second, view);
+        performers.update(input, objects.find(o => o.type === 'stage'), motion);
+        if (sidePerformers) sidePerformers.update({ ...input, artistId: input.secondaryStage?.artistId, performing: input.performing && input.secondaryStage?.booked }, { x: FESTIVAL_SCENE.stage.x, y: FESTIVAL_SCENE.stage.y, rot: 0 }, motion);
         // Include both detail levels and camera-only transitions in shadow invalidation.
         const casters = [...presentation.group.children, ...(sidePresentation?.group.children || [])].filter(mesh => mesh.isInstancedMesh && mesh.castShadow);
         const nextShadow = JSON.stringify([layoutKey, ...casters.map(mesh => [mesh.count, mesh.count ? mesh.instanceMatrix.version : 0])]);
@@ -158,7 +164,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     if (disposed) return;
     disposed = true; cancelRender();
     canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored); globalThis.document?.removeEventListener('visibilitychange', visibility);
-    media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose(); sidePresentation?.dispose();
+    media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose(); sidePresentation?.dispose(); performers.dispose(); sidePerformers?.dispose();
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
   resize(); watchDensity();
@@ -186,6 +192,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

@@ -645,3 +645,7 @@ MixMash homepage. List Front of House as **Early playable**. This supersedes
 the historical no-hub-card hold, including that portion of earlier phase notes.
 Keep `noindex` and the sitemap exclusion unchanged. This does not approve
 search indexing or certify separate final-art, hardware or performance gates.
+
+## Performer presentation (2026-10-18, Accepted)
+
+Under Dave's direct instruction and CT-DEC-19 autonomy, retain existing act illustration palettes and lineup sizes as cosmetic identities. Use compact source-authored 3D ensembles plus matching classic sprites, with instrument silhouettes and reduced-motion support. No artist attributes, simulation, rules or saved fields change. This is a visual patch, not acceptance of final human art quality or physical-device performance.

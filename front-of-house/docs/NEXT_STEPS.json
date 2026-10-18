@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.6 stage and site equipment cards delivered",
-  "lastActivity": "2026-10-17",
+  "head": "Band and performer visuals in verification",
+  "lastActivity": "2026-10-18",
   "status": "amber",
-  "statusReason": "Stage and remaining equipment cards released with CI, deployed source parity, desktop/mobile screenshots and cold-offline save checks. Existing human, physical-device and calibration acceptance remain open.",
+  "statusReason": "Presentation-only ensembles added for existing acts; source model checks pass. Browser, release and live screenshot verification in progress. Rules and schema 2 unchanged.",
   "activity30d": {
     "headline": "PA, lighting, stage and site model cards released; existing human acceptance remains open."
   },

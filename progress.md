@@ -69,3 +69,7 @@ Linux CI retained a60px Lighting label in a54px button at320px. Shortened the eq
 - Dominic cached Playwright1.61.1 selected after1.64 image lacked pinned browser. Short-screen hidden-atom rules extended to the new catalog; initial desktop/phone state and receipt checks passed. Full final matrix/CI/live delivery pending.
 - PR172 review found the new static module missing from the hub precache. Cache v84 now includes the module and all remaining card imagery; a cold hub-only install test verifies first FOH visit, twelve decoded previews and exact reload while offline.
 - Final source d1f3eae passed required CI39090667953 and merged 7bc9ed3. Pages and 26 live source matches verified. Dominic passed 18 hosted catalog cases, first-visit cold offline preview/state/reload and captured screenshots; source rules/schema/geometry unchanged. Existing human/device/calibration gates remain open.
+
+## 2026-10-18 Band and performer visuals
+- Direct user request: add performers while preserving rules and saves; screenshots required.
+- Added a presentation-only stage ensemble using existing menu artwork identities and source-authored instruments. Desktop and mobile verification pending on Dominic.

@@ -60,6 +60,7 @@ jobs:
       - run: npm run smoke:front-of-house-floor
       - run: npm run smoke:front-of-house-batching
       - run: npm run smoke:front-of-house-resolution
+      - run: node test/front-of-house-performers-smoke.mjs
       - run: npm run smoke:front-of-house-site-equipment
       - run: npm run smoke:front-of-house-lighting
       - run: npm run smoke:front-of-house-lot

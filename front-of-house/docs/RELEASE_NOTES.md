@@ -5,6 +5,12 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.7 — 2026-10-18
+
+- Booked acts now perform on stage with distinct instrumental lineups and existing band colors. The 3D view adds guitars, basses, drums, microphones and keyboards; classic view uses matching performer sprites.
+- Festival secondary acts receive their own ensemble. Performers disappear outside Show, respect reduced motion and do not affect picking, rules, money or saves.
+- Cache v85; save schema 2 unchanged.
+
 ## 0.3.6 — 2026-10-17
 
 - Stage and site-equipment cards use the same models as the 3D venue.
