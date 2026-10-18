@@ -98,7 +98,25 @@ jobs:
       - run: git diff --exit-code -- front-of-house/docs/CAREER_BASELINE.md
       - run: npm run docs:front-of-house
       - run: git diff --exit-code -- front-of-house/docs/ASSETS.md front-of-house/docs/CATALOG.md front-of-house/docs/STRINGS.md
-      - run: npx playwright install --with-deps chromium webkit
+      - name: Install Playwright browsers
+        env:
+          HOSTED: ${{ runner.environment == 'github-hosted' }}
+        run: |
+          if [ "$HOSTED" = true ]; then
+            npx playwright install --with-deps chromium webkit
+            exit 0
+          fi
+          # Box runner: install-deps.sh preinstalls the system libraries, so apt
+          # (whose Debian mirror sometimes answers 500) is only used if Playwright
+          # reports something missing, with retries.
+          if ! npx playwright install-deps --dry-run chromium webkit | grep -q 'All system dependencies are installed'; then
+            for attempt in 1 2 3; do
+              npx playwright install-deps chromium webkit && break
+              [ "$attempt" = 3 ] && exit 1
+              sleep 30
+            done
+          fi
+          npx playwright install chromium webkit
       - run: npm run smoke:landing
       - run: npm run smoke:front-of-house
       - run: node --test test/front-of-house-version.test.mjs
