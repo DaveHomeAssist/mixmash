@@ -5,6 +5,11 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.9 — 2026-10-18
+
+- On a 375px phone the paused Show header fits its plate: the clock's line box now holds the font's full height instead of overflowing by about 2 px, whichever monospace font the device has. Incident choice costs on phones are set slightly smaller so a long cost such as "$125 · not enough cash" stays on one line beside its label, keeping the rain choices inside the peek sheet with room to spare. Layout only: rules, money, strings, balance and save schema 2 are unchanged.
+- Cache v87.
+
 ## 0.3.8 — 2026-10-18
 
 - Fixes FOH-QA-012. In a zoomed or short desktop window below 1024 × 700 (for example 150% or 200% zoom on 1440 × 900 or 1366 × 768), Promote keeps its action row, including **Open doors**, pinned to the bottom of the sheet. Book lists the acts first and puts each deal button straight under the act's name; the room choice, the intro line and the act details follow below. On very short windows the deal notes shorten to one line and the act art is hidden. Layout only: rules, money, balance and save schema 2 are unchanged.
