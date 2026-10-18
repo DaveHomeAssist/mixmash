@@ -739,7 +739,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
         image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(performerSprite(scene.artistId, i));
         performerImages.set(key, image);
       }
-      const image = performerImages.get(key), h = view.th * 2.5;
+      const image = performerImages.get(key), h = view.th * 1.15;
       if (image.complete && image.naturalWidth) ctx.drawImage(image, x - h * 5 / 12, y - h, h * 5 / 6, h);
     }
   }

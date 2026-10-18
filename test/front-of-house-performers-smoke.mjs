@@ -40,7 +40,7 @@ try {
     if (venueId === 'festival') assert.equal((await page.evaluate(() => __frontOfHouse.board())).sidePerformers.artist, 'hollow-census');
     await page.screenshot({ path: `${output}/${artistId}-${width}.png` });
     assert.deepEqual(await page.evaluate(() => __frontOfHouse.state()), before);
-    await page.reload(); await page.waitForFunction(() => window.__frontOfHouse);
+    await page.reload(); await page.waitForFunction(() => window.__frontOfHouse?.rendererStatus().active);
     assert.deepEqual(await page.evaluate(() => __frontOfHouse.state()), before);
     assert.deepEqual(settlementFor(await page.evaluate(() => __frontOfHouse.state())), settlementFor(before));
     if (artistId === 'sodium-arcade') {
