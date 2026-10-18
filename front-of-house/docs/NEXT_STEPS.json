@@ -2487,6 +2487,13 @@
       "FOH-FLOW-01 remains Proposed.",
       "Human, physical-device, calibration and original-image provenance gates remain open."
     ],
-    "verificationLimit": "Existing passed runtime CI reused; current source equality is not new interaction or physical-device acceptance."
+    "verificationLimit": "Existing passed runtime CI reused; current source equality is not new interaction or physical-device acceptance.",
+    "delivery": {
+      "pullRequest": "https://github.com/DaveHomeAssist/mixmash/pull/176",
+      "implementationCommit": "24570cc690940d9873f16bed089fb87963928d56",
+      "status": "Pushed; merge and deployment blocked by offline CI runners.",
+      "evidence": "At 2026-10-18T23:28:11Z, both configured MixMash runners were offline. CI39176604795 regression scope check succeeded; required test remained queued. Six local catalog checks passed; no runtime change.",
+      "next": "Restore an existing CI runner through its owner; obtain required checks on the final head, then merge and verify Pages and the four hosted documentation files."
+    }
   }
 }
