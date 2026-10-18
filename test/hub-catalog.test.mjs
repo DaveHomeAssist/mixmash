@@ -35,7 +35,9 @@ test('FOH approval affects discovery only, not indexing or game saves', async ()
   assert.match(await read('front-of-house/README.md'), /signed off the first playable for homepage promotion on 2026-10-05/);
   const script = await read('src/hub/app.js');
   assert.ok(!script.includes('localStorage.clear'));
-  assert.ok(!script.includes('localStorage.removeItem'));
+  // The only key the homepage may delete is its own expired "Continue" marker.
+  assert.deepEqual(script.match(/localStorage\.removeItem\([^)]*\)/g), ['localStorage.removeItem(LAST_GAME_KEY)']);
+  assert.match(script, /const LAST_GAME_KEY = 'mm\.lastGame';/);
   const sw = await read('sw.js');
   for (const file of ['src/hub/style.css', 'src/hub/app.js', ...playableGames.map(g => `assets/previews/${g.image}`)]) assert.ok(sw.includes(`'./${file}'`));
 });

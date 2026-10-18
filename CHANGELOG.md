@@ -6,6 +6,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 - Front of House 0.3.8: below the 1024 × 700 no-scroll gate (150% and 200% browser zoom), Promote's action row stays pinned to the bottom of the sheet and Book lists the acts first with each deal button under the act's name, so **Open doors** and the deals are on screen without scrolling the sheet (FOH-QA-012). CSS only; rules, balance and save schema 2 are unchanged. Cache v86.
 
+- Hub: pick up where you left off. Game pages record `mm.lastGame` through `/assets/last-game.js` (EMPIRES is recorded when launched from the hub, its files untouched); the homepage tags that card **Continue** with an accent ring for 14 days without reordering, deletes stale or malformed entries, and **Pick for me** skips it. Garden's Mute All now also remembers its setting in `mm.prefs`. No game save, rule or cache-version change.
+
 - Front of House 0.3.7: presentation-only band ensembles and classic performer sprites, with existing act palettes, reduced motion and unchanged rules/schema 2. Cache v85.
 
 - Front of House 0.3.3: the booking confirmation moves from Build's card to a fading board toast, keeping the HUD within 2% of the lot at 1024 × 700 right after booking (FOH-QA-015). Cache v82.

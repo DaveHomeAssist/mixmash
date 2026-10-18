@@ -14,6 +14,41 @@ let lastDetail = '';
 let currentView = '';
 const stored = key => { try { return localStorage.getItem(`mixmash.hub.${key}`); } catch { return null; } };
 function save(key, value) { try { localStorage.setItem(`mixmash.hub.${key}`, value); } catch { /* Private browsing still supports this visit. */ } }
+// "Continue": game pages record mm.lastGame = {slug, t} (assets/last-game.js). Fresh, known entries tag
+// that card; anything malformed, unknown or older than 14 days is deleted and ignored. Cards never reorder.
+const LAST_GAME_KEY = 'mm.lastGame';
+const LAST_GAME_MAX_AGE = 14 * 24 * 60 * 60 * 1000;
+function readLastGame() {
+  let raw = null;
+  try { raw = localStorage.getItem(LAST_GAME_KEY); } catch { return ''; }
+  if (raw === null) return '';
+  let entry = null;
+  try { entry = JSON.parse(raw); } catch { /* deleted below */ }
+  const age = entry && Number.isFinite(entry.t) ? Date.now() - entry.t : NaN;
+  const known = entry && typeof entry.slug === 'string' && cards.some(card => card.dataset.game === entry.slug);
+  // Allow a minute of clock skew; a timestamp further in the future is not trustworthy.
+  if (known && age > -60000 && age < LAST_GAME_MAX_AGE) return entry.slug;
+  try { localStorage.removeItem(LAST_GAME_KEY); } catch { /* Nothing else to clean up. */ }
+  return '';
+}
+function recordLastGame(slug) { try { localStorage.setItem(LAST_GAME_KEY, JSON.stringify({ slug, t: Date.now() })); } catch { /* Storage blocked. */ } }
+const lastGame = readLastGame();
+const lastCard = cards.find(card => card.dataset.game === lastGame);
+if (lastCard) {
+  lastCard.classList.add('is-last-played');
+  const tag = document.createElement('span');
+  tag.className = 'continue-tag'; tag.id = `continue-${lastGame}`; tag.textContent = 'Continue';
+  lastCard.append(tag);
+  for (const link of lastCard.querySelectorAll('.details-link,.play-link')) link.setAttribute('aria-describedby', tag.id);
+}
+// Games that cannot include the marker script (EMPIRES) are recorded when launched from here.
+const routeSlugs = new Map(cards.map(card => [new URL(card.querySelector('.play-link').href).pathname, card.dataset.game]));
+document.addEventListener('click', event => {
+  const link = event.target.closest?.('a[href]');
+  if (!link || link.origin !== location.origin) return;
+  const slug = routeSlugs.get(link.pathname);
+  if (slug === 'empires') recordLastGame(slug);
+});
 function setTheme(theme) {
   root.dataset.theme = theme;
   themeButton.textContent = theme === 'light' ? 'Dark mode' : 'Light mode';
@@ -112,7 +147,11 @@ window.addEventListener('hashchange', () => { showView(!tabKeyboard); tabKeyboar
 window.addEventListener('resize', fitCatalog);
 const picker = document.getElementById('pick-game'); picker.hidden = false;
 picker.addEventListener('click', () => {
-  const choices = cards.filter(card => card.dataset.game !== previousPick);
+  // Skip the game played last (and the previous pick) while anything else is left to choose.
+  const others = cards.filter(card => card.dataset.game !== lastGame);
+  const pool = others.length ? others : cards;
+  const fresh = pool.filter(card => card.dataset.game !== previousPick);
+  const choices = fresh.length ? fresh : pool;
   const bytes = new Uint32Array(1); crypto.getRandomValues(bytes);
   const selected = choices[bytes[0] % choices.length]; previousPick = selected.dataset.game;
   announcement.textContent = `Picked ${selected.querySelector('h3').textContent}. Review its details, then choose Play.`;
