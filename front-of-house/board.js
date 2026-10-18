@@ -5,6 +5,7 @@
 // ./sprites once all of them have loaded, and the code-drawn boxes until then (and
 // for a stage turned away from the viewer, which has no art).
 
+import { bandLook, performerSprite } from './menu-art.mjs';
 import * as D from './data.mjs';
 import { clipGround } from './site-map-geometry.mjs';
 import { footprint } from './engine.mjs';
@@ -721,6 +722,28 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
   }
 
   // scene: { objects, clearSet, blockedSet, showClear, cursor, ghost, crowd, incident, night, lightTower, t }
+  const performerImages = new Map();
+  function drawPerformers(stage, scene) {
+    if (!scene.performing || !scene.artistId) return;
+    const look = bandLook(scene.artistId), d = dims(stage), angle = -(stage.rot || 0) * Math.PI / 2;
+    const performers = look.roles.map((role, i) => {
+      const dx = (i - (look.roles.length - 1) / 2) * .95, dz = role === 'drums' ? -.65 : .45;
+      const x = stage.x + d.w / 2 + dx * Math.cos(angle) + dz * Math.sin(angle);
+      const y = stage.y + d.h / 2 - dx * Math.sin(angle) + dz * Math.cos(angle);
+      return { i, point: iso(x, y, .55) };
+    }).sort((a, b) => a.point[1] - b.point[1]);
+    for (const { i, point: [x, y] } of performers) {
+      const key = `${scene.artistId}:${i}`;
+      if (!performerImages.has(key)) {
+        const image = new Image(); image.onload = redraw;
+        image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(performerSprite(scene.artistId, i));
+        performerImages.set(key, image);
+      }
+      const image = performerImages.get(key), h = view.th * 1.15;
+      if (image.complete && image.naturalWidth) ctx.drawImage(image, x - h * 5 / 12, y - h, h * 5 / 6, h);
+    }
+  }
+
   function draw(scene) {
     lastScene = scene;
     useRoom(scene.grid);
@@ -873,7 +896,7 @@ export function createBoard(canvas, { cacheFloor = true } = {}) {
       else if (D.OBJECT_TYPES[o.type]?.supportOnly) touringProp(o);
       else box(o.x, o.y, d.w, d.h, lookOf(o).height, lookOf(o), flickerOf(o));
       hits.push(g.r ? { o, d, r: g.r } : { o, d, poly: g.poly });
-      if (o.type === 'stage' && !repaint) drawStageFacing(o);
+      if (o.type === 'stage' && !repaint) { drawStageFacing(o); drawPerformers(o, scene); }
       if (BOX_LABELS[o.type]) {
         const [x, y] = iso(o.x + d.w / 2, o.y + d.h / 2, LOOK[o.type].height);
         ctx.save(); ctx.fillStyle = '#102b21'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(BOX_LABELS[o.type], x, y); ctx.restore();

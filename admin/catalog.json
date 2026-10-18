@@ -2999,6 +2999,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-performers.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-performers.mjs",
+      "description": "Cosmetic ensembles must remain bounded, deterministic and independent of saves.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-performers.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-prefs.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3409,6 +3419,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-performers-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-performers-smoke.mjs",
+      "description": "Actual gameplay performer checks and screenshots, with exact state and receipt preservation.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-performers-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-research-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3816,6 +3836,16 @@
       "title": "pa-models.mjs",
       "description": "FOH presentation adapter for the FMP ZLX-15BT / EKX-15SP equipment models. Approximate exterior geometry only; no manufacturer specification is a game rule.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/pa-models.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/performers.mjs",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "MJS",
+      "title": "performers.mjs",
+      "description": "Original cosmetic stage performers. No random source, simulation writes or saved state.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performers.mjs",
       "open": null
     },
     {

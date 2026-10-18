@@ -12,6 +12,11 @@ const acts = {
   'paper-voltage': ['#d7a8cf', '#8fa9d8', 'rock', 5],
   'north-kettle': ['#93bcbc', '#c7b486', 'folk', 5],
 };
+// Shared visual identity only; lineup size and roles never enter simulation state.
+export function bandLook(artistId) {
+  const [primary, secondary, genre, count] = acts[artistId] || acts['sodium-arcade'];
+  return { primary, secondary, genre, roles: Array.from({ length: count }, (_, i) => genre === 'electronic' ? 'keys' : count > 2 && i === 0 ? 'drums' : i === Math.floor(count / 2) && genre === 'soul' ? 'voice' : i % 2 ? 'bass' : 'guitar') };
+}
 const skins = ['#dba581', '#a96e50', '#e2bb98', '#815443', '#bd8a67'];
 function player(x, y, scale, color, index, role) {
   const instrument = role === 'drums' ? '<circle cy="23" r="23" fill="#c49372" stroke="#ddd6c0" stroke-width="3"/><circle cy="23" r="14" fill="#343e4e"/><path d="M-30 0v43m60-43v43M-42 0h24m-5-9l14 12m33-12L9 3" stroke="#dccbac" stroke-width="3"/>'
@@ -19,6 +24,10 @@ function player(x, y, scale, color, index, role) {
     : role === 'voice' ? '<path d="M14-22v66m-10 0h20" stroke="#d9c9aa" stroke-width="2"/><rect x="9" y="-29" width="9" height="13" rx="4" fill="#ddd6c0"/><path d="M-8-5L13-23" stroke="#dba581" stroke-width="6" stroke-linecap="round"/>'
     : `<path d="M-17 5c-13 5-10 24 2 26 9 2 18-5 14-13L23-8l-5-5L-5 10c-3-8-7-8-12-5" fill="${role === 'bass' ? '#b9c4b9' : '#d6a25d'}" stroke="#282b31" stroke-width="2"/><circle cx="-10" cy="18" r="4" fill="#34313a"/><path d="M-13 21L24-12" stroke="#eee1c5" stroke-width="1.5"/>`;
   return `<g transform="translate(${x} ${y}) scale(${scale})"><ellipse cy="47" rx="27" ry="5" fill="#151d28" opacity=".45"/><path d="M-10 13l-5 30m23-30l9 30" stroke="#252b39" stroke-width="10" stroke-linecap="round"/><path d="M-16-17Q0-25 16-17l6 33h-43z" fill="${color}"/><path d="M-15-13l-9 23m39-23l12 20" stroke="${skins[index % skins.length]}" stroke-width="7" stroke-linecap="round"/><rect x="-4" y="-30" width="8" height="12" rx="3" fill="${skins[index % skins.length]}"/><ellipse cy="-40" rx="12" ry="15" fill="${skins[index % skins.length]}"/><path d="M-13-38Q-16-63 5-57q13 3 9 20l-5-12-19 3z" fill="${index % 2 ? '#3c3033' : '#252a34'}"/>${index % 3 === 0 ? '<path d="M-15-48h31M-9-48l2-13h15l4 13" stroke="#d8c7a6" stroke-width="4" fill="#675e51"/>' : ''}${instrument}</g>`;
+}
+export function performerSprite(artistId, index) {
+  const look = bandLook(artistId), role = look.roles[index];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${player(50, 65, 1, index % 2 ? look.secondary : look.primary, index, role)}</svg>`;
 }
 export function bandArt(artistId, variant = '') {
   const [paper, ink, genre, count] = acts[artistId] || acts['sodium-arcade'];

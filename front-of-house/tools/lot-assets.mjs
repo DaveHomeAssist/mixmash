@@ -10,7 +10,7 @@ import { PA_MODEL_SOURCE } from '../pa-models.mjs';
 import { OBJECT_TYPES, VENUES } from '../data.mjs';
 const root = new URL('../', import.meta.url), hash = b => createHash('sha256').update(b).digest('hex');
 const sources = {};
-for (const file of [...SITE_CARD_TYPES.map(type => `assets/equipment/${type}.png`), 'equipment-cards.mjs', 'assets/equipment/lights.png', 'lighting-models.mjs', 'assets/equipment/pa-s.png', 'assets/equipment/pa-m.png', 'pa-models.mjs', 'lot-models.mjs', 'lot-camera.mjs', 'site-map-geometry.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs', 'service-crowd.mjs', 'service-guests.mjs', 'guest-flow.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
+for (const file of [...SITE_CARD_TYPES.map(type => `assets/equipment/${type}.png`), 'equipment-cards.mjs', 'assets/equipment/lights.png', 'lighting-models.mjs', 'assets/equipment/pa-s.png', 'assets/equipment/pa-m.png', 'pa-models.mjs', 'lot-models.mjs', 'lot-camera.mjs', 'site-map-geometry.mjs', 'lot-presentation.mjs', 'lot-renderer.mjs', 'performers.mjs', 'menu-art.mjs', 'service-crowd.mjs', 'service-guests.mjs', 'guest-flow.mjs']) sources[file] = hash(await readFile(new URL(file, root)));
 const models = createLotModels(), round = n => Math.round(n * 100000) / 100000;
 function describe(type) {
   const model = type === 'guest' ? models.guest() : models.create({ type, x: 0, y: 0, rot: 0 });

@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House 0.3.7: presentation-only band ensembles and classic performer sprites, with existing act palettes, reduced motion and unchanged rules/schema 2. Cache v85.
+
 - Front of House 0.3.3: the booking confirmation moves from Build's card to a fading board toast, keeping the HUD within 2% of the lot at 1024 × 700 right after booking (FOH-QA-015). Cache v82.
 
 - Front of House 0.3.2: anticipatory suggestions. Build outlines the legal tiles for gates, exits and PAs (2D and 3D), adds **Pick Exit** when exits cap capacity, and names last night's weakest part with ringed tools. Book marks the last deal and short guarantees, Promote offers **Same as last time** price and ads on a press, Show marks the last response, and Done previews the next offers. A new device preferences key, `front_of_house_prefs`, sits outside the save and absorbs the renderer and theme keys. Adds Suggestions on/off and Forget to the menu. Rules, balance and save schema 2 are unchanged. Cache v81.
