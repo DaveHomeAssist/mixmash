@@ -12,24 +12,13 @@ Front of House also reads its
 [equipment adapter guidance](front-of-house/docs/EQUIPMENT_PLATFORM_ADAPTER.md).
 Other games retain their own behavior and require their own explicit adapter.
 
-## Status naming
+## Session naming
 
-Name work with one string everywhere (chat status title, session title, Notion
-Status Check Runs "Human Name"):
+Follow [Status Naming](https://github.com/DaveHomeAssist/skills/blob/master/status-naming.md), the canonical authority for the format, parent/subproject emoji map, phases, date semantics and exceptions.
 
-`<icon> <PROJECT> | <light> | <phase> | <title> | <mm-dd hh:mm>`
+`<emoji(s)> <Project> | <PHASE> | <Title> <MM-DD>`
 
-Example: `🏰 EMPIRES | 🟢 | Build | 2x Sprites Shipped | 10-17 09:23`
-
-- icon: the project's fixed emoji, always first (🏰 is EMPIRES). PROJECT in caps.
-- light: 🟢 complete and verified · 🟡 partial · 🔴 not started, blocked or failed · ⚪ unverifiable.
-  Add ⏳ scheduled, 🙋 awaiting Dave or 🚧 blocked to 🟡/🔴/⚪, never to 🟢.
-- phase: Research, Design, Build, Audit or Scheduled.
-- title: 2 to 6 words, 30 characters or fewer, outcome not activity. Reason goes in the body.
-- mm-dd hh:mm: date and 24h time of the latest light change.
-- Every light change gets a new name: a `RENAME:` line in chat and the Notion row updated.
-- Full rule and what it superseded: ops-hub `90-governance/SESSION_NAMING_FORMAT_2026-10-17.md`.
-- Older canonical source (pre-2026-10-17 form, pending update): https://github.com/DaveHomeAssist/skills/blob/master/status-naming.md
+Preserve Dave's manual titles and protected or uncertain sessions. Status belongs in the body; status changes do not authorize renames or Notion writes. Local instructions extend this rule only through a named, purposeful exception; they do not maintain a competing format.
 
 ## Admin index
 
