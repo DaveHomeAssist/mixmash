@@ -76,4 +76,8 @@ from current data. Browsing does not invoke an engine action or persist a new
 selection. The catalog, Build icons and inspection cards share these previews.
 Runtime geometry, cameras, settlement and save schema are unchanged. The fence
 kit is a site-wide rule toggle, not a placeable model, and retains its existing
-control. Verification and hosted delivery are pending for this slice.
+control. Source d1f3eae passed required CI39090667953; PR172 merged
+7bc9ed3 and Pages published it. Dominic verified 26 hosted byte matches,
+18 responsive Chromium/WebKit cases and exact saves/receipts/reload. Cache v84
+precaches the new module and preview images; cold hub-only installation and
+first FOH visit offline pass. Human/device/calibration acceptance remains open.

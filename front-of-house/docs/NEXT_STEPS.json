@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.6 stage and site equipment cards in verification",
+  "head": "0.3.6 stage and site equipment cards delivered",
   "lastActivity": "2026-10-17",
   "status": "amber",
-  "statusReason": "Twelve remaining placeable model previews, catalog and Build/inspection cards implemented. Responsive and save checks underway; CI and deployed proof pending. Geometry, rules and saves unchanged.",
+  "statusReason": "Stage and remaining equipment cards released with CI, deployed source parity, desktop/mobile screenshots and cold-offline save checks. Existing human, physical-device and calibration acceptance remain open.",
   "activity30d": {
-    "headline": "PA and lighting equipment models and matching cards released; existing human acceptance remains open."
+    "headline": "PA, lighting, stage and site model cards released; existing human acceptance remains open."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -45,15 +45,16 @@
     "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized.",
     "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes.",
     "PR168: 0.3.4 PA rigs and matching equipment cards, source4945433, merged8b5ae09, required CI39057828540 passed; Pages and13 hosted byte matches plus eight live responsive/save checks passed.",
-    "PR171: 0.3.5 J-Six and Vertigo lighting rig/cards, source3990130, merged1bcc10a. General CI39075354548 and paired CI39073920410 attempt2 pass; Pages and15 hosted byte matches plus eight light/dark live responsive/save checks pass. Earlier compact-tab failures, WebKit timeout and paired attempt1 rejection retained."
+    "PR171: 0.3.5 J-Six and Vertigo lighting rig/cards, source3990130, merged1bcc10a. General CI39075354548 and paired CI39073920410 attempt2 pass; Pages and15 hosted byte matches plus eight light/dark live responsive/save checks pass. Earlier compact-tab failures, WebKit timeout and paired attempt1 rejection retained.",
+    "PR172: 0.3.6 twelve stage/site model cards, source d1f3eae, merged 7bc9ed3. Required CI39090667953 passed; Pages and 26 hosted byte matches, 18 responsive catalog cases and cold hub-only offline first-visit/reload proof pass. Cache v84 includes module and previews; schema 2 and game rules unchanged."
   ],
   "nextStep": {
-    "title": "Complete stage and site card release verification",
-    "why": "User requested the remaining equipment visual pass.",
-    "doneWhen": "Responsive cards, exact saves, required CI and deployed screenshots pass.",
+    "title": "Review delivered equipment visuals",
+    "why": "Technical release proof is complete; human and physical-device acceptance remain separate.",
+    "doneWhen": "Actual visual/device observations are recorded against the existing release checklist.",
     "effort": "S",
-    "owner": "Current FOH executor",
-    "blockedBy": "Verification in progress"
+    "owner": "Dave and current FOH executor",
+    "blockedBy": "Direct human and physical-device evidence"
   },
   "findings": [
     {
@@ -388,7 +389,7 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
-  "kickoffPrompt": "Continue Front of House from delivered0.3.5 lighting slice PR171 at1bcc10a and PA PR168. Review the existing RELEASE human/device/calibration/rights checklist and record actual evidence. Reuse the passed exact-source browser and settlement checks; do not repeat shipped equipment work, change game rules/saves, or infer human acceptance.",
+  "kickoffPrompt": "Continue Front of House from delivered0.3.6 stage/site cards PR172, lighting PR171 and PA PR168. Review the existing RELEASE human/device/calibration/rights checklist and record actual evidence. Reuse passed exact-source browser, save and settlement checks; do not repeat shipped equipment work, change game rules/saves, or infer human acceptance.",
   "confidence": "medium",
   "unknowns": [
     "Final realistic art and physical scale/operator-eye calibration remain unaccepted.",
@@ -1294,6 +1295,35 @@
         "Compact Lighting tab overflow fixed with scoped typography and Lights label.",
         "Original general job timed out at WebKit ticketing reload; unchanged full general workflow passed.",
         "Paired attempt1 desktop crowd CPU p95 8.7ms exceeded8.1ms; one unchanged paired retry passed all18 metrics. Independent source/raw/fixture/statistics audits reproduce both36-window verdicts. No baseline or limit changes."
+      ],
+      "remaining": [
+        "Human visual acceptance",
+        "Physical device and calibration acceptance"
+      ]
+    },
+    "stageEquipment": {
+      "source": "d1f3eae88a1f7682312077e88454a8adf839a200",
+      "merge": "7bc9ed34ac241624c074d8b1fab4fa818319be9f",
+      "pullRequest": "https://github.com/DaveHomeAssist/mixmash/pull/172",
+      "generalCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/39090667953",
+      "pairedCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/39090667953/attempts/2",
+      "pagesBuiltAt": "2026-10-18T03:49:19Z",
+      "hostedFiles": 26,
+      "liveCases": 18,
+      "runner": "Dominic; Playwright1.61.1 container Chromium/WebKit",
+      "saveSchema": 2,
+      "cache": "v84",
+      "rulesChanged": false,
+      "runtimeGeometryChanged": false,
+      "offline": "Cold hub-only installation, first FOH visit, all twelve previews and exact state reload pass offline.",
+      "retainedFailures": [
+        "Initial tar wildcard quoting fixed before source transfer",
+        "Initial1.64 container lacked pinned browser; used cached1.61.1",
+        "Short-window hidden/compact pagination corrected and full matrix passed",
+        "Remote partial copy missed root manifest; unchanged file restored and errors check passed",
+        "PR review found missing static precache dependency; cachev84 plus cold-offline regression now passes",
+        "Superseded-source CI39090236834 and Horseshoes39090236840 canceled after offline fix push",
+        "Paired attempt1 independently reproduced two CPU p95 rejections: desktop crowd8.0ms/7.65ms limit and ultrawide crowd9.7ms/8.55ms limit. All frame timing comparisons pass. Renderer/engine/data/camera/presentation/performance harness are byte-identical to this PR base; fixed historical baseline remains unchanged. One unchanged attempt2 passes all18 metrics, independently audited; no limits changed. Cause of measurement variability remains unverified."
       ],
       "remaining": [
         "Human visual acceptance",
