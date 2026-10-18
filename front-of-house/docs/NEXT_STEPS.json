@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "Band and performer visuals in verification",
+  "head": "0.3.7 band performers delivered",
   "lastActivity": "2026-10-18",
   "status": "amber",
-  "statusReason": "Presentation-only ensembles added for existing acts; source model checks pass. Browser, release and live screenshot verification in progress. Rules and schema 2 unchanged.",
+  "statusReason": "Band ensembles and classic sprites released with exact-head CI, audited paired performance, deployed source parity and eight live desktop/mobile save/receipt journeys. Existing human and physical-device acceptance remain separate.",
   "activity30d": {
-    "headline": "PA, lighting, stage and site model cards released; existing human acceptance remains open."
+    "headline": "PA, lighting, stage/site cards and band performers released."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -46,10 +46,11 @@
     "PR144: e37dbb9 passes general and paired regression CI38327150693; merged50d495c06032ad8c4350a812238771b25352fb1c after PR145 d9110eda41de377279fdf04b204bc199daa1bb21. Pages38350747856 publishes0.3.1/cachev79. Duncan12 hosted byte matches, correct cover, offline exact state and all eight held-run journeys pass. No additional engine/balance/save changes.",
     "PR168: 0.3.4 PA rigs and matching equipment cards, source4945433, merged8b5ae09, required CI39057828540 passed; Pages and13 hosted byte matches plus eight live responsive/save checks passed.",
     "PR171: 0.3.5 J-Six and Vertigo lighting rig/cards, source3990130, merged1bcc10a. General CI39075354548 and paired CI39073920410 attempt2 pass; Pages and15 hosted byte matches plus eight light/dark live responsive/save checks pass. Earlier compact-tab failures, WebKit timeout and paired attempt1 rejection retained.",
-    "PR172: 0.3.6 twelve stage/site model cards, source d1f3eae, merged 7bc9ed3. Required CI39090667953 passed; Pages and 26 hosted byte matches, 18 responsive catalog cases and cold hub-only offline first-visit/reload proof pass. Cache v84 includes module and previews; schema 2 and game rules unchanged."
+    "PR172: 0.3.6 twelve stage/site model cards, source d1f3eae, merged 7bc9ed3. Required CI39090667953 passed; Pages and 26 hosted byte matches, 18 responsive catalog cases and cold hub-only offline first-visit/reload proof pass. Cache v84 includes module and previews; schema 2 and game rules unchanged.",
+    "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged."
   ],
   "nextStep": {
-    "title": "Review delivered equipment visuals",
+    "title": "Review delivered stage and performer visuals",
     "why": "Technical release proof is complete; human and physical-device acceptance remain separate.",
     "doneWhen": "Actual visual/device observations are recorded against the existing release checklist.",
     "effort": "S",
@@ -389,7 +390,7 @@
       "url": "https://github.com/DaveHomeAssist/mixmash/pull/59"
     }
   ],
-  "kickoffPrompt": "Continue Front of House from delivered0.3.6 stage/site cards PR172, lighting PR171 and PA PR168. Review the existing RELEASE human/device/calibration/rights checklist and record actual evidence. Reuse passed exact-source browser, save and settlement checks; do not repeat shipped equipment work, change game rules/saves, or infer human acceptance.",
+  "kickoffPrompt": "Continue Front of House from delivered0.3.7 performer visuals PR173 and equipment PR168/171/172. Review the existing RELEASE human/device/calibration/rights checklist and record actual observations. Reuse passed exact-source browser, save and settlement proof; do not repeat shipped visuals, change game rules/saves, or infer human acceptance.",
   "confidence": "medium",
   "unknowns": [
     "Final realistic art and physical scale/operator-eye calibration remain unaccepted.",

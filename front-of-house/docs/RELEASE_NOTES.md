@@ -8,7 +8,7 @@ requires migration.
 ## 0.3.7 — 2026-10-18
 
 - Booked acts now perform on stage with distinct instrumental lineups and existing band colors. The 3D view adds guitars, basses, drums, microphones and keyboards; classic view uses matching performer sprites.
-- Festival secondary acts receive their own ensemble. Performers disappear outside Show, respect reduced motion and do not affect picking, rules, money or saves.
+- Festival secondary acts receive their own ensemble. Performers enter at the existing set-start event, disappear outside Show, respect reduced motion and do not affect picking, rules, money or saves.
 - Cache v85; save schema 2 unchanged.
 
 ## 0.3.6 — 2026-10-17

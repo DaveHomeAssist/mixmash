@@ -73,3 +73,5 @@ Linux CI retained a60px Lighting label in a54px button at320px. Shortened the eq
 ## 2026-10-18 Band and performer visuals
 - Direct user request: add performers while preserving rules and saves; screenshots required.
 - Added a presentation-only stage ensemble using existing menu artwork identities and source-authored instruments. Desktop and mobile verification pending on Dominic.
+
+- Performer release complete: PR173 source602abcf, merge2f91f61, Pages39098459345. CI39096514098 passed476 tests, full browser gates and18 performance comparisons; independent36-window source/raw audit agrees. Dominic passed eight live desktop/mobile performer journeys plus classic switching, timing, exact save/settlement/reload checks and full3D recovery/parity. Skill client completed and screenshots inspected. Human/physical-device acceptance remains separate.
