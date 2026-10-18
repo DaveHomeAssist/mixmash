@@ -34,13 +34,18 @@ on:
 # calibrated on that image, not on the shared box.
 jobs:
   scope:
-    # A push that only merges an already-tested pull request touching nothing
-    # outside front-of-house/ skips the duplicate post-merge run. Direct pushes,
-    # and merges touching anything else, always run the full job.
+    # Skips the post-merge run when it would only repeat a test that already
+    # passed. Either (a) the pushed commit has exactly the tree of a merged pull
+    # request's head, and CI's test job passed on that head as a pull_request run
+    # (the head contained the old gh-pages, so the PR's merge ref was this same
+    # tree), or (b) the merge touches nothing outside front-of-house/.
+    # FOH releases also bump sw.js, CHANGELOG.md and admin/catalog.json, so (b)
+    # alone almost never applied. Direct pushes always run the full job.
     if: github.event_name == 'push'
     runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.hosted) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)) && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","mixmash"]') }}
     timeout-minutes: 5
     permissions:
+      actions: read
       contents: read
       pull-requests: read
     outputs:
@@ -56,15 +61,30 @@ jobs:
         run: |
           set -u
           run=true
-          merged=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '[.[] | select(.merged_at != null)] | length' 2>/dev/null || echo 0)
-          if [ "${merged:-0}" -gt 0 ] && [ -n "${BEFORE//0/}" ]; then
-            if files=$(gh api "repos/$REPO/compare/$BEFORE...$SHA" --jq '.files[].filename' 2>/dev/null) \
-              && [ -n "$files" ] && [ "$(wc -l <<< "$files")" -lt 300 ] \
-              && ! grep -qv '^front-of-house/' <<< "$files"; then
-              run=false
+          reason='direct push or untested change'
+          heads=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '.[] | select(.merged_at != null) | .head.sha' 2>/dev/null || true)
+          if [ -n "$heads" ]; then
+            reason='merged PR, but not the exact tree its CI tested, and not front-of-house/ only'
+            tree=$(gh api "repos/$REPO/git/commits/$SHA" --jq .tree.sha 2>/dev/null || true)
+            for head in $heads; do
+              [ -n "$tree" ] || break
+              [ "$(gh api "repos/$REPO/git/commits/$head" --jq .tree.sha 2>/dev/null || true)" = "$tree" ] || continue
+              for id in $(gh api "repos/$REPO/actions/workflows/ci.yml/runs?head_sha=$head&event=pull_request&status=success&per_page=20" --jq '.workflow_runs[].id' 2>/dev/null); do
+                ok=$(gh api "repos/$REPO/actions/runs/$id/jobs" --jq '[.jobs[] | select(.name == "test" and .conclusion == "success")] | length' 2>/dev/null || echo 0)
+                if [ "${ok:-0}" -gt 0 ]; then
+                  run=false; reason="same tree as PR head $head, tested in run $id"; break 2
+                fi
+              done
+            done
+            if [ "$run" = true ] && [ -n "${BEFORE//0/}" ]; then
+              if files=$(gh api "repos/$REPO/compare/$BEFORE...$SHA" --jq '.files[].filename' 2>/dev/null) \
+                && [ -n "$files" ] && [ "$(wc -l <<< "$files")" -lt 300 ] \
+                && ! grep -qv '^front-of-house/' <<< "$files"; then
+                run=false; reason='merged change touches only front-of-house/'
+              fi
             fi
           fi
-          echo "merged PRs: $merged; full job: $run"
+          echo "merged PR heads: ${heads:-none}; full job: $run ($reason)"
           echo "run=$run" >> "$GITHUB_OUTPUT"
 
   test:
