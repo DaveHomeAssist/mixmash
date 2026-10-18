@@ -5,7 +5,7 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.7 band performers delivered",
+  "head": "0.3.8 short-window phase actions (FOH-QA-012)",
   "lastActivity": "2026-10-18",
   "status": "amber",
   "statusReason": "Band ensembles and classic sprites released with exact-head CI, audited paired performance, deployed source parity and eight live desktop/mobile save/receipt journeys. Existing human and physical-device acceptance remain separate.",
@@ -62,8 +62,8 @@
       "id": "FOH-QA-001..014",
       "type": "qa-audit",
       "sev": "P1",
-      "title": "QA audit 2026-10-07: 11 fixed in 0.1.2, 3 low items open",
-      "detail": "Fixed: FOH-QA-001 seat price above the Loam Shell ceiling after Back and rebook (reload removed the paid seat contract; net 45,152 vs 41,340 in the repro); 002 Start over inside a locked room; 003 Lot food plan blocking Fathom Hall doors; 004 reload deleting a PA left by a removed stage; 005 no game with storage blocked; 006 inherited-name ids crashing a load; 007 stale tab overwriting newer progress; 008 silent save failures; 009 room settings changing on reload; 010 200-show history renumbered on reload; 011 developer-hook throw. Open: 012 zoomed short viewports hide Open doors below the panel fold; 013 seeded save-and-replay (D12); 014 edited saves in a locked room. Evidence: front-of-house/docs/QA_AUDIT.md."
+      "title": "QA audit 2026-10-07: 11 fixed in 0.1.2, 012 fixed in 0.3.8, 2 low items open",
+      "detail": "Fixed: FOH-QA-001 seat price above the Loam Shell ceiling after Back and rebook (reload removed the paid seat contract; net 45,152 vs 41,340 in the repro); 002 Start over inside a locked room; 003 Lot food plan blocking Fathom Hall doors; 004 reload deleting a PA left by a removed stage; 005 no game with storage blocked; 006 inherited-name ids crashing a load; 007 stale tab overwriting newer progress; 008 silent save failures; 009 room settings changing on reload; 010 200-show history renumbered on reload; 011 developer-hook throw. Fixed in 0.3.8: 012 zoomed short viewports hid Open doors and Book deals below the sheet fold (sticky Promote actions, act-first Book below 1024x700). Open: 013 seeded save-and-replay (D12); 014 edited saves in a locked room. Evidence: front-of-house/docs/QA_AUDIT.md."
     },
     {
       "id": "MXS-06",

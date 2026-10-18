@@ -910,6 +910,30 @@ try {
   }
   ok('every room\'s Book sheet, and Promote with seats or a sponsor, fit at 1024x700 without scrolling');
 
+  // FOH-QA-012: below the 1024x700 gate (150% and 200% zoom of 1440x900 and 1366x768) the sheet may
+  // scroll, but with the sheet unscrolled each phase action is on screen and is the element under its centre.
+  const inView = (page, selector) => page.evaluate((selector) => [...document.querySelectorAll(selector)].filter((b) => !b.disabled).map((b) => {
+    const r = b.getBoundingClientRect(), sheet = b.closest('.at-sheet').getBoundingClientRect();
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return { label: b.textContent.trim().split(/\s+/).slice(0, 2).join(' '), shown: r.top >= sheet.top && r.bottom <= Math.min(sheet.bottom, innerHeight) + 0.5 && !!hit && b.contains(hit) };
+  }), selector);
+  for (const [width, height] of [[960, 600], [910, 512], [720, 450], [683, 384]]) {
+    const zoomed = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+    const { page: pageZ, failures: failuresZ } = await open(zoomed);
+    const deals = await inView(pageZ, '[data-act="deal"]');
+    assert.ok(deals.length >= 3 && deals.every((d) => d.shown), `Book deal buttons in view at ${width}x${height}: ${JSON.stringify(deals)}`);
+    await pageZ.click('[data-act="deal"][data-deal="guarantee"]');
+    await pageZ.click('[data-act="starter"]');
+    await pageZ.click('[data-act="confirm-build"]');
+    assert.equal((await game(pageZ)).phase, 'promote');
+    const doors = await inView(pageZ, '[data-act="confirm-promo"]');
+    assert.ok(doors.length === 1 && doors[0].shown, `Open doors in view at ${width}x${height}: ${JSON.stringify(doors)}`);
+    assert.deepEqual((await measureLayout(pageZ)).scroll, [0, 0, 0, 0], `the page itself doesn't scroll at ${width}x${height}`);
+    assert.deepEqual(failuresZ, [], `no page failures at ${width}x${height}`);
+    await zoomed.close();
+  }
+  ok('below 1024x700 (150% and 200% zoom) Book\'s deal buttons and Promote\'s Open doors are on screen without scrolling the sheet');
+
   const lowContrast = await page.evaluate(() => {
     const rgb = (v) => (v.match(/[\d.]+/g) || []).map(Number);
     const lum = (c) => c.slice(0, 3).map((v) => v / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))

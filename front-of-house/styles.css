@@ -1027,3 +1027,28 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 .equipment-model-choice { display: grid; gap: 4px; }
 .equipment-model-choice select { min-height: 44px; min-width: 0; width: 100%; }
 #win[data-kind="site-equipment"] .live-readouts dd { overflow-wrap: anywhere; }
+
+/* FOH-QA-012: below the 1024 x 700 no-scroll gate (a zoomed desktop window, for example 150% or
+   200% of 1440 x 900) the sheet may scroll, but the phase action stays on screen. Promote's
+   action row sticks to the sheet's bottom edge. Book lists the acts first, with each act's deal
+   buttons straight under its name; the room choice, the intro line and the act details follow. */
+@media (min-width: 681px) and (max-width: 1023px), (min-width: 681px) and (max-height: 699px) {
+  body[data-phase='promote'] .at-sheet > .actions {
+    position: sticky; bottom: -14px; z-index: 2;
+    margin: 0 -16px -14px; padding: 8px 16px 14px;
+    background: var(--sheet); border-top: 1px solid var(--border);
+  }
+  body[data-phase='book'] .at-sheet > .offers { order: 1; }
+  body[data-phase='book'] .at-sheet > :is(.rooms, .nights, .lede) { order: 2; }
+  body[data-phase='book'] .offer > * { order: 3; }
+  body[data-phase='book'] .offer > .artist-identity { order: 1; }
+  body[data-phase='book'] .offer > .choice { order: 2; }
+}
+@media (min-width: 681px) and (max-height: 560px) {
+  body[data-phase='book'] .offer { grid-template-columns: minmax(0, 1fr); }
+  body[data-phase='book'] .offer .choice { min-width: 0; padding-block: 6px; }
+  body[data-phase='book'] .offer .choice-text { display: block; width: 100%; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+}
+@media (min-width: 681px) and (max-height: 420px) {
+  body[data-phase='book'] .offer .band-art { display: none; }
+}
