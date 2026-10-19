@@ -108,10 +108,11 @@ function restoreFocusAfterNavClick(event) {
 }
 document.addEventListener('click', restoreFocusAfterNavClick);
 
-// Leaving fullscreen often leaves focus on the document; restore the game.
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) focusGame();
-});
+// Entering or leaving fullscreen leaves focus on the button or the document;
+// hand it back to the game either way so keys keep reaching Garden OS.
+function onFullscreenChange() { setTimeout(focusGame, 0); }
+document.addEventListener('fullscreenchange', onFullscreenChange);
+document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
 // Move the shared nav (src/kit/nav.js) into the strip above the game, and make
 // its Fullscreen button fullscreen the whole stage (strip + game) instead of
@@ -124,7 +125,12 @@ function adoptNav() {
   if (!fsBtn) return;
   nav.addEventListener('click', (event) => {
     if (!fsBtn.contains(event.target)) return;
+    // stopPropagation keeps nav.js from fullscreening the document instead of
+    // the stage, which also skips restoreFocusAfterNavClick, so blur the button
+    // and refocus the game here. Otherwise "Exit Full" keeps focus, keys never
+    // reach the game, and Space/Enter would toggle fullscreen back off.
     event.stopPropagation();
+    try { fsBtn.blur(); } catch (e) {}
     if (document.fullscreenElement) {
       if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
     } else if (stage.requestFullscreen) {
@@ -132,6 +138,7 @@ function adoptNav() {
     } else if (stage.webkitRequestFullscreen) {
       stage.webkitRequestFullscreen();
     }
+    setTimeout(focusGame, 0);
   }, true);
 }
 // Mute All remembers its setting in mm.prefs ({"muteAll": true}). Restore it once
