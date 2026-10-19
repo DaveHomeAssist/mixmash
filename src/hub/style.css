@@ -1302,3 +1302,29 @@ body:has(.view:not(#games):target) .site-shell {
     padding:2px 6px
   }
 }
+
+/* Share and the optional revenue slots (src/hub/monetization.mjs). Slots are only emitted when configured. */
+.support-slot {
+  margin:8px 0 24px;
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--wash)
+}
+.support-slot h3 { margin-top:0 }
+.support-slot p { margin-bottom:14px }
+.ad-slot {
+  margin:24px 0 8px;
+  min-height:274px;
+  contain:layout;
+  border-top:1px solid var(--line);
+  padding-top:8px
+}
+.ad-label {
+  margin:0 0 6px;
+  font:11px/1.4 ui-monospace,monospace;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted)
+}
+.support-link { color:inherit; display:inline-flex; align-items:center; min-height:44px }

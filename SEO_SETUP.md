@@ -45,5 +45,18 @@ Even after submission, a zero-backlink domain ranks slowly. Add at least one pub
 | `/mars/` | yes | `/mars/` (trailing slash — matches served path) |
 | `/garden/` | yes | `/garden/` |
 | `/empires/` | yes | `/empires/` |
+| `/pitch/` | yes | `/pitch/` (trailing slash; fixed 2026-10-18, was `/pitch`) |
+| `/front-of-house/` | no — `noindex` until promoted | n/a, kept out of `sitemap.xml` |
 
 `home.html` is intentionally **not** in `sitemap.xml` because it canonicalizes to `/play/`.
+
+## Share cards and structured data (2026-10-18)
+
+- Each game has a 1200×630 share card at `assets/og/<id>.jpg`, built by `npm run hub:og` from the
+  gameplay capture in `assets/previews/` and the catalog copy. The hub keeps `assets/og-card.png`
+  (`npm run hub:social`).
+- The hub emits JSON-LD (`WebSite`, `Organization`, an `ItemList` of `VideoGame`) from
+  `src/hub/seo.mjs`; `/play/`, `/pitch/`, `/mars/` and `/garden/` each carry their own `VideoGame`
+  block. `test/hub-discoverability.test.mjs` keeps them in sync with the catalog.
+- Revenue switches (support link, ad slot) live in `src/hub/monetization.mjs` and ship off. See
+  [docs/REVENUE_SETUP.md](docs/REVENUE_SETUP.md).
