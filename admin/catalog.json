@@ -5553,6 +5553,16 @@
       "open": null
     },
     {
+      "path": ".github/scripts/box-browser.sh",
+      "project": "studio",
+      "category": "ops",
+      "kind": "TXT",
+      "title": "Box browser smoke wrapper",
+      "description": "Runs each CI browser smoke on the self-hosted box with its own D-Bus session and a box-wide lock, so the two mixmash runners never share a bus or run WebGL suites at once. Passes straight through on hosted runners.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/scripts/box-browser.sh",
+      "open": null
+    },
+    {
       "path": ".github/workflows/ci.yml",
       "project": "studio",
       "category": "ops",
