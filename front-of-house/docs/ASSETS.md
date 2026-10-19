@@ -12,7 +12,7 @@ Every image, drawing and sound the game uses or keeps, with where it lives and w
 | Board sprites (`sprites/`) | 8 | 898.4 | Stand-in |
 | Sprite library (`sprites/library/`) | 32 | 19604.8 | Library, drawn by nothing |
 | Code-drawn elements (`board.js`) | 8 | 0 | Drawn every frame |
-| Sound | 0 | 0 | None yet |
+| Sound | 0 | 0 | Runtime-generated; see sound register |
 
 ## 1. Board sprites
 
@@ -96,7 +96,9 @@ Added in `5b40552` for later tiers. Nothing draws these yet, and the service wor
 
 ## 5. Sound
 
-None. The header's Mute All button belongs to the shared studio navigation; Front of House plays no sound.
+| Id | Source or file | Trigger |
+| --- | --- | --- |
+| opening-production | opening.mjs | Enable sound: synthesized case impacts, scanner cue, ambience and musical pulse follow the opening timeline; optional browser speech supplies the soundcheck. Shared Mute All is respected. |
 
 ## 6. Status key
 

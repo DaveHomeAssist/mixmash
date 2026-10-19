@@ -651,6 +651,6 @@ search indexing or certify separate final-art, hardware or performance gates.
 Under Dave's direct instruction and CT-DEC-19 autonomy, retain existing act illustration palettes and lineup sizes as cosmetic identities. Use compact source-authored 3D ensembles plus matching classic sprites, with instrument silhouettes and reduced-motion support. No artist attributes, simulation, rules or saved fields change. This is a visual patch, not acceptance of final human art quality or physical-device performance.
 
 
-## Opening title sequence approved October 19 2026
+## CT-DEC-38: Opening title sequence
 
 Dave approved the eleven-second empty-lot-to-show sequence and explicitly made implementation a goal. Use the existing renderer with pinned GSAP choreography and optional synchronized sound. Source inspection confirms continuous yaw, pitch and zoom for the restrained reveal. The intro is a separate presentation scene with Skip, Replay, Continue/New game, reduced motion, mute and returning-visit behavior; no game/save-schema migration or equipment producer change. The approved storyboard is captured in FEATURE_BRIEFS.md. Synthesized sound and optional browser soundcheck avoid new media dependencies. Human audio and visual acceptance remain separate from automated delivery.

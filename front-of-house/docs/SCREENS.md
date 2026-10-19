@@ -4,7 +4,25 @@
 
 This document covers every screen the player can reach, how they get there and how they leave, and what each control sends to the engine. Layout decisions and mockups are in [HUD.md](HUD.md); rules are in [RULES.md](RULES.md).
 
+## Opening and title menu
+
+Standard entry begins with the eleven-second empty-lot-to-show presentation, then a title menu. The completed venue remains behind the menu. First visits play the full sequence; returning visits get a brief reveal. Reduced motion and unavailable WebGL use the static completed scene. An unavailable animation library enters the playable game directly.
+
+| Control or path | Result |
+| --- | --- |
+| Skip intro or Escape | Settle directly on the title menu; available during scene loading |
+| Continue | Close the presentation and return to the current saved phase |
+| New game, with no save | Enter the fresh Career booking screen |
+| New game, with an existing save | Open the existing game-mode selection and confirmation |
+| Replay intro | Replay the presentation, including from the game menu; retain the game and its save |
+| Enable sound or Mute sound | Start optional generated production audio after a gesture, or use the shared mute control |
+| Dark controls or Light controls | Change the existing device theme preference |
+
+The scene owns its own equipment, crowd, camera and clock. Title keys do not reach gameplay shortcuts; focus stays inside the title controls until entry. Presentation never books, places equipment, spends cash or signs. Explicit renderer and QA URLs continue to enter the game directly for existing player and rendering checks.
+
 ## 1. The flow
+
+This gameplay diagram begins after title-screen entry.
 
 ```mermaid
 stateDiagram-v2
