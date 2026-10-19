@@ -1,7 +1,7 @@
 # Revenue setup — mixmash.games
 
-All revenue hooks ship **off**. Nothing below loads, renders or reserves space until Dave supplies
-the value. Each switch lives in [`src/hub/monetization.mjs`](../src/hub/monetization.mjs); after
+Revenue hooks are off by default until Dave supplies a value. **Cloudflare Web Analytics is ON**
+(token set Oct 19, 2026). Support and ads stay off until Dave supplies those values. Each switch lives in [`src/hub/monetization.mjs`](../src/hub/monetization.mjs); after
 editing it run `npm run hub:build`, then `npm test` and `npm run smoke:landing`, and commit the
 regenerated `index.html`.
 
@@ -15,12 +15,12 @@ regenerated `index.html`.
 | Switch | Value Dave supplies | What turning it on does |
 |---|---|---|
 | `supportUrl` | His Ko-fi page, exactly `https://ko-fi.com/<name>` (letters, digits, underscores; no `?` or `#`). Later: an itch.io page (`https://<name>.itch.io/`). | Adds a "Keep the games free" block with a **Support MixMash on Ko-fi** button to the Studio view and a footer link. Plain link, opens Ko-fi in a new tab. No script, no tracking. A malformed Ko-fi URL renders nothing. |
-| `cloudflareAnalyticsToken` | The 32-character hex site token from Cloudflare Web Analytics | Puts the official beacon (`static.cloudflareinsights.com/beacon.min.js`) on the homepage and on every game wrapper page (`/play/`, `/mars/`, `/pitch/`, `/garden/`, `/front-of-house/`) via the shared `/assets/analytics.js`. Adds the two Cloudflare origins to the CSP on `/mars/` and `/front-of-house/` only while on. Not on EMPIRES. Cookieless, no banner. |
+| `cloudflareAnalyticsToken` | **ON** — `3aeddc4297384179a3dcb309314cb365` (public site ID from Dave's Cloudflare account, Oct 19) | Puts the official beacon (`static.cloudflareinsights.com/beacon.min.js`) on the homepage and on every game wrapper page (`/play/`, `/mars/`, `/pitch/`, `/garden/`, `/front-of-house/`) via the shared `/assets/analytics.js`. Adds the two Cloudflare origins to the CSP on `/mars/` and `/front-of-house/` only while on. Not on EMPIRES. Cookieless, no banner. |
 | `adsensePublisherId` + `adsenseSlotId` | **Leave empty for now.** AdSense publisher ID (`ca-pub-` + 16 digits) and one display ad unit ID | Loads the AdSense script on the homepage only and shows one labelled ad unit in the Studio view, in a container that reserves 274px so nothing shifts. Never inside a game or the game grid. |
 | `ads.txt` (root file) | Same publisher ID, later | Required by AdSense once ads are on: `google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0`. Do not create it before a real ID exists. |
 
-While a value is empty nothing renders, and no third-party request is made. `/assets/analytics.js`
-is then a comment-only file. The service worker never touches third-party requests, so it does not
+While a value is empty nothing renders, and no third-party request is made. With analytics on,
+`/assets/analytics.js` injects the official Cloudflare beacon; while off it is comment-only. The service worker never touches third-party requests, so it does not
 cache or block the beacon.
 
 ## Turn on Ko-fi
@@ -33,20 +33,22 @@ cache or block the beacon.
    `npm run hub:build`, then `npm test` and `npm run smoke:landing`, and commit `index.html` with the
    config change. Verify the Studio view and footer on mixmash.games show **Support MixMash on Ko-fi**.
 
-## Turn on Cloudflare Web Analytics
+## Cloudflare Web Analytics — ON
 
-mixmash.games is served by GitHub Pages, so use the JS-snippet setup (no DNS or proxy change needed).
+**Status: ON** as of Oct 19, 2026. Token `3aeddc4297384179a3dcb309314cb365` is set in
+`src/hub/monetization.mjs`. The homepage and every non-EMPIRES game wrapper load the official
+beacon (`type="module"`, matching Cloudflare's current snippet). Visits appear under **Analytics &
+Logs → Web Analytics** in the Cloudflare dashboard within a few minutes of loading mixmash.games.
 
-1. **Dave:** sign in or sign up (free) at <https://dash.cloudflare.com>. Open **Analytics & Logs →
-   Web Analytics → Add a site**, enter `mixmash.games` as the hostname, and choose **Manual setup /
-   JS snippet** (not "Enable with Cloudflare", which needs the domain proxied through Cloudflare).
-   Cloudflare shows a snippet containing `data-cf-beacon='{"token": "…"}'`. Send the token value
-   (32 hex characters) to the MixMash bot. It is a public site identifier, not a secret.
-2. **Bot:** set `cloudflareAnalyticsToken: '<token>'`, run `npm run hub:build`, then `npm test`
-   and `npm run smoke:landing`. Commit `index.html`, `assets/analytics.js`, `mars/index.html` and
-   `front-of-house/index.html` (CSP lines only) with the config change.
-3. **Check:** load mixmash.games and one game page; within a few minutes visits appear under Web
-   Analytics in the Cloudflare dashboard.
+Setup that was used (kept for reference if the token ever needs rotating):
+
+1. **Dave:** sign in at <https://dash.cloudflare.com>. Open **Analytics & Logs → Web Analytics →
+   Add a site**, enter `mixmash.games`, choose **Manual setup / JS snippet** (not "Enable with
+   Cloudflare"). Copy the 32-hex token from `data-cf-beacon='{"token": "…"}'`.
+2. **Bot:** set `cloudflareAnalyticsToken`, run `npm run hub:build`, then `npm test` and
+   `npm run smoke:landing`. Commit `index.html`, `assets/analytics.js`, `mars/index.html` and
+   `front-of-house/index.html` (CSP lines only).
+3. **Check:** load mixmash.games and one game page; confirm the beacon request and dashboard hits.
 
 ## Later
 

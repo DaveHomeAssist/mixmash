@@ -126,11 +126,31 @@ function showView(moveFocus = true) {
     if (moveFocus && leaving.startsWith('game-')) document.getElementById(`details-${lastDetail}`)?.focus();
   } else {
     if (moveFocus) target.querySelector('h2')?.focus({ preventScroll: true });
-    const panels = [...target.querySelectorAll('[data-web2-scroll]')];
-    const panel = panels.find(element => element.scrollHeight > element.clientHeight && getComputedStyle(element).overflowY === 'auto') || panels[0];
-    if (panel) panel.scrollTop = Number(stored(`scroll.${target.id}`)) || 0;
+    restoreScroll(target);
   }
 }
+// Layout-dependent work (catalog capacity, scroll restore) must run against styled layout. WebKit can run
+// this module before the render-blocking stylesheet applies (slow network, busy device): no panel is a
+// scroll container yet, so a restored scrollTop clamps to 0 and the catalog measures an unstyled grid.
+// Anything measured too early is redone once the stylesheet and then the page finish loading.
+let restorePending = '';
+function restoreScroll(target) {
+  const wanted = Number(stored(`scroll.${target.id}`)) || 0;
+  const panels = [...target.querySelectorAll('[data-web2-scroll]')];
+  const panel = panels.find(element => element.scrollHeight > element.clientHeight && getComputedStyle(element).overflowY === 'auto') || panels[0];
+  if (!panel) return;
+  panel.scrollTop = wanted;
+  restorePending = panel.scrollTop < wanted - 1 && document.readyState !== 'complete' ? target.id : '';
+}
+function relayout() {
+  fitCatalog();
+  // Re-read storage: a scroll the visitor made meanwhile was saved and wins over the original position.
+  if (restorePending && restorePending === currentView) restoreScroll(document.getElementById(restorePending));
+  if (document.readyState === 'complete') restorePending = '';
+}
+const hubStyles = document.querySelector('link[rel="stylesheet"][href$="/src/hub/style.css"]');
+if (hubStyles && !hubStyles.sheet) hubStyles.addEventListener('load', relayout, { once: true });
+if (document.readyState !== 'complete') window.addEventListener('load', relayout, { once: true });
 for (const link of nav) { link.setAttribute('role', 'tab'); link.setAttribute('aria-controls', link.hash.slice(1)); }
 document.querySelector('.site-nav').setAttribute('role', 'tablist');
 for (const view of views.filter(view => ['games', 'studio'].includes(view.id))) { view.setAttribute('role', 'tabpanel'); view.setAttribute('aria-labelledby', `nav-${view.id}`); }

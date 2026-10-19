@@ -19,7 +19,7 @@ export const monetization = {
   // Cloudflare Web Analytics site token (32 hex characters, from the JS snippet Cloudflare shows
   // after adding the site). Cookieless, so no consent banner. Loads the official beacon on the
   // homepage and every game wrapper page that includes /assets/analytics.js (not EMPIRES).
-  cloudflareAnalyticsToken: ''
+  cloudflareAnalyticsToken: '3aeddc4297384179a3dcb309314cb365'
 };
 
 const escape = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -81,7 +81,7 @@ export const CF_BEACON_SRC = 'https://static.cloudflareinsights.com/beacon.min.j
 /** The official beacon tag for the static homepage head. Empty string when disabled. */
 export function analyticsHead(config = monetization) {
   if (!analyticsEnabled(config)) return '';
-  return `<script defer src="${CF_BEACON_SRC}" data-cf-beacon='${JSON.stringify({ token: config.cloudflareAnalyticsToken })}'></script>`;
+  return `<script type="module" src="${CF_BEACON_SRC}" data-cf-beacon='${JSON.stringify({ token: config.cloudflareAnalyticsToken })}'></script>`;
 }
 /**
  * Body of the generated /assets/analytics.js, the shared include on game wrapper pages. Disabled, it
@@ -94,7 +94,7 @@ export function analyticsScript(config = monetization) {
   'use strict';
   if (document.querySelector('script[data-cf-beacon]')) return;
   var beacon = document.createElement('script');
-  beacon.defer = true;
+  beacon.type = 'module';
   beacon.src = ${JSON.stringify(CF_BEACON_SRC)};
   beacon.setAttribute('data-cf-beacon', ${JSON.stringify(JSON.stringify({ token: config.cloudflareAnalyticsToken }))});
   document.head.appendChild(beacon);
