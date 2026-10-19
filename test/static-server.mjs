@@ -69,18 +69,28 @@ export function launchOptions() {
 /**
  * Collects page errors and *same-origin* request failures. Cross-origin misses
  * (web fonts on a sandboxed runner, for instance) are not this suite's problem
- * and would otherwise make the rail flaky.
+ * and would otherwise make the rail flaky. Cloudflare Web Analytics is also
+ * ignored: the beacon is expected on production, but on localhost the RUM POST
+ * fails CORS (Cloudflare only allows the registered hostname), which floods the
+ * console without meaning the page itself is broken.
  */
 export function trackPageFailures(page, origin, { ignore = [] } = {}) {
   const failures = [];
-  const ignored = (url) => ignore.some((pattern) => pattern.test(url));
-  page.on('pageerror', (error) => failures.push(`pageerror: ${error}`));
+  // Localhost CORS from the Cloudflare beacon (Chromium names the host; WebKit
+  // often only says "Access-Control-Allow-Origin" / "access control checks").
+  const analyticsNoise = text => /cloudflareinsights\.com|cdn-cgi\/rum|Access-Control-Allow-Origin|access control checks/i.test(text);
+  const ignored = (url) => ignore.some((pattern) => pattern.test(url)) || /cloudflareinsights\.com/i.test(url);
+  page.on('pageerror', (error) => {
+    if (analyticsNoise(String(error))) return;
+    failures.push(`pageerror: ${error}`);
+  });
   page.on('console', (msg) => {
     if (msg.type() !== 'error') return;
     const text = msg.text();
     // "Failed to load resource" is reported without a URL; the requestfailed
     // handler below is the precise signal, so skip the vague duplicate.
     if (/Failed to load resource/i.test(text)) return;
+    if (analyticsNoise(text)) return;
     failures.push(`console: ${text}`);
   });
   page.on('requestfailed', (request) => {

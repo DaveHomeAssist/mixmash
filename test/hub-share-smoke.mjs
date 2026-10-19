@@ -1,4 +1,4 @@
-/** Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; revenue slots stay absent. */
+/** Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; support/ads stay off; analytics beacon allowed. */
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -65,18 +65,21 @@ try {
     assert.equal(await page.locator('.share-button:visible').count(), 0);
     await context.close();
   }
-  // Unconfigured revenue slots render nothing and request nothing off-site, at 360px and desktop.
+  // Support and ads stay off. The only allowed off-site request is the Cloudflare analytics beacon.
+  const allowedOffsite = url => /^https:\/\/(static\.)?cloudflareinsights\.com\//.test(url);
   for (const [width, height] of [[360, 780], [1440, 900]]) {
     for (const hash of ['', '#studio', `#game-${playableGames[0].id}`]) {
       const { context, page, failures } = await open(hash, { width, height });
       const offsite = [];
       page.on('request', request => { if (!request.url().startsWith(origin)) offsite.push(request.url()); });
       await page.reload({ waitUntil: 'networkidle' });
-      assert.equal(await page.locator('[data-support-slot],[data-ad-slot],.adsbygoogle').count(), 0, `${width} ${hash}: no slots`);
-      assert.deepEqual(offsite, [], `${width} ${hash}: no third-party requests`);
+      assert.equal(await page.locator('[data-support-slot],[data-ad-slot],.adsbygoogle').count(), 0, `${width} ${hash}: no support/ad slots`);
+      const unexpected = [...new Set(offsite)].filter(url => !allowedOffsite(url));
+      assert.deepEqual(unexpected, [], `${width} ${hash}: unexpected third-party ${JSON.stringify(offsite)}`);
+      assert.ok(offsite.some(url => url.includes('static.cloudflareinsights.com/beacon.min.js')), `${width} ${hash}: analytics beacon requested`);
       if (shots) await page.screenshot({ path: join(shots, `hub-${width}${hash ? '-' + hash.slice(1) : ''}.png`) });
       assert.deepEqual(failures, []); await context.close();
     }
   }
-  console.log('Hub share and revenue-slot smoke passed.');
+  console.log('Hub share, analytics-on, and support/ads-off smoke passed.');
 } finally { await browser.close(); await server.close(); }
