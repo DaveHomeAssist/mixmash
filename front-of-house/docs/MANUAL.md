@@ -126,6 +126,8 @@ The game saves automatically in the current browser after each step. To keep a p
 
 Loading a valid code replaces the current game; export that game first if you need both. A damaged code or a code from another game is refused without replacing the current save. Starting a new game replaces the current run after its confirmation.
 
+Nights are seeded and reproducible. Restoring the same save code restores the saved night and its state, so you may replay it and try a different response. This is allowed in this single-player game. Loading a code replaces the current run; it does not combine cash or rewards from different attempts.
+
 Previously visited content can reopen offline from the browser cache. Warm the 3D preview while online before relying on it offline. A new browser, cleared storage or uncached content still needs a connection. Offline recovery does not replace a portable save backup.
 
 ## Keyboard and display

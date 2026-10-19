@@ -50,13 +50,15 @@ Original recommendation was A; **Dave selected B — more realistic 3D** on 2026
 | D10 | CT-DEC-11 later rooms | **Keep implemented room behavior experimental while venue art and tier-specific tests develop** | Accept current behavior: grid Club, returnable Lot, house rigs, seated multi-night shell, two-stage grounds | Reopen room mechanics before art: specify fixed-room versus grid behavior and future stage scheduling first | **A / medium**. A keeps CT-DEC-11 Proposed; B does not claim later-tier balance acceptance. [FB-02](FEATURE_BRIEFS.md#fb-02-distinct-venue-scenes) |
 | D11 | When may the game be promoted publicly? | **Wait for the 3D Lot and live-operations pilot plus existing release gates** | Promote the current playable once existing provenance, design and human acceptance gates pass; label it early access | Keep it unlisted without a launch milestone for now | **A / medium**. More coherent first impression, later discovery. Neither answer is a release command or a playtest sign-off. [Release checklist](RELEASE.md) |
 
-## Open question from the 2026-10-07 QA audit
+## Resolved question from the 2026-10-07 QA audit
 
-Nothing waits on this answer; 0.1.2 ships either way.
+Historical context: this choice did not block the 0.1.2 release. It is now settled as recorded below.
 
 | ID | Decision and what it unlocks | A | B | C | Recommendation / confidence |
 | --- | --- | --- | --- | --- | --- |
 | D12 | Save-and-replay of a seeded night ([FOH-QA-013](QA_AUDIT.md)). A save code or second tab taken before doors shows how the night goes, so the player can replay it with a different response. No cash is duplicated | **Accept it as single-player freedom**; keep nights seeded and reproducible, and say in the manual that a save code restores a night exactly | Reseed a night that is reloaded or imported between Open doors and Settle, so its draw and incident change. Ends informed replays; breaks the exact replay that tests and save repair rely on | Lock the career after doors: refuse imports and tab switches until the night is signed. Strongest integrity, most friction, still bypassable by editing storage | **A / medium**. The game has no scores or competition to protect, the career already carries on after a bad night (R-21), and B and C cost reproducibility or convenience for little gain |
+
+**Disposition, 2026-10-19:** D12 = A accepted under [CT-DEC-37](DECISIONS.md#ct-dec-37-conditional-early-access-and-retained-single-player-replay). The alternatives above remain decision history, not an unanswered request. This mapping follows the seeded-replay wording; global D9 and local D12 are distinct identifiers.
 
 ## Settled 2026-10-12: venue-scale bars and restrooms
 
@@ -82,7 +84,7 @@ Dave reported that bar and restroom logic looked flawed at Split Acre: the settl
 
 ## Execution sequence
 
-First prove the realistic Lot and its controls, then meaningful arrivals and crew trade-offs using rentals. Research follows measurable service constraints; ownership follows explicit accounting. Inventory art provenance now, retain current assets through prototype work, and archive unused art after replacement acceptance. Keep Lot tuning and later-room behavior experimental while collecting the specified evidence. Public promotion follows the Lot and operations pilots plus release gates. The minimap remains deferred under CT-DEC-12. No D1–D11 selection remains outstanding; D12 is open and blocks nothing.
+First prove the realistic Lot and its controls, then meaningful arrivals and crew trade-offs using rentals. Research follows measurable service constraints; ownership follows explicit accounting. Inventory art provenance now, retain current assets through prototype work, and archive unused art after replacement acceptance. Keep Lot tuning and later-room behavior experimental while collecting the specified evidence. Public promotion follows the Lot and operations pilots plus release gates. The minimap remains deferred under CT-DEC-12. No D1–D11 selection remains outstanding. D12 = A was accepted by Dave on 2026-10-19 through the explicit seeded-replay choice in global D9; see CT-DEC-37.
 
 ## Recording an answer
 
