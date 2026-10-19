@@ -8,6 +8,7 @@ requires migration.
 ## 0.3.10 — 2026-10-18
 
 - Fixes FOH-QA-014. A save that sits in a room its career has not unlocked, before the doors open, now loads at Oak St. Lot on the Book screen, the same way Start over handles a locked room. Only edited save data can do this. The room's layout is kept for when it unlocks, the unpaid booking and promotion are dropped, and cash is unchanged. Importing such a code explains the move. Paid nights (Show, Settle, Done) still load where they were. Rules, balance and save schema 2 are unchanged.
+- The 3D view draws placed equipment in far fewer draw calls. Each PA or lighting rig used to cost about 40 draw calls, one per part; static props now share one merged mesh per material, so the Lot's Suggested layout drops from 239 to 74 calls with the same triangles and picture. Picking still uses the original parts.
 - Cache v88.
 
 ## 0.3.9 — 2026-10-18
