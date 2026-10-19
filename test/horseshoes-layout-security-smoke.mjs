@@ -2,11 +2,9 @@
 import { createRequire } from 'node:module';
 import { startStaticServer } from './static-server.mjs';
 const require = createRequire(import.meta.url);
-const server = process.env.HORSESHOES_BASE_URL ? null : await startStaticServer();
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const url = process.env.HORSESHOES_BASE_URL || `${server.origin}/horseshoes/`;
 const output = process.env.HORSESHOES_OUTPUT || '/tmp/horseshoes-layout-security';
 fs.mkdirSync(output, { recursive: true });
 async function bounds(page, selector) {
@@ -25,9 +23,12 @@ async function bounds(page, selector) {
   assert.ok(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight && document.documentElement.scrollWidth <= innerWidth));
 }
 (async () => {
-  const browser = await chromium.launch({ args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
+  let server, browser;
   const results = [];
   try {
+    server = process.env.HORSESHOES_BASE_URL ? null : await startStaticServer();
+    const url = process.env.HORSESHOES_BASE_URL || `${server.origin}/horseshoes/`;
+    browser = await chromium.launch({ args: ['--no-sandbox', '--enable-unsafe-swiftshader'] });
     for (const [width, height] of [[568,320],[667,375],[844,390],[320,256],[375,812],[1440,900],[3840,1080]]) {
       const compact = width < 560 && height <= 600;
       const context = await browser.newContext({ viewport: { width, height }, hasTouch: width < 900, reducedMotion: 'reduce', colorScheme: 'dark' });
@@ -99,5 +100,7 @@ async function bounds(page, selector) {
     }
     fs.writeFileSync(`${output}/report.json`, JSON.stringify({ url, results }, null, 2));
     console.log(JSON.stringify(results));
-  } finally { await browser.close(); await server?.close(); }
+  } finally {
+    try { await browser?.close(); } finally { await server?.close(); }
+  }
 })().catch(e => { console.error(e); process.exitCode = 1; });
