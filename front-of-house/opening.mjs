@@ -96,6 +96,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   function finish({ focus = true } = {}) {
     if (disposed) return;
     ready = true;
+    globalThis.speechSynthesis?.cancel();
     timeline?.pause(); menu = true; time.value = 11; frame(true);
     root.dataset.state = 'menu';
     gsap.set(title, { opacity: 1 }); gsap.set(title.querySelectorAll('h1 span'), { y: 0, opacity: 1 });
@@ -154,10 +155,14 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   function syncTheme() { const dark = document.documentElement.dataset.theme === 'dark'; $('[data-intro="theme"]').textContent = dark ? 'Light controls' : 'Dark controls'; }
   function motionChanged() { if (media.matches) finish(); }
   function muteChanged() { if (muted()) globalThis.speechSynthesis?.cancel(); syncSound(); }
-  function visibility() { if (document.hidden) { timeline?.pause(); ambient?.pause(); globalThis.speechSynthesis?.cancel(); } else if (menu) ambient?.resume(); else timeline?.resume(); }
+  function visibility() {
+    if (document.hidden) { timeline?.pause(); ambient?.pause(); globalThis.speechSynthesis?.cancel(); if (audio) void audio.suspend(); }
+    else { if (menu) ambient?.resume(); else timeline?.resume(); if (soundEnabled && !muted()) void audio?.resume(); }
+  }
   const observer = new ResizeObserver(() => { renderer?.resize(); frame(true); }); observer.observe(root);
   media.addEventListener('change', motionChanged); window.addEventListener('mixmash:mute', muteChanged); document.addEventListener('visibilitychange', visibility);
   syncTheme(); syncSound();
+  $('[data-intro="skip"]').focus();
   // Renderer failure must not strand the player on a loading screen.
   const fallbackTimer = setTimeout(() => { if (!ready) { ready = true; finish(); } }, 4000);
   async function installFallback() {
