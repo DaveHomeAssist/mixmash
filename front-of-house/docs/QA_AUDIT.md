@@ -4,6 +4,12 @@
 
 The audit tried to make the game lie, lose state, miscalculate, trap the player or pay twice, against one invariant: **a booking keeps its act, room, contract, costs, layout, prices, attendance, results, cash, reputation, relationships and history from Book through Settle and into the next booking.** Defects were classified against current behavior and accepted design ([DECISIONS.md](DECISIONS.md)); proposals in [FEATURE_BRIEFS.md](FEATURE_BRIEFS.md) were not treated as requirements.
 
+## Delivery reconciliation — 2026-10-18
+
+This is a record review, not a repeat of the original browser campaign. At source `b99cdd5`, FOH-QA-012 is delivered by PR174 (`7c768c0`, required CI39107587347 passed); PR175 (`c4db3ba`, required CI39129481433 passed) also fixes the paused Show header at 375px. Current Pages and five hosted runtime files match the reviewed source. FOH-QA-015 is already fixed by PR162 and is now correctly listed under Fixed in KNOWN_ISSUES.
+
+FOH-QA-013 remains the D12 product choice. A small read-only engine probe reproduces FOH-QA-014 only after manually changing a sandbox Club state to a locked career state: normalization leaves Promote selected and Open doors reports that the room is locked. No normal-player reproduction was established, so the existing condition for recovery work remains unmet. No normalization, save or rule change was made. Historical test results below retain their original scope.
+
 ## 1. What ran
 
 | Campaign | Method | Result |

@@ -10,6 +10,7 @@ on:
       - 'test/static-server.mjs'
       - 'package*.json'
       - '.github/workflows/horseshoes.yml'
+      - '.github/scripts/box-browser.sh'
   push:
     branches: [gh-pages]
     paths:
@@ -21,6 +22,7 @@ on:
       - 'test/static-server.mjs'
       - 'package*.json'
       - '.github/workflows/horseshoes.yml'
+      - '.github/scripts/box-browser.sh'
   workflow_dispatch:
     inputs:
       hosted:
@@ -30,7 +32,52 @@ on:
 # Self-hosted box runner by default; hosted only for a manual hosted: true run
 # or a pull request from a fork (forks must never reach the box).
 jobs:
+  scope:
+    # Same post-merge skip as ci.yml: when the pushed commit has exactly the
+    # tree of a merged pull request's head, and this workflow's horseshoes job
+    # already passed on that head as a pull_request run, the push run would only
+    # repeat it. Direct pushes always run the full job.
+    if: github.event_name == 'push'
+    runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.hosted) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)) && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","mixmash"]') }}
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.scope.outputs.run }}
+    steps:
+      - name: Skip a merge whose exact tree already passed as a pull request
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -u
+          run=true
+          reason='direct push or untested change'
+          heads=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '.[] | select(.merged_at != null) | .head.sha' 2>/dev/null || true)
+          if [ -n "$heads" ]; then
+            reason='merged PR, but not the exact tree its Horseshoes run tested'
+            tree=$(gh api "repos/$REPO/git/commits/$SHA" --jq .tree.sha 2>/dev/null || true)
+            for head in $heads; do
+              [ -n "$tree" ] || break
+              [ "$(gh api "repos/$REPO/git/commits/$head" --jq .tree.sha 2>/dev/null || true)" = "$tree" ] || continue
+              for id in $(gh api "repos/$REPO/actions/workflows/horseshoes.yml/runs?head_sha=$head&event=pull_request&status=success&per_page=20" --jq '.workflow_runs[].id' 2>/dev/null); do
+                ok=$(gh api "repos/$REPO/actions/runs/$id/jobs" --jq '[.jobs[] | select(.name == "horseshoes" and .conclusion == "success")] | length' 2>/dev/null || echo 0)
+                if [ "${ok:-0}" -gt 0 ]; then
+                  run=false; reason="same tree as PR head $head, tested in run $id"; break 2
+                fi
+              done
+            done
+          fi
+          echo "merged PR heads: ${heads:-none}; full job: $run ($reason)"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+
   horseshoes:
+    needs: scope
+    if: ${{ !cancelled() && (needs.scope.result != 'success' || needs.scope.outputs.run == 'true') }}
     runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.hosted) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)) && 'ubuntu-latest' || fromJSON('["self-hosted","Linux","X64","mixmash"]') }}
     timeout-minutes: 30
     steps:
@@ -59,7 +106,9 @@ jobs:
             done
           fi
           npx playwright install chromium
-      - run: npm run smoke:horseshoes
+      # Private D-Bus session and box-wide browser turn on the self-hosted box (see the script).
+      - name: npm run smoke:horseshoes
+        run: .github/scripts/box-browser.sh npm run smoke:horseshoes
       - name: Clean up browser and server processes left by this job (self-hosted)
         if: always() && runner.environment == 'self-hosted'
         run: |

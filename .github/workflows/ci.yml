@@ -137,30 +137,56 @@ jobs:
             done
           fi
           npx playwright install chromium webkit
-      - run: npm run smoke:landing
-      - run: npm run smoke:front-of-house
+      # Browser smokes go through box-browser.sh: on the self-hosted box each
+      # gets a private D-Bus session and they take turns across both mixmash
+      # runners (see the script). On hosted runners it runs the command as is.
+      - name: npm run smoke:landing
+        run: .github/scripts/box-browser.sh npm run smoke:landing
+      - name: npm run smoke:front-of-house
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house
       - run: node --test test/front-of-house-version.test.mjs
-      - run: node test/front-of-house-menu-art-smoke.mjs
-      - run: npm run smoke:front-of-house-advisory
-      - run: npm run smoke:front-of-house-suggestions
-      - run: npm run smoke:front-of-house-floor
-      - run: npm run smoke:front-of-house-batching
-      - run: npm run smoke:front-of-house-resolution
-      - run: node test/front-of-house-performers-smoke.mjs
-      - run: npm run smoke:front-of-house-site-equipment
-      - run: npm run smoke:front-of-house-lighting
-      - run: npm run smoke:front-of-house-lot
-      - run: npm run smoke:front-of-house-3d
-      - run: npm run smoke:front-of-house-club
-      - run: npm run smoke:front-of-house-shell
-      - run: npm run smoke:front-of-house-festival
-      - run: npm run smoke:front-of-house-navigation
-      - run: npm run art:visual
-      - run: npm run smoke:play
-      - run: npm run smoke:catalog
-      - run: npm run smoke:zelda2mario
-      - run: npm run smoke:admin
-      - run: npm run smoke:mobile
+      - name: node test/front-of-house-menu-art-smoke.mjs
+        run: .github/scripts/box-browser.sh node test/front-of-house-menu-art-smoke.mjs
+      - name: npm run smoke:front-of-house-advisory
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-advisory
+      - name: npm run smoke:front-of-house-suggestions
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-suggestions
+      - name: npm run smoke:front-of-house-floor
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-floor
+      - name: npm run smoke:front-of-house-batching
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-batching
+      - name: npm run smoke:front-of-house-resolution
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-resolution
+      - name: node test/front-of-house-performers-smoke.mjs
+        run: .github/scripts/box-browser.sh node test/front-of-house-performers-smoke.mjs
+      - name: npm run smoke:front-of-house-site-equipment
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-site-equipment
+      - name: npm run smoke:front-of-house-lighting
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-lighting
+      - name: npm run smoke:front-of-house-lot
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-lot
+      - name: npm run smoke:front-of-house-3d
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-3d
+      - name: npm run smoke:front-of-house-club
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-club
+      - name: npm run smoke:front-of-house-shell
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-shell
+      - name: npm run smoke:front-of-house-festival
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-festival
+      - name: npm run smoke:front-of-house-navigation
+        run: .github/scripts/box-browser.sh npm run smoke:front-of-house-navigation
+      - name: npm run art:visual
+        run: .github/scripts/box-browser.sh npm run art:visual
+      - name: npm run smoke:play
+        run: .github/scripts/box-browser.sh npm run smoke:play
+      - name: npm run smoke:catalog
+        run: .github/scripts/box-browser.sh npm run smoke:catalog
+      - name: npm run smoke:zelda2mario
+        run: .github/scripts/box-browser.sh npm run smoke:zelda2mario
+      - name: npm run smoke:admin
+        run: .github/scripts/box-browser.sh npm run smoke:admin
+      - name: npm run smoke:mobile
+        run: .github/scripts/box-browser.sh npm run smoke:mobile
       - name: Clean up browser and server processes left by this job (self-hosted)
         if: always() && runner.environment == 'self-hosted'
         run: |
