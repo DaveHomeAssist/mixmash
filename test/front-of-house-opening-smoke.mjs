@@ -1,11 +1,13 @@
 // Title theatre acceptance: real entry, skip/replay, exact saves, reduced motion and fallback.
 import assert from 'node:assert/strict';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, mkdtemp } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { startStaticServer, launchOptions, trackPageFailures } from './static-server.mjs';
 const server = await startStaticServer(), browser = await chromium.launch(launchOptions());
 const url = process.env.FRONT_OF_HOUSE_BASE_URL || `${server.origin}/front-of-house/`;
-const output = process.env.FOH_OPENING_OUTPUT || '/app/evidence';
+const output = process.env.FOH_OPENING_OUTPUT || await mkdtemp(join(tmpdir(), 'foh-opening-'));
 await mkdir(output, { recursive: true });
 const results = [];
 try {
