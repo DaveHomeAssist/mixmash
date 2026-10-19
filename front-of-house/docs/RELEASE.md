@@ -115,3 +115,20 @@ Observed limits remain part of review: HUD panels cover parts of close views and
 - [ ] Keep the current Early playable listing, noindex and sitemap exclusion until all required final launch gates are fulfilled. Do not promote automatically from CI or device diagnostics alone.
 
 Outcome: pending. This checklist prepares review; it grants no human, physical-device, calibration, rights or full-launch acceptance.
+
+## 5. Historical 0.3.0 tag provenance — 2026-10-18
+
+**Disposition: missing tag; intended target confirmed; no tag mutation performed.**
+
+[CT-DEC-33](DECISIONS.md#ct-dec-33-default-3d-view-and-independent-0x-releases) requires an immutable `front-of-house-v<version>` tag after the exact deployed merge is verified. For **front-of-house-v0.3.0**, that target is **`d28656b707a03bf8a288ec81a468fe8c897ea1d7`**, the [PR146 merge](https://github.com/DaveHomeAssist/mixmash/pull/146), not its feature head, the later artwork integration or today's publishing head.
+
+| Source | Confirmed evidence |
+| --- | --- |
+| Remote refs and releases | `git ls-remote --tags origin` has no `front-of-house-v0.3.0`; the GitHub releases collection is empty. The older 0.1.0, 0.1.1 and 0.2.0 tags exist. Absence was checked directly, not inferred from a local tag list. |
+| Version at intended target | `front-of-house/version.mjs` at `d28656b` declares 0.3.0, 2026-10-12, early playable, cache v78, save schema 2. The root CHANGELOG and PR146 describe the same venue-scale amenities release. |
+| Merge | PR146 merged on 2026-10-12 at 23:17:53 UTC, producing `d28656b707a03bf8a288ec81a468fe8c897ea1d7`. |
+| Post-merge CI | [CI38321390702](https://github.com/DaveHomeAssist/mixmash/actions/runs/38321390702) succeeded on that exact merge. |
+| Exact deployment | [Pages38321389955](https://github.com/DaveHomeAssist/mixmash/actions/runs/38321389955) succeeded on that exact merge. GitHub deployment **7026119815**, environment `github-pages`, records success at **2026-10-12T23:18:22Z**. |
+| Later version boundary | `d8a51cc4b9aba9400ce4c6bf7b6defb96b5bf3e2` integrated the 0.3.0 base into artwork with version 0.3.1/cache v79; it is not the 0.3.0 tag target. |
+
+The provider records establish which merge was deployed. They do not recreate historical live browser behavior, prove an original hosted byte comparison, or supply human/device acceptance. No new browser campaign ran. A future tag-repair action must recheck remote absence and use the exact target above under the existing release policy; this provenance-only pass does not create, move or delete a tag. PR176's documentation delivery remains subject to final-head CI, merge and Pages verification; the unavailable CI runner route is a separate blocker.

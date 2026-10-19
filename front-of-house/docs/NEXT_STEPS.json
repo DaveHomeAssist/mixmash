@@ -5,12 +5,12 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.8 short-window phase actions (FOH-QA-012)",
+  "head": "0.3.9 paused Show header; delivery records reconciled",
   "lastActivity": "2026-10-18",
   "status": "amber",
-  "statusReason": "Band ensembles and classic sprites released with exact-head CI, audited paired performance, deployed source parity and eight live desktop/mobile save/receipt journeys. Existing human and physical-device acceptance remain separate.",
+  "statusReason": "Delivered performer, short-window phase actions and 375px paused Show header work is recorded separately from remaining human/device acceptance. This reconciliation changes documentation only.",
   "activity30d": {
-    "headline": "PA, lighting, stage/site cards and band performers released."
+    "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
   "shipped": [
     "PR #49: centralized key table, conflict tests and session-only 50-step Build undo/redo; merged CI passed.",
@@ -50,12 +50,12 @@
     "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged."
   ],
   "nextStep": {
-    "title": "Review delivered stage and performer visuals",
-    "why": "Technical release proof is complete; human and physical-device acceptance remain separate.",
-    "doneWhen": "Actual visual/device observations are recorded against the existing release checklist.",
+    "title": "Complete PR176 delivery when existing CI returns",
+    "why": "0.3.0 provenance is resolved: the absent tag belongs to PR146 merge d28656b. This packet excludes tag mutation. The documentation PR still requires final-head CI before merge.",
+    "doneWhen": "Required final-head checks pass, PR176 merges, Pages and all changed hosted documentation files are verified, and the existing board is refreshed.",
     "effort": "S",
-    "owner": "Dave and current FOH executor",
-    "blockedBy": "Direct human and physical-device evidence"
+    "owner": "Current FOH executor and existing CI runner owner",
+    "blockedBy": "Existing MixMash CI runners offline; do not bypass or launch a replacement workflow."
   },
   "findings": [
     {
@@ -149,8 +149,8 @@
       "id": "FOH-CROWD-REPRESENTATION",
       "type": "bug",
       "sev": "P2",
-      "title": "Classic crowd correction verified remotely; delivery pending",
-      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. CI/Pages/hosted delivery remains pending; original failure evidence is preserved.",
+      "title": "Classic crowd correction delivered through PR130",
+      "detail": "Frozen522f3f2 and current5b443f6 both draw200 for150 at density1.5. Implementation50ee2de applies the existing cumulative integer allocation to legacy scenes. Dominic Chromium fixture and Chromium/WebKit floor count/cache/picking checks pass, without scene mutation, engine/save changes or changes to service actors. Full player suite and four exact frozen-browser legacy save/sign journeys pass. Delivered through PR130 merge 0ba0fca94fc7e6787c32ce399dda144cdba099d4. The existing fixed-issue receipt records CI, Pages, hosted 12-script retry and 49-path equality. Dedicated offline and 3D recovery reruns were not performed for that historical change; original failure evidence is preserved.",
       "files": [
         "front-of-house/board.js:612",
         "test/front-of-house-floor-smoke.mjs:54",
@@ -179,8 +179,8 @@
       "id": "FOH-AMEN-01",
       "type": "balance",
       "sev": "P2",
-      "title": "Venue-scale bars and restrooms (0.3.0): implemented, in review",
-      "detail": "Dave reported on 2026-10-12 that bar and restroom logic looked flawed: a sold-out Split Acre settlement asked for 47 bars and 146 restrooms because every venue used the Lot rates (125 and 40 guests per unit). Meeting that guideline would push Split Acre below its 6,000 permit and Loam Shell below 700. Implemented per D13-D16 (CT-DEC-36): Bar tent (3x2, serves 1,000) and Restroom block (2x2, serves 500) at Loam Shell and Split Acre; guideline-meeting Suggested layouts above the Lot (Fathom Hall 94%, Loam Shell and Split Acre 100% at permit capacity); venue-correct settlement gap; CT-DEC-26 careless guard moved to the Festival. PR146 head 92fd3f5 passes 455 unit tests, vendor/asset/docs/build checks, all three simulators and all eleven Front of House smoke groups on Dominic; Lot BALANCE_BASELINE unchanged. A Dominic Playwright check confirms the tools, A/W keys, Lot exclusion and the settlement line 'Bar service 375 of 6,000 \u00b7 add 6 bar tents; restroom service 400 of 6,000 \u00b7 add 12 restroom blocks'. Remaining: PR CI, Dave's merge approval, Pages, hosted check, tag, and Dave's balance/readability review.",
+      "title": "Venue-scale bars and restrooms (0.3.0): delivered; human review open",
+      "detail": "Dave reported on 2026-10-12 that bar and restroom logic looked flawed: a sold-out Split Acre settlement asked for 47 bars and 146 restrooms because every venue used the Lot rates (125 and 40 guests per unit). Meeting that guideline would push Split Acre below its 6,000 permit and Loam Shell below 700. Implemented per D13-D16 (CT-DEC-36): Bar tent (3x2, serves 1,000) and Restroom block (2x2, serves 500) at Loam Shell and Split Acre; guideline-meeting Suggested layouts above the Lot (Fathom Hall 94%, Loam Shell and Split Acre 100% at permit capacity); venue-correct settlement gap; CT-DEC-26 careless guard moved to the Festival. PR146 head 92fd3f5 passes 455 unit tests, vendor/asset/docs/build checks, all three simulators and all eleven Front of House smoke groups on Dominic; Lot BALANCE_BASELINE unchanged. A Dominic Playwright check confirms the tools, A/W keys, Lot exclusion and the settlement line 'Bar service 375 of 6,000 \u00b7 add 6 bar tents; restroom service 400 of 6,000 \u00b7 add 12 restroom blocks'. PR146 merged at d28656b707a03bf8a288ec81a468fe8c897ea1d7; required CI38318232353 passed. Current Pages/source parity was checked at b99cdd5 on 2026-10-18; that is not a rerun of the original hosted interaction matrix. Remaining: missing front-of-house-v0.3.0 tag disposition and Dave's balance/readability review.",
       "files": [
         "front-of-house/docs/FEATURE_BRIEFS.md",
         "front-of-house/docs/DECISIONS.md",
@@ -2419,12 +2419,12 @@
       "careless": "Club 100 (was 69), Amphitheater 100 (was 69), Festival 91 (was 66)"
     },
     "pending": [
-      "PR146 CI",
-      "Dave approves merge; then Pages and hosted check",
-      "Tag front-of-house-v0.3.0 after deployed merge",
+      "front-of-house-v0.3.0 absent; intended target confirmed as d28656b707a03bf8a288ec81a468fe8c897ea1d7. Tag mutation excluded from provenance-only pass.",
       "Dave's balance and readability review"
     ],
-    "cacheNote": "Open PR144 uses cache v77; this release reserves v78."
+    "cacheNote": "Historical reservation: PR144 used v77 and this release used v78. Current 0.3.9 uses v87.",
+    "merge": "d28656b707a03bf8a288ec81a468fe8c897ea1d7",
+    "ci": "https://github.com/DaveHomeAssist/mixmash/actions/runs/38318232353"
   },
   "numberingReview20261009": {
     "pr": "https://github.com/DaveHomeAssist/mixmash/pull/141",
@@ -2441,7 +2441,7 @@
     "ci": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37916548234",
     "pages": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37928177752",
     "postmergeCI": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37928178712",
-    "postmergeStatus": "in_progress",
+    "postmergeStatus": "completed/success (verified 2026-10-18)",
     "tag": "front-of-house-v0.2.0",
     "runtime": "https://mixmash.games/front-of-house/",
     "hostedFiles": 71,
@@ -2468,6 +2468,48 @@
   "detailPageIntegration": {
     "pullRequest": 145,
     "revision": "3d0ba9e9c1671af0b6b5245e4825ac544008d64b",
-    "evidence": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized. Review follow-up reproduced mobile detail-body scroll loss at375x812 (50px reset to0) and375x700 (162px reset to0). Both positions now restore exactly on Duncan; the existing short-phone copy scroller remains supported. Expanded landing smoke exercises both phone scroll containers. Required refreshed-head CI and hosted checks remain pending."
+    "historicalEvidence": "PR142 final cf2c8e0 passes CI37916548234 general and paired regression and merged94c69a5a2c8d3c8003a4dc7394ab25c3a3ba4ae6. Pages37928177752 publishes that exact merge. Duncan matches71 hosted files and passes48 live Advisory checks across all phases/four rooms/both themes/seven sizes, linked-receipt return/focus and one-time signing. Combined local and hosted cachev76 unsigned/signed offline reloads preserve exact state and envelope content, advice leaves save bytes unchanged and signed receipts are read-only. Annotated front-of-house-v0.2.0 resolves to the deployed merge. Postmerge CI37928178712 remains active at this record timestamp. Original failures and physical-device/screen-reader/human/calibration/image-rights gates remain open; the private Next Steps Board is unavailable and not synchronized. Review follow-up reproduced mobile detail-body scroll loss at375x812 (50px reset to0) and375x700 (162px reset to0). Both positions now restore exactly on Duncan; the existing short-phone copy scroller remains supported. Expanded landing smoke exercises both phone scroll containers. Required refreshed-head CI and hosted checks remain pending.",
+    "evidence": "PR145 is merged at d9110eda41de377279fdf04b204bc199daa1bb21 (verified 2026-10-18). The previous evidence field is retained as historicalEvidence; its pending and unavailable statements describe that earlier checkpoint, not current delivery. No new detail-page browser campaign was run in this reconciliation."
+  },
+  "reconciliation20261018": {
+    "base": "b99cdd5db4674c354460086ee4d1ec16f1cc77ca",
+    "scope": "Documentation only; no rules, saves, runtime, service worker or catalog changes.",
+    "verified": [
+      "PR174 / FOH-QA-012 merged 7c768c08f9c03ab2bdf6cf2228939b83fdff8576; required CI39107587347 passed.",
+      "PR175 / 375px paused Show header merged c4db3ba83066ae34f722921171e5e95489493ff1; required CI39129481433 passed.",
+      "Pages built b99cdd5; current hosted game.js, engine.mjs, board.js, styles.css and version.mjs equal that source.",
+      "PR142 postmerge CI37928178712 completed successfully.",
+      "FOH-QA-015 fixed by a0b38ff / PR162 merge133d7ad; moved from Open to Fixed."
+    ],
+    "retainedGates": [
+      "FOH-QA-013: D12 remains unanswered; no new product choice inferred.",
+      "FOH-QA-014: read-only normalization probe reproduces hand-edited career/locked-venue state only; existing recovery condition requires evidence outside edited data.",
+      "FOH-FLOW-01 remains Proposed.",
+      "Human, physical-device, calibration and original-image provenance gates remain open."
+    ],
+    "verificationLimit": "Existing passed runtime CI reused; current source equality is not new interaction or physical-device acceptance.",
+    "delivery": {
+      "pullRequest": "https://github.com/DaveHomeAssist/mixmash/pull/176",
+      "implementationCommit": "24570cc690940d9873f16bed089fb87963928d56",
+      "status": "Pushed; merge and deployment blocked by offline CI runners.",
+      "evidence": "At 2026-10-18T23:28:11Z, both configured MixMash runners were offline. CI39176604795 regression scope check succeeded; required test remained queued. Six local catalog checks passed; no runtime change.",
+      "next": "Obtain required checks on the final head after the existing runner route returns, then merge and verify Pages and every changed documentation file."
+    }
+  },
+  "releaseTagProvenance20261018": {
+    "tag": "front-of-house-v0.3.0",
+    "disposition": "Absent remotely; intended target confirmed; no tag mutation",
+    "target": "d28656b707a03bf8a288ec81a468fe8c897ea1d7",
+    "authority": "CT-DEC-33: tag the exact deployed merge",
+    "sourceBase": "b99cdd5db4674c354460086ee4d1ec16f1cc77ca",
+    "version": "0.3.0 / v78 / schema2",
+    "mergeTime": "2026-10-12T23:17:53Z",
+    "postmergeCI": 38321390702,
+    "pagesRun": 38321389955,
+    "deployment": 7026119815,
+    "deploymentSuccessTime": "2026-10-12T23:18:22Z",
+    "record": "front-of-house/docs/RELEASE.md section5",
+    "limits": "Provider deployment provenance only; no historical live browser or human/device acceptance inferred. No runtime, rules, saves, tags or services changed.",
+    "remaining": "PR176 final-head CI, merge and Pages are pending. Tag repair is outside this packet. QA013/D12, conditional QA014, Proposed FLOW01 and human/device/calibration/rights gates remain separate."
   }
 }
