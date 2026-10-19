@@ -133,9 +133,16 @@ try {
     await page.locator('#details-mars').click();
     await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
     assert.equal(await panel.evaluate(e => e.scrollTop), scroll, 'detail scroll restored after navigation');
-    await page.reload();
+    // Restoration must hold against styled layout: sample after the load event, by which the hub has
+    // redone any restore that ran before its stylesheet applied.
+    await page.reload({ waitUntil: 'load' });
     await page.waitForFunction(() => !document.getElementById('game-mars').hidden);
     assert.equal(await panel.evaluate(e => e.scrollTop), scroll, 'detail scroll restored after reload');
+    // Slow stylesheet (a busy device or slow network): WebKit runs the hub module before styles apply.
+    await page.route('**/src/hub/style.css', async route => { await new Promise(resolve => setTimeout(resolve, 600)); await route.continue(); });
+    await page.reload({ waitUntil: 'load' });
+    await page.unroute('**/src/hub/style.css');
+    assert.equal(await panel.evaluate(e => e.scrollTop), scroll, 'detail scroll restored after reload with a slow stylesheet');
     await fit(page, `${engine} direct detail`); await context.close();
    }
    // No JavaScript retains complete links and native detail navigation.
