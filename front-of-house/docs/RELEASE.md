@@ -47,11 +47,13 @@ The site is the `gh-pages` branch served as-is by GitHub Pages; a merge into `gh
 
 ## 3. Public launch (one time)
 
+**D11 = B (Dave, 2026-10-19, [CT-DEC-37](DECISIONS.md#ct-dec-37-early-access-promotion-accepted-medium-issues-seeded-replay-and-festival-entry)):** promote as **early access** once two gates pass: the human playtest/sign-off (section 4 desktop/phone gameplay plus a recorded dated sign-off) and the art licence gate (KI-07 and section 4 "Rights and final launch"). The 3D Lot and live-operations pilots are no longer prerequisites. Until both gates are recorded, nothing below is unticked or promoted automatically.
+
 Dave approved the **Early playable** homepage listing on2026-10-05; the hub card is deployed. The game remains `noindex` and excluded from the sitemap. That limited sign-off does not close final art, performance, device or career acceptance. Before full launch and search promotion:
 
 - [x] Dave signed off the first playable for the Early playable homepage listing on2026-10-05 ([record](DECISIONS.md#homepage-visibility-sign-off-2026-10-05)); final acceptance for later revisions remains separate.
 - [ ] CT-DEC-10 (the Lot career) and CT-DEC-11 (rooms after the Lot) are accepted or changed.
-- [ ] The Medium issues in KNOWN_ISSUES.md are fixed, or Dave has accepted them for launch.
+- [ ] The Medium issues in KNOWN_ISSUES.md are fixed, or Dave has accepted them for launch. Dave accepted KI-01 and KI-14 for early access on 2026-10-19 ([CT-DEC-37](DECISIONS.md#ct-dec-37-early-access-promotion-accepted-medium-issues-seeded-replay-and-festival-entry)); KI-02 and KI-03 are decided after the human playtest.
 - [ ] Every image in ASSETS.md has a recorded source and licence (KI-07).
 - [ ] Every act and room name has a current name check in WORLD.md.
 

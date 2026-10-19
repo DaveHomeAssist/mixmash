@@ -281,7 +281,9 @@ export const FEST_STARTER = [
   { type: 'restroom-block', x: 34, y: 9, rot: 0 },
   { type: 'restroom-block', x: 36, y: 9, rot: 0 },
   { type: 'restroom-block', x: 38, y: 9, rot: 0 },
-  { type: 'gate', x: 20, y: 23, rot: 0 },
+  // FOH-FLOW-01 (Dave, 2026-10-19): one gate admits GATE_RATE x DOORS_MINUTES = 300 guests, so
+  // twenty gates along the south boundary cover the 6,000 permit. Each adds one door staffer.
+  ...Array.from({ length: 20 }, (_, i) => ({ type: 'gate', x: 10 + i, y: 23, rot: 0 })),
   { type: 'exit', x: 0, y: 12, rot: 0 },
   { type: 'exit', x: 39, y: 12, rot: 0 },
   { type: 'exit', x: 0, y: 22, rot: 0 },

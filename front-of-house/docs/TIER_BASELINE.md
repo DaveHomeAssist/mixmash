@@ -15,7 +15,7 @@ This validates the current mechanics. Festival VIP/bus requirements are included
 | careless | lot | 100/100 | 100 | None |
 | careless | club | 100/100 | 100 | None |
 | careless | amphitheater | 100/100 | 100 | None |
-| careless | festival | 91/100 | 100 | 9, 14, 18, 26, 33, 39, 56, 75, 93 |
+| careless | festival | 90/100 | 100 | 9, 14, 18, 26, 33, 39, 40, 56, 75, 93 |
 
 ## Verdicts
 

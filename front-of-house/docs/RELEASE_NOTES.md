@@ -5,6 +5,12 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.3.11 — 2026-10-19
+
+- Split Acre's Suggested layout now has twenty Entry gates along the south fence instead of one, enough to admit a 6,000 sell-out during doors. Entry flow at a full Festival rises from about 5% to 100%; door staff rise by 19. Gate rates, gate costs, other venues and saved layouts are unchanged (FOH-FLOW-01, Dave's choice in CT-DEC-37).
+- The manual says a save code restores a night exactly, and that replaying a seeded night is allowed (D12 A).
+- Cache v89.
+
 ## 0.3.9 — 2026-10-18
 
 - On a 375px phone the paused Show header fits its plate: the clock's line box now holds the font's full height instead of overflowing by about 2 px, whichever monospace font the device has. Incident choice costs on phones are set slightly smaller so a long cost such as "$125 · not enough cash" stays on one line beside its label, keeping the rain choices inside the peek sheet with room to spare. Layout only: rules, money, strings, balance and save schema 2 are unchanged.

@@ -8,7 +8,7 @@ The audit tried to make the game lie, lose state, miscalculate, trap the player 
 
 This is a record review, not a repeat of the original browser campaign. At source `b99cdd5`, FOH-QA-012 is delivered by PR174 (`7c768c0`, required CI39107587347 passed); PR175 (`c4db3ba`, required CI39129481433 passed) also fixes the paused Show header at 375px. Current Pages and five hosted runtime files match the reviewed source. FOH-QA-015 is already fixed by PR162 and is now correctly listed under Fixed in KNOWN_ISSUES.
 
-FOH-QA-013 remains the D12 product choice. A small read-only engine probe reproduces FOH-QA-014 only after manually changing a sandbox Club state to a locked career state: normalization leaves Promote selected and Open doors reports that the room is locked. No normal-player reproduction was established, so the existing condition for recovery work remains unmet. No normalization, save or rule change was made. Historical test results below retain their original scope.
+FOH-QA-013 is closed by design: Dave chose D12 A on 2026-10-19 (CT-DEC-37). A small read-only engine probe reproduces FOH-QA-014 only after manually changing a sandbox Club state to a locked career state: normalization leaves Promote selected and Open doors reports that the room is locked. No normal-player reproduction was established, so the existing condition for recovery work remains unmet. No normalization, save or rule change was made. Historical test results below retain their original scope.
 
 ## 1. What ran
 
@@ -47,7 +47,7 @@ Severity follows the audit plan: P0 career or data integrity, P1 critical gamepl
 | FOH-QA-010 | P3 | SAVE | After 200 shows, play kept every entry but a reload kept 200 and renumbered them from Show 1 | 201-show career, reload | History numbers change on reload | Fixed 0.1.2: the same 200-show window in play and saves, numbers kept |
 | FOH-QA-011 | P3 | STATE | `chooseVenue` with an inherited name throws in Sandbox (developer hook only) | `__frontOfHouse.act({type:'chooseVenue', venueId:'toString'})` | Uncaught exception | Fixed with FOH-QA-006 |
 | FOH-QA-012 | P3 | RESP | At 150% browser zoom on 1440×900 or 1366×768 (about 960×600 CSS px), Promote's Open doors sits below the panel's visible area and is reachable only by scrolling the panel; at 200% the Book deal buttons do the same | Zoom 150% → Promote | Primary action hidden below the fold; below the 1024×700 hard gate | Fixed in 0.3.8: sticky Promote actions, act-first Book below the gate |
-| FOH-QA-013 | P3 | EXP | Nights are seeded, so a save code or second tab taken before doors shows the night's result and lets the player replay a different response | Copy code before doors → play → import → choose again | Informed retries; no cash duplication | Open: design choice for Dave (decision packet) |
+| FOH-QA-013 | P3 | EXP | Nights are seeded, so a save code or second tab taken before doors shows the night's result and lets the player replay a different response | Copy code before doors → play → import → choose again | Informed retries; no cash duplication | By design: D12 A, Dave 2026-10-19 (CT-DEC-37); documented in the manual |
 | FOH-QA-014 | P3 | SAVE | A hand-made save can still load a career in Build or Promote in a locked room. Booking and doors are refused there, so it cannot be played; the player must choose the Lot | Edited save code | Confusing state from edited data only | Open, low |
 
 No P0 defect was found: no duplicate payout, double charge, skipped phase, lost settlement or cash that disagreed with a signed sheet, in any engine or across any reload.
@@ -68,7 +68,7 @@ No P0 defect was found: no duplicate payout, double charge, skipped phase, lost 
 | 1024×700 rule and regression widths | Pass; FOH-QA-012 below the gate |
 | Light and dark | Light pass; dark measured in the rerun recorded in [progress.md](../progress.md) |
 | Long-career test | Pass (230 shows) |
-| Economy exploit pass | FOH-QA-002 fixed; FOH-QA-013 open as a design choice |
+| Economy exploit pass | FOH-QA-002 fixed; FOH-QA-013 accepted by design (D12 A) |
 | Console | No unexplained errors |
 | P0 / P1 open | 0 / 0 |
 

@@ -88,3 +88,12 @@ test('support markers normalize from version only, preserve paid history and res
   assert.equal(returned.venue.objects.filter(o => D.OBJECT_TYPES[o.type].supportOnly).length, 2, 'cached layout survives room change and reload');
   assert.equal(returned.venue.support, undefined); assert.equal(E.normalizeState(build(false)).venue.support, undefined);
 });
+
+test('FOH-FLOW-01: Split Acre Suggested layout admits a 6,000 sell-out through its gates (CT-DEC-37)', () => {
+  const venue = { id: 'festival', grid: D.VENUES.festival.grid, objects: D.FEST_STARTER };
+  const v = E.evaluateVenue(venue);
+  assert.equal(v.gates, 20); assert.equal(v.capacity, 6000); assert.deepEqual(v.missing, []);
+  assert.ok(v.gates * D.GATE_RATE * D.DOORS_MINUTES >= v.capacity, 'gate throughput covers the permit');
+  assert.ok(D.FEST_STARTER.filter(o => o.type === 'gate').every(o => o.y === D.VENUES.festival.grid.h - 1), 'gates sit on the south boundary');
+  for (const id of ['lot', 'club', 'amphitheater']) assert.equal(D.VENUES[id].starter.filter(o => o.type === 'gate').length, 1, `${id} Suggested layout unchanged`);
+});
