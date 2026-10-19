@@ -66,10 +66,16 @@ try {
     await page.goto(url); await page.waitForSelector('.opening-actions:not([hidden])');
     await page.locator('.opening [data-intro="enter"]').click();
     await page.locator('[data-act="deal"]:not([disabled])').first().click();
+    await page.locator('[data-act="starter"]').click();
     const saved = await page.evaluate(() => localStorage.getItem('front_of_house_v1'));
+    const tools = await page.evaluate(() => __frontOfHouse.buildTools());
     await page.locator('#menu-btn').click(); await page.locator('#intro-replay').click();
     await page.waitForSelector('.opening-actions:not([hidden])');
-    await page.keyboard.press('1'); await page.keyboard.press('Enter');
+    await page.keyboard.press('1');
+    assert.deepEqual(await page.evaluate(() => __frontOfHouse.buildTools()), tools, 'title keys cannot select a Build tool');
+    await page.keyboard.press('Control+z');
+    assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')), saved, 'title keys cannot undo a saved layout');
+    await page.keyboard.press('Enter');
     await page.waitForSelector('.opening', {state:'detached'});
     assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')), saved, 'title keys cannot place equipment into a saved Build');
     results.push({savedBuildKeyboardIsolation:true}); await context.close();
