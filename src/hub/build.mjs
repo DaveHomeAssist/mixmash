@@ -2,7 +2,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { playableGames, studio } from './catalog.mjs';
-import { monetization, supportBlock, supportFooterLink, adHead, adBlock } from './monetization.mjs';
+import { monetization, supportBlock, supportFooterLink, adHead, adBlock, analyticsHead, analyticsScript, applyAnalyticsCsp, ANALYTICS_PAGES } from './monetization.mjs';
 import { structuredData, SITE } from './seo.mjs';
 const root = new URL('../../', import.meta.url);
 const escape = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -24,7 +24,7 @@ const details = playableGames.map(g => `
   </div>
 </section>`).join('\n');
 let html = await readFile(new URL('template.html', import.meta.url), 'utf8');
-for (const [key, value] of Object.entries({ TITLE: escape(studio.title), DESCRIPTION: escape(studio.description), INTRO: escape(studio.intro), COUNT: playableGames.length, NOTE: escape(studio.note), CARDS: cards, DETAILS: details, OG_ALT: escape(`MixMash Studio: ${playableGames.map(g => g.name).join(', ')}. Free browser games.`), SHARE_TEXT: escape(studio.intro), JSONLD: structuredData(), AD_HEAD: adHead(monetization) ? '\n' + adHead(monetization) : '', SUPPORT: supportBlock(monetization), AD: adBlock(monetization), SUPPORT_FOOTER: supportFooterLink(monetization) })) html = html.replaceAll(`{{${key}}}`, String(value));
+for (const [key, value] of Object.entries({ TITLE: escape(studio.title), DESCRIPTION: escape(studio.description), INTRO: escape(studio.intro), COUNT: playableGames.length, NOTE: escape(studio.note), CARDS: cards, DETAILS: details, OG_ALT: escape(`MixMash Studio: ${playableGames.map(g => g.name).join(', ')}. Free browser games.`), SHARE_TEXT: escape(studio.intro), JSONLD: structuredData(), AD_HEAD: [analyticsHead(monetization), adHead(monetization)].filter(Boolean).map(tag => '\n' + tag).join(''), SUPPORT: supportBlock(monetization), AD: adBlock(monetization), SUPPORT_FOOTER: supportFooterLink(monetization) })) html = html.replaceAll(`{{${key}}}`, String(value));
 if (html.includes('{{')) throw new Error('Unresolved homepage template marker');
 const destination = new URL('index.html', root);
 if (process.argv.includes('--check')) {
@@ -44,3 +44,19 @@ const manifestOutput = JSON.stringify(manifest, null, 2) + '\n';
 if (process.argv.includes('--check')) {
   if (manifestSource !== manifestOutput) throw new Error('Installed app metadata drift. Run npm run hub:build.');
 } else await writeFile(manifestURL, manifestOutput);
+
+// Analytics include for game wrapper pages, plus the beacon origins in any wrapper CSP while it is on.
+const generated = [[new URL('assets/analytics.js', root), analyticsScript(monetization)]];
+for (const page of ANALYTICS_PAGES) {
+  const url = new URL(page, root);
+  const source = await readFile(url, 'utf8');
+  if (!source.includes('<script src="/assets/analytics.js" defer></script>')) throw new Error(`${page} is missing the analytics include`);
+  generated.push([url, applyAnalyticsCsp(source, monetization)]);
+}
+for (const [url, output] of generated) {
+  let current = null;
+  try { current = await readFile(url, 'utf8'); } catch {}
+  if (process.argv.includes('--check')) {
+    if (current !== output) throw new Error(`Analytics drift in ${fileURLToPath(url)}. Run npm run hub:build.`);
+  } else if (current !== output) await writeFile(url, output);
+}
