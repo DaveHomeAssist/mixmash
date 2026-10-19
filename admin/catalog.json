@@ -4128,7 +4128,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit ae18805609a837cd6e5d9d99bdfa93555df0b924 (source PR16).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit 4d09e2fe4107b479444584bbd01acca688fa8593 (source PR16).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -4213,23 +4213,23 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-BCNGlPdW.css",
+      "path": "horseshoes/assets/horseshoes-0NVzVOSx.css",
       "project": "horseshoes",
       "category": "build",
       "kind": "CSS",
       "title": "Horseshoes production CSS",
-      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BCNGlPdW); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BCNGlPdW.css",
+      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-0NVzVOSx); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-0NVzVOSx.css",
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-D36k9iY7.js",
+      "path": "horseshoes/assets/horseshoes-DW19vTBY.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-D36k9iY7); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-D36k9iY7.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-DW19vTBY); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-DW19vTBY.js",
       "open": null
     },
     {
@@ -5210,6 +5210,16 @@
       "title": "catalog-smoke.mjs",
       "description": "Browser smoke rail for the rest of the catalog: /pitch/, /mars/, the /empires/ shell, and the hub. smoke:play already covers /play/.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/catalog-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/garden-embed-focus-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "garden-embed-focus-smoke.mjs",
+      "description": "Garden wrapper: Fullscreen and Mute hand keyboard focus back to the game iframe, and Space/Enter never toggle the strip buttons.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/garden-embed-focus-smoke.mjs",
       "open": null
     },
     {
