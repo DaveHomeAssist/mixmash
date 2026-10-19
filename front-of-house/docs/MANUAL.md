@@ -6,7 +6,7 @@ Run a concert, settle its money, and build a career from Oak St. Lot to Split Ac
 
 The first visit builds an empty lot into a show before revealing **New game**. Returning visits show a short title reveal and **Continue** when this browser has a saved game. **Skip intro** or Escape goes straight to the title menu. **Replay intro** is available there and in the game menu.
 
-Choose **Enable sound** for production cues and a quiet musical pulse. The shared mute setting is respected; the scene is complete without audio. Reduced motion shows the completed venue without equipment travel or a camera move. The title scene never spends cash or changes the show. Choosing **New game** from an existing save opens the normal mode selection and confirmation.
+Choose **Enable sound** for production cues and a quiet musical pulse. The shared mute setting is respected; the scene is complete without audio. Reduced motion shows the completed venue without equipment travel or a camera move. The title scene never spends cash or changes the show. Continue resumes Show playback from its paused position, excluding time spent on the title screen, and returns focus to an open settlement when applicable. Choosing **New game** from an existing save opens the normal mode selection and confirmation.
 
 ## Finish your first show
 

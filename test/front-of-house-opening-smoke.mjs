@@ -82,6 +82,29 @@ try {
     assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')), saved, 'title keys cannot place equipment into a saved Build');
     results.push({savedBuildKeyboardIsolation:true}); await context.close();
   }
+  {
+    const context = await browser.newContext({serviceWorkers:'block'}), page = await context.newPage();
+    await page.goto(url); await page.locator('.opening [data-intro="skip"]').click();
+    await page.locator('.opening [data-intro="enter"]').click();
+    await page.locator('[data-act="deal"]:not([disabled])').first().click();
+    await page.locator('[data-act="starter"]').click(); await page.locator('[data-act="confirm-build"]').click();
+    await page.locator('[data-act="confirm-promo"]').click(); await page.reload();
+    await page.waitForSelector('.opening-actions:not([hidden])');
+    const before = await page.evaluate(() => ({save:localStorage.getItem('front_of_house_v1'),p:JSON.parse(render_game_to_text()).playback.progress}));
+    await page.waitForTimeout(700);
+    assert.deepEqual(await page.evaluate(() => ({save:localStorage.getItem('front_of_house_v1'),p:JSON.parse(render_game_to_text()).playback.progress})),before,'saved Show stays paused behind the title');
+    await page.locator('.opening [data-intro="enter"]').click();
+    await page.waitForFunction(p => JSON.parse(render_game_to_text()).playback.progress > p + 0.01,before.p);
+    assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')),before.save);
+    results.push({savedShowResumes:true,titleTimeExcluded:true});
+    await page.locator('#skip-btn').click(); await page.locator('[data-act="respond"]:not([disabled])').first().click();
+    await page.reload(); await page.waitForSelector('.opening-actions:not([hidden])');
+    const unsigned = await page.evaluate(() => localStorage.getItem('front_of_house_v1'));
+    await page.locator('.opening [data-intro="enter"]').click();
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'win-title', 'Continue focuses the saved settlement dialog');
+    assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')), unsigned);
+    results.push({savedSettlementFocus:true,unsignedSavePreserved:true}); await context.close();
+  }
   for (const scenario of ['no-webgl','blocked-storage','context-loss','no-gsap']) {
     const context = await browser.newContext({ reducedMotion: 'reduce', serviceWorkers: 'block' });
     if (scenario === 'blocked-storage') await context.addInitScript(() => {

@@ -8,7 +8,7 @@
 .opening button:focus-visible { outline: 3px solid #167b8f; outline-offset: 4px; }
 .opening-title { position: absolute; top: 21%; left: 6%; opacity: 0; max-width: 48%; pointer-events: none; }
 .opening-kicker { font: 700 11px ui-monospace,monospace; letter-spacing: .18em; }
-.opening h1 { font: 950 clamp(52px,7.2vw,120px)/.88 Impact,'Arial Black',sans-serif; letter-spacing: -.025em; margin: 20px 0 26px; }
+.opening h1 { font: 900 clamp(52px,7.2vw,120px)/.88 Impact,'Arial Black',sans-serif; letter-spacing: -.025em; margin: 20px 0 26px; }
 .opening h1 span { display: block; }
 .opening-tape { display: inline-block; padding: 9px 14px; background: #eadca5; color: #292719; font: 700 clamp(12px,1.2vw,17px) ui-monospace,monospace; transform: rotate(-2deg); }
 .opening-actions { position: absolute; left: 6%; bottom: 12%; display: flex; flex-wrap: wrap; gap: 10px; max-width: 48%; }

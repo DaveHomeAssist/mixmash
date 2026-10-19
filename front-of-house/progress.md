@@ -1133,3 +1133,9 @@ Dominic container: 21 camera/release tests passed. First browser failure found a
 
 
 Verification follow-up: Dominic passed all 493 repository tests, asset checks, build checks and the opening's five-viewport/save/replay/fallback scenarios. The broader player journey exposed a pre-existing 683×384 Book cutoff: the second deal ended at375px against a372px sheet bottom, reproduced identically on unchanged2db3f6c. The existing <=420px Book rule now reduces choice padding from6px to4px, recovering8px across two choices without shrinking text or44px targets. The same journey and final opening checks must pass before merge.
+
+
+Final input/lifecycle review added immediate loading-state Skip focus, isolation from global Build/undo shortcuts, saved Show playback resume with title time excluded, and focus restoration to an existing settlement. Shader haze now fades its edge/end instead of drawing hard cone silhouettes. Camera motion uses a smooth glide and menu controls fade in before the eleven-second finish; they stay inert until ready. Cold offline entry/reload and WebKit phone/save checks passed on Dominic; final source must pass the complete opening/player rails and required CI before delivery. Superseded candidate CI runs were cancelled rather than left consuming runner time.
+
+
+Final local candidate passed all13 opening scenarios (including real saved Build undo isolation, saved Show resume/time exclusion and saved settlement focus), WebKit phone/save, cold offline entry/reload and the required web-game client. The player rail passed all29 checks after the bounded Book correction. Renderer-specific source/unit checks and source asset manifest pass; required final-head CI and hosted release proof remain pending. The silent engineering preview is a browser capture, not an audio or physical-device acceptance claim.

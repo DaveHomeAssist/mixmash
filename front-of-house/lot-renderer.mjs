@@ -182,8 +182,15 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     openingGate.visible = t >= 2.4;
     openingGate.children.forEach((pivot,i) => { pivot.rotation.y = (i ? -1 : 1) * Math.max(0, Math.min(1, (t - 6) / 0.4)) * Math.PI / 2; });
     if (!openingBeams) {
-      const geometry = new T.ConeGeometry(2.1, 8, 12, 1, true); geometry.translate(0, -4, 0);
-      const material = new T.MeshBasicMaterial({ color: 0xffdca3, transparent: true, opacity: 0.06, depthWrite: false, side: T.DoubleSide });
+      const geometry = new T.ConeGeometry(1.2, 8, 16, 1, true); geometry.translate(0, -4, 0);
+      const material = new T.ShaderMaterial({ transparent: true, depthWrite: false, side: T.DoubleSide, blending: T.AdditiveBlending,
+        uniforms: { beamColor: { value: new T.Color(0xffdca3) } },
+        vertexShader: `varying vec2 beamUv; varying vec3 beamNormal; varying vec3 beamView;
+          void main() { beamUv = uv; beamNormal = normalMatrix * normal; vec4 p = modelViewMatrix * vec4(position, 1.0); beamView = -p.xyz; gl_Position = projectionMatrix * p; }`,
+        fragmentShader: `uniform vec3 beamColor; varying vec2 beamUv; varying vec3 beamNormal; varying vec3 beamView;
+          void main() { float edge = pow(abs(dot(normalize(beamNormal), normalize(beamView))), 2.0);
+            float fade = smoothstep(0.0, 0.4, beamUv.y); gl_FragColor = vec4(beamColor, edge * fade * 0.035); }`,
+      });
       openingBeams = new T.Group();
       for (const x of [10,14]) { const beam = new T.Mesh(geometry, material); beam.position.set(x, 2.5, 1.5); openingBeams.add(beam); }
       world.add(openingBeams);

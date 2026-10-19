@@ -2513,14 +2513,14 @@
     "remaining": "PR176 final-head CI, merge and Pages are pending. Tag repair is outside this packet. QA013/D12, conditional QA014, Proposed FLOW01 and human/device/calibration/rights gates remain separate."
   },
   "openingSequence": {
-    "status": "implemented; repository checks passed; final browser rerun pending",
+    "status": "implemented and locally verified; CI and hosted delivery pending",
     "sourceBase": "2db3f6c",
     "date": "2026-10-19",
     "scope": "Approved 11 second title/menu with isolated scene, GSAP, skip/replay, reduced motion, optional sound",
     "remaining": [
-      "final browser rerun including audio assertions and short-window Book fix",
-      "CI",
+      "required final-head CI",
       "merge and hosted verification",
+      "immutable version tag after deployed merge verification",
       "human visual/audio acceptance"
     ],
     "verification": {
@@ -2528,8 +2528,10 @@
       "tests": 493,
       "assetChecks": "pass",
       "build": "pass",
-      "openingJourneys": "five viewports, six skip beats, replay, returning saves, reduced motion, blocked storage, WebGL fallback and context loss passed",
-      "preexistingFailure": "683x384 Book cutoff reproduced on2db3f6c; narrow padding correction in final rerun"
+      "openingJourneys": "13 opening scenarios pass, including five viewports, six skip beats, replay, returning saves, saved Build tool/undo isolation, saved Show resume, saved settlement focus, storage and renderer/library failures",
+      "preexistingFailure": "3px Book cutoff on2db3f6c corrected; full player rail passed",
+      "playerRail": "29 checks passed, including the pre-existing short-window Book correction",
+      "additional": "WebKit phone entry/save and cold offline entry/reload passed; required web-game client captured Book at $3000 after title exit"
     }
   }
 }

@@ -86,7 +86,8 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     const scene = { floor: 'lot', grid: { w: 24, h: 16 }, objects: STARTER_LAYOUT, crowd, serviceCrowd: {actors, totals: {audience: crowd}}, artistId: 'sodium-arcade', performing: t >= 8, night: true, lightTower: t >= 5, showGrid: false, t };
     renderer.draw(scene);
     renderer.openingPose?.(t);
-    if (!media.matches) renderer.setCamera?.({ yaw: 30 + Math.min(1, Math.max(0, (t - 3.8) / 2.2)) * 22, pitch: 43, zoom: t < 3.8 ? 1.65 : 1.65 - Math.min(1, (t - 3.8) / 2.2) * 0.65 });
+    const arc = Math.min(1, Math.max(0, (t - 3.8) / 2.2)), glide = arc * arc * (3 - 2 * arc);
+    if (!media.matches) renderer.setCamera?.({ yaw: 30 + glide * 22, pitch: 43, zoom: 1.65 - glide * 0.65 });
     const beat = t < 1.2 ? 0 : t < 3.8 ? 1 : t < 6 ? 2 : t < 8 ? 3 : t < 9 ? 4 : 5;
     if (beat !== last) {
       caption.textContent = ['An empty lot. A night to make.', 'Build the room.', 'Check the sound. Bring up the lights.', 'Open the gates.', 'This is your show.', ''][beat];
@@ -100,17 +101,17 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     timeline?.pause(); menu = true; time.value = 11; frame(true);
     root.dataset.state = 'menu';
     gsap.set(title, { opacity: 1 }); gsap.set(title.querySelectorAll('h1 span'), { y: 0, opacity: 1 });
-    gsap.set($('.opening-tape'), { opacity: 1 }); actions.hidden = false; caption.textContent = '';
+    gsap.set($('.opening-tape'), { opacity: 1 }); gsap.set(actions, { opacity: 1 }); actions.hidden = false; actions.inert = false; caption.textContent = '';
     $('[data-intro="skip"]').hidden = true;
     try { localStorage.setItem(SEEN, '1'); } catch { /* menu remains usable */ }
     if (focus) $('[data-intro="enter"]').focus();
     ambient?.kill();
-    if (!media.matches && renderer) ambient = gsap.to(time, { value: 1000, duration: 989, ease: 'none', onUpdate: () => frame() });
+    if (!media.matches && renderer) ambient = gsap.to(time, { value: 1000, duration: 989, repeat: -1, ease: 'none', onUpdate: () => frame() });
   }
   function play(full = true) {
     if (disposed || !ready) return;
     timeline?.kill(); ambient?.kill(); globalThis.speechSynthesis?.cancel();
-    menu = false; last = -1; actions.hidden = true; time.value = 0; $('[data-intro="skip"]').hidden = false;
+    menu = false; last = -1; actions.hidden = true; actions.inert = true; gsap.set(actions, { opacity: 0 }); time.value = 0; $('[data-intro="skip"]').hidden = false;
     root.dataset.state = 'playing';
     gsap.set(title, { opacity: 0 }); gsap.set(title.querySelectorAll('h1 span'), { y: 10, opacity: 0 }); gsap.set($('.opening-tape'), { opacity: 0 });
     if (media.matches || fallingBack) { finish(); return; }
@@ -124,6 +125,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     timeline.call(speakCheck, [], 4.1).call(() => soundCue('scan'), [], 6).call(() => soundCue('music'), [], 8);
     timeline.set(title, { opacity: 1 }, 9).to(title.querySelectorAll('h1 span'), { y: 0, opacity: 1, duration: 0.2, stagger: 0.24, ease: 'power3.out' }, 9);
     timeline.call(() => soundCue('case'), [], 9).call(() => soundCue('case'), [], 9.24).to($('.opening-tape'), { opacity: 1, duration: 0.3 }, 9.7);
+    timeline.call(() => { actions.hidden = false; }, [], 10.4).to(actions, { opacity: 1, duration: 0.6 }, 10.4);
     $('[data-intro="skip"]').focus(); frame(true);
   }
   function teardown() {
@@ -147,7 +149,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     e.stopPropagation(); // Title controls must never reach the game's global Build shortcuts.
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(); }
     if (e.key === 'Tab') {
-      const buttons = [...root.querySelectorAll('button')].filter(b => !b.hidden && !b.closest('[hidden]'));
+      const buttons = [...root.querySelectorAll('button')].filter(b => !b.hidden && !b.closest('[hidden], [inert]'));
       const first = buttons[0], end = buttons.at(-1);
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); end.focus(); }
       else if (!e.shiftKey && document.activeElement === end) { e.preventDefault(); first.focus(); }

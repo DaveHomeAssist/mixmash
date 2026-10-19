@@ -160,6 +160,7 @@ function loadState() {
 let hadOpeningSave = false;
 try { hadOpeningSave = !!store?.load(); } catch { /* blocked storage remains playable */ }
 let state = loadState();
+let openingActive = false;
 const ui = {
   tool: 'select', placeTool: 'stage', selection: null, dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
   mounted: null, play: null, raf: 0, sightKey: '', sight: { clear: new Set(), blocked: new Set() }, confirmNew: false,
@@ -1208,6 +1209,7 @@ function endPlayback() {
 }
 
 function loop() {
+  if (openingActive) { ui.raf = 0; return; }
   ui.raf = requestAnimationFrame(() => {
     const play = ui.play;
     if (!play) return;
@@ -3176,10 +3178,24 @@ layoutBoard();
 render();
 // Existing explicit renderer/QA routes remain direct game entries.
 if (!new URLSearchParams(location.search).has('renderer') && !new URLSearchParams(location.search).has('qa')) {
+  const resumeOpeningGame = () => {
+    openingActive = false;
+    render();
+    const play = ui.play;
+    if (play && (state.phase === 'show' || (play.after && !play.after.done))) {
+      const now = performance.now();
+      if (play.live) play.last = now;
+      else play.start = now - play.p * PLAY_SECONDS * 1000;
+      if (play.after && !play.after.done) play.after.start = now - (play.after.progress || 0) * AFTER_SECONDS * 1000;
+      if (!ui.raf) loop();
+    }
+    focusHeading();
+  };
   const showOpening = (replay = false) => {
+    openingActive = true;
     stopPlayback();
-    void createOpening({ replay, hasSave: hadOpeningSave || state.phase !== 'book' || state.history.length > 0, enter: () => { render(); el.menuBtn.focus(); },
-      newGame: () => { setMenu(true); $('#menu-new')?.focus(); el.menu.querySelector('[data-mode="career"]')?.focus(); },
+    void createOpening({ replay, hasSave: hadOpeningSave || state.phase !== 'book' || state.history.length > 0, enter: resumeOpeningGame,
+      newGame: () => { resumeOpeningGame(); setMenu(true); el.menu.querySelector('[data-mode="career"]')?.focus(); },
       theme: () => $('#theme-toggle').click(),
     });
   };
