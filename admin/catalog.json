@@ -4124,7 +4124,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit 78a16b5a458c8d1f5dd4bb40af4ef8698e96fbbf (source PR14).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit ae18805609a837cd6e5d9d99bdfa93555df0b924 (source PR16).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -4146,6 +4146,16 @@
       "title": "horseshoes-broadcast-smoke.mjs",
       "description": "Pavilion broadcast and skippable camera pass acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-broadcast-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/horseshoes-layout-security-smoke.mjs",
+      "project": "horseshoes",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "horseshoes-layout-security-smoke.mjs",
+      "description": "Regression: required control bounds, compact court navigation and document CSP.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-layout-security-smoke.mjs",
       "open": null
     },
     {
@@ -4199,23 +4209,23 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-BIqcnaFO.css",
+      "path": "horseshoes/assets/horseshoes-BCNGlPdW.css",
       "project": "horseshoes",
       "category": "build",
       "kind": "CSS",
       "title": "Horseshoes production CSS",
-      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BIqcnaFO); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BIqcnaFO.css",
+      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BCNGlPdW); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BCNGlPdW.css",
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-CJyCwu-H.js",
+      "path": "horseshoes/assets/horseshoes-D36k9iY7.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-CJyCwu-H); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-CJyCwu-H.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-D36k9iY7); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-D36k9iY7.js",
       "open": null
     },
     {
