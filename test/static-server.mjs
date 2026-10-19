@@ -112,3 +112,16 @@ export function trackPageFailures(page, origin, { ignore = [] } = {}) {
   });
   return failures;
 }
+
+/**
+ * Answers the Cloudflare Web Analytics beacon with an empty script and the RUM
+ * endpoint with 204, for smokes that collect every console error themselves.
+ * On localhost the real RUM POST fails CORS (Cloudflare only allows
+ * mixmash.games) and smokes must not depend on a third-party network.
+ * `target` is a Playwright page or browser context.
+ */
+export async function stubCloudflareAnalytics(target) {
+  await target.route(/^https:\/\/static\.cloudflareinsights\.com\//, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/javascript; charset=utf-8', body: '' }));
+  await target.route(/^https:\/\/cloudflareinsights\.com\//, (route) => route.fulfill({ status: 204, body: '' }));
+}
