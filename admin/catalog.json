@@ -741,6 +741,10 @@
           "description": "node src/hub/social.mjs"
         },
         {
+          "name": "npm run hub:og",
+          "description": "node src/hub/og-games.mjs"
+        },
+        {
           "name": "npm run smoke:front-of-house-pa",
           "description": "node test/front-of-house-pa-smoke.mjs"
         },
@@ -983,7 +987,7 @@
       "project": "mars",
       "category": "surface",
       "kind": "HTML",
-      "title": "MarsScape",
+      "title": "MarsScape: Colony Survival on Mars | MixMash Studio",
       "description": "MarsScape is an authoritative browser colony skiller about gathering, crafting, building, and surviving on Mars.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/index.html",
       "open": "/mars/"
@@ -4949,6 +4953,16 @@
       "open": null
     },
     {
+      "path": "docs/REVENUE_SETUP.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Revenue setup — mixmash.games",
+      "description": "All revenue hooks ship off. Nothing below loads, renders or reserves space until Dave supplies the value. Each switch lives in src/hub/monetization.mjs; after editing it run npm run hub:build, then npm test and npm run…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/REVENUE_SETUP.md",
+      "open": null
+    },
+    {
       "path": "README.md",
       "project": "studio",
       "category": "docs",
@@ -5089,6 +5103,66 @@
       "open": "/assets/og-card.png"
     },
     {
+      "path": "assets/og/empires.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "empires.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for empires, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/empires.jpg",
+      "open": "/assets/og/empires.jpg"
+    },
+    {
+      "path": "assets/og/front-of-house.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "front-of-house.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for front-of-house, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/front-of-house.jpg",
+      "open": "/assets/og/front-of-house.jpg"
+    },
+    {
+      "path": "assets/og/garden.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "garden.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for garden, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/garden.jpg",
+      "open": "/assets/og/garden.jpg"
+    },
+    {
+      "path": "assets/og/mars.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mars.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for mars, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/mars.jpg",
+      "open": "/assets/og/mars.jpg"
+    },
+    {
+      "path": "assets/og/mixmash.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "mixmash.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for mixmash, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/mixmash.jpg",
+      "open": "/assets/og/mixmash.jpg"
+    },
+    {
+      "path": "assets/og/pitch.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "pitch.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for pitch, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/pitch.jpg",
+      "open": "/assets/og/pitch.jpg"
+    },
+    {
       "path": "favicon.svg",
       "project": "studio",
       "category": "art",
@@ -5139,6 +5213,16 @@
       "open": null
     },
     {
+      "path": "test/hub-discoverability.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-discoverability.test.mjs",
+      "description": "Search/share metadata, sitemap, structured data, share controls and disabled revenue slots.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-discoverability.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/hub-offline-smoke.mjs",
       "project": "studio",
       "category": "tests",
@@ -5156,6 +5240,16 @@
       "title": "hub-resume-smoke.mjs",
       "description": "Hub \"pick up where you left off\": Continue tag, expiry, Pick for me exclusion, route markers, Garden mute memory.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-resume-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/hub-share-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-share-smoke.mjs",
+      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; revenue slots stay absent.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-share-smoke.mjs",
       "open": null
     },
     {
@@ -5326,6 +5420,36 @@
       "title": "catalog.mjs",
       "description": "Public browser-game catalog. Claims are supported by docs/HOMEPAGE_EVIDENCE.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/catalog.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/monetization.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "monetization.mjs",
+      "description": "Revenue switches for the static homepage. Everything here ships OFF.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/monetization.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/og-games.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "og-games.mjs",
+      "description": "Build one 1200x630 share card per game from its live gameplay preview and catalog copy. Uses assets/previews (real captures), not assets/covers, whose key art carries its own title panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/og-games.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/seo.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "seo.mjs",
+      "description": "Search and share metadata derived from the public catalog. No claim here is new: names, genres and descriptions come from catalog.mjs (backed by docs/HOMEPAGE_EVIDENCE.md).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/seo.mjs",
       "open": null
     },
     {

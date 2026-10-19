@@ -157,6 +157,29 @@ picker.addEventListener('click', () => {
   announcement.textContent = `Picked ${selected.querySelector('h3').textContent}. Review its details, then choose Play.`;
   location.hash = `game-${previousPick}`;
 });
+// Share: the native share sheet where the browser has one, otherwise copy the link. Buttons stay
+// hidden without JavaScript, so a no-script visit never shows a control that cannot work.
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch { /* Fall back below. */ }
+  const field = document.createElement('textarea');
+  field.value = text; field.setAttribute('readonly', ''); field.style.position = 'fixed'; field.style.opacity = '0';
+  document.body.append(field); field.select();
+  let copied = false; try { copied = document.execCommand('copy'); } catch { copied = false; }
+  field.remove(); return copied;
+}
+async function share(button) {
+  const { shareUrl: url, shareTitle: title, shareText: text } = button.dataset;
+  if (typeof navigator.share === 'function') {
+    try { await navigator.share({ title, text, url }); return; } catch (error) { if (error?.name === 'AbortError') return; }
+  }
+  const copied = await copyText(url);
+  button.dataset.shared = copied ? 'copied' : 'failed';
+  announcement.textContent = copied ? `Link copied: ${url}` : `Copy this link: ${url}`;
+  const label = button.textContent;
+  button.textContent = copied ? 'Link copied' : 'Copy failed';
+  setTimeout(() => { button.textContent = label; }, 2000);
+}
+for (const button of document.querySelectorAll('.share-button')) { button.hidden = false; button.addEventListener('click', () => share(button)); }
 for (const image of document.images) {
   image.addEventListener('error', () => image.classList.add('image-failed'));
   if (image.complete && !image.naturalWidth) image.classList.add('image-failed');

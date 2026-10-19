@@ -2,6 +2,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { playableGames, studio } from './catalog.mjs';
+import { monetization, supportBlock, supportFooterLink, adHead, adBlock } from './monetization.mjs';
+import { structuredData, SITE } from './seo.mjs';
 const root = new URL('../../', import.meta.url);
 const escape = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const picture = (game, eager = false) => `<img src="/assets/previews/${escape(game.image)}" width="1000" height="650" alt="${escape(game.alt)}" decoding="async"${eager ? ' fetchpriority="high"' : ' loading="lazy"'}>`;
@@ -16,13 +18,13 @@ const details = playableGames.map(g => `
 <section class="view detail-view ${g.accent}" id="game-${g.id}" aria-labelledby="heading-${g.id}" data-game-detail="${g.id}">
   <div class="detail-top"><a class="button back-link" href="#games">← Back to games</a><span class="game-status">${escape(g.status)}</span></div>
   <div class="detail-body" data-web2-scroll><div class="detail-copy" role="region" aria-label="${escape(g.name)} details" tabindex="0" data-web2-scroll><p class="eyebrow">${escape(g.genre)}</p><h2 id="heading-${g.id}" tabindex="-1">${escape(g.name)}</h2><p class="detail-hook">${escape(g.hook)}</p><p>${escape(g.description)}</p>
-    <div class="detail-actions"><a class="button primary" href="${g.route}" aria-label="${escape(g.action)}: ${escape(g.name)}">${escape(g.action)} <span aria-hidden="true">→</span></a><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
+    <div class="detail-actions"><a class="button primary" href="${g.route}" aria-label="${escape(g.action)}: ${escape(g.name)}">${escape(g.action)} <span aria-hidden="true">→</span></a><button class="button share-button" type="button" aria-label="Share ${escape(g.name)}" data-share-url="${SITE}${g.route}" data-share-title="${escape(g.name)}" data-share-text="${escape(`${g.name}: ${g.hook}`)}" hidden>Share</button><a class="button" href="https://github.com/DaveHomeAssist/mixmash/issues/new">Send feedback <span class="sr-only"> (external GitHub site, account required)</span><span aria-hidden="true">↗</span></a></div>
     <dl><div><dt>Players</dt><dd>${escape(g.players)}</dd></div><div><dt>Controls</dt><dd>${escape(g.controls)}</dd></div></dl><h3>Saving progress</h3><p>${escape(g.saving)}</p><div class="related-links">${g.related.map(link => `<a href="${escape(link.href)}">${escape(link.title)} ↗</a>`).join('')}</div></div>
     <div class="detail-art">${cover(g)}<span class="detail-stamp" aria-hidden="true">ADMIT ONE<br>FREE TO PLAY</span></div>
   </div>
 </section>`).join('\n');
 let html = await readFile(new URL('template.html', import.meta.url), 'utf8');
-for (const [key, value] of Object.entries({ TITLE: escape(studio.title), DESCRIPTION: escape(studio.description), INTRO: escape(studio.intro), COUNT: playableGames.length, NOTE: escape(studio.note), CARDS: cards, DETAILS: details })) html = html.replaceAll(`{{${key}}}`, String(value));
+for (const [key, value] of Object.entries({ TITLE: escape(studio.title), DESCRIPTION: escape(studio.description), INTRO: escape(studio.intro), COUNT: playableGames.length, NOTE: escape(studio.note), CARDS: cards, DETAILS: details, OG_ALT: escape(`MixMash Studio: ${playableGames.map(g => g.name).join(', ')}. Free browser games.`), SHARE_TEXT: escape(studio.intro), JSONLD: structuredData(), AD_HEAD: adHead(monetization) ? '\n' + adHead(monetization) : '', SUPPORT: supportBlock(monetization), AD: adBlock(monetization), SUPPORT_FOOTER: supportFooterLink(monetization) })) html = html.replaceAll(`{{${key}}}`, String(value));
 if (html.includes('{{')) throw new Error('Unresolved homepage template marker');
 const destination = new URL('index.html', root);
 if (process.argv.includes('--check')) {
