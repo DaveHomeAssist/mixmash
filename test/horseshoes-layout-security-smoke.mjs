@@ -67,12 +67,20 @@ async function bounds(page, selector) {
       }
       if (compact) {
         await press('#settings-tab');
+        await page.locator('.menu-footer nav a').first().focus();
         const before = await page.evaluate(() => __horseshoes.getState().match);
         await page.setViewportSize({ width: 844, height: 390 });
         assert.ok(await page.locator('#game-menu').evaluate(el => el.open), 'resize must keep the game paused');
         assert.deepEqual(await page.evaluate(() => __horseshoes.getState().match), before);
+        assert.equal(await page.evaluate(() => document.activeElement.id), 'menu-resume');
         await page.keyboard.press('Escape');
         assert.equal(await page.locator('header nav a').count(), 2);
+        await page.locator('header nav a').first().focus();
+        await page.setViewportSize({ width, height });
+        await page.waitForFunction(() => document.activeElement.id === 'settings-tab');
+        await page.locator('#settings-tab').press('Enter');
+        assert.ok(await page.locator('#game-menu').evaluate(el => el.open));
+        await page.keyboard.press('Escape');
       }
       assert.deepEqual(await page.evaluate(() => policyViolations), [], 'normal gameplay must not violate CSP');
       assert.deepEqual(errors, []);

@@ -1,6 +1,6 @@
 # Backyard Horseshoes — Phase 3 prototype
 
-Built from DaveHomeAssist/curling-simulator commit `ae18805609a837cd6e5d9d99bdfa93555df0b924` ([source PR16](https://github.com/DaveHomeAssist/curling-simulator/pull/16)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
+Built from DaveHomeAssist/curling-simulator commit `4d09e2fe4107b479444584bbd01acca688fa8593` ([source PR16](https://github.com/DaveHomeAssist/curling-simulator/pull/16)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
 
 ## Play
 
@@ -65,4 +65,4 @@ by this maintenance work. Exact candidate verification is recorded in the source
 release document and release PR; physical-device and human acceptance remain
 separate.
 
-The source toolchain uses Vite7.3.7 and Vitest4.1.12 with patched transitive dependencies. The October18 repair audit reports zero known vulnerabilities for both the full lockfile and runtime-only dependencies; all80 source tests and480 Mixmash unit tests pass. Runtime Three.js and Rapier versions are unchanged.
+The source toolchain uses Vite7.3.7 and Vitest4.1.12 with patched transitive dependencies. The October18 repair audit reports zero known vulnerabilities for both the full lockfile and runtime-only dependencies; all80 source tests and487 integrated Mixmash unit tests pass. Runtime Three.js and Rapier versions are unchanged.
