@@ -132,3 +132,11 @@ Outcome: pending. This checklist prepares review; it grants no human, physical-d
 | Later version boundary | `d8a51cc4b9aba9400ce4c6bf7b6defb96b5bf3e2` integrated the 0.3.0 base into artwork with version 0.3.1/cache v79; it is not the 0.3.0 tag target. |
 
 The provider records establish which merge was deployed. They do not recreate historical live browser behavior, prove an original hosted byte comparison, or supply human/device acceptance. No new browser campaign ran. A future tag-repair action must recheck remote absence and use the exact target above under the existing release policy; this provenance-only pass does not create, move or delete a tag. PR176's documentation delivery remains subject to final-head CI, merge and Pages verification; the unavailable CI runner route is a separate blocker.
+
+## 6. Conditional early-access decision — 2026-10-19
+
+[CT-DEC-37](DECISIONS.md#ct-dec-37-conditional-early-access-and-retained-single-player-replay) records Dave's global D9 approval. KI-01 and KI-14 are accepted known limitations, not evidence that a retune or supported-device qualification passed. KI-02 and KI-03 wait for the manual playtest. Seeded replay is allowed; additional Suggested Festival gates are an accepted, separately verifiable layout change.
+
+**Launch remains conditional.** Preserve the desktop and real-phone Book-to-Done playtest with midway reload, recorded phone/browser, Club/Amphitheater/Festival career review and dated visual sign-off; preserve source/licence evidence for the legacy images and 3D archive. The consolidated source places these as the first two FOH money-gate entries after six time-sensitive entries, but restarts visible numbering. Resolve the exact original "items 7-8" reference before promotion; do not treat this contextual correspondence as completed acceptance. No indexing, public outreach or full-launch change is made here.
+
+The completed PR176 documentation delivery is not reopened. Open PR177's runtime and overlapping acceptance records remain under their existing owner. This decision/manual slice does not validate, approve or duplicate that PR's conditional QA014 repair.
