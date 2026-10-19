@@ -174,7 +174,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     fallingBack = true; renderer?.destroy();
     const replacement = canvas.cloneNode(); canvas.replaceWith(replacement); canvas = replacement;
     const { createBoard } = await import('./board.js');
-    if (!disposed) { renderer = createBoard(canvas); finish({ focus: false }); }
+    if (!disposed) { renderer = createBoard(canvas); renderer.resize(); finish({ focus: false }); }
   }
   try {
     const { createLotRenderer } = await import('./lot-renderer.mjs');

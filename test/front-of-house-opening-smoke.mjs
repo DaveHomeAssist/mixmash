@@ -125,6 +125,13 @@ try {
     }
     await page.waitForSelector('.opening-actions:not([hidden])');
     if (scenario === 'context-loss') await page.locator('.opening-board').evaluate(canvas => canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context')?.loseContext());
+    if (['no-webgl', 'context-loss'].includes(scenario)) {
+      await page.waitForFunction(() => {
+        const canvas = document.querySelector('.opening-board');
+        const ctx = canvas?.getContext('2d');
+        return ctx && canvas.width >= innerWidth && canvas.height >= innerHeight && ctx.getImageData(0, 0, canvas.width, canvas.height).data.some((value, i) => i % 4 === 3 && value > 0);
+      });
+    }
     await page.locator('.opening [data-intro="enter"]').click();
     await page.waitForSelector('.opening', {state:'detached'});
     assert.equal(await page.locator('#menu-btn').isEnabled(),true);

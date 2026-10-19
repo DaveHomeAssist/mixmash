@@ -8,7 +8,7 @@
   "head": "0.4.0 opening sequence in verification",
   "lastActivity": "2026-10-19",
   "status": "amber",
-  "statusReason": "Approved opening sequence is implemented in an isolated presentation scene. Browser, CI and hosted delivery gates are recorded separately; existing project findings and human/device acceptance remain open.",
+  "statusReason": "Opening implemented and verified on Dominic: 493 repository tests, 29 player smoke checks, 13 opening scenarios, WebKit phone and cold offline entry. Final CI, merge and live release remain pending; human/device/audio acceptance remains open.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
