@@ -58,6 +58,37 @@ test('Start over from a later room begins the new career on the Lot, and locked 
   assert.match(E.applyAction(forced, { type: 'chooseDeal', artistId: E.offersFor(forced)[0], deal: 'door' }).error, /locked/);
 });
 
+test('FOH-QA-014: an edited save in a locked room before doors opens on the Lot Book screen and keeps the layout', () => {
+  const clubLayout = D.VENUES.club.starter.filter((o) => o.type !== 'lights');
+  let s = E.createGame(11); s.unlocks.club = true; s.cash = 20000;
+  s = act(s, { type: 'chooseVenue', venueId: 'club' });
+  s = act(s, { type: 'chooseDeal', artistId: E.offersFor(s)[0], deal: 'guarantee', roomPolicy: 1 });
+  s = act(act(s, { type: 'setLayout', objects: clubLayout }), { type: 'confirmBuild' });
+  for (const phase of ['book', 'build', 'promote']) {
+    const edited = clone(s); edited.phase = phase; edited.unlocks.club = false;
+    assert.equal(E.lockedRoomBeforeDoors(edited), 'club');
+    const loaded = reload(edited);
+    assert.equal(loaded.venue.id, 'lot');
+    assert.equal(loaded.phase, 'book');
+    assert.equal(loaded.booking.deal, null);
+    assert.equal(loaded.cash, edited.cash, 'nothing is paid or refunded');
+    assert.deepEqual(loaded.layouts.club, clubLayout, 'the Fathom Hall layout is kept for later');
+    assert.deepEqual(loaded.booking.artistId, E.offersFor(loaded)[0]);
+    assert.deepEqual(reload(loaded), loaded, 'a second reload changes nothing');
+    const booked = act(loaded, { type: 'chooseDeal', artistId: E.offersFor(loaded)[0], deal: 'door' });
+    assert.equal(booked.phase, 'build');
+  }
+  // Unlocked rooms, sandbox careers and paid nights load where they were.
+  assert.equal(E.lockedRoomBeforeDoors(s), null);
+  assert.deepEqual(reload(s), s);
+  const sandbox = clone(s); sandbox.unlocks.club = false; sandbox.mode = 'sandbox';
+  assert.equal(E.lockedRoomBeforeDoors(sandbox), null);
+  const opened = act(s, { type: 'confirmPromotion' }); const paid = clone(opened); paid.unlocks.club = false;
+  assert.equal(E.lockedRoomBeforeDoors(paid), null);
+  assert.equal(reload(paid).venue.id, 'club');
+  assert.equal(reload(paid).phase, 'show');
+});
+
 test('a PA left behind by a removed stage is still there after a reload', () => {
   let s = E.createGame(3);
   s = act(act(s, { type: 'chooseDeal', artistId: E.offersFor(s)[0], deal: 'door' }), { type: 'setLayout', objects: D.STARTER_LAYOUT });

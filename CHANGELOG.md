@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House 0.3.10: a save that sits in a room its career has not unlocked, before the doors open (only possible from edited save data), now loads at Oak St. Lot on the Book screen instead of a Build or Promote screen that refuses to book or open doors. The room's layout is kept for later, nothing is paid or refunded, and importing such a code says so (FOH-QA-014). Rules, balance and save schema 2 are unchanged. Cache v88.
+
 - Front of House 0.3.9: on a 375px phone the paused Show header no longer overflows its plate. The clock's line box was 1em tall with no plate padding, so the font's own ascent and descent (about 1.32em in JetBrains Mono) spilled 2 px past it; the phone clock now uses a 1.4 line height, and an incident choice's cost ("$125 · not enough cash") is set smaller so its row stays on one line, which more than pays for the taller header in the wet-lot rain sheet. CSS only; rules, strings, balance and save schema 2 are unchanged. Cache v87.
 
 - Front of House 0.3.8: below the 1024 × 700 no-scroll gate (150% and 200% browser zoom), Promote's action row stays pinned to the bottom of the sheet and Book lists the acts first with each deal button under the act's name, so **Open doors** and the deals are on screen without scrolling the sheet (FOH-QA-012). CSS only; rules, balance and save schema 2 are unchanged. Cache v86.

@@ -1722,8 +1722,25 @@ function migrateV1toV2(raw) {
   return over.error ? state : over.state;
 }
 
+// FOH-QA-014: a room the save has not unlocked, before doors (nothing is paid yet). Only edited
+// data reaches this, since Start over and chooseVenue never leave a career in a locked room.
+export function lockedRoomBeforeDoors(raw) {
+  if (!isObj(raw) || !isObj(raw.venue) || !own(D.VENUES, raw.venue.id) || raw.venue.id === 'lot') return null;
+  if (raw.mode === 'sandbox' || (isObj(raw.unlocks) && raw.unlocks[raw.venue.id] === true)) return null;
+  return ['show', 'settle', 'done'].includes(raw.phase) ? null : raw.venue.id;
+}
+
 export function normalizeState(raw, fallbackSeed = 1) {
   if (!isObj(raw) || raw.schema !== D.SCHEMA_VERSION) return createGame(fallbackSeed);
+  // Such a career is moved to the Lot's Book screen, as Start over does: the room's layout is
+  // kept for later and its unpaid booking and promotion are dropped.
+  const lockedRoom = lockedRoomBeforeDoors(raw);
+  if (lockedRoom) {
+    const layouts = isObj(raw.layouts) ? { ...raw.layouts } : {};
+    if (Array.isArray(raw.venue.objects)) layouts[lockedRoom] = raw.venue.objects;
+    raw = { ...raw, venue: { id: 'lot', objects: Array.isArray(layouts.lot) ? layouts.lot : [] }, layouts,
+      booking: {}, promotion: {}, show: null, phase: 'book' };
+  }
   const s = createGame(isInt(raw.seed) && raw.seed >= 0 && raw.seed <= 0xffffffff ? raw.seed : fallbackSeed);
 
   s.cash = clamp(intOr(raw.cash, D.START_CASH), -1e9, 1e9);
@@ -2012,6 +2029,10 @@ export function normalizeState(raw, fallbackSeed = 1) {
   if (i < PHASES.indexOf('show')) {
     s.show = null;
     s.promotion.confirmed = false;
+  }
+  if (lockedRoom) {
+    s.booking.artistId = offersFor(s)[0];
+    s.promotion.price = artistFor(s.booking.artistId).fairPrice;
   }
   return s;
 }
