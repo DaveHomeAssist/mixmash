@@ -1,6 +1,6 @@
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, stat } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -102,6 +102,31 @@ test('local Mars server serves the shared game shell with executable MIME types'
   const manifest = await fetch(`http://127.0.0.1:${port}/manifest.webmanifest`);
   assert.equal(manifest.status, 200);
   assert.match(manifest.headers.get('content-type') || '', /^application\/manifest\+json/);
+
+  // Every repo-root /assets script mars/index.html includes must come back as JavaScript,
+  // not the index.html fallback (the browser refuses text/html scripts).
+  const page = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+  const sharedScripts = [...page.matchAll(/<script[^>]+src="(\/assets\/[^"]+)"/g)].map((match) => match[1]);
+  assert.ok(sharedScripts.includes('/assets/last-game.js'));
+  assert.ok(sharedScripts.includes('/assets/analytics.js'));
+  for (const src of sharedScripts) {
+    const response = await fetch(`http://127.0.0.1:${port}${src}`);
+    assert.equal(response.status, 200, src);
+    assert.match(response.headers.get('content-type') || '', /^text\/javascript/, src);
+    assert.equal(await response.text(), await readFile(new URL(`..${src}`, import.meta.url), 'utf8'), src);
+  }
+
+  // The allowlist stays narrow: other repo-root files are not exposed.
+  const rootFile = await fetch(`http://127.0.0.1:${port}/admin/catalog.json`);
+  assert.match(rootFile.headers.get('content-type') || '', /^text\/html/);
+
+  // The server's CSP header must not block the analytics beacon the page's meta CSP allows.
+  const shell = await fetch(`http://127.0.0.1:${port}/mars/`);
+  const csp = shell.headers.get('content-security-policy') || '';
+  assert.match(csp, /script-src [^;]*https:\/\/static\.cloudflareinsights\.com/);
+  assert.match(csp, /connect-src [^;]*https:\/\/cloudflareinsights\.com/);
+  assert.match(page, /script-src [^;]*https:\/\/static\.cloudflareinsights\.com/);
+  assert.match(page, /connect-src [^;]*https:\/\/cloudflareinsights\.com/);
 });
 
 async function assertRejects(fn, pattern) {
