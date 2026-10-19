@@ -5203,6 +5203,16 @@
       "open": null
     },
     {
+      "path": "test/garden-embed-focus-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "garden-embed-focus-smoke.mjs",
+      "description": "Garden wrapper: Fullscreen and Mute hand keyboard focus back to the game iframe, and Space/Enter never toggle the strip buttons.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/garden-embed-focus-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/hub-catalog.test.mjs",
       "project": "studio",
       "category": "tests",
