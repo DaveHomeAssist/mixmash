@@ -1139,3 +1139,7 @@ Final input/lifecycle review added immediate loading-state Skip focus, isolation
 
 
 Final local candidate passed all13 opening scenarios (including real saved Build undo isolation, saved Show resume/time exclusion and saved settlement focus), WebKit phone/save, cold offline entry/reload and the required web-game client. The player rail passed all29 checks after the bounded Book correction. Renderer-specific source/unit checks and source asset manifest pass; required final-head CI and hosted release proof remain pending. The silent engineering preview is a browser capture, not an audio or physical-device acceptance claim.
+
+### 2026-10-19 — Opening sound and reduced motion audit
+
+Distinct source-generated latch/switch, equipment wheels/clamps/cables, scanner, footsteps, crowd swell, downbeat and menu tones now follow the authored beats. Skip fades transient effects into the menu bed; mute and teardown suspend/close the owned context. Reduced motion uses a static venue and short opacity reveal. Dominic opening rail passes with measured nonzero audio output, mute and context cleanup, plus save isolation and renderer-fallback checks. Final hosted CI and live delivery remain pending; human listening and physical-device acceptance remain open.

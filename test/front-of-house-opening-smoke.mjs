@@ -42,6 +42,21 @@ try {
   }
   // Full duration and replay; every skip beat is exercised without altering career state.
   const context = await browser.newContext({ viewport: {width:1440,height:900}, serviceWorkers:'block' });
+  await context.addInitScript(() => {
+    const connect = AudioNode.prototype.connect, meters = new WeakMap();
+    window.__openingAudioMeters = [];
+    AudioNode.prototype.connect = function(destination, ...args) {
+      if (destination === this.context.destination) {
+        let meter = meters.get(this.context);
+        if (!meter) {
+          meter = this.context.createAnalyser(); meter.fftSize = 2048;
+          connect.call(meter, destination); meters.set(this.context, meter); window.__openingAudioMeters.push(meter);
+        }
+        return connect.call(this, meter, ...args);
+      }
+      return connect.call(this, destination, ...args);
+    };
+  });
   const page = await context.newPage(); const errors = trackPageFailures(page, new URL(url).origin);
   await page.goto(url); await page.waitForSelector('.opening');
   await page.waitForSelector('.opening-actions:not([hidden])', {timeout:30000});
@@ -53,6 +68,10 @@ try {
   }
   await page.locator('.opening [data-intro="sound"]').click();
   await page.waitForFunction(() => __mixmashNav.audioContexts.some(c => c.state === 'running'));
+  await page.waitForFunction(() => __openingAudioMeters.some(meter => {
+    const samples = new Float32Array(meter.fftSize); meter.getFloatTimeDomainData(samples);
+    return samples.some(value => Math.abs(value) > 0.0001);
+  }));
   await page.locator('.opening [data-intro="sound"]').click();
   await page.waitForFunction(() => __mixmashNav.isMuted() && __mixmashNav.audioContexts.every(c => c.state !== 'running'));
   await page.locator('.opening [data-intro="sound"]').click();
@@ -61,8 +80,9 @@ try {
   await page.keyboard.press('Escape'); await page.locator('.opening [data-intro="theme"]').click();
   await page.screenshot({path:`${output}/menu-dark.png`});
   await page.locator('.opening [data-intro="enter"]').click();
+  await page.waitForFunction(() => __mixmashNav.audioContexts.every(c => c.state === 'closed'));
   assert.deepEqual(errors, []); await context.close();
-  results.push({fullSequence:true,skipBeats:6,soundGesture:true});
+  results.push({fullSequence:true,skipBeats:6,soundGesture:true,audibleWaveform:true,audioDisposed:true});
   {
     const context = await browser.newContext({reducedMotion:'reduce',serviceWorkers:'block'}), page = await context.newPage();
     await page.goto(url); await page.waitForSelector('.opening-actions:not([hidden])');

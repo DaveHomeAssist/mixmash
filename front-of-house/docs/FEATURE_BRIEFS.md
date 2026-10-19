@@ -1021,7 +1021,7 @@ Approved outcome: an 11 second empty-lot-to-show sequence with mechanical equipm
 
 Flow: ready scene → full first-visit intro (brief on return) → Continue when a save exists, otherwise New game. Replay and Skip are immediate keyboard/touch controls. New game preserves the existing confirmation flow for an existing career.
 
-Scope: independent presentation scene with existing Lot geometry, synthesized production percussion/ambience and music, responsive title controls, mute/theme controls, reduced-motion static reveal, graceful classic fallback, cleanup on entry to game. The soundcheck uses browser speech when available; the visual sequence is complete without it.
+Scope: independent presentation scene with existing Lot geometry, synthesized latch/switch, rolling equipment, clamps/cables, scanner and footstep cues, rising crowd texture, downbeat and a quiet tonal menu loop, responsive title controls, mute/theme controls, reduced-motion static reveal, graceful classic fallback, cleanup on entry to game. The soundcheck uses browser speech when available; the visual sequence is complete without it.
 
 Rules/data/save: no engine actions or schema changes from presentation. Only an intro-seen device preference is written. Retain existing saved game and external-tab synchronization.
 Dependencies: vendored pinned GSAP core, existing Three renderer and models; no third-party runtime request. ECP-1.0 revision 1.0 applies: existing FOH equipment IDs, dimensions, material ownership and gameplay effects remain owned by the current adapter; no producer changes or physical compatibility claims.

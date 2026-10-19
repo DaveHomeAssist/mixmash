@@ -32,21 +32,52 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   }
   // Keep the authored eleven-second clock even on software WebGL startup frames.
   gsap.ticker.lagSmoothing(0);
-  let renderer, timeline, ambient, audio, music, bed, disposed = false, ready = false, menu = false, last = -1, seen = false, soundEnabled = false;
-  let time = { value: 0 }, lastDraw = 0;
+  let renderer, timeline, reducedReveal, ambient, audio, music, bed, disposed = false, ready = false, menu = false, last = -1, seen = false, soundEnabled = false;
+  let time = { value: 0 }, lastDraw = 0, noise, effects, outdoorGain, crowdGain, musicStep = 0;
   try { seen = localStorage.getItem(SEEN) === '1'; } catch { /* storage is optional */ }
   const muted = () => globalThis.__mixmashNav?.isMuted() ?? false;
   function syncSound() { $('[data-intro="sound"]').textContent = muted() ? 'Sound muted' : soundEnabled ? 'Mute sound' : 'Enable sound'; }
   function soundCue(kind) {
     if (!audio || audio.state !== 'running' || muted() || !soundEnabled) return;
     const now = audio.currentTime;
-    const oscillator = audio.createOscillator(), gain = audio.createGain();
-    oscillator.type = kind === 'music' ? 'sine' : 'triangle';
-    oscillator.frequency.setValueAtTime(kind === 'music' ? 55 : kind === 'scan' ? 880 : 130, now);
-    oscillator.frequency.exponentialRampToValueAtTime(kind === 'scan' ? 660 : 38, now + 0.16);
-    gain.gain.setValueAtTime(kind === 'music' ? 0.08 : 0.035, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
-    oscillator.connect(gain).connect(audio.destination); oscillator.start(now); oscillator.stop(now + 0.3);
-    oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+    function tone(frequency, end, duration, level, type = 'sine', delay = 0) {
+      const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + delay;
+      oscillator.type = type; oscillator.frequency.setValueAtTime(frequency, start);
+      oscillator.frequency.exponentialRampToValueAtTime(end, start + duration);
+      gain.gain.setValueAtTime(0.0001, start); gain.gain.exponentialRampToValueAtTime(level, start + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(gain).connect(kind === 'music' ? audio.destination : effects);
+      oscillator.start(start); oscillator.stop(start + duration + 0.02);
+      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+    }
+    function texture(frequency, duration, level, type = 'bandpass') {
+      const source = audio.createBufferSource(), filter = audio.createBiquadFilter(), gain = audio.createGain();
+      source.buffer = noise; filter.type = type; filter.frequency.value = frequency; filter.Q.value = 0.7;
+      gain.gain.setValueAtTime(0.0001, now); gain.gain.exponentialRampToValueAtTime(level, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      source.connect(filter).connect(gain).connect(effects); source.start(now); source.stop(now + duration + 0.02);
+      source.onended = () => { source.disconnect(); filter.disconnect(); gain.disconnect(); };
+    }
+    if (kind === 'latch') { tone(1250, 460, 0.07, 0.025, 'triangle'); tone(720, 180, 0.1, 0.02, 'triangle', 0.06); }
+    else if (kind === 'switch') texture(2200, 0.045, 0.035, 'highpass');
+    else if (kind === 'wheel') texture(260, 0.22, 0.06, 'lowpass');
+    else if (kind === 'clamp') { tone(1800, 650, 0.055, 0.02, 'triangle'); tone(520, 90, 0.08, 0.025, 'triangle', 0.04); }
+    else if (kind === 'cable') { texture(2400, 0.06, 0.025); tone(280, 70, 0.065, 0.02); }
+    else if (kind === 'scan') { tone(880, 880, 0.08, 0.02); tone(1174, 1174, 0.1, 0.015, 'sine', 0.09); }
+    else if (kind === 'step') { texture(480, 0.11, 0.025, 'lowpass'); tone(95, 45, 0.08, 0.015); }
+    else if (kind === 'cheer') texture(720, 0.9, 0.08);
+    else if (kind === 'low-note') tone(55, 55, 2.1, 0.035);
+    else if (kind === 'downbeat') { tone(130, 40, 0.35, 0.1); tone(55, 55, 0.8, 0.045); }
+    else if (kind === 'music') {
+      const note = [55, 65.406, 73.416, 65.406][musicStep++ % 4];
+      tone(note, note, 0.85, 0.035); tone(note * 2, note * 2, 0.65, 0.008);
+    } else { tone(130, 38, 0.2, 0.045, 'triangle'); texture(180, 0.12, 0.025, 'lowpass'); }
+  }
+  function mixAtmosphere() {
+    if (!audio || !outdoorGain) return;
+    const t = time.value, gathering = Math.max(0, Math.min(1, (t - 6) / 2));
+    outdoorGain.gain.setTargetAtTime(0.008 - gathering * 0.005, audio.currentTime, 0.1);
+    crowdGain.gain.setTargetAtTime(menu ? 0.012 : gathering * 0.025, audio.currentTime, 0.18);
   }
   function speakCheck() {
     if (!soundEnabled || muted() || !globalThis.speechSynthesis || !globalThis.SpeechSynthesisUtterance) return;
@@ -61,19 +92,26 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
       audio ||= new (globalThis.AudioContext || globalThis.webkitAudioContext)();
       await audio.resume(); soundEnabled = true;
       if (!bed) {
-        const buffer = audio.createBuffer(1, audio.sampleRate * 2, audio.sampleRate), data = buffer.getChannelData(0);
-        for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.025;
-        bed = audio.createBufferSource(); bed.buffer = buffer; bed.loop = true;
-        const filter = audio.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 900;
-        bed.connect(filter).connect(audio.destination); bed.start();
+        noise = audio.createBuffer(1, audio.sampleRate * 2, audio.sampleRate);
+        const data = noise.getChannelData(0);
+        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+        effects = audio.createGain(); effects.connect(audio.destination);
+        bed = audio.createBufferSource(); bed.buffer = noise; bed.loop = true;
+        const outdoor = audio.createBiquadFilter(), crowd = audio.createBiquadFilter();
+        outdoor.type = 'lowpass'; outdoor.frequency.value = 900;
+        crowd.type = 'bandpass'; crowd.frequency.value = 650; crowd.Q.value = 0.7;
+        outdoorGain = audio.createGain(); crowdGain = audio.createGain();
+        outdoorGain.gain.value = 0; crowdGain.gain.value = 0;
+        bed.connect(outdoor).connect(outdoorGain).connect(audio.destination);
+        bed.connect(crowd).connect(crowdGain).connect(audio.destination); bed.start();
       }
       if (!music) music = setInterval(() => { if (!document.hidden && menu) soundCue('music'); }, 650);
     } catch { soundEnabled = false; }
-    syncSound();
+    mixAtmosphere(); syncSound();
   }
   function frame(force = false) {
     if (!renderer || disposed || document.hidden) return;
-    const t = time.value;
+    const t = time.value; mixAtmosphere();
     root.dataset.seconds = String(Math.min(11, t).toFixed(2));
     if (!force && performance.now() - lastDraw < (menu ? 125 : 40)) return;
     lastDraw = performance.now();
@@ -98,7 +136,8 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     if (disposed) return;
     ready = true;
     globalThis.speechSynthesis?.cancel();
-    timeline?.pause(); menu = true; time.value = 11; frame(true);
+    reducedReveal?.kill(); timeline?.pause(); menu = true; time.value = 11; frame(true);
+    effects?.gain.setTargetAtTime(0.0001, audio.currentTime, 0.08);
     root.dataset.state = 'menu';
     gsap.set(title, { opacity: 1 }); gsap.set(title.querySelectorAll('h1 span'), { y: 0, opacity: 1 });
     gsap.set($('.opening-tape'), { opacity: 1 }); gsap.set(actions, { opacity: 1 }); actions.hidden = false; actions.inert = false; caption.textContent = '';
@@ -111,18 +150,26 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   function play(full = true) {
     if (disposed || !ready) return;
     timeline?.kill(); ambient?.kill(); globalThis.speechSynthesis?.cancel();
-    menu = false; last = -1; actions.hidden = true; actions.inert = true; gsap.set(actions, { opacity: 0 }); time.value = 0; $('[data-intro="skip"]').hidden = false;
+    menu = false; last = -1; musicStep = 0;
+    effects?.gain.setTargetAtTime(1, audio.currentTime, 0.015); actions.hidden = true; actions.inert = true; gsap.set(actions, { opacity: 0 }); time.value = 0; $('[data-intro="skip"]').hidden = false;
     root.dataset.state = 'playing';
     gsap.set(title, { opacity: 0 }); gsap.set(title.querySelectorAll('h1 span'), { y: 10, opacity: 0 }); gsap.set($('.opening-tape'), { opacity: 0 });
-    if (media.matches || fallingBack) { finish(); return; }
+    if (media.matches || fallingBack) {
+      finish();
+      if (media.matches) reducedReveal = gsap.timeline().fromTo(title, { opacity: 0 }, { opacity: 1, duration: 0.25 })
+        .fromTo(actions, { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.15);
+      return;
+    }
     if (!full) {
       time.value = 11; frame(true); gsap.set(title.querySelectorAll('h1 span'), { y: 0, opacity: 1 });
       timeline = gsap.timeline({ onComplete: finish }); timeline.to(title, { opacity: 1, duration: 0.6 }); return;
     }
     timeline = gsap.timeline({ onComplete: finish });
     timeline.to(time, { value: 11, duration: 11, ease: 'none', onUpdate: () => frame() }, 0);
-    for (let i = 0; i < STARTER_LAYOUT.length; i++) timeline.call(() => soundCue('case'), [], 1.2 + i * 0.12);
-    timeline.call(speakCheck, [], 4.1).call(() => soundCue('scan'), [], 6).call(() => soundCue('music'), [], 8);
+    timeline.call(() => soundCue('latch'), [], 0.05).call(() => soundCue('switch'), [], 0.25);
+    for (let i = 0; i < STARTER_LAYOUT.length; i++) timeline.call(() => soundCue(['wheel', 'clamp', 'case', 'cable'][i % 4]), [], 1.2 + i * 0.12);
+    for (const step of [6.25, 6.52, 6.85, 7.12, 7.45, 7.72]) timeline.call(() => soundCue('step'), [], step);
+    timeline.call(() => soundCue('low-note'), [], 3.8).call(speakCheck, [], 4.1).call(() => soundCue('scan'), [], 6).call(() => { soundCue('downbeat'); soundCue('cheer'); }, [], 8);
     timeline.set(title, { opacity: 1 }, 9).to(title.querySelectorAll('h1 span'), { y: 0, opacity: 1, duration: 0.2, stagger: 0.24, ease: 'power3.out' }, 9);
     timeline.call(() => soundCue('case'), [], 9).call(() => soundCue('case'), [], 9.24).to($('.opening-tape'), { opacity: 1, duration: 0.3 }, 9.7);
     timeline.call(() => { actions.hidden = false; }, [], 10.4).to(actions, { opacity: 1, duration: 0.6 }, 10.4);
@@ -130,7 +177,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   }
   function teardown() {
     if (disposed) return;
-    disposed = true; timeline?.kill(); ambient?.kill(); stopSound(); if (audio) void audio.close();
+    disposed = true; timeline?.kill(); reducedReveal?.kill(); ambient?.kill(); stopSound(); if (audio) void audio.close();
     renderer?.destroy(); observer.disconnect(); inertWatch.disconnect(); media.removeEventListener('change', motionChanged);
     window.removeEventListener('mixmash:mute', muteChanged); document.removeEventListener('visibilitychange', visibility);
     root.remove(); previous.forEach(([e, inert]) => { e.inert = inert; });
@@ -160,8 +207,8 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   function motionChanged() { if (media.matches) finish(); }
   function muteChanged() { if (muted()) globalThis.speechSynthesis?.cancel(); syncSound(); }
   function visibility() {
-    if (document.hidden) { timeline?.pause(); ambient?.pause(); globalThis.speechSynthesis?.cancel(); if (audio) void audio.suspend(); }
-    else { if (menu) ambient?.resume(); else timeline?.resume(); if (soundEnabled && !muted()) void audio?.resume(); }
+    if (document.hidden) { timeline?.pause(); reducedReveal?.pause(); ambient?.pause(); globalThis.speechSynthesis?.cancel(); if (audio) void audio.suspend(); }
+    else { reducedReveal?.resume(); if (menu) ambient?.resume(); else timeline?.resume(); if (soundEnabled && !muted()) void audio?.resume(); }
   }
   const observer = new ResizeObserver(() => { renderer?.resize(); frame(true); }); observer.observe(root);
   media.addEventListener('change', motionChanged); window.addEventListener('mixmash:mute', muteChanged); document.addEventListener('visibilitychange', visibility);
