@@ -4958,7 +4958,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Revenue setup — mixmash.games",
-      "description": "All revenue hooks ship off. Nothing below loads, renders or reserves space until Dave supplies the value. Each switch lives in src/hub/monetization.mjs; after editing it run npm run hub:build, then npm test and npm run…",
+      "description": "Revenue hooks are off by default until Dave supplies a value.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/REVENUE_SETUP.md",
       "open": null
     },
@@ -5258,7 +5258,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "hub-share-smoke.mjs",
-      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; revenue slots stay absent.",
+      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; support/ads stay off; analytics beacon allowed.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-share-smoke.mjs",
       "open": null
     },
