@@ -113,7 +113,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     menu = false; last = -1; actions.hidden = true; time.value = 0; $('[data-intro="skip"]').hidden = false;
     root.dataset.state = 'playing';
     gsap.set(title, { opacity: 0 }); gsap.set(title.querySelectorAll('h1 span'), { y: 10, opacity: 0 }); gsap.set($('.opening-tape'), { opacity: 0 });
-    if (media.matches) { finish(); return; }
+    if (media.matches || fallingBack) { finish(); return; }
     if (!full) {
       time.value = 11; frame(true); gsap.set(title.querySelectorAll('h1 span'), { y: 0, opacity: 1 });
       timeline = gsap.timeline({ onComplete: finish }); timeline.to(title, { opacity: 1, duration: 0.6 }); return;
@@ -144,6 +144,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     if (action === 'theme') { theme(); syncTheme(); }
   });
   root.addEventListener('keydown', e => {
+    e.stopPropagation(); // Title controls must never reach the game's global Build shortcuts.
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(); }
     if (e.key === 'Tab') {
       const buttons = [...root.querySelectorAll('button')].filter(b => !b.hidden && !b.closest('[hidden]'));
@@ -152,6 +153,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
       else if (!e.shiftKey && document.activeElement === end) { e.preventDefault(); first.focus(); }
     }
   });
+  root.addEventListener('keyup', e => e.stopPropagation());
   function syncTheme() { const dark = document.documentElement.dataset.theme === 'dark'; $('[data-intro="theme"]').textContent = dark ? 'Light controls' : 'Dark controls'; }
   function motionChanged() { if (media.matches) finish(); }
   function muteChanged() { if (muted()) globalThis.speechSynthesis?.cancel(); syncSound(); }

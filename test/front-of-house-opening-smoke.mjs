@@ -61,6 +61,19 @@ try {
   await page.locator('.opening [data-intro="enter"]').click();
   assert.deepEqual(errors, []); await context.close();
   results.push({fullSequence:true,skipBeats:6,soundGesture:true});
+  {
+    const context = await browser.newContext({reducedMotion:'reduce',serviceWorkers:'block'}), page = await context.newPage();
+    await page.goto(url); await page.waitForSelector('.opening-actions:not([hidden])');
+    await page.locator('.opening [data-intro="enter"]').click();
+    await page.locator('[data-act="deal"]:not([disabled])').first().click();
+    const saved = await page.evaluate(() => localStorage.getItem('front_of_house_v1'));
+    await page.locator('#menu-btn').click(); await page.locator('#intro-replay').click();
+    await page.waitForSelector('.opening-actions:not([hidden])');
+    await page.keyboard.press('1'); await page.keyboard.press('Enter');
+    await page.waitForSelector('.opening', {state:'detached'});
+    assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')), saved, 'title keys cannot place equipment into a saved Build');
+    results.push({savedBuildKeyboardIsolation:true}); await context.close();
+  }
   for (const scenario of ['no-webgl','blocked-storage','context-loss','no-gsap']) {
     const context = await browser.newContext({ reducedMotion: 'reduce', serviceWorkers: 'block' });
     if (scenario === 'blocked-storage') await context.addInitScript(() => {
