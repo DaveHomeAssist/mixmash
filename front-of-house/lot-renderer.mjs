@@ -35,6 +35,9 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   let state = 'ready', reason = '', lastScene = null, clear = null, layoutKey = '', overlayKey = '', gridVisible = true, paused = false, disposed = false;
   let objects = [], pickables = [], objectHeights = [];
   let shadowKey = '', shadowUpdates = 0, renderedFrames = 0;
+  let openingBeams = null;
+  let openingWorkLight = null;
+  let openingGate = null;
   let requestedDpr = 1, densityMedia = null, renderFrame = 0;
   const ownedOverlayMaterials = new Map();
 
@@ -146,6 +149,51 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     densityMedia?.addEventListener('change', densityChanged);
   }
   function densityChanged() { if (disposed) return; watchDensity(); resize(); }
+  // Only the disposable opening renderer calls this; gameplay scene inputs are unchanged.
+  function openingPose(seconds) {
+    const t = Math.max(0, Math.min(11, seconds));
+    if (!openingWorkLight) { openingWorkLight = new T.PointLight(0xffdb9b, 30, 10, 2); openingWorkLight.position.set(12, 1.5, 14); world.add(openingWorkLight); }
+    openingWorkLight.intensity = 30 * Math.min(1, t / 1.2) * (1 - Math.max(0, Math.min(1, (t - 4) / 2)));
+    props.children.forEach((group, i) => {
+      group.userData.openingBase ||= group.position.clone();
+      const progress = Math.max(0, Math.min(1, (t - 1.2 - i * 0.12) / 0.22));
+      group.visible = progress > 0;
+      group.position.copy(group.userData.openingBase);
+      group.position.y += (1 - progress) * 0.8;
+      if (i === 0) group.children.forEach((part, section) => {
+        part.userData.openingBase ||= part.position.clone();
+        const joined = Math.max(0, Math.min(1, (t - 1.2 - (section % 6) * 0.08) / 0.22));
+        part.position.copy(part.userData.openingBase); part.position.x += (section % 2 ? -1 : 1) * (1 - joined) * 0.6;
+      });
+    });
+    world.background.setHex(0x202c38);
+    sky.intensity = 1.1;
+    sun.intensity = 0.7 + Math.min(1, t / 1.2) * 0.5;
+    stageLight.color.setHex(0xffd49a);
+    stageLight.intensity = Math.max(0, Math.min(1, (t - 4) / 4)) * 65 * (1 + Math.sin(Math.max(0, seconds - 11) * 0.3) * 0.08);
+    if (!openingGate) {
+      openingGate = new T.Group(); const geometry = new T.BoxGeometry(0.45, 0.8, 0.04);
+      for (const side of [-1,1]) {
+        const pivot = new T.Group(), leaf = new T.Mesh(geometry, models.material(0x78815f)); leaf.position.set(-side * 0.225, 0.4, 0); leaf.castShadow = true;
+        pivot.position.set(12.5 + side * 0.5, 0, 15.5); pivot.add(leaf); openingGate.add(pivot);
+      }
+      world.add(openingGate);
+    }
+    openingGate.visible = t >= 2.4;
+    openingGate.children.forEach((pivot,i) => { pivot.rotation.y = (i ? -1 : 1) * Math.max(0, Math.min(1, (t - 6) / 0.4)) * Math.PI / 2; });
+    if (!openingBeams) {
+      const geometry = new T.ConeGeometry(2.1, 8, 12, 1, true); geometry.translate(0, -4, 0);
+      const material = new T.MeshBasicMaterial({ color: 0xffdca3, transparent: true, opacity: 0.06, depthWrite: false, side: T.DoubleSide });
+      openingBeams = new T.Group();
+      for (const x of [10,14]) { const beam = new T.Mesh(geometry, material); beam.position.set(x, 2.5, 1.5); openingBeams.add(beam); }
+      world.add(openingBeams);
+    }
+    const sweep = Math.max(0, Math.min(1, t - 8));
+    openingBeams.visible = t >= 8;
+    openingBeams.children.forEach((beam, i) => { beam.rotation.z = (i ? -1 : 1) * (0.6 + sweep * 1.4); beam.rotation.x = -0.45; });
+    renderer.shadowMap.needsUpdate = t < 3.5 || (t >= 6 && t <= 6.4);
+    render();
+  }
   function pickAt(x, y) {
     if (disposed || state !== 'ready') return { object: null, blocked: false };
     world.updateMatrixWorld(true);
@@ -165,11 +213,13 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     disposed = true; cancelRender();
     canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored); globalThis.document?.removeEventListener('visibilitychange', visibility);
     media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose(); sidePresentation?.dispose(); performers.dispose(); sidePerformers?.dispose();
+    if (openingBeams) { openingBeams.children[0].geometry.dispose(); openingBeams.children[0].material.dispose(); }
+    if (openingGate) openingGate.children[0].children[0].geometry.dispose();
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
   resize(); watchDensity();
   return {
-    draw, resize, pickAt, objectAt: (x, y) => pickAt(x, y).object, destroy,
+    draw, resize, openingPose, pickAt, objectAt: (x, y) => pickAt(x, y).object, destroy,
     setClear: (value) => { clear = value; resize(); },
     camera: () => camera.info(),
     navigation: () => ({ ...camera.navigation(), fixed: festival ? [{ ...FESTIVAL_SCENE.annex, kind: 'ground' }, { ...FESTIVAL_SCENE.stage, kind: 'stage' }] : [] }),

@@ -5,6 +5,11 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.0 — 2026-10-19
+
+An opening title sequence builds an empty lot into a show using the existing 3D equipment and renderer, then reveals the entry menu. It includes Skip intro, Replay intro, Continue for existing saves, a brief return reveal, reduced-motion presentation, theme controls and optional synchronized synthesized sound. Browsers require a press of Enable sound before audio plays. The classic board remains a fallback. Game rules, costs and save schema are unchanged. A pre-existing short-window Book cutoff at 683 × 384 is also corrected with smaller button padding; text and touch targets retain their size.
+
+
 ## 0.3.9 — 2026-10-18
 
 - On a 375px phone the paused Show header fits its plate: the clock's line box now holds the font's full height instead of overflowing by about 2 px, whichever monospace font the device has. Incident choice costs on phones are set slightly smaller so a long cost such as "$125 · not enough cash" stays on one line beside its label, keeping the rain choices inside the peek sheet with room to spare. Layout only: rules, money, strings, balance and save schema 2 are unchanged.

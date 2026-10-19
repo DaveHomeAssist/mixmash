@@ -22,6 +22,7 @@ import { binding, matches } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
 import { advisoryFor } from './advisory.mjs';
 import { bandArt, venueArt } from './menu-art.mjs';
+import { createOpening } from './opening.mjs';
 import { bumpHint, clearPrefs, defaultPrefs, loadPrefs, rememberAct, rememberIncident, rememberRoom, rememberTab, savePrefs, setSuggest, setView, TAB_PHASES } from './prefs.mjs';
 import { bookSuggestions, buildSuggestion, hasPlacementRule, incidentSuggestion, legalTiles, nextShowPreview, promoteSuggestion } from './anticipate.mjs';
 
@@ -156,6 +157,8 @@ function loadState() {
   return raw ? normalizeState(migrateSave(raw), freshSeed()) : createGame(freshSeed());
 }
 
+let hadOpeningSave = false;
+try { hadOpeningSave = !!store?.load(); } catch { /* blocked storage remains playable */ }
 let state = loadState();
 const ui = {
   tool: 'select', placeTool: 'stage', selection: null, dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
@@ -3046,6 +3049,7 @@ window.render_game_to_text = () => {
   const r = settlementFor(state);
   return JSON.stringify({
     game: 'front-of-house',
+    opening: document.querySelector('.opening') ? { state: document.querySelector('.opening').dataset.state, seconds: Number(document.querySelector('.opening').dataset.seconds || 0) } : null,
     phase: state.phase,
     build: state.phase === 'build' ? {
       tool: ui.tool, selected: ui.selection === null ? null : state.venue.objects[ui.selection], cursor: ui.cursor,
@@ -3170,3 +3174,15 @@ if ('ResizeObserver' in window) {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', queueLayout, { once: true });
 layoutBoard();
 render();
+// Existing explicit renderer/QA routes remain direct game entries.
+if (!new URLSearchParams(location.search).has('renderer') && !new URLSearchParams(location.search).has('qa')) {
+  const showOpening = (replay = false) => {
+    stopPlayback();
+    void createOpening({ replay, hasSave: hadOpeningSave || state.phase !== 'book' || state.history.length > 0, enter: () => { render(); el.menuBtn.focus(); },
+      newGame: () => { setMenu(true); $('#menu-new')?.focus(); el.menu.querySelector('[data-mode="career"]')?.focus(); },
+      theme: () => $('#theme-toggle').click(),
+    });
+  };
+  $('#intro-replay').addEventListener('click', () => { setMenu(false); showOpening(true); });
+  showOpening();
+} else $('#intro-replay').hidden = true;

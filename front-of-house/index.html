@@ -23,6 +23,7 @@
   <link rel="modulepreload" href="./board.js" />
   <link rel="modulepreload" href="./controls.mjs" />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./opening.css" />
   <script src="/src/kit/pwa.js" defer></script>
   <script src="/assets/last-game.js" data-game="front-of-house" defer></script>
   <script src="/assets/analytics.js" defer></script>
@@ -95,6 +96,7 @@
   <div id="menu" class="menu" role="region" aria-label="Menu" hidden>
     <div id="menu-art" class="menu-art" aria-hidden="true"></div>
     <button type="button" data-act="advisory-open">Advisory desk</button>
+    <button type="button" id="intro-replay">Replay intro</button>
     <button type="button" data-act="camera-open">Camera &amp; 3D preview</button>
     <button type="button" data-act="development">Development</button>
     <button type="button" data-act="equipment-open">Equipment</button>
@@ -166,6 +168,7 @@
 
   <script src="../src/kit/nav.js" data-nav-collapse="off"></script>
   <script src="../src/kit/save.js"></script>
+  <script src="./vendor/gsap/gsap.min.js"></script>
   <script type="module" src="./game.js"></script>
 </body>
 </html>

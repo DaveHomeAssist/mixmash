@@ -1121,3 +1121,15 @@ CI on the merged branch failed only `npm run art:visual`, the same failure as gh
 ## 2026-10-18: Paused Show header at 375px (0.3.9)
 
 `smoke:front-of-house` failed "the paused Show controls fit at 375px" (also on a3476b4) with `plate at-tl card-plate: 22 in 20`. Measured in the failing state: the phone HUD card plate has no padding and lays out as a baseline-aligned row, and its clock used `line-height: 1` at 1.2rem (a 19.2px line box). Chrome's scrollable overflow includes each text fragment's full font box, and JetBrains Mono's ascent plus descent is about 1.32em (25.3px), so the box spilled about 2 px under the plate. Not a stray element: a real line box smaller than its font, made visible wherever the installed monospace face is tall. Fixed by giving the phone clock a 1.4 line height (plate 20.4px to 26.9px, scrollHeight equals clientHeight). That cost 6.5px in the wet-lot rain sheet, whose old margin was only 2.5px because "Hand out ponchos" with "$125 · not enough cash" filled the 331px choice row and wrapped to two lines; phone incident costs now use 0.8rem, every choice is one line, and the rain sheet has about 22px spare. Assertions unchanged. CSS only; no rule, number, string or save change; cache v87.
+
+
+## 2026-10-19 Opening sequence 0.4.0 in progress
+
+Original prompt: Implement the approved eleven-second empty-lot-to-show title sequence using the game renderer, GSAP choreography and synchronized sound; preserve saves and support skip, replay, return, reduced motion and phones.
+
+Continuous camera capability confirmed in lot-camera.mjs. Separate renderer scene and menu implemented; GSAP 3.15.0 vendored from official npm with retained license header and source hash. No engine/save schema edits. ECP-1.0 revision 1.0 consumer-only presentation uses unchanged equipment IDs and models.
+
+Dominic container: 21 camera/release tests passed. First browser failure found a UMD-as-module startup error; fixed with classic script loading. Second run passed four viewport entry/replay/save cases, but software WebGL extended the natural timeline beyond the test timeout. Frame submission is now coalesced, idle animation throttled and GSAP lag smoothing disabled for the authored clock. Rerun required before delivery. Desktop and 375px screenshots inspected; human visual/audio and device acceptance pending.
+
+
+Verification follow-up: Dominic passed all 493 repository tests, asset checks, build checks and the opening's five-viewport/save/replay/fallback scenarios. The broader player journey exposed a pre-existing 683×384 Book cutoff: the second deal ended at375px against a372px sheet bottom, reproduced identically on unchanged2db3f6c. The existing <=420px Book rule now reduces choice padding from6px to4px, recovering8px across two choices without shrinking text or44px targets. The same journey and final opening checks must pass before merge.

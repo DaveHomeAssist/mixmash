@@ -1012,3 +1012,19 @@ Player problem: stages and site equipment still use mixed old icons or a placeho
 ## Band and performer presentation (2026-10-18)
 
 Dave requested band and performer sprites after the equipment pass. The stage currently has no performing act. Add source-authored, camera-safe 3D performers with instruments, using the existing booking illustration palettes and lineup sizes. Show them only after the existing set-start event during the show phase; retain empty stages in Build and settlement. Festival's booked secondary act receives its own lineup. Motion follows the existing presentation clock and reduced-motion preference. Preserve picking, renderer recovery, rules, accounting and schema 2 saves. No new artist statistics or equipment ownership is introduced. Acceptance: all artist lineups, rotated stages, reduced motion, lifecycle disposal, immutable snapshots, exact save and settlement parity, desktop/mobile screenshots and existing release gates. Human art approval remains separate from automated checks.
+
+
+## Opening sequence approved October 19 2026
+
+Problem: first entry should establish the concert production fantasy before the game controls.
+Approved outcome: an 11 second empty-lot-to-show sequence with mechanical equipment arrivals, continuous camera reveal, crowd arrival, stage light payoff, stencil title and main menu. GSAP choreographs the existing renderer.
+
+Flow: ready scene → full first-visit intro (brief on return) → Continue when a save exists, otherwise New game. Replay and Skip are immediate keyboard/touch controls. New game preserves the existing confirmation flow for an existing career.
+
+Scope: independent presentation scene with existing Lot geometry, synthesized production percussion/ambience and music, responsive title controls, mute/theme controls, reduced-motion static reveal, graceful classic fallback, cleanup on entry to game. The soundcheck uses browser speech when available; the visual sequence is complete without it.
+
+Rules/data/save: no engine actions or schema changes from presentation. Only an intro-seen device preference is written. Retain existing saved game and external-tab synchronization.
+Dependencies: vendored pinned GSAP core, existing Three renderer and models; no third-party runtime request. ECP-1.0 revision 1.0 applies: existing FOH equipment IDs, dimensions, material ownership and gameplay effects remain owned by the current adapter; no producer changes or physical compatibility claims.
+Camera: existing setCamera supports continuous yaw/pitch/zoom; proposed reveal uses a bounded arc and pullback, preserving gameplay controls.
+Risks: autoplay restrictions require explicit sound activation; software WebGL and narrow devices need fallback and bounded frame work. Spoken soundcheck availability varies by browser.
+Acceptance: skip at every beat; replay/return/reduced-motion paths; immediate keyboard/touch controls; no page overflow at desktop/phone/ultrawide; live save bytes unchanged by intro and Continue; WebGL loss remains navigable; assets cached offline; CI, hosted runtime and human acceptance reported separately.

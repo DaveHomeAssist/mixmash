@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v87';
+const VERSION = 'v88';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -79,6 +79,9 @@ const PRECACHE = [
   './front-of-house/index.html',
   './front-of-house/styles.css',
   './front-of-house/game.js',
+  './front-of-house/opening.mjs',
+  './front-of-house/opening.css',
+  './front-of-house/vendor/gsap/gsap.min.js',
   './front-of-house/version.mjs',
   './front-of-house/advisory.mjs',
   './front-of-house/prefs.mjs',
