@@ -252,6 +252,10 @@ export const PATTERN_NOTES = [
     }),
   },
   {
+    match: /^assets\/og\/([a-z-]+)\.jpg$/,
+    note: ([, game]) => ({ description: `1200x630 Open Graph/Twitter share card for ${game}, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.` }),
+  },
+  {
     match: /^assets\/covers\/([a-z]+)\.jpg$/,
     note: ([, game]) => ({ description: `Canonical ${game} cover for homepage detail panels. Generated-art context is in assets/covers/README.md; gameplay captures remain in assets/previews.` }),
   },
