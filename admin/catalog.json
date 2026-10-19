@@ -2058,7 +2058,7 @@
       "category": "planning",
       "kind": "MD",
       "title": "Front of House Roadmap",
-      "description": "The phases from the first document to the last career tier. Each phase ships as its own pull request, merges only when CI is green, and ends at its Done when line. The career tiers come from CT-DEC-09; what each tier…",
+      "description": "Delivery reconciliation — 2026-10-18: Current release is 0.3.9 / cache v87 / save schema 2 at reviewed base b99cdd5.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/ROADMAP.md",
       "open": null
     },

@@ -124,6 +124,8 @@ The game saves automatically in the current browser after each step. To keep a p
 3. In the destination browser, open **Save and load**, paste it into **Save code**, and choose **Load this code**.
 4. Check the room, phase and cash before continuing.
 
+A save code restores a night exactly. Nights are seeded: a code copied before doors replays the same draw and incident, so you can load it and try a different response. That is allowed; it's a single-player game with no scores to protect.
+
 Loading a valid code replaces the current game; export that game first if you need both. A damaged code or a code from another game is refused without replacing the current save. Starting a new game replaces the current run after its confirmation.
 
 Previously visited content can reopen offline from the browser cache. Warm the 3D preview while online before relying on it offline. A new browser, cleared storage or uncached content still needs a connection. Offline recovery does not replace a portable save backup.
