@@ -3,6 +3,7 @@ import { STARTER_LAYOUT } from './data.mjs';
 
 const SEEN = 'front_of_house_intro_seen_v1';
 export async function createOpening({ hasSave, enter, newGame, theme, replay = false }) {
+  const saved = () => typeof hasSave === 'function' ? hasSave() : hasSave;
   const root = document.createElement('section');
   root.className = 'opening'; root.setAttribute('aria-label', 'Front of House title screen');
   root.dataset.state = 'loading';
@@ -10,7 +11,7 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     <div class="opening-shade" aria-hidden="true"></div>
     <div class="opening-toolbar"><button type="button" data-intro="sound">Enable sound</button><button type="button" data-intro="theme">Dark controls</button><button type="button" data-intro="skip">Skip intro</button></div>
     <div class="opening-title"><p class="opening-kicker">MIXMASH STUDIO PRESENTS</p><h1><span>FRONT</span><span>OF HOUSE</span></h1><p class="opening-tape">Book. Build. Run the show.</p></div>
-    <div class="opening-actions" hidden><button type="button" class="opening-primary" data-intro="enter">${hasSave ? 'Continue' : 'New game'}</button>${hasSave ? '<button type="button" data-intro="new">New game</button>' : ''}<button type="button" data-intro="replay">Replay intro</button></div>
+    <div class="opening-actions" hidden><button type="button" class="opening-primary" data-intro="enter">${saved() ? 'Continue' : 'New game'}</button><button type="button" data-intro="new" ${saved() ? '' : 'hidden'}>New game</button><button type="button" data-intro="replay">Replay intro</button></div>
     <p class="opening-caption" role="status">Preparing the lot…</p>`;
   document.body.append(root);
   const gameElements = [...document.body.children].filter(e => e !== root && !['SCRIPT', 'STYLE', 'LINK'].includes(e.tagName));
@@ -178,11 +179,11 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
   function teardown() {
     if (disposed) return;
     disposed = true; timeline?.kill(); reducedReveal?.kill(); ambient?.kill(); stopSound(); if (audio) void audio.close();
-    renderer?.destroy(); observer.disconnect(); inertWatch.disconnect(); media.removeEventListener('change', motionChanged);
+    renderer?.destroy(); observer?.disconnect(); window.removeEventListener('resize', resized); window.removeEventListener('storage', syncActions); window.removeEventListener('pageshow', syncActions); inertWatch.disconnect(); media.removeEventListener('change', motionChanged);
     window.removeEventListener('mixmash:mute', muteChanged); document.removeEventListener('visibilitychange', visibility);
     root.remove(); previous.forEach(([e, inert]) => { e.inert = inert; });
   }
-  function leave(fresh = false) { teardown(); if (fresh && hasSave) newGame(); else enter(); }
+  function leave(fresh = false) { teardown(); if (fresh && saved()) newGame(); else enter(); }
   root.addEventListener('click', e => {
     const action = e.target.closest('[data-intro]')?.dataset.intro;
     if (action === 'skip') finish();
@@ -210,7 +211,14 @@ export async function createOpening({ hasSave, enter, newGame, theme, replay = f
     if (document.hidden) { timeline?.pause(); reducedReveal?.pause(); ambient?.pause(); globalThis.speechSynthesis?.cancel(); if (audio) void audio.suspend(); }
     else { reducedReveal?.resume(); if (menu) ambient?.resume(); else timeline?.resume(); if (soundEnabled && !muted()) void audio?.resume(); }
   }
-  const observer = new ResizeObserver(() => { renderer?.resize(); frame(true); }); observer.observe(root);
+  function resized() { renderer?.resize(); frame(true); }
+  function syncActions() {
+    $('[data-intro="enter"]').textContent = saved() ? 'Continue' : 'New game';
+    $('[data-intro="new"]').hidden = !saved();
+  }
+  const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(resized) : null;
+  if (observer) observer.observe(root); else window.addEventListener('resize', resized);
+  window.addEventListener('storage', syncActions); window.addEventListener('pageshow', syncActions);
   media.addEventListener('change', motionChanged); window.addEventListener('mixmash:mute', muteChanged); document.addEventListener('visibilitychange', visibility);
   syncTheme(); syncSound();
   $('[data-intro="skip"]').focus();

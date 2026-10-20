@@ -125,8 +125,25 @@ try {
     assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')), unsigned);
     results.push({savedSettlementFocus:true,unsignedSavePreserved:true}); await context.close();
   }
-  for (const scenario of ['no-webgl','blocked-storage','context-loss','no-gsap']) {
+  {
+    const context = await browser.newContext({reducedMotion:'reduce',serviceWorkers:'block'});
+    const title = await context.newPage(); await title.goto(url);
+    await title.waitForSelector('.opening-actions:not([hidden])');
+    assert.equal(await title.locator('.opening [data-intro="enter"]').textContent(), 'New game');
+    const other = await context.newPage(); await other.goto(url + '?renderer=2d');
+    await other.locator('[data-act="deal"]:not([disabled])').first().click();
+    await title.waitForFunction(() => document.querySelector('.opening [data-intro="enter"]').textContent === 'Continue');
+    assert.equal(await title.locator('.opening [data-intro="new"]').isVisible(),true);
+    const saved = await other.evaluate(() => localStorage.getItem('front_of_house_v1'));
+    await title.locator('.opening [data-intro="enter"]').click();
+    await title.waitForSelector('.opening',{state:'detached'});
+    assert.equal(await title.evaluate(() => __frontOfHouse.state().phase), 'build');
+    assert.equal(await title.evaluate(() => localStorage.getItem('front_of_house_v1')),saved);
+    results.push({crossTabTitleRefresh:true,adoptedSavePreserved:true}); await context.close();
+  }
+  for (const scenario of ['no-webgl','blocked-storage','context-loss','no-gsap','no-resize-observer']) {
     const context = await browser.newContext({ reducedMotion: 'reduce', serviceWorkers: 'block' });
+    if (scenario === 'no-resize-observer') await context.addInitScript(() => { delete window.ResizeObserver; });
     if (scenario === 'blocked-storage') await context.addInitScript(() => {
       Storage.prototype.getItem = () => { throw new Error('Storage blocked'); };
       Storage.prototype.setItem = () => { throw new Error('Storage blocked'); };

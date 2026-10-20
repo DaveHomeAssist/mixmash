@@ -1143,3 +1143,7 @@ Final local candidate passed all13 opening scenarios (including real saved Build
 ### 2026-10-19 — Opening sound and reduced motion audit
 
 Distinct source-generated latch/switch, equipment wheels/clamps/cables, scanner, footsteps, crowd swell, downbeat and menu tones now follow the authored beats. Skip fades transient effects into the menu bed; mute and teardown suspend/close the owned context. Reduced motion uses a static venue and short opacity reveal. Dominic opening rail passes with measured nonzero audio output, mute and context cleanup, plus save isolation and renderer-fallback checks. Final hosted CI and live delivery remain pending; human listening and physical-device acceptance remain open.
+
+### 2026-10-19 — Opening review edge cases
+
+The title refreshes Continue/New game when another tab advances the save, and uses ordinary resize events when ResizeObserver is unavailable. Dominic passes15 opening scenarios and the complete3D application smoke, which now enters through the title before testing default renderer preferences. CI31c0d8d retained a genuine older-test overlay failure and one CPU regression measurement (9ms versus8.4ms budget); no measurement limits changed. Final integrated-source CI and live proof remain pending.

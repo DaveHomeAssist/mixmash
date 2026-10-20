@@ -3154,6 +3154,7 @@ function adoptStoredGame(message) {
   const next = loadState();
   if (JSON.stringify(next) === JSON.stringify(normalizeState(JSON.parse(JSON.stringify(state)), state.seed))) return;
   state = next;
+  hadOpeningSave = true;
   resetHistory();
   stopPlayback();
   ui.play = null;
@@ -3194,7 +3195,7 @@ if (!new URLSearchParams(location.search).has('renderer') && !new URLSearchParam
   const showOpening = (replay = false) => {
     openingActive = true;
     stopPlayback();
-    void createOpening({ replay, hasSave: hadOpeningSave || state.phase !== 'book' || state.history.length > 0, enter: resumeOpeningGame,
+    void createOpening({ replay, hasSave: () => hadOpeningSave || state.phase !== 'book' || state.history.length > 0, enter: resumeOpeningGame,
       newGame: () => { resumeOpeningGame(); setMenu(true); el.menu.querySelector('[data-mode="career"]')?.focus(); },
       theme: () => $('#theme-toggle').click(),
     });

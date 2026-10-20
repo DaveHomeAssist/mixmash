@@ -8,7 +8,7 @@
   "head": "0.4.0 opening sequence in verification",
   "lastActivity": "2026-10-19",
   "status": "amber",
-  "statusReason": "Opening implemented and verified on Dominic: 493 repository tests, 29 player smoke checks, 13 opening scenarios, WebKit phone and cold offline entry. Final CI, merge and live release remain pending; human/device/audio acceptance remains open.",
+  "statusReason": "Opening implemented; Dominic passes 15 opening scenarios including actual audio output, mute/cleanup, cross-tab save adoption and missing ResizeObserver, plus the complete 3D application smoke. Required final CI, merge and hosted verification remain pending; human/device/listening acceptance remains open.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
