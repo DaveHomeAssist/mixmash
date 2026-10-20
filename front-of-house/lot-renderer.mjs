@@ -56,13 +56,57 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     const spec = OBJECT_TYPES[o.type] || { w: 1, h: 1 }, w = o.rot % 2 ? spec.h : spec.w, h = o.rot % 2 ? spec.w : spec.h;
     const t = 0.06; cell(o.x, o.y, w, t, color, 1); cell(o.x, o.y + h - t, w, t, color, 1); cell(o.x, o.y, t, h, color, 1); cell(o.x + w - t, o.y, t, h, color, 1);
   }
+  // Static props draw as one merged mesh per material and shadow role. The authored part meshes
+  // stay in place, hidden, as the pick and bounds authority, so a layout costs a handful of draw
+  // calls in the colour and shadow passes instead of one per part (PA and lighting rigs are ~40 each).
+  let propBatches = [];
+  function clearPropBatches() { for (const mesh of propBatches) { mesh.geometry.dispose(); props.remove(mesh); } propBatches = []; }
+  function batchProps() {
+    props.updateMatrixWorld(true);
+    const buckets = new Map(), names = ['position', 'normal', 'uv'], shown = mesh => { for (let p = mesh; p && p !== props; p = p.parent) if (!p.visible) return false; return true; };
+    props.traverse(mesh => {
+      if (!mesh.isMesh || mesh.isInstancedMesh || mesh.isSkinnedMesh || Array.isArray(mesh.material) || !shown(mesh)) return;
+      const g = mesh.geometry;
+      if (g.morphAttributes && Object.keys(g.morphAttributes).length) return;
+      if (!names.every(n => g.attributes[n]?.itemSize === (n === 'uv' ? 2 : 3)) || Object.keys(g.attributes).length !== names.length) return;
+      const key = `${mesh.material.uuid}:${mesh.castShadow}:${mesh.receiveShadow}`;
+      if (!buckets.has(key)) buckets.set(key, []); buckets.get(key).push(mesh);
+    });
+    const normal = new T.Matrix3(), v = new T.Vector3();
+    for (const meshes of buckets.values()) {
+      if (meshes.length < 2) continue;
+      let count = 0;
+      for (const mesh of meshes) count += mesh.geometry.index ? mesh.geometry.index.count : mesh.geometry.attributes.position.count;
+      const out = { position: new Float32Array(count * 3), normal: new Float32Array(count * 3), uv: new Float32Array(count * 2) };
+      let at = 0;
+      for (const mesh of meshes) {
+        const g = mesh.geometry, index = g.index, n = index ? index.count : g.attributes.position.count, pos = g.attributes.position, nor = g.attributes.normal, uv = g.attributes.uv;
+        normal.getNormalMatrix(mesh.matrixWorld);
+        for (let i = 0; i < n; i++, at++) {
+          const k = index ? index.getX(i) : i;
+          v.fromBufferAttribute(pos, k).applyMatrix4(mesh.matrixWorld); out.position.set([v.x, v.y, v.z], at * 3);
+          v.fromBufferAttribute(nor, k).applyMatrix3(normal).normalize(); out.normal.set([v.x, v.y, v.z], at * 3);
+          out.uv.set([uv.getX(k), uv.getY(k)], at * 2);
+        }
+        mesh.visible = false;
+      }
+      const geometry = new T.BufferGeometry();
+      for (const name of names) geometry.setAttribute(name, new T.BufferAttribute(out[name], name === 'uv' ? 2 : 3));
+      geometry.computeBoundingSphere();
+      const batch = new T.Mesh(geometry, meshes[0].material);
+      Object.assign(batch, { castShadow: meshes[0].castShadow, receiveShadow: meshes[0].receiveShadow, name: 'prop-batch', raycast: () => {} });
+      batch.userData.propBatch = meshes.length;
+      props.add(batch); propBatches.push(batch);
+    }
+  }
   function rebuildObjects(input) {
-    props.clear(); pickables = []; objectHeights = []; objects = input.map(o => ({ ...o }));
+    clearPropBatches(); props.clear(); pickables = []; objectHeights = []; objects = input.map(o => ({ ...o }));
     objects.forEach((o, index) => {
       const group = models.create(o); if (!group) return;
       group.traverse(mesh => { if (mesh.isMesh) { mesh.userData.objectIndex = index; pickables.push(mesh); } }); props.add(group);
       objectHeights[index] = new T.Box3().setFromObject(group).max.y;
     });
+    batchProps();
     const stage = objects.find(o => o.type === 'stage'); camera.setStage(stage);
     if (stage) { const spec = OBJECT_TYPES.stage; stageLight.position.set(stage.x + (stage.rot % 2 ? spec.h : spec.w) / 2, 2.8, stage.y + (stage.rot % 2 ? spec.w : spec.h) / 2); }
   }
@@ -164,7 +208,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     if (disposed) return;
     disposed = true; cancelRender();
     canvas.removeEventListener('webglcontextlost', contextLost); canvas.removeEventListener('webglcontextrestored', contextRestored); globalThis.document?.removeEventListener('visibilitychange', visibility);
-    media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose(); sidePresentation?.dispose(); performers.dispose(); sidePerformers?.dispose();
+    media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; clearPropBatches(); presentation.dispose(); sidePresentation?.dispose(); performers.dispose(); sidePerformers?.dispose();
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
   resize(); watchDensity();
@@ -192,6 +236,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', propBatches: { meshes: propBatches.length, parts: propBatches.reduce((n, m) => n + m.userData.propBatch, 0) }, performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

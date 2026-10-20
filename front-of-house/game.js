@@ -8,7 +8,7 @@ import * as D from './data.mjs';
 import { equipmentCardInfo, SITE_CARD_TYPES } from './equipment-cards.mjs';
 import {
   amenitySupply, applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
-  careerProgress, completedShows, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
+  careerProgress, completedShows, migrateSave, normalizeState, lockedRoomBeforeDoors, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
 import { heldRunQuote } from './held-run.mjs';
@@ -3024,14 +3024,15 @@ function importCode(code) {
     setSaveStatus("That code isn't a Front of House save. Nothing was changed.");
     return false;
   }
-  state = normalizeState(migrateSave(parsed.state), freshSeed());
+  const migrated = migrateSave(parsed.state), lockedRoom = lockedRoomBeforeDoors(migrated);
+  state = normalizeState(migrated, freshSeed());
   resetHistory();
   persist();
   stopPlayback();
   ui.play = null;
   ui.mounted = null;
   render();
-  setSaveStatus('Loaded the save code.');
+  setSaveStatus(lockedRoom ? `Loaded the save code. ${D.VENUES[lockedRoom].name} is still locked in that career, so it opens at ${D.VENUES.lot.name} on the Book screen. Nothing was paid, and the room's layout is kept.` : 'Loaded the save code.');
   setMenu(false, { focus: !el.menu.hidden });
   return true;
 }

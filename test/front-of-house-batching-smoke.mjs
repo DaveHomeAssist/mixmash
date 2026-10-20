@@ -23,6 +23,20 @@ try {
   assert.equal(first.before.renderedFrames, 0); assert.equal(first.before.pendingRender, true);
   assert.equal(first.after.renderedFrames, 1); assert.equal(first.after.pendingRender, false);
   assert.equal(first.after.camera.yaw, 135); assert.deepEqual(first.pick, { x: 12, y: 8 }); assert.equal(first.unchanged, true);
+  // Static props share one merged mesh per material: the PA and lighting rigs no longer add a
+  // draw call per part, while the hidden authored parts still answer picks and layout changes.
+  const props = await page.evaluate(async () => {
+    const pa = input.objects.find(o => o.type.startsWith('pa-')), spec = (await import('/front-of-house/data.mjs')).OBJECT_TYPES[pa.type];
+    const at = backend.clientOf(pa.x + (pa.rot % 2 ? spec.h : spec.w) / 2, pa.y + (pa.rot % 2 ? spec.w : spec.h) / 2, 0.8), picked = backend.objectAt(at.x, at.y);
+    const full = backend.info(), geometries = full.resources.geometries;
+    backend.draw({ ...input, objects: input.objects.filter(o => o !== pa) }); await new Promise(requestAnimationFrame); const without = backend.info();
+    backend.draw(input); await new Promise(requestAnimationFrame); const restored = backend.info();
+    return { pa, picked, full: full.propBatches, without: without.propBatches, restored: restored.propBatches, geometries, restoredGeometries: restored.resources.geometries };
+  });
+  assert.ok(props.full.meshes > 0 && props.full.parts >= 4 * props.full.meshes, `props batch into few meshes: ${JSON.stringify(props.full)}`);
+  assert.equal(props.picked?.type, props.pa.type, 'a batched PA rig is still picked through its authored parts');
+  assert.ok(props.without.parts < props.full.parts, 'removing a rig rebuilds the batches without it');
+  assert.deepEqual(props.restored, props.full); assert.equal(props.restoredGeometries, props.geometries, 'rebuilt batches dispose the previous merged geometry');
   const detail = await page.evaluate(async () => {
     backend.preset('wide'); await new Promise(requestAnimationFrame); const wide = backend.info();
     backend.preset('foh'); await new Promise(requestAnimationFrame); const close = backend.info();
