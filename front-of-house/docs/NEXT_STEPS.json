@@ -2550,7 +2550,8 @@
     "retainedFailures": [
       "CI 39230050413: old renderer smoke attempted gameplay controls behind title; corrected entry flow passed on Dominic and final CI. One CPU group at 9ms exceeded 8.4ms.",
       "Manual 39360800469: full application job passed; one renderer CPU group at 4.4ms exceeded 3.9ms. Final PR paired run passed unchanged limits; all evidence retained.",
-      "Additional hosted offline probe initially compared the normal reload savedAt refresh byte-for-byte; career state was identical. Corrected reload-state assertion passed; exact bytes remain required around intro controls."
+      "Additional hosted offline probe initially compared the normal reload savedAt refresh byte-for-byte; career state was identical. Corrected reload-state assertion passed; exact bytes remain required around intro controls.",
+      "Records CI39374458919 timed out clicking Skip after a mid-intro screenshot. Removed that blocking capture from the first timed interaction; all six dedicated skip-beat checks remain and the focused15-scenario rail passes on Dominic. Runtime unchanged."
     ]
   }
 }

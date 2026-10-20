@@ -17,7 +17,8 @@ try {
     await page.goto(url);
     await page.waitForSelector('.opening');
     if (reducedMotion === 'no-preference') {
-      await page.waitForTimeout(4300); await page.screenshot({ path: `${output}/build-${width}.png` });
+      // Keep expensive software-renderer captures out of the timed Skip interaction.
+      await page.waitForTimeout(4300);
       await page.getByRole('button', { name: 'Skip intro', exact: true }).click();
     }
     await page.waitForSelector('.opening-actions:not([hidden])');
