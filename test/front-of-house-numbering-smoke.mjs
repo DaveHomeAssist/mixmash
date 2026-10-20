@@ -16,7 +16,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.clock.setFixedTime(new Date('2026-10-09T08:00:00.000Z'));
   const failures = trackPageFailures(page, server.origin);
-  await page.goto(`${server.origin}/front-of-house/`);
+  await page.goto(`${server.origin}/front-of-house/?qa=1`);
   await page.waitForFunction(() => !!window.__frontOfHouse);
   const load = async (state) => {
     assert.equal(await page.evaluate(({ state, ns, v }) => __frontOfHouse.importCode(

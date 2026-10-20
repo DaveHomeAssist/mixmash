@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.3.9 paused Show header; delivery records reconciled",
-  "lastActivity": "2026-10-18",
+  "head": "0.4.0 opening sequence in verification",
+  "lastActivity": "2026-10-19",
   "status": "amber",
-  "statusReason": "Delivered performer, short-window phase actions and 375px paused Show header work is recorded separately from remaining human/device acceptance. This reconciliation changes documentation only.",
+  "statusReason": "Opening implemented; Dominic passes 15 opening scenarios including actual audio output, mute/cleanup, cross-tab save adoption and missing ResizeObserver, plus the complete 3D application smoke. Required final CI, merge and hosted verification remain pending; human/device/listening acceptance remains open.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -50,12 +50,12 @@
     "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged."
   ],
   "nextStep": {
-    "title": "Complete PR176 delivery when existing CI returns",
-    "why": "0.3.0 provenance is resolved: the absent tag belongs to PR146 merge d28656b. This packet excludes tag mutation. The documentation PR still requires final-head CI before merge.",
-    "doneWhen": "Required final-head checks pass, PR176 merges, Pages and all changed hosted documentation files are verified, and the existing board is refreshed.",
-    "effort": "S",
-    "owner": "Current FOH executor and existing CI runner owner",
-    "blockedBy": "Existing MixMash CI runners offline; do not bypass or launch a replacement workflow."
+    "title": "Verify and deliver the opening sequence",
+    "why": "Approved title/menu now needs final source checks, regression CI and hosted proof.",
+    "doneWhen": "Required checks, merge, deployment and live entry/save checks pass; human visual/audio feedback stays explicit.",
+    "effort": "M",
+    "owner": "Current FOH opening executor",
+    "blockedBy": null
   },
   "findings": [
     {
@@ -2511,5 +2511,27 @@
     "record": "front-of-house/docs/RELEASE.md section5",
     "limits": "Provider deployment provenance only; no historical live browser or human/device acceptance inferred. No runtime, rules, saves, tags or services changed.",
     "remaining": "PR176 final-head CI, merge and Pages are pending. Tag repair is outside this packet. QA013/D12, conditional QA014, Proposed FLOW01 and human/device/calibration/rights gates remain separate."
+  },
+  "openingSequence": {
+    "status": "implemented and locally verified; CI and hosted delivery pending",
+    "sourceBase": "2db3f6c",
+    "date": "2026-10-19",
+    "scope": "Approved 11 second title/menu with isolated scene, GSAP, skip/replay, reduced motion, optional sound",
+    "remaining": [
+      "required final-head CI",
+      "merge and hosted verification",
+      "immutable version tag after deployed merge verification",
+      "human visual/audio acceptance"
+    ],
+    "verification": {
+      "runner": "Dominic",
+      "tests": 493,
+      "assetChecks": "pass",
+      "build": "pass",
+      "openingJourneys": "13 opening scenarios pass, including five viewports, six skip beats, replay, returning saves, saved Build tool/undo isolation, saved Show resume, saved settlement focus, storage and renderer/library failures",
+      "preexistingFailure": "3px Book cutoff on2db3f6c corrected; full player rail passed",
+      "playerRail": "29 checks passed, including the pre-existing short-window Book correction",
+      "additional": "WebKit phone entry/save and cold offline entry/reload passed; required web-game client captured Book at $3000 after title exit"
+    }
   }
 }

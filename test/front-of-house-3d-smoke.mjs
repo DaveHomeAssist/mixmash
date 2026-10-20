@@ -31,6 +31,8 @@ try {
   const preferenceContext = await browser.newContext({ viewport: { width: 1024, height: 700 }, serviceWorkers: 'block' });
   const preferencePage = await preferenceContext.newPage();
   await preferencePage.goto(`${server.origin}/front-of-house/`);
+  await preferencePage.locator('.opening [data-intro="skip"]').click();
+  await preferencePage.locator('.opening [data-intro="enter"]').click();
   await preferencePage.waitForFunction(() => window.__frontOfHouse?.rendererStatus().active);
   assert.equal(await preferencePage.locator('#game-version').innerText(), `v${FRONT_OF_HOUSE_RELEASE.version}`);
   assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), null, 'implicit 3D default is not mistaken for an explicit choice');
@@ -38,6 +40,7 @@ try {
   await preferencePage.waitForFunction(() => !__frontOfHouse.rendererStatus().enabled);
   assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), '2d');
   await preferencePage.reload(); await preferencePage.waitForFunction(() => window.__frontOfHouse);
+  await preferencePage.locator('.opening-actions:not([hidden]) [data-intro="enter"]').click();
   assert.equal(await preferencePage.evaluate(() => __frontOfHouse.rendererStatus().enabled), false, 'explicit 2D survives reload');
   await preferencePage.click('#renderer-btn'); await preferencePage.waitForFunction(() => __frontOfHouse.rendererStatus().active);
   assert.equal(await preferencePage.evaluate(() => localStorage.getItem('front_of_house_renderer')), '3d');

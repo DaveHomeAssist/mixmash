@@ -1056,4 +1056,5 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
 }
 @media (min-width: 681px) and (max-height: 420px) {
   body[data-phase='book'] .offer .band-art { display: none; }
+  body[data-phase='book'] .offer .choice { padding-block: 4px; }
 }

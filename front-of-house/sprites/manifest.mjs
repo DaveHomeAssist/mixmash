@@ -89,5 +89,6 @@ export const OTHER_ASSETS = [
   { path: 'docs/hud/hud-phone.jpg', kind: 'Mockup', note: 'HUD.md mockup, phone' },
 ];
 
-// Sound. The header's "Mute All" is the shared studio nav; this game plays no sound yet.
-export const AUDIO = [];
+// Opening sound is generated in code; no sampled audio files are shipped.
+export const AUDIO = [{ id: 'opening-production', file: 'opening.mjs', procedural: true,
+  trigger: 'Enable sound: synthesized case impacts, scanner cue, ambience and musical pulse follow the opening timeline; optional browser speech supplies the soundcheck. Shared Mute All is respected.' }];

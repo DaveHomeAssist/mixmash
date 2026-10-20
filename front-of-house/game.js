@@ -22,6 +22,7 @@ import { binding, matches } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
 import { advisoryFor } from './advisory.mjs';
 import { bandArt, venueArt } from './menu-art.mjs';
+import { createOpening } from './opening.mjs';
 import { bumpHint, clearPrefs, defaultPrefs, loadPrefs, rememberAct, rememberIncident, rememberRoom, rememberTab, savePrefs, setSuggest, setView, TAB_PHASES } from './prefs.mjs';
 import { bookSuggestions, buildSuggestion, hasPlacementRule, incidentSuggestion, legalTiles, nextShowPreview, promoteSuggestion } from './anticipate.mjs';
 
@@ -156,7 +157,10 @@ function loadState() {
   return raw ? normalizeState(migrateSave(raw), freshSeed()) : createGame(freshSeed());
 }
 
+let hadOpeningSave = false;
+try { hadOpeningSave = !!store?.load(); } catch { /* blocked storage remains playable */ }
 let state = loadState();
+let openingActive = false;
 const ui = {
   tool: 'select', placeTool: 'stage', selection: null, dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
   mounted: null, play: null, raf: 0, sightKey: '', sight: { clear: new Set(), blocked: new Set() }, confirmNew: false,
@@ -1205,6 +1209,7 @@ function endPlayback() {
 }
 
 function loop() {
+  if (openingActive) { ui.raf = 0; return; }
   ui.raf = requestAnimationFrame(() => {
     const play = ui.play;
     if (!play) return;
@@ -3046,6 +3051,7 @@ window.render_game_to_text = () => {
   const r = settlementFor(state);
   return JSON.stringify({
     game: 'front-of-house',
+    opening: document.querySelector('.opening') ? { state: document.querySelector('.opening').dataset.state, seconds: Number(document.querySelector('.opening').dataset.seconds || 0) } : null,
     phase: state.phase,
     build: state.phase === 'build' ? {
       tool: ui.tool, selected: ui.selection === null ? null : state.venue.objects[ui.selection], cursor: ui.cursor,
@@ -3148,6 +3154,7 @@ function adoptStoredGame(message) {
   const next = loadState();
   if (JSON.stringify(next) === JSON.stringify(normalizeState(JSON.parse(JSON.stringify(state)), state.seed))) return;
   state = next;
+  hadOpeningSave = true;
   resetHistory();
   stopPlayback();
   ui.play = null;
@@ -3170,3 +3177,29 @@ if ('ResizeObserver' in window) {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', queueLayout, { once: true });
 layoutBoard();
 render();
+// Existing explicit renderer/QA routes remain direct game entries.
+if (!new URLSearchParams(location.search).has('renderer') && !new URLSearchParams(location.search).has('qa')) {
+  const resumeOpeningGame = () => {
+    openingActive = false;
+    render();
+    const play = ui.play;
+    if (play && (state.phase === 'show' || (play.after && !play.after.done))) {
+      const now = performance.now();
+      if (play.live) play.last = now;
+      else play.start = now - play.p * PLAY_SECONDS * 1000;
+      if (play.after && !play.after.done) play.after.start = now - (play.after.progress || 0) * AFTER_SECONDS * 1000;
+      if (!ui.raf) loop();
+    }
+    focusHeading();
+  };
+  const showOpening = (replay = false) => {
+    openingActive = true;
+    stopPlayback();
+    void createOpening({ replay, hasSave: () => hadOpeningSave || state.phase !== 'book' || state.history.length > 0, enter: resumeOpeningGame,
+      newGame: () => { resumeOpeningGame(); setMenu(true); el.menu.querySelector('[data-mode="career"]')?.focus(); },
+      theme: () => $('#theme-toggle').click(),
+    });
+  };
+  $('#intro-replay').addEventListener('click', () => { setMenu(false); showOpening(true); });
+  showOpening();
+} else $('#intro-replay').hidden = true;

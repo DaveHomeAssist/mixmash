@@ -103,7 +103,7 @@ ${table(['Group', 'Files', 'Size (KB)', 'Status'], [
     ['Board sprites (`sprites/`)', boardRows.length, kb(boardBytes), 'Stand-in'],
     ['Sprite library (`sprites/library/`)', libRows.length, kb(libBytes), 'Library, drawn by nothing'],
     ['Code-drawn elements (`board.js`)', M.CODE_DRAWN.length, '0', 'Drawn every frame'],
-    ['Sound', M.AUDIO.length, '0', M.AUDIO.length ? '' : 'None yet'],
+    ['Sound', M.AUDIO.filter(a => !a.procedural).length, '0', M.AUDIO.length ? 'Runtime-generated; see sound register' : 'None yet'],
   ])}
 
 ## 1. Board sprites
@@ -130,7 +130,7 @@ ${table(['Path', 'Kind', 'KB', 'Note'], otherRows)}
 
 ## 5. Sound
 
-${M.AUDIO.length ? table(['Id', 'File', 'Trigger'], M.AUDIO.map((a) => [a.id, a.file, a.trigger])) : 'None. The header\'s Mute All button belongs to the shared studio navigation; Front of House plays no sound.'}
+${M.AUDIO.length ? table(['Id', 'Source or file', 'Trigger'], M.AUDIO.map((a) => [a.id, a.file, a.trigger])) : 'None. The header\'s Mute All button belongs to the shared studio navigation; Front of House plays no sound.'}
 
 ## 6. Status key
 
