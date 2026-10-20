@@ -98,14 +98,15 @@ test('share controls exist for the studio and every game, hidden until JavaScrip
   const app = await read('src/hub/app.js');
   assert.match(app, /navigator\.share/); assert.match(app, /navigator\.clipboard\.writeText/);
 });
-test('revenue slots ship disabled: no markup, no third-party script, no ads.txt', async () => {
+test('support and ads ship disabled; analytics is the only third-party script', async () => {
   assert.equal(monetization.supportUrl, ''); assert.equal(monetization.adsensePublisherId, ''); assert.equal(monetization.adsenseSlotId, '');
   assert.equal(supportEnabled(), false); assert.equal(adsEnabled(), false);
   assert.equal(supportBlock() + supportFooterLink() + adHead() + adBlock(), '');
   const html = await read('index.html');
   for (const marker of ['data-support-slot', 'data-ad-slot', 'adsbygoogle', 'googlesyndication', 'ko-fi', 'patreon']) assert.ok(!html.includes(marker), `homepage has no ${marker}`);
   const external = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]).filter(src => /^https?:/.test(src));
-  assert.deepEqual(external, [], 'no third-party scripts');
+  assert.deepEqual(external, ['https://static.cloudflareinsights.com/beacon.min.js'], 'only the Cloudflare analytics beacon');
+  assert.ok(html.includes(`data-cf-beacon='{"token":"3aeddc4297384179a3dcb309314cb365"}'`), 'homepage carries the live analytics token');
   assert.equal(await exists('ads.txt'), false, 'no ads.txt until a real publisher ID exists');
 });
 test('revenue slots render only for well-formed values', () => {

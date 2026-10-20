@@ -10,18 +10,28 @@ const KOFI = 'https://ko-fi.com/test_page';
 const TOKEN = '0123456789abcdef0123456789abcdef';
 const INCLUDE = '<script src="/assets/analytics.js" defer></script>';
 
-test('shipped config is off: no support link, no analytics anywhere', async () => {
+test('shipped config: support off, Cloudflare Web Analytics on', async () => {
+  const TOKEN_LIVE = '3aeddc4297384179a3dcb309314cb365';
   assert.equal(monetization.supportUrl, '');
-  assert.equal(monetization.cloudflareAnalyticsToken, '');
-  assert.equal(analyticsEnabled(), false);
-  assert.equal(analyticsHead() + supportBlock() + supportFooterLink(), '');
+  assert.equal(monetization.cloudflareAnalyticsToken, TOKEN_LIVE);
+  assert.equal(analyticsEnabled(), true);
+  assert.equal(supportBlock() + supportFooterLink(), '');
+  assert.equal(analyticsHead(), `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN_LIVE}"}'></script>`);
   const include = await read('assets/analytics.js');
   assert.equal(include, analyticsScript());
-  assert.equal(include.replace(/\/\*[^]*?\*\//g, '').trim(), '', 'disabled include is comments only');
-  for (const file of ['index.html', ...ANALYTICS_PAGES]) {
+  assert.ok(include.includes('createElement'), 'enabled include injects the beacon');
+  assert.ok(include.includes(TOKEN_LIVE), 'include carries the live token');
+  const home = await read('index.html');
+  assert.ok(home.includes(`data-cf-beacon='{"token":"${TOKEN_LIVE}"}'`), 'homepage has the beacon');
+  assert.ok(home.includes('static.cloudflareinsights.com/beacon.min.js'), 'homepage loads the beacon script');
+  for (const file of ANALYTICS_PAGES) {
     const html = await read(file);
-    assert.ok(!html.includes('cloudflareinsights'), `${file} references no Cloudflare origin while off`);
-    assert.ok(!html.includes('data-cf-beacon'), `${file} has no beacon while off`);
+    assert.ok(html.includes(INCLUDE), `${file} keeps the shared include`);
+  }
+  for (const file of ['mars/index.html', 'front-of-house/index.html']) {
+    const html = await read(file);
+    assert.ok(html.includes('https://static.cloudflareinsights.com'), `${file} CSP allows the beacon script`);
+    assert.ok(html.includes('https://cloudflareinsights.com'), `${file} CSP allows the beacon connect`);
   }
 });
 
@@ -33,7 +43,7 @@ test('every non-EMPIRES wrapper includes the shared analytics include; EMPIRES d
 
 test('a token renders the official beacon on the homepage and in the wrapper include', () => {
   const on = { cloudflareAnalyticsToken: TOKEN };
-  assert.equal(analyticsHead(on), `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN}"}'></script>`);
+  assert.equal(analyticsHead(on), `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN}"}'></script>`);
   const appended = [];
   const document = {
     querySelector: () => null,
@@ -43,7 +53,7 @@ test('a token renders the official beacon on the homepage and in the wrapper inc
   vm.runInNewContext(analyticsScript(on), { document });
   assert.equal(appended.length, 1);
   assert.equal(appended[0].src, CF_BEACON_SRC);
-  assert.equal(appended[0].defer, true);
+  assert.equal(appended[0].type, 'module');
   assert.equal(appended[0].attrs['data-cf-beacon'], `{"token":"${TOKEN}"}`);
   // Already present (e.g. Cloudflare auto-injection): no duplicate beacon.
   appended.length = 0;
@@ -59,15 +69,20 @@ test('malformed tokens load nothing', () => {
 });
 
 test('CSP pages gain the beacon origins only while on, and lose them when turned off', async () => {
-  const csp = (await read('front-of-house/index.html')).match(/<meta http-equiv="Content-Security-Policy"[^>]*>/)[0];
-  assert.equal(applyAnalyticsCsp(csp, {}), csp, 'off leaves the CSP byte-identical');
-  const on = applyAnalyticsCsp(csp, { cloudflareAnalyticsToken: TOKEN });
+  const shipped = (await read('front-of-house/index.html')).match(/<meta http-equiv="Content-Security-Policy"[^>]*>/)[0];
+  assert.match(shipped, /script-src 'self' https:\/\/static\.cloudflareinsights\.com;/);
+  assert.match(shipped, /connect-src 'self' https:\/\/cloudflareinsights\.com;/);
+  const off = applyAnalyticsCsp(shipped, {});
+  assert.ok(!off.includes('cloudflareinsights'), 'turning off strips the origins');
+  assert.equal(applyAnalyticsCsp(off, {}), off, 'off leaves an already-off CSP byte-identical');
+  const on = applyAnalyticsCsp(off, { cloudflareAnalyticsToken: TOKEN });
   assert.match(on, /script-src 'self' https:\/\/static\.cloudflareinsights\.com;/);
   assert.match(on, /connect-src 'self' https:\/\/cloudflareinsights\.com;/);
   assert.equal(applyAnalyticsCsp(on, { cloudflareAnalyticsToken: TOKEN }), on, 'idempotent');
-  assert.equal(applyAnalyticsCsp(on, {}), csp, 'turning off restores the original policy');
+  assert.equal(applyAnalyticsCsp(on, {}), off, 'turning off restores the off policy');
+  assert.equal(applyAnalyticsCsp(shipped, { cloudflareAnalyticsToken: TOKEN }), shipped, 'shipped on CSP is already final');
   const mars = (await read('mars/index.html')).match(/<meta http-equiv="Content-Security-Policy"[^>]*>/)[0];
-  assert.match(applyAnalyticsCsp(mars, { cloudflareAnalyticsToken: TOKEN }), /connect-src 'self' https:\/\/mixmash-marsscape-authority\.vercel\.app https:\/\/cloudflareinsights\.com;/);
+  assert.match(mars, /connect-src 'self' https:\/\/mixmash-marsscape-authority\.vercel\.app https:\/\/cloudflareinsights\.com;/);
   assert.equal(applyAnalyticsCsp('<p>no policy</p>', { cloudflareAnalyticsToken: TOKEN }), '<p>no policy</p>');
 });
 

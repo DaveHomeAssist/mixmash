@@ -5,7 +5,7 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
-import { launchOptions } from './static-server.mjs';
+import { launchOptions, stubCloudflareAnalytics } from './static-server.mjs';
 
 const root = join(fileURLToPath(new URL('..', import.meta.url)));
 const port = 19_300 + Math.floor(Math.random() * 1_000);
@@ -49,6 +49,7 @@ let browser;
 try {
   browser = await chromium.launch(launchOptions());
   const page = await browser.newPage();
+  await stubCloudflareAnalytics(page);
   const errors = [];
   const screenshotDir = join(tmpdir(), `mixmash-play-smoke-${process.pid}`);
   await mkdir(screenshotDir, { recursive: true });
@@ -653,6 +654,7 @@ try {
   for (const [width, height, touch] of [[1440, 900, false], [375, 812, true], [812, 375, true], [1180, 820, true], [3840, 1080, false]]) {
     console.log(`Picker viewport: ${width}x${height}`);
     const context = await browser.newContext({ viewport: { width, height }, hasTouch: touch, isMobile: touch });
+    await stubCloudflareAnalytics(context);
     const setupPage = await context.newPage();
     const setupErrors = [];
     setupPage.on('pageerror', error => setupErrors.push(String(error)));
