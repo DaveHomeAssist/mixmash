@@ -2517,6 +2517,7 @@
     "status": "deployed and automatically verified; human/device acceptance open",
     "sourceBase": "2db3f6c",
     "date": "2026-10-20",
+    "boardSync": "Existing private Next Steps Board refreshed for this delivery checkpoint; updater parity check passed on 2026-10-20. Human acceptance remains open.",
     "scope": "Approved 11 second title/menu with isolated scene, GSAP, skip/replay, reduced motion, optional sound",
     "remaining": [
       "human desktop and physical-phone gameplay acceptance",
@@ -2534,7 +2535,7 @@
       "testsScope": "493 local pre-integration tests; final CI passed the repository suite, build, asset/doc checks and all required browser rails on the exact merged tree.",
       "hostedFiles": 18,
       "saveBoundary": "Intro controls preserve exact stored bytes. Normal page boot updates savedAt; the career state remains identical across offline reload.",
-      "pairedRenderer": "PR 39360805379 passes all 18 metrics; independent audit validates 36 raw windows, 20 source hashes and tree equality between candidate/tested merge/deployed merge. This is not a device frame-rate guarantee."
+      "pairedRenderer": "CI run 39360805379 passes all 18 metrics; independent audit validates 36 raw windows, 20 source hashes and tree equality between candidate/tested merge/deployed merge. This is not a device frame-rate guarantee."
     },
     "featureDate": "2026-10-19",
     "sourceHead": "ae53418830a7206c114da18902588d5372be3c95",
