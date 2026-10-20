@@ -8,7 +8,7 @@
   "head": "0.4.0 opening deployed; human acceptance open",
   "lastActivity": "2026-10-20",
   "status": "amber",
-  "statusReason": "Opening0.4.0 is merged, deployed and automatically verified:18 hosted runtime files match,15 opening scenarios and29 player checks pass, plus full phone animation/touch, cold offline entry/reload and WebKit phone entry. Human desktop/physical-phone visual and listening acceptance remains open; unrelated project findings are preserved.",
+  "statusReason": "Opening 0.4.0 is merged, deployed and automatically verified: 18 hosted runtime files match, 15 opening scenarios and 29 player checks pass, plus full phone animation/touch, cold offline entry/reload and WebKit phone entry. Human desktop/physical-phone visual and listening acceptance remains open; unrelated project findings are preserved.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -48,7 +48,7 @@
     "PR171: 0.3.5 J-Six and Vertigo lighting rig/cards, source3990130, merged1bcc10a. General CI39075354548 and paired CI39073920410 attempt2 pass; Pages and15 hosted byte matches plus eight light/dark live responsive/save checks pass. Earlier compact-tab failures, WebKit timeout and paired attempt1 rejection retained.",
     "PR172: 0.3.6 twelve stage/site model cards, source d1f3eae, merged 7bc9ed3. Required CI39090667953 passed; Pages and 26 hosted byte matches, 18 responsive catalog cases and cold hub-only offline first-visit/reload proof pass. Cache v84 includes module and previews; schema 2 and game rules unchanged.",
     "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged.",
-    "PR181:0.4.0 opening merged44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI39360805379 and Horseshoes39360805369 pass; paired renderer evidence independently audits36 raw windows and18 metrics. Pages build1298868065 serves the merge;18 hosted source matches,15 opening scenarios,29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
+    "PR #181: 0.4.0 opening merged at 44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI 39360805379 and Horseshoes 39360805369 pass; paired renderer evidence independently audits 36 raw windows and 18 metrics. Pages build 1298868065 serves the merge; 18 hosted source matches, 15 opening scenarios, 29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
     "title": "Complete opening visual and audio acceptance",
@@ -2530,11 +2530,11 @@
       "openingJourneys": "15 live scenarios pass: five viewports, six skip beats, replay/return saves, Build tool/undo isolation, Show clock resume, settlement focus, actual audio waveform/mute/cleanup, cross-tab adoption, storage/library/WebGL/context-loss and missing ResizeObserver paths.",
       "preexistingFailure": "3px Book cutoff on2db3f6c corrected; full player rail passed",
       "playerRail": "29 live checks pass; complete production player journeys and short-window Book correction.",
-      "additional": "Full375x812 animation and touch Skip/entry, cold hub-only offline first visit/reload and WebKit phone entry/save checks pass on Dominic.",
+      "additional": "Full 375 \u00d7 812 animation and touch Skip/entry, cold hub-only offline first visit/reload and WebKit phone entry/save checks pass on Dominic.",
       "testsScope": "493 local pre-integration tests; final CI passed the repository suite, build, asset/doc checks and all required browser rails on the exact merged tree.",
       "hostedFiles": 18,
       "saveBoundary": "Intro controls preserve exact stored bytes. Normal page boot updates savedAt; the career state remains identical across offline reload.",
-      "pairedRenderer": "PR39360805379 passes all18 metrics; independent audit validates36 raw windows,20 source hashes and tree equality between candidate/tested merge/deployed merge. This is not a device frame-rate guarantee."
+      "pairedRenderer": "PR 39360805379 passes all 18 metrics; independent audit validates 36 raw windows, 20 source hashes and tree equality between candidate/tested merge/deployed merge. This is not a device frame-rate guarantee."
     },
     "featureDate": "2026-10-19",
     "sourceHead": "ae53418830a7206c114da18902588d5372be3c95",
@@ -2548,8 +2548,8 @@
     "tag": "front-of-house-v0.4.0",
     "tagTarget": "44209d76ab8f0bed62989adfd8b0a105ec935cb2",
     "retainedFailures": [
-      "CI39230050413: old renderer smoke attempted gameplay controls behind title; corrected entry flow passed on Dominic and final CI. One CPU group9ms exceeded8.4ms.",
-      "Manual39360800469: full application job passed; one renderer CPU group4.4ms exceeded3.9ms. Final PR paired run passed unchanged limits; all evidence retained.",
+      "CI 39230050413: old renderer smoke attempted gameplay controls behind title; corrected entry flow passed on Dominic and final CI. One CPU group at 9ms exceeded 8.4ms.",
+      "Manual 39360800469: full application job passed; one renderer CPU group at 4.4ms exceeded 3.9ms. Final PR paired run passed unchanged limits; all evidence retained.",
       "Additional hosted offline probe initially compared the normal reload savedAt refresh byte-for-byte; career state was identical. Corrected reload-state assertion passed; exact bytes remain required around intro controls."
     ]
   }
