@@ -1147,3 +1147,7 @@ Distinct source-generated latch/switch, equipment wheels/clamps/cables, scanner,
 ### 2026-10-19 — Opening review edge cases
 
 The title refreshes Continue/New game when another tab advances the save, and uses ordinary resize events when ResizeObserver is unavailable. Dominic passes15 opening scenarios and the complete3D application smoke, which now enters through the title before testing default renderer preferences. CI31c0d8d retained a genuine older-test overlay failure and one CPU regression measurement (9ms versus8.4ms budget); no measurement limits changed. Final integrated-source CI and live proof remain pending.
+
+### 2026-10-20 — Opening0.4.0 deployed and automatically verified
+
+PR181 merged44209d76ab8f0bed62989adfd8b0a105ec935cb2 after required CI39360805379 and Horseshoes39360805369 passed. Tested merge38f082a and delivered merge have identical tree414c1c5ee619a858dffcbbbed65ced9bdffafa06. Pages build1298868065 succeeded; Dominic matched18 hosted runtime files and passed15 live opening scenarios,29 complete player checks, full-phone animation/touch, cold offline first entry/reload and WebKit phone save/entry. Immutable front-of-house-v0.4.0 peels to that deployed merge. Original failed CPU measurements remain recorded with unchanged thresholds; normal reload savedAt refresh is distinguished from career-state preservation. This is an early-playable engineering delivery, not human visual/listening or physical-device acceptance. Next action is the required desktop and phone hand-play/feedback; unrelated findings stay open.

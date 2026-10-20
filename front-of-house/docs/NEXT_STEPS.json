@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.4.0 opening sequence in verification",
-  "lastActivity": "2026-10-19",
+  "head": "0.4.0 opening deployed; human acceptance open",
+  "lastActivity": "2026-10-20",
   "status": "amber",
-  "statusReason": "Opening implemented; Dominic passes 15 opening scenarios including actual audio output, mute/cleanup, cross-tab save adoption and missing ResizeObserver, plus the complete 3D application smoke. Required final CI, merge and hosted verification remain pending; human/device/listening acceptance remains open.",
+  "statusReason": "Opening0.4.0 is merged, deployed and automatically verified:18 hosted runtime files match,15 opening scenarios and29 player checks pass, plus full phone animation/touch, cold offline entry/reload and WebKit phone entry. Human desktop/physical-phone visual and listening acceptance remains open; unrelated project findings are preserved.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -47,15 +47,16 @@
     "PR168: 0.3.4 PA rigs and matching equipment cards, source4945433, merged8b5ae09, required CI39057828540 passed; Pages and13 hosted byte matches plus eight live responsive/save checks passed.",
     "PR171: 0.3.5 J-Six and Vertigo lighting rig/cards, source3990130, merged1bcc10a. General CI39075354548 and paired CI39073920410 attempt2 pass; Pages and15 hosted byte matches plus eight light/dark live responsive/save checks pass. Earlier compact-tab failures, WebKit timeout and paired attempt1 rejection retained.",
     "PR172: 0.3.6 twelve stage/site model cards, source d1f3eae, merged 7bc9ed3. Required CI39090667953 passed; Pages and 26 hosted byte matches, 18 responsive catalog cases and cold hub-only offline first-visit/reload proof pass. Cache v84 includes module and previews; schema 2 and game rules unchanged.",
-    "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged."
+    "PR173: 0.3.7 band/performer visuals, source 602abcf, merged 2f91f61. CI39096514098 passed 476 tests and all required browser checks; paired gate passed all18 metrics with independent36-window source/raw audit. Pages39098459345 built; eight hosted files match and eight live desktop/mobile journeys pass. Set-start timing, reduced motion, classic sprites and exact saves/settlements verified. Rules/schema2 unchanged.",
+    "PR181:0.4.0 opening merged44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI39360805379 and Horseshoes39360805369 pass; paired renderer evidence independently audits36 raw windows and18 metrics. Pages build1298868065 serves the merge;18 hosted source matches,15 opening scenarios,29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
-    "title": "Verify and deliver the opening sequence",
-    "why": "Approved title/menu now needs final source checks, regression CI and hosted proof.",
-    "doneWhen": "Required checks, merge, deployment and live entry/save checks pass; human visual/audio feedback stays explicit.",
-    "effort": "M",
-    "owner": "Current FOH opening executor",
-    "blockedBy": null
+    "title": "Complete opening visual and audio acceptance",
+    "why": "The deployed sequence and automatic checks are complete; actual desktop/phone play and listening feedback remain necessary.",
+    "doneWhen": "Dave confirms readable opening and menu, usable Skip/Continue and acceptable sound on desktop and phone, including a reload during a show.",
+    "effort": "S",
+    "owner": "Dave",
+    "blockedBy": "Desktop and phone visual/audio feedback"
   },
   "findings": [
     {
@@ -2513,25 +2514,43 @@
     "remaining": "PR176 final-head CI, merge and Pages are pending. Tag repair is outside this packet. QA013/D12, conditional QA014, Proposed FLOW01 and human/device/calibration/rights gates remain separate."
   },
   "openingSequence": {
-    "status": "implemented and locally verified; CI and hosted delivery pending",
+    "status": "deployed and automatically verified; human/device acceptance open",
     "sourceBase": "2db3f6c",
-    "date": "2026-10-19",
+    "date": "2026-10-20",
     "scope": "Approved 11 second title/menu with isolated scene, GSAP, skip/replay, reduced motion, optional sound",
     "remaining": [
-      "required final-head CI",
-      "merge and hosted verification",
-      "immutable version tag after deployed merge verification",
-      "human visual/audio acceptance"
+      "human desktop and physical-phone gameplay acceptance",
+      "human visual and listening acceptance"
     ],
     "verification": {
       "runner": "Dominic",
       "tests": 493,
       "assetChecks": "pass",
       "build": "pass",
-      "openingJourneys": "13 opening scenarios pass, including five viewports, six skip beats, replay, returning saves, saved Build tool/undo isolation, saved Show resume, saved settlement focus, storage and renderer/library failures",
+      "openingJourneys": "15 live scenarios pass: five viewports, six skip beats, replay/return saves, Build tool/undo isolation, Show clock resume, settlement focus, actual audio waveform/mute/cleanup, cross-tab adoption, storage/library/WebGL/context-loss and missing ResizeObserver paths.",
       "preexistingFailure": "3px Book cutoff on2db3f6c corrected; full player rail passed",
-      "playerRail": "29 checks passed, including the pre-existing short-window Book correction",
-      "additional": "WebKit phone entry/save and cold offline entry/reload passed; required web-game client captured Book at $3000 after title exit"
-    }
+      "playerRail": "29 live checks pass; complete production player journeys and short-window Book correction.",
+      "additional": "Full375x812 animation and touch Skip/entry, cold hub-only offline first visit/reload and WebKit phone entry/save checks pass on Dominic.",
+      "testsScope": "493 local pre-integration tests; final CI passed the repository suite, build, asset/doc checks and all required browser rails on the exact merged tree.",
+      "hostedFiles": 18,
+      "saveBoundary": "Intro controls preserve exact stored bytes. Normal page boot updates savedAt; the career state remains identical across offline reload.",
+      "pairedRenderer": "PR39360805379 passes all18 metrics; independent audit validates36 raw windows,20 source hashes and tree equality between candidate/tested merge/deployed merge. This is not a device frame-rate guarantee."
+    },
+    "featureDate": "2026-10-19",
+    "sourceHead": "ae53418830a7206c114da18902588d5372be3c95",
+    "integrationBase": "b8496a3455482e604b66018fc69f8cc24904b9cc",
+    "pullRequest": 181,
+    "merge": "44209d76ab8f0bed62989adfd8b0a105ec935cb2",
+    "ciRun": 39360805379,
+    "testedMerge": "38f082a9d677e53939e3117512b717da9e3b5535",
+    "testedTree": "414c1c5ee619a858dffcbbbed65ced9bdffafa06",
+    "pagesBuild": 1298868065,
+    "tag": "front-of-house-v0.4.0",
+    "tagTarget": "44209d76ab8f0bed62989adfd8b0a105ec935cb2",
+    "retainedFailures": [
+      "CI39230050413: old renderer smoke attempted gameplay controls behind title; corrected entry flow passed on Dominic and final CI. One CPU group9ms exceeded8.4ms.",
+      "Manual39360800469: full application job passed; one renderer CPU group4.4ms exceeded3.9ms. Final PR paired run passed unchanged limits; all evidence retained.",
+      "Additional hosted offline probe initially compared the normal reload savedAt refresh byte-for-byte; career state was identical. Corrected reload-state assertion passed; exact bytes remain required around intro controls."
+    ]
   }
 }

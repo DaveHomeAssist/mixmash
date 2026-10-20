@@ -10,6 +10,9 @@ requires migration.
 An opening title sequence builds an empty lot into a show using the existing 3D equipment and renderer, then reveals the entry menu. It includes Skip intro, Replay intro, Continue for existing saves, a brief return reveal, reduced-motion presentation, theme controls and optional synchronized synthesized sound. Browsers require a press of Enable sound before audio plays. The classic board remains a fallback. Game rules, costs and save schema are unchanged. A pre-existing short-window Book cutoff at 683 × 384 is also corrected with smaller button padding; text and touch targets retain their size.
 
 
+Delivery verified2026-10-20: [PR181](https://github.com/DaveHomeAssist/mixmash/pull/181), merge`44209d7`, green required CI, successful Pages build1298868065 and18 matching hosted runtime files. Fifteen live opening scenarios,29 player checks, full phone animation/touch, cold offline entry/reload and WebKit phone entry pass. `front-of-house-v0.4.0` identifies the verified deployed merge. Human desktop/physical-phone and listening acceptance remain open.
+
+
 ## 0.3.9 — 2026-10-18
 
 - On a 375px phone the paused Show header fits its plate: the clock's line box now holds the font's full height instead of overflowing by about 2 px, whichever monospace font the device has. Incident choice costs on phones are set slightly smaller so a long cost such as "$125 · not enough cash" stays on one line beside its label, keeping the rain choices inside the peek sheet with room to spare. Layout only: rules, money, strings, balance and save schema 2 are unchanged.
