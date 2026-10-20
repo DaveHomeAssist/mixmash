@@ -214,10 +214,16 @@ async function serveStatic(response, pathname) {
   }
 }
 
+// Repo-root files the game pages include by absolute path. GitHub Pages serves them from
+// the site root; this local server has to as well, or the request falls back to
+// index.html and the browser refuses to run it (text/html MIME). Keep it a narrow
+// allowlist, never the whole repo root.
+const SHARED_ROOT_FILES = ['manifest.webmanifest', 'sw.js', 'offline.html', 'assets/last-game.js', 'assets/analytics.js'];
+
 function sharedStaticPath(pathname) {
   const path = decodeURIComponent(pathname).replace(/^\/+/, '');
   if (path.startsWith('src/kit/')) return path;
-  if (['manifest.webmanifest', 'sw.js', 'offline.html', 'assets/last-game.js'].includes(path)) return path;
+  if (SHARED_ROOT_FILES.includes(path)) return path;
   return '';
 }
 
@@ -614,7 +620,7 @@ async function createJsonStore() {
 }
 
 function setSecurityHeaders(response) {
-  response.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ${PUBLIC_API_ORIGIN}; object-src 'none'; base-uri 'self'; form-action 'self'`);
+  response.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ${PUBLIC_API_ORIGIN} https://cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'`);
   response.setHeader('X-Content-Type-Options', 'nosniff');
   response.setHeader('X-Frame-Options', 'DENY');
   response.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');

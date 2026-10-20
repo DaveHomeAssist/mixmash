@@ -145,6 +145,20 @@ async function startLocalServer(port) {
   return { processHandle, url };
 }
 
+// The game page loads the Cloudflare Web Analytics beacon (/assets/analytics.js). Serve it
+// an empty stub here: the real beacon's RUM POST fails CORS from localhost (Cloudflare
+// only allows mixmash.games), and screenshots must not depend on a third-party network.
+// The stub is still a real request, so a CSP that blocked the beacon would show up as a
+// console error, and analyticsBeaconRequests proves the include actually ran.
+const analyticsBeaconRequests = [];
+async function stubAnalytics(context) {
+  await context.route(/^https:\/\/static\.cloudflareinsights\.com\//, (route) => {
+    analyticsBeaconRequests.push(route.request().url());
+    return route.fulfill({ status: 200, contentType: 'text/javascript; charset=utf-8', body: '' });
+  });
+  await context.route(/^https:\/\/cloudflareinsights\.com\//, (route) => route.fulfill({ status: 204, body: '' }));
+}
+
 async function gameState(page) {
   return page.evaluate(() => {
     if (typeof window.render_game_to_text === 'function') {
@@ -339,6 +353,7 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: 'no-preference',
   });
+  await stubAnalytics(context);
   const page = await context.newPage();
   const consoleErrors = [];
   page.on('console', (message) => {
@@ -500,6 +515,7 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: 'no-preference',
   });
+  await stubAnalytics(missingContext);
   await missingContext.route('**/assets/commissioned/index.json', (route) => route.fulfill({
     status: 200,
     contentType: 'application/json',
@@ -688,6 +704,9 @@ try {
   };
   const reportPath = join(outputDirectory, 'visual-report.json');
   writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  if (!analyticsBeaconRequests.some((url) => url.endsWith('/beacon.min.js'))) {
+    consoleErrors.push('analytics: /assets/analytics.js did not request the Cloudflare beacon');
+  }
   const failed = consoleErrors.length > 0 || failedComparisons.length > 0 || failedGoldenGates.length > 0;
   console.log(`MarsScape visual regression: ${failed ? 'FAIL' : 'PASS'}`);
   console.log(`Screenshots: ${outputDirectory}`);
