@@ -10,12 +10,16 @@ const KOFI = 'https://ko-fi.com/test_page';
 const TOKEN = '0123456789abcdef0123456789abcdef';
 const INCLUDE = '<script src="/assets/analytics.js" defer></script>';
 
-test('shipped config: support off, Cloudflare Web Analytics on', async () => {
+test('shipped config: Ko-fi support on, Cloudflare Web Analytics on', async () => {
   const TOKEN_LIVE = '3aeddc4297384179a3dcb309314cb365';
-  assert.equal(monetization.supportUrl, '');
+  assert.equal(monetization.supportUrl, 'https://ko-fi.com/avbydave');
+  assert.equal(supportEnabled(), true);
   assert.equal(monetization.cloudflareAnalyticsToken, TOKEN_LIVE);
   assert.equal(analyticsEnabled(), true);
-  assert.equal(supportBlock() + supportFooterLink(), '');
+  const homeSupport = await read('index.html');
+  assert.ok(homeSupport.includes(supportBlock()), 'homepage carries the Ko-fi block');
+  assert.ok(homeSupport.includes(supportFooterLink()), 'homepage footer carries the Ko-fi link');
+  assert.equal((homeSupport.match(/href="https:\/\/ko-fi\.com\/avbydave" target="_blank" rel="noopener"/g) || []).length, 2, 'exactly two Ko-fi links: block and footer');
   assert.equal(analyticsHead(), `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN_LIVE}"}'></script>`);
   const include = await read('assets/analytics.js');
   assert.equal(include, analyticsScript());
@@ -92,7 +96,10 @@ test('Ko-fi support link: accepted shape, Ko-fi label and copy', () => {
   assert.equal(isKofi(KOFI), true); assert.equal(isKofi('https://example.itch.io/'), false);
   const block = supportBlock({ supportUrl: KOFI });
   assert.match(block, /href="https:\/\/ko-fi\.com\/test_page" target="_blank" rel="noopener">Support MixMash on Ko-fi/);
-  assert.match(block, /a one-off tip on Ko-fi/);
+  assert.match(block, /<h3>Keep the games free<\/h3>/);
+  assert.match(block, /a tip on Ko-fi helps keep the site free and ad-light, and funds new games, stages and fighters\./);
+  assert.match(block, /<p class="support-note">One-off tips\. No Ko-fi account needed\.<\/p><\/div>$/);
+  assert.ok(!supportBlock({ supportUrl: 'https://example.itch.io/' }).includes('support-note'), 'Ko-fi-only note stays off other hosts');
   assert.match(supportFooterLink({ supportUrl: KOFI }), />Support MixMash on Ko-fi</);
   // itch.io stays valid for the planned second channel, with the generic label.
   assert.match(supportBlock({ supportUrl: 'https://example.itch.io/' }), />Support MixMash </);

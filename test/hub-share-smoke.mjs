@@ -1,4 +1,4 @@
-/** Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; support/ads stay off; analytics beacon allowed. */
+/** Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; Ko-fi support is a plain link (no Ko-fi request); ads stay off; analytics beacon allowed. */
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -65,7 +65,8 @@ try {
     assert.equal(await page.locator('.share-button:visible').count(), 0);
     await context.close();
   }
-  // Support and ads stay off. The only allowed off-site request is the Cloudflare analytics beacon.
+  // Ko-fi support is on as two plain links (Studio block + footer); ads stay off. The only allowed
+  // off-site request is the Cloudflare analytics beacon, so the Ko-fi links load nothing from Ko-fi.
   const allowedOffsite = url => /^https:\/\/(static\.)?cloudflareinsights\.com\//.test(url);
   for (const [width, height] of [[360, 780], [1440, 900]]) {
     for (const hash of ['', '#studio', `#game-${playableGames[0].id}`]) {
@@ -73,7 +74,8 @@ try {
       const offsite = [];
       page.on('request', request => { if (!request.url().startsWith(origin)) offsite.push(request.url()); });
       await page.reload({ waitUntil: 'networkidle' });
-      assert.equal(await page.locator('[data-support-slot],[data-ad-slot],.adsbygoogle').count(), 0, `${width} ${hash}: no support/ad slots`);
+      assert.equal(await page.locator('[data-ad-slot],.adsbygoogle').count(), 0, `${width} ${hash}: no ad slots`);
+      assert.deepEqual(await page.locator('[data-support-slot]').evaluateAll(nodes => nodes.map(node => (node.matches('a') ? node : node.querySelector('a')).getAttribute('href'))), ['https://ko-fi.com/avbydave', 'https://ko-fi.com/avbydave'], `${width} ${hash}: Ko-fi block and footer link`);
       const unexpected = [...new Set(offsite)].filter(url => !allowedOffsite(url));
       assert.deepEqual(unexpected, [], `${width} ${hash}: unexpected third-party ${JSON.stringify(offsite)}`);
       assert.ok(offsite.some(url => url.includes('static.cloudflareinsights.com/beacon.min.js')), `${width} ${hash}: analytics beacon requested`);
@@ -81,5 +83,5 @@ try {
       assert.deepEqual(failures, []); await context.close();
     }
   }
-  console.log('Hub share, analytics-on, and support/ads-off smoke passed.');
+  console.log('Hub share, analytics-on, Ko-fi-link and ads-off smoke passed.');
 } finally { await browser.close(); await server.close(); }

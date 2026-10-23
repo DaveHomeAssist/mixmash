@@ -1,5 +1,5 @@
 /**
- * Revenue switches for the static homepage. Everything here ships OFF.
+ * Revenue switches for the static homepage. Support (Ko-fi) and analytics are on; ads ship OFF.
  *
  * Leave a value empty and the homepage renders nothing for it: no markup, no reserved space,
  * no third-party script and no network request. Fill one in, run `npm run hub:build`, and
@@ -9,7 +9,7 @@ export const monetization = {
   // Dave's Ko-fi page, exactly https://ko-fi.com/<name> (Dave's pick, Oct 19). An itch.io page
   // (https://<name>.itch.io/) is the planned second channel; any other https page also works.
   // Shows a "Keep the games free" tip block in the Studio view and a footer link.
-  supportUrl: '',
+  supportUrl: 'https://ko-fi.com/avbydave',
   // Optional label override. Empty: "Support MixMash on Ko-fi" for Ko-fi, else "Support MixMash".
   supportLabel: '',
   // Google AdSense publisher ID (ca-pub- plus 16 digits) and one display ad unit slot ID (digits).
@@ -43,8 +43,10 @@ export function supportEnabled(config = monetization) {
 }
 const supportLabel = config => config.supportLabel || (isKofi(config.supportUrl) ? 'Support MixMash on Ko-fi' : 'Support MixMash');
 const supportCopy = config => isKofi(config.supportUrl)
-  ? 'Every game here is free to play. If you enjoy one, a one-off tip on Ko-fi helps fund new games and updates. No account needed.'
-  : 'Every game here is free to play. If you enjoy one, you can chip in to support new games and updates.';
+  ? 'Every MixMash game is free to play, right in your browser. If one made your day, a tip on Ko-fi helps keep the site free and ad-light, and funds new games, stages and fighters.'
+  : 'Every MixMash game is free to play, right in your browser. If one made your day, chipping in helps keep the site free and ad-light, and funds new games, stages and fighters.';
+// Ko-fi takes one-off tips from guests (help.ko-fi.com: "No, an account is not needed to support you on Ko-fi!").
+const supportNote = config => isKofi(config.supportUrl) ? 'One-off tips. No Ko-fi account needed.' : '';
 /** Ads are live only with both a valid publisher ID and a numeric slot ID. */
 export function adsEnabled(config = monetization) {
   return /^ca-pub-\d{16}$/.test(config.adsensePublisherId || '') && /^\d{6,12}$/.test(config.adsenseSlotId || '');
@@ -52,7 +54,8 @@ export function adsEnabled(config = monetization) {
 /** "Support MixMash" block for the Studio view. Empty string when disabled. */
 export function supportBlock(config = monetization) {
   if (!supportEnabled(config)) return '';
-  return `<div class="support-slot" data-support-slot><h3>Keep the games free.</h3><p>${escape(supportCopy(config))}</p><a class="button primary" href="${escape(config.supportUrl)}" target="_blank" rel="noopener">${escape(supportLabel(config))} <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a></div>`;
+  const note = supportNote(config);
+  return `<div class="support-slot" data-support-slot><h3>Keep the games free</h3><p>${escape(supportCopy(config))}</p><a class="button primary" href="${escape(config.supportUrl)}" target="_blank" rel="noopener">${escape(supportLabel(config))} <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>${note ? `<p class="support-note">${escape(note)}</p>` : ''}</div>`;
 }
 /** Compact footer link. Empty string when disabled. */
 export function supportFooterLink(config = monetization) {

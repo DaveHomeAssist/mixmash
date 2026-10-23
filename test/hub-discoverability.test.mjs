@@ -98,12 +98,14 @@ test('share controls exist for the studio and every game, hidden until JavaScrip
   const app = await read('src/hub/app.js');
   assert.match(app, /navigator\.share/); assert.match(app, /navigator\.clipboard\.writeText/);
 });
-test('support and ads ship disabled; analytics is the only third-party script', async () => {
-  assert.equal(monetization.supportUrl, ''); assert.equal(monetization.adsensePublisherId, ''); assert.equal(monetization.adsenseSlotId, '');
-  assert.equal(supportEnabled(), false); assert.equal(adsEnabled(), false);
-  assert.equal(supportBlock() + supportFooterLink() + adHead() + adBlock(), '');
+test('Ko-fi support on, ads off; analytics is the only third-party script', async () => {
+  assert.equal(monetization.supportUrl, 'https://ko-fi.com/avbydave'); assert.equal(monetization.adsensePublisherId, ''); assert.equal(monetization.adsenseSlotId, '');
+  assert.equal(supportEnabled(), true); assert.equal(adsEnabled(), false);
+  assert.equal(adHead() + adBlock(), '');
   const html = await read('index.html');
-  for (const marker of ['data-support-slot', 'data-ad-slot', 'adsbygoogle', 'googlesyndication', 'ko-fi', 'patreon']) assert.ok(!html.includes(marker), `homepage has no ${marker}`);
+  for (const marker of ['data-ad-slot', 'adsbygoogle', 'googlesyndication', 'patreon']) assert.ok(!html.includes(marker), `homepage has no ${marker}`);
+  assert.equal((html.match(/data-support-slot/g) || []).length, 2, 'Ko-fi block and footer link');
+  assert.ok(!/<script[^>]+ko-fi/i.test(html), 'Ko-fi is a plain link, no Ko-fi script or widget');
   const external = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]).filter(src => /^https?:/.test(src));
   assert.deepEqual(external, ['https://static.cloudflareinsights.com/beacon.min.js'], 'only the Cloudflare analytics beacon');
   assert.ok(html.includes(`data-cf-beacon='{"token":"3aeddc4297384179a3dcb309314cb365"}'`), 'homepage carries the live analytics token');
