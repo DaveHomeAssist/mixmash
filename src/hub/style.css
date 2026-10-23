@@ -1313,6 +1313,7 @@ body:has(.view:not(#games):target) .site-shell {
 }
 .support-slot h3 { margin-top:0 }
 .support-slot p { margin-bottom:14px }
+.support-slot .support-note { margin:10px 0 0; font-size:.875rem; color:var(--muted) }
 .ad-slot {
   margin:24px 0 8px;
   min-height:274px;
@@ -1327,4 +1328,5 @@ body:has(.view:not(#games):target) .site-shell {
   letter-spacing:.08em;
   color:var(--muted)
 }
-.support-link { color:inherit; display:inline-flex; align-items:center; min-height:44px }
+/* Fills the 34px footer bar exactly; 44px overflowed the viewport by 5px. The footer is hidden on phones, and 34px clears WCAG 2.2's 24px target minimum. */
+.support-link { color:inherit; display:inline-flex; align-items:center; min-height:34px; padding-inline:8px }

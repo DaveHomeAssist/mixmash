@@ -92,7 +92,10 @@ test('Ko-fi support link: accepted shape, Ko-fi label and copy', () => {
   assert.equal(isKofi(KOFI), true); assert.equal(isKofi('https://example.itch.io/'), false);
   const block = supportBlock({ supportUrl: KOFI });
   assert.match(block, /href="https:\/\/ko-fi\.com\/test_page" target="_blank" rel="noopener">Support MixMash on Ko-fi/);
-  assert.match(block, /a one-off tip on Ko-fi/);
+  assert.match(block, /<h3>Keep the games free<\/h3>/);
+  assert.match(block, /a tip on Ko-fi helps keep the site free and ad-light, and funds new games, stages and fighters\./);
+  assert.match(block, /<p class="support-note">One-off tips\. No Ko-fi account needed\.<\/p><\/div>$/);
+  assert.ok(!supportBlock({ supportUrl: 'https://example.itch.io/' }).includes('support-note'), 'Ko-fi-only note stays off other hosts');
   assert.match(supportFooterLink({ supportUrl: KOFI }), />Support MixMash on Ko-fi</);
   // itch.io stays valid for the planned second channel, with the generic label.
   assert.match(supportBlock({ supportUrl: 'https://example.itch.io/' }), />Support MixMash </);
