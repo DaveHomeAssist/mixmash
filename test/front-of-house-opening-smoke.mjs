@@ -61,10 +61,21 @@ try {
   const page = await context.newPage(); const errors = trackPageFailures(page, new URL(url).origin);
   await page.goto(url); await page.waitForSelector('.opening');
   await page.waitForSelector('.opening-actions:not([hidden])', {timeout:30000});
+  // Each beat is timed on the page clock from the Replay press and pressed in the same browser task.
+  // A test-side sleep plus Playwright's visible/stable wait could land the 9.3 s beat after the 11 s
+  // sequence had finished and hidden Skip on a loaded runner (CI run 39940875784).
+  await page.evaluate(() => document.addEventListener('click', e => {
+    if (e.target.closest?.('.opening [data-intro="replay"]')) window.__openingReplayAt = performance.now();
+  }, true));
+  const skipBeats = [];
   for (const seconds of [0,1.3,3.9,6.2,8.1,9.3]) {
     await page.locator('.opening [data-intro="replay"]').click();
-    await page.waitForTimeout(seconds * 1000);
-    await page.locator('.opening [data-intro="skip"]').click();
+    skipBeats.push(await page.evaluate(async (ms) => {
+      await new Promise(resolve => setTimeout(resolve, Math.max(0, window.__openingReplayAt + ms - performance.now())));
+      const at = Math.round(performance.now() - window.__openingReplayAt), skip = document.querySelector('.opening [data-intro="skip"]');
+      if (!skip || skip.hidden || !skip.getClientRects().length) throw new Error(`Skip intro was not shown ${at} ms after Replay (beat ${ms} ms)`);
+      skip.click(); return at;
+    }, seconds * 1000));
     await page.waitForSelector('.opening-actions:not([hidden])');
   }
   await page.locator('.opening [data-intro="sound"]').click();
@@ -83,7 +94,7 @@ try {
   await page.locator('.opening [data-intro="enter"]').click();
   await page.waitForFunction(() => __mixmashNav.audioContexts.every(c => c.state === 'closed'));
   assert.deepEqual(errors, []); await context.close();
-  results.push({fullSequence:true,skipBeats:6,soundGesture:true,audibleWaveform:true,audioDisposed:true});
+  results.push({fullSequence:true,skipBeats:6,skipBeatMs:skipBeats,soundGesture:true,audibleWaveform:true,audioDisposed:true});
   {
     const context = await browser.newContext({reducedMotion:'reduce',serviceWorkers:'block'}), page = await context.newPage();
     await page.goto(url); await page.waitForSelector('.opening-actions:not([hidden])');
