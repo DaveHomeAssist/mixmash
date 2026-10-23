@@ -16,7 +16,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
   const festival = venue === 'festival', camera = createLotCamera(festival ? { width: FESTIVAL_SCENE.width, depth: FESTIVAL_SCENE.depth } : { width, depth }), models = createLotModels(), world = new T.Scene();
   const environment = venue === 'lot' ? createLotEnvironment(width, depth) : null;
-  if (environment) { world.add(environment.group); world.fog = environment.fog; }
+  // The scenery shader owns distance haze; playable materials keep their original shader path.
+  if (environment) world.add(environment.group);
   const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models, { width, depth, pillars: spec.pillars, indoor: venue === 'club' }), room = models.room(spec);
   const sidePresentation = festival ? createLotPresentation(models, { width: FESTIVAL_SCENE.annex.w, depth: FESTIVAL_SCENE.annex.h, indoor: true }) : null;
   if (sidePresentation) sidePresentation.group.position.x = FESTIVAL_SCENE.annex.x;
@@ -26,7 +27,9 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   let stageAudience = null;
   const media = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   let motion = reducedMotion === null ? !media?.matches : !reducedMotion;
-  const floorGeometry = new T.PlaneGeometry(width, depth), floorMaterial = models.material(venue === 'club' ? 0x4b4040 : venue === 'amphitheater' ? 0x354532 : 0x373b3c, 0, 0.97).clone();
+  // Diffuse asphalt keeps warm light pools and shadows without per-pixel PBR cost.
+  const floorGeometry = new T.PlaneGeometry(width, depth, environment ? width : 1, environment ? depth : 1);
+  const floorMaterial = environment ? new T.MeshLambertMaterial({ color: 0x373b3c, map: models.material(0x373b3c, 0, 0.97).map }) : models.material(venue === 'club' ? 0x4b4040 : venue === 'amphitheater' ? 0x354532 : 0x373b3c, 0, 0.97).clone();
   const floorMap = floorMaterial.map.clone(); floorMap.repeat.set(width * 2, depth * 2); floorMap.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); floorMap.needsUpdate = true; floorMaterial.map = floorMap;
   const floor = new T.Mesh(floorGeometry, floorMaterial); floor.rotation.x = -Math.PI / 2; floor.position.set(width / 2, -0.01, depth / 2); floor.receiveShadow = true;
   const sky = new T.HemisphereLight(0xdce9ff, 0x343a35, 2.2);

@@ -1166,3 +1166,25 @@ Review correction: environment teardown now emits each InstancedMesh disposal
 event before releasing shared resources, and the ownership test requires all
 instance buffers as well as geometry/material/texture disposal. The final local
 opening rail also passed; exact revised-head CI remains required.
+
+The first paired CI39904452996 failed sustained frame-time limits (five of six
+viewport/attendance groups); source551aee4 full CI39904477584 and Horseshoes
+39904521103 passed. Retained full36 raw windows and comparison: no thresholds
+changed. Same-host diagnostic A/B points to per-pixel lit decoration and hidden
+surface overdraw. Decoration now uses unlit colors with a fixed night palette;
+the sky draws after opaque depth, and grass/gravel rings omit hidden ground below
+the playable floor. Scenery, fog, camera, attendance and simulation are retained.
+Quick probes are diagnostic only; revised visual/player and full paired gates
+remain required before merge.
+
+Final optimization candidate: all static scenery is merged into one vertex-color
+mesh plus the sky. Color conversion and faceted tint are baked once; a small
+shader applies gravel grain, night tint and distant haze. Fog stays out of the
+playable materials, and the rough Lot asphalt uses a subdivided diffuse material
+with its original grid, warm point-light pools and shadow reception. Other rooms
+and all gameplay remain unchanged. Same-host short probes improved markedly but
+are not release acceptance. Dominic passes the updated ownership/ground-hole
+tests, responsive visual/state checks, Lot boundary/context/20-cycle disposal and
+full3D gesture/reload/settlement parity; final opening/full CI/paired limits remain
+required. Failed CI evidence independently audits36 raw windows and21 source
+digests; five failed groups are retained with unchanged limits.

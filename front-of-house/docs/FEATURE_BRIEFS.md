@@ -1038,7 +1038,7 @@ The existing Lot camera, all presets and opening use the same static environment
 The fence remains the playable boundary: scenery never enters picking, placement,
 navigation bounds, crowd, economy or saves. Club, Shell, Festival and classic
 fallback keep their established presentation. Use authored procedural low-poly
-geometry, shared/instanced materials and no external assets or new dependency.
+geometry, shared textures and two static drawing batches, with no external assets or new dependency.
 Warm venue illumination contrasts with cool surroundings; no extra shadow maps.
 Acceptance: desktop/phone/ultrawide captures, all camera quadrants and eye-level
 presets show coherent surroundings; picking and reload preserve game state;

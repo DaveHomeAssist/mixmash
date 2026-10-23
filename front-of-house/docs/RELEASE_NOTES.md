@@ -11,8 +11,8 @@ The Lot now sits in gravel and grass beside a service road and loading apron,
 with sparse trees and distant industrial silhouettes. A cool dusk gradient and
 restrained distance fog replace the flat grey exterior; warm venue lighting
 connects it to the opening. The fence remains the playable boundary. Decoration
-uses static instanced geometry, adds no shadow map, and changes no rules, saves,
-camera controls or other rooms. Cache v89; save schema 2 unchanged.
+uses one static vertex-colored mesh plus sky, adds no shadow map, and changes no rules, saves,
+camera controls or other rooms. The Lot asphalt uses subdivided diffuse lighting to retain warm light pools and shadows at lower cost. Cache v89; save schema 2 unchanged.
 
 ## 0.4.0 — 2026-10-19
 

@@ -2557,10 +2557,12 @@
   },
   "lotSurroundings": {
     "date": "2026-10-23",
-    "status": "implemented; verification pending",
+    "status": "performance regression identified; optimized candidate in verification",
     "scope": "Lot and opening only; static gravel/grass, service road/loading, trees, industrial horizon, dusk/fog/warm venue light",
     "boundaries": "No picking, placement, economy, save or camera-control changes",
-    "verification": "Dominic:494 tests/build, boundary/picking/context/20 disposal cycles, complete3D gesture/reload/settlement parity pass. Three game viewports, four orbit quadrants and four camera presets captured and inspected; state unchanged. Opening check and unchanged paired performance/CI, merge and hosted verification pending.",
-    "boardSync": "Existing private board refreshed for this checkpoint; updater parity checked on2026-10-23."
+    "verification": "Updated ownership/ground-hole tests, 1440/375/2560 visual/state checks, all4presets/4quadrants, boundary/context/20-cycle disposal and full3D gesture/reload/settlement parity pass on Dominic. Short probes are diagnostic only. New exact-head full CI/paired renderer gate and hosted delivery remain pending.",
+    "boardSync": "Existing private board refreshed for this checkpoint; updater parity checked on2026-10-23.",
+    "retainedFailure": "Paired CI39904452996 failed sustained frame-time limits in5/6 groups; complete36-window evidence retained. Full CI39904477584 and Horseshoes39904521103 passed. Limits unchanged; optimize material/hidden surface rendering before release.",
+    "optimization": "Two static batches: vertex-colored scenery with baked color conversion and a minimal grain/night/haze shader, depth-ordered sky and ground rings omitting the hidden playable floor. Fog is scenery-only; subdivided diffuse Lot asphalt retains grid, warm light pools and shadows. All requested scenery and logical boundaries remain."
   }
 }
