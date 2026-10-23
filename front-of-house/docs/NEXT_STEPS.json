@@ -496,6 +496,7 @@
       "run": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37205343575",
       "source": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
       "artifactId": 11305185297,
+      "gateBaselineNote": "Gate baseline re-pinned from 6ed7b7c to 841269997a2b4b112871b7560abf1c8670e850de on 2026-10-23 via PR #183 (CT-DEC-40); this record still documents what was measured against 6ed7b7c.",
       "validWindows": 18,
       "limits": "Superseded calibration state: CT-DEC-21 paired regression policy implemented and verified by final CI37258873878."
     },
