@@ -500,7 +500,7 @@ body:has(.view:not(#games):target) .hero {
   padding:0 4px
 }
 .site-footer {
-  height:34px;
+  height:44px;
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -1328,5 +1328,5 @@ body:has(.view:not(#games):target) .site-shell {
   letter-spacing:.08em;
   color:var(--muted)
 }
-/* Fills the 34px footer bar exactly; 44px overflowed the viewport by 5px. The footer is hidden on phones, and 34px clears WCAG 2.2's 24px target minimum. */
-.support-link { color:inherit; display:inline-flex; align-items:center; min-height:34px; padding-inline:8px }
+/* Match the footer track so the touch target stays inside the viewport. */
+.support-link { color:inherit; display:inline-flex; align-items:center; min-height:44px; padding-inline:8px }

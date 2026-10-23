@@ -89,3 +89,15 @@ normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
 trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
 dbf0682 without Front of House source changes; combined-head CI and release
 remain pending. Old6ed comparisons remain failures; device/human proof separate.
+
+## 2026-10-23 delivery integration mobile correction
+
+Combined-head pair39939626013 independently passes36windows/22source hashes/tree
+atba4fbc7; hosted Horseshoes39940920864 passes. Hosted full39940917728
+passes Front of House but fails7hub WebKit touch targets: integrated Ko-fi
+footer link34px below existing44px threshold. Increase footer row and link
+together to44px, preserving copy/behavior and viewport fit. All12hub mobile
+configs pass on Dominic. Full updated-head CI pending; no scenery release yet.
+Dominic landing verification passes20Chromium/WebKit views in both themes,
+including320x256 and3840x1080; desktop capture inspected, no root overflow or
+clipped controls. Existing hub:check passes.

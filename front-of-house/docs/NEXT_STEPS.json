@@ -8,7 +8,7 @@
   "head": "0.4.1 Lot surroundings in verification",
   "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "Expanded-scene calibration qualifies at7b7233a: CI39933460388 full functional/normal/fault pass; independent54-window/33-source audit passes. Current base8a1f692 integrated without Front of House changes; combined-head CI/review and release pending.",
+  "statusReason": "Combined-head pair39939626013 independently passes36windows/22source digests/tree atba4fbc7; hosted Horseshoes39940920864 passes. Full hosted39940917728 passed Front of House but failed mobile hub touch targets introduced by integrated Ko-fi footer (34px). Correct footer/link to44px;12hub mobile configurations pass on Dominic, full updated-head CI pending.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -51,12 +51,12 @@
     "PR #181: 0.4.0 opening merged at 44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI 39360805379 and Horseshoes 39360805369 pass; paired renderer evidence independently audits 36 raw windows and 18 metrics. Pages build 1298868065 serves the merge; 18 hosted source matches, 15 opening scenarios, 29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
-    "title": "Verify combined delivery head and release scenery",
-    "why": "Calibration has audited full normal/fault proof; current delivery-base changes are integrated, preserve both scopes.",
-    "doneWhen": "Pass combined-head CI/review, merge, verify Pages and hosted asset/gameplay parity, then tag0.4.1; human/device acceptance separate.",
+    "title": "Verify footer integration correction and release scenery",
+    "why": "Scenery performance and full Front of House behavior qualify; integrated delivery footer exposed a concrete hub44px target regression.",
+    "doneWhen": "Pass updated-head full CI including mobile touch and applicable renderer checks, review/merge, Pages/hosted parity and0.4.1tag; human/device acceptance separate.",
     "effort": "M",
     "owner": "Codex",
-    "blockedBy": "Combined-head CI/review and release evidence pending"
+    "blockedBy": "Updated-head full qualification pending after small integrated hub footer correction"
   },
   "findings": [
     {
@@ -2599,6 +2599,8 @@
     "independentAudit": "54raw windows/33source digests/fixtures/statistics/tree equality pass",
     "baseline": "841269997a2b4b112871b7560abf1c8670e850de",
     "historical": "All four original6ed7b7c comparisons remain failed. No physical-phone/fullHUD/human qualification inferred.",
-    "integration": "dbf0682 merges delivery8a1f692, no Front of House runtime/policy changes; exact combined-head CI pending."
+    "integration": "dbf0682 merges delivery8a1f692, no Front of House runtime/policy changes; exact combined-head CI pending.",
+    "combinedHeadPair": "39939626013 foh-regression SUCCESS; independent36windows/22source hashes/exact tree pass atba4fbc7; whole run failure from separate shared-runner functional timeout.",
+    "integrationFailure": "39940917728 hosted full passes Front of House but fails7hub WebKit targets at34px; existing44px rule retained. Correct actual footer and link dimensions, not test."
   }
 }
