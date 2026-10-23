@@ -75,3 +75,29 @@ Linux CI retained a60px Lighting label in a54px button at320px. Shortened the eq
 - Added a presentation-only stage ensemble using existing menu artwork identities and source-authored instruments. Desktop and mobile verification pending on Dominic.
 
 - Performer release complete: PR173 source602abcf, merge2f91f61, Pages39098459345. CI39096514098 passed476 tests, full browser gates and18 performance comparisons; independent36-window source/raw audit agrees. Dominic passed eight live desktop/mobile performer journeys plus classic switching, timing, exact save/settlement/reload checks and full3D recovery/parity. Skill client completed and screenshots inspected. Human/physical-device acceptance remains separate.
+
+## 2026-10-23 explicit scenery calibration
+
+CT-DEC-40 freezes runtime8412699 for the expanded scene under CT-DEC-18/19.
+Old6ed comparisons remain failed; no Dave answer inferred for FOH-PERF-01.
+Timing limits/fixtures/camera/native quality unchanged. Full paired normal and
+valid20ms fault rejection plus exact-head release gates are pending.
+
+2026-10-23 qualification: CI39933460388 at7b7233a passes full functional,
+normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
+54raw windows,33source digests, fixtures/statistics and exact candidate/fault
+trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
+dbf0682 without Front of House source changes; combined-head CI and release
+remain pending. Old6ed comparisons remain failures; device/human proof separate.
+
+## 2026-10-23 delivery integration mobile correction
+
+Combined-head pair39939626013 independently passes36windows/22source hashes/tree
+atba4fbc7; hosted Horseshoes39940920864 passes. Hosted full39940917728
+passes Front of House but fails7hub WebKit touch targets: integrated Ko-fi
+footer link34px below existing44px threshold. Increase footer row and link
+together to44px, preserving copy/behavior and viewport fit. All12hub mobile
+configs pass on Dominic. Full updated-head CI pending; no scenery release yet.
+Dominic landing verification passes20Chromium/WebKit views in both themes,
+including320x256 and3840x1080; desktop capture inspected, no root overflow or
+clipped controls. Existing hub:check passes.

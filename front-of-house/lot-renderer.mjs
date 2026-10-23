@@ -4,6 +4,7 @@ import { createLotCamera, LOT_ZOOMS } from './lot-camera.mjs';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA, FESTIVAL_SCENE } from './lot-models.mjs';
 import { createLotPresentation, stageRepresentatives } from './lot-presentation.mjs';
 import { createPerformers } from './performers.mjs';
+import { createLotEnvironment } from './lot-environment.mjs';
 import { OBJECT_TYPES, VENUES } from './data.mjs';
 
 export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false, venue = 'lot' } = {}) {
@@ -14,6 +15,45 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
   const festival = venue === 'festival', camera = createLotCamera(festival ? { width: FESTIVAL_SCENE.width, depth: FESTIVAL_SCENE.depth } : { width, depth }), models = createLotModels(), world = new T.Scene();
+  const environment = venue === 'lot' ? createLotEnvironment(width, depth) : null;
+  // The scenery shader owns distance haze; playable materials keep their original shader path.
+  const backdropWorld = environment ? new T.Scene() : null;
+  // Composite after opaque venue geometry: its depth rejects covered backdrop pixels.
+  // This decorative target stores display RGB; the composite copies it without another color conversion.
+  const backdropTarget = environment ? new T.WebGLRenderTarget(1, 1, { minFilter: T.LinearFilter, magFilter: T.LinearFilter, depthBuffer: true, stencilBuffer: false, samples: 0 }) : null;
+  let backdropDirty = true, backdropFrames = 0, backdropCalls = 0, backdropTriangles = 0;
+  const backdropView = new Float64Array(32); backdropView.fill(NaN);
+  let backdropQuad = null;
+  if (environment) {
+    backdropWorld.add(environment.group);
+    const material = new T.ShaderMaterial({ depthWrite: false, depthTest: true, toneMapped: false, fog: false,
+      uniforms: { image: { value: backdropTarget.texture } },
+      vertexShader: 'varying vec2 imageUv; void main(){ imageUv=uv; gl_Position=vec4(position.xy,1.0,1.0); }',
+      fragmentShader: 'uniform sampler2D image; varying vec2 imageUv; void main(){ gl_FragColor=texture2D(image,imageUv); }',
+    });
+    backdropQuad = new T.Mesh(new T.PlaneGeometry(2, 2), material); backdropQuad.frustumCulled = false; backdropQuad.renderOrder = 10000; world.add(backdropQuad);
+  }
+  function setEnvironmentNight(night) { if (environment?.setNight(night)) backdropDirty = true; }
+  function renderBackdrop() {
+    backdropCalls = 0; backdropTriangles = 0;
+    if (!environment) return;
+    camera.camera.updateMatrixWorld();
+    const view = camera.camera.matrixWorld.elements, projection = camera.camera.projectionMatrix.elements;
+    for (let i = 0; i < 16; i++) {
+      if (backdropView[i] !== view[i] || backdropView[i + 16] !== projection[i]) backdropDirty = true;
+      backdropView[i] = view[i]; backdropView[i + 16] = projection[i];
+    }
+    if (!backdropDirty) return;
+    const pendingShadow = renderer.shadowMap.needsUpdate, shadows = renderer.shadowMap.enabled;
+    try {
+      renderer.shadowMap.enabled = false; renderer.setRenderTarget(backdropTarget);
+      renderer.render(backdropWorld, camera.camera);
+      backdropCalls = renderer.info.render.calls; backdropTriangles = renderer.info.render.triangles;
+      backdropFrames++; backdropDirty = false;
+    } finally {
+      renderer.setRenderTarget(null); renderer.shadowMap.enabled = shadows; renderer.shadowMap.needsUpdate = pendingShadow;
+    }
+  }
   const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models, { width, depth, pillars: spec.pillars, indoor: venue === 'club' }), room = models.room(spec);
   const sidePresentation = festival ? createLotPresentation(models, { width: FESTIVAL_SCENE.annex.w, depth: FESTIVAL_SCENE.annex.h, indoor: true }) : null;
   if (sidePresentation) sidePresentation.group.position.x = FESTIVAL_SCENE.annex.x;
@@ -23,7 +63,9 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   let stageAudience = null;
   const media = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   let motion = reducedMotion === null ? !media?.matches : !reducedMotion;
-  const floorGeometry = new T.PlaneGeometry(width, depth), floorMaterial = models.material(venue === 'club' ? 0x4b4040 : venue === 'amphitheater' ? 0x354532 : 0x373b3c, 0, 0.97).clone();
+  // Diffuse asphalt keeps warm light pools and shadows without per-pixel PBR cost.
+  const floorGeometry = new T.PlaneGeometry(width, depth, environment ? width : 1, environment ? depth : 1);
+  const floorMaterial = environment ? new T.MeshLambertMaterial({ color: 0x373b3c, map: models.material(0x373b3c, 0, 0.97).map }) : models.material(venue === 'club' ? 0x4b4040 : venue === 'amphitheater' ? 0x354532 : 0x373b3c, 0, 0.97).clone();
   const floorMap = floorMaterial.map.clone(); floorMap.repeat.set(width * 2, depth * 2); floorMap.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); floorMap.needsUpdate = true; floorMaterial.map = floorMap;
   const floor = new T.Mesh(floorGeometry, floorMaterial); floor.rotation.x = -Math.PI / 2; floor.position.set(width / 2, -0.01, depth / 2); floor.receiveShadow = true;
   const sky = new T.HemisphereLight(0xdce9ff, 0x343a35, 2.2);
@@ -92,6 +134,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
         const nextShadow = JSON.stringify([layoutKey, ...casters.map(mesh => [mesh.count, mesh.count ? mesh.instanceMatrix.version : 0])]);
         if (nextShadow !== shadowKey) { renderer.shadowMap.needsUpdate = true; shadowKey = nextShadow; }
       }
+      renderBackdrop();
       const updateShadow = renderer.shadowMap.needsUpdate;
       renderer.render(world, camera.camera); renderedFrames++;
       if (updateShadow) shadowUpdates++;
@@ -127,6 +170,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     }
     const night = !!input.night;
     world.background = new T.Color(venue === 'club' ? (night ? 0x15121d : 0x55515a) : (night ? 0x111923 : 0x85949d));
+    setEnvironmentNight(night);
+    if (environment) { sky.color.setHex(0xb4c9e1); sun.color.setHex(0xffd3a0); stageLight.color.setHex(0xffd49a); }
     sky.intensity = night ? 1.35 : 2.2; sun.intensity = night ? 0.8 : 3; stageLight.intensity = night && (input.lightTower || input.houseLights) ? 60 : 0;
     render();
   }
@@ -138,6 +183,10 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     if (width * height * dpr * dpr > 6000000) dpr = Math.min(dpr, 1.5);
     if (renderer.getPixelRatio() !== dpr) renderer.setPixelRatio(dpr);
     renderer.setSize(width, height, false); camera.resize(r, clear);
+    if (backdropTarget) {
+      const bw = Math.max(1, Math.ceil(canvas.width / 2)), bh = Math.max(1, Math.ceil(canvas.height / 2));
+      if (backdropTarget.width !== bw || backdropTarget.height !== bh) { backdropTarget.setSize(bw, bh); backdropDirty = true; }
+    }
     if (changed) watchDensity();
     render();
   }
@@ -166,7 +215,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
         part.position.copy(part.userData.openingBase); part.position.x += (section % 2 ? -1 : 1) * (1 - joined) * 0.6;
       });
     });
-    world.background.setHex(0x202c38);
+    world.background.setHex(0x202c38); setEnvironmentNight(true);
     sky.intensity = 1.1;
     sun.intensity = 0.7 + Math.min(1, t / 1.2) * 0.5;
     stageLight.color.setHex(0xffd49a);
@@ -209,7 +258,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     return { object: hit && !hit.object.userData.permanent ? { ...objects[hit.object.userData.objectIndex] } : null, blocked: !!hit?.object.userData.permanent };
   }
   function contextLost(event) { event.preventDefault(); cancelRender(); report('lost', 'WebGL context lost; retain the current game and use the fallback board.'); }
-  function contextRestored() { if (disposed) return; renderer.shadowMap.needsUpdate = true; report('ready'); resize(); if (lastScene) draw(lastScene); }
+  function contextRestored() { if (disposed) return; backdropDirty = true; renderer.shadowMap.needsUpdate = true; report('ready'); resize(); if (lastScene) draw(lastScene); }
   function visibility() { if (globalThis.document?.hidden) cancelRender(); else render(); }
   function motionChanged() { if (reducedMotion === null) { motion = !media?.matches; if (lastScene) draw(lastScene); } }
   media?.addEventListener('change', motionChanged);
@@ -222,6 +271,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose(); sidePresentation?.dispose(); performers.dispose(); sidePerformers?.dispose();
     if (openingBeams) { openingBeams.children[0].geometry.dispose(); openingBeams.children[0].material.dispose(); }
     if (openingGate) openingGate.children[0].children[0].geometry.dispose();
+    environment?.dispose();
+    if (backdropQuad) { backdropQuad.geometry.dispose(); backdropQuad.material.dispose(); backdropTarget.dispose(); backdropWorld.clear(); }
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
   resize(); watchDensity();
@@ -249,6 +300,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', environment: environment ? { ...environment.info(), fixedScale: 0.5, adaptive: false, backing: { width: backdropTarget.width, height: backdropTarget.height }, renderedFrames: backdropFrames } : null, performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls + backdropCalls, triangles: renderer.info.render.triangles + backdropTriangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }

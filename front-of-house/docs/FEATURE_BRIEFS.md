@@ -1028,3 +1028,65 @@ Dependencies: vendored pinned GSAP core, existing Three renderer and models; no 
 Camera: existing setCamera supports continuous yaw/pitch/zoom; proposed reveal uses a bounded arc and pullback, preserving gameplay controls.
 Risks: autoplay restrictions require explicit sound activation; software WebGL and narrow devices need fallback and bounded frame work. Spoken soundcheck availability varies by browser.
 Acceptance: skip at every beat; replay/return/reduced-motion paths; immediate keyboard/touch controls; no page overflow at desktop/phone/ultrawide; live save bytes unchanged by intro and Continue; WebGL loss remains navigable; assets cached offline; CI, hosted runtime and human acceptance reported separately.
+
+## Lot surroundings and dusk atmosphere — 2026-10-23
+
+Dave approved extending the ground beyond the fence with grass/gravel, a service
+road, loading area, trees and distant industrial silhouettes, plus a dusk gradient,
+horizon and restrained fog. The present flat grey exterior makes the venue float.
+The existing Lot camera, all presets and opening use the same static environment.
+The fence remains the playable boundary: scenery never enters picking, placement,
+navigation bounds, crowd, economy or saves. Club, Shell, Festival and classic
+fallback keep their established presentation. Use authored procedural low-poly
+geometry, shared textures and two static drawing batches, with no external assets or new dependency.
+Warm venue illumination contrasts with cool surroundings; no extra shadow maps.
+The decorative setting uses a fixed half-dimension, non-MSAA backdrop target and
+shares the actual3D camera. Native board/equipment/crowd/control resolution stays
+unchanged; static backdrops cache until view, size or palette changes.
+Acceptance: desktop/phone/ultrawide captures, all camera quadrants and eye-level
+presets show coherent surroundings; picking and reload preserve game state;
+reduced motion adds no environmental animation; resources dispose on teardown;
+existing renderer/player checks and unchanged performance limits pass.
+
+### Performance strategy FOH-PERF-01
+
+The implemented scene at8412699 passes both full functional CI routes and
+Horseshoes. The fourth paired run39919907393 is a valid rejection: empty phone
+CPU1.6ms exceeds1.4ms; empty ultrawide mean61.32ms exceeds50.25ms; crowded
+ultrawide CPU6.6ms exceeds6.3ms. All36 raw windows,21 source digests and the
+tested tree independently validate. Earlier three rejections remain retained.
+
+Bounded component probes did not produce a qualifying correction. Texture,
+compositor, native-drawing, shadow-receiver and vertex-shading experiments were
+restored and remain diagnostics only. Six short Intel HD630 hardware windows
+show about60fps; they are2second single-repeat isolated-renderer samples with
+11source digests bound to8412699. They do not qualify sustained hardware, the
+full HUD, a physical phone, human acceptance or a replacement baseline.
+
+Historical unanswered options (approval request retired under CT-DEC-40):
+
+- **A, recommended:** preserve CT-DEC-21's pinned baseline and timing limits;
+  continue optimization with the complete requested scenery. Further work may
+  require a larger rendering change instead of another material adjustment.
+- **B:** retain the current appearance and evaluate explicit recalibration,
+  backed by sustained native hardware evidence and a reviewed replacement
+  policy. Keep every previous rejection; this never counts as passing the
+  original gate or grants physical-device acceptance.
+
+Neither option authorizes removal of the requested scenery, hidden quality
+changes, benchmark-specific behavior, altered saves, other-room changes or
+public-launch promotion. Merge, deployment, hosted verification and the0.4.1tag
+remain open until the applicable gate is satisfied.
+
+CT-DEC-40 explicitly freezes the expanded scene at8412699 under delegated
+engineering authority. The18 sustained native windows are now audited; they
+remain hardware-specific. No human answer is inferred. Full paired normal and
+20ms fault proof under unchanged tolerances must qualify the replacement
+calibration before merge. All four original-baseline failures remain failures.
+
+2026-10-23 qualification: CI39933460388 at7b7233a passes full functional,
+normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
+54raw windows,33source digests, fixtures/statistics and exact candidate/fault
+trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
+dbf0682 without Front of House source changes; combined-head CI and release
+remain pending. Old6ed comparisons remain failures; device/human proof separate.

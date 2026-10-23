@@ -1,13 +1,14 @@
 // Paired CI regression limits; these are change-detection tolerances, not device frame-rate targets.
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { summarize } from './performance-stats.mjs';
 
-export const BASELINE = '6ed7b7c2991ef0d8ccc71fe167444f5422cd7483';
+export const BASELINE = '841269997a2b4b112871b7560abf1c8670e850de';
 export const LIMITS = Object.freeze({ frameMean: { ratio: 1.25, floorMs: 8 }, frameP95: { ratio: 1.25, floorMs: 8 }, cpuP95: { ratio: 1.5, floorMs: 1 } });
 const viewports = [[1440, 900], [375, 812], [2560, 720]];
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -37,6 +38,12 @@ export function validateReport(report, rawById, fixtures) {
     assert.deepEqual(summarize(raw.frames), r.frame); assert.deepEqual(summarize(raw.submissions), r.cpuSubmission);
     assert.ok(Math.abs(r.frame.elapsedMs - r.elapsedMs) < 0.01, 'Frames must span the complete window');
     assert.equal(raw.quality.dpr, 1); assert.deepEqual(raw.quality.backing, r.viewport);
+    if (p.venue === 'lot' && p.decorativeBackdrop) assert.ok(raw.quality.environment?.fixedScale !== undefined, 'Declared decorative backing is missing');
+    if (raw.quality.environment?.fixedScale !== undefined) {
+      assert.equal(raw.quality.environment.fixedScale, 0.5, 'Decorative scale changed');
+      assert.equal(raw.quality.environment.adaptive, false);
+      assert.deepEqual(raw.quality.environment.backing, { width: Math.ceil(r.viewport.width / 2), height: Math.ceil(r.viewport.height / 2) });
+    }
     assert.equal(raw.quality.motion, true);
     assert.equal(raw.quality.representativeGuests, r.sceneName === 'crowd' ? 150 : 0);
     assert.equal(raw.quality.representedAttendance, r.sceneName === 'crowd' ? 150 : 0);
@@ -78,8 +85,11 @@ export function compareReports(baseline, candidate, baselineFixtures, candidateF
 export async function loadEvidence(directory, checkout) {
   const report = JSON.parse(await readFile(resolve(directory, 'report.json'), 'utf8'));
   assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: checkout, encoding: 'utf8' }).trim(), report.source.commit);
-  assert.deepEqual(Object.keys(report.source.sha256).sort(), [...sourceFiles].sort());
-  for (const path of sourceFiles) assert.equal(hash(await readFile(resolve(checkout, path))), report.source.sha256[path], `Source digest: ${path}`);
+  // The pinned historical baseline predates the decorative environment module.
+  const expectedSources = [...sourceFiles];
+  if (existsSync(resolve(checkout, 'front-of-house/lot-environment.mjs'))) expectedSources.push('front-of-house/lot-environment.mjs');
+  assert.deepEqual(Object.keys(report.source.sha256).sort(), expectedSources.sort());
+  for (const path of expectedSources) assert.equal(hash(await readFile(resolve(checkout, path))), report.source.sha256[path], `Source digest: ${path}`);
   const fixtures = {}, raw = {};
   for (const scene of ['empty', 'crowd']) {
     const bytes = await readFile(resolve(directory, `${scene}-fixture.json`)); assert.equal(hash(bytes), report.fixtureSha256[scene]); fixtures[scene] = JSON.parse(bytes);

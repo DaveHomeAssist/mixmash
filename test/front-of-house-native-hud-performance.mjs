@@ -26,7 +26,7 @@ const fixture = JSON.stringify({ actions, state }), saveCode = Buffer.from(JSON.
 await writeFile(join(output, 'fixture.json'), fixture);
 const sources = {};
 for (const path of ['front-of-house/board.js', 'front-of-house/game.js', 'front-of-house/board-adapter.mjs', 'front-of-house/engine.mjs', 'front-of-house/data.mjs', 'front-of-house/services.mjs', 'front-of-house/room-profile.mjs', 'front-of-house/service-crowd.mjs', 'front-of-house/service-guests.mjs', 'front-of-house/index.html', 'front-of-house/styles.css', 'test/front-of-house-native-hud-performance.mjs']) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
-for (const path of ['front-of-house/lot-renderer.mjs', 'front-of-house/lot-models.mjs', 'front-of-house/lot-camera.mjs', 'front-of-house/lot-presentation.mjs', 'front-of-house/lot-assets.json', 'package-lock.json']) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
+for (const path of ['front-of-house/lot-renderer.mjs', 'front-of-house/lot-environment.mjs', 'front-of-house/lot-models.mjs', 'front-of-house/lot-camera.mjs', 'front-of-house/lot-presentation.mjs', 'front-of-house/lot-assets.json', 'package-lock.json']) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
 if (festival) for (const path of ['front-of-house/site-map.mjs', 'front-of-house/site-map-geometry.mjs', 'front-of-house/stage-accounts.mjs', 'front-of-house/tools/performance-stats.mjs']) sources[path] = hash(await readFile(new URL(`../${path}`, import.meta.url)));
 const report = {
   mode: quick ? 'harness validation only' : 'full HUD native 3D diagnostic', startedAt: new Date().toISOString(),

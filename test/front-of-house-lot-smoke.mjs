@@ -30,15 +30,29 @@ try {
     window.backend.draw(window.input);
   });
   assert.equal(await page.evaluate(() => backend.status().state), 'ready');
+  assert.equal(await page.evaluate(() => backend.info().environment?.decorative), true);
+  for (const yaw of [0, 90, 180, 270]) {
+    const boundary = await page.evaluate(yaw => {
+      backend.setCamera({ yaw, pitch: 48 });
+      const outside = backend.clientOf(-4, 8);
+      return { tile: backend.tileAt(outside.x, outside.y), pick: backend.objectAt(outside.x, outside.y), unchanged: before === JSON.stringify(input) };
+    }, yaw);
+    assert.deepEqual(boundary, { tile: null, pick: null, unchanged: true }, 'surroundings never become a buildable tile or selectable object');
+  }
+
   const cached = await page.evaluate(() => {
     const start = backend.info();
-    backend.draw(input); backend.setCamera({ yaw: 37 }); backend.draw({ ...input, night: true });
+    backend.draw(input); const same = backend.info(); backend.setCamera({ yaw: 37 }); backend.draw({ ...input, night: true });
     const staticScene = backend.info();
     backend.pause(); backend.draw({ ...input, objects: input.objects.filter(o => o.type !== 'bar') });
     const paused = backend.info(); backend.resume(); const changed = backend.info();
     backend.draw(input);
-    return { start, staticScene, paused, changed };
+    return { start, same, staticScene, paused, changed };
   });
+  assert.equal(cached.same.environment.renderedFrames, cached.start.environment.renderedFrames, 'static surroundings reuse their owned backdrop texture');
+  assert.equal(cached.staticScene.environment.renderedFrames, cached.start.environment.renderedFrames + 2, 'camera and night palette each invalidate the backdrop');
+  assert.deepEqual(cached.staticScene.environment.backing, { width: Math.ceil(cached.staticScene.backing.width / 2), height: Math.ceil(cached.staticScene.backing.height / 2) });
+  assert.equal(cached.staticScene.environment.adaptive, false, 'only a fixed decorative layer uses its documented resolution');
   assert.equal(cached.staticScene.shadowUpdates, cached.start.shadowUpdates, 'camera and lighting intensity reuse static shadows');
   assert.equal(cached.staticScene.renderedFrames, cached.start.renderedFrames + 3);
   assert.equal(cached.paused.shadowUpdates, cached.staticScene.shadowUpdates, 'paused invalidation does not render');
