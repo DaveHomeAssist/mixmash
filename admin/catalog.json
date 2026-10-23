@@ -5328,7 +5328,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "hub-share-smoke.mjs",
-      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; support/ads stay off; analytics beacon allowed.",
+      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; Ko-fi support is a plain link (no Ko-fi request); ads stay off; analytics beacon allowed.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-share-smoke.mjs",
       "open": null
     },
@@ -5528,7 +5528,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "monetization.mjs",
-      "description": "Revenue switches for the static homepage. Everything here ships OFF.",
+      "description": "Revenue switches for the static homepage. Support (Ko-fi) and analytics are on; ads ship OFF.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/monetization.mjs",
       "open": null
     },

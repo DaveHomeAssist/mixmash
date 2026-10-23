@@ -5,7 +5,8 @@
   "limitations": [
     "SwiftShader regression detection, not physical GPU or desktop/low-power frame-rate acceptance.",
     "PR measurements use the actual generated merge revision; manual dispatch uses the frozen branch revision.",
-    "These runs precede later equipment controls and render batching delivery; current-head CI remains required."
+    "These runs precede later equipment controls and render batching delivery; current-head CI remains required.",
+    "Gate baseline re-pinned from 6ed7b7c to 841269997a2b4b112871b7560abf1c8670e850de on 2026-10-23 via PR #183 (CT-DEC-40); this record still documents what was measured against 6ed7b7c."
   ],
   "replication": {
     "url": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37207123068",

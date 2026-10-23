@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.4.1 Lot surroundings shipped",
+  "head": "0.4.2 fixes verified on the 0.4.1 Lot surroundings release",
   "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "The requested scenery patch is merged, deployed and tagged. Exact-head functional/mobile, Horseshoes and independently audited paired checks pass. Pages, 48 served hashes and the full hosted gameplay verification pass. Broader human, physical-device, final-art and full-career acceptance remain separate.",
+  "statusReason": "Settlement and browser fixes pass 493 unit tests, 29 main browser checks, opening checks, seven research journeys and unchanged simulation baselines on Dominic. PR #184 is merged with the 0.4.1 gh-pages base and awaits one final-head CI run. Merge, deployment and human/device acceptance remain separate.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -52,12 +52,12 @@
     "PR #183: 0.4.1 Lot surroundings and dusk atmosphere, source 29ad882, merged bb87e31. CI 39957245252 attempt 2 and Horseshoes 39957245218 pass; independent paired audit verifies 36 windows, 22 source digests, exact tested tree and all 18 metrics. Prior failed attempts remain retained. Delivery CI 39970727780 and Pages 39970718650 succeed; 48 served hashes and live desktop/phone-sized/ultrawide scenery, camera, fence and reload checks pass. Thirteen original hosted suites plus the same-assertion hosted numbering adapter pass; the original local numbering check also passes. Immutable front-of-house-v0.4.1 peels to the deployed merge. Rules and schema 2 unchanged; human/device acceptance separate."
   ],
   "nextStep": {
-    "title": "Review the live Lot on desktop and a physical phone",
-    "why": "The technical scenery release is delivered. Collect human feedback on readability, camera controls, atmosphere and save continuity without reopening settled engineering choices.",
-    "doneWhen": "Dave plays a show on desktop and an actual phone, reloads partway through, and records visual/control/save feedback. This is separate from the completed technical scenery patch.",
+    "title": "Release PR #184 on the 0.4.1 base",
+    "why": "The Front of House correction is verified and merged with gh-pages after 0.4.1 (#183/#185). The hub Ko-fi target was fixed on gh-pages at 91d3a02.",
+    "doneWhen": "Required final-head CI passes, PR #184 merges, Pages and hosted behavior are verified, and the release tag identifies the deployed revision. Desktop/phone/audio acceptance remains separate.",
     "effort": "S",
-    "owner": "Dave",
-    "blockedBy": "No technical blocker for this scenery patch; manual device review remains a separate project step."
+    "owner": "Code",
+    "blockedBy": "Final-head CI on the merged branch (one approved run)."
   },
   "findings": [
     {
@@ -496,6 +496,7 @@
       "run": "https://github.com/DaveHomeAssist/mixmash/actions/runs/37205343575",
       "source": "6ed7b7c2991ef0d8ccc71fe167444f5422cd7483",
       "artifactId": 11305185297,
+      "gateBaselineNote": "Gate baseline re-pinned from 6ed7b7c to 841269997a2b4b112871b7560abf1c8670e850de on 2026-10-23 via PR #183 (CT-DEC-40); this record still documents what was measured against 6ed7b7c.",
       "validWindows": 18,
       "limits": "Superseded calibration state: CT-DEC-21 paired regression policy implemented and verified by final CI37258873878."
     },
@@ -2617,5 +2618,27 @@
     },
     "retirementReason": "CT-DEC-18/19 already delegate engineering measurement decisions. CT-DEC-40 selected calibration; no human answer inferred.",
     "qualification": "Complete normal/fault CI39933460388 and independent54-window/33-source audit; final CI39957245252 attempt2 passes normal/full functional at29ad882 with independent36-window/22-source/tree audit. Initial rejections retained."
+  },
+  "auditCorrections20261023": {
+    "sourceBase": "8a1f6924c1b69d71f8d383dfe2cef2c90cdafc83",
+    "scope": [
+      "Settlement artist-payment row and displayed arithmetic regression",
+      "Opening optional Skip interaction",
+      "Research preview loading before reload"
+    ],
+    "version": "0.4.2",
+    "cache": "v90",
+    "saveSchema": 2,
+    "verification": "Dominic: 493 unit tests; syntax/build; generated references and assets; unchanged Lot/tier/career baselines; 15 opening scenarios; seven Chromium/WebKit research journeys; 29 main browser checks; four focused settlement cases including signing cash and desktop/phone fit. Original guarantee omission reproduced.",
+    "delivery": "Merged with gh-pages bc63597 (0.4.1 Lot surroundings, #183/#185) on 2026-10-23; the inherited hub Ko-fi target was fixed on gh-pages at 91d3a02. Final-head PR CI pending. No merge, deploy or release tag claimed.",
+    "humanAcceptance": "Desktop/physical-phone and listening review remains open; automated checks do not replace it.",
+    "pr": "https://github.com/DaveHomeAssist/mixmash/pull/184",
+    "versionReservation": "0.4.1/cache v89 shipped with #183 (tag front-of-house-v0.4.1); this correction uses 0.4.2/cache v90.",
+    "verificationAttempts": [
+      "Initial screenshot timed out before the settlement assertion; rerun used the Playwright font-wait environment override and passed.",
+      "Container Git ownership check initially failed; a process-scoped safe-directory configuration permitted the existing catalog test.",
+      "The new assertion initially read a compact display record without artistPay; corrected to use settlementFor on authoritative state, then all 29 main browser checks passed.",
+      "Initial candidate CI 39940360332 was cancelled when version metadata and the assertion changed. Final-head CI must run again."
+    ]
   }
 }
