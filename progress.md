@@ -75,3 +75,10 @@ Linux CI retained a60px Lighting label in a54px button at320px. Shortened the eq
 - Added a presentation-only stage ensemble using existing menu artwork identities and source-authored instruments. Desktop and mobile verification pending on Dominic.
 
 - Performer release complete: PR173 source602abcf, merge2f91f61, Pages39098459345. CI39096514098 passed476 tests, full browser gates and18 performance comparisons; independent36-window source/raw audit agrees. Dominic passed eight live desktop/mobile performer journeys plus classic switching, timing, exact save/settlement/reload checks and full3D recovery/parity. Skill client completed and screenshots inspected. Human/physical-device acceptance remains separate.
+
+## 2026-10-23 explicit scenery calibration
+
+CT-DEC-40 freezes runtime8412699 for the expanded scene under CT-DEC-18/19.
+Old6ed comparisons remain failed; no Dave answer inferred for FOH-PERF-01.
+Timing limits/fixtures/camera/native quality unchanged. Full paired normal and
+valid20ms fault rejection plus exact-head release gates are pending.

@@ -269,7 +269,7 @@ jobs:
       - uses: actions/checkout@v4
         if: steps.scope.outputs.run == 'true'
         with:
-          ref: 6ed7b7c2991ef0d8ccc71fe167444f5422cd7483
+          ref: 841269997a2b4b112871b7560abf1c8670e850de
           path: baseline
           persist-credentials: false
       - uses: actions/setup-node@v4

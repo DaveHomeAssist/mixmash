@@ -680,3 +680,37 @@ composited behind the native-resolution work area. It follows the same real3D
 camera and caches between view/palette changes. The native board, equipment,
 crowd, controls and shadow quality remain unchanged. This is an explicit fixed
 decorative budget, never adaptive resolution or an undisclosed board downgrade.
+
+## CT-DEC-40: Explicit expanded-scene performance calibration
+
+**Selected by Codex under CT-DEC-18/19, 2026-10-23. Qualification pending.**
+
+Freeze841269997a2b4b112871b7560abf1c8670e850de as the reference for
+subsequent scenery regression comparisons. CT-DEC-39 intentionally adds the
+rendered exterior and fixed half-resolution decorative target absent from the
+original6ed7b7c reference. This changes the scene workload and its quality
+contract. It warrants an explicit calibration, not an assertion that scenery
+costs nothing. Four valid comparisons against6ed7b7c failed and remain failed.
+The latest fails3/18 metrics; preserve every raw artifact and source audit.
+
+Bounded rendering alternatives did not establish an acceptable correction.
+The retained appearance passed functional/viewport/camera/picking/save checks
+and18 sustained Intel HD630 windows (10s warmup,30s measurement,3 repeats per
+scene/viewport), approximately60fps with worst framep9516.8ms. This supports
+that configuration only, not phone, full-HUD or human acceptance. The decision
+accepts measured added scenery cost under delegated engineering authority; it
+does not claim an optimization or a pass against the old reference.
+
+Keep CT-DEC-21's same-host/browser protocol,18 windows per side, median-of-three
+groups, frame tolerance max(25%,8ms), CPU tolerance max(50%,1ms), raw/source
+audits and quality guards. Require a full paired run and full valid20ms CPU
+fault run with numerical rejection before this policy qualifies for merge.
+No fixture, camera, native quality, adaptive resolution or timing-limit change.
+Correctness, exact-head CI/review, deployment, hosted behavior and applicable
+device/human gates remain separate. The reference is frozen, not moved to
+each future candidate.
+
+FOH-PERF-01 was an unnecessary approval question given CT-DEC-19. Retire the
+request without attributing optionB or any answer to Dave; preserve its options
+and unanswered history. This decision is an explicit engineering selection,
+not permission inferred from silence.

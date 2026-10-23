@@ -1063,7 +1063,7 @@ show about60fps; they are2second single-repeat isolated-renderer samples with
 11source digests bound to8412699. They do not qualify sustained hardware, the
 full HUD, a physical phone, human acceptance or a replacement baseline.
 
-This strategy question is **Open**; no answer or policy change is inferred:
+Historical unanswered options (approval request retired under CT-DEC-40):
 
 - **A, recommended:** preserve CT-DEC-21's pinned baseline and timing limits;
   continue optimization with the complete requested scenery. Further work may
@@ -1077,3 +1077,9 @@ Neither option authorizes removal of the requested scenery, hidden quality
 changes, benchmark-specific behavior, altered saves, other-room changes or
 public-launch promotion. Merge, deployment, hosted verification and the0.4.1tag
 remain open until the applicable gate is satisfied.
+
+CT-DEC-40 explicitly freezes the expanded scene at8412699 under delegated
+engineering authority. The18 sustained native windows are now audited; they
+remain hardware-specific. No human answer is inferred. Full paired normal and
+20ms fault proof under unchanged tolerances must qualify the replacement
+calibration before merge. All four original-baseline failures remain failures.

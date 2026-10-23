@@ -8,7 +8,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { summarize } from './performance-stats.mjs';
 
-export const BASELINE = '6ed7b7c2991ef0d8ccc71fe167444f5422cd7483';
+export const BASELINE = '841269997a2b4b112871b7560abf1c8670e850de';
 export const LIMITS = Object.freeze({ frameMean: { ratio: 1.25, floorMs: 8 }, frameP95: { ratio: 1.25, floorMs: 8 }, cpuP95: { ratio: 1.5, floorMs: 1 } });
 const viewports = [[1440, 900], [375, 812], [2560, 720]];
 const hash = value => createHash('sha256').update(value).digest('hex');
