@@ -40,6 +40,8 @@ try{
    for(const name of ['Patch','Service','Admission','Ledger']){await page.locator(`#win [data-tab-name="${name}"]`).click();await fit(page);}
    await page.locator('#win [data-tab-name="Patch"]').click();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('#win [data-tab-name="Service"]').getAttribute('aria-selected'),'true');
    await page.screenshot({path:join(output,`${name}-${width}-${three?'3d':'classic'}-development.png`)});
+   // Finish dynamically requested equipment previews before navigation can cancel them.
+   await page.waitForLoadState('networkidle');
    await page.reload();await page.waitForFunction(()=>window.__frontOfHouse);assert.equal((await state(page)).cash,cash-120);
    assert.equal((await view(page)).development.active,'patch');
    await page.locator('[data-act="next"]').click();await page.locator('[data-deal="door"]:not([disabled]):visible').first().click();
@@ -58,6 +60,7 @@ try{
    await page.locator('#win [data-tab-name="Ledger"]').click();assert.match(await page.locator('#win-body').innerText(),/Recorded for this night/);await fit(page);
    await page.locator('#win [data-win="close"]').first().click();await page.locator('[data-act="next"]').click();await page.locator('[data-deal="door"]:not([disabled]):visible').first().click();
    assert.deepEqual((await view(page)).development.booked,['patch']);
+   await page.waitForLoadState('networkidle');
    await page.reload();await page.waitForFunction(()=>window.__frontOfHouse);assert.deepEqual((await view(page)).development.booked,['patch']);assert.deepEqual(errors,[]);
    await context.close();console.log(`  ok development ${name} ${width} ${three?'3d':'classic'}: projects, cash, reload, signed progress and next booking`);
   }}finally{await browser.close();}

@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.4.0 opening deployed; human acceptance open",
-  "lastActivity": "2026-10-20",
+  "head": "0.4.1 settlement and browser fixes; delivery checks open",
+  "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "Opening 0.4.0 is merged, deployed and automatically verified: 18 hosted runtime files match, 15 opening scenarios and 29 player checks pass, plus full phone animation/touch, cold offline entry/reload and WebKit phone entry. Human desktop/physical-phone visual and listening acceptance remains open; unrelated project findings are preserved.",
+  "statusReason": "The settlement guarantee display and opening/research browser races are corrected. Dominic passes 493 unit tests, syntax/build, generated references, the Lot baseline, opening checks and four settlement cases. Final browser/simulation checks, CI and delivery remain open. Desktop/physical-phone visual and listening acceptance remains open.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -2554,5 +2554,19 @@
       "Additional hosted offline probe initially compared the normal reload savedAt refresh byte-for-byte; career state was identical. Corrected reload-state assertion passed; exact bytes remain required around intro controls.",
       "Records CI39374458919 timed out clicking Skip after a mid-intro screenshot. Removed that blocking capture from the first timed interaction; all six dedicated skip-beat checks remain and the focused15-scenario rail passes on Dominic. Runtime unchanged."
     ]
+  },
+  "auditCorrections20261023": {
+    "sourceBase": "8a1f6924c1b69d71f8d383dfe2cef2c90cdafc83",
+    "scope": [
+      "Settlement artist-payment row and displayed arithmetic regression",
+      "Opening optional Skip interaction",
+      "Research preview loading before reload"
+    ],
+    "version": "0.4.1",
+    "cache": "v89",
+    "saveSchema": 2,
+    "verification": "Dominic: 493 unit tests, syntax/build, generated references, Lot simulation, opening rail and four focused settlement cases pass; remaining browser/simulation checks in progress.",
+    "delivery": "PR verification required before merge. Publishing base 8a1f692 has unrelated hub Ko-fi mobile target failures in CI 39934648017.",
+    "humanAcceptance": "Desktop/physical-phone and listening review remains open; automated checks do not replace it."
   }
 }

@@ -118,7 +118,12 @@ try {
     await page.waitForFunction(p => JSON.parse(render_game_to_text()).playback.progress > p + 0.01,before.p);
     assert.equal(await page.evaluate(() => localStorage.getItem('front_of_house_v1')),before.save);
     results.push({savedShowResumes:true,titleTimeExcluded:true});
-    await page.locator('#skip-btn').click(); await page.locator('[data-act="respond"]:not([disabled])').first().click();
+    // An early incident can hide Skip before the resumed-playback assertion completes.
+    await page.evaluate(() => {
+      const skip = document.querySelector('#skip-btn');
+      if (skip && skip.getClientRects().length && !skip.disabled) skip.click();
+    });
+    await page.locator('[data-act="respond"]:not([disabled])').first().click();
     await page.reload(); await page.waitForSelector('.opening-actions:not([hidden])');
     const unsigned = await page.evaluate(() => localStorage.getItem('front_of_house_v1'));
     await page.locator('.opening [data-intro="enter"]').click();

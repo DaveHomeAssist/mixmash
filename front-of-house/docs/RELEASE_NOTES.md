@@ -5,6 +5,12 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.1 — 2026-10-23
+
+- Settlement Summary includes the artist payment for every deal. A guarantee is labelled **Guarantee paid before doors**, so revenue minus show costs and artist payment visibly reconciles to the promoter result. Combined stage accounts retain the total artist payment and identify a prepaid guarantee when applicable.
+- The opening browser test handles an incident that has already hidden Skip. Research reload checks wait for pending preview requests to finish, retaining strict reporting of request failures.
+- Cache v89. Rules, balance, money movement and save schema 2 are unchanged. Desktop, physical-phone and listening acceptance remain open.
+
 ## 0.4.0 — 2026-10-19
 
 An opening title sequence builds an empty lot into a show using the existing 3D equipment and renderer, then reveals the entry menu. It includes Skip intro, Replay intro, Continue for existing saves, a brief return reveal, reduced-motion presentation, theme controls and optional synchronized synthesized sound. Browsers require a press of Enable sound before audio plays. The classic board remains a fallback. Game rules, costs and save schema are unchanged. A pre-existing short-window Book cutoff at 683 × 384 is also corrected with smaller button padding; text and touch targets retain their size.
