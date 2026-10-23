@@ -1266,3 +1266,9 @@ completion-quality mismatch are proposed investigations, not changes. Rules/data
 legacy baselines, saves, renderer and product version remain unchanged. A prior
 Dominic run lost connectivity; its completion and remaining baseline checks are
 not claimed. Required repository CI and delivery are separate provider evidence.
+
+## 2026-10-23: Controlled beginner recovery investigation
+
+Dave directly requested matched cheaper-plan and earlier-venue experiments after PR186, without changing balance. Original prompt: test whether existing affordable alternatives improve beginner progression, compare matched and held-out outcomes, preserve rules/saves/version, and do not merge balance changes without approval. Protocol and standalone harness added; original workbench retained byte for byte. Five focused tests pass, including exact replay/reload, hidden-seed independence, minimum quotes and legal earned-Shell recovery. An initial Festival fixture lacked mandatory support objects; corrected before cohort execution. Cloud Node24.19.0 runner; cohort measurement and broad regressions pending. Private board and communications page are unavailable here.
+
+Recovery measurement complete: 800 matched experiment careers/13,446 signed shows; historical fixed58 to adaptive83 completions, fresh53 to84, no completion regressions. Venue-only equals fixed and combined equals adaptive with zero eligible venue attempts. Separate random1001 earned-Shell probe signs a profitable continuation; four adaptive Festival terminal states refuse venue selection from Done. All800 exact replays/prefix checks pass; original600-career/10,183-show report is byte identical. Full508 tests/build and Lot/tier/career/docs gates pass without baseline drift. Game runtime, rules, saves and version unchanged. FOH-BAL-01/D12 remain open. Findings recommend affordable-plan guidance before economic changes. No merge/deploy/human acceptance; private board/log sync remains unavailable.

@@ -318,6 +318,14 @@
         {
           "name": "npm run test:front-of-house-workbench",
           "description": "Verify policy determinism, hidden-outcome independence, legal replay and honest cohort statistics."
+        },
+        {
+          "name": "npm run sim:front-of-house-recovery",
+          "description": "Compare fixed beginner, affordable-plan fallback and earlier earned venues on matched seeds without changing rules."
+        },
+        {
+          "name": "npm run test:front-of-house-recovery",
+          "description": "Verify recovery choices, public-information boundaries, exact save/replay and legal earned-venue continuation."
         }
       ]
     },
@@ -1791,6 +1799,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/BEGINNER_RECOVERY_FINDINGS.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Beginner recovery findings",
+      "description": "Recommendation: improve affordable-plan guidance first; retain the current economy and completion rules pending a separate decision.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BEGINNER_RECOVERY_FINDINGS.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/BEGINNER_RECOVERY_PROTOCOL.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Beginner recovery experiment protocol",
+      "description": "Scope authorized by Dave on October 23, 2026: test existing cheaper plans and earned earlier venues.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BEGINNER_RECOVERY_PROTOCOL.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/CAREER_BASELINE.md",
       "project": "front-of-house",
       "category": "docs",
@@ -2881,6 +2909,16 @@
       "open": "/front-of-house/sprites/stage.png"
     },
     {
+      "path": "front-of-house/sim/beginner-recovery.test.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "beginner-recovery.test.mjs",
+      "description": "Recovery experiment integrity and genuine legal continuation regression checks.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/beginner-recovery.test.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/sim/workbench.test.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3621,6 +3659,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/sim/beginner-recovery.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "beginner-recovery.mjs",
+      "description": "Controlled beginner recovery: unchanged engine, matched seeds, independent intervention arms.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/beginner-recovery.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/sim/career.mjs",
       "project": "front-of-house",
       "category": "tooling",
@@ -3638,6 +3686,16 @@
       "title": "paired.mjs",
       "description": "Paired balance comparisons for the Lot career. Not part of CI and writes no files: it prints a Markdown report to stdout.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/paired.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/recovery-evidence.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "recovery-evidence.mjs",
+      "description": "Verify and compact the source-bound historical and fresh beginner recovery reports.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/recovery-evidence.mjs",
       "open": null
     },
     {
@@ -4038,6 +4096,16 @@
       "title": "services.mjs",
       "description": "Deterministic aggregate admission/bar service model for the optional live Lot pilot. Unselected careers retain their existing show and doors-snapshot rules.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/beginner-recovery-evidence.json",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JSON",
+      "title": "Front of House beginner recovery evidence",
+      "description": "Source digests, matched historical and fresh validation outcomes, recovery events and selected exact action traces.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/beginner-recovery-evidence.json",
       "open": null
     },
     {
