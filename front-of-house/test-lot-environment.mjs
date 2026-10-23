@@ -20,7 +20,7 @@ test('Lot surroundings are batched, static, owned decoration beyond the playable
   }
   const fogNear = env.fog.near; env.setNight(true); assert.equal(env.fog.near, fogNear);
   let disposed = 0; const owned = new Set();
-  meshes.forEach(m => { owned.add(m.geometry); owned.add(m.material); if (m.material.map) owned.add(m.material.map); });
+  meshes.forEach(m => { if (m.isInstancedMesh) owned.add(m); owned.add(m.geometry); owned.add(m.material); if (m.material.map) owned.add(m.material.map); });
   owned.forEach(resource => resource.addEventListener('dispose', () => disposed++));
   env.dispose(); assert.equal(disposed, owned.size); assert.equal(env.group.children.length, 0);
 });

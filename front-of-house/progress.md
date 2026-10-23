@@ -1161,3 +1161,8 @@ industrial horizon and a dusk gradient with restrained fog. The Lot and opening
 share an owned decorative scene with instanced geometry and no extra shadow map.
 The existing camera, pickables, engine and schema2 remain unchanged; other rooms
 and classic fallback keep their existing presentation. Dominic passes494 repository tests/build, the Lot boundary/picking/context/20-disposal-cycle rail, and complete3D gesture/reload/settlement parity. Three responsive game captures (1440x900,375x812,2560x720), four orbit quadrants and all four presets preserve exact game state with no application errors. Final opening checks and unchanged paired performance/CI gates remain pending. The skill client captured only the existing localhost Cloudflare analytics CORS noise; the application-aware collector reports no app errors. ECP-1.0 revision1.0: no equipment producer/consumer changes.
+
+Review correction: environment teardown now emits each InstancedMesh disposal
+event before releasing shared resources, and the ownership test requires all
+instance buffers as well as geometry/material/texture disposal. The final local
+opening rail also passed; exact revised-head CI remains required.

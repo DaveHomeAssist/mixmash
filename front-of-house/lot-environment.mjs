@@ -76,6 +76,6 @@ export function createLotEnvironment(width, depth) {
   }
   return { group, fog, setNight,
     info: () => ({ decorative: true, trees: treePositions.length, industrialBuildings: 32, batches: batches.size + 2, fogNear: fog.near, fogFar: fog.far }),
-    dispose: () => { geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.clear(); },
+    dispose: () => { group.children.forEach(mesh => { if (mesh.isInstancedMesh) mesh.dispose(); }); geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose()); group.clear(); },
   };
 }
