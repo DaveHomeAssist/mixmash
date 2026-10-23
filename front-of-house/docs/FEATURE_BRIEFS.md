@@ -1083,3 +1083,10 @@ engineering authority. The18 sustained native windows are now audited; they
 remain hardware-specific. No human answer is inferred. Full paired normal and
 20ms fault proof under unchanged tolerances must qualify the replacement
 calibration before merge. All four original-baseline failures remain failures.
+
+2026-10-23 qualification: CI39933460388 at7b7233a passes full functional,
+normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
+54raw windows,33source digests, fixtures/statistics and exact candidate/fault
+trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
+dbf0682 without Front of House source changes; combined-head CI and release
+remain pending. Old6ed comparisons remain failures; device/human proof separate.

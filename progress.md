@@ -82,3 +82,10 @@ CT-DEC-40 freezes runtime8412699 for the expanded scene under CT-DEC-18/19.
 Old6ed comparisons remain failed; no Dave answer inferred for FOH-PERF-01.
 Timing limits/fixtures/camera/native quality unchanged. Full paired normal and
 valid20ms fault rejection plus exact-head release gates are pending.
+
+2026-10-23 qualification: CI39933460388 at7b7233a passes full functional,
+normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
+54raw windows,33source digests, fixtures/statistics and exact candidate/fault
+trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
+dbf0682 without Front of House source changes; combined-head CI and release
+remain pending. Old6ed comparisons remain failures; device/human proof separate.

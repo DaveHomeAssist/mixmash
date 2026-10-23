@@ -714,3 +714,10 @@ FOH-PERF-01 was an unnecessary approval question given CT-DEC-19. Retire the
 request without attributing optionB or any answer to Dave; preserve its options
 and unanswered history. This decision is an explicit engineering selection,
 not permission inferred from silence.
+
+2026-10-23 qualification: CI39933460388 at7b7233a passes full functional,
+normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
+54raw windows,33source digests, fixtures/statistics and exact candidate/fault
+trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
+dbf0682 without Front of House source changes; combined-head CI and release
+remain pending. Old6ed comparisons remain failures; device/human proof separate.

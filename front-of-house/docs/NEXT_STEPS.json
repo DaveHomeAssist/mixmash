@@ -8,7 +8,7 @@
   "head": "0.4.1 Lot surroundings in verification",
   "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "Expanded scene retained at8412699; CT-DEC-40 explicitly calibrates its changed workload under CT-DEC-18/19. Four original-baseline failures remain failures. Full paired normal/fault qualification pending; no merge/deploy.",
+  "statusReason": "Expanded-scene calibration qualifies at7b7233a: CI39933460388 full functional/normal/fault pass; independent54-window/33-source audit passes. Current base8a1f692 integrated without Front of House changes; combined-head CI/review and release pending.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -51,12 +51,12 @@
     "PR #181: 0.4.0 opening merged at 44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI 39360805379 and Horseshoes 39360805369 pass; paired renderer evidence independently audits 36 raw windows and 18 metrics. Pages build 1298868065 serves the merge; 18 hosted source matches, 15 opening scenarios, 29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
-    "title": "Qualify explicit expanded-scene calibration",
-    "why": "Delegated engineering authority resolves measurement criteria; preserve all scenery, timing limits and historical failures.",
-    "doneWhen": "Pass full paired normal and valid20ms fault rejection, exact-head checks and review, then verify merge, Pages and hosted gameplay; device/human acceptance separate.",
+    "title": "Verify combined delivery head and release scenery",
+    "why": "Calibration has audited full normal/fault proof; current delivery-base changes are integrated, preserve both scopes.",
+    "doneWhen": "Pass combined-head CI/review, merge, verify Pages and hosted asset/gameplay parity, then tag0.4.1; human/device acceptance separate.",
     "effort": "M",
     "owner": "Codex",
-    "blockedBy": "Replacement calibration qualification pending"
+    "blockedBy": "Combined-head CI/review and release evidence pending"
   },
   "findings": [
     {
@@ -2589,5 +2589,16 @@
       "observed": "All18 cadence values about60fps; worst framep9516.8ms and CPUp957.1ms",
       "limitations": "Standalone native diagnostic, not a passing software pair, new baseline, full-HUD, physical-phone or human qualification"
     }
+  },
+  "calibration40": {
+    "source": "7b7233a30d969e4052da37a20c2c24e2b14d9940",
+    "run": "39933460388",
+    "functional": "pass",
+    "normal": "pass",
+    "measured20msFault": "valid numerical rejection",
+    "independentAudit": "54raw windows/33source digests/fixtures/statistics/tree equality pass",
+    "baseline": "841269997a2b4b112871b7560abf1c8670e850de",
+    "historical": "All four original6ed7b7c comparisons remain failed. No physical-phone/fullHUD/human qualification inferred.",
+    "integration": "dbf0682 merges delivery8a1f692, no Front of House runtime/policy changes; exact combined-head CI pending."
   }
 }
