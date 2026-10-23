@@ -1090,3 +1090,13 @@ normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
 trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
 dbf0682 without Front of House source changes; combined-head CI and release
 remain pending. Old6ed comparisons remain failures; device/human proof separate.
+
+Scenery delivery verified on 2026-10-23: PR #183 source 29ad882 merged as
+bb87e31. Exact-head full functional/mobile, Horseshoes and independently audited
+paired checks pass. Pages and 48 served runtime/integration hashes verify.
+Live desktop, phone-sized and ultrawide captures, camera presets/quadrants,
+outside-fence picking and exact reload state pass. Thirteen original hosted
+suites plus the same-assertion hosted numbering adapter pass; the original
+local counter check also passes. Immutable front-of-house-v0.4.1 identifies
+the verified deployed merge. Broader device/human approval remains separate
+under CT-DEC-33.

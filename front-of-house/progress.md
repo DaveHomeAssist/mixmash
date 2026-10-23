@@ -1233,3 +1233,22 @@ renderer evidence: no software-gate pass, replacement baseline, full-HUD,
 physical-phone or human acceptance follows. Owned runner claim released and
 source remains clean. FOH-PERF-01 is unanswered; CT-DEC-21 stays authoritative.
 No runtime bytes, timing limits, baseline, merge, deployment or tag changed.
+
+## 2026-10-23 scenery release delivered
+
+PR #183 source 29ad882 merged as bb87e31 with exact tested-tree equality.
+Full functional/mobile CI and Horseshoes pass. Paired 39957245252 attempt 2
+independently audits 36 windows, 22 source digests and the tested tree, with
+all 18 metrics passing. Prior rejected attempts remain failed records.
+Pages 39970718650 and delivery CI 39970727780 pass. All 48 served hashes match;
+live scenery, camera, fence and reload checks pass at 1440x900, 375x812 and
+2560x720. Thirteen original hosted suites plus a same-assertion hosted numbering
+adapter pass; original local numbering also passes. The first private adapter
+import error was corrected without changing application code or assertions.
+Immutable front-of-house-v0.4.1 peels to the verified deployed merge.
+
+Preserved the delivery branch's coarse-pointer footer fix. Retired FOH-PERF-01
+remains unanswered history, archived outside active Decisions for Dave.
+Technical scenery delivery does not certify physical phones, human final art,
+full careers or public launch. Release records and existing board are reconciled
+within this scoped documentation follow-up; no game runtime changes.

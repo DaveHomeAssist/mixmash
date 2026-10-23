@@ -683,7 +683,7 @@ decorative budget, never adaptive resolution or an undisclosed board downgrade.
 
 ## CT-DEC-40: Explicit expanded-scene performance calibration
 
-**Selected by Codex under CT-DEC-18/19, 2026-10-23. Qualification pending.**
+**Selected by Codex under CT-DEC-18/19, 2026-10-23. Calibration qualified.**
 
 Freeze841269997a2b4b112871b7560abf1c8670e850de as the reference for
 subsequent scenery regression comparisons. CT-DEC-39 intentionally adds the
@@ -721,3 +721,15 @@ normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
 trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
 dbf0682 without Front of House source changes; combined-head CI and release
 remain pending. Old6ed comparisons remain failures; device/human proof separate.
+
+Qualification evidence: CI39933460388 includes the full normal comparison and
+valid measured20ms CPU-fault rejection; independent audit verifies54windows
+and33source digests. Final source29ad882 passes full functional/mobile CI and
+paired39957245252 attempt2 with independent36-window/22-source/tree audit;
+Horseshoes39957245218 passes. Initial attempts remain valid failed records.
+PR183 merges asbb87e31 with exact tested-tree equality; delivery CI39970727780
+and Pages39970718650 succeed. All48served runtime/integration hashes and live
+three-viewport scenery/camera/fence/reload checks pass. Full hosted gameplay verification passes: thirteen original hosted suites plus
+a same-assertion live numbering adapter; the original local counter test also
+passes. Immutable front-of-house-v0.4.1 peels to deployed merge bb87e31.
+CT-DEC-33 keeps broader human/device/full-launch acceptance separate.
