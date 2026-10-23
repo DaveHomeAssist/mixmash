@@ -1028,3 +1028,19 @@ Dependencies: vendored pinned GSAP core, existing Three renderer and models; no 
 Camera: existing setCamera supports continuous yaw/pitch/zoom; proposed reveal uses a bounded arc and pullback, preserving gameplay controls.
 Risks: autoplay restrictions require explicit sound activation; software WebGL and narrow devices need fallback and bounded frame work. Spoken soundcheck availability varies by browser.
 Acceptance: skip at every beat; replay/return/reduced-motion paths; immediate keyboard/touch controls; no page overflow at desktop/phone/ultrawide; live save bytes unchanged by intro and Continue; WebGL loss remains navigable; assets cached offline; CI, hosted runtime and human acceptance reported separately.
+
+## Lot surroundings and dusk atmosphere — 2026-10-23
+
+Dave approved extending the ground beyond the fence with grass/gravel, a service
+road, loading area, trees and distant industrial silhouettes, plus a dusk gradient,
+horizon and restrained fog. The present flat grey exterior makes the venue float.
+The existing Lot camera, all presets and opening use the same static environment.
+The fence remains the playable boundary: scenery never enters picking, placement,
+navigation bounds, crowd, economy or saves. Club, Shell, Festival and classic
+fallback keep their established presentation. Use authored procedural low-poly
+geometry, shared/instanced materials and no external assets or new dependency.
+Warm venue illumination contrasts with cool surroundings; no extra shadow maps.
+Acceptance: desktop/phone/ultrawide captures, all camera quadrants and eye-level
+presets show coherent surroundings; picking and reload preserve game state;
+reduced motion adds no environmental animation; resources dispose on teardown;
+existing renderer/player checks and unchanged performance limits pass.

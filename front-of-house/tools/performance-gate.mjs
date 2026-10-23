@@ -1,6 +1,7 @@
 // Paired CI regression limits; these are change-detection tolerances, not device frame-rate targets.
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
@@ -78,8 +79,11 @@ export function compareReports(baseline, candidate, baselineFixtures, candidateF
 export async function loadEvidence(directory, checkout) {
   const report = JSON.parse(await readFile(resolve(directory, 'report.json'), 'utf8'));
   assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: checkout, encoding: 'utf8' }).trim(), report.source.commit);
-  assert.deepEqual(Object.keys(report.source.sha256).sort(), [...sourceFiles].sort());
-  for (const path of sourceFiles) assert.equal(hash(await readFile(resolve(checkout, path))), report.source.sha256[path], `Source digest: ${path}`);
+  // The pinned historical baseline predates the decorative environment module.
+  const expectedSources = [...sourceFiles];
+  if (existsSync(resolve(checkout, 'front-of-house/lot-environment.mjs'))) expectedSources.push('front-of-house/lot-environment.mjs');
+  assert.deepEqual(Object.keys(report.source.sha256).sort(), expectedSources.sort());
+  for (const path of expectedSources) assert.equal(hash(await readFile(resolve(checkout, path))), report.source.sha256[path], `Source digest: ${path}`);
   const fixtures = {}, raw = {};
   for (const scene of ['empty', 'crowd']) {
     const bytes = await readFile(resolve(directory, `${scene}-fixture.json`)); assert.equal(hash(bytes), report.fixtureSha256[scene]); fixtures[scene] = JSON.parse(bytes);

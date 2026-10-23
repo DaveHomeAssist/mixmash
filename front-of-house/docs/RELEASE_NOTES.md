@@ -5,6 +5,15 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.1 — 2026-10-23
+
+The Lot now sits in gravel and grass beside a service road and loading apron,
+with sparse trees and distant industrial silhouettes. A cool dusk gradient and
+restrained distance fog replace the flat grey exterior; warm venue lighting
+connects it to the opening. The fence remains the playable boundary. Decoration
+uses static instanced geometry, adds no shadow map, and changes no rules, saves,
+camera controls or other rooms. Cache v89; save schema 2 unchanged.
+
 ## 0.4.0 — 2026-10-19
 
 An opening title sequence builds an empty lot into a show using the existing 3D equipment and renderer, then reveals the entry menu. It includes Skip intro, Replay intro, Continue for existing saves, a brief return reveal, reduced-motion presentation, theme controls and optional synchronized synthesized sound. Browsers require a press of Enable sound before audio plays. The classic board remains a fallback. Game rules, costs and save schema are unchanged. A pre-existing short-window Book cutoff at 683 × 384 is also corrected with smaller button padding; text and touch targets retain their size.

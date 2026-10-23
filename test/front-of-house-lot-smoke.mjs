@@ -30,6 +30,16 @@ try {
     window.backend.draw(window.input);
   });
   assert.equal(await page.evaluate(() => backend.status().state), 'ready');
+  assert.equal(await page.evaluate(() => backend.info().environment?.decorative), true);
+  for (const yaw of [0, 90, 180, 270]) {
+    const boundary = await page.evaluate(yaw => {
+      backend.setCamera({ yaw, pitch: 48 });
+      const outside = backend.clientOf(-4, 8);
+      return { tile: backend.tileAt(outside.x, outside.y), pick: backend.objectAt(outside.x, outside.y), unchanged: before === JSON.stringify(input) };
+    }, yaw);
+    assert.deepEqual(boundary, { tile: null, pick: null, unchanged: true }, 'surroundings never become a buildable tile or selectable object');
+  }
+
   const cached = await page.evaluate(() => {
     const start = backend.info();
     backend.draw(input); backend.setCamera({ yaw: 37 }); backend.draw({ ...input, night: true });

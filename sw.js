@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v88';
+const VERSION = 'v89';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -88,6 +88,7 @@ const PRECACHE = [
   './front-of-house/anticipate.mjs',
   './front-of-house/menu-art.mjs',
   './front-of-house/performers.mjs',
+  './front-of-house/lot-environment.mjs',
   './front-of-house/equipment-cards.mjs',
   './front-of-house/assets/equipment/lights.png',
   './front-of-house/assets/equipment/stage.png',

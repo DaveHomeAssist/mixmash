@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.4.0 opening deployed; human acceptance open",
-  "lastActivity": "2026-10-20",
+  "head": "0.4.1 Lot surroundings in verification",
+  "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "Opening 0.4.0 is merged, deployed and automatically verified: 18 hosted runtime files match, 15 opening scenarios and 29 player checks pass, plus full phone animation/touch, cold offline entry/reload and WebKit phone entry. Human desktop/physical-phone visual and listening acceptance remains open; unrelated project findings are preserved.",
+  "statusReason": "Approved Lot environment implemented; source/browser/performance and release verification pending. Previous opening delivery and human acceptance records preserved.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -51,12 +51,12 @@
     "PR #181: 0.4.0 opening merged at 44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI 39360805379 and Horseshoes 39360805369 pass; paired renderer evidence independently audits 36 raw windows and 18 metrics. Pages build 1298868065 serves the merge; 18 hosted source matches, 15 opening scenarios, 29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
-    "title": "Complete opening visual and audio acceptance",
-    "why": "The deployed sequence and automatic checks are complete; actual desktop/phone play and listening feedback remain necessary.",
-    "doneWhen": "Dave confirms readable opening and menu, usable Skip/Continue and acceptable sound on desktop and phone, including a reload during a show.",
-    "effort": "S",
-    "owner": "Dave",
-    "blockedBy": "Desktop and phone visual/audio feedback"
+    "title": "Verify and deliver Lot surroundings",
+    "why": "Replace floating grey exterior with a readable decorative setting while preserving gameplay.",
+    "doneWhen": "Visual, boundary/save, renderer regression, CI, merge and hosted checks pass; human visual acceptance remains explicit.",
+    "effort": "M",
+    "owner": "Codex",
+    "blockedBy": "Verification in progress"
   },
   "findings": [
     {
@@ -2554,5 +2554,13 @@
       "Additional hosted offline probe initially compared the normal reload savedAt refresh byte-for-byte; career state was identical. Corrected reload-state assertion passed; exact bytes remain required around intro controls.",
       "Records CI39374458919 timed out clicking Skip after a mid-intro screenshot. Removed that blocking capture from the first timed interaction; all six dedicated skip-beat checks remain and the focused15-scenario rail passes on Dominic. Runtime unchanged."
     ]
+  },
+  "lotSurroundings": {
+    "date": "2026-10-23",
+    "status": "implemented; verification pending",
+    "scope": "Lot and opening only; static gravel/grass, service road/loading, trees, industrial horizon, dusk/fog/warm venue light",
+    "boundaries": "No picking, placement, economy, save or camera-control changes",
+    "verification": "Dominic:494 tests/build, boundary/picking/context/20 disposal cycles, complete3D gesture/reload/settlement parity pass. Three game viewports, four orbit quadrants and four camera presets captured and inspected; state unchanged. Opening check and unchanged paired performance/CI, merge and hosted verification pending.",
+    "boardSync": "Existing private board refreshed for this checkpoint; updater parity checked on2026-10-23."
   }
 }

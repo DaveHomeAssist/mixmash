@@ -4,6 +4,7 @@ import { createLotCamera, LOT_ZOOMS } from './lot-camera.mjs';
 import { createLotModels, MODEL_REVISION, MODEL_METADATA, FESTIVAL_SCENE } from './lot-models.mjs';
 import { createLotPresentation, stageRepresentatives } from './lot-presentation.mjs';
 import { createPerformers } from './performers.mjs';
+import { createLotEnvironment } from './lot-environment.mjs';
 import { OBJECT_TYPES, VENUES } from './data.mjs';
 
 export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = null, reducedMotion = null, deferRendering = false, venue = 'lot' } = {}) {
@@ -14,6 +15,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true;
   renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping;
   const festival = venue === 'festival', camera = createLotCamera(festival ? { width: FESTIVAL_SCENE.width, depth: FESTIVAL_SCENE.depth } : { width, depth }), models = createLotModels(), world = new T.Scene();
+  const environment = venue === 'lot' ? createLotEnvironment(width, depth) : null;
+  if (environment) { world.add(environment.group); world.fog = environment.fog; }
   const props = new T.Group(), overlays = new T.Group(), presentation = createLotPresentation(models, { width, depth, pillars: spec.pillars, indoor: venue === 'club' }), room = models.room(spec);
   const sidePresentation = festival ? createLotPresentation(models, { width: FESTIVAL_SCENE.annex.w, depth: FESTIVAL_SCENE.annex.h, indoor: true }) : null;
   if (sidePresentation) sidePresentation.group.position.x = FESTIVAL_SCENE.annex.x;
@@ -127,6 +130,8 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     }
     const night = !!input.night;
     world.background = new T.Color(venue === 'club' ? (night ? 0x15121d : 0x55515a) : (night ? 0x111923 : 0x85949d));
+    environment?.setNight(night);
+    if (environment) { sky.color.setHex(0xb4c9e1); sun.color.setHex(0xffd3a0); stageLight.color.setHex(0xffd49a); }
     sky.intensity = night ? 1.35 : 2.2; sun.intensity = night ? 0.8 : 3; stageLight.intensity = night && (input.lightTower || input.houseLights) ? 60 : 0;
     render();
   }
@@ -166,7 +171,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
         part.position.copy(part.userData.openingBase); part.position.x += (section % 2 ? -1 : 1) * (1 - joined) * 0.6;
       });
     });
-    world.background.setHex(0x202c38);
+    world.background.setHex(0x202c38); environment?.setNight(true);
     sky.intensity = 1.1;
     sun.intensity = 0.7 + Math.min(1, t / 1.2) * 0.5;
     stageLight.color.setHex(0xffd49a);
@@ -222,6 +227,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     media?.removeEventListener('change', motionChanged); densityMedia?.removeEventListener('change', densityChanged); densityMedia = null; presentation.dispose(); sidePresentation?.dispose(); performers.dispose(); sidePerformers?.dispose();
     if (openingBeams) { openingBeams.children[0].geometry.dispose(); openingBeams.children[0].material.dispose(); }
     if (openingGate) openingGate.children[0].children[0].geometry.dispose();
+    environment?.dispose();
     clearOverlays(); ownedOverlayMaterials.forEach(m => m.dispose()); ownedOverlayMaterials.clear(); models.dispose(); floorGeometry.dispose(); floorMaterial.dispose(); floorMap.dispose(); sun.shadow.dispose(); renderer.dispose(); world.clear(); objects = []; pickables = []; lastScene = null; report('disposed');
   }
   resize(); watchDensity();
@@ -249,6 +255,6 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
     turnView: () => { const yaw = camera.info().yaw + 90; camera.setCamera({ yaw }); render(); return Math.floor(((yaw % 360) + 360) % 360 / 90); },
     pause: () => { paused = true; cancelRender(); }, resume: () => { paused = false; render(); },
     status: () => ({ state, reason }),
-    info: () => ({ renderer: 'three-webgl', performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
+    info: () => ({ renderer: 'three-webgl', environment: environment?.info() || null, performers: performers.info(), sidePerformers: sidePerformers?.info() || null, venue, grid: { ...spec.grid }, showGrid: gridVisible, presentationExtent: festival ? { w: FESTIVAL_SCENE.width, h: FESTIVAL_SCENE.depth } : { ...spec.grid }, secondaryStage: festival ? { booked: !!lastScene?.secondaryStage?.booked, artist: lastScene?.secondaryStage?.artist || null, audience: stageAudience, presentation: sidePresentation.info() } : null, permanent: room.children.filter(mesh => !mesh.userData.pickThrough).map(mesh => mesh.name), seatingGuides: spec.seats ? { capacity: spec.seats, illustrative: true, ids: room.children.filter(mesh => mesh.userData.pickThrough).map(mesh => mesh.name) } : null, revision: MODEL_REVISION, provenance: MODEL_METADATA, camera: camera.info(), legalTiles: legalShown, status: state, objects: objects.map(o => ({ ...o })), representativeGuests: presentation.info().representativeGuests + (sidePresentation?.info().representativeGuests || 0), presentation: presentation.info(), motion, representedAttendance: lastScene?.crowd || 0, resources: { ...renderer.info.memory }, modelResources: models.counts(), requestedDpr, dpr: renderer.getPixelRatio(), backing: { width: canvas.width, height: canvas.height }, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, renderedFrames, shadowUpdates, deferredRendering: deferRendering, pendingRender: !!renderFrame }),
   };
 }
