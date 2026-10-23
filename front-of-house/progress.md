@@ -1209,3 +1209,16 @@ covered pixels can be rejected. Scenery, layer dimensions and native venue
 quality remain unchanged. Quick component probes remain diagnostic only; the
 final probe overlapped visual capture and is excluded from acceptance. All
 release checks remain required; no merge/deploy performed.
+
+Source8412699 passed native full CI (test job in39919907393), hosted full
+CI39919916136 and Horseshoes39919907346. The paired job in39919907393 failed
+three of18metrics:375emptyCPU1.6>1.4ms,2560emptymean61.32>50.25ms,
+2560crowdCPU6.6>6.3ms. Independent audit confirms36raw windows,21source
+digests and tree equality. Later texture, clear/sky, native-draw, shadow,
+browser-composition and vertex-shading diagnostics supplied no qualifying
+correction; all experimental source was restored. Six short Intel HD630
+windows hold approximately60fps, with11runtime source hashes matching8412699;
+these are preliminary isolated-renderer diagnostics, not device qualification
+or a substitute for the rejected gate. FOH-PERF-01 remains an unanswered
+strategy question. No baseline/limit change, merge, deployment or tag performed.
+This tracking checkpoint changes no runtime bytes.

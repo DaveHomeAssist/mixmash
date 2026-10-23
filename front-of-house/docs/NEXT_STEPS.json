@@ -8,7 +8,7 @@
   "head": "0.4.1 Lot surroundings in verification",
   "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "Requested Lot surroundings implemented; latest paired gate rejects two ultrawide metrics. Depth-tested late backdrop compositing is under verification; merge/deploy pending.",
+  "statusReason": "Lot surroundings implemented and both full functional CI routes pass at8412699; paired software-renderer gate rejects three metrics. FOH-PERF-01 asks whether to continue strict optimization or evaluate explicit recalibration; no merge/deploy.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -51,12 +51,12 @@
     "PR #181: 0.4.0 opening merged at 44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI 39360805379 and Horseshoes 39360805369 pass; paired renderer evidence independently audits 36 raw windows and 18 metrics. Pages build 1298868065 serves the merge; 18 hosted source matches, 15 opening scenarios, 29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
-    "title": "Verify and deliver Lot surroundings",
-    "why": "Replace floating grey exterior with a readable decorative setting while preserving gameplay.",
-    "doneWhen": "Visual, boundary/save, renderer regression, CI, merge and hosted checks pass; human visual acceptance remains explicit.",
+    "title": "Resolve Lot scenery performance strategy",
+    "why": "The requested scene is reviewable and functionally verified, but the unchanged paired regression gate remains red.",
+    "doneWhen": "Resolve FOH-PERF-01, preserve the complete requested scenery, pass the applicable performance policy and exact-head release checks, then verify merge, Pages and hosted gameplay; human acceptance stays explicit.",
     "effort": "M",
-    "owner": "Codex",
-    "blockedBy": "Verification in progress"
+    "owner": "Codex / Dave",
+    "blockedBy": "Rejected renderer gate; performance strategy question unanswered"
   },
   "findings": [
     {
@@ -262,6 +262,18 @@
       "confidence": "medium",
       "blocks": "nothing; 0.1.2 ships either way",
       "source": "front-of-house/docs/DECISION_PACKET.md"
+    },
+    {
+      "id": "FOH-PERF-01",
+      "question": "Continue against the existing scenery regression budget, or evaluate a new scenery baseline?",
+      "options": {
+        "A": "Keep the existing baseline and limits; continue optimization with the full scenery scope, potentially requiring a larger renderer change.",
+        "B": "Keep the current appearance and prepare explicit recalibration with sustained hardware evidence and review; retain every old rejection and do not call the old gate passed."
+      },
+      "recommended": "A",
+      "confidence": "medium",
+      "blocks": "Merge/deploy until the existing gate passes or an explicitly approved tested replacement policy is delivered.",
+      "source": "front-of-house/docs/FEATURE_BRIEFS.md#performance-strategy-foh-perf-01"
     }
   ],
   "files": [
@@ -2557,12 +2569,14 @@
   },
   "lotSurroundings": {
     "date": "2026-10-23",
-    "status": "performance regression identified; optimized candidate in verification",
+    "status": "implemented; full functional checks pass; renderer regression and strategy decision open",
     "scope": "Lot and opening only; static gravel/grass, service road/loading, trees, industrial horizon, dusk/fog/warm venue light",
     "boundaries": "No picking, placement, economy, save or camera-control changes",
-    "verification": "Latest76fa274 pair39915912455 independently audits36windows/21source hashes and fails2of18metrics (ultrawide empty mean and crowd CPU). Native full job cancelled during browser install and Horseshoes screenshot timed out; runners later recovered. Local495tests/build,15opening and3D/Lot rails pass. Revised compositor checks pending; budgets unchanged; no merge/deploy.",
+    "verification": "Source8412699: native test job in39919907393, hosted full39919916136 and Horseshoes39919907346 pass. Paired39919907393 rejects3of18metrics:375emptyCPU1.6>1.4ms;2560emptymean61.32>50.25ms;2560crowdCPU6.6>6.3ms. Independent36-window/21-digest/tree audit passes; performance decision is a valid rejection. No merge/deploy/tag.",
     "boardSync": "Existing private board refreshed for this checkpoint; updater parity checked on2026-10-23.",
-    "retainedFailure": "Paired CI39904452996 failed sustained frame-time limits in5/6 groups; complete36-window evidence retained. Full CI39904477584 and Horseshoes39904521103 passed. Limits unchanged; optimize material/hidden surface rendering before release. Second pair39910675684 failed empty frame means and1440 crowd CPU despite all crowd frame metrics passing; raw evidence retained; unchanged limits.",
-    "optimization": "Two static batches: vertex-colored scenery with baked color conversion and a minimal grain/night/haze shader, depth-ordered sky and ground rings omitting the hidden playable floor. Fog is scenery-only; subdivided diffuse Lot asphalt retains grid, warm light pools and shadows. All requested scenery and logical boundaries remain. Fixed half-dimension non-MSAA decorative backdrop, composited behind the native-resolution venue using the actual3D camera; view/palette/resize cache; explicit backing-quality assertions. Composite now draws after opaque venue geometry with depth testing, avoiding hidden full-resolution backdrop work."
+    "retainedFailure": "Paired CI39904452996 failed sustained frame-time limits in5/6 groups; complete36-window evidence retained. Full CI39904477584 and Horseshoes39904521103 passed. Limits unchanged; optimize material/hidden surface rendering before release. Second pair39910675684 failed empty frame means and1440 crowd CPU despite all crowd frame metrics passing; raw evidence retained; unchanged limits. Fourth pair39919907393 at8412699 rejects three metrics; all four artifacts independently validated36windows/21source hashes each. No limit or baseline change.",
+    "optimization": "Two static batches: vertex-colored scenery with baked color conversion and a minimal grain/night/haze shader, depth-ordered sky and ground rings omitting the hidden playable floor. Fog is scenery-only; subdivided diffuse Lot asphalt retains grid, warm light pools and shadows. All requested scenery and logical boundaries remain. Fixed half-dimension non-MSAA decorative backdrop, composited behind the native-resolution venue using the actual3D camera; view/palette/resize cache; explicit backing-quality assertions. Composite now draws after opaque venue geometry with depth testing, avoiding hidden full-resolution backdrop work.",
+    "diagnostics": "Single-repeat full-camera ultrawide component probes: procedural grain, native drawing, nearest upscale, redundant-clear/sky simplification, shadow-receiver isolation, browser composition and vertex shading did not establish a qualifying correction. All experimental source restored; none promoted. Six2second isolated Intel HD630 hardware windows run about60fps with11hash-bound source inputs; preliminary only, not sustained/full-HUD/phone qualification.",
+    "decision": "FOH-PERF-01 remains Open; recommendationA does not infer an answer. Current source and limits remain authoritative."
   }
 }

@@ -1047,3 +1047,33 @@ Acceptance: desktop/phone/ultrawide captures, all camera quadrants and eye-level
 presets show coherent surroundings; picking and reload preserve game state;
 reduced motion adds no environmental animation; resources dispose on teardown;
 existing renderer/player checks and unchanged performance limits pass.
+
+### Performance strategy FOH-PERF-01
+
+The implemented scene at8412699 passes both full functional CI routes and
+Horseshoes. The fourth paired run39919907393 is a valid rejection: empty phone
+CPU1.6ms exceeds1.4ms; empty ultrawide mean61.32ms exceeds50.25ms; crowded
+ultrawide CPU6.6ms exceeds6.3ms. All36 raw windows,21 source digests and the
+tested tree independently validate. Earlier three rejections remain retained.
+
+Bounded component probes did not produce a qualifying correction. Texture,
+compositor, native-drawing, shadow-receiver and vertex-shading experiments were
+restored and remain diagnostics only. Six short Intel HD630 hardware windows
+show about60fps; they are2second single-repeat isolated-renderer samples with
+11source digests bound to8412699. They do not qualify sustained hardware, the
+full HUD, a physical phone, human acceptance or a replacement baseline.
+
+This strategy question is **Open**; no answer or policy change is inferred:
+
+- **A, recommended:** preserve CT-DEC-21's pinned baseline and timing limits;
+  continue optimization with the complete requested scenery. Further work may
+  require a larger rendering change instead of another material adjustment.
+- **B:** retain the current appearance and evaluate explicit recalibration,
+  backed by sustained native hardware evidence and a reviewed replacement
+  policy. Keep every previous rejection; this never counts as passing the
+  original gate or grants physical-device acceptance.
+
+Neither option authorizes removal of the requested scenery, hidden quality
+changes, benchmark-specific behavior, altered saves, other-room changes or
+public-launch promotion. Merge, deployment, hosted verification and the0.4.1tag
+remain open until the applicable gate is satisfied.
