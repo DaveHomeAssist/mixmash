@@ -1198,3 +1198,14 @@ evaluator tests reject smaller/adaptive decorative backing or changed native
 backing. Both full rejection artifacts remain retained. Backdrop visual/state,
 context restore and20-cycle disposal checks pass; updated cache/backing tests
 and exact final-head gates remain required.
+
+Third full pair39915912455 (76fa274) passes16of18metrics but rejects ultrawide
+empty mean96.62ms against90.90ms and crowd CPU10.2ms against9.3ms. Independent
+audit validates36raw windows and21source hashes; rejection retained. Native full
+job was cancelled during browser install and Horseshoes screenshot timed out;
+runners went offline then recovered. A bounded compositor correction draws the
+fixed-resolution backdrop after opaque venue geometry with depth testing, so
+covered pixels can be rejected. Scenery, layer dimensions and native venue
+quality remain unchanged. Quick component probes remain diagnostic only; the
+final probe overlapped visual capture and is excluded from acceptance. All
+release checks remain required; no merge/deploy performed.

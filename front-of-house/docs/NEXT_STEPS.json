@@ -8,7 +8,7 @@
   "head": "0.4.1 Lot surroundings in verification",
   "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "Approved Lot environment implemented; source/browser/performance and release verification pending. Previous opening delivery and human acceptance records preserved.",
+  "statusReason": "Requested Lot surroundings implemented; latest paired gate rejects two ultrawide metrics. Depth-tested late backdrop compositing is under verification; merge/deploy pending.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -2560,9 +2560,9 @@
     "status": "performance regression identified; optimized candidate in verification",
     "scope": "Lot and opening only; static gravel/grass, service road/loading, trees, industrial horizon, dusk/fog/warm venue light",
     "boundaries": "No picking, placement, economy, save or camera-control changes",
-    "verification": "Dominic495tests/build/simulator,15opening scenarios, full3D gesture/reload/settlement and Lot boundary/context/20-cycle disposal pass. Fixed backdrop cache/view/night/half-backing assertions and5performance-evaluator tests pass.1440/375/2560captures inspected; exact game state preserved. Revised exact-head CI/paired budgets and hosted delivery pending.",
+    "verification": "Latest76fa274 pair39915912455 independently audits36windows/21source hashes and fails2of18metrics (ultrawide empty mean and crowd CPU). Native full job cancelled during browser install and Horseshoes screenshot timed out; runners later recovered. Local495tests/build,15opening and3D/Lot rails pass. Revised compositor checks pending; budgets unchanged; no merge/deploy.",
     "boardSync": "Existing private board refreshed for this checkpoint; updater parity checked on2026-10-23.",
     "retainedFailure": "Paired CI39904452996 failed sustained frame-time limits in5/6 groups; complete36-window evidence retained. Full CI39904477584 and Horseshoes39904521103 passed. Limits unchanged; optimize material/hidden surface rendering before release. Second pair39910675684 failed empty frame means and1440 crowd CPU despite all crowd frame metrics passing; raw evidence retained; unchanged limits.",
-    "optimization": "Two static batches: vertex-colored scenery with baked color conversion and a minimal grain/night/haze shader, depth-ordered sky and ground rings omitting the hidden playable floor. Fog is scenery-only; subdivided diffuse Lot asphalt retains grid, warm light pools and shadows. All requested scenery and logical boundaries remain. Fixed half-dimension non-MSAA decorative backdrop, composited behind the native-resolution venue using the actual3D camera; view/palette/resize cache; explicit backing-quality assertions."
+    "optimization": "Two static batches: vertex-colored scenery with baked color conversion and a minimal grain/night/haze shader, depth-ordered sky and ground rings omitting the hidden playable floor. Fog is scenery-only; subdivided diffuse Lot asphalt retains grid, warm light pools and shadows. All requested scenery and logical boundaries remain. Fixed half-dimension non-MSAA decorative backdrop, composited behind the native-resolution venue using the actual3D camera; view/palette/resize cache; explicit backing-quality assertions. Composite now draws after opaque venue geometry with depth testing, avoiding hidden full-resolution backdrop work."
   }
 }

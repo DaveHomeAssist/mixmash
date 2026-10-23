@@ -18,6 +18,7 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   const environment = venue === 'lot' ? createLotEnvironment(width, depth) : null;
   // The scenery shader owns distance haze; playable materials keep their original shader path.
   const backdropWorld = environment ? new T.Scene() : null;
+  // Composite after opaque venue geometry: its depth rejects covered backdrop pixels.
   // This decorative target stores display RGB; the composite copies it without another color conversion.
   const backdropTarget = environment ? new T.WebGLRenderTarget(1, 1, { minFilter: T.LinearFilter, magFilter: T.LinearFilter, depthBuffer: true, stencilBuffer: false, samples: 0 }) : null;
   let backdropDirty = true, backdropFrames = 0, backdropCalls = 0, backdropTriangles = 0;
@@ -25,12 +26,12 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
   let backdropQuad = null;
   if (environment) {
     backdropWorld.add(environment.group);
-    const material = new T.ShaderMaterial({ depthWrite: false, depthTest: false, toneMapped: false, fog: false,
+    const material = new T.ShaderMaterial({ depthWrite: false, depthTest: true, toneMapped: false, fog: false,
       uniforms: { image: { value: backdropTarget.texture } },
       vertexShader: 'varying vec2 imageUv; void main(){ imageUv=uv; gl_Position=vec4(position.xy,1.0,1.0); }',
       fragmentShader: 'uniform sampler2D image; varying vec2 imageUv; void main(){ gl_FragColor=texture2D(image,imageUv); }',
     });
-    backdropQuad = new T.Mesh(new T.PlaneGeometry(2, 2), material); backdropQuad.frustumCulled = false; backdropQuad.renderOrder = -100; world.add(backdropQuad);
+    backdropQuad = new T.Mesh(new T.PlaneGeometry(2, 2), material); backdropQuad.frustumCulled = false; backdropQuad.renderOrder = 10000; world.add(backdropQuad);
   }
   function setEnvironmentNight(night) { if (environment?.setNight(night)) backdropDirty = true; }
   function renderBackdrop() {
