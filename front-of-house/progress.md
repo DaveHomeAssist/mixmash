@@ -1,10 +1,10 @@
 Original prompt: Create the starter documentation for the Concert Tycoon game concept (Notion capture "Concert Tycoon Ideas") so the project is in good shape from the start, and record the document locations in Notion.
 
-## 2026-10-23: Settlement reconciliation and browser race fixes (0.4.1)
+## 2026-10-23: Settlement reconciliation and browser race fixes (0.4.2)
 
 The settlement Summary omitted the prepaid artist guarantee while including it in the promoter result. Every deal now shows its artist payment, with payment timing in the label and the combined total for multi-stage accounts. The main browser journey checks the guarantee amount and adds the displayed revenue, costs and payment to verify the displayed result; it also checks Summary and Ledger fit at desktop and phone sizes.
 
-The opening test checks and presses Skip in one browser task, so an early incident may already have replaced it. Both research reloads wait for pending requests to finish instead of discarding cancelled-download failures. No shared failure filter is weakened. Cache v89 and patch version 0.4.1 preserve rules, balance and schema 2. Test, CI and delivery evidence is tracked in NEXT_STEPS.json; desktop/physical-phone and listening acceptance remain open.
+The opening test checks and presses Skip in one browser task, so an early incident may already have replaced it. Both research reloads wait for pending requests to finish instead of discarding cancelled-download failures. No shared failure filter is weakened. Cache v90 and patch version 0.4.2 preserve rules, balance and schema 2. Test, CI and delivery evidence is tracked in NEXT_STEPS.json; desktop/physical-phone and listening acceptance remain open.
 
 ## 2026-10-17: Booking confirmation as a toast (0.3.3)
 

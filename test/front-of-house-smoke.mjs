@@ -221,7 +221,8 @@ try {
   })));
   assert.equal(bridge.length, 4, 'the summary includes revenue, costs, artist payment and result');
   assert.equal(bridge[2].label, 'Guarantee paid before doors');
-  assert.equal(bridge[2].value, -settling.settlement.artistPay, 'the guarantee is shown exactly once');
+  const receipt = settlementFor(await page.evaluate(() => __frontOfHouse.state()));
+  assert.equal(bridge[2].value, -receipt.artistPay, 'the guarantee is shown exactly once');
   assert.equal(bridge.slice(0, -1).reduce((sum, row) => sum + row.value, 0), bridge.at(-1).value, 'visible amounts reconcile to the promoter result');
   assert.equal(await page.locator('#win .settlement-note').count(), 2, 'the summary has one win and one priority');
   assert.equal(await page.textContent('#win-foot .primary'), 'Sign & Continue', 'the primary action explains signing and progression');

@@ -4,7 +4,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- Front of House 0.4.1: include prepaid guarantees in the settlement Summary financial bridge; handle an already-visible incident in the opening browser test and finish preview loading before research reload checks. Cache v89; rules, balance and save schema 2 unchanged.
+- Front of House 0.4.2: include prepaid guarantees in the settlement Summary financial bridge; handle an already-visible incident in the opening browser test and finish preview loading before research reload checks. Cache v90; rules, balance and save schema 2 unchanged.
 
 - Front of House 0.4.0: an eleven-second empty-lot-to-show opening flows into a title menu with Continue/New game, Skip and Replay. Separate scene state preserves career saves. Optional synthesized audio, reduced-motion static reveal, light/dark controls, classic fallback and bounded idle animation; cache v88, schema 2 unchanged.
 

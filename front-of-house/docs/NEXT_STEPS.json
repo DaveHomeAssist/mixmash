@@ -5,10 +5,10 @@
   "repos": [
     "DaveHomeAssist/mixmash"
   ],
-  "head": "0.4.1 settlement and browser fixes; delivery checks open",
+  "head": "0.4.2 fixes verified; release blocked by hub mobile target",
   "lastActivity": "2026-10-23",
   "status": "amber",
-  "statusReason": "The settlement guarantee display and opening/research browser races are corrected. Dominic passes 493 unit tests, syntax/build, generated references, the Lot baseline, opening checks and four settlement cases. Final browser/simulation checks, CI and delivery remain open. Desktop/physical-phone visual and listening acceptance remains open.",
+  "statusReason": "Settlement and browser fixes pass 493 unit tests, 29 main browser checks, opening checks, seven research journeys and unchanged simulation baselines on Dominic. PR #184 is ready for CI. An inherited hub Ko-fi target is 34px tall and fails the required mobile gate. Merge, deployment and human desktop/phone/audio acceptance remain open.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -51,12 +51,12 @@
     "PR #181: 0.4.0 opening merged at 44209d76ab8f0bed62989adfd8b0a105ec935cb2 from ae53418. CI 39360805379 and Horseshoes 39360805369 pass; paired renderer evidence independently audits 36 raw windows and 18 metrics. Pages build 1298868065 serves the merge; 18 hosted source matches, 15 opening scenarios, 29 player checks and full-phone/offline/WebKit checks pass. Immutable front-of-house-v0.4.0 peels to the deployed merge. Human/device/audio acceptance remains separate."
   ],
   "nextStep": {
-    "title": "Complete opening visual and audio acceptance",
-    "why": "The deployed sequence and automatic checks are complete; actual desktop/phone play and listening feedback remain necessary.",
-    "doneWhen": "Dave confirms readable opening and menu, usable Skip/Continue and acceptable sound on desktop and phone, including a reload during a show.",
+    "title": "Clear the inherited hub mobile gate, then release PR #184",
+    "why": "The Front of House correction is verified; the required mobile rail fails on the unchanged hub Ko-fi link.",
+    "doneWhen": "Required final-head CI passes, PR #184 merges, Pages and hosted behavior are verified, and the release tag identifies the deployed revision. Desktop/phone/audio acceptance remains separate.",
     "effort": "S",
-    "owner": "Dave",
-    "blockedBy": "Desktop and phone visual/audio feedback"
+    "owner": "Code",
+    "blockedBy": "Hub Ko-fi touch target is 34px high; required minimum is 44px."
   },
   "findings": [
     {
@@ -2562,11 +2562,19 @@
       "Opening optional Skip interaction",
       "Research preview loading before reload"
     ],
-    "version": "0.4.1",
-    "cache": "v89",
+    "version": "0.4.2",
+    "cache": "v90",
     "saveSchema": 2,
-    "verification": "Dominic: 493 unit tests, syntax/build, generated references, Lot simulation, opening rail and four focused settlement cases pass; remaining browser/simulation checks in progress.",
-    "delivery": "PR verification required before merge. Publishing base 8a1f692 has unrelated hub Ko-fi mobile target failures in CI 39934648017.",
-    "humanAcceptance": "Desktop/physical-phone and listening review remains open; automated checks do not replace it."
+    "verification": "Dominic: 493 unit tests; syntax/build; generated references and assets; unchanged Lot/tier/career baselines; 15 opening scenarios; seven Chromium/WebKit research journeys; 29 main browser checks; four focused settlement cases including signing cash and desktop/phone fit. Original guarantee omission reproduced.",
+    "delivery": "Blocked before merge: inherited hub Ko-fi target fails the existing iPad WebKit mobile check (34px high; 44px required), also present in base CI 39934648017. Final PR CI pending. No merge, deploy or release tag claimed.",
+    "humanAcceptance": "Desktop/physical-phone and listening review remains open; automated checks do not replace it.",
+    "pr": "https://github.com/DaveHomeAssist/mixmash/pull/184",
+    "versionReservation": "0.4.1/cache v89 is already used by open surroundings PR #183; this correction uses 0.4.2/cache v90.",
+    "verificationAttempts": [
+      "Initial screenshot timed out before the settlement assertion; rerun used the Playwright font-wait environment override and passed.",
+      "Container Git ownership check initially failed; a process-scoped safe-directory configuration permitted the existing catalog test.",
+      "The new assertion initially read a compact display record without artistPay; corrected to use settlementFor on authoritative state, then all 29 main browser checks passed.",
+      "Initial candidate CI 39940360332 was cancelled when version metadata and the assertion changed. Final-head CI must run again."
+    ]
   }
 }
