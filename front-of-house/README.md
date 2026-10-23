@@ -79,6 +79,15 @@ This follows the MarsScape split in `mars/`:
 - Saves go through the shared `src/kit/save.js` store under `front_of_house_v1` (see `docs/SAVE_FORMAT.md`). Save codes are checked for the namespace and schema before anything is written, so a bad code can't replace a good save.
 - `window.render_game_to_text()` (the MIXMASH and MarsScape convention) and `window.__frontOfHouse` let the smoke test play the loop.
 
+## Balance workbench
+
+The [balance workbench](docs/BALANCE_WORKBENCH.md) compares six public-information
+player policies through real engine actions, with matched seeds, held-out cohorts,
+outcome distributions and exact replay. Run `npm run sim:front-of-house-workbench`.
+Its reports diagnose tuning candidates without changing balance or legacy baselines.
+Read the [600-career findings](docs/BALANCE_WORKBENCH_FINDINGS.md) for the measured
+comparison and proposed investigations.
+
 ## Verification
 
 | Command | Checks |

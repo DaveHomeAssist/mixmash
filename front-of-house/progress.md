@@ -1252,3 +1252,17 @@ remains unanswered history, archived outside active Decisions for Dave.
 Technical scenery delivery does not certify physical phones, human final art,
 full careers or public launch. Release records and existing board are reconciled
 within this scoped documentation follow-up; no game runtime changes.
+
+## 2026-10-23: Balance workbench and measured tuning review
+
+Dave requested six player strategies, bulk simulations and tuning recommendations
+before any balance changes. Added the headless workbench and integrity tests,
+source-bound JSON replay, generated tables, compact baseline and findings. Walter
+Node22.22.1 completed600careers/10183signed shows on100matched seeds per policy,
+with80development/20held-out seeds. Eight workbench tests and14trace replays pass.
+All source digests match. Beginner58%, random61%, four stronger policies100%
+completion; policy stops and bounded-grid limits are explicit. Festival scale and
+completion-quality mismatch are proposed investigations, not changes. Rules/data,
+legacy baselines, saves, renderer and product version remain unchanged. A prior
+Dominic run lost connectivity; its completion and remaining baseline checks are
+not claimed. Required repository CI and delivery are separate provider evidence.

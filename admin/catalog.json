@@ -310,6 +310,14 @@
         {
           "name": "npm run sim:front-of-house-career",
           "description": "Regenerate the four-room career report; verify earned unlocks, cash, receipts and exact save/reload pairs."
+        },
+        {
+          "name": "npm run sim:front-of-house-workbench",
+          "description": "Compare six observable-state policies on matched seeds; write outcome reports and exact replay traces without changing game balance."
+        },
+        {
+          "name": "npm run test:front-of-house-workbench",
+          "description": "Verify policy determinism, hidden-outcome independence, legal replay and honest cohort statistics."
         }
       ]
     },
@@ -1763,6 +1771,26 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House balance findings",
+      "description": "Measured October 23, 2026 on Walter, Node 22.22.1: 600 careers and 10,183 signed shows, using seeds 1001 to 1100 for each of six fixed policies.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
+      "open": null
+    },
+    {
+      "path": "front-of-house/docs/BALANCE_WORKBENCH.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House balance workbench",
+      "description": "Compare six reproducible player policies through the existing rules engine before changing balance.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BALANCE_WORKBENCH.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/CAREER_BASELINE.md",
       "project": "front-of-house",
       "category": "docs",
@@ -2853,6 +2881,16 @@
       "open": "/front-of-house/sprites/stage.png"
     },
     {
+      "path": "front-of-house/sim/workbench.test.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "workbench.test.mjs",
+      "description": "Workbench integrity: no hidden-outcome planning, exact engine replay and honest denominators.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/workbench.test.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-advisory.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3633,6 +3671,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/sim/workbench.mjs",
+      "project": "front-of-house",
+      "category": "tooling",
+      "kind": "MJS",
+      "title": "workbench.mjs",
+      "description": "Balance workbench: public-information policies, real engine actions and replayable cohorts.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/workbench.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/advisory.mjs",
       "project": "front-of-house",
       "category": "source",
@@ -3990,6 +4038,16 @@
       "title": "services.mjs",
       "description": "Deterministic aggregate admission/bar service model for the optional live Lot pilot. Unselected careers retain their existing show and doors-snapshot rules.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/workbench-baseline.json",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JSON",
+      "title": "Front of House workbench baseline",
+      "description": "Source digests and measured600-career development/held-out outcome distributions; no game balance changes.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/workbench-baseline.json",
       "open": null
     },
     {
@@ -5328,7 +5386,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "hub-share-smoke.mjs",
-      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; support/ads stay off; analytics beacon allowed.",
+      "description": "Hub Share: native sheet, clipboard fallback, legacy copy fallback, no-script; Ko-fi support is a plain link (no Ko-fi request); ads stay off; analytics beacon allowed.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-share-smoke.mjs",
       "open": null
     },
@@ -5528,7 +5586,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "monetization.mjs",
-      "description": "Revenue switches for the static homepage. Everything here ships OFF.",
+      "description": "Revenue switches for the static homepage. Support (Ko-fi) and analytics are on; ads ship OFF.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/monetization.mjs",
       "open": null
     },
