@@ -674,3 +674,9 @@ renderer regression limits and no adaptive quality or device qualification.
 Compatible visual correction uses0.4.1 under CT-DEC-33; cachev89 and schema2 are
 separate. Source, automated tests, merge, deployment and human/device acceptance
 remain separate proof lanes.
+
+The decorative setting uses a fixed half-dimension render target, without MSAA,
+composited behind the native-resolution work area. It follows the same real3D
+camera and caches between view/palette changes. The native board, equipment,
+crowd, controls and shadow quality remain unchanged. This is an explicit fixed
+decorative budget, never adaptive resolution or an undisclosed board downgrade.

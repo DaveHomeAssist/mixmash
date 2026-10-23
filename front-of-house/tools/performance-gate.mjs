@@ -38,6 +38,12 @@ export function validateReport(report, rawById, fixtures) {
     assert.deepEqual(summarize(raw.frames), r.frame); assert.deepEqual(summarize(raw.submissions), r.cpuSubmission);
     assert.ok(Math.abs(r.frame.elapsedMs - r.elapsedMs) < 0.01, 'Frames must span the complete window');
     assert.equal(raw.quality.dpr, 1); assert.deepEqual(raw.quality.backing, r.viewport);
+    if (p.venue === 'lot' && p.decorativeBackdrop) assert.ok(raw.quality.environment?.fixedScale !== undefined, 'Declared decorative backing is missing');
+    if (raw.quality.environment?.fixedScale !== undefined) {
+      assert.equal(raw.quality.environment.fixedScale, 0.5, 'Decorative scale changed');
+      assert.equal(raw.quality.environment.adaptive, false);
+      assert.deepEqual(raw.quality.environment.backing, { width: Math.ceil(r.viewport.width / 2), height: Math.ceil(r.viewport.height / 2) });
+    }
     assert.equal(raw.quality.motion, true);
     assert.equal(raw.quality.representativeGuests, r.sceneName === 'crowd' ? 150 : 0);
     assert.equal(raw.quality.representedAttendance, r.sceneName === 'crowd' ? 150 : 0);

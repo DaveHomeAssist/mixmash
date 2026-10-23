@@ -42,13 +42,17 @@ try {
 
   const cached = await page.evaluate(() => {
     const start = backend.info();
-    backend.draw(input); backend.setCamera({ yaw: 37 }); backend.draw({ ...input, night: true });
+    backend.draw(input); const same = backend.info(); backend.setCamera({ yaw: 37 }); backend.draw({ ...input, night: true });
     const staticScene = backend.info();
     backend.pause(); backend.draw({ ...input, objects: input.objects.filter(o => o.type !== 'bar') });
     const paused = backend.info(); backend.resume(); const changed = backend.info();
     backend.draw(input);
-    return { start, staticScene, paused, changed };
+    return { start, same, staticScene, paused, changed };
   });
+  assert.equal(cached.same.environment.renderedFrames, cached.start.environment.renderedFrames, 'static surroundings reuse their owned backdrop texture');
+  assert.equal(cached.staticScene.environment.renderedFrames, cached.start.environment.renderedFrames + 2, 'camera and night palette each invalidate the backdrop');
+  assert.deepEqual(cached.staticScene.environment.backing, { width: Math.ceil(cached.staticScene.backing.width / 2), height: Math.ceil(cached.staticScene.backing.height / 2) });
+  assert.equal(cached.staticScene.environment.adaptive, false, 'only a fixed decorative layer uses its documented resolution');
   assert.equal(cached.staticScene.shadowUpdates, cached.start.shadowUpdates, 'camera and lighting intensity reuse static shadows');
   assert.equal(cached.staticScene.renderedFrames, cached.start.renderedFrames + 3);
   assert.equal(cached.paused.shadowUpdates, cached.staticScene.shadowUpdates, 'paused invalidation does not render');

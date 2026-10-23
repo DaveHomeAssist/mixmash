@@ -12,7 +12,7 @@ with sparse trees and distant industrial silhouettes. A cool dusk gradient and
 restrained distance fog replace the flat grey exterior; warm venue lighting
 connects it to the opening. The fence remains the playable boundary. Decoration
 uses one static vertex-colored mesh plus sky, adds no shadow map, and changes no rules, saves,
-camera controls or other rooms. The Lot asphalt uses subdivided diffuse lighting to retain warm light pools and shadows at lower cost. Cache v89; save schema 2 unchanged.
+camera controls or other rooms. Only the decorative setting uses a fixed half-dimension backdrop; the venue and controls retain native resolution. The Lot asphalt uses subdivided diffuse lighting to retain warm light pools and shadows at lower cost. Cache v89; save schema 2 unchanged.
 
 ## 0.4.0 — 2026-10-19
 

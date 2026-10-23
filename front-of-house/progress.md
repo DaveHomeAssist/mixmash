@@ -1188,3 +1188,13 @@ tests, responsive visual/state checks, Lot boundary/context/20-cycle disposal an
 full3D gesture/reload/settlement parity; final opening/full CI/paired limits remain
 required. Failed CI evidence independently audits36 raw windows and21 source
 digests; five failed groups are retained with unchanged limits.
+
+Second full pair39910675684 improved all crowd frame metrics but still rejected
+empty-frame means and desktop crowd CPU. The revised fixed decorative backdrop
+uses a half-dimension non-MSAA render target and the actual3D camera, with cached
+view/palette/resize invalidation. Native venue/backing/crowd/shadows and timed
+limits remain unchanged. The performance record explicitly declares this layer;
+evaluator tests reject smaller/adaptive decorative backing or changed native
+backing. Both full rejection artifacts remain retained. Backdrop visual/state,
+context restore and20-cycle disposal checks pass; updated cache/backing tests
+and exact final-head gates remain required.

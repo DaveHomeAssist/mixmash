@@ -99,29 +99,29 @@ export function createLotEnvironment(width, depth) {
   });
   materials.push(settingMaterial);
   const setting = new T.Mesh(settingGeometry, settingMaterial); setting.name = 'lot-setting'; group.add(setting);
+  // Both backdrop shaders emit display RGB, including when drawn into the owned target.
   const skyMaterial = new T.ShaderMaterial({ side: T.BackSide, depthWrite: false, fog: false, toneMapped: false,
-    uniforms: { top: { value: new T.Color(0x314b68) }, horizon: { value: new T.Color(0xc1a69a) }, bottom: { value: new T.Color(0x71827f) } },
+    uniforms: { top: { value: new T.Color(0x314b68).convertLinearToSRGB() }, horizon: { value: new T.Color(0xc1a69a).convertLinearToSRGB() }, bottom: { value: new T.Color(0x71827f).convertLinearToSRGB() } },
     vertexShader: 'varying vec3 direction; void main(){ direction=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
     fragmentShader: `varying vec3 direction; uniform vec3 top; uniform vec3 horizon; uniform vec3 bottom;
       void main(){ float h=normalize(direction).y; vec3 color=h>0.0?mix(horizon,top,smoothstep(0.0,0.23,h)):mix(horizon,bottom,smoothstep(0.0,0.35,-h));
         gl_FragColor=vec4(color,1.0);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
       }` });
   materials.push(skyMaterial);
   const sky = new T.Mesh(geometry(new T.SphereGeometry(480, 24, 12)), skyMaterial); sky.position.set(width / 2, 0, depth / 2); sky.renderOrder = 1; group.add(sky);
   const fog = new T.Fog(0xb4a6a0, 75, 180);
   let lastNight = null;
   function setNight(night) {
-    if (lastNight === night) return;
+    if (lastNight === night) return false;
     lastNight = night;
     for (const m of materials) if (m.userData.dayColor) m.color.copy(m.userData.dayColor).multiplyScalar(night ? 0.35 : 1);
-    skyMaterial.uniforms.top.value.setHex(night ? 0x101e35 : 0x314b68);
-    skyMaterial.uniforms.horizon.value.setHex(night ? 0x625c70 : 0xc1a69a);
-    skyMaterial.uniforms.bottom.value.setHex(night ? 0x293e46 : 0x71827f);
+    skyMaterial.uniforms.top.value.setHex(night ? 0x101e35 : 0x314b68).convertLinearToSRGB();
+    skyMaterial.uniforms.horizon.value.setHex(night ? 0x625c70 : 0xc1a69a).convertLinearToSRGB();
+    skyMaterial.uniforms.bottom.value.setHex(night ? 0x293e46 : 0x71827f).convertLinearToSRGB();
     fog.color.setHex(night ? 0x34464f : 0xb4a6a0);
     settingMaterial.uniforms.night.value = night ? 0.6 : 1;
     settingMaterial.uniforms.haze.value.copy(fog.color).convertLinearToSRGB();
+    return true;
   }
   return { group, fog, setNight,
     info: () => ({ decorative: true, trees: treePositions.length, industrialBuildings: 32, batches: 2, fogNear: fog.near, fogFar: fog.far }),

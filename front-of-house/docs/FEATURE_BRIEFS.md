@@ -1040,6 +1040,9 @@ navigation bounds, crowd, economy or saves. Club, Shell, Festival and classic
 fallback keep their established presentation. Use authored procedural low-poly
 geometry, shared textures and two static drawing batches, with no external assets or new dependency.
 Warm venue illumination contrasts with cool surroundings; no extra shadow maps.
+The decorative setting uses a fixed half-dimension, non-MSAA backdrop target and
+shares the actual3D camera. Native board/equipment/crowd/control resolution stays
+unchanged; static backdrops cache until view, size or palette changes.
 Acceptance: desktop/phone/ultrawide captures, all camera quadrants and eye-level
 presets show coherent surroundings; picking and reload preserve game state;
 reduced motion adds no environmental animation; resources dispose on teardown;
