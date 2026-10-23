@@ -654,3 +654,23 @@ Under Dave's direct instruction and CT-DEC-19 autonomy, retain existing act illu
 ## CT-DEC-38: Opening title sequence
 
 Dave approved the eleven-second empty-lot-to-show sequence and explicitly made implementation a goal. Use the existing renderer with pinned GSAP choreography and optional synchronized sound. Source inspection confirms continuous yaw, pitch and zoom for the restrained reveal. The intro is a separate presentation scene with Skip, Replay, Continue/New game, reduced motion, mute and returning-visit behavior; no game/save-schema migration or equipment producer change. The approved storyboard is captured in FEATURE_BRIEFS.md. Synthesized sound and optional browser soundcheck avoid new media dependencies. Human audio and visual acceptance remain separate from automated delivery.
+
+## CT-DEC-39: Lot surroundings and dusk atmosphere
+
+**Accepted by Dave, 2026-10-23**, through the explicit request to extend the
+ground beyond the fence with inexpensive gravel/grass, a service road, loading
+area, trees and distant industrial silhouettes, and replace the flat grey with
+a dusk gradient, horizon and restrained fog. Warm venue lighting connects this
+setting to the existing opening. The fence remains the clear playable boundary.
+
+Apply this to the Lot and its opening only. Keep existing camera controls,
+logical bounds, placement, picking, saves, economy, other rooms and classic
+fallback. Use source-authored static geometry and shared resources. Under
+CT-DEC-19, measured rendering optimizations use baked vertex tint, a merged
+scenery batch, a depth-ordered sky, ground rings omitting hidden surfaces and
+scenery-only haze. Diffuse subdivided Lot asphalt retains its grid, warm light
+pools and shadow reception. These are presentation choices, with unchanged
+renderer regression limits and no adaptive quality or device qualification.
+Compatible visual correction uses0.4.1 under CT-DEC-33; cachev89 and schema2 are
+separate. Source, automated tests, merge, deployment and human/device acceptance
+remain separate proof lanes.
