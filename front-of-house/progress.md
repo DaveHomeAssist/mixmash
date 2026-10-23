@@ -1222,3 +1222,14 @@ these are preliminary isolated-renderer diagnostics, not device qualification
 or a substitute for the rejected gate. FOH-PERF-01 remains an unanswered
 strategy question. No baseline/limit change, merge, deployment or tag performed.
 This tracking checkpoint changes no runtime bytes.
+
+Sustained native diagnostic at clean frozen8412699 completed18windows on
+IntelHD630/MesaEGL with the standard10second warmup,30second samples and
+three repeats at1440x900,375x812 and2560x720, empty and150representatives.
+Independent audit verifies18raw windows,11source digests, both fixture hashes,
+statistics and backing/quality guards. All cadence samples are about60fps;
+worst framep95 is16.8ms and CPUp95 is7.1ms. This remains standalone isolated
+renderer evidence: no software-gate pass, replacement baseline, full-HUD,
+physical-phone or human acceptance follows. Owned runner claim released and
+source remains clean. FOH-PERF-01 is unanswered; CT-DEC-21 stays authoritative.
+No runtime bytes, timing limits, baseline, merge, deployment or tag changed.
