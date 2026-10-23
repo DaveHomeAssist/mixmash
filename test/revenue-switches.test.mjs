@@ -10,12 +10,16 @@ const KOFI = 'https://ko-fi.com/test_page';
 const TOKEN = '0123456789abcdef0123456789abcdef';
 const INCLUDE = '<script src="/assets/analytics.js" defer></script>';
 
-test('shipped config: support off, Cloudflare Web Analytics on', async () => {
+test('shipped config: Ko-fi support on, Cloudflare Web Analytics on', async () => {
   const TOKEN_LIVE = '3aeddc4297384179a3dcb309314cb365';
-  assert.equal(monetization.supportUrl, '');
+  assert.equal(monetization.supportUrl, 'https://ko-fi.com/avbydave');
+  assert.equal(supportEnabled(), true);
   assert.equal(monetization.cloudflareAnalyticsToken, TOKEN_LIVE);
   assert.equal(analyticsEnabled(), true);
-  assert.equal(supportBlock() + supportFooterLink(), '');
+  const homeSupport = await read('index.html');
+  assert.ok(homeSupport.includes(supportBlock()), 'homepage carries the Ko-fi block');
+  assert.ok(homeSupport.includes(supportFooterLink()), 'homepage footer carries the Ko-fi link');
+  assert.equal((homeSupport.match(/href="https:\/\/ko-fi\.com\/avbydave" target="_blank" rel="noopener"/g) || []).length, 2, 'exactly two Ko-fi links: block and footer');
   assert.equal(analyticsHead(), `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN_LIVE}"}'></script>`);
   const include = await read('assets/analytics.js');
   assert.equal(include, analyticsScript());

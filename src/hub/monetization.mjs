@@ -1,5 +1,5 @@
 /**
- * Revenue switches for the static homepage. Everything here ships OFF.
+ * Revenue switches for the static homepage. Support (Ko-fi) and analytics are on; ads ship OFF.
  *
  * Leave a value empty and the homepage renders nothing for it: no markup, no reserved space,
  * no third-party script and no network request. Fill one in, run `npm run hub:build`, and
@@ -9,7 +9,7 @@ export const monetization = {
   // Dave's Ko-fi page, exactly https://ko-fi.com/<name> (Dave's pick, Oct 19). An itch.io page
   // (https://<name>.itch.io/) is the planned second channel; any other https page also works.
   // Shows a "Keep the games free" tip block in the Studio view and a footer link.
-  supportUrl: '',
+  supportUrl: 'https://ko-fi.com/avbydave',
   // Optional label override. Empty: "Support MixMash on Ko-fi" for Ko-fi, else "Support MixMash".
   supportLabel: '',
   // Google AdSense publisher ID (ca-pub- plus 16 digits) and one display ad unit slot ID (digits).

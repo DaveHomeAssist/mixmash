@@ -1,7 +1,8 @@
 # Revenue setup — mixmash.games
 
 Revenue hooks are off by default until Dave supplies a value. **Cloudflare Web Analytics is ON**
-(token set Oct 19, 2026). Support and ads stay off until Dave supplies those values. Each switch lives in [`src/hub/monetization.mjs`](../src/hub/monetization.mjs); after
+(token set Oct 19, 2026). **Ko-fi support is ON** (`https://ko-fi.com/avbydave`, switched on once PayPal/Stripe
+was connected on Ko-fi). Ads stay off until there is traffic data. Each switch lives in [`src/hub/monetization.mjs`](../src/hub/monetization.mjs); after
 editing it run `npm run hub:build`, then `npm test` and `npm run smoke:landing`, and commit the
 regenerated `index.html`.
 
@@ -23,7 +24,13 @@ While a value is empty nothing renders, and no third-party request is made. With
 `/assets/analytics.js` injects the official Cloudflare beacon; while off it is comment-only. The service worker never touches third-party requests, so it does not
 cache or block the beacon.
 
-## Turn on Ko-fi
+## Ko-fi — ON
+
+**Status: ON.** `supportUrl` is `https://ko-fi.com/avbydave`. The Studio view shows the "Keep the games free"
+block and the footer shows **Support MixMash on Ko-fi**. Payment status check (no login):
+`/workspace/kofi-live/check.sh` on the box prints CONNECTED / NOT_CONNECTED / UNKNOWN.
+
+Setup that was used:
 
 1. **Dave:** go to <https://ko-fi.com>, click **Start a page** (or sign in), and pick a page name;
    that becomes `https://ko-fi.com/<name>`. Under **Settings → Payments**, connect Stripe or PayPal
