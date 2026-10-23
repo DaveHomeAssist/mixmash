@@ -221,6 +221,8 @@ export const COMMAND_NOTES = {
   'smoke:front-of-house': { project: 'front-of-house', description: 'Lot Night end to end: reload, save codes and version 1 conversion, the next show, the out-of-money stop, keyboard building, the board sprites, the board camera, no page scroll in any phase, the corner HUD, the sheets and windows, the phone tabs, the menu, reduced motion, phone width, contrast.' },
   'sim:front-of-house-tiers': { project: 'front-of-house', description: 'Regenerate the100-seed later-tier career baseline, checking earned progression, held nights, cancellation, cash and continued Festival play.' },
   'sim:front-of-house': { project: 'front-of-house', description: 'Regenerate docs/BALANCE_BASELINE.md. CI fails on drift or a FAIL verdict.' },
+  'sim:front-of-house-workbench': { project: 'front-of-house', description: 'Compare six observable-state policies on matched seeds; write outcome reports and exact replay traces without changing game balance.' },
+  'test:front-of-house-workbench': { project: 'front-of-house', description: 'Verify policy determinism, hidden-outcome independence, legal replay and honest cohort statistics.' },
   'sim:front-of-house-career': { project: 'front-of-house', description: 'Regenerate the four-room career report; verify earned unlocks, cash, receipts and exact save/reload pairs.' },
   'start:mars': { project: 'mars', description: 'Run the authority server locally with SQLite at http://localhost:8787/mars/.' },
   'art:index': { project: 'mars', description: 'Regenerate the commissioned-art runtime index from valid present frames.' },
@@ -270,6 +272,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/sim/workbench-baseline.json': { title: 'Front of House workbench baseline', description: 'Source digests and measured600-career development/held-out outcome distributions; no game balance changes.' },
   'front-of-house/assets/equipment/stage.png': { description: 'Equipment card preview rendered from the existing FOH stage model.' },
   'front-of-house/assets/equipment/delay.png': { description: 'Equipment card preview rendered from the existing FOH delay model.' },
   'front-of-house/assets/equipment/vip-deck.png': { description: 'Equipment card preview rendered from the existing FOH vip-deck model.' },

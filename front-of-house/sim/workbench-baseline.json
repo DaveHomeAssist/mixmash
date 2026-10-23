@@ -1,0 +1,4140 @@
+{
+  "schema": 1,
+  "config": {
+    "seeds": 100,
+    "start": 1001,
+    "maxShows": 60
+  },
+  "source": {
+    "engine.mjs": "d5e02698e5f66c83a03adfd7eb542536048a7333e11e521de656cd3b0f217d99",
+    "data.mjs": "ffc4aba2a3fdb56ee610171415a1f6a0981d25af97fc7c437755332aa1ffe0d6",
+    "sim/reference.mjs": "e5dec9c5691f6b35e84196782c8831e1b9cc95d2ff9699e892b4c17c798629c5",
+    "sim/workbench.mjs": "23faa6e8fbbb3554d14a663d954308e9a82496b4400135fc4b297b8e185d8e0e",
+    "services.mjs": "bd618c7baee5483e6981c536b948faca10cbaeeef48cd77f7e30dd92295da9f5",
+    "research.mjs": "b21ab8b3735822c55d5aca6f8286ec83f35ed0c352ea7ac4133f18629bce0c04",
+    "ownership.mjs": "838aa7bea53dffa0963e3e0080e16645365ee3765170c430b1973692fd6ebca0",
+    "career-ledger.mjs": "d73530a6befb1b2fd0fb01bf5815f2881c73e8fef269a9cfb5530cf50b5de430",
+    "stage-accounts.mjs": "af790f8f253b6477ffd0536c6a27392f5d4c5f173d183d7fa2a80dd044660db8",
+    "seating.mjs": "112e9a4f239ecaf99630c2ec7c68f097be6ab8ea443f52c3786cfc598b5fb9aa",
+    "curfew.mjs": "6479bdc2c67a70d7fb132ab2b2de158812e863ee20d18ca94d6e8dd6a41cd939",
+    "held-run.mjs": "73cedce5977f044ff26dc835c9e9ff54aafbc1cc385f4c6ce4a05859570b43b9",
+    "ticketing.mjs": "d77a670ea9d288f08cae63218613381b59d13459752229854f0128be7ee8d10d",
+    "room-profile.mjs": "1d8d7baf16be2a94e89d7ceb8807f2b8c7ac7403b9ce9e7807d3fe2a13391806",
+    "sanitation.mjs": "a9eb1281db83783570c06d3fa637cbad2aabc18950e7213fc153c8cf87c41d1e",
+    "concessions.mjs": "f1e4dc88662398dc913898572e908f15d2448fe2bdf3fcc12bbe28828815ec83",
+    "guest-flow.mjs": "5fb4a6775ccab8e5461d282d3d26917c8ad4fc69e83059bf9af7cf720650a1c8"
+  },
+  "policyVersion": 1,
+  "scope": "Ordinary one-night careers, earned venues, representative layouts, three ticket prices and three ad presets; no live services, purchases, research or held runs.",
+  "interpretation": "Scripted policies are hypotheses, not measured human behavior. Terminal cash compares different career lengths; use matched fixed-horizon experiments before causal tuning. Forecast scoring is approximate, especially Festival gross minus opening cost. No balance values changed.",
+  "cohorts": {
+    "all": {
+      "policies": {
+        "beginner": {
+          "careers": 100,
+          "completed": 58,
+          "completionRate": 0.58,
+          "stops": {
+            "policy_no_plan": 39,
+            "complete": 58,
+            "engine_cannot_continue": 1,
+            "no_affordable_grid_plan": 2
+          },
+          "finalCash": {
+            "n": 100,
+            "mean": 475234.28,
+            "p10": 2062,
+            "median": 552775,
+            "p90": 1313878,
+            "min": 1298,
+            "max": 1481853
+          },
+          "minimumCash": {
+            "n": 100,
+            "mean": 98.94,
+            "p10": 52,
+            "median": 110,
+            "p90": 110,
+            "min": 4,
+            "max": 110
+          },
+          "cashDeltaPerShow": {
+            "n": 1322,
+            "mean": 35721.20121028744,
+            "p10": -560,
+            "median": 3310,
+            "p90": 27876,
+            "min": -38575,
+            "max": 475866
+          },
+          "netPerShow": {
+            "n": 1322,
+            "mean": 35721.20121028744,
+            "p10": -560,
+            "median": 3310,
+            "p90": 27876,
+            "min": -38575,
+            "max": 475866
+          },
+          "satisfaction": {
+            "n": 1322,
+            "mean": 79.55446293494705,
+            "p10": 61,
+            "median": 79,
+            "p90": 93,
+            "min": 57,
+            "max": 94
+          },
+          "signedShows": 1322,
+          "completionShows": {
+            "n": 58,
+            "mean": 20.70689655172414,
+            "p10": 17,
+            "median": 20,
+            "p90": 25,
+            "min": 14,
+            "max": 31
+          },
+          "lossRecovery": {
+            "losses": 223,
+            "observable": 156,
+            "censored": 67,
+            "recoveredWithin3": 149
+          },
+          "rooms": {
+            "lot": {
+              "reached": 100,
+              "total": 100,
+              "shows": 585,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 585,
+                "mean": 426.24444444444447,
+                "p10": -643,
+                "median": 552,
+                "p90": 1324,
+                "min": -1435,
+                "max": 1384
+              },
+              "satisfaction": {
+                "n": 585,
+                "mean": 89.88888888888889,
+                "p10": 85,
+                "median": 91,
+                "p90": 93,
+                "min": 85,
+                "max": 93
+              }
+            },
+            "club": {
+              "reached": 59,
+              "total": 100,
+              "shows": 299,
+              "unlockShows": {
+                "n": 59,
+                "mean": 8.203389830508474,
+                "p10": 6,
+                "median": 8,
+                "p90": 11,
+                "min": 4,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 299,
+                "mean": 5621.822742474917,
+                "p10": 3556,
+                "median": 5923,
+                "p90": 6841,
+                "min": 1302,
+                "max": 6901
+              },
+              "satisfaction": {
+                "n": 299,
+                "mean": 65.8428093645485,
+                "p10": 61,
+                "median": 66,
+                "p90": 72,
+                "min": 61,
+                "max": 86
+              }
+            },
+            "amphitheater": {
+              "reached": 59,
+              "total": 100,
+              "shows": 287,
+              "unlockShows": {
+                "n": 59,
+                "mean": 13.271186440677965,
+                "p10": 10,
+                "median": 13,
+                "p90": 16,
+                "min": 8,
+                "max": 18
+              },
+              "cashDelta": {
+                "n": 287,
+                "mean": 24257.257839721253,
+                "p10": 21650,
+                "median": 23476,
+                "p90": 28050,
+                "min": 21245,
+                "max": 28476
+              },
+              "satisfaction": {
+                "n": 287,
+                "mean": 77.37630662020906,
+                "p10": 75,
+                "median": 78,
+                "p90": 79,
+                "min": 75,
+                "max": 79
+              }
+            },
+            "festival": {
+              "reached": 59,
+              "total": 100,
+              "shows": 151,
+              "unlockShows": {
+                "n": 59,
+                "mean": 18.135593220338983,
+                "p10": 14,
+                "median": 18,
+                "p90": 21,
+                "min": 13,
+                "max": 24
+              },
+              "cashDelta": {
+                "n": 151,
+                "mean": 253849.78145695364,
+                "p10": -36373,
+                "median": 420240,
+                "p90": 467866,
+                "min": -38575,
+                "max": 475866
+              },
+              "satisfaction": {
+                "n": 151,
+                "mean": 70.80794701986756,
+                "p10": 57,
+                "median": 58,
+                "p90": 94,
+                "min": 57,
+                "max": 94
+              }
+            }
+          }
+        },
+        "cautious": {
+          "careers": 100,
+          "completed": 100,
+          "completionRate": 1,
+          "stops": {
+            "complete": 100
+          },
+          "finalCash": {
+            "n": 100,
+            "mean": 1226483.15,
+            "p10": 716103,
+            "median": 1294040,
+            "p90": 1820795,
+            "min": 647975,
+            "max": 1846025
+          },
+          "minimumCash": {
+            "n": 100,
+            "mean": 661.89,
+            "p10": 345,
+            "median": 520,
+            "p90": 1020,
+            "min": 252,
+            "max": 1020
+          },
+          "cashDeltaPerShow": {
+            "n": 1604,
+            "mean": 76277.00436408978,
+            "p10": 1208,
+            "median": 8459,
+            "p90": 513624,
+            "min": -29059,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 1604,
+            "mean": 76277.00436408978,
+            "p10": 1208,
+            "median": 8459,
+            "p90": 513624,
+            "min": -29059,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 1604,
+            "mean": 78.38403990024938,
+            "p10": 63,
+            "median": 80,
+            "p90": 87,
+            "min": 62,
+            "max": 99
+          },
+          "signedShows": 1604,
+          "completionShows": {
+            "n": 100,
+            "mean": 16.04,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 20
+          },
+          "lossRecovery": {
+            "losses": 5,
+            "observable": 5,
+            "censored": 0,
+            "recoveredWithin3": 5
+          },
+          "rooms": {
+            "lot": {
+              "reached": 100,
+              "total": 100,
+              "shows": 632,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 632,
+                "mean": 1745.4018987341772,
+                "p10": 757,
+                "median": 1784,
+                "p90": 2589,
+                "min": 2,
+                "max": 2764
+              },
+              "satisfaction": {
+                "n": 632,
+                "mean": 82.69303797468355,
+                "p10": 78,
+                "median": 81,
+                "p90": 90,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 100,
+              "total": 100,
+              "shows": 386,
+              "unlockShows": {
+                "n": 100,
+                "mean": 6.32,
+                "p10": 5,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 10
+              },
+              "cashDelta": {
+                "n": 386,
+                "mean": 8184.020725388601,
+                "p10": 5877,
+                "median": 8613,
+                "p90": 9369,
+                "min": 3177,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 386,
+                "mean": 75.3160621761658,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 100,
+              "total": 100,
+              "shows": 391,
+              "unlockShows": {
+                "n": 100,
+                "mean": 10.18,
+                "p10": 9,
+                "median": 10,
+                "p90": 12,
+                "min": 8,
+                "max": 14
+              },
+              "cashDelta": {
+                "n": 391,
+                "mean": 34234.36061381074,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36336,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 391,
+                "mean": 81.93350383631713,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 100,
+              "total": 100,
+              "shows": 195,
+              "unlockShows": {
+                "n": 100,
+                "mean": 14.09,
+                "p10": 12,
+                "median": 14,
+                "p90": 16,
+                "min": 11,
+                "max": 17
+              },
+              "cashDelta": {
+                "n": 195,
+                "mean": 536925.917948718,
+                "p10": 512013,
+                "median": 570424,
+                "p90": 572361,
+                "min": -29059,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 195,
+                "mean": 63.37435897435898,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 99
+              }
+            }
+          }
+        },
+        "growth": {
+          "careers": 100,
+          "completed": 100,
+          "completionRate": 1,
+          "stops": {
+            "complete": 100
+          },
+          "finalCash": {
+            "n": 100,
+            "mean": 1225896.07,
+            "p10": 717018,
+            "median": 1294027,
+            "p90": 1822561,
+            "min": 654326,
+            "max": 1848588
+          },
+          "minimumCash": {
+            "n": 100,
+            "mean": 283.32,
+            "p10": 45,
+            "median": 220,
+            "p90": 520,
+            "min": 2,
+            "max": 520
+          },
+          "cashDeltaPerShow": {
+            "n": 1595,
+            "mean": 76670.6,
+            "p10": 1384,
+            "median": 8459,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 1595,
+            "mean": 76670.6,
+            "p10": 1384,
+            "median": 8459,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 1595,
+            "mean": 78.0626959247649,
+            "p10": 63,
+            "median": 80,
+            "p90": 86,
+            "min": 62,
+            "max": 99
+          },
+          "signedShows": 1595,
+          "completionShows": {
+            "n": 100,
+            "mean": 15.95,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 19
+          },
+          "lossRecovery": {
+            "losses": 11,
+            "observable": 11,
+            "censored": 0,
+            "recoveredWithin3": 11
+          },
+          "rooms": {
+            "lot": {
+              "reached": 100,
+              "total": 100,
+              "shows": 617,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 617,
+                "mean": 1788.839546191248,
+                "p10": 781,
+                "median": 1822,
+                "p90": 2445,
+                "min": -293,
+                "max": 2784
+              },
+              "satisfaction": {
+                "n": 617,
+                "mean": 81.9837925445705,
+                "p10": 78,
+                "median": 80,
+                "p90": 89,
+                "min": 73,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 100,
+              "total": 100,
+              "shows": 393,
+              "unlockShows": {
+                "n": 100,
+                "mean": 6.17,
+                "p10": 6,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 7
+              },
+              "cashDelta": {
+                "n": 393,
+                "mean": 8138.17048346056,
+                "p10": 5764,
+                "median": 8517,
+                "p90": 9369,
+                "min": 4021,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 393,
+                "mean": 75.36386768447836,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 100,
+              "total": 100,
+              "shows": 391,
+              "unlockShows": {
+                "n": 100,
+                "mean": 10.1,
+                "p10": 9,
+                "median": 10,
+                "p90": 11,
+                "min": 8,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 391,
+                "mean": 34210.83887468031,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36336,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 391,
+                "mean": 81.95140664961637,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 100,
+              "total": 100,
+              "shows": 194,
+              "unlockShows": {
+                "n": 100,
+                "mean": 14.01,
+                "p10": 13,
+                "median": 14,
+                "p90": 15,
+                "min": 11,
+                "max": 16
+              },
+              "cashDelta": {
+                "n": 194,
+                "mean": 539232.7525773196,
+                "p10": 512146,
+                "median": 570424,
+                "p90": 572361,
+                "min": -29564,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 194,
+                "mean": 63.22164948453608,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 99
+              }
+            }
+          }
+        },
+        "aggressive": {
+          "careers": 100,
+          "completed": 100,
+          "completionRate": 1,
+          "stops": {
+            "complete": 100
+          },
+          "finalCash": {
+            "n": 100,
+            "mean": 1214146.27,
+            "p10": 718581,
+            "median": 1276611,
+            "p90": 1747579,
+            "min": 573995,
+            "max": 1839562
+          },
+          "minimumCash": {
+            "n": 100,
+            "mean": 126.75,
+            "p10": 45,
+            "median": 120,
+            "p90": 220,
+            "min": 45,
+            "max": 220
+          },
+          "cashDeltaPerShow": {
+            "n": 1601,
+            "mean": 75649.36102435978,
+            "p10": 947,
+            "median": 7228,
+            "p90": 506157,
+            "min": -25331,
+            "max": 572808
+          },
+          "netPerShow": {
+            "n": 1601,
+            "mean": 75649.36102435978,
+            "p10": 947,
+            "median": 7228,
+            "p90": 506157,
+            "min": -25331,
+            "max": 572808
+          },
+          "satisfaction": {
+            "n": 1601,
+            "mean": 79.01936289818863,
+            "p10": 67,
+            "median": 81,
+            "p90": 88,
+            "min": 62,
+            "max": 97
+          },
+          "signedShows": 1601,
+          "completionShows": {
+            "n": 100,
+            "mean": 16.01,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 20
+          },
+          "lossRecovery": {
+            "losses": 16,
+            "observable": 16,
+            "censored": 0,
+            "recoveredWithin3": 16
+          },
+          "rooms": {
+            "lot": {
+              "reached": 100,
+              "total": 100,
+              "shows": 634,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 634,
+                "mean": 1620.1908517350157,
+                "p10": 746,
+                "median": 1528,
+                "p90": 2690,
+                "min": -223,
+                "max": 2764
+              },
+              "satisfaction": {
+                "n": 634,
+                "mean": 83.23343848580441,
+                "p10": 78,
+                "median": 82,
+                "p90": 90,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 100,
+              "total": 100,
+              "shows": 356,
+              "unlockShows": {
+                "n": 100,
+                "mean": 6.34,
+                "p10": 5,
+                "median": 6,
+                "p90": 8,
+                "min": 5,
+                "max": 10
+              },
+              "cashDelta": {
+                "n": 356,
+                "mean": 7129.373595505618,
+                "p10": 3694,
+                "median": 8774,
+                "p90": 9355,
+                "min": 2311,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 356,
+                "mean": 75.76966292134831,
+                "p10": 71,
+                "median": 72,
+                "p90": 86,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 100,
+              "total": 100,
+              "shows": 401,
+              "unlockShows": {
+                "n": 100,
+                "mean": 9.9,
+                "p10": 9,
+                "median": 10,
+                "p90": 12,
+                "min": 8,
+                "max": 14
+              },
+              "cashDelta": {
+                "n": 401,
+                "mean": 34179.71571072319,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36444,
+                "min": 12342,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 401,
+                "mean": 81.94513715710723,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 100,
+              "total": 100,
+              "shows": 210,
+              "unlockShows": {
+                "n": 100,
+                "mean": 13.91,
+                "p10": 12,
+                "median": 14,
+                "p90": 16,
+                "min": 11,
+                "max": 19
+              },
+              "cashDelta": {
+                "n": 210,
+                "mean": 494491.91904761904,
+                "p10": 365549,
+                "median": 561251,
+                "p90": 572424,
+                "min": -25331,
+                "max": 572808
+              },
+              "satisfaction": {
+                "n": 210,
+                "mean": 66.21904761904761,
+                "p10": 62,
+                "median": 63,
+                "p90": 74,
+                "min": 62,
+                "max": 97
+              }
+            }
+          }
+        },
+        "profit": {
+          "careers": 100,
+          "completed": 100,
+          "completionRate": 1,
+          "stops": {
+            "complete": 100
+          },
+          "finalCash": {
+            "n": 100,
+            "mean": 1220254.22,
+            "p10": 717018,
+            "median": 1290269,
+            "p90": 1818746,
+            "min": 654326,
+            "max": 1848588
+          },
+          "minimumCash": {
+            "n": 100,
+            "mean": 283.32,
+            "p10": 45,
+            "median": 220,
+            "p90": 520,
+            "min": 2,
+            "max": 520
+          },
+          "cashDeltaPerShow": {
+            "n": 1599,
+            "mean": 76125.9674796748,
+            "p10": 1377,
+            "median": 8459,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 1599,
+            "mean": 76125.9674796748,
+            "p10": 1377,
+            "median": 8459,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 1599,
+            "mean": 78.16072545340838,
+            "p10": 63,
+            "median": 80,
+            "p90": 86,
+            "min": 62,
+            "max": 99
+          },
+          "signedShows": 1599,
+          "completionShows": {
+            "n": 100,
+            "mean": 15.99,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 20
+          },
+          "lossRecovery": {
+            "losses": 12,
+            "observable": 12,
+            "censored": 0,
+            "recoveredWithin3": 12
+          },
+          "rooms": {
+            "lot": {
+              "reached": 100,
+              "total": 100,
+              "shows": 620,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 620,
+                "mean": 1791.5467741935483,
+                "p10": 781,
+                "median": 1805,
+                "p90": 2569,
+                "min": -293,
+                "max": 2784
+              },
+              "satisfaction": {
+                "n": 620,
+                "mean": 82.10161290322581,
+                "p10": 78,
+                "median": 80,
+                "p90": 89,
+                "min": 73,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 100,
+              "total": 100,
+              "shows": 393,
+              "unlockShows": {
+                "n": 100,
+                "mean": 6.2,
+                "p10": 6,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 8
+              },
+              "cashDelta": {
+                "n": 393,
+                "mean": 8130.513994910942,
+                "p10": 5764,
+                "median": 8545,
+                "p90": 9369,
+                "min": 4021,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 393,
+                "mean": 75.44783715012723,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 100,
+              "total": 100,
+              "shows": 392,
+              "unlockShows": {
+                "n": 100,
+                "mean": 10.13,
+                "p10": 9,
+                "median": 10,
+                "p90": 12,
+                "min": 8,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 392,
+                "mean": 34201.005102040814,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36336,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 392,
+                "mean": 81.94642857142857,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 100,
+              "total": 100,
+              "shows": 194,
+              "unlockShows": {
+                "n": 100,
+                "mean": 14.05,
+                "p10": 13,
+                "median": 14,
+                "p90": 16,
+                "min": 11,
+                "max": 17
+              },
+              "cashDelta": {
+                "n": 194,
+                "mean": 536147.3041237113,
+                "p10": 511748,
+                "median": 570424,
+                "p90": 572361,
+                "min": -29564,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 194,
+                "mean": 63.41237113402062,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 99
+              }
+            }
+          }
+        },
+        "random": {
+          "careers": 100,
+          "completed": 61,
+          "completionRate": 0.61,
+          "stops": {
+            "no_affordable_grid_plan": 26,
+            "complete": 61,
+            "engine_cannot_continue": 13
+          },
+          "finalCash": {
+            "n": 100,
+            "mean": 592473.28,
+            "p10": 1956,
+            "median": 590794,
+            "p90": 1388607,
+            "min": 1171,
+            "max": 1696073
+          },
+          "minimumCash": {
+            "n": 100,
+            "mean": 195.49,
+            "p10": 18,
+            "median": 140,
+            "p90": 414,
+            "min": 1,
+            "max": 1295
+          },
+          "cashDeltaPerShow": {
+            "n": 2462,
+            "mean": 23942.862713241266,
+            "p10": -725,
+            "median": 857,
+            "p90": 26970,
+            "min": -39268,
+            "max": 576912
+          },
+          "netPerShow": {
+            "n": 2462,
+            "mean": 23942.862713241266,
+            "p10": -725,
+            "median": 857,
+            "p90": 26970,
+            "min": -39268,
+            "max": 576912
+          },
+          "satisfaction": {
+            "n": 2462,
+            "mean": 82.3038180341186,
+            "p10": 67,
+            "median": 82,
+            "p90": 97,
+            "min": 57,
+            "max": 99
+          },
+          "signedShows": 2462,
+          "completionShows": {
+            "n": 61,
+            "mean": 28.885245901639344,
+            "p10": 21,
+            "median": 28,
+            "p90": 38,
+            "min": 17,
+            "max": 47
+          },
+          "lossRecovery": {
+            "losses": 612,
+            "observable": 537,
+            "censored": 75,
+            "recoveredWithin3": 427
+          },
+          "rooms": {
+            "lot": {
+              "reached": 100,
+              "total": 100,
+              "shows": 1498,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 1498,
+                "mean": 379.97797062750334,
+                "p10": -690,
+                "median": 407,
+                "p90": 1456,
+                "min": -1538,
+                "max": 2748
+              },
+              "satisfaction": {
+                "n": 1498,
+                "mean": 85.96328437917224,
+                "p10": 73,
+                "median": 86,
+                "p90": 97,
+                "min": 67,
+                "max": 99
+              }
+            },
+            "club": {
+              "reached": 88,
+              "total": 100,
+              "shows": 355,
+              "unlockShows": {
+                "n": 88,
+                "mean": 16.545454545454547,
+                "p10": 9,
+                "median": 15,
+                "p90": 26,
+                "min": 6,
+                "max": 34
+              },
+              "cashDelta": {
+                "n": 355,
+                "mean": 4455.985915492958,
+                "p10": 2237,
+                "median": 3871,
+                "p90": 7593,
+                "min": 1022,
+                "max": 9305
+              },
+              "satisfaction": {
+                "n": 355,
+                "mean": 70.2056338028169,
+                "p10": 61,
+                "median": 71,
+                "p90": 80,
+                "min": 61,
+                "max": 92
+              }
+            },
+            "amphitheater": {
+              "reached": 88,
+              "total": 100,
+              "shows": 358,
+              "unlockShows": {
+                "n": 88,
+                "mean": 20.579545454545453,
+                "p10": 13,
+                "median": 19,
+                "p90": 29,
+                "min": 10,
+                "max": 39
+              },
+              "cashDelta": {
+                "n": 358,
+                "mean": 21477.99441340782,
+                "p10": 10389,
+                "median": 21918,
+                "p90": 30766,
+                "min": 8074,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 358,
+                "mean": 79.88268156424581,
+                "p10": 75,
+                "median": 80,
+                "p90": 84,
+                "min": 73,
+                "max": 84
+              }
+            },
+            "festival": {
+              "reached": 88,
+              "total": 100,
+              "shows": 251,
+              "unlockShows": {
+                "n": 88,
+                "mean": 24.647727272727273,
+                "p10": 17,
+                "median": 23,
+                "p90": 35,
+                "min": 13,
+                "max": 43
+              },
+              "cashDelta": {
+                "n": 251,
+                "mean": 195645.91235059762,
+                "p10": -36132,
+                "median": 31819,
+                "p90": 512213,
+                "min": -39268,
+                "max": 576912
+              },
+              "satisfaction": {
+                "n": 251,
+                "mean": 81.02788844621514,
+                "p10": 59,
+                "median": 81,
+                "p90": 98,
+                "min": 57,
+                "max": 99
+              }
+            }
+          }
+        }
+      },
+      "paired": [
+        {
+          "policy": "cautious",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 100,
+            "mean": 751248.87,
+            "p10": -126855,
+            "median": 723190,
+            "p90": 1785139,
+            "min": -781340,
+            "max": 1832909
+          }
+        },
+        {
+          "policy": "growth",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 100,
+            "mean": 750661.79,
+            "p10": 3032,
+            "median": 723061,
+            "p90": 1333075,
+            "min": -744939,
+            "max": 1833572
+          }
+        },
+        {
+          "policy": "aggressive",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 100,
+            "mean": 738911.99,
+            "p10": -161963,
+            "median": 710190,
+            "p90": 1650366,
+            "min": -688419,
+            "max": 1818779
+          }
+        },
+        {
+          "policy": "profit",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 100,
+            "mean": 745019.94,
+            "p10": 3032,
+            "median": 723361,
+            "p90": 1333375,
+            "min": -744939,
+            "max": 1832909
+          }
+        },
+        {
+          "policy": "random",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 100,
+            "mean": 117239,
+            "p10": -908316,
+            "median": 31712,
+            "p90": 944088,
+            "min": -1440591,
+            "max": 1519148
+          }
+        }
+      ]
+    },
+    "development": {
+      "policies": {
+        "beginner": {
+          "careers": 80,
+          "completed": 48,
+          "completionRate": 0.6,
+          "stops": {
+            "policy_no_plan": 31,
+            "complete": 48,
+            "engine_cannot_continue": 1
+          },
+          "finalCash": {
+            "n": 80,
+            "mean": 502868.25,
+            "p10": 2080,
+            "median": 565011,
+            "p90": 1320598,
+            "min": 1682,
+            "max": 1481853
+          },
+          "minimumCash": {
+            "n": 80,
+            "mean": 99.1125,
+            "p10": 55,
+            "median": 110,
+            "p90": 110,
+            "min": 4,
+            "max": 110
+          },
+          "cashDeltaPerShow": {
+            "n": 1107,
+            "mean": 36124.17344173442,
+            "p10": -560,
+            "median": 4057,
+            "p90": 28050,
+            "min": -38575,
+            "max": 475866
+          },
+          "netPerShow": {
+            "n": 1107,
+            "mean": 36124.17344173442,
+            "p10": -560,
+            "median": 4057,
+            "p90": 28050,
+            "min": -38575,
+            "max": 475866
+          },
+          "satisfaction": {
+            "n": 1107,
+            "mean": 79.39024390243902,
+            "p10": 61,
+            "median": 79,
+            "p90": 93,
+            "min": 57,
+            "max": 94
+          },
+          "signedShows": 1107,
+          "completionShows": {
+            "n": 48,
+            "mean": 21.041666666666668,
+            "p10": 17,
+            "median": 21,
+            "p90": 26,
+            "min": 14,
+            "max": 31
+          },
+          "lossRecovery": {
+            "losses": 185,
+            "observable": 135,
+            "censored": 50,
+            "recoveredWithin3": 129
+          },
+          "rooms": {
+            "lot": {
+              "reached": 80,
+              "total": 80,
+              "shows": 478,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 478,
+                "mean": 432.04811715481173,
+                "p10": -643,
+                "median": 588,
+                "p90": 1324,
+                "min": -1414,
+                "max": 1384
+              },
+              "satisfaction": {
+                "n": 478,
+                "mean": 89.86820083682008,
+                "p10": 85,
+                "median": 91,
+                "p90": 93,
+                "min": 85,
+                "max": 93
+              }
+            },
+            "club": {
+              "reached": 49,
+              "total": 80,
+              "shows": 254,
+              "unlockShows": {
+                "n": 49,
+                "mean": 8.183673469387756,
+                "p10": 5,
+                "median": 8,
+                "p90": 11,
+                "min": 4,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 254,
+                "mean": 5662.86220472441,
+                "p10": 3599,
+                "median": 5951,
+                "p90": 6841,
+                "min": 1302,
+                "max": 6901
+              },
+              "satisfaction": {
+                "n": 254,
+                "mean": 65.74803149606299,
+                "p10": 61,
+                "median": 66,
+                "p90": 72,
+                "min": 61,
+                "max": 86
+              }
+            },
+            "amphitheater": {
+              "reached": 49,
+              "total": 80,
+              "shows": 244,
+              "unlockShows": {
+                "n": 49,
+                "mean": 13.36734693877551,
+                "p10": 10,
+                "median": 13,
+                "p90": 16,
+                "min": 8,
+                "max": 18
+              },
+              "cashDelta": {
+                "n": 244,
+                "mean": 24389.54098360656,
+                "p10": 21650,
+                "median": 23476,
+                "p90": 28084,
+                "min": 21245,
+                "max": 28476
+              },
+              "satisfaction": {
+                "n": 244,
+                "mean": 77.40163934426229,
+                "p10": 75,
+                "median": 78,
+                "p90": 79,
+                "min": 75,
+                "max": 79
+              }
+            },
+            "festival": {
+              "reached": 49,
+              "total": 80,
+              "shows": 131,
+              "unlockShows": {
+                "n": 49,
+                "mean": 18.346938775510203,
+                "p10": 14,
+                "median": 19,
+                "p90": 21,
+                "min": 13,
+                "max": 24
+              },
+              "cashDelta": {
+                "n": 131,
+                "mean": 247278.82442748093,
+                "p10": -36475,
+                "median": 420219,
+                "p90": 467866,
+                "min": -38575,
+                "max": 475866
+              },
+              "satisfaction": {
+                "n": 131,
+                "mean": 71.31297709923665,
+                "p10": 57,
+                "median": 58,
+                "p90": 94,
+                "min": 57,
+                "max": 94
+              }
+            }
+          }
+        },
+        "cautious": {
+          "careers": 80,
+          "completed": 80,
+          "completionRate": 1,
+          "stops": {
+            "complete": 80
+          },
+          "finalCash": {
+            "n": 80,
+            "mean": 1211201.3875,
+            "p10": 715886,
+            "median": 1284702,
+            "p90": 1820795,
+            "min": 647975,
+            "max": 1846025
+          },
+          "minimumCash": {
+            "n": 80,
+            "mean": 641.475,
+            "p10": 345,
+            "median": 520,
+            "p90": 1020,
+            "min": 287,
+            "max": 1020
+          },
+          "cashDeltaPerShow": {
+            "n": 1279,
+            "mean": 75571.62705238468,
+            "p10": 1232,
+            "median": 8465,
+            "p90": 513624,
+            "min": -29059,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 1279,
+            "mean": 75571.62705238468,
+            "p10": 1232,
+            "median": 8465,
+            "p90": 513624,
+            "min": -29059,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 1279,
+            "mean": 78.40734949179046,
+            "p10": 63,
+            "median": 80,
+            "p90": 87,
+            "min": 62,
+            "max": 99
+          },
+          "signedShows": 1279,
+          "completionShows": {
+            "n": 80,
+            "mean": 15.9875,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 20
+          },
+          "lossRecovery": {
+            "losses": 5,
+            "observable": 5,
+            "censored": 0,
+            "recoveredWithin3": 5
+          },
+          "rooms": {
+            "lot": {
+              "reached": 80,
+              "total": 80,
+              "shows": 497,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 497,
+                "mean": 1751.6016096579476,
+                "p10": 796,
+                "median": 1790,
+                "p90": 2569,
+                "min": 2,
+                "max": 2764
+              },
+              "satisfaction": {
+                "n": 497,
+                "mean": 82.67404426559357,
+                "p10": 78,
+                "median": 81,
+                "p90": 90,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 80,
+              "total": 80,
+              "shows": 311,
+              "unlockShows": {
+                "n": 80,
+                "mean": 6.2125,
+                "p10": 5,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 10
+              },
+              "cashDelta": {
+                "n": 311,
+                "mean": 8166.6495176848875,
+                "p10": 5834,
+                "median": 8559,
+                "p90": 9369,
+                "min": 3177,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 311,
+                "mean": 75.41479099678456,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 80,
+              "total": 80,
+              "shows": 316,
+              "unlockShows": {
+                "n": 80,
+                "mean": 10.1,
+                "p10": 9,
+                "median": 10,
+                "p90": 12,
+                "min": 8,
+                "max": 13
+              },
+              "cashDelta": {
+                "n": 316,
+                "mean": 34179.082278481015,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36336,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 316,
+                "mean": 81.90506329113924,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 80,
+              "total": 80,
+              "shows": 155,
+              "unlockShows": {
+                "n": 80,
+                "mean": 14.05,
+                "p10": 12,
+                "median": 14,
+                "p90": 16,
+                "min": 11,
+                "max": 17
+              },
+              "cashDelta": {
+                "n": 155,
+                "mean": 531904.1741935484,
+                "p10": 511881,
+                "median": 569468,
+                "p90": 572361,
+                "min": -29059,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 155,
+                "mean": 63.6,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 99
+              }
+            }
+          }
+        },
+        "growth": {
+          "careers": 80,
+          "completed": 80,
+          "completionRate": 1,
+          "stops": {
+            "complete": 80
+          },
+          "finalCash": {
+            "n": 80,
+            "mean": 1203230.1875,
+            "p10": 716188,
+            "median": 1283877,
+            "p90": 1819052,
+            "min": 654326,
+            "max": 1845835
+          },
+          "minimumCash": {
+            "n": 80,
+            "mean": 271.0125,
+            "p10": 45,
+            "median": 220,
+            "p90": 520,
+            "min": 24,
+            "max": 520
+          },
+          "cashDeltaPerShow": {
+            "n": 1278,
+            "mean": 75131.78012519561,
+            "p10": 1386,
+            "median": 8419,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 1278,
+            "mean": 75131.78012519561,
+            "p10": 1386,
+            "median": 8419,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 1278,
+            "mean": 78.12910798122066,
+            "p10": 63,
+            "median": 80,
+            "p90": 86,
+            "min": 62,
+            "max": 99
+          },
+          "signedShows": 1278,
+          "completionShows": {
+            "n": 80,
+            "mean": 15.975,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 19
+          },
+          "lossRecovery": {
+            "losses": 7,
+            "observable": 7,
+            "censored": 0,
+            "recoveredWithin3": 7
+          },
+          "rooms": {
+            "lot": {
+              "reached": 80,
+              "total": 80,
+              "shows": 495,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 495,
+                "mean": 1805.909090909091,
+                "p10": 820,
+                "median": 1826,
+                "p90": 2444,
+                "min": -146,
+                "max": 2764
+              },
+              "satisfaction": {
+                "n": 495,
+                "mean": 81.93333333333334,
+                "p10": 78,
+                "median": 80,
+                "p90": 88,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 80,
+              "total": 80,
+              "shows": 314,
+              "unlockShows": {
+                "n": 80,
+                "mean": 6.1875,
+                "p10": 5,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 7
+              },
+              "cashDelta": {
+                "n": 314,
+                "mean": 8128.528662420382,
+                "p10": 5810,
+                "median": 8505,
+                "p90": 9369,
+                "min": 4021,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 314,
+                "mean": 75.48089171974522,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 80,
+              "total": 80,
+              "shows": 316,
+              "unlockShows": {
+                "n": 80,
+                "mean": 10.1125,
+                "p10": 9,
+                "median": 10,
+                "p90": 11,
+                "min": 8,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 316,
+                "mean": 34159.05063291139,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36336,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 316,
+                "mean": 81.93037974683544,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 80,
+              "total": 80,
+              "shows": 153,
+              "unlockShows": {
+                "n": 80,
+                "mean": 14.0625,
+                "p10": 13,
+                "median": 14,
+                "p90": 15,
+                "min": 11,
+                "max": 16
+              },
+              "cashDelta": {
+                "n": 153,
+                "mean": 534495.8954248365,
+                "p10": 511748,
+                "median": 569468,
+                "p90": 572361,
+                "min": -29564,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 153,
+                "mean": 63.40522875816993,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 99
+              }
+            }
+          }
+        },
+        "aggressive": {
+          "careers": 80,
+          "completed": 80,
+          "completionRate": 1,
+          "stops": {
+            "complete": 80
+          },
+          "finalCash": {
+            "n": 80,
+            "mean": 1204099.275,
+            "p10": 717041,
+            "median": 1266996,
+            "p90": 1742598,
+            "min": 647040,
+            "max": 1839562
+          },
+          "minimumCash": {
+            "n": 80,
+            "mean": 128.4375,
+            "p10": 45,
+            "median": 120,
+            "p90": 220,
+            "min": 45,
+            "max": 220
+          },
+          "cashDeltaPerShow": {
+            "n": 1274,
+            "mean": 75422.2464678179,
+            "p10": 959,
+            "median": 7430,
+            "p90": 502120,
+            "min": -25331,
+            "max": 572808
+          },
+          "netPerShow": {
+            "n": 1274,
+            "mean": 75422.2464678179,
+            "p10": 959,
+            "median": 7430,
+            "p90": 502120,
+            "min": -25331,
+            "max": 572808
+          },
+          "satisfaction": {
+            "n": 1274,
+            "mean": 79.04631083202511,
+            "p10": 67,
+            "median": 81,
+            "p90": 88,
+            "min": 62,
+            "max": 94
+          },
+          "signedShows": 1274,
+          "completionShows": {
+            "n": 80,
+            "mean": 15.925,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 20
+          },
+          "lossRecovery": {
+            "losses": 14,
+            "observable": 14,
+            "censored": 0,
+            "recoveredWithin3": 14
+          },
+          "rooms": {
+            "lot": {
+              "reached": 80,
+              "total": 80,
+              "shows": 497,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 497,
+                "mean": 1626.4446680080482,
+                "p10": 758,
+                "median": 1533,
+                "p90": 2670,
+                "min": -223,
+                "max": 2764
+              },
+              "satisfaction": {
+                "n": 497,
+                "mean": 83.28772635814889,
+                "p10": 78,
+                "median": 83,
+                "p90": 90,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 80,
+              "total": 80,
+              "shows": 285,
+              "unlockShows": {
+                "n": 80,
+                "mean": 6.2125,
+                "p10": 5,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 10
+              },
+              "cashDelta": {
+                "n": 285,
+                "mean": 7160.375438596491,
+                "p10": 3817,
+                "median": 8687,
+                "p90": 9355,
+                "min": 2311,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 285,
+                "mean": 75.80350877192983,
+                "p10": 71,
+                "median": 72,
+                "p90": 86,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 80,
+              "total": 80,
+              "shows": 323,
+              "unlockShows": {
+                "n": 80,
+                "mean": 9.775,
+                "p10": 9,
+                "median": 10,
+                "p90": 11,
+                "min": 8,
+                "max": 14
+              },
+              "cashDelta": {
+                "n": 323,
+                "mean": 34113.02476780186,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36444,
+                "min": 12342,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 323,
+                "mean": 81.91331269349845,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 80,
+              "total": 80,
+              "shows": 169,
+              "unlockShows": {
+                "n": 80,
+                "mean": 13.8125,
+                "p10": 12,
+                "median": 14,
+                "p90": 15,
+                "min": 11,
+                "max": 19
+              },
+              "cashDelta": {
+                "n": 169,
+                "mean": 486511.1538461539,
+                "p10": 327499,
+                "median": 561251,
+                "p90": 572424,
+                "min": -25331,
+                "max": 572808
+              },
+              "satisfaction": {
+                "n": 169,
+                "mean": 66.56213017751479,
+                "p10": 62,
+                "median": 63,
+                "p90": 75,
+                "min": 62,
+                "max": 94
+              }
+            }
+          }
+        },
+        "profit": {
+          "careers": 80,
+          "completed": 80,
+          "completionRate": 1,
+          "stops": {
+            "complete": 80
+          },
+          "finalCash": {
+            "n": 80,
+            "mean": 1196195.95,
+            "p10": 716188,
+            "median": 1220372,
+            "p90": 1818384,
+            "min": 654326,
+            "max": 1845835
+          },
+          "minimumCash": {
+            "n": 80,
+            "mean": 271.0125,
+            "p10": 45,
+            "median": 220,
+            "p90": 520,
+            "min": 24,
+            "max": 520
+          },
+          "cashDeltaPerShow": {
+            "n": 1282,
+            "mean": 74458.40561622466,
+            "p10": 1386,
+            "median": 8419,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 1282,
+            "mean": 74458.40561622466,
+            "p10": 1386,
+            "median": 8419,
+            "p90": 513624,
+            "min": -29564,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 1282,
+            "mean": 78.22620904836194,
+            "p10": 63,
+            "median": 80,
+            "p90": 86,
+            "min": 62,
+            "max": 99
+          },
+          "signedShows": 1282,
+          "completionShows": {
+            "n": 80,
+            "mean": 16.025,
+            "p10": 14,
+            "median": 16,
+            "p90": 18,
+            "min": 13,
+            "max": 20
+          },
+          "lossRecovery": {
+            "losses": 8,
+            "observable": 8,
+            "censored": 0,
+            "recoveredWithin3": 8
+          },
+          "rooms": {
+            "lot": {
+              "reached": 80,
+              "total": 80,
+              "shows": 498,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 498,
+                "mean": 1807.7309236947792,
+                "p10": 820,
+                "median": 1824,
+                "p90": 2569,
+                "min": -146,
+                "max": 2764
+              },
+              "satisfaction": {
+                "n": 498,
+                "mean": 82.04417670682732,
+                "p10": 78,
+                "median": 80,
+                "p90": 88,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 80,
+              "total": 80,
+              "shows": 314,
+              "unlockShows": {
+                "n": 80,
+                "mean": 6.225,
+                "p10": 6,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 8
+              },
+              "cashDelta": {
+                "n": 314,
+                "mean": 8125.843949044586,
+                "p10": 5811,
+                "median": 8517,
+                "p90": 9369,
+                "min": 4021,
+                "max": 9525
+              },
+              "satisfaction": {
+                "n": 314,
+                "mean": 75.54140127388536,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 91
+              }
+            },
+            "amphitheater": {
+              "reached": 80,
+              "total": 80,
+              "shows": 317,
+              "unlockShows": {
+                "n": 80,
+                "mean": 10.15,
+                "p10": 9,
+                "median": 10,
+                "p90": 12,
+                "min": 8,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 317,
+                "mean": 34147.05362776025,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36336,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 317,
+                "mean": 81.92429022082018,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 80,
+              "total": 80,
+              "shows": 153,
+              "unlockShows": {
+                "n": 80,
+                "mean": 14.1125,
+                "p10": 13,
+                "median": 14,
+                "p90": 16,
+                "min": 11,
+                "max": 17
+              },
+              "cashDelta": {
+                "n": 153,
+                "mean": 530583.6274509804,
+                "p10": 511683,
+                "median": 569468,
+                "p90": 572361,
+                "min": -29564,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 153,
+                "mean": 63.64705882352941,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 99
+              }
+            }
+          }
+        },
+        "random": {
+          "careers": 80,
+          "completed": 48,
+          "completionRate": 0.6,
+          "stops": {
+            "no_affordable_grid_plan": 22,
+            "complete": 48,
+            "engine_cannot_continue": 10
+          },
+          "finalCash": {
+            "n": 80,
+            "mean": 588085.25,
+            "p10": 1962,
+            "median": 588191,
+            "p90": 1352746,
+            "min": 1171,
+            "max": 1696073
+          },
+          "minimumCash": {
+            "n": 80,
+            "mean": 201.2625,
+            "p10": 18,
+            "median": 141,
+            "p90": 414,
+            "min": 1,
+            "max": 1295
+          },
+          "cashDeltaPerShow": {
+            "n": 1985,
+            "mean": 23580.261964735517,
+            "p10": -725,
+            "median": 863,
+            "p90": 27019,
+            "min": -39268,
+            "max": 576324
+          },
+          "netPerShow": {
+            "n": 1985,
+            "mean": 23580.261964735517,
+            "p10": -725,
+            "median": 863,
+            "p90": 27019,
+            "min": -39268,
+            "max": 576324
+          },
+          "satisfaction": {
+            "n": 1985,
+            "mean": 82.28866498740554,
+            "p10": 67,
+            "median": 82,
+            "p90": 97,
+            "min": 57,
+            "max": 99
+          },
+          "signedShows": 1985,
+          "completionShows": {
+            "n": 48,
+            "mean": 28.770833333333332,
+            "p10": 20,
+            "median": 28,
+            "p90": 38,
+            "min": 17,
+            "max": 45
+          },
+          "lossRecovery": {
+            "losses": 487,
+            "observable": 424,
+            "censored": 63,
+            "recoveredWithin3": 333
+          },
+          "rooms": {
+            "lot": {
+              "reached": 80,
+              "total": 80,
+              "shows": 1210,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 1210,
+                "mean": 384.3809917355372,
+                "p10": -700,
+                "median": 417,
+                "p90": 1443,
+                "min": -1494,
+                "max": 2748
+              },
+              "satisfaction": {
+                "n": 1210,
+                "mean": 86.000826446281,
+                "p10": 73,
+                "median": 86,
+                "p90": 97,
+                "min": 67,
+                "max": 99
+              }
+            },
+            "club": {
+              "reached": 71,
+              "total": 80,
+              "shows": 289,
+              "unlockShows": {
+                "n": 71,
+                "mean": 16.577464788732396,
+                "p10": 9,
+                "median": 15,
+                "p90": 27,
+                "min": 6,
+                "max": 33
+              },
+              "cashDelta": {
+                "n": 289,
+                "mean": 4404.397923875433,
+                "p10": 2190,
+                "median": 3807,
+                "p90": 7593,
+                "min": 1022,
+                "max": 9305
+              },
+              "satisfaction": {
+                "n": 289,
+                "mean": 70.26989619377163,
+                "p10": 61,
+                "median": 71,
+                "p90": 79,
+                "min": 61,
+                "max": 92
+              }
+            },
+            "amphitheater": {
+              "reached": 71,
+              "total": 80,
+              "shows": 286,
+              "unlockShows": {
+                "n": 71,
+                "mean": 20.64788732394366,
+                "p10": 13,
+                "median": 19,
+                "p90": 29,
+                "min": 10,
+                "max": 37
+              },
+              "cashDelta": {
+                "n": 286,
+                "mean": 21864.825174825175,
+                "p10": 10566,
+                "median": 22156,
+                "p90": 30735,
+                "min": 8074,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 286,
+                "mean": 79.82867132867133,
+                "p10": 75,
+                "median": 80,
+                "p90": 84,
+                "min": 73,
+                "max": 84
+              }
+            },
+            "festival": {
+              "reached": 71,
+              "total": 80,
+              "shows": 200,
+              "unlockShows": {
+                "n": 71,
+                "mean": 24.676056338028168,
+                "p10": 18,
+                "median": 23,
+                "p90": 35,
+                "min": 13,
+                "max": 41
+              },
+              "cashDelta": {
+                "n": 200,
+                "mean": 194077.54,
+                "p10": -35961,
+                "median": 41087,
+                "p90": 482726,
+                "min": -39268,
+                "max": 576324
+              },
+              "satisfaction": {
+                "n": 200,
+                "mean": 80.715,
+                "p10": 58,
+                "median": 81,
+                "p90": 98,
+                "min": 57,
+                "max": 99
+              }
+            }
+          }
+        }
+      },
+      "paired": [
+        {
+          "policy": "cautious",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 80,
+            "mean": 708333.1375,
+            "p10": -134057,
+            "median": 712806,
+            "p90": 1784447,
+            "min": -781340,
+            "max": 1832492
+          }
+        },
+        {
+          "policy": "growth",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 80,
+            "mean": 700361.9375,
+            "p10": 3032,
+            "median": 711663,
+            "p90": 1321502,
+            "min": -744939,
+            "max": 1824754
+          }
+        },
+        {
+          "policy": "aggressive",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 80,
+            "mean": 701231.025,
+            "p10": -171127,
+            "median": 678029,
+            "p90": 1650366,
+            "min": -688419,
+            "max": 1818779
+          }
+        },
+        {
+          "policy": "profit",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 80,
+            "mean": 693327.7,
+            "p10": 3032,
+            "median": 711663,
+            "p90": 1315745,
+            "min": -744939,
+            "max": 1824754
+          }
+        },
+        {
+          "policy": "random",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 80,
+            "mean": 85217,
+            "p10": -941797,
+            "median": 31712,
+            "p90": 944088,
+            "min": -1440591,
+            "max": 1519148
+          }
+        }
+      ]
+    },
+    "heldout": {
+      "policies": {
+        "beginner": {
+          "careers": 20,
+          "completed": 10,
+          "completionRate": 0.5,
+          "stops": {
+            "complete": 10,
+            "policy_no_plan": 8,
+            "no_affordable_grid_plan": 2
+          },
+          "finalCash": {
+            "n": 20,
+            "mean": 364698.4,
+            "p10": 1497,
+            "median": 2336,
+            "p90": 910272,
+            "min": 1298,
+            "max": 1332457
+          },
+          "minimumCash": {
+            "n": 20,
+            "mean": 98.25,
+            "p10": 43,
+            "median": 110,
+            "p90": 110,
+            "min": 8,
+            "max": 110
+          },
+          "cashDeltaPerShow": {
+            "n": 215,
+            "mean": 33646.362790697676,
+            "p10": -577,
+            "median": 1364,
+            "p90": 23876,
+            "min": -37898,
+            "max": 467866
+          },
+          "netPerShow": {
+            "n": 215,
+            "mean": 33646.362790697676,
+            "p10": -577,
+            "median": 1364,
+            "p90": 23876,
+            "min": -37898,
+            "max": 467866
+          },
+          "satisfaction": {
+            "n": 215,
+            "mean": 80.4,
+            "p10": 61,
+            "median": 85,
+            "p90": 93,
+            "min": 57,
+            "max": 94
+          },
+          "signedShows": 215,
+          "completionShows": {
+            "n": 10,
+            "mean": 19.1,
+            "p10": 15,
+            "median": 19,
+            "p90": 21,
+            "min": 15,
+            "max": 23
+          },
+          "lossRecovery": {
+            "losses": 38,
+            "observable": 21,
+            "censored": 17,
+            "recoveredWithin3": 20
+          },
+          "rooms": {
+            "lot": {
+              "reached": 20,
+              "total": 20,
+              "shows": 107,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 107,
+                "mean": 400.31775700934577,
+                "p10": -759,
+                "median": 463,
+                "p90": 1344,
+                "min": -1435,
+                "max": 1384
+              },
+              "satisfaction": {
+                "n": 107,
+                "mean": 89.98130841121495,
+                "p10": 85,
+                "median": 91,
+                "p90": 93,
+                "min": 85,
+                "max": 93
+              }
+            },
+            "club": {
+              "reached": 10,
+              "total": 20,
+              "shows": 45,
+              "unlockShows": {
+                "n": 10,
+                "mean": 8.3,
+                "p10": 6,
+                "median": 7,
+                "p90": 11,
+                "min": 6,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 45,
+                "mean": 5390.177777777778,
+                "p10": 3338,
+                "median": 5843,
+                "p90": 6793,
+                "min": 2364,
+                "max": 6901
+              },
+              "satisfaction": {
+                "n": 45,
+                "mean": 66.37777777777778,
+                "p10": 61,
+                "median": 66,
+                "p90": 71,
+                "min": 61,
+                "max": 83
+              }
+            },
+            "amphitheater": {
+              "reached": 10,
+              "total": 20,
+              "shows": 43,
+              "unlockShows": {
+                "n": 10,
+                "mean": 12.8,
+                "p10": 10,
+                "median": 12,
+                "p90": 16,
+                "min": 10,
+                "max": 16
+              },
+              "cashDelta": {
+                "n": 43,
+                "mean": 23506.627906976744,
+                "p10": 21752,
+                "median": 23476,
+                "p90": 27464,
+                "min": 21425,
+                "max": 28176
+              },
+              "satisfaction": {
+                "n": 43,
+                "mean": 77.23255813953489,
+                "p10": 75,
+                "median": 78,
+                "p90": 79,
+                "min": 75,
+                "max": 79
+              }
+            },
+            "festival": {
+              "reached": 10,
+              "total": 20,
+              "shows": 20,
+              "unlockShows": {
+                "n": 10,
+                "mean": 17.1,
+                "p10": 13,
+                "median": 16,
+                "p90": 20,
+                "min": 13,
+                "max": 21
+              },
+              "cashDelta": {
+                "n": 20,
+                "mean": 296889.55,
+                "p10": -35100,
+                "median": 420241,
+                "p90": 467866,
+                "min": -37898,
+                "max": 467866
+              },
+              "satisfaction": {
+                "n": 20,
+                "mean": 67.5,
+                "p10": 57,
+                "median": 57,
+                "p90": 93,
+                "min": 57,
+                "max": 94
+              }
+            }
+          }
+        },
+        "cautious": {
+          "careers": 20,
+          "completed": 20,
+          "completionRate": 1,
+          "stops": {
+            "complete": 20
+          },
+          "finalCash": {
+            "n": 20,
+            "mean": 1287610.2,
+            "p10": 719844,
+            "median": 1307205,
+            "p90": 1809164,
+            "min": 677969,
+            "max": 1841136
+          },
+          "minimumCash": {
+            "n": 20,
+            "mean": 743.55,
+            "p10": 345,
+            "median": 834,
+            "p90": 1020,
+            "min": 252,
+            "max": 1020
+          },
+          "cashDeltaPerShow": {
+            "n": 325,
+            "mean": 79052.93538461538,
+            "p10": 1091,
+            "median": 8330,
+            "p90": 513844,
+            "min": 11,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 325,
+            "mean": 79052.93538461538,
+            "p10": 1091,
+            "median": 8330,
+            "p90": 513844,
+            "min": 11,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 325,
+            "mean": 78.29230769230769,
+            "p10": 63,
+            "median": 79,
+            "p90": 88,
+            "min": 62,
+            "max": 92
+          },
+          "signedShows": 325,
+          "completionShows": {
+            "n": 20,
+            "mean": 16.25,
+            "p10": 15,
+            "median": 15,
+            "p90": 19,
+            "min": 14,
+            "max": 19
+          },
+          "lossRecovery": {
+            "losses": 0,
+            "observable": 0,
+            "censored": 0,
+            "recoveredWithin3": 0
+          },
+          "rooms": {
+            "lot": {
+              "reached": 20,
+              "total": 20,
+              "shows": 135,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 135,
+                "mean": 1722.5777777777778,
+                "p10": 639,
+                "median": 1770,
+                "p90": 2690,
+                "min": 11,
+                "max": 2744
+              },
+              "satisfaction": {
+                "n": 135,
+                "mean": 82.76296296296296,
+                "p10": 78,
+                "median": 81,
+                "p90": 91,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 20,
+              "total": 20,
+              "shows": 75,
+              "unlockShows": {
+                "n": 20,
+                "mean": 6.75,
+                "p10": 5,
+                "median": 6,
+                "p90": 9,
+                "min": 5,
+                "max": 10
+              },
+              "cashDelta": {
+                "n": 75,
+                "mean": 8256.053333333333,
+                "p10": 5970,
+                "median": 8774,
+                "p90": 9369,
+                "min": 4306,
+                "max": 9465
+              },
+              "satisfaction": {
+                "n": 75,
+                "mean": 74.90666666666667,
+                "p10": 71,
+                "median": 72,
+                "p90": 84,
+                "min": 71,
+                "max": 90
+              }
+            },
+            "amphitheater": {
+              "reached": 20,
+              "total": 20,
+              "shows": 75,
+              "unlockShows": {
+                "n": 20,
+                "mean": 10.5,
+                "p10": 9,
+                "median": 10,
+                "p90": 13,
+                "min": 9,
+                "max": 14
+              },
+              "cashDelta": {
+                "n": 75,
+                "mean": 34467.26666666667,
+                "p10": 30694,
+                "median": 35844,
+                "p90": 36444,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 75,
+                "mean": 82.05333333333333,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 20,
+              "total": 20,
+              "shows": 40,
+              "unlockShows": {
+                "n": 20,
+                "mean": 14.25,
+                "p10": 12,
+                "median": 14,
+                "p90": 17,
+                "min": 12,
+                "max": 17
+              },
+              "cashDelta": {
+                "n": 40,
+                "mean": 556385.175,
+                "p10": 513624,
+                "median": 570424,
+                "p90": 572361,
+                "min": 510153,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 40,
+                "mean": 62.5,
+                "p10": 62,
+                "median": 62,
+                "p90": 63,
+                "min": 62,
+                "max": 63
+              }
+            }
+          }
+        },
+        "growth": {
+          "careers": 20,
+          "completed": 20,
+          "completionRate": 1,
+          "stops": {
+            "complete": 20
+          },
+          "finalCash": {
+            "n": 20,
+            "mean": 1316559.6,
+            "p10": 719623,
+            "median": 1301730,
+            "p90": 1835647,
+            "min": 687597,
+            "max": 1848588
+          },
+          "minimumCash": {
+            "n": 20,
+            "mean": 332.55,
+            "p10": 31,
+            "median": 345,
+            "p90": 520,
+            "min": 2,
+            "max": 520
+          },
+          "cashDeltaPerShow": {
+            "n": 317,
+            "mean": 82874.42271293375,
+            "p10": 1285,
+            "median": 8499,
+            "p90": 514008,
+            "min": -293,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 317,
+            "mean": 82874.42271293375,
+            "p10": 1285,
+            "median": 8499,
+            "p90": 514008,
+            "min": -293,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 317,
+            "mean": 77.79495268138801,
+            "p10": 63,
+            "median": 79,
+            "p90": 86,
+            "min": 62,
+            "max": 92
+          },
+          "signedShows": 317,
+          "completionShows": {
+            "n": 20,
+            "mean": 15.85,
+            "p10": 14,
+            "median": 15,
+            "p90": 17,
+            "min": 14,
+            "max": 18
+          },
+          "lossRecovery": {
+            "losses": 4,
+            "observable": 4,
+            "censored": 0,
+            "recoveredWithin3": 4
+          },
+          "rooms": {
+            "lot": {
+              "reached": 20,
+              "total": 20,
+              "shows": 122,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 122,
+                "mean": 1719.5819672131147,
+                "p10": 412,
+                "median": 1790,
+                "p90": 2445,
+                "min": -293,
+                "max": 2784
+              },
+              "satisfaction": {
+                "n": 122,
+                "mean": 82.18852459016394,
+                "p10": 78,
+                "median": 79,
+                "p90": 90,
+                "min": 73,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 20,
+              "total": 20,
+              "shows": 79,
+              "unlockShows": {
+                "n": 20,
+                "mean": 6.1,
+                "p10": 6,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 7
+              },
+              "cashDelta": {
+                "n": 79,
+                "mean": 8176.493670886076,
+                "p10": 5721,
+                "median": 8545,
+                "p90": 9369,
+                "min": 4109,
+                "max": 9415
+              },
+              "satisfaction": {
+                "n": 79,
+                "mean": 74.89873417721519,
+                "p10": 71,
+                "median": 72,
+                "p90": 85,
+                "min": 71,
+                "max": 90
+              }
+            },
+            "amphitheater": {
+              "reached": 20,
+              "total": 20,
+              "shows": 75,
+              "unlockShows": {
+                "n": 20,
+                "mean": 10.05,
+                "p10": 9,
+                "median": 10,
+                "p90": 11,
+                "min": 9,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 75,
+                "mean": 34429.04,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36444,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 75,
+                "mean": 82.04,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 20,
+              "total": 20,
+              "shows": 41,
+              "unlockShows": {
+                "n": 20,
+                "mean": 13.8,
+                "p10": 12,
+                "median": 14,
+                "p90": 15,
+                "min": 12,
+                "max": 16
+              },
+              "cashDelta": {
+                "n": 41,
+                "mean": 556909.3170731707,
+                "p10": 513624,
+                "median": 570644,
+                "p90": 572526,
+                "min": 510153,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 41,
+                "mean": 62.53658536585366,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 63
+              }
+            }
+          }
+        },
+        "aggressive": {
+          "careers": 20,
+          "completed": 20,
+          "completionRate": 1,
+          "stops": {
+            "complete": 20
+          },
+          "finalCash": {
+            "n": 20,
+            "mean": 1254334.25,
+            "p10": 727794,
+            "median": 1288746,
+            "p90": 1764833,
+            "min": 573995,
+            "max": 1809723
+          },
+          "minimumCash": {
+            "n": 20,
+            "mean": 120,
+            "p10": 70,
+            "median": 95,
+            "p90": 195,
+            "min": 45,
+            "max": 220
+          },
+          "cashDeltaPerShow": {
+            "n": 327,
+            "mean": 76534.20489296636,
+            "p10": 880,
+            "median": 5521,
+            "p90": 511682,
+            "min": -23003,
+            "max": 572808
+          },
+          "netPerShow": {
+            "n": 327,
+            "mean": 76534.20489296636,
+            "p10": 880,
+            "median": 5521,
+            "p90": 511682,
+            "min": -23003,
+            "max": 572808
+          },
+          "satisfaction": {
+            "n": 327,
+            "mean": 78.91437308868501,
+            "p10": 66,
+            "median": 81,
+            "p90": 89,
+            "min": 62,
+            "max": 97
+          },
+          "signedShows": 327,
+          "completionShows": {
+            "n": 20,
+            "mean": 16.35,
+            "p10": 14,
+            "median": 17,
+            "p90": 18,
+            "min": 14,
+            "max": 19
+          },
+          "lossRecovery": {
+            "losses": 2,
+            "observable": 2,
+            "censored": 0,
+            "recoveredWithin3": 2
+          },
+          "rooms": {
+            "lot": {
+              "reached": 20,
+              "total": 20,
+              "shows": 137,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 137,
+                "mean": 1597.5036496350365,
+                "p10": 657,
+                "median": 1463,
+                "p90": 2690,
+                "min": -49,
+                "max": 2744
+              },
+              "satisfaction": {
+                "n": 137,
+                "mean": 83.03649635036497,
+                "p10": 78,
+                "median": 82,
+                "p90": 90,
+                "min": 78,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 20,
+              "total": 20,
+              "shows": 71,
+              "unlockShows": {
+                "n": 20,
+                "mean": 6.85,
+                "p10": 6,
+                "median": 6,
+                "p90": 8,
+                "min": 5,
+                "max": 10
+              },
+              "cashDelta": {
+                "n": 71,
+                "mean": 7004.929577464789,
+                "p10": 3432,
+                "median": 8793,
+                "p90": 9369,
+                "min": 2572,
+                "max": 9415
+              },
+              "satisfaction": {
+                "n": 71,
+                "mean": 75.63380281690141,
+                "p10": 71,
+                "median": 72,
+                "p90": 86,
+                "min": 71,
+                "max": 90
+              }
+            },
+            "amphitheater": {
+              "reached": 20,
+              "total": 20,
+              "shows": 78,
+              "unlockShows": {
+                "n": 20,
+                "mean": 10.4,
+                "p10": 9,
+                "median": 10,
+                "p90": 12,
+                "min": 8,
+                "max": 13
+              },
+              "cashDelta": {
+                "n": 78,
+                "mean": 34455.88461538462,
+                "p10": 30694,
+                "median": 35844,
+                "p90": 36444,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 78,
+                "mean": 82.07692307692308,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 20,
+              "total": 20,
+              "shows": 41,
+              "unlockShows": {
+                "n": 20,
+                "mean": 14.3,
+                "p10": 12,
+                "median": 14,
+                "p90": 17,
+                "min": 12,
+                "max": 18
+              },
+              "cashDelta": {
+                "n": 41,
+                "mean": 527388.243902439,
+                "p10": 479896,
+                "median": 566276,
+                "p90": 572808,
+                "min": -23003,
+                "max": 572808
+              },
+              "satisfaction": {
+                "n": 41,
+                "mean": 64.8048780487805,
+                "p10": 62,
+                "median": 63,
+                "p90": 69,
+                "min": 62,
+                "max": 97
+              }
+            }
+          }
+        },
+        "profit": {
+          "careers": 20,
+          "completed": 20,
+          "completionRate": 1,
+          "stops": {
+            "complete": 20
+          },
+          "finalCash": {
+            "n": 20,
+            "mean": 1316487.3,
+            "p10": 719923,
+            "median": 1301626,
+            "p90": 1834984,
+            "min": 685858,
+            "max": 1848588
+          },
+          "minimumCash": {
+            "n": 20,
+            "mean": 332.55,
+            "p10": 31,
+            "median": 345,
+            "p90": 520,
+            "min": 2,
+            "max": 520
+          },
+          "cashDeltaPerShow": {
+            "n": 317,
+            "mean": 82869.86119873817,
+            "p10": 1285,
+            "median": 8499,
+            "p90": 514008,
+            "min": -293,
+            "max": 572526
+          },
+          "netPerShow": {
+            "n": 317,
+            "mean": 82869.86119873817,
+            "p10": 1285,
+            "median": 8499,
+            "p90": 514008,
+            "min": -293,
+            "max": 572526
+          },
+          "satisfaction": {
+            "n": 317,
+            "mean": 77.89589905362776,
+            "p10": 63,
+            "median": 79,
+            "p90": 87,
+            "min": 62,
+            "max": 92
+          },
+          "signedShows": 317,
+          "completionShows": {
+            "n": 20,
+            "mean": 15.85,
+            "p10": 14,
+            "median": 15,
+            "p90": 17,
+            "min": 14,
+            "max": 18
+          },
+          "lossRecovery": {
+            "losses": 4,
+            "observable": 4,
+            "censored": 0,
+            "recoveredWithin3": 4
+          },
+          "rooms": {
+            "lot": {
+              "reached": 20,
+              "total": 20,
+              "shows": 122,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 122,
+                "mean": 1725.483606557377,
+                "p10": 412,
+                "median": 1790,
+                "p90": 2620,
+                "min": -293,
+                "max": 2784
+              },
+              "satisfaction": {
+                "n": 122,
+                "mean": 82.3360655737705,
+                "p10": 78,
+                "median": 80,
+                "p90": 90,
+                "min": 73,
+                "max": 92
+              }
+            },
+            "club": {
+              "reached": 20,
+              "total": 20,
+              "shows": 79,
+              "unlockShows": {
+                "n": 20,
+                "mean": 6.1,
+                "p10": 6,
+                "median": 6,
+                "p90": 7,
+                "min": 5,
+                "max": 7
+              },
+              "cashDelta": {
+                "n": 79,
+                "mean": 8149.0759493670885,
+                "p10": 5503,
+                "median": 8545,
+                "p90": 9369,
+                "min": 4109,
+                "max": 9415
+              },
+              "satisfaction": {
+                "n": 79,
+                "mean": 75.07594936708861,
+                "p10": 71,
+                "median": 72,
+                "p90": 86,
+                "min": 71,
+                "max": 90
+              }
+            },
+            "amphitheater": {
+              "reached": 20,
+              "total": 20,
+              "shows": 75,
+              "unlockShows": {
+                "n": 20,
+                "mean": 10.05,
+                "p10": 9,
+                "median": 10,
+                "p90": 11,
+                "min": 9,
+                "max": 12
+              },
+              "cashDelta": {
+                "n": 75,
+                "mean": 34429.04,
+                "p10": 30694,
+                "median": 35736,
+                "p90": 36444,
+                "min": 30020,
+                "max": 36511
+              },
+              "satisfaction": {
+                "n": 75,
+                "mean": 82.04,
+                "p10": 81,
+                "median": 82,
+                "p90": 83,
+                "min": 80,
+                "max": 83
+              }
+            },
+            "festival": {
+              "reached": 20,
+              "total": 20,
+              "shows": 41,
+              "unlockShows": {
+                "n": 20,
+                "mean": 13.8,
+                "p10": 12,
+                "median": 14,
+                "p90": 15,
+                "min": 12,
+                "max": 16
+              },
+              "cashDelta": {
+                "n": 41,
+                "mean": 556909.3170731707,
+                "p10": 513624,
+                "median": 570644,
+                "p90": 572526,
+                "min": 510153,
+                "max": 572526
+              },
+              "satisfaction": {
+                "n": 41,
+                "mean": 62.53658536585366,
+                "p10": 62,
+                "median": 63,
+                "p90": 63,
+                "min": 62,
+                "max": 63
+              }
+            }
+          }
+        },
+        "random": {
+          "careers": 20,
+          "completed": 13,
+          "completionRate": 0.65,
+          "stops": {
+            "complete": 13,
+            "engine_cannot_continue": 3,
+            "no_affordable_grid_plan": 4
+          },
+          "finalCash": {
+            "n": 20,
+            "mean": 610025.4,
+            "p10": 1477,
+            "median": 601337,
+            "p90": 1388607,
+            "min": 1462,
+            "max": 1447057
+          },
+          "minimumCash": {
+            "n": 20,
+            "mean": 172.4,
+            "p10": 17,
+            "median": 118,
+            "p90": 369,
+            "min": 8,
+            "max": 511
+          },
+          "cashDeltaPerShow": {
+            "n": 477,
+            "mean": 25451.798742138366,
+            "p10": -736,
+            "median": 857,
+            "p90": 23676,
+            "min": -39268,
+            "max": 576912
+          },
+          "netPerShow": {
+            "n": 477,
+            "mean": 25451.798742138366,
+            "p10": -736,
+            "median": 857,
+            "p90": 23676,
+            "min": -39268,
+            "max": 576912
+          },
+          "satisfaction": {
+            "n": 477,
+            "mean": 82.36687631027253,
+            "p10": 67,
+            "median": 82,
+            "p90": 97,
+            "min": 57,
+            "max": 99
+          },
+          "signedShows": 477,
+          "completionShows": {
+            "n": 13,
+            "mean": 29.307692307692307,
+            "p10": 21,
+            "median": 27,
+            "p90": 37,
+            "min": 21,
+            "max": 47
+          },
+          "lossRecovery": {
+            "losses": 125,
+            "observable": 113,
+            "censored": 12,
+            "recoveredWithin3": 94
+          },
+          "rooms": {
+            "lot": {
+              "reached": 20,
+              "total": 20,
+              "shows": 288,
+              "unlockShows": {
+                "n": 0,
+                "mean": null,
+                "p10": null,
+                "median": null,
+                "p90": null,
+                "min": null,
+                "max": null
+              },
+              "cashDelta": {
+                "n": 288,
+                "mean": 361.4791666666667,
+                "p10": -667,
+                "median": 326,
+                "p90": 1464,
+                "min": -1538,
+                "max": 2748
+              },
+              "satisfaction": {
+                "n": 288,
+                "mean": 85.80555555555556,
+                "p10": 73,
+                "median": 87,
+                "p90": 97,
+                "min": 67,
+                "max": 99
+              }
+            },
+            "club": {
+              "reached": 17,
+              "total": 20,
+              "shows": 66,
+              "unlockShows": {
+                "n": 17,
+                "mean": 16.41176470588235,
+                "p10": 8,
+                "median": 14,
+                "p90": 25,
+                "min": 8,
+                "max": 34
+              },
+              "cashDelta": {
+                "n": 66,
+                "mean": 4681.878787878788,
+                "p10": 2340,
+                "median": 4079,
+                "p90": 7554,
+                "min": 1108,
+                "max": 9253
+              },
+              "satisfaction": {
+                "n": 66,
+                "mean": 69.92424242424242,
+                "p10": 61,
+                "median": 70,
+                "p90": 80,
+                "min": 61,
+                "max": 89
+              }
+            },
+            "amphitheater": {
+              "reached": 17,
+              "total": 20,
+              "shows": 72,
+              "unlockShows": {
+                "n": 17,
+                "mean": 20.294117647058822,
+                "p10": 11,
+                "median": 18,
+                "p90": 28,
+                "min": 11,
+                "max": 39
+              },
+              "cashDelta": {
+                "n": 72,
+                "mean": 19941.416666666668,
+                "p10": 10029,
+                "median": 16786,
+                "p90": 30502,
+                "min": 8287,
+                "max": 35908
+              },
+              "satisfaction": {
+                "n": 72,
+                "mean": 80.09722222222223,
+                "p10": 77,
+                "median": 81,
+                "p90": 83,
+                "min": 74,
+                "max": 84
+              }
+            },
+            "festival": {
+              "reached": 17,
+              "total": 20,
+              "shows": 51,
+              "unlockShows": {
+                "n": 17,
+                "mean": 24.529411764705884,
+                "p10": 16,
+                "median": 21,
+                "p90": 34,
+                "min": 14,
+                "max": 43
+              },
+              "cashDelta": {
+                "n": 51,
+                "mean": 201796.39215686274,
+                "p10": -36708,
+                "median": 28485,
+                "p90": 518419,
+                "min": -39268,
+                "max": 576912
+              },
+              "satisfaction": {
+                "n": 51,
+                "mean": 82.25490196078431,
+                "p10": 61,
+                "median": 80,
+                "p90": 98,
+                "min": 57,
+                "max": 99
+              }
+            }
+          }
+        }
+      },
+      "paired": [
+        {
+          "policy": "cautious",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 20,
+            "mean": 922911.8,
+            "p10": -46116,
+            "median": 782610,
+            "p90": 1806828,
+            "min": -218891,
+            "max": 1832909
+          }
+        },
+        {
+          "policy": "growth",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 20,
+            "mean": 951861.2,
+            "p10": -46292,
+            "median": 783882,
+            "p90": 1768080,
+            "min": -219112,
+            "max": 1833572
+          }
+        },
+        {
+          "policy": "aggressive",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 20,
+            "mean": 889635.85,
+            "p10": 187009,
+            "median": 728623,
+            "p90": 1322456,
+            "min": -364740,
+            "max": 1808226
+          }
+        },
+        {
+          "policy": "profit",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 20,
+            "mean": 951788.9,
+            "p10": -45992,
+            "median": 783882,
+            "p90": 1768380,
+            "min": -218812,
+            "max": 1832909
+          }
+        },
+        {
+          "policy": "random",
+          "reference": "beginner",
+          "cashDifference": {
+            "n": 20,
+            "mean": 245327,
+            "p10": -731120,
+            "median": 26241,
+            "p90": 921786,
+            "min": -908316,
+            "max": 1435761
+          }
+        }
+      ]
+    }
+  },
+  "fullReportSha256": "612bab576b2c86b17f42946b5a41daf95f95c40abca80318c5c6296566077eb2",
+  "signedShows": 10183,
+  "exampleReplays": 14,
+  "recoveryProbes": [
+    {
+      "policy": "beginner",
+      "seed": 1001,
+      "before": {
+        "cash": 2233,
+        "room": "lot",
+        "phase": "book",
+        "shows": 1
+      },
+      "quote": 1605,
+      "actions": [
+        {
+          "type": "chooseDeal",
+          "artistId": "gravel-hymnal",
+          "deal": "door",
+          "nights": 1
+        },
+        {
+          "type": "setLayout",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-s",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar",
+              "x": 1,
+              "y": 8,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 20,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 21,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "restroom",
+              "x": 22,
+              "y": 12,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 23,
+              "y": 5,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 14,
+              "rot": 0
+            }
+          ]
+        },
+        {
+          "type": "confirmBuild"
+        },
+        {
+          "type": "setPromotion",
+          "price": 18,
+          "ads": {
+            "flyers": 0,
+            "social": 0,
+            "radio": 0
+          }
+        }
+      ],
+      "response": "second-lane",
+      "after": {
+        "cash": 2082,
+        "room": "lot",
+        "shows": 2,
+        "net": -151,
+        "satisfaction": 92
+      }
+    },
+    {
+      "policy": "beginner",
+      "seed": 1093,
+      "before": {
+        "cash": 1298,
+        "room": "lot",
+        "phase": "book",
+        "shows": 2
+      },
+      "quote": 1025,
+      "actions": [
+        {
+          "type": "chooseDeal",
+          "artistId": "gravel-hymnal",
+          "deal": "door"
+        },
+        {
+          "type": "setLayout",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 9,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "pa-s",
+              "x": 8,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 12,
+              "y": 15,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 5,
+              "rot": 0
+            }
+          ]
+        },
+        {
+          "type": "confirmBuild"
+        },
+        {
+          "type": "setPromotion",
+          "price": 15,
+          "ads": {
+            "flyers": 0,
+            "social": 0,
+            "radio": 0
+          }
+        }
+      ],
+      "response": "second-lane",
+      "after": {
+        "cash": 1078,
+        "room": "lot",
+        "shows": 3,
+        "net": -220,
+        "satisfaction": 72
+      }
+    },
+    {
+      "policy": "random",
+      "seed": 1001,
+      "before": {
+        "cash": 26608,
+        "room": "festival",
+        "phase": "book",
+        "shows": 22
+      },
+      "quote": 21100,
+      "actions": [
+        {
+          "type": "chooseVenue",
+          "venueId": "amphitheater"
+        },
+        {
+          "type": "chooseDeal",
+          "artistId": "amber-turnout",
+          "deal": "guarantee",
+          "nights": 1,
+          "roomPolicy": 1,
+          "curfewPolicy": 1,
+          "seatingPolicy": 1
+        },
+        {
+          "type": "setLayout",
+          "objects": [
+            {
+              "type": "fence",
+              "x": 0,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "stage",
+              "x": 11,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "lights",
+              "x": 18,
+              "y": 0,
+              "rot": 0
+            },
+            {
+              "type": "bar-tent",
+              "x": 2,
+              "y": 4,
+              "rot": 0
+            },
+            {
+              "type": "restroom-block",
+              "x": 0,
+              "y": 6,
+              "rot": 0
+            },
+            {
+              "type": "restroom-block",
+              "x": 26,
+              "y": 6,
+              "rot": 0
+            },
+            {
+              "type": "gate",
+              "x": 14,
+              "y": 17,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 9,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 27,
+              "y": 9,
+              "rot": 0
+            },
+            {
+              "type": "exit",
+              "x": 0,
+              "y": 16,
+              "rot": 0
+            }
+          ]
+        },
+        {
+          "type": "confirmBuild"
+        },
+        {
+          "type": "setPromotion",
+          "price": 72,
+          "ads": {
+            "flyers": 0,
+            "social": 0,
+            "radio": 0
+          },
+          "seatPrice": 80
+        }
+      ],
+      "response": "backup-amp",
+      "after": {
+        "cash": 62452,
+        "room": "amphitheater",
+        "shows": 23,
+        "net": 35844,
+        "satisfaction": 82
+      }
+    }
+  ]
+}

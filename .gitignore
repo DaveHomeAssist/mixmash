@@ -4,3 +4,5 @@ mars/output/
 .vercel
 .env*.local
 .art-validation/
+
+front-of-house/sim/output/

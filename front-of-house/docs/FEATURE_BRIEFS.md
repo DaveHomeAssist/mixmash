@@ -1029,6 +1029,29 @@ Camera: existing setCamera supports continuous yaw/pitch/zoom; proposed reveal u
 Risks: autoplay restrictions require explicit sound activation; software WebGL and narrow devices need fallback and bounded frame work. Spoken soundcheck availability varies by browser.
 Acceptance: skip at every beat; replay/return/reduced-motion paths; immediate keyboard/touch controls; no page overflow at desktop/phone/ultrawide; live save bytes unchanged by intro and Continue; WebGL loss remains navigable; assets cached offline; CI, hosted runtime and human acceptance reported separately.
 
+## Balance workbench 2026-10-23
+
+Dave requested a workbench built on the existing simulator to compare beginner,
+cautious, growth, aggressive, profit and random legal policies before changing
+balance. Run the real deterministic engine without a browser. Enumerate public
+booking/layout/price/ad candidates, enforce actual opening affordability, expose
+only public forecasts to planners, and reveal incidents only at the response step.
+Compare matched development and held-out seed cohorts through all four earned
+venues. Report cash/profit distributions, progression, losses and recovery,
+policy versus financial stops, decision coverage, paired differences and replayable
+action traces with source digests. Findings are tuning hypotheses, not permission
+to change game values. Keep existing balance baselines and thresholds intact.
+
+The first slice is a command-line workbench producing JSON and Markdown reports
+and independently replayable examples. It uses representative authored layouts,
+one-night bookings, current room policies, and a bounded price/ad grid. Optional
+live services, equipment purchases, research, arbitrary placement optimization and
+held-night scheduling are excluded and named in reports. No runtime, rule, data,
+save, dependency or rendering changes. Acceptance: all six policies across all
+four venues where earned, hidden-outcome independence, deterministic replay,
+legal actions and exact cash accounting, correct summary denominators, strict CLI
+validation, reproducible bulk cohorts and unchanged legacy generated baselines.
+
 ## Lot surroundings and dusk atmosphere — 2026-10-23
 
 Dave approved extending the ground beyond the fence with grass/gravel, a service
