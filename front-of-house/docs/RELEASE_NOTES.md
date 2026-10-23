@@ -11,6 +11,15 @@ requires migration.
 - The opening browser test handles an incident that has already hidden Skip. Research reload checks wait for pending preview requests to finish, retaining strict reporting of request failures.
 - Cache v90. Rules, balance, money movement and save schema 2 are unchanged. Desktop, physical-phone and listening acceptance remain open.
 
+## 0.4.1 — 2026-10-23
+
+The Lot now sits in gravel and grass beside a service road and loading apron,
+with sparse trees and distant industrial silhouettes. A cool dusk gradient and
+restrained distance fog replace the flat grey exterior; warm venue lighting
+connects it to the opening. The fence remains the playable boundary. Decoration
+uses one static vertex-colored mesh plus sky, adds no shadow map, and changes no rules, saves,
+camera controls or other rooms. Only the decorative setting uses a fixed half-dimension backdrop; the venue and controls retain native resolution. The Lot asphalt uses subdivided diffuse lighting to retain warm light pools and shadows at lower cost. Cache v89; save schema 2 unchanged.
+
 ## 0.4.0 — 2026-10-19
 
 An opening title sequence builds an empty lot into a show using the existing 3D equipment and renderer, then reveals the entry menu. It includes Skip intro, Replay intro, Continue for existing saves, a brief return reveal, reduced-motion presentation, theme controls and optional synchronized synthesized sound. Browsers require a press of Enable sound before audio plays. The classic board remains a fallback. Game rules, costs and save schema are unchanged. A pre-existing short-window Book cutoff at 683 × 384 is also corrected with smaller button padding; text and touch targets retain their size.

@@ -1159,3 +1159,102 @@ The title refreshes Continue/New game when another tab advances the save, and us
 PR #181 merged as 44209d76ab8f0bed62989adfd8b0a105ec935cb2 after required CI 39360805379 and Horseshoes 39360805369 passed. Tested merge 38f082a and delivered merge have identical tree 414c1c5ee619a858dffcbbbed65ced9bdffafa06. Pages build 1298868065 succeeded; Dominic matched 18 hosted runtime files and passed 15 live opening scenarios, 29 complete player checks, full-phone animation/touch, cold offline first entry/reload and WebKit phone save/entry. Immutable front-of-house-v0.4.0 peels to that deployed merge. Original failed CPU measurements remain recorded with unchanged thresholds; normal reload savedAt refresh is distinguished from career-state preservation. This is an early-playable engineering delivery, not human visual/listening or physical-device acceptance. Next action is the required desktop and phone hand-play/feedback; unrelated findings stay open.
 
 The records follow-up also removes an expensive screenshot before the first timed Skip click in the opening smoke. A software-renderer capture can finish after the eleven-second intro, leaving no Skip button to click. Menu captures and all six dedicated skip-beat checks remain. The focused15-scenario rail passes on Dominic after this test-only correction; game runtime and the immutable release tag are unchanged.
+
+## 2026-10-23 — Lot surroundings and dusk atmosphere
+
+Dave approved grass/gravel beyond the fence, service road/loading area, trees,
+industrial horizon and a dusk gradient with restrained fog. The Lot and opening
+share an owned decorative scene with instanced geometry and no extra shadow map.
+The existing camera, pickables, engine and schema2 remain unchanged; other rooms
+and classic fallback keep their existing presentation. Dominic passes494 repository tests/build, the Lot boundary/picking/context/20-disposal-cycle rail, and complete3D gesture/reload/settlement parity. Three responsive game captures (1440x900,375x812,2560x720), four orbit quadrants and all four presets preserve exact game state with no application errors. Final opening checks and unchanged paired performance/CI gates remain pending. The skill client captured only the existing localhost Cloudflare analytics CORS noise; the application-aware collector reports no app errors. ECP-1.0 revision1.0: no equipment producer/consumer changes.
+
+Review correction: environment teardown now emits each InstancedMesh disposal
+event before releasing shared resources, and the ownership test requires all
+instance buffers as well as geometry/material/texture disposal. The final local
+opening rail also passed; exact revised-head CI remains required.
+
+The first paired CI39904452996 failed sustained frame-time limits (five of six
+viewport/attendance groups); source551aee4 full CI39904477584 and Horseshoes
+39904521103 passed. Retained full36 raw windows and comparison: no thresholds
+changed. Same-host diagnostic A/B points to per-pixel lit decoration and hidden
+surface overdraw. Decoration now uses unlit colors with a fixed night palette;
+the sky draws after opaque depth, and grass/gravel rings omit hidden ground below
+the playable floor. Scenery, fog, camera, attendance and simulation are retained.
+Quick probes are diagnostic only; revised visual/player and full paired gates
+remain required before merge.
+
+Final optimization candidate: all static scenery is merged into one vertex-color
+mesh plus the sky. Color conversion and faceted tint are baked once; a small
+shader applies gravel grain, night tint and distant haze. Fog stays out of the
+playable materials, and the rough Lot asphalt uses a subdivided diffuse material
+with its original grid, warm point-light pools and shadow reception. Other rooms
+and all gameplay remain unchanged. Same-host short probes improved markedly but
+are not release acceptance. Dominic passes the updated ownership/ground-hole
+tests, responsive visual/state checks, Lot boundary/context/20-cycle disposal and
+full3D gesture/reload/settlement parity; final opening/full CI/paired limits remain
+required. Failed CI evidence independently audits36 raw windows and21 source
+digests; five failed groups are retained with unchanged limits.
+
+Second full pair39910675684 improved all crowd frame metrics but still rejected
+empty-frame means and desktop crowd CPU. The revised fixed decorative backdrop
+uses a half-dimension non-MSAA render target and the actual3D camera, with cached
+view/palette/resize invalidation. Native venue/backing/crowd/shadows and timed
+limits remain unchanged. The performance record explicitly declares this layer;
+evaluator tests reject smaller/adaptive decorative backing or changed native
+backing. Both full rejection artifacts remain retained. Backdrop visual/state,
+context restore and20-cycle disposal checks pass; updated cache/backing tests
+and exact final-head gates remain required.
+
+Third full pair39915912455 (76fa274) passes16of18metrics but rejects ultrawide
+empty mean96.62ms against90.90ms and crowd CPU10.2ms against9.3ms. Independent
+audit validates36raw windows and21source hashes; rejection retained. Native full
+job was cancelled during browser install and Horseshoes screenshot timed out;
+runners went offline then recovered. A bounded compositor correction draws the
+fixed-resolution backdrop after opaque venue geometry with depth testing, so
+covered pixels can be rejected. Scenery, layer dimensions and native venue
+quality remain unchanged. Quick component probes remain diagnostic only; the
+final probe overlapped visual capture and is excluded from acceptance. All
+release checks remain required; no merge/deploy performed.
+
+Source8412699 passed native full CI (test job in39919907393), hosted full
+CI39919916136 and Horseshoes39919907346. The paired job in39919907393 failed
+three of18metrics:375emptyCPU1.6>1.4ms,2560emptymean61.32>50.25ms,
+2560crowdCPU6.6>6.3ms. Independent audit confirms36raw windows,21source
+digests and tree equality. Later texture, clear/sky, native-draw, shadow,
+browser-composition and vertex-shading diagnostics supplied no qualifying
+correction; all experimental source was restored. Six short Intel HD630
+windows hold approximately60fps, with11runtime source hashes matching8412699;
+these are preliminary isolated-renderer diagnostics, not device qualification
+or a substitute for the rejected gate. FOH-PERF-01 remains an unanswered
+strategy question. No baseline/limit change, merge, deployment or tag performed.
+This tracking checkpoint changes no runtime bytes.
+
+Sustained native diagnostic at clean frozen8412699 completed18windows on
+IntelHD630/MesaEGL with the standard10second warmup,30second samples and
+three repeats at1440x900,375x812 and2560x720, empty and150representatives.
+Independent audit verifies18raw windows,11source digests, both fixture hashes,
+statistics and backing/quality guards. All cadence samples are about60fps;
+worst framep95 is16.8ms and CPUp95 is7.1ms. This remains standalone isolated
+renderer evidence: no software-gate pass, replacement baseline, full-HUD,
+physical-phone or human acceptance follows. Owned runner claim released and
+source remains clean. FOH-PERF-01 is unanswered; CT-DEC-21 stays authoritative.
+No runtime bytes, timing limits, baseline, merge, deployment or tag changed.
+
+## 2026-10-23 scenery release delivered
+
+PR #183 source 29ad882 merged as bb87e31 with exact tested-tree equality.
+Full functional/mobile CI and Horseshoes pass. Paired 39957245252 attempt 2
+independently audits 36 windows, 22 source digests and the tested tree, with
+all 18 metrics passing. Prior rejected attempts remain failed records.
+Pages 39970718650 and delivery CI 39970727780 pass. All 48 served hashes match;
+live scenery, camera, fence and reload checks pass at 1440x900, 375x812 and
+2560x720. Thirteen original hosted suites plus a same-assertion hosted numbering
+adapter pass; original local numbering also passes. The first private adapter
+import error was corrected without changing application code or assertions.
+Immutable front-of-house-v0.4.1 peels to the verified deployed merge.
+
+Preserved the delivery branch's coarse-pointer footer fix. Retired FOH-PERF-01
+remains unanswered history, archived outside active Decisions for Dave.
+Technical scenery delivery does not certify physical phones, human final art,
+full careers or public launch. Release records and existing board are reconciled
+within this scoped documentation follow-up; no game runtime changes.

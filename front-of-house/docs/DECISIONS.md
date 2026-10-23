@@ -654,3 +654,82 @@ Under Dave's direct instruction and CT-DEC-19 autonomy, retain existing act illu
 ## CT-DEC-38: Opening title sequence
 
 Dave approved the eleven-second empty-lot-to-show sequence and explicitly made implementation a goal. Use the existing renderer with pinned GSAP choreography and optional synchronized sound. Source inspection confirms continuous yaw, pitch and zoom for the restrained reveal. The intro is a separate presentation scene with Skip, Replay, Continue/New game, reduced motion, mute and returning-visit behavior; no game/save-schema migration or equipment producer change. The approved storyboard is captured in FEATURE_BRIEFS.md. Synthesized sound and optional browser soundcheck avoid new media dependencies. Human audio and visual acceptance remain separate from automated delivery.
+
+## CT-DEC-39: Lot surroundings and dusk atmosphere
+
+**Accepted by Dave, 2026-10-23**, through the explicit request to extend the
+ground beyond the fence with inexpensive gravel/grass, a service road, loading
+area, trees and distant industrial silhouettes, and replace the flat grey with
+a dusk gradient, horizon and restrained fog. Warm venue lighting connects this
+setting to the existing opening. The fence remains the clear playable boundary.
+
+Apply this to the Lot and its opening only. Keep existing camera controls,
+logical bounds, placement, picking, saves, economy, other rooms and classic
+fallback. Use source-authored static geometry and shared resources. Under
+CT-DEC-19, measured rendering optimizations use baked vertex tint, a merged
+scenery batch, a depth-ordered sky, ground rings omitting hidden surfaces and
+scenery-only haze. Diffuse subdivided Lot asphalt retains its grid, warm light
+pools and shadow reception. These are presentation choices, with unchanged
+renderer regression limits and no adaptive quality or device qualification.
+Compatible visual correction uses0.4.1 under CT-DEC-33; cachev89 and schema2 are
+separate. Source, automated tests, merge, deployment and human/device acceptance
+remain separate proof lanes.
+
+The decorative setting uses a fixed half-dimension render target, without MSAA,
+composited behind the native-resolution work area. It follows the same real3D
+camera and caches between view/palette changes. The native board, equipment,
+crowd, controls and shadow quality remain unchanged. This is an explicit fixed
+decorative budget, never adaptive resolution or an undisclosed board downgrade.
+
+## CT-DEC-40: Explicit expanded-scene performance calibration
+
+**Selected by Codex under CT-DEC-18/19, 2026-10-23. Calibration qualified.**
+
+Freeze841269997a2b4b112871b7560abf1c8670e850de as the reference for
+subsequent scenery regression comparisons. CT-DEC-39 intentionally adds the
+rendered exterior and fixed half-resolution decorative target absent from the
+original6ed7b7c reference. This changes the scene workload and its quality
+contract. It warrants an explicit calibration, not an assertion that scenery
+costs nothing. Four valid comparisons against6ed7b7c failed and remain failed.
+The latest fails3/18 metrics; preserve every raw artifact and source audit.
+
+Bounded rendering alternatives did not establish an acceptable correction.
+The retained appearance passed functional/viewport/camera/picking/save checks
+and18 sustained Intel HD630 windows (10s warmup,30s measurement,3 repeats per
+scene/viewport), approximately60fps with worst framep9516.8ms. This supports
+that configuration only, not phone, full-HUD or human acceptance. The decision
+accepts measured added scenery cost under delegated engineering authority; it
+does not claim an optimization or a pass against the old reference.
+
+Keep CT-DEC-21's same-host/browser protocol,18 windows per side, median-of-three
+groups, frame tolerance max(25%,8ms), CPU tolerance max(50%,1ms), raw/source
+audits and quality guards. Require a full paired run and full valid20ms CPU
+fault run with numerical rejection before this policy qualifies for merge.
+No fixture, camera, native quality, adaptive resolution or timing-limit change.
+Correctness, exact-head CI/review, deployment, hosted behavior and applicable
+device/human gates remain separate. The reference is frozen, not moved to
+each future candidate.
+
+FOH-PERF-01 was an unnecessary approval question given CT-DEC-19. Retire the
+request without attributing optionB or any answer to Dave; preserve its options
+and unanswered history. This decision is an explicit engineering selection,
+not permission inferred from silence.
+
+2026-10-23 qualification: CI39933460388 at7b7233a passes full functional,
+normal comparison and valid20ms CPU-fault rejection. Independent audit verifies
+54raw windows,33source digests, fixtures/statistics and exact candidate/fault
+trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
+dbf0682 without Front of House source changes; combined-head CI and release
+remain pending. Old6ed comparisons remain failures; device/human proof separate.
+
+Qualification evidence: CI39933460388 includes the full normal comparison and
+valid measured20ms CPU-fault rejection; independent audit verifies54windows
+and33source digests. Final source29ad882 passes full functional/mobile CI and
+paired39957245252 attempt2 with independent36-window/22-source/tree audit;
+Horseshoes39957245218 passes. Initial attempts remain valid failed records.
+PR183 merges asbb87e31 with exact tested-tree equality; delivery CI39970727780
+and Pages39970718650 succeed. All48served runtime/integration hashes and live
+three-viewport scenery/camera/fence/reload checks pass. Full hosted gameplay verification passes: thirteen original hosted suites plus
+a same-assertion live numbering adapter; the original local counter test also
+passes. Immutable front-of-house-v0.4.1 peels to deployed merge bb87e31.
+CT-DEC-33 keeps broader human/device/full-launch acceptance separate.

@@ -68,3 +68,19 @@ test('different hosts, browsers, scenes or render quality require recalibration 
     x => { x.report.protocol.launchArgs = []; },
   ]) { const b = structuredClone(a); mutate(b); assert.throws(() => compareReports(a.report, b.report, a.fixtures, b.fixtures)); }
 });
+
+test('fixed decorative backing is explicit while native venue quality remains mandatory', () => {
+  const e = evidence(); e.report.protocol.venue = 'lot'; e.report.protocol.decorativeBackdrop = 'fixed half dimensions';
+  for (const r of e.report.runs) {
+    const env = { fixedScale: 0.5, adaptive: false, backing: { width: Math.ceil(r.viewport.width / 2), height: Math.ceil(r.viewport.height / 2) } };
+    e.raw[r.id].quality.environment = env; r.finalQuality.environment = env;
+  }
+  validateReport(e.report, e.raw, e.fixtures);
+  for (const mutate of [
+    x => { delete x.raw[x.report.runs[0].id].quality.environment; },
+    x => { x.raw[x.report.runs[0].id].quality.environment.fixedScale = 0.25; },
+    x => { x.raw[x.report.runs[0].id].quality.environment.adaptive = true; },
+    x => { x.raw[x.report.runs[0].id].quality.environment.backing.width--; },
+    x => { x.raw[x.report.runs[0].id].quality.backing.width--; },
+  ]) { const changed = structuredClone(e); mutate(changed); assert.throws(() => validateReport(changed.report, changed.raw, changed.fixtures)); }
+});
