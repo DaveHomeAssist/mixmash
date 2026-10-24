@@ -355,6 +355,18 @@
     {
       "path": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
       "why": "Measured six-policy comparison, limits and proposed tuning priorities; no balance changes"
+    },
+    {
+      "path": "front-of-house/docs/BEGINNER_RECOVERY_PROTOCOL.md",
+      "why": "Frozen matched controls and validation protocol without game balance changes"
+    },
+    {
+      "path": "front-of-house/docs/BEGINNER_RECOVERY_FINDINGS.md",
+      "why": "Measured beginner completion, cash recovery, venue opportunities and recommendations"
+    },
+    {
+      "path": "front-of-house/sim/beginner-recovery-evidence.json",
+      "why": "Source-bound experiment outcomes, hashes, traces and recovery diagnostics"
     }
   ],
   "verify": [
@@ -366,7 +378,9 @@
     "npm run smoke:front-of-house",
     "npm run admin:index",
     "npm run test:front-of-house-workbench",
-    "npm run sim:front-of-house-workbench"
+    "npm run sim:front-of-house-workbench",
+    "npm run test:front-of-house-recovery",
+    "node front-of-house/sim/recovery-evidence.mjs"
   ],
   "context": [
     "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
@@ -2645,7 +2659,7 @@
   "balanceWorkbench": {
     "requested": "2026-10-23",
     "scope": "Compare six public-information policies using the existing simulator; report tuning hypotheses before any balance change.",
-    "state": "Implemented and bulk verified; tuning recommendations remain proposed",
+    "state": "Merged in PR #186; original cohort independently reproduced byte for byte during recovery investigation",
     "guide": "front-of-house/docs/BALANCE_WORKBENCH.md",
     "source": "front-of-house/sim/workbench.mjs",
     "policies": [
@@ -2677,6 +2691,44 @@
     "host": "Walter",
     "tests": "Eight workbench integrity tests pass;14 exact example replays; source hashes verified",
     "rawReportSha256": "612bab576b2c86b17f42946b5a41daf95f95c40abca80318c5c6296566077eb2",
-    "recoveryProbes": "Three real-action continuations: cheaper beginner plans and a profitable earned-Shell recovery from Festival; separate from the frozen cohort."
+    "recoveryProbes": "Three real-action continuations: cheaper beginner plans and a profitable earned-Shell recovery from Festival; separate from the frozen cohort.",
+    "beginnerRecovery": {
+      "requested": "2026-10-23",
+      "state": "Implemented and verified on an unmerged investigation branch; no balance changes",
+      "branch": "codex/foh-beginner-recovery-1023",
+      "frozenExperiment": "3733287706602a03d872e2166e7786785f81b0a3",
+      "protocol": "front-of-house/docs/BEGINNER_RECOVERY_PROTOCOL.md",
+      "report": "front-of-house/docs/BEGINNER_RECOVERY_FINDINGS.md",
+      "evidence": "front-of-house/sim/beginner-recovery-evidence.json",
+      "historical": {
+        "seeds": [
+          1001,
+          1100
+        ],
+        "fixedCompleted": 58,
+        "adaptiveCompleted": 83,
+        "venueOnlyCompleted": 58,
+        "combinedCompleted": 83
+      },
+      "freshValidation": {
+        "seeds": [
+          2001,
+          2100
+        ],
+        "fixedCompleted": 53,
+        "adaptiveCompleted": 84,
+        "venueOnlyCompleted": 53,
+        "combinedCompleted": 84
+      },
+      "careers": 800,
+      "signedShows": 13446,
+      "venueOpportunities": 0,
+      "venueDiagnostic": "Separate random seed1001: earned Shell continuation gains $27876; no beginner completion effect estimated. Four adaptive Festival refusals occur in Done where venue changes are refused.",
+      "recommendation": "Prioritize affordable-plan guidance and retain economy; investigate proactive reserve/venue policies separately. FOH-BAL-01 stays open.",
+      "verification": "508 unit tests and build pass; all800 experiment careers replay with identical pre-intervention outcomes; original600-career report is byte identical; Lot/tier/career/docs baselines unchanged; full career30/30 and30 reload pairs.",
+      "delivery": "Draft PR #187 opened; connected GitHub publication verified against the exact tested tree. CI pending; no merge, deployment or human acceptance claimed.",
+      "privateSync": "Existing cross-project board and communications log unavailable in this cloud workspace; synchronization not claimed.",
+      "pr": "https://github.com/DaveHomeAssist/mixmash/pull/187"
+    }
   }
 }

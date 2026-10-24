@@ -1123,3 +1123,7 @@ suites plus the same-assertion hosted numbering adapter pass; the original
 local counter check also passes. Immutable front-of-house-v0.4.1 identifies
 the verified deployed merge. Broader device/human approval remains separate
 under CT-DEC-33.
+
+## Beginner recovery controls, 2026-10-23
+
+Dave authorizes matched experiments with existing cheaper opening plans and earlier earned venues. [Frozen protocol](BEGINNER_RECOVERY_PROTOCOL.md) defines four controls, historical replication and a fresh validation range, accounting/replay checks and explicit exclusions. This extends the balance workbench only; no gameplay or save effects and no product version change. FOH-BAL-01 remains open; the request does not authorize subsequent economy or finale-rule changes.

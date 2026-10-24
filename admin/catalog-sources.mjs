@@ -223,6 +223,8 @@ export const COMMAND_NOTES = {
   'sim:front-of-house': { project: 'front-of-house', description: 'Regenerate docs/BALANCE_BASELINE.md. CI fails on drift or a FAIL verdict.' },
   'sim:front-of-house-workbench': { project: 'front-of-house', description: 'Compare six observable-state policies on matched seeds; write outcome reports and exact replay traces without changing game balance.' },
   'test:front-of-house-workbench': { project: 'front-of-house', description: 'Verify policy determinism, hidden-outcome independence, legal replay and honest cohort statistics.' },
+  'sim:front-of-house-recovery': { project: 'front-of-house', description: 'Compare fixed beginner, affordable-plan fallback and earlier earned venues on matched seeds without changing rules.' },
+  'test:front-of-house-recovery': { project: 'front-of-house', description: 'Verify recovery choices, public-information boundaries, exact save/replay and legal earned-venue continuation.' },
   'sim:front-of-house-career': { project: 'front-of-house', description: 'Regenerate the four-room career report; verify earned unlocks, cash, receipts and exact save/reload pairs.' },
   'start:mars': { project: 'mars', description: 'Run the authority server locally with SQLite at http://localhost:8787/mars/.' },
   'art:index': { project: 'mars', description: 'Regenerate the commissioned-art runtime index from valid present frames.' },
@@ -272,6 +274,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/sim/beginner-recovery-evidence.json': { title: 'Front of House beginner recovery evidence', description: 'Source digests, matched historical and fresh validation outcomes, recovery events and selected exact action traces.' },
   'front-of-house/sim/workbench-baseline.json': { title: 'Front of House workbench baseline', description: 'Source digests and measured600-career development/held-out outcome distributions; no game balance changes.' },
   'front-of-house/assets/equipment/stage.png': { description: 'Equipment card preview rendered from the existing FOH stage model.' },
   'front-of-house/assets/equipment/delay.png': { description: 'Equipment card preview rendered from the existing FOH delay model.' },
