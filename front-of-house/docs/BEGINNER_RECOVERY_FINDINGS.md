@@ -15,7 +15,7 @@ settlement presentation/browser checks, not a new economy decision. FOH-BAL-01
 and D12 remain open; this request authorizes the controls, not the rest of option A.
 
 The [protocol](BEGINNER_RECOVERY_PROTOCOL.md) and experiment implementation were
-frozen in `3733287706602a03d872e2166e7786785f81b0a3` before cohort execution.
+frozen locally in `3733287706602a03d872e2166e7786785f81b0a3` before cohort execution.
 The original workbench, game rules, data, saves, renderer and product version are
 byte unchanged. Tests ran in the cloud workspace on Node 24.19.0.
 

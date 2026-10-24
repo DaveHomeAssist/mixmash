@@ -2726,8 +2726,9 @@
       "venueDiagnostic": "Separate random seed1001: earned Shell continuation gains $27876; no beginner completion effect estimated. Four adaptive Festival refusals occur in Done where venue changes are refused.",
       "recommendation": "Prioritize affordable-plan guidance and retain economy; investigate proactive reserve/venue policies separately. FOH-BAL-01 stays open.",
       "verification": "508 unit tests and build pass; all800 experiment careers replay with identical pre-intervention outcomes; original600-career report is byte identical; Lot/tier/career/docs baselines unchanged; full career30/30 and30 reload pairs.",
-      "delivery": "Draft PR preparation; no merge, deployment or human acceptance claimed.",
-      "privateSync": "Existing cross-project board and communications log unavailable in this cloud workspace; synchronization not claimed."
+      "delivery": "Draft PR #187 opened; connected GitHub publication verified against the exact tested tree. CI pending; no merge, deployment or human acceptance claimed.",
+      "privateSync": "Existing cross-project board and communications log unavailable in this cloud workspace; synchronization not claimed.",
+      "pr": "https://github.com/DaveHomeAssist/mixmash/pull/187"
     }
   }
 }
