@@ -1123,3 +1123,25 @@ suites plus the same-assertion hosted numbering adapter pass; the original
 local counter check also passes. Immutable front-of-house-v0.4.1 identifies
 the verified deployed merge. Broader device/human approval remains separate
 under CT-DEC-33.
+
+
+## Balance recovery controls, 2026-10-25
+
+Dave approved FOH-BAL-01 investigation A: compare adaptive beginner and earlier
+venue recovery on fresh matched seeds, then recommend Festival pacing targets.
+Player problem: a preferred kit can be unaffordable while legal alternatives
+exist, and highest-venue-only policies omit recovery at earned smaller rooms.
+Smallest slice: preserve six original policies and add beginner adaptive,
+beginner recovery, combined adaptive recovery, and random recovery controls.
+Adaptive keeps the preferred beginner plan when affordable; otherwise chooses
+the cheapest affordable grid opening, with the original cheapest response.
+Recovery tries the highest earned room first, then smaller earned rooms only
+when the current policy cannot select a plan. It never bypasses a refused
+Next show action. No injected funds, unlocks, future outcomes or rule changes.
+Freeze policies before fresh seeds 2001 through 2100, 80 development and 20 held
+out, maximum 60 signed shows. Analyze matched completion transitions, bounded
+stops, downshift episodes, cash recovery, Festival entry/completion and show
+quality. Acceptance: exact action replay, reload and ledger invariants; original
+six policies remain behaviorally identical; all economic/runtime sources stay
+byte-identical. Recommend targets as proposals only. No UI, save, balance,
+completion, equipment, service, research or dependency changes.

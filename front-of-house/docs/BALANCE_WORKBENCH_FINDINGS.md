@@ -86,7 +86,10 @@ planner; Festival ranking is gross minus opening cost, not exact future net.
 
 ## Decision for the next investigation
 
-**FOH-BAL-01 remains open. No balance changes are authorized by this report.**
+**Historical decision: Dave selected investigation A on October 25, 2026.**
+The approved scope is adaptive beginner and earlier-venue controls on fresh
+matched seeds, then pacing recommendations. Game balance and completion rules
+remain unchanged. See [the recovery study](BALANCE_RECOVERY_FINDINGS.md).
 
 - **A, recommended:** establish adaptive beginner and earlier-venue recovery controls,
   then test the Festival economy curve against explicit pacing targets.
@@ -110,7 +113,8 @@ hashes and cohort statistics are preserved in
 [the compact baseline](../sim/workbench-baseline.json); the full raw report's
 SHA-256 is `612bab576b2c86b17f42946b5a41daf95f95c40abca80318c5c6296566077eb2`.
 
-Reproduce the measured cohort and replay examples from the repository root:
+Reproduce the version 1 measured cohort from commit f9731fa or its exact source
+bundle. Current version 2 adds four policies and has a separate fresh cohort:
 
 ```sh
 npm run test:front-of-house-workbench

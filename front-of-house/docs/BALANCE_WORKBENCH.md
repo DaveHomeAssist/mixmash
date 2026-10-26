@@ -1,6 +1,6 @@
 # Front of House balance workbench
 
-Compare six reproducible player policies through the existing rules engine before
+Compare reproducible player policies through the existing rules engine before
 changing balance. The workbench has no browser, renderer, service or dependency.
 It never modifies game rules, tuning values, saves or existing balance baselines.
 
@@ -47,7 +47,23 @@ optimizes an approximate public score, not actual future settlement. Aggressive
 is an optimism control, not a claim that spending more is always rational. Random
 weights combinations equally, so its distribution depends on grid construction.
 
-All policies advance to the highest earned venue. No career receives injected
+The original six policies advance to the highest earned venue. Version 2 adds
+four controls, keeping the original policies unchanged:
+
+| Control | Change from original |
+| --- | --- |
+| beginner-adaptive | Keep the preferred beginner plan; when unavailable choose the cheapest affordable grid opening, with ID tie-break and original cheapest incident response |
+| beginner-recovery | Try the original beginner plan at the highest earned room, then each smaller earned room if no preferred plan is affordable |
+| beginner-adaptive-recovery | Apply adaptive booking first at the highest room, then at smaller earned rooms if no grid plan is affordable |
+| random-recovery | Original random selection, then smaller earned rooms only if the highest room has no affordable grid plan |
+
+Recovery returns to the highest earned room on the next booking, rather than
+holding at the smaller room. It does not bypass the engine's done-phase
+Next show refusal. Each actual downshift records the attempted rooms and cash;
+all venue changes use legal actions. Random controls use the same choice seed
+as their baseline until their paths diverge. Matched game seeds align the
+initial conditions; different choices can produce different later public rosters
+and outcomes, so they are not identical future shocks. No career receives injected
 cash, unlocks, relationships or preview knowledge. Planner inputs contain public
 offers/relationships, venue/cash, usual prices, authored layout properties,
 opening quotes and attendance forecasts. Future draws and incidents stay in the
@@ -114,3 +130,13 @@ Investigate beginner traps, weak recovery, per-tier income jumps and consistentl
 selected deals before proposing a change. Use controlled matched-seed ablations
 to distinguish a policy error from a rule problem. Keep proposed tuning values
 out of the playable game until the findings are reviewed.
+
+
+## Recovery study provenance
+
+The original six-policy findings and compact baseline remain the October 23
+version 1 experiment. To reproduce that exact report use its recorded source
+bundle or commit f9731fa, rather than version 2's ten-policy default. The fresh
+recovery study uses seeds 2001 through 2100, with 2081 through 2100 held out.
+Policies were frozen before examining that cohort. See the recovery findings
+for matched transitions, limitations and proposed Festival pacing targets.
