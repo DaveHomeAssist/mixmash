@@ -733,3 +733,20 @@ three-viewport scenery/camera/fence/reload checks pass. Full hosted gameplay ver
 a same-assertion live numbering adapter; the original local counter test also
 passes. Immutable front-of-house-v0.4.1 peels to deployed merge bb87e31.
 CT-DEC-33 keeps broader human/device/full-launch acceptance separate.
+
+
+## CT-DEC-41: Recovery controls before Festival tuning
+
+**Accepted by Dave, 2026-10-25. Investigation only.**
+
+FOH-BAL-01 option A is approved for adaptive beginner and earlier earned venue
+recovery comparisons on fresh matched seeds, followed by recommendations for
+explicit Festival pacing targets. Keep game balance and completion rules
+unchanged. Preserve the six original policies, version 1 evidence and unanswered
+D12. The bounded controls use real legal actions, public forecasts and earned
+unlocks only. No engine continuation refusal may be bypassed.
+
+See [the scoped brief](FEATURE_BRIEFS.md#balance-recovery-controls-2026-10-25)
+and [recovery findings](BALANCE_RECOVERY_FINDINGS.md). Target ranges are proposals
+for a later product decision, not authorization to retune or change the meaning
+of career completion.

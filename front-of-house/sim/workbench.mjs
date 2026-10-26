@@ -9,7 +9,10 @@ import * as D from '../data.mjs';
 import { festivalSales, festivalSettlement } from '../stage-accounts.mjs';
 import { BUDGET_LAYOUT, REFERENCE_ADS } from './reference.mjs';
 
-export const POLICIES = ['beginner', 'cautious', 'growth', 'aggressive', 'profit', 'random'];
+export const BASE_POLICIES = ['beginner', 'cautious', 'growth', 'aggressive', 'profit', 'random'];
+export const POLICIES = [...BASE_POLICIES, 'beginner-adaptive', 'beginner-recovery', 'beginner-adaptive-recovery', 'random-recovery'];
+const basePolicy = policy => policy.startsWith('beginner-') ? 'beginner' : policy === 'random-recovery' ? 'random' : policy;
+const allowsRecovery = policy => policy.endsWith('-recovery');
 const HERE = dirname(fileURLToPath(import.meta.url));
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const clone = value => structuredClone(value);
@@ -143,12 +146,15 @@ export function candidatesFor(state, { cache = true } = {}) {
 export function selectPlan(observation, features, policy, choiceSeed = 1) {
   assert.ok(POLICIES.includes(policy), 'Unknown policy');
   if (!features.length) return null;
-  if (policy === 'random') return features[Math.floor(E.mulberry32(choiceSeed)() * features.length)].id;
+  if (basePolicy(policy) === 'random') return features[Math.floor(E.mulberry32(choiceSeed)() * features.length)].id;
   let eligible = features;
-  if (policy === 'beginner') {
+  if (basePolicy(policy) === 'beginner') {
     // Follow the suggested kit/usual price/reference ads; choose the first affordable public offer.
     eligible = features.filter(f => f.layout === 'suggested' && f.price === f.fairPrice && f.ads === 'reference' && f.ticketing !== 'platform');
-    return eligible[0]?.id ?? null;
+    if (eligible.length) return eligible[0].id;
+    // Adapt only when the preferred configuration is unavailable, using public opening cost.
+    if (policy.includes('-adaptive')) return [...features].sort((a, b) => a.upfront - b.upfront || a.id.localeCompare(b.id))[0].id;
+    return null;
   }
   if (policy === 'cautious') {
     // Keep the largest authored incident cost when possible, otherwise take the safest affordable quote.
@@ -166,14 +172,14 @@ export function selectPlan(observation, features, policy, choiceSeed = 1) {
 export function chooseResponse(incidentId, cash, policy, choiceSeed) {
   const options = D.INCIDENTS[incidentId].responses.filter(r => r.cost <= cash);
   assert.ok(options.length, 'No affordable incident response');
-  if (policy === 'random') return options[Math.floor(E.mulberry32(choiceSeed)() * options.length)].id;
-  if (policy === 'beginner') return [...options].sort((a, b) => a.cost - b.cost)[0].id;
+  if (basePolicy(policy) === 'random') return options[Math.floor(E.mulberry32(choiceSeed)() * options.length)].id;
+  if (basePolicy(policy) === 'beginner') return [...options].sort((a, b) => a.cost - b.cost)[0].id;
   return [...options].sort((a, b) => b.score - a.score || a.cost - b.cost)[0].id;
 }
 
 export function runCareer(seed, policy, { maxShows = 60, reload = false } = {}) {
   let state = E.createGame(seed), minimumCash = state.cash, totalCandidates = 0;
-  const trace = [], shows = [], coverage = {}, rejected = { booking: 0, opening: 0, promotion: 0 };
+  const trace = [], shows = [], recoveries = [], coverage = {}, rejected = { booking: 0, opening: 0, promotion: 0 };
   const reached = { lot: 0 }, unlocked = {};
   const record = input => {
     state = action(state, input); trace.push(clone(input));
@@ -190,22 +196,32 @@ export function runCareer(seed, policy, { maxShows = 60, reload = false } = {}) 
   let stop = 'show_limit', brokeAt = null;
   for (let night = 0; night < maxShows; night++) {
     if (state.history.length && !state.equipment) record({ type: 'enableEquipment' });
-    const room = D.VENUE_ORDER.filter(id => id === 'lot' || state.unlocks[id]).at(-1);
-    if (room !== state.venue.id) record({ type: 'chooseVenue', venueId: room });
-    reached[room] ??= night;
-    const { observation, candidates, rejected: refusals } = candidatesFor(state);
-    totalCandidates += candidates.length;
-    for (const key of Object.keys(rejected)) rejected[key] += refusals[key];
-    const choiceSeed = parseInt(digest([seed, policy, night, 'plan']).slice(0, 8), 16);
-    const id = selectPlan(observation, candidates.map(x => x.feature), policy, choiceSeed);
-    if (!id) { stop = candidates.length ? 'policy_no_plan' : 'no_affordable_grid_plan'; brokeAt = night; break; }
-    const chosen = candidates.find(c => c.feature.id === id);
+    const earned = D.VENUE_ORDER.filter(id => id === 'lot' || state.unlocks[id]);
+    const highest = earned.at(-1);
+    const rooms = allowsRecovery(policy) ? [...earned].reverse() : [highest];
+    const choiceSeed = parseInt(digest([seed, basePolicy(policy), night, 'plan']).slice(0, 8), 16);
+    let room, chosen, lastCount = 0;
+    const attempts = [];
+    for (const target of rooms) {
+      room = target;
+      if (room !== state.venue.id) record({ type: 'chooseVenue', venueId: room });
+      reached[room] ??= night;
+      const { observation, candidates, rejected: refusals } = candidatesFor(state);
+      totalCandidates += candidates.length;
+      for (const key of Object.keys(rejected)) rejected[key] += refusals[key];
+      const id = selectPlan(observation, candidates.map(x => x.feature), policy, choiceSeed);
+      lastCount = candidates.length;
+      attempts.push({ room, affordable: candidates.length, selected: id !== null });
+      if (id) { chosen = candidates.find(c => c.feature.id === id); break; }
+    }
+    if (!chosen) { stop = lastCount ? 'policy_no_plan' : 'no_affordable_grid_plan'; brokeAt = night; break; }
+    if (room !== highest) recoveries.push({ show: night + 1, highest, room, cash: state.cash, attempts });
     for (const input of chosen.actions) record(input);
     const openingCash = state.cash;
     record({ type: 'confirmPromotion' });
     assert.equal(state.cash, openingCash - chosen.feature.upfront, 'Opening charged exactly once');
     const incident = state.show.incidentId, responseId = chooseResponse(incident, state.cash, policy,
-      parseInt(digest([seed, policy, night, 'response']).slice(0, 8), 16));
+      parseInt(digest([seed, basePolicy(policy), night, 'response']).slice(0, 8), 16));
     const responseCash = state.cash;
     record({ type: 'respond', responseId });
     const receipt = clone(E.settlementFor(state));
@@ -230,7 +246,7 @@ export function runCareer(seed, policy, { maxShows = 60, reload = false } = {}) 
   }
   const normalized = E.normalizeState(clone(state));
   return { seed, policy, complete: stop === 'complete', stop, brokeAt, shows, reached, unlocked,
-    cash: state.cash, minimumCash, totalCandidates, rejected, coverage, trace,
+    cash: state.cash, minimumCash, totalCandidates, rejected, coverage, recoveries, trace,
     finalStateHash: digest(normalized), options: { maxShows }, fingerprint: digest(trace) };
 }
 
@@ -295,7 +311,7 @@ export function buildReport(runs, config) {
     return [...new Set(choices.filter(Boolean))];
   });
   examples.forEach(replay);
-  return { schema: 1, config, source: provenance(), policyVersion: 1,
+  return { schema: 1, config, source: provenance(), policyVersion: 2,
     scope: 'Ordinary one-night careers, earned venues, representative layouts, three ticket prices and three ad presets; no live services, purchases, research or held runs.',
     interpretation: 'Scripted policies are hypotheses, not measured human behavior. Terminal cash compares different career lengths; use matched fixed-horizon experiments before causal tuning. Forecast scoring is approximate, especially Festival gross minus opening cost. No balance values changed.',
     cohorts: { all: summarize(runs), development: summarize(development), heldout: summarize(heldout) },
@@ -303,7 +319,7 @@ export function buildReport(runs, config) {
 }
 
 export function markdown(report) {
-  const out = ['# Front of House balance workbench', '', `Reproducible cohort: ${report.config.seeds} seeds per policy, ${report.config.maxShows} shows maximum, six strategies.`, '',
+  const out = ['# Front of House balance workbench', '', `Reproducible cohort: ${report.config.seeds} seeds per policy, ${report.config.maxShows} shows maximum, ${POLICIES.length} strategies.`, '',
     report.scope, '', report.interpretation, '', '## Strategy outcomes', '',
     '| Policy | Careers | Completed | Median final cash | Cash p10 | Median completed shows | Signed shows |',
     '| --- | --- | --- | --- | --- | --- | --- |'];

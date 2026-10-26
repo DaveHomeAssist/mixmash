@@ -6,7 +6,7 @@
     "DaveHomeAssist/mixmash"
   ],
   "head": "0.4.1 Lot surroundings shipped",
-  "lastActivity": "2026-10-23",
+  "lastActivity": "2026-10-25",
   "status": "amber",
   "statusReason": "The requested scenery patch is merged, deployed and tagged. Exact-head functional/mobile, Horseshoes and independently audited paired checks pass. Pages, 48 served hashes and the full hosted gameplay verification pass. Broader human, physical-device, final-art and full-career acceptance remain separate.",
   "activity30d": {
@@ -276,6 +276,21 @@
       "confidence": "medium",
       "blocks": "Future tuning only; no balance changes in this workbench delivery",
       "source": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
+      "humanAnswer": "A: recovery controls on fresh matched seeds, then recommend Festival pacing targets. No game balance or completion changes.",
+      "answeredAt": "2026-10-25"
+    },
+    {
+      "id": "FOH-BAL-02",
+      "question": "Which Festival pacing direction should a later isolated experiment target?",
+      "options": {
+        "A": "Test gradual Festival pacing: competent median 4 to 6 shows, adaptive beginner 6 to 10, meaningful entry cash gate and bounded recovery",
+        "B": "Retain the current fast finale; focus on affordable-choice and recovery guidance",
+        "C": "Scope a separate quality-led finale experiment; completion semantics need explicit approval"
+      },
+      "recommended": "A",
+      "confidence": "medium",
+      "blocks": "Future tuning only; no game changes in this investigation",
+      "source": "front-of-house/docs/BALANCE_RECOVERY_FINDINGS.md",
       "humanAnswer": null
     }
   ],
@@ -2677,6 +2692,46 @@
     "host": "Walter",
     "tests": "Eight workbench integrity tests pass;14 exact example replays; source hashes verified",
     "rawReportSha256": "612bab576b2c86b17f42946b5a41daf95f95c40abca80318c5c6296566077eb2",
-    "recoveryProbes": "Three real-action continuations: cheaper beginner plans and a profitable earned-Shell recovery from Festival; separate from the frozen cohort."
+    "recoveryProbes": "Three real-action continuations: cheaper beginner plans and a profitable earned-Shell recovery from Festival; separate from the frozen cohort.",
+    "recoveryStudy": {
+      "requested": "2026-10-25",
+      "state": "Measured; game balance and completion unchanged; pacing targets proposed",
+      "seedRange": [
+        2001,
+        2100
+      ],
+      "heldoutSeedRange": [
+        2081,
+        2100
+      ],
+      "seedsPerPolicy": 100,
+      "policiesAdded": [
+        "beginner-adaptive",
+        "beginner-recovery",
+        "beginner-adaptive-recovery",
+        "random-recovery"
+      ],
+      "host": "Dominic",
+      "gameBalanceChanged": false,
+      "completionRulesChanged": false,
+      "guide": "front-of-house/docs/BALANCE_WORKBENCH.md",
+      "report": "front-of-house/docs/BALANCE_RECOVERY_FINDINGS.md",
+      "careers": 1000,
+      "signedShows": 17472,
+      "tests": "11 integrity tests; 18 original-policy parity careers; 26 exact example replays; full unit/build/legacy simulator/docs checks pass on Dominic",
+      "baseline": "front-of-house/sim/recovery-baseline.json",
+      "rawReportSha256": "d62b752ea2860131eb415eb380690df21cbf4151cf902bf30dbc08d1e1852861",
+      "results": {
+        "beginnerCompleted": 53,
+        "adaptiveBeginnerCompleted": 83,
+        "beginnerRecoveryCompleted": 53,
+        "adaptiveRecoveryCompleted": 83,
+        "randomCompleted": 65,
+        "randomRecoveryCompleted": 75,
+        "profitableDownshiftShows": 31,
+        "downshiftCareers": 16
+      },
+      "delivery": "Candidate verified; commit and remote CI pending"
+    }
   }
 }

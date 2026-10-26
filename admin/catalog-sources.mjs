@@ -272,6 +272,7 @@ export const PATTERN_NOTES = [
 ];
 
 export const FILE_NOTES = {
+  'front-of-house/sim/recovery-baseline.json': { title: 'Front of House recovery study baseline', description: 'Fresh matched cohort statistics, recovery episodes and source digests; proposed pacing only.' },
   'front-of-house/sim/workbench-baseline.json': { title: 'Front of House workbench baseline', description: 'Source digests and measured600-career development/held-out outcome distributions; no game balance changes.' },
   'front-of-house/assets/equipment/stage.png': { description: 'Equipment card preview rendered from the existing FOH stage model.' },
   'front-of-house/assets/equipment/delay.png': { description: 'Equipment card preview rendered from the existing FOH delay model.' },

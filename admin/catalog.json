@@ -1771,6 +1771,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/docs/BALANCE_RECOVERY_FINDINGS.md",
+      "project": "front-of-house",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Front of House recovery study and Festival pacing",
+      "description": "Measured October 25, 2026 on Dominic, Node 24.17.0: 1,000 careers and 17,472 signed shows.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BALANCE_RECOVERY_FINDINGS.md",
+      "open": null
+    },
+    {
       "path": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
       "project": "front-of-house",
       "category": "docs",
@@ -1786,7 +1796,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Front of House balance workbench",
-      "description": "Compare six reproducible player policies through the existing rules engine before changing balance.",
+      "description": "Compare reproducible player policies through the existing rules engine before changing balance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/docs/BALANCE_WORKBENCH.md",
       "open": null
     },
@@ -4038,6 +4048,16 @@
       "title": "services.mjs",
       "description": "Deterministic aggregate admission/bar service model for the optional live Lot pilot. Unselected careers retain their existing show and doors-snapshot rules.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/services.mjs",
+      "open": null
+    },
+    {
+      "path": "front-of-house/sim/recovery-baseline.json",
+      "project": "front-of-house",
+      "category": "source",
+      "kind": "JSON",
+      "title": "Front of House recovery study baseline",
+      "description": "Fresh matched cohort statistics, recovery episodes and source digests; proposed pacing only.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/sim/recovery-baseline.json",
       "open": null
     },
     {

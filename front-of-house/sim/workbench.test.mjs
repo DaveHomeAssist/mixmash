@@ -5,7 +5,7 @@ import * as E from '../engine.mjs';
 import * as D from '../data.mjs';
 import { POLICIES, candidatesFor, observe, selectPlan, runCareer, replay, summarize, parseArgs, publicProjection } from './workbench.mjs';
 
-test('all six policies make deterministic legal careers and replay exact states', () => {
+test('all policies make deterministic legal careers and replay exact states', () => {
   for (const policy of POLICIES) {
     const run = runCareer(12, policy, { maxShows: 2 });
     assert.ok(run.shows.length > 0);
@@ -114,4 +114,42 @@ test('loss recovery treats short unresolved follow-up as censored', () => {
   rows[1].cashAfter = 3100;
   const recovered = summarize([{ ...base, shows: rows }]).policies.beginner.lossRecovery;
   assert.equal(recovered.observable, 1); assert.equal(recovered.recoveredWithin3, 1);
+});
+
+
+test('adaptive beginner preserves preferred plans and falls back to cheapest affordable opening', () => {
+  const state = E.createGame(12);
+  const { observation, candidates } = candidatesFor(state);
+  const features = candidates.map(c => c.feature);
+  const original = selectPlan(observation, features, 'beginner');
+  assert.ok(original);
+  assert.equal(selectPlan(observation, features, 'beginner-adaptive'), original);
+  const alternatives = features.filter(f => f.id !== original && f.ads === 'none');
+  assert.equal(selectPlan(observation, alternatives, 'beginner'), null);
+  const picked = selectPlan(observation, alternatives, 'beginner-adaptive');
+  assert.equal(alternatives.find(f => f.id === picked).upfront, Math.min(...alternatives.map(f => f.upfront)));
+  assert.equal(selectPlan(observation, [], 'beginner-adaptive'), null);
+});
+
+test('recovery controls share initial choices and never fabricate an earned room', () => {
+  for (const base of ['beginner', 'beginner-adaptive', 'random']) {
+    const baseline = runCareer(12, base, { maxShows: 2 });
+    const recovery = runCareer(12, `${base}-recovery`, { maxShows: 2, reload: true });
+    assert.deepEqual(recovery.shows, baseline.shows);
+    assert.deepEqual(recovery.trace, baseline.trace);
+    assert.equal(replay(recovery).pass, true);
+    assert.equal(recovery.recoveries.length, 0);
+  }
+});
+
+test('earned smaller venue recovery completes and survives reload without bypassing the engine', () => {
+  // Previously inspected diagnostic seed, separate from the fresh measured cohort.
+  const run = runCareer(1001, 'random-recovery');
+  assert.ok(run.recoveries.length > 0);
+  assert.ok(run.recoveries.every(e => e.highest === 'festival' && e.room === 'amphitheater'));
+  assert.equal(run.stop, 'complete');
+  const resumed = runCareer(1001, 'random-recovery', { reload: true });
+  assert.deepEqual(resumed.trace, run.trace);
+  assert.equal(resumed.finalStateHash, run.finalStateHash);
+  assert.equal(replay(run).pass, true);
 });
