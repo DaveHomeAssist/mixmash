@@ -2731,7 +2731,7 @@
         "profitableDownshiftShows": 31,
         "downshiftCareers": 16
       },
-      "delivery": "Candidate verified; commit and remote CI pending"
+      "delivery": "Study verification recorded here; current commit, CI, merge and deployment proof is owned by Git and provider records"
     }
   }
 }
