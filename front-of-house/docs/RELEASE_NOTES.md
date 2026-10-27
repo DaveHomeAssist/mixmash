@@ -5,6 +5,10 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.2: Save export recovery candidate (2026-10-27)
+
+Save codes capture the current visible career, including progress after browser storage fills up. Previously Export preferred the last stored snapshot, silently losing unsaved progress during recovery. Save schema 2 is unchanged. Cache v90. Review and deployment are pending.
+
 ## 0.4.1 — 2026-10-23
 
 The Lot now sits in gravel and grass beside a service road and loading apron,

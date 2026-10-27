@@ -2733,5 +2733,13 @@
       },
       "delivery": "Study verification recorded here; current commit, CI, merge and deployment proof is owned by Git and provider records"
     }
+  },
+  "currentSaveExport": {
+    "sourceRevision": "0eafcbf815594ccc3ae9b2c3f142c72ba50cc888",
+    "observedAt": "2026-10-27T22:05:02.022416+00:00",
+    "status": "implemented and browser verified; PR review pending",
+    "scope": "Export the current visible career even after a storage write fails. Preserve save schema and stored original.",
+    "evidence": "Dominic Chromium: normal export and restore passed before; quota-failure export returned stale progress. Both cases pass after fix, including restoration in a fresh browser context.",
+    "nextAction": "Review the isolated repair PR. Merge, deployment and native device acceptance remain open."
   }
 }

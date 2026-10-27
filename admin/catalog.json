@@ -3541,6 +3541,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-save-export-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-save-export-smoke.mjs",
+      "description": "Export must preserve the current career, including progress after storage fails.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-save-export-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-seating-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",

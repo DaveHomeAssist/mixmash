@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Front of House save export captures current in-memory progress after storage failures, with Chromium export/restore regression coverage. Release candidate 0.4.2; schema 2 unchanged.
+
 - Front of House balance workbench: add adaptive beginner and earned smaller venue recovery controls, with fresh matched seed comparisons and proposed Festival pacing targets. Game balance, completion rules and saves stay unchanged.
 
 - Front of House 0.4.1: static Lot surroundings, service/loading areas, sparse trees, industrial horizon and dusk atmosphere. Warm venue light against cool scenery; fence and gameplay boundaries preserved. Cache v89, schema 2 unchanged.
