@@ -1502,7 +1502,7 @@ function sheetParts(r, { signed: done }) {
     <dl class="settlement-bridge">
       <div><dt>Total revenue</dt><dd class="pos">${money(settlementRevenue(r))}</dd></div>
       <div><dt>Total show costs</dt><dd class="neg">${money(-r.costs.total)}</dd></div>
-      ${deal === 'door' || r.stageAccounts ? `<div><dt>${r.stageAccounts ? 'Artist payouts at signing' : 'Artist payout at signing'}</dt><dd class="neg">${money(-(r.artistTotal ?? r.artistPay))}</dd></div>` : ''}
+      <div><dt>${r.stageAccounts ? (deal === 'door' ? 'Artist payouts at signing' : 'Artist payouts (guarantee before doors)') : deal === 'door' ? 'Artist payout at signing' : 'Guarantee paid before doors'}</dt><dd class="neg">${money(-(r.artistTotal ?? r.artistPay))}</dd></div>
       <div class="settlement-bridge-total"><dt>Promoter result</dt><dd class="${r.net >= 0 ? 'pos' : 'neg'}">${money(r.net)}</dd></div>
     </dl>`;
   const summaryView = `

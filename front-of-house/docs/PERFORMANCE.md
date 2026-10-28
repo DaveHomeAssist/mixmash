@@ -148,6 +148,8 @@ Download the named artifact, verify its source and raw/fixture digests and inspe
 
 ## Completed GitHub runner calibration
 
+> 2026-10-23 note: the regression gate baseline was re-pinned to `8412699` via PR #183 (CT-DEC-40). The October 4 calibration and measurements in this section remain records of `6ed7b7c`.
+
 All 18 full windows at clean source `6ed7b7c2991ef0d8ccc71fe167444f5422cd7483` are valid. [Run 37205343575](https://github.com/DaveHomeAssist/mixmash/actions/runs/37205343575) passed both calibration and normal correctness jobs. The downloaded JSON artifact (ID11305185297, thirty-day retention) was audited against every source/fixture/raw digest and recomputed statistics. [Every repeat](../performance/2026-10-04-ci.json) is retained in the public summary.
 
 Runner: Ubuntu24.04 image20260927.320.1, Linux x64, four logical AMD EPYC7763 CPUs, approximately16GiB; Chromium149.0.7827.55, verified SwiftShader. Standard three viewports, requested DPR1, empty/150-guest scenes, three repeats,10s warm-up/30s sampling. Empty cadence ranges10.68–54.74Hz and crowd cadence1.91–3.06Hz. Large software-rendered frame intervals are retained, not treated as hardware performance. Valid measurements do not mean the software backend meets60fps.
@@ -172,7 +174,7 @@ Remaining FOH-P01 work includes declared CI regression limits with actual slowdo
 
 ## Paired regression policy under verification
 
-FOH-P01g implements a same-runner comparison against calibrated `6ed7b7c2991ef0d8ccc71fe167444f5422cd7483`. Normal PR correctness checks remain; the additional job measures changes to Front of House modules/vendor files, measurement tools, dependency lock or workflow. Unrelated changes skip timing. Manual dispatch uses `foh_performance_gate=true`; `foh_performance_fault=true` additionally runs the deliberate slowdown.
+FOH-P01g implements a same-runner comparison against a pinned calibrated reference. It was originally `6ed7b7c2991ef0d8ccc71fe167444f5422cd7483`; on 2026-10-23 PR #183 (CT-DEC-40) re-pinned the gate to the expanded-scene reference `841269997a2b4b112871b7560abf1c8670e850de`. Evidence dated before that re-pin below remains measured against6ed7b7c. Normal PR correctness checks remain; the additional job measures changes to Front of House modules/vendor files, measurement tools, dependency lock or workflow. Unrelated changes skip timing. Manual dispatch uses `foh_performance_gate=true`; `foh_performance_fault=true` additionally runs the deliberate slowdown.
 
 Each baseline/candidate has all18 full windows. The gate audits source/fixture/raw digests, recomputes statistics, requires identical rendered scenes/browser/runner/backing/motion/guest count and compares median-of-three timing per scene/viewport. Whole fixture state may differ when unrelated career fields evolve, but the exact rendered scene must match. Invalid/quick/missing/duplicate evidence fails before budget evaluation.
 

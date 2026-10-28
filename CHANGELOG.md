@@ -4,7 +4,9 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- Front of House save export captures current in-memory progress after storage failures, with Chromium export/restore regression coverage. Release candidate 0.4.2; schema 2 unchanged.
+- Front of House 0.4.3: save export captures current in-memory progress after storage failures, with Chromium export/restore regression coverage. Cache v91; save schema 2 unchanged.
+
+- Front of House 0.4.2: include prepaid guarantees in the settlement Summary financial bridge; handle an already-visible incident in the opening browser test and finish preview loading before research reload checks. Cache v90; rules, balance and save schema 2 unchanged.
 
 - Front of House balance workbench: add adaptive beginner and earned smaller venue recovery controls, with fresh matched seed comparisons and proposed Festival pacing targets. Game balance, completion rules and saves stay unchanged.
 
