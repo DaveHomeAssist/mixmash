@@ -5,6 +5,17 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.4 — 2026-10-28
+
+Playtest fixes from the live 0.4.2 show night.
+
+- Once the wind-down ends, Settle and Done show an empty lot in day lighting. The settlement keeps the attendance; the board no longer leaves a crowd standing in a dark lot.
+- On phones, the Book, Promote, Settle and Done sheets grow with their content up to the height under the strip, so a short sheet such as Settle leaves the lot visible above it. Nothing scrolls.
+- The 2D/3D switch shows both labels and lights the view on screen. It is pressed while 3D is on.
+- Save and load is the first section of the Menu. **Download save file** saves the current career as a text file of its save code, and **Load a save file** loads one (a raw save also loads). Save codes still work.
+- A PA placed away from the stage says "PA … must touch the stage. Pick a tile right beside the stage." The red ghost says it while you hover, a 3D drag says it on release, and the PA tool stays chosen.
+- Cache v92. Rules, balance, money movement and save schema 2 are unchanged.
+
 ## 0.4.3 — 2026-10-28
 
 - Save codes capture the current visible career, including progress after browser storage fills up. Previously Export preferred the last stored snapshot, silently losing unsaved progress during recovery.

@@ -778,12 +778,14 @@ function inspectAt(tile) {
 function ghostAt(tile) {
   const ghost = { type: ui.tool, x: tile.x, y: tile.y, rot: ui.rot };
   const { problems } = validatePlacement([...state.venue.objects, ghost], state.venue);
-  return { ...ghost, valid: !problems.some((p) => p.index === state.venue.objects.length) };
+  const mine = problems.find((p) => p.index === state.venue.objects.length);
+  return { ...ghost, valid: !mine, ...(mine ? { reason: mine.message } : {}) };
 }
 
 // Extra advice for an engine refusal the player can act on at once.
 const REFUSAL_HINTS = [
   [/^Only one PA/, 'Remove the placed PA first.'],
+  [/must touch the stage$/, 'Pick a tile right beside the stage.'],
   [/boundary$/, 'Use a tile on the outer edge.'],
 ];
 function refusalText(error) {
@@ -800,9 +802,11 @@ function placeAt(tile) {
   const type = ui.tool, blockedBefore = sight().blocked.size;
   const { error } = applyAction(state, { type: 'place', object: { type, x: tile.x, y: tile.y, rot: ui.rot } });
   if (error) {
+    // The tool stays chosen, so the next tap can try a better tile.
     const text = refusalText(error);
     say(text, 'error');
     el.boardStatus.textContent = text;
+    document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === ui.tool; });
     return false;
   }
   act({ type: 'place', object: { type, x: tile.x, y: tile.y, rot: ui.rot } }, { quiet: true });
@@ -1955,10 +1959,15 @@ function updateRendererStatus(status) {
   const toggle = $('[data-act="renderer-toggle"]');
   if (toggle) { toggle.textContent = status.enabled ? 'Use classic view' : 'Try 3D preview'; toggle.setAttribute('aria-pressed', String(status.enabled)); }
   const quick = $('#renderer-btn');
-  quick.textContent = status.enabled ? '2D' : '3D';
+  // A two-part switch: the lit half is the view on screen, and pressed means 3D is on.
+  const mode = status.enabled ? '3d' : '2d';
+  if (quick.dataset.mode !== mode) {
+    quick.dataset.mode = mode;
+    quick.innerHTML = `<span class="renderer-seg" data-seg="2d"${mode === '2d' ? ' data-on' : ''}>2D</span><span class="renderer-seg" data-seg="3d"${mode === '3d' ? ' data-on' : ''}>3D</span>`;
+  }
   quick.setAttribute('aria-pressed', String(status.enabled));
-  quick.setAttribute('aria-label', status.enabled ? 'Use the classic 2D view' : 'Try the 3D preview');
-  quick.title = status.enabled ? 'Back to the classic 2D view' : 'Try the 3D preview (camera presets are in Menu, Camera)';
+  quick.setAttribute('aria-label', '3D view');
+  quick.title = status.enabled ? 'Showing the 3D view. Click for the classic 2D view.' : 'Showing the classic 2D view. Click for the 3D view (camera presets are in Menu, Camera).';
   document.querySelectorAll('[data-camera-preset], [data-camera-orbit]').forEach(button => { button.disabled = !status.active; });
   const help = status.active ? 'Select: tap to inspect, drag to orbit. Place: tap to place; dragging only previews. Two fingers pan and pinch; a middle-button drag, or holding Space and dragging, pans. 0 or Fit resets the camera; the 2D button returns to the classic view. Camera presets are in the menu.' : classicBoardHelp;
   if ($('#board-help').textContent !== help) $('#board-help').textContent = help;
@@ -2022,9 +2031,19 @@ function stageAudienceForScene() {
   return stageAudienceSnapshot;
 }
 
+// Once the show is over (Settle after the wind-down, and Done) the lot is empty and lit
+// for day again; the settlement keeps the attendance. During the wind-down the crowd
+// still eases from the forecast to the signed attendance.
+function showOver() {
+  if (state.phase !== 'settle' && state.phase !== 'done') return false;
+  const after = ui.play?.after;
+  return !(after && !after.done);
+}
+
 function draw() {
-  const services = state.show?.services ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
-  const night = ['show', 'settle', 'done'].includes(state.phase);
+  const over = showOver();
+  const services = state.show?.services && !over ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
+  const night = ['show', 'settle', 'done'].includes(state.phase) && !over;
   const scene = {
     objects: state.venue.objects,
     grid: state.venue.grid,
@@ -2054,6 +2073,7 @@ function draw() {
   };
   if (state.phase === 'settle' || state.phase === 'done') {
     if (state.show && state.show.incidentId !== 'rain') scene.incident = null;
+    if (over) scene.incident = null;
   }
   if (state.phase === 'build') {
     const at = ui.hover || (ui.focused ? ui.cursor : null);
@@ -2063,7 +2083,14 @@ function draw() {
       if (ui.tool !== 'bulldoze' && ui.tool !== 'select') scene.ghost = ghostAt(at);
     }
   }
+  // A red ghost says why before the tap, not only after it.
+  const ghostReason = scene.ghost && !scene.ghost.valid && ui.hover ? refusalText(scene.ghost.reason) : '';
+  if (ghostReason !== ui.ghostReason) {
+    ui.ghostReason = ghostReason;
+    if (ghostReason) el.boardStatus.textContent = ghostReason;
+  }
   el.canvas.style.cursor = state.phase === 'build' && ui.tool === 'bulldoze' ? 'crosshair' : '';
+  ui.lastScene = { phase: state.phase, night: scene.night, crowd: scene.crowd, services: !!scene.services, incident: scene.incident };
   board.draw(scene);
   siteMap.update(scene);
   const worker = $('#live-worker');
@@ -2201,12 +2228,17 @@ el.canvas.addEventListener('pointerup', (event) => {
   if (!board.status().active || !lotPointers.has(event.pointerId)) return;
   event.preventDefault(); event.stopImmediatePropagation();
   const tap = lotPointers.size === 1 && lotGesture && !lotGesture.moved && !lotGesture.multi && lotGesture.button === 0;
+  const previewDrag = lotPointers.size === 1 && lotGesture && lotGesture.moved && !lotGesture.multi && lotGesture.button === 0 && !ui.cameraMode && !['select', 'bulldoze'].includes(ui.tool);
   lotPointers.delete(event.pointerId);
   if (!lotPointers.size) cancelLotGesture();
   if (el.canvas.hasPointerCapture(event.pointerId)) el.canvas.releasePointerCapture(event.pointerId);
   if (tap && state.phase === 'build' && el.win.hidden && el.menu.hidden) {
     const tile = ui.tool === 'select' || ui.tool === 'bulldoze' ? targetAt(event) : board.tileAt(event.clientX, event.clientY);
     if (tile) { ui.cursor = tile; placeAt(tile); }
+  } else if (previewDrag && state.phase === 'build' && el.win.hidden && el.menu.hidden) {
+    // A drag with a placement tool only previews; say so, and why that tile would be refused.
+    const tile = board.tileAt(event.clientX, event.clientY), ghost = tile ? ghostAt(tile) : null;
+    el.boardStatus.textContent = ghost && !ghost.valid ? `${refusalText(ghost.reason)} Dragging only previews; tap to place.` : 'Dragging only previews; tap a tile to place.';
   }
 }, true);
 for (const name of ['pointercancel', 'lostpointercapture']) el.canvas.addEventListener(name, () => { if (board.status().active) cancelLotGesture(); }, true);
@@ -2978,14 +3010,48 @@ document.addEventListener('fullscreenchange', syncFullscreen);
 
 function setSaveStatus(text) { el.saveStatus.textContent = text; }
 
+// Export the visible career even when the latest storage write failed.
+function currentSaveCode() {
+  return window.MixKitSave
+    ? window.MixKitSave.encodeCode(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, savedAt: new Date().toISOString(), state })) : null;
+}
+
+// A save file holds the same save code as text, so a file and a pasted code load alike.
+function downloadSave() {
+  const code = currentSaveCode();
+  if (!code) { setSaveStatus('Nothing saved yet.'); return; }
+  const stamp = new Date().toISOString().slice(0, 10);
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([code + '\n'], { type: 'text/plain' }));
+  link.download = `front-of-house-save-${stamp}.txt`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  setSaveStatus(`Downloaded ${link.download}. Load it with Load a save file in any browser.`);
+}
+
+$('#save-file').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  let text = '';
+  try { text = await file.text(); } catch { text = ''; }
+  // A raw save (JSON) loads too, as if it were its code.
+  const trimmed = text.trim();
+  const code = trimmed.startsWith('{') && window.MixKitSave ? window.MixKitSave.encodeCode(trimmed) : trimmed;
+  if (importCode(code)) setSaveStatus(`Loaded ${file.name}.`);
+  else setSaveStatus(`${file.name} isn't a Front of House save file. Nothing was changed.`);
+});
+
 document.querySelector('.savebar').addEventListener('click', (e) => {
   const target = e.target.closest('[data-save]');
   if (!target) return;
   const kind = target.dataset.save;
-  if (kind === 'export') {
-    // Export the visible career even when the latest storage write failed.
-    const code = window.MixKitSave
-      ? window.MixKitSave.encodeCode(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, savedAt: new Date().toISOString(), state })) : null;
+  if (kind === 'download') {
+    downloadSave();
+  } else if (kind === 'export') {
+    const code = currentSaveCode();
     el.saveCode.value = code || '';
     el.saveCode.select();
     setSaveStatus(code ? 'Copy this code to move your game to another browser.' : 'Nothing saved yet.');
@@ -3108,6 +3174,7 @@ window.__frontOfHouse = {
   importCode,
   buildTools: () => ({ tool: ui.tool, selection: ui.selection, undo: history.undo.length, redo: history.redo.length }),
   board: () => board.info(),
+  scene: () => (ui.lastScene ? { ...ui.lastScene } : null),
   rendererStatus: () => board.status(),
   siteMap: () => siteMap.info(),
   rendererRetry: () => board.retry(),
