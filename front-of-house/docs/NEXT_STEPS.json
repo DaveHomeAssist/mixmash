@@ -2741,5 +2741,11 @@
     "scope": "Export the current visible career even after a storage write fails. Preserve save schema and stored original.",
     "evidence": "Dominic Chromium: normal export and restore passed before; quota-failure export returned stale progress. Both cases pass after fix, including restoration in a fresh browser context.",
     "nextAction": "Review the isolated repair PR. Merge, deployment and native device acceptance remain open."
+  },
+  "pr189CheckRepair": {
+    "date": "2026-10-27",
+    "state": "verified on Dominic",
+    "verification": "506 standard tests covered: 505 passed in Node 22 slim, then the catalog suite passed 6/6 in Node 22.22.1 with Git and an exact tracked-file index. Initial container Git and archive metadata setup failures were corrected; no tests skipped.",
+    "detail": "Keep the release candidate heading explicit while checking its exact version/date. Accept colon and historical heading separators; runtime, cache and save schema unchanged. No merge or deployment."
   }
 }
