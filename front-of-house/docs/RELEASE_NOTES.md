@@ -5,6 +5,12 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.2 — 2026-10-23
+
+- Settlement Summary includes the artist payment for every deal. A guarantee is labelled **Guarantee paid before doors**, so revenue minus show costs and artist payment visibly reconciles to the promoter result. Combined stage accounts retain the total artist payment and identify a prepaid guarantee when applicable.
+- The opening browser test handles an incident that has already hidden Skip. Research reload checks wait for pending preview requests to finish, retaining strict reporting of request failures.
+- Cache v90. Rules, balance, money movement and save schema 2 are unchanged. Desktop, physical-phone and listening acceptance remain open.
+
 ## 0.4.1 — 2026-10-23
 
 The Lot now sits in gravel and grass beside a service road and loading apron,

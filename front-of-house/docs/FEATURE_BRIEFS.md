@@ -1114,6 +1114,12 @@ trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
 dbf0682 without Front of House source changes; combined-head CI and release
 remain pending. Old6ed comparisons remain failures; device/human proof separate.
 
+CT-DEC-40 second qualification: Gamerbot dispatch CI39987286316 re-qualified
+pin 8412699 against gh-pages bc63597 on 2026-10-23. Normal pair passed all six
+groups (2560x720-crowd frameP95 566.6/645.9 ms; 375x812-crowd cpuP95 4.2/5.9 ms);
+the 20 ms fault was rejected on cpuP95 in all six. First qualification remains
+CI39933460388 at 7b7233a.
+
 Scenery delivery verified on 2026-10-23: PR #183 source 29ad882 merged as
 bb87e31. Exact-head full functional/mobile, Horseshoes and independently audited
 paired checks pass. Pages and 48 served runtime/integration hashes verify.
