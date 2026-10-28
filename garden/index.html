@@ -89,9 +89,20 @@ frame.addEventListener('load', focusGame);
 
 // Pointer on the stage/strip (but not Hub/Mute/Fullscreen/GitHub) hands focus
 // back to the game so keys work without a canvas click first.
+// The browser's own mousedown default runs after pointerdown and moves focus
+// from the iframe to <body> when the strip background is clicked, so focusing
+// synchronously here lost. Cancel that default for non-control targets and
+// defer the refocus past it (touch taps synthesize the same mousedown).
+function isStripControl(target) {
+  return !!(target && target.closest && target.closest('.mixnav a, .mixnav button'));
+}
+stage.addEventListener('mousedown', (event) => {
+  if (isStripControl(event.target)) return;
+  event.preventDefault();
+});
 stage.addEventListener('pointerdown', (event) => {
-  if (event.target.closest && event.target.closest('.mixnav a, .mixnav button')) return;
-  focusGame();
+  if (isStripControl(event.target)) return;
+  setTimeout(focusGame, 0);
 });
 
 // Strip controls (Mute, Fullscreen, GitHub) leave a :focus-visible ring and
