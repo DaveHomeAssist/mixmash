@@ -2031,9 +2031,10 @@ function stageAudienceForScene() {
   return stageAudienceSnapshot;
 }
 
-// Once the show is over (Settle after the wind-down, and Done) the lot is empty and lit
-// for day again; the settlement keeps the attendance. During the wind-down the crowd
-// still eases from the forecast to the signed attendance.
+// Once the show is over (Settle after the wind-down, and Done) the lot is lit for day
+// again and holds a settled, representative crowd: never more than the signed attendance,
+// split by stage as sold. During the wind-down the crowd still eases from the forecast to
+// the signed attendance.
 function showOver() {
   if (state.phase !== 'settle' && state.phase !== 'done') return false;
   const after = ui.play?.after;
@@ -2044,6 +2045,7 @@ function draw() {
   const over = showOver();
   const services = state.show?.services && !over ? (state.phase === 'show' ? ui.services : liveServicesFor(state, { events: true })) : null;
   const night = ['show', 'settle', 'done'].includes(state.phase) && !over;
+  const settled = over ? Math.max(0, settlementFor(state)?.attendance || 0) : 0;
   const scene = {
     objects: state.venue.objects,
     grid: state.venue.grid,
@@ -2058,10 +2060,10 @@ function draw() {
     cursor: null,
     ghost: null,
     selection: state.phase === 'build' && ui.selection !== null ? state.venue.objects[ui.selection] : null,
-    crowd: night ? crowdNow() : 0,
+    crowd: over ? settled : night ? crowdNow() : 0,
     artistId: state.booking.artistId,
     performing: state.phase === 'show' && (ui.play?.p ?? 0) >= D.ACT_ON_STAGE_AT,
-    ...(state.venue.id === 'festival' ? { stageAudience: night ? stageAudienceForScene() : null, secondaryStage: { artistId: state.booking.secondId, booked: !!state.booking.secondId, artist: state.booking.secondId ? artistFor(state.booking.secondId).name : null } } : {}),
+    ...(state.venue.id === 'festival' ? { stageAudience: night || over ? stageAudienceForScene() : null, secondaryStage: { artistId: state.booking.secondId, booked: !!state.booking.secondId, artist: state.booking.secondId ? artistFor(state.booking.secondId).name : null } } : {}),
     serviceProgress: state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(1, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 1,
     serviceMinute: services ? services.minute + (state.phase === 'show' && !reduceMotion && ui.play?.live && !ui.play.paused ? Math.min(0.999, Math.max(0, (performance.now() - ui.play.last) * ui.play.speed / 1000)) : 0) : 0,
     services,

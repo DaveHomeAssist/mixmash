@@ -2780,6 +2780,6 @@
   "playtest0428Fixes": {
     "date": "2026-10-28",
     "state": "release 0.4.4, cache v92",
-    "detail": "Five fixes from the live 0.4.2 playtest: empty day-lit lot after the show, content-sized phone sheets, lit 2D/3D switch, Save and load first in the Menu with save file download and load, PA must-touch-the-stage message before and after the tap. Rules, balance and save schema 2 unchanged."
+    "detail": "Five fixes from the live 0.4.2 playtest: day-lit lot after the show with a settled crowd within the signed attendance, content-sized phone sheets, lit 2D/3D switch, Save and load first in the Menu with save file download and load, PA must-touch-the-stage message before and after the tap. Rules, balance and save schema 2 unchanged."
   }
 }

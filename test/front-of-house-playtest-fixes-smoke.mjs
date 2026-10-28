@@ -1,4 +1,4 @@
-/** Live 0.4.2 playtest fixes (0.4.4): the lot after the show, the phone sheet, the 2D/3D
+/** Live 0.4.2 playtest fixes (0.4.4): the day-lit settled lot after the show, the phone sheet, the 2D/3D
  * switch, save files and the PA refusal. Chromium, classic and 3D. */
 import assert from 'node:assert/strict';
 import { readFile, writeFile, mkdtemp } from 'node:fs/promises';
@@ -39,7 +39,8 @@ async function playToSettle(page) {
 }
 
 try {
-  // 1. After the show the lot is empty and lit for day; the settlement keeps the attendance.
+  // 1. After the show the lot is lit for day and holds a settled, representative crowd that
+  //    never exceeds the signed attendance; the settlement keeps the attendance.
   for (const renderer of ['2d', '3d']) {
     const { context, page, failures } = await open({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' }, renderer);
     if (renderer === '3d') await page.waitForFunction(() => __frontOfHouse.rendererStatus().active);
@@ -47,13 +48,21 @@ try {
     const scene = await page.evaluate(() => __frontOfHouse.scene());
     const game = await text(page);
     assert.equal(scene.night, false, `${renderer}: Settle returns the lot to day lighting`);
-    assert.equal(scene.crowd, 0, `${renderer}: Settle clears the crowd from the lot`);
-    assert.ok(game.crowd > 0 && game.crowd === game.settlement.attendance, `${renderer}: the reported crowd still matches the settlement attendance`);
-    if (renderer === '3d') assert.equal(await page.evaluate(() => __frontOfHouse.board().representativeGuests), 0, '3d: no guest figures remain after the show');
-    else assert.equal(await page.evaluate(() => __frontOfHouse.board().crowd.length), 0, '2d: no crowd dots remain after the show');
+    const attendance = game.settlement.attendance;
+    assert.ok(game.crowd > 0 && game.crowd === attendance, `${renderer}: the reported crowd still matches the settlement attendance`);
+    assert.ok(scene.crowd > 0 && scene.crowd <= attendance, `${renderer}: the settled crowd never exceeds the signed attendance (${scene.crowd} of ${attendance})`);
+    assert.equal(scene.services, false, `${renderer}: no live service queues remain after the show`);
+    assert.equal(scene.incident, null, `${renderer}: no incident marker remains after the show`);
+    if (renderer === '3d') {
+      const figures = await page.evaluate(() => __frontOfHouse.board().representativeGuests);
+      assert.ok(figures > 0 && figures <= Math.min(180, attendance), `3d: guest figures stay representative (${figures} for ${attendance})`);
+    } else {
+      const dots = await page.evaluate(() => __frontOfHouse.board().crowd.length);
+      assert.ok(dots > 0 && dots <= attendance, `2d: crowd dots never exceed the attendance (${dots} for ${attendance})`);
+    }
     assert.deepEqual(failures, []);
     await context.close();
-    console.log(`  ok ${renderer}: empty, day-lit lot on Settle; attendance kept`);
+    console.log(`  ok ${renderer}: day-lit settled lot on Settle, crowd within attendance`);
   }
 
   // 2. On a phone a short sheet (Settle, Done) leaves the lot visible above it.

@@ -9,7 +9,7 @@ requires migration.
 
 Playtest fixes from the live 0.4.2 show night.
 
-- Once the wind-down ends, Settle and Done show an empty lot in day lighting. The settlement keeps the attendance; the board no longer leaves a crowd standing in a dark lot.
+- Once the wind-down ends, Settle and Done return the lot to day lighting with a settled, representative crowd that never exceeds the signed attendance (split by stage as sold at the festival). The board no longer leaves an oversized crowd standing in a dark lot.
 - On phones, the Book, Promote, Settle and Done sheets grow with their content up to the height under the strip, so a short sheet such as Settle leaves the lot visible above it. Nothing scrolls.
 - The 2D/3D switch shows both labels and lights the view on screen. It is pressed while 3D is on.
 - Save and load is the first section of the Menu. **Download save file** saves the current career as a text file of its save code, and **Load a save file** loads one (a raw save also loads). Save codes still work.

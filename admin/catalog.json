@@ -3516,7 +3516,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "front-of-house-playtest-fixes-smoke.mjs",
-      "description": "Live 0.4.2 playtest fixes (0.4.4): the lot after the show, the phone sheet, the 2D/3D switch, save files and the PA refusal. Chromium, classic and 3D.",
+      "description": "Live 0.4.2 playtest fixes (0.4.4): the day-lit settled lot after the show, the phone sheet, the 2D/3D switch, save files and the PA refusal. Chromium, classic and 3D.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-playtest-fixes-smoke.mjs",
       "open": null
     },

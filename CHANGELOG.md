@@ -4,7 +4,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- Front of House 0.4.4: playtest fixes. After the show the lot clears and returns to day lighting; phone Book, Promote, Settle and Done sheets grow with their content so the lot stays visible; the 2D/3D switch lights the view on screen; Save and load sits at the top of the Menu with Download save file and Load a save file; a PA away from the stage says it must touch the stage, before and after the tap, and keeps the tool. Cache v92; rules, balance and save schema 2 unchanged.
+- Front of House 0.4.4: playtest fixes. After the show the lot returns to day lighting with a settled crowd that never exceeds the signed attendance; phone Book, Promote, Settle and Done sheets grow with their content so the lot stays visible; the 2D/3D switch lights the view on screen; Save and load sits at the top of the Menu with Download save file and Load a save file; a PA away from the stage says it must touch the stage, before and after the tap, and keeps the tool. Cache v92; rules, balance and save schema 2 unchanged.
 
 - Front of House 0.4.3: save export captures current in-memory progress after storage failures, with Chromium export/restore regression coverage. Cache v91; save schema 2 unchanged.
 
