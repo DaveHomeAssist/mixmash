@@ -79,6 +79,15 @@ This follows the MarsScape split in `mars/`:
 - Saves go through the shared `src/kit/save.js` store under `front_of_house_v1` (see `docs/SAVE_FORMAT.md`). Save codes are checked for the namespace and schema before anything is written, so a bad code can't replace a good save.
 - `window.render_game_to_text()` (the MIXMASH and MarsScape convention) and `window.__frontOfHouse` let the smoke test play the loop.
 
+## Balance workbench
+
+The [balance workbench](docs/BALANCE_WORKBENCH.md) compares six public-information
+player policies through real engine actions, with matched seeds, held-out cohorts,
+outcome distributions and exact replay. Run `npm run sim:front-of-house-workbench`.
+Its reports diagnose tuning candidates without changing balance or legacy baselines.
+Read the [600-career findings](docs/BALANCE_WORKBENCH_FINDINGS.md) for the measured
+comparison and proposed investigations.
+
 ## Verification
 
 | Command | Checks |
@@ -117,3 +126,12 @@ Each guest makes one two-minute visit after their bar/food stop. Waiting expires
 Facilities → Artist offers Sodium Arcade an optional quiet changing area, separate from guest stalls. Accepting needs a connected powered trailer and cleaner. Fulfillment adds up to two relationship points, with no artist-pay change; declining has no penalty. All terms lock at doors. Old shows without the trial retain their previous rules.
 
 Native overview measurements: [`performance/2026-10-04-navigation-native.json`](performance/2026-10-04-navigation-native.json) records all twelve frozen-source full-client visible/hidden windows; interpretation and limitations are in [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
+
+
+### Recovery controls and pacing study
+
+[Recovery findings](docs/BALANCE_RECOVERY_FINDINGS.md) compare adaptive beginner
+and earlier venue strategies on fresh matched seeds. The
+[workbench guide](docs/BALANCE_WORKBENCH.md) documents all ten controls and replay.
+The original six-policy [findings](docs/BALANCE_WORKBENCH_FINDINGS.md) and source
+baseline remain historical evidence. Pacing recommendations change no game rules.

@@ -1258,3 +1258,33 @@ remains unanswered history, archived outside active Decisions for Dave.
 Technical scenery delivery does not certify physical phones, human final art,
 full careers or public launch. Release records and existing board are reconciled
 within this scoped documentation follow-up; no game runtime changes.
+
+## 2026-10-23: Balance workbench and measured tuning review
+
+Dave requested six player strategies, bulk simulations and tuning recommendations
+before any balance changes. Added the headless workbench and integrity tests,
+source-bound JSON replay, generated tables, compact baseline and findings. Walter
+Node22.22.1 completed600careers/10183signed shows on100matched seeds per policy,
+with80development/20held-out seeds. Eight workbench tests and14trace replays pass.
+All source digests match. Beginner58%, random61%, four stronger policies100%
+completion; policy stops and bounded-grid limits are explicit. Festival scale and
+completion-quality mismatch are proposed investigations, not changes. Rules/data,
+legacy baselines, saves, renderer and product version remain unchanged. A prior
+Dominic run lost connectivity; its completion and remaining baseline checks are
+not claimed. Required repository CI and delivery are separate provider evidence.
+
+
+## 2026-10-25: Adaptive booking and earlier venue recovery study
+
+Approved investigation CT-DEC-41 adds four policy controls to the existing six.
+Fresh seeds 2001 through 2100 produce 1,000 careers and 17,472 signed shows on
+Dominic, Node 24.17.0. Adaptive beginner completes 83/100 versus 53/100 original;
+held out 15/20 versus 11/20. Random recovery completes 75/100 versus 65/100;
+held out 16/20 versus 14/20. All 31 Shell recovery shows are profitable, across
+16 careers. Beginner downshift controls execute none because booking stops are
+at the Lot. Engine Next show refusals remain unchanged and are not bypassed.
+Eleven integrity tests, 18 original-policy parity careers and 26 exact fresh
+replays pass. Full unit/build, three legacy simulators/baseline drift and generated
+docs checks pass on Dominic. Game rules, data, saves and browser code unchanged.
+[Recovery findings](docs/BALANCE_RECOVERY_FINDINGS.md) propose Festival pacing
+ranges for FOH-BAL-02; these are not a retune or completion-rule change.

@@ -733,3 +733,28 @@ three-viewport scenery/camera/fence/reload checks pass. Full hosted gameplay ver
 a same-assertion live numbering adapter; the original local counter test also
 passes. Immutable front-of-house-v0.4.1 peels to deployed merge bb87e31.
 CT-DEC-33 keeps broader human/device/full-launch acceptance separate.
+
+Second qualification (gh-pages re-check, 2026-10-23): MixMash Gamerbot's
+single fault-injection dispatch CI39987286316
+(https://github.com/DaveHomeAssist/mixmash/actions/runs/39987286316) re-qualified the 8412699 pin against gh-pages bc63597. The normal
+pair passed all six groups (tightest: 2560x720-crowd frameP95 566.6 ms vs
+645.9 ms limit; 375x812-crowd cpuP95 4.2 ms vs 5.9 ms limit), and the 20 ms
+CPU fault was rejected on cpuP95 in all six groups. This is the second
+qualification after CI39933460388 at 7b7233a; limits and protocol are unchanged.
+
+
+## CT-DEC-41: Recovery controls before Festival tuning
+
+**Accepted by Dave, 2026-10-25. Investigation only.**
+
+FOH-BAL-01 option A is approved for adaptive beginner and earlier earned venue
+recovery comparisons on fresh matched seeds, followed by recommendations for
+explicit Festival pacing targets. Keep game balance and completion rules
+unchanged. Preserve the six original policies, version 1 evidence and unanswered
+D12. The bounded controls use real legal actions, public forecasts and earned
+unlocks only. No engine continuation refusal may be bypassed.
+
+See [the scoped brief](FEATURE_BRIEFS.md#balance-recovery-controls-2026-10-25)
+and [recovery findings](BALANCE_RECOVERY_FINDINGS.md). Target ranges are proposals
+for a later product decision, not authorization to retune or change the meaning
+of career completion.

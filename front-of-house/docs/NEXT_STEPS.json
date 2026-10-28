@@ -6,9 +6,9 @@
     "DaveHomeAssist/mixmash"
   ],
   "head": "0.4.2 fixes verified on the 0.4.1 Lot surroundings release",
-  "lastActivity": "2026-10-23",
+  "lastActivity": "2026-10-27",
   "status": "amber",
-  "statusReason": "Settlement and browser fixes pass 493 unit tests, 29 main browser checks, opening checks, seven research journeys and unchanged simulation baselines on Dominic. PR #184 is merged with the 0.4.1 gh-pages base and awaits one final-head CI run. Merge, deployment and human/device acceptance remain separate.",
+  "statusReason": "Settlement and browser fixes pass 493 unit tests, 29 main browser checks, opening checks, seven research journeys and unchanged simulation baselines on Dominic. PR #184 is merged with gh-pages 0eafcbf (0.4.1 base plus #188 balance workbench) and awaits one final-head CI run. CT-DEC-40 pin 8412699 second-qualified by CI39987286316. Merge, deployment and human/device acceptance remain separate.",
   "activity30d": {
     "headline": "PA, lighting, stage/site cards, performers and narrow-window fixes released; stale delivery records reconciled."
   },
@@ -263,6 +263,35 @@
       "confidence": "medium",
       "blocks": "nothing; 0.1.2 ships either way",
       "source": "front-of-house/docs/DECISION_PACKET.md"
+    },
+    {
+      "id": "FOH-BAL-01",
+      "question": "Which tuning investigation follows the measured workbench report?",
+      "options": {
+        "A": "Adaptive beginner and earlier-venue recovery controls, then Festival economy pacing experiments",
+        "B": "Passing-finale completion experiment first; changes career-success semantics",
+        "C": "Retain economy/completion rules and investigate guidance only"
+      },
+      "recommended": "A",
+      "confidence": "medium",
+      "blocks": "Future tuning only; no balance changes in this workbench delivery",
+      "source": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
+      "humanAnswer": "A: recovery controls on fresh matched seeds, then recommend Festival pacing targets. No game balance or completion changes.",
+      "answeredAt": "2026-10-25"
+    },
+    {
+      "id": "FOH-BAL-02",
+      "question": "Which Festival pacing direction should a later isolated experiment target?",
+      "options": {
+        "A": "Test gradual Festival pacing: competent median 4 to 6 shows, adaptive beginner 6 to 10, meaningful entry cash gate and bounded recovery",
+        "B": "Retain the current fast finale; focus on affordable-choice and recovery guidance",
+        "C": "Scope a separate quality-led finale experiment; completion semantics need explicit approval"
+      },
+      "recommended": "A",
+      "confidence": "medium",
+      "blocks": "Future tuning only; no game changes in this investigation",
+      "source": "front-of-house/docs/BALANCE_RECOVERY_FINDINGS.md",
+      "humanAnswer": null
     }
   ],
   "files": [
@@ -333,6 +362,14 @@
     {
       "path": "front-of-house/performance/2026-10-04-ci-paired.json",
       "why": "Actual paired renderer gate and measured negative control"
+    },
+    {
+      "path": "front-of-house/docs/BALANCE_WORKBENCH.md",
+      "why": "Policy definitions, bulk comparison commands, source-bound replay and interpretation limits"
+    },
+    {
+      "path": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
+      "why": "Measured six-policy comparison, limits and proposed tuning priorities; no balance changes"
     }
   ],
   "verify": [
@@ -342,7 +379,9 @@
     "npm run docs:front-of-house",
     "npm run sim:front-of-house",
     "npm run smoke:front-of-house",
-    "npm run admin:index"
+    "npm run admin:index",
+    "npm run test:front-of-house-workbench",
+    "npm run sim:front-of-house-workbench"
   ],
   "context": [
     "This project card supersedes the Front of House portion of the older MixMash audit at 1d482ba. Other games retain their own audit state.",
@@ -2616,6 +2655,7 @@
       "status": "Retired approval request under CT-DEC-40",
       "humanAnswer": null
     },
+    "ghPagesRecheck": {"status": "passed", "qualification": "second", "by": "MixMash Gamerbot single fault-injection workflow_dispatch", "run": "https://github.com/DaveHomeAssist/mixmash/actions/runs/39987286316", "date": "2026-10-23", "pin": "841269997a2b4b112871b7560abf1c8670e850de", "candidate": "bc63597389d03f1470220426d006ea5e1ff8643c", "result": "Normal pair passed all 6 groups (tightest 2560x720-crowd frameP95 566.6 vs 645.9 ms limit; 375x812-crowd cpuP95 4.2 vs 5.9 ms limit); 20 ms CPU fault rejected on cpuP95 in all 6 groups.", "firstQualification": "CI39933460388 at 7b7233a"},
     "retirementReason": "CT-DEC-18/19 already delegate engineering measurement decisions. CT-DEC-40 selected calibration; no human answer inferred.",
     "qualification": "Complete normal/fault CI39933460388 and independent54-window/33-source audit; final CI39957245252 attempt2 passes normal/full functional at29ad882 with independent36-window/22-source/tree audit. Initial rejections retained."
   },
@@ -2630,7 +2670,7 @@
     "cache": "v90",
     "saveSchema": 2,
     "verification": "Dominic: 493 unit tests; syntax/build; generated references and assets; unchanged Lot/tier/career baselines; 15 opening scenarios; seven Chromium/WebKit research journeys; 29 main browser checks; four focused settlement cases including signing cash and desktop/phone fit. Original guarantee omission reproduced.",
-    "delivery": "Merged with gh-pages bc63597 (0.4.1 Lot surroundings, #183/#185) on 2026-10-23; the inherited hub Ko-fi target was fixed on gh-pages at 91d3a02. Final-head PR CI pending. No merge, deploy or release tag claimed.",
+    "delivery": "Merged with gh-pages bc63597 (0.4.1 Lot surroundings, #183/#185) on 2026-10-23, then with gh-pages 0eafcbf (#188 balance workbench recovery controls) on 2026-10-27; the inherited hub Ko-fi target was fixed on gh-pages at 91d3a02. Final-head PR CI pending. No merge, deploy or release tag claimed.",
     "humanAcceptance": "Desktop/physical-phone and listening review remains open; automated checks do not replace it.",
     "pr": "https://github.com/DaveHomeAssist/mixmash/pull/184",
     "versionReservation": "0.4.1/cache v89 shipped with #183 (tag front-of-house-v0.4.1); this correction uses 0.4.2/cache v90.",
@@ -2640,5 +2680,82 @@
       "The new assertion initially read a compact display record without artistPay; corrected to use settlementFor on authoritative state, then all 29 main browser checks passed.",
       "Initial candidate CI 39940360332 was cancelled when version metadata and the assertion changed. Final-head CI must run again."
     ]
+  },
+  "balanceWorkbench": {
+    "requested": "2026-10-23",
+    "scope": "Compare six public-information policies using the existing simulator; report tuning hypotheses before any balance change.",
+    "state": "Implemented and bulk verified; tuning recommendations remain proposed",
+    "guide": "front-of-house/docs/BALANCE_WORKBENCH.md",
+    "source": "front-of-house/sim/workbench.mjs",
+    "policies": [
+      "beginner",
+      "cautious",
+      "growth",
+      "aggressive",
+      "profit",
+      "random"
+    ],
+    "gameBalanceChanged": false,
+    "excluded": [
+      "arbitrary placement search",
+      "held-night schedules",
+      "live services",
+      "equipment purchases",
+      "research"
+    ],
+    "humanReview": "Existing desktop and physical-phone next step remains separate; D12 remains unanswered and nonblocking.",
+    "report": "front-of-house/docs/BALANCE_WORKBENCH_FINDINGS.md",
+    "baseline": "front-of-house/sim/workbench-baseline.json",
+    "seedsPerPolicy": 100,
+    "seedRange": [
+      1001,
+      1100
+    ],
+    "careers": 600,
+    "signedShows": 10183,
+    "host": "Walter",
+    "tests": "Eight workbench integrity tests pass;14 exact example replays; source hashes verified",
+    "rawReportSha256": "612bab576b2c86b17f42946b5a41daf95f95c40abca80318c5c6296566077eb2",
+    "recoveryProbes": "Three real-action continuations: cheaper beginner plans and a profitable earned-Shell recovery from Festival; separate from the frozen cohort.",
+    "recoveryStudy": {
+      "requested": "2026-10-25",
+      "state": "Measured; game balance and completion unchanged; pacing targets proposed",
+      "seedRange": [
+        2001,
+        2100
+      ],
+      "heldoutSeedRange": [
+        2081,
+        2100
+      ],
+      "seedsPerPolicy": 100,
+      "policiesAdded": [
+        "beginner-adaptive",
+        "beginner-recovery",
+        "beginner-adaptive-recovery",
+        "random-recovery"
+      ],
+      "host": "Dominic",
+      "gameBalanceChanged": false,
+      "completionRulesChanged": false,
+      "guide": "front-of-house/docs/BALANCE_WORKBENCH.md",
+      "report": "front-of-house/docs/BALANCE_RECOVERY_FINDINGS.md",
+      "careers": 1000,
+      "signedShows": 17472,
+      "tests": "11 integrity tests; 18 original-policy parity careers; 26 exact example replays; full unit/build/legacy simulator/docs checks pass on Dominic",
+      "baseline": "front-of-house/sim/recovery-baseline.json",
+      "rawReportSha256": "d62b752ea2860131eb415eb380690df21cbf4151cf902bf30dbc08d1e1852861",
+      "results": {
+        "beginnerCompleted": 53,
+        "adaptiveBeginnerCompleted": 83,
+        "beginnerRecoveryCompleted": 53,
+        "adaptiveRecoveryCompleted": 83,
+        "randomCompleted": 65,
+        "randomRecoveryCompleted": 75,
+        "profitableDownshiftShows": 31,
+        "downshiftCareers": 16
+      },
+      "delivery": "Study verification recorded here; current commit, CI, merge and deployment proof is owned by Git and provider records"
+    }
   }
 }

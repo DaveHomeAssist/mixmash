@@ -1029,6 +1029,29 @@ Camera: existing setCamera supports continuous yaw/pitch/zoom; proposed reveal u
 Risks: autoplay restrictions require explicit sound activation; software WebGL and narrow devices need fallback and bounded frame work. Spoken soundcheck availability varies by browser.
 Acceptance: skip at every beat; replay/return/reduced-motion paths; immediate keyboard/touch controls; no page overflow at desktop/phone/ultrawide; live save bytes unchanged by intro and Continue; WebGL loss remains navigable; assets cached offline; CI, hosted runtime and human acceptance reported separately.
 
+## Balance workbench 2026-10-23
+
+Dave requested a workbench built on the existing simulator to compare beginner,
+cautious, growth, aggressive, profit and random legal policies before changing
+balance. Run the real deterministic engine without a browser. Enumerate public
+booking/layout/price/ad candidates, enforce actual opening affordability, expose
+only public forecasts to planners, and reveal incidents only at the response step.
+Compare matched development and held-out seed cohorts through all four earned
+venues. Report cash/profit distributions, progression, losses and recovery,
+policy versus financial stops, decision coverage, paired differences and replayable
+action traces with source digests. Findings are tuning hypotheses, not permission
+to change game values. Keep existing balance baselines and thresholds intact.
+
+The first slice is a command-line workbench producing JSON and Markdown reports
+and independently replayable examples. It uses representative authored layouts,
+one-night bookings, current room policies, and a bounded price/ad grid. Optional
+live services, equipment purchases, research, arbitrary placement optimization and
+held-night scheduling are excluded and named in reports. No runtime, rule, data,
+save, dependency or rendering changes. Acceptance: all six policies across all
+four venues where earned, hidden-outcome independence, deterministic replay,
+legal actions and exact cash accounting, correct summary denominators, strict CLI
+validation, reproducible bulk cohorts and unchanged legacy generated baselines.
+
 ## Lot surroundings and dusk atmosphere — 2026-10-23
 
 Dave approved extending the ground beyond the fence with grass/gravel, a service
@@ -1091,6 +1114,12 @@ trees. Horseshoes39933468289 passes. Current delivery8a1f692 integrated via
 dbf0682 without Front of House source changes; combined-head CI and release
 remain pending. Old6ed comparisons remain failures; device/human proof separate.
 
+CT-DEC-40 second qualification: Gamerbot dispatch CI39987286316 re-qualified
+pin 8412699 against gh-pages bc63597 on 2026-10-23. Normal pair passed all six
+groups (2560x720-crowd frameP95 566.6/645.9 ms; 375x812-crowd cpuP95 4.2/5.9 ms);
+the 20 ms fault was rejected on cpuP95 in all six. First qualification remains
+CI39933460388 at 7b7233a.
+
 Scenery delivery verified on 2026-10-23: PR #183 source 29ad882 merged as
 bb87e31. Exact-head full functional/mobile, Horseshoes and independently audited
 paired checks pass. Pages and 48 served runtime/integration hashes verify.
@@ -1100,3 +1129,25 @@ suites plus the same-assertion hosted numbering adapter pass; the original
 local counter check also passes. Immutable front-of-house-v0.4.1 identifies
 the verified deployed merge. Broader device/human approval remains separate
 under CT-DEC-33.
+
+
+## Balance recovery controls, 2026-10-25
+
+Dave approved FOH-BAL-01 investigation A: compare adaptive beginner and earlier
+venue recovery on fresh matched seeds, then recommend Festival pacing targets.
+Player problem: a preferred kit can be unaffordable while legal alternatives
+exist, and highest-venue-only policies omit recovery at earned smaller rooms.
+Smallest slice: preserve six original policies and add beginner adaptive,
+beginner recovery, combined adaptive recovery, and random recovery controls.
+Adaptive keeps the preferred beginner plan when affordable; otherwise chooses
+the cheapest affordable grid opening, with the original cheapest response.
+Recovery tries the highest earned room first, then smaller earned rooms only
+when the current policy cannot select a plan. It never bypasses a refused
+Next show action. No injected funds, unlocks, future outcomes or rule changes.
+Freeze policies before fresh seeds 2001 through 2100, 80 development and 20 held
+out, maximum 60 signed shows. Analyze matched completion transitions, bounded
+stops, downshift episodes, cash recovery, Festival entry/completion and show
+quality. Acceptance: exact action replay, reload and ledger invariants; original
+six policies remain behaviorally identical; all economic/runtime sources stay
+byte-identical. Recommend targets as proposals only. No UI, save, balance,
+completion, equipment, service, research or dependency changes.
