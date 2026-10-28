@@ -2757,5 +2757,24 @@
       },
       "delivery": "Study verification recorded here; current commit, CI, merge and deployment proof is owned by Git and provider records"
     }
+  },
+  "currentSaveExport": {
+    "sourceRevision": "0eafcbf815594ccc3ae9b2c3f142c72ba50cc888",
+    "observedAt": "2026-10-27T22:05:02.022416+00:00",
+    "status": "implemented and browser verified; PR review pending",
+    "scope": "Export the current visible career even after a storage write fails. Preserve save schema and stored original.",
+    "evidence": "Dominic Chromium: normal export and restore passed before; quota-failure export returned stale progress. Both cases pass after fix, including restoration in a fresh browser context.",
+    "nextAction": "Review the isolated repair PR. Merge, deployment and native device acceptance remain open."
+  },
+  "pr189CheckRepair": {
+    "date": "2026-10-27",
+    "state": "verified on Dominic",
+    "verification": "506 standard tests covered: 505 passed in Node 22 slim, then the catalog suite passed 6/6 in Node 22.22.1 with Git and an exact tracked-file index. Initial container Git and archive metadata setup failures were corrected; no tests skipped.",
+    "detail": "Keep the release candidate heading explicit while checking its exact version/date. Accept colon and historical heading separators; runtime, cache and save schema unchanged. No merge or deployment."
+  },
+  "pr189GhPagesSync": {
+    "date": "2026-10-28",
+    "state": "merged gh-pages after 0.4.2 (#184, 1ab8e84)",
+    "detail": "Save export fix renumbered to release 0.4.3, cache v91; 0.4.2 notes kept. Runtime, rules and save schema 2 unchanged."
   }
 }

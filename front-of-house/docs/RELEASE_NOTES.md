@@ -5,6 +5,11 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.3 — 2026-10-28
+
+- Save codes capture the current visible career, including progress after browser storage fills up. Previously Export preferred the last stored snapshot, silently losing unsaved progress during recovery.
+- Cache v91. Rules, balance and save schema 2 are unchanged.
+
 ## 0.4.2 — 2026-10-23
 
 - Settlement Summary includes the artist payment for every deal. A guarantee is labelled **Guarantee paid before doors**, so revenue minus show costs and artist payment visibly reconciles to the promoter result. Combined stage accounts retain the total artist payment and identify a prepaid guarantee when applicable.

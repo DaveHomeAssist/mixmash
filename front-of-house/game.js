@@ -2983,8 +2983,9 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
   if (!target) return;
   const kind = target.dataset.save;
   if (kind === 'export') {
-    const code = (store && store.exportCode()) || (window.MixKitSave
-      ? window.MixKitSave.encodeCode(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, savedAt: new Date().toISOString(), state })) : null);
+    // Export the visible career even when the latest storage write failed.
+    const code = window.MixKitSave
+      ? window.MixKitSave.encodeCode(JSON.stringify({ ns: D.SAVE_NAMESPACE, v: D.SCHEMA_VERSION, savedAt: new Date().toISOString(), state })) : null;
     el.saveCode.value = code || '';
     el.saveCode.select();
     setSaveStatus(code ? 'Copy this code to move your game to another browser.' : 'Nothing saved yet.');
