@@ -140,7 +140,10 @@ body:not([data-phase='build']) #board { cursor: default; }
 /* The camera buttons sit in the top strip; on phones they float over the board. */
 .camera-row { display: flex; gap: 4px; flex: none; }
 .camera-row button { min-width: 44px; padding: 0 10px; font-size: 1rem; }
-.camera-row .renderer-btn { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; }
+.camera-row .renderer-btn { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 2px; padding: 0 4px; }
+/* The 2D/3D switch lights the view on screen; pressed (aria-pressed) means 3D is on. */
+.renderer-btn .renderer-seg { padding: 2px 5px; border-radius: 4px; color: var(--text-muted); }
+.renderer-btn .renderer-seg[data-on] { color: var(--desk); background: var(--cyan); }
 
 /* The board's status line: a short toast under the strip, centred on the clear part of
    the board. It fades a few seconds after each change. */
@@ -385,6 +388,8 @@ button.tile:hover:not(:disabled) { background: var(--border); }
 .keys dt { font-family: var(--font-mono); font-weight: 700; }
 .keys dd { margin: 0; color: var(--text-muted); }
 a.button { display: inline-flex; align-items: center; text-decoration: none; }
+label.button { display: inline-flex; align-items: center; cursor: pointer; }
+.savebar:has(#save-file:focus-visible) label[for='save-file'] { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .lede { color: var(--text-muted); }
 .notice { color: var(--text-muted); }
 
@@ -728,8 +733,12 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
      pixels and wrapped the choice onto a second line; a smaller cost keeps one line with room. */
   body[data-layout='hud'] .incident-plate .choice .cost { font-size: 0.8rem; }
 
-  /* Book, Promote, Settle and Done: the sheet takes the height under the strip. */
-  body[data-layout='sheet'] .panel { top: calc(var(--strip-h) + 8px); height: auto; padding: 12px; }
+  /* Book, Promote, Settle and Done: the sheet grows with its content up to the height under
+     the strip, so a short sheet (Settle, Done) leaves the lot visible above it. */
+  body[data-layout='sheet'] .panel {
+    top: auto; height: auto; padding: 12px;
+    max-height: calc(100vh - var(--strip-h) - 8px); max-height: calc(100dvh - var(--strip-h) - 8px);
+  }
   body[data-layout='sheet'] .camera-row { display: none; }
   .at-sheet .rooms button { min-height: 40px; }
   .palette, .stats { grid-template-columns: minmax(0, 1fr); }
