@@ -122,3 +122,16 @@ test('revenue slots render only for well-formed values', () => {
   for (const bad of [{ adsensePublisherId: 'pub-1234567890123456', adsenseSlotId: '1234567890' }, { adsensePublisherId: 'ca-pub-1234567890123456', adsenseSlotId: '' }, { adsensePublisherId: 'ca-pub-123"><script>', adsenseSlotId: '1' }]) assert.equal(adHead(bad) + adBlock(bad), '', JSON.stringify(bad));
   assert.ok(!supportBlock({ supportUrl: 'https://x.example/"><script>' }).includes('"><script>'), 'support URL is escaped');
 });
+test('Privacy note (PRIV-03): linked from the homepage footer and Studio view, names the analytics, studio contact only', async () => {
+  const html = await read('index.html');
+  assert.match(html, /<footer class="site-footer">[^]*<a class="privacy-link" href="\/privacy\/">Privacy<\/a>[^]*<\/footer>/, 'footer links the privacy note');
+  assert.match(html, /<div class="studio-links">[^]*href="\/privacy\/">Privacy<\/a>/, 'Studio view links it too (the footer is hidden on phones)');
+  const note = await read('privacy/index.html');
+  assert.equal(canonical(note), `${SITE}/privacy/`);
+  assert.ok(note.includes('Last updated October 30, 2026'), 'dated');
+  assert.ok(note.includes('Cloudflare Web Analytics'), 'names the analytics in use');
+  assert.ok(note.includes('mailto:avbydave@gmail.com'), 'studio contact');
+  assert.ok(!/daverobertson/i.test(note), 'never a personal address');
+  assert.ok(!/<script[^>]+src=/i.test(note), 'the note itself loads no scripts');
+  assert.ok((await read('sitemap.xml')).includes(`<loc>${SITE}/privacy/</loc>`), 'in the sitemap');
+});
