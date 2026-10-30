@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy | MixMash Studio</title>
+<meta name="description" content="What mixmash.games collects (very little), what stays in your browser, and the outside services the site uses.">
+<link rel="canonical" href="https://mixmash.games/privacy/">
+<meta name="theme-color" content="#f5f1e7">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script>try { if (localStorage.getItem('mixmash.hub.theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) { /* Storage blocked: light theme. */ }</script>
+<style>
+:root { color-scheme:light; --paper:#f5f1e7; --card:#fffcf4; --ink:#20221f; --muted:#565c54; --line:#b7b9ab; --primary:#aa2549; --focus:#174fbe; font-family:Arial,Helvetica,sans-serif; font-size:16px }
+:root[data-theme=dark] { color-scheme:dark; --paper:#171a19; --card:#232725; --ink:#f5f1e7; --muted:#b9c1b9; --line:#606a62; --primary:#ff91b0; --focus:#98c6ff }
+* { box-sizing:border-box }
+body { margin:0; background:var(--paper); color:var(--ink); line-height:1.55 }
+a { color:var(--primary); text-underline-offset:2px }
+a:focus-visible { outline:3px solid var(--focus); outline-offset:2px }
+.skip-link { position:absolute; left:8px; top:-60px; background:var(--card); padding:8px 12px; border:2px solid var(--ink) }
+.skip-link:focus { top:8px }
+.shell { max-width:760px; margin:0 auto; padding:16px 20px 40px }
+.masthead { display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:14px; border-bottom:2px solid var(--ink) }
+.brand { display:flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; font-weight:900; letter-spacing:.04em }
+.monogram { display:grid; place-items:center; width:38px; height:38px; border:2px solid var(--ink); border-radius:50%; font-size:13px }
+.brand small { font:11px ui-monospace,monospace; letter-spacing:.12em }
+.back { font:12px ui-monospace,monospace; text-transform:uppercase; letter-spacing:.06em; color:var(--ink); padding:10px 4px; min-height:44px; display:inline-flex; align-items:center }
+.eyebrow { margin:28px 0 6px; font:11px/1.4 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.08em; color:var(--muted) }
+h1 { margin:0 0 12px; font-size:clamp(2rem,7vw,3rem); line-height:1.05; letter-spacing:-.02em }
+h2 { margin:30px 0 8px; font-size:1.2rem }
+p, li { color:var(--ink); max-width:65ch }
+.lede { font-size:1.1rem; color:var(--muted) }
+ul { padding-left:1.2em }
+li { margin:4px 0 }
+code { font:0.9em ui-monospace,monospace; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 4px; overflow-wrap:anywhere }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:4px 18px; margin:14px 0 }
+footer { margin-top:36px; padding-top:12px; border-top:1px solid var(--line); font:11px ui-monospace,monospace; color:var(--muted); display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to privacy note</a>
+<div class="shell">
+  <header class="masthead">
+    <a class="brand" href="/" aria-label="MixMash Studio home"><span class="monogram" aria-hidden="true">MM</span><span>MIXMASH <small>STUDIO</small></span></a>
+    <a class="back" href="/">← Back to games</a>
+  </header>
+  <main id="main" tabindex="-1">
+    <p class="eyebrow">Privacy note · Last updated October 30, 2026</p>
+    <h1>Privacy, in plain words.</h1>
+    <p class="lede">MixMash Studio is a small, independent set of free browser games. There are no accounts, mixmash.games sets no cookies, there are no ads, and we never sell your data.</p>
+
+    <h2>What we measure</h2>
+    <p>The homepage and the MIXMASH, Front of House, Pitch Riot, MarsScape and Garden OS pages load <a href="https://www.cloudflare.com/web-analytics/">Cloudflare Web Analytics</a>. It counts page views without cookies, local storage or fingerprinting. It sees the page address, the referring site, your browser and device type, your country (worked out from your IP address) and page-load timing. We only look at the totals. Age of Dave (EMPIRES) and this page do not load it.</p>
+
+    <h2>What stays in your browser</h2>
+    <p>Game saves and settings live in your browser's own storage (local storage, plus IndexedDB for MarsScape and Garden OS). They are not sent to us, except for MarsScape and Garden OS progress, described below. That includes:</p>
+    <ul>
+      <li>Game progress, save slots, options, sound and mute settings.</li>
+      <li>The homepage's light or dark theme, and the last game you opened, so the homepage can offer to pick up where you left off.</li>
+      <li>An offline copy of the site, kept by a service worker so games still open without a connection.</li>
+    </ul>
+    <p><strong>To clear it:</strong> open your browser's settings for this site (often under the padlock or site-info icon next to the address) and clear site data for <code>mixmash.games</code>. Garden OS keeps its own saves under <code>davehomeassist.github.io</code>, so clear that too. Clearing removes your saves, so export a backup from the game menu first if a game offers one.</p>
+
+    <h2>MarsScape online saves</h2>
+    <p>When MarsScape is online, your colony is saved on a small game server hosted by Vercel (<code>mixmash-marsscape-authority.vercel.app</code>). The server stores the colony's game state under a random session ID your browser makes up. No name, email or account is attached. Your IP address is used briefly to limit request floods and is not saved with your colony. To have a MarsScape server save deleted, email us its exported save code, which contains the session ID.</p>
+
+    <h2>Other services the site uses</h2>
+    <div class="card">
+      <ul>
+        <li><strong>GitHub Pages</strong> hosts mixmash.games. Like any web host, it receives your IP address when you load a page. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy statement</a>.</li>
+        <li><strong>Cloudflare Web Analytics</strong>, as described above. <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare privacy policy</a>.</li>
+        <li><strong>Vercel</strong> hosts the MarsScape save server and the Garden OS progress server. <a href="https://vercel.com/legal/privacy-policy">Vercel privacy policy</a>.</li>
+        <li><strong>Garden OS</strong> is embedded from Dave's Garden OS project on <code>davehomeassist.github.io</code>. Story Mode can send your game actions to its own progress server (<code>garden-os-theta.vercel.app</code>) under a random session ID, with no name or account.</li>
+        <li><strong>Google Fonts</strong> serves typefaces to Pitch Riot, Garden OS and a few studio pages, so Google receives your IP address when they load. <a href="https://developers.google.com/fonts/faq/privacy">Google Fonts privacy FAQ</a>.</li>
+        <li><strong>Ko-fi</strong> and <strong>GitHub</strong> (Send feedback, Source) are plain links. Nothing loads from them until you click, and then their own policies apply. <a href="https://more.ko-fi.com/privacy">Ko-fi privacy policy</a>.</li>
+      </ul>
+    </div>
+
+    <h2>Questions</h2>
+    <p>Email <a href="mailto:avbydave@gmail.com">avbydave@gmail.com</a>. If anything here changes, we'll update this note and its date.</p>
+  </main>
+  <footer><span>Independent. Browser native. All welcome.</span><a href="/">mixmash.games</a><span>© 2026 MixMash Studio</span></footer>
+</div>
+</body>
+</html>

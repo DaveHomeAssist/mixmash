@@ -5031,6 +5031,16 @@
       "open": "/offline.html"
     },
     {
+      "path": "privacy/index.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Privacy | MixMash Studio",
+      "description": "What mixmash.games collects (very little), what stays in your browser, and the outside services the site uses.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/privacy/index.html",
+      "open": "/privacy/"
+    },
+    {
       "path": "src/hub/template.html",
       "project": "studio",
       "category": "surface",
