@@ -1,0 +1,55 @@
+name: Pages site
+
+# Publishes only the built site (no package*.json, vercel.json, root Markdown, .gitignore,
+# .github/, test/ or api/) through a GitHub Pages artifact.
+#
+# Dormant until Dave switches Pages to Actions. Today Pages builds from the gh-pages
+# branch ("Deploy from a branch", build_type legacy), and this workflow does nothing on push.
+# To switch (Dave only; settings change, no billing impact on a public repo with the box runner):
+#   1. Settings -> Secrets and variables -> Actions -> Variables: add PAGES_SOURCE = actions
+#   2. Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"
+#   3. Actions -> Pages site -> Run workflow (or push to gh-pages) to publish the first artifact.
+# Roll back: set Source back to "Deploy from a branch" (gh-pages, / root) and delete the variable.
+on:
+  push:
+    branches: [gh-pages]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: vars.PAGES_SOURCE == 'actions' || github.event_name == 'workflow_dispatch'
+    runs-on: [self-hosted, Linux, X64, mixmash]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node .github/scripts/build-pages-site.mjs _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    # A manual run before the switch only builds and uploads; deploy-pages refuses while the
+    # Pages source is still the branch, so it is skipped rather than left to fail.
+    if: vars.PAGES_SOURCE == 'actions'
+    runs-on: [self-hosted, Linux, X64, mixmash]
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
