@@ -280,6 +280,17 @@
     border-color: rgba(84, 232, 255, 0.36);
     background: rgba(84, 232, 255, 0.08);
   }
+  .shortcut-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .shortcut-table th, .shortcut-table td { padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); color: var(--mix-muted); text-align: left; vertical-align: top; }
+  .shortcut-table th { color: var(--mix-orange); font-size: 12px; text-transform: uppercase; }
+  .shortcut-table td:first-child { color: var(--mix-text, #f4f0ff); font-weight: 700; }
+  .menu-overlay kbd {
+    display: inline-block; min-width: 1.6em; margin: 0 2px 2px 0; padding: 1px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.28); border-bottom-width: 3px; border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06); color: inherit; font: 700 12px/1.5 ui-monospace, monospace; text-align: center;
+  }
+  .menu-overlay[data-theme="light"] kbd { border-color: rgba(20, 30, 50, 0.3); background: rgba(20, 30, 50, 0.05); }
+  .shortcut-note { margin-top: 10px; font-size: 12px; color: var(--mix-muted); }
   .control-table {
     width: 100%;
     border-collapse: collapse;
@@ -596,6 +607,7 @@
       <button id="tab-controls" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-controls" data-menu-tab="controls">Controls</button>
       <button id="tab-audio" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-audio" data-menu-tab="audio">Audio</button>
       <button id="tab-progress" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-progress" data-menu-tab="progress">Progress</button>
+      <button id="tab-shortcuts" class="menu-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-shortcuts" data-menu-tab="shortcuts">Shortcuts</button>
     </nav>
     <div class="menu-panels">
       <section id="panel-onboarding" class="menu-panel" role="tabpanel" aria-labelledby="tab-onboarding" data-menu-panel="onboarding">
@@ -673,6 +685,44 @@
           <div class="menu-card">
             <h2>Runtime State</h2>
             <p id="audio-state-readout">Audio context has not started.</p>
+          </div>
+        </div>
+      </section>
+      <section id="panel-shortcuts" class="menu-panel" role="tabpanel" aria-labelledby="tab-shortcuts" data-menu-panel="shortcuts" hidden>
+        <div class="panel-grid">
+          <div class="menu-card">
+            <h2>Game shortcuts</h2>
+            <table class="shortcut-table" aria-label="Game shortcuts">
+              <thead><tr><th>Action</th><th>Keyboard</th><th>Gamepad</th></tr></thead>
+              <tbody>
+                <tr><td>Pause / resume</td><td><kbd>P</kbd> <kbd>Esc</kbd></td><td><kbd>Start</kbd></td></tr>
+                <tr><td>Quit to title (from pause)</td><td><kbd>Esc</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Shortcuts (this panel)</td><td><kbd>?</kbd> <kbd>H</kbd></td><td><kbd>Back</kbd> / <kbd>Select</kbd></td></tr>
+                <tr><td>Mute / unmute</td><td><kbd>M</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Fullscreen</td><td><kbd>F</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Command menu</td><td><kbd>O</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Quick Fight (title)</td><td><kbd>Q</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Setup match / rematch</td><td><kbd>Enter</kbd> <kbd>Space</kbd></td><td><kbd>Start</kbd></td></tr>
+                <tr><td>Resume saved match (title)</td><td><kbd>R</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Restart run (Platform Rush)</td><td><kbd>R</kbd></td><td>&mdash;</td></tr>
+                <tr><td>Training: hitboxes / reset damage</td><td><kbd>H</kbd> / <kbd>R</kbd></td><td>&mdash;</td></tr>
+              </tbody>
+            </table>
+            <p class="shortcut-note">In Training, <kbd>H</kbd> toggles hitboxes, so use <kbd>?</kbd> for this panel. A shortcut never overrides a key you bound to a fighter action in Controls. Browser shortcuts with Ctrl, Alt or Cmd pass through.</p>
+          </div>
+          <div class="menu-card">
+            <h2>Fighting (defaults)</h2>
+            <table class="shortcut-table" aria-label="Fighter controls">
+              <thead><tr><th>Action</th><th>P1</th><th>P2</th><th>Gamepad</th></tr></thead>
+              <tbody>
+                <tr><td>Move</td><td><kbd>A</kbd> <kbd>D</kbd></td><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td><td>Stick / D-pad</td></tr>
+                <tr><td>Jump / drop</td><td><kbd>W</kbd> / <kbd>S</kbd></td><td><kbd>&uarr;</kbd> / <kbd>&darr;</kbd></td><td><kbd>A</kbd> / Down</td></tr>
+                <tr><td>Attack</td><td><kbd>J</kbd> <kbd>Space</kbd></td><td><kbd>Num 1</kbd></td><td><kbd>X</kbd></td></tr>
+                <tr><td>Special</td><td><kbd>K</kbd></td><td><kbd>Num 2</kbd></td><td><kbd>Y</kbd></td></tr>
+                <tr><td>Shield</td><td><kbd>L</kbd></td><td><kbd>Num 3</kbd></td><td><kbd>RB</kbd> <kbd>RT</kbd></td></tr>
+              </tbody>
+            </table>
+            <p class="shortcut-note">Remap fighter keys in the Controls tab. Press <kbd>Esc</kbd>, <kbd>?</kbd> or <kbd>Back</kbd> to close.</p>
           </div>
         </div>
       </section>
@@ -886,6 +936,11 @@ const state = {
 let snapshotAvailable = false;
 let lastSnapshotSaveFrame = -1;
 let domMenuOpen = false;
+// Polish pass: reduced-motion query, render-only juice state and a session-only mute (M).
+const REDUCED_MOTION_QUERY = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+function reducedMotion() { return !!(REDUCED_MOTION_QUERY && REDUCED_MOTION_QUERY.matches); }
+const polishFx = { rings: [], koFlashAt: -Infinity, hud: [{ dmg: 0, popAt: -Infinity }, { dmg: 0, popAt: -Infinity }] };
+let sessionMuted = false;
 let menuReturnMode = null;
 let lastMenuTrigger = null;
 let activeMenuTab = 'onboarding';
@@ -1563,7 +1618,8 @@ document.addEventListener('keydown', e => {
   if (domMenuOpen || isCapturingBinding) return;
   if (!keys[e.code]) justPressed[e.code] = true;
   keys[e.code] = true;
-  e.preventDefault();
+  // Let browser and OS shortcuts (Ctrl/Alt/Cmd combos, F1-F12) through.
+  if (!e.ctrlKey && !e.metaKey && !e.altKey && !/^F\d{1,2}$/.test(e.code)) e.preventDefault();
 });
 document.addEventListener('keyup', e => { keys[e.code] = false; });
 
@@ -2513,6 +2569,7 @@ function recordCombatEvent(type, attacker, target, details) {
 function triggerScreenShake(strength, attacker, target, launchVx, launchVy) {
   const intensity = finite(strength, 0);
   if (intensity <= 0) return;
+  if (target) spawnImpactRing(target.x, target.y - finite(target.h, 60) / 2, attacker && attacker.def ? (attacker.useAltColor ? attacker.def.altColor : attacker.def.color) : '#ffffff', intensity);
 
   let vx = finite(launchVx, 0) + finite(attacker && attacker.vx, 0) * 0.18;
   let vy = finite(launchVy, 0) * 0.7 + finite(attacker && attacker.vy, 0) * 0.18;
@@ -2658,6 +2715,7 @@ function collectPlatformRushItem(item) {
   syncPlatformRushCounts();
   spawnDamageNumber(item.x, item.y - 18, item.type === 'deepCut' ? 18 : 10);
   spawnHitSparks(item.x, item.y, item.type === 'deepCut' ? 12 : 7, item.type === 'deepCut' ? '#ffd36a' : '#9ee8ff');
+  spawnImpactRing(item.x, item.y, item.type === 'deepCut' ? '#ffd36a' : '#9ee8ff', item.type === 'deepCut' ? 10 : 5);
   playSound(item.type === 'deepCut' ? 'cheer' : 'select');
   saveActiveMatchSnapshot(true);
 
@@ -3416,7 +3474,7 @@ function syncMusicState(force) {
   const cueKey = getMusicCueKey();
   const cue = cueKey ? MUSIC_CUES[cueKey] : null;
   const pausedDuck = state.mode === 'paused' ? 0.28 : 1;
-  const targetGain = cue ? Math.max(0.0001, options.volume * options.musicVolume * pausedDuck * cue.level * 0.12) : 0.0001;
+  const targetGain = cue && !sessionMuted ? Math.max(0.0001, options.volume * options.musicVolume * pausedDuck * cue.level * 0.12) : 0.0001;
   const targetFilter = cue ? cue.filter * (state.mode === 'paused' ? 0.55 : 1) : 1800;
 
   if (force || musicState.currentCue !== cueKey) {
@@ -3472,7 +3530,7 @@ if (audioPromptBtn) {
 
 function playSound(type) {
   if (!audioCtx) return;
-  const vol = options.volume * options.sfxVolume;
+  const vol = sessionMuted ? 0 : options.volume * options.sfxVolume;
   if (vol <= 0) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -4171,10 +4229,18 @@ function renderPlatformRushCollectibles() {
     const pulse = 0.75 + Math.sin(state.frameCount * 0.09 + item.x * 0.01) * 0.25;
     const dist = player ? Math.hypot(finite(player.x, 0) - item.x, finite(player.y, 0) - item.y) : 999;
     const hiddenAlpha = item.hidden ? (dist < 170 ? 0.96 : 0.38 + pulse * 0.14) : 1;
+    const bob = reducedMotion() ? 0 : Math.sin(state.frameCount * 0.06 + item.x * 0.02) * 3;
     ctx.save();
-    ctx.translate(pos.x, pos.y);
+    ctx.translate(pos.x, pos.y + bob * z);
     ctx.scale(z, z);
     ctx.globalAlpha = hiddenAlpha;
+    if (!item.hidden) {
+      const halo = ctx.createRadialGradient(0, 0, 4, 0, 0, 38);
+      halo.addColorStop(0, item.type === 'deepCut' ? 'rgba(255,211,106,0.30)' : 'rgba(126,232,255,0.26)');
+      halo.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(-38, -38, 76, 76);
+    }
 
     if (item.type === 'deepCut') {
       ctx.save();
@@ -4234,6 +4300,7 @@ function checkBlastZones() {
         launch: { vx: p.vx, vy: p.vy },
       });
       triggerScreenShake(10, killer, p, p.vx, p.vy);
+      polishFx.koFlashAt = performance.now();
 
       if (state.matchType === 'rush') {
         const spawn = currentStage.spawns[0];
@@ -4468,8 +4535,8 @@ function resizeCanvas() {
 function worldToScreen(wx, wy) {
   const cam = state.camera;
   return {
-    x: BASE_W / 2 + (wx - cam.x) * cam.zoom + state.screenShake.x,
-    y: BASE_H / 2 + (wy - cam.y) * cam.zoom + state.screenShake.y,
+    x: BASE_W / 2 + (wx - cam.x) * cam.zoom + (reducedMotion() ? 0 : state.screenShake.x),
+    y: BASE_H / 2 + (wy - cam.y) * cam.zoom + (reducedMotion() ? 0 : state.screenShake.y),
   };
 }
 
@@ -7935,34 +8002,91 @@ function formatClock(seconds) {
 
 function renderPlatformRushHUD() {
   const rush = state.platformRush || createPlatformRushState();
-  const x = 16;
+  // Clear of the page's top-left menu handle; explicit baselines keep the clock inside the card.
+  const x = 56;
   const y = 12;
-  const w = 342;
-  const h = 74;
+  const w = 360;
+  const h = 86;
+  const reduce = reducedMotion();
+  const now = performance.now();
+  const score = Math.round(finite(rush.score, 0));
+  const fx = polishFx.rush || (polishFx.rush = { score, popAt: -Infinity, records: 0, deep: 0 });
+  if (score > fx.score) fx.popAt = now;
+  fx.score = score;
+  const ease = (from, to) => reduce ? to : from + (to - from) * 0.18;
+  const recordPct = rush.totalRecords ? rush.recordsCollected / rush.totalRecords : 0;
+  const deepPct = rush.totalDeepCuts ? rush.deepCutsCollected / rush.totalDeepCuts : 0;
+  fx.records = ease(fx.records, recordPct);
+  fx.deep = ease(fx.deep, deepPct);
+  const remaining = finite(rush.timeRemaining, 0);
+  const urgent = remaining <= 10;
+  const warn = remaining <= 30;
+  const clockColor = urgent ? '#ff5d5d' : warn ? '#ffb347' : '#ffffff';
+
   ctx.save();
-  ctx.fillStyle = 'rgba(5,8,18,0.82)';
-  ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = 'rgba(255,211,106,0.44)';
+  ctx.textBaseline = 'top';
+  ctx.shadowColor = urgent ? 'rgba(255,93,93,0.6)' : 'rgba(255,211,106,0.35)';
+  ctx.shadowBlur = urgent && !reduce ? 12 + Math.sin(now / 120) * 6 : 12;
+  hudRoundRect(x, y, w, h, 12);
+  const bg = ctx.createLinearGradient(x, y, x, y + h);
+  bg.addColorStop(0, 'rgba(14,12,30,0.92)');
+  bg.addColorStop(1, 'rgba(6,8,18,0.80)');
+  ctx.fillStyle = bg;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  hudRoundRect(x + 0.5, y + 0.5, w - 1, h - 1, 12);
+  ctx.strokeStyle = 'rgba(255,211,106,0.45)';
   ctx.lineWidth = 1;
-  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
-  ctx.fillStyle = '#ffd36a';
-  ctx.font = 'bold 14px monospace';
+  ctx.stroke();
+
   ctx.textAlign = 'left';
-  ctx.fillText('PLATFORM RUSH', x + 14, y + 12);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 24px monospace';
+  ctx.fillStyle = '#ffd36a';
+  ctx.font = 'bold 13px monospace';
+  ctx.fillText('PLATFORM RUSH', x + 14, y + 10);
+
+  // Clock: amber under 30 s, red and breathing under 10 s.
+  ctx.save();
   ctx.textAlign = 'right';
-  ctx.fillText(formatClock(rush.timeRemaining), x + w - 14, y + 8);
-  ctx.textAlign = 'left';
-  ctx.font = '12px monospace';
-  ctx.fillStyle = '#dce8f7';
-  ctx.fillText(`Score ${Math.round(finite(rush.score, 0))}`, x + 14, y + 38);
-  ctx.fillStyle = '#9ee8ff';
-  ctx.fillText(`Records ${rush.recordsCollected}/${rush.totalRecords}`, x + 136, y + 38);
-  ctx.fillStyle = '#ffd36a';
-  ctx.fillText(`Deep Cuts ${rush.deepCutsCollected}/${rush.totalDeepCuts}`, x + 254, y + 38);
+  ctx.font = 'bold 24px monospace';
+  ctx.fillStyle = clockColor;
+  const clockScale = urgent && !reduce ? 1 + Math.max(0, Math.sin(now / 160)) * 0.06 : 1;
+  ctx.translate(x + w - 14, y + 7);
+  ctx.scale(clockScale, clockScale);
+  ctx.fillText(formatClock(rush.timeRemaining), 0, 0);
+  ctx.restore();
+
+  // Score with a short pop when it rises.
+  const popT = (now - fx.popAt) / 280;
+  const pop = !reduce && popT >= 0 && popT < 1 ? 1 - popT : 0;
+  ctx.save();
+  ctx.translate(x + 14, y + 30);
+  ctx.scale(1 + pop * 0.22, 1 + pop * 0.22);
+  ctx.font = 'bold 15px monospace';
+  ctx.fillStyle = pop > 0 ? '#fff2ad' : '#ffffff';
+  ctx.fillText(`${score}`, 0, 0);
+  ctx.restore();
+  ctx.font = '10px monospace';
   ctx.fillStyle = '#8fa1b8';
-  ctx.fillText('R restart  |  P pause  |  collect all records', x + 14, y + 58);
+  ctx.fillText('SCORE', x + 14, y + 48);
+
+  // Progress bars: records (cyan) and deep cuts (gold).
+  const bar = (bx, by, bw, pct, color, label, text) => {
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    hudRoundRect(bx, by, bw, 6, 3); ctx.fill();
+    if (pct > 0.001) {
+      ctx.fillStyle = color;
+      hudRoundRect(bx, by, Math.max(6, bw * Math.min(1, pct)), 6, 3); ctx.fill();
+    }
+    ctx.font = '11px monospace';
+    ctx.fillStyle = color;
+    ctx.fillText(`${label} ${text}`, bx, by - 15);
+  };
+  bar(x + 96, y + 47, 112, fx.records, '#9ee8ff', 'Records', `${rush.recordsCollected}/${rush.totalRecords}`);
+  bar(x + 226, y + 47, 120, fx.deep, '#ffd36a', 'Deep Cuts', `${rush.deepCutsCollected}/${rush.totalDeepCuts}`);
+
+  ctx.font = '11px monospace';
+  ctx.fillStyle = '#8fa1b8';
+  ctx.fillText(touchUiActive() ? 'Collect all records before time runs out' : 'R restart  |  P / Esc pause  |  ? shortcuts', x + 14, y + 66);
   ctx.restore();
 }
 
@@ -7984,30 +8108,46 @@ function renderHUD() {
     const hx = i === 0 ? 120 : BASE_W - 120;
     const color = p.useAltColor ? p.def.altColor : p.def.color;
 
-    // HUD panel with gradient bg
+    // HUD panel: rounded glass card with the fighter's colour as an accent and glow
     const panelW = 180, panelH = 52;
+    const pop = hudDamagePop(i, p.damage);
+    ctx.save();
+    ctx.shadowColor = color; ctx.shadowBlur = 14 + pop * 18;
+    hudRoundRect(hx - panelW / 2, hudY - 20, panelW, panelH, 10);
     const grd = ctx.createLinearGradient(hx - panelW / 2, hudY - 20, hx - panelW / 2, hudY + panelH - 20);
-    grd.addColorStop(0, 'rgba(0,0,0,0.75)');
-    grd.addColorStop(1, 'rgba(0,0,0,0.5)');
+    grd.addColorStop(0, 'rgba(14,12,26,0.88)');
+    grd.addColorStop(1, 'rgba(6,6,14,0.66)');
     ctx.fillStyle = grd;
-    ctx.fillRect(hx - panelW / 2, hudY - 20, panelW, panelH);
+    ctx.fill();
+    ctx.restore();
+    ctx.save();
+    hudRoundRect(hx - panelW / 2, hudY - 20, panelW, panelH, 10);
+    ctx.clip();
     // Color accent bar at top
     ctx.fillStyle = color;
     ctx.fillRect(hx - panelW / 2, hudY - 20, panelW, 3);
+    ctx.restore();
     // Border
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
-    ctx.strokeRect(hx - panelW / 2, hudY - 20, panelW, panelH);
+    hudRoundRect(hx - panelW / 2 + 0.5, hudY - 19.5, panelW - 1, panelH - 1, 10);
+    ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 1;
+    ctx.stroke();
 
     // Name
     ctx.fillStyle = color; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'center';
     ctx.fillText(p.def.name.toUpperCase(), hx, hudY - 2);
 
-    // Damage %
-    const dmgColor = p.damage < 50 ? '#fff' : p.damage < 100 ? '#ffcc00' : '#ff4400';
-    ctx.fillStyle = '#000'; ctx.font = 'bold 22px monospace';
-    ctx.fillText(`${Math.floor(p.damage)}%`, hx + 1, hudY + 23);
+    // Damage %: eases from white through amber to red, and pops briefly when it rises
+    const dmgColor = hudDamageColor(p.damage);
+    ctx.save();
+    ctx.translate(hx, hudY + 15);
+    const popScale = 1 + pop * 0.32;
+    ctx.scale(popScale, popScale);
+    ctx.font = 'bold 22px monospace';
+    ctx.fillStyle = 'rgba(0,0,0,0.85)';
+    ctx.fillText(`${Math.floor(p.damage)}%`, 1, 8);
     ctx.fillStyle = dmgColor;
-    ctx.fillText(`${Math.floor(p.damage)}%`, hx, hudY + 22);
+    ctx.fillText(`${Math.floor(p.damage)}%`, 0, 7);
+    ctx.restore();
 
     // Stocks or score
     if (state.matchType === 'rush') {
@@ -8018,9 +8158,15 @@ function renderHUD() {
       ctx.fillText(`Score: ${p.score}`, hx, hudY - 32);
     } else {
       for (let s = 0; s < p.stocks; s++) {
+        ctx.save();
+        ctx.shadowColor = color; ctx.shadowBlur = 8;
         ctx.fillStyle = color; ctx.beginPath();
         ctx.arc(hx - 30 + s * 18, hudY - 30, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1.2; ctx.beginPath();
+        ctx.arc(hx - 30 + s * 18, hudY - 30, 6, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.beginPath();
+        ctx.arc(hx - 32 + s * 18, hudY - 32, 2, 0, Math.PI * 2); ctx.fill();
       }
     }
   }
@@ -8149,7 +8295,7 @@ function renderTitle() {
   const qP2Label = quickFightSetup.p2Cpu ? `${qP2.name} CPU` : qP2.name;
   ctx.fillText(`${qP1.name} vs ${qP2Label}  |  ${qStage.name}  |  ${quickFightSetup.matchType.toUpperCase()}`, BASE_W / 2, y0 + 24);
   ctx.fillStyle = '#666'; ctx.font = '14px monospace';
-  ctx.fillText(snapshotAvailable ? 'R = Resume  |  O = Menu  |  F = Fullscreen' : 'O = Menu  |  F = Fullscreen', BASE_W / 2, y0 + 56);
+  ctx.fillText(snapshotAvailable ? 'R = Resume  |  O = Menu  |  F = Fullscreen  |  ? = Shortcuts' : 'O = Menu  |  F = Fullscreen  |  ? = Shortcuts', BASE_W / 2, y0 + 56);
 }
 
 function drawStatBar(x, y, w, label, value, maxVal, color) {
@@ -8756,7 +8902,7 @@ function renderResults() {
     ctx.font = '16px monospace'; ctx.fillStyle = '#dce8f7';
     ctx.fillText(`Records ${rush.recordsCollected}/${rush.totalRecords}  |  Deep Cuts ${rush.deepCutsCollected}/${rush.totalDeepCuts}  |  Time ${formatClock(rush.timeRemaining)}`, BASE_W / 2, BASE_H / 2 + 4);
     ctx.fillStyle = '#aaa'; ctx.font = '18px monospace';
-    ctx.fillText('ENTER = Restart Run  |  ESC = Title', BASE_W / 2, BASE_H / 2 + 56);
+    ctx.fillText('ENTER / Start = Restart Run  |  ESC = Title', BASE_W / 2, BASE_H / 2 + 56);
     if (!state.confettiSpawned) { spawnConfetti(); state.confettiSpawned = true; }
     return;
   }
@@ -8777,11 +8923,24 @@ function renderResults() {
 }
 
 function renderPaused() {
-  ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(0, 0, BASE_W, BASE_H);
+  ctx.save();
+  ctx.fillStyle = 'rgba(4,6,14,0.62)'; ctx.fillRect(0, 0, BASE_W, BASE_H);
+  const cw = 420, ch = 132, cx = BASE_W / 2 - cw / 2, cy = BASE_H / 2 - 62;
+  hudRoundRect(cx, cy, cw, ch, 14);
+  ctx.fillStyle = 'rgba(12,14,28,0.92)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,143,66,0.55)'; ctx.lineWidth = 1.5; ctx.stroke();
+  const bar = ctx.createLinearGradient(cx, 0, cx + cw, 0);
+  bar.addColorStop(0, '#f0c75a'); bar.addColorStop(0.5, '#38d7b8'); bar.addColorStop(1, '#ff8f42');
+  ctx.fillStyle = bar; ctx.fillRect(cx + 14, cy, cw - 28, 3);
   ctx.fillStyle = '#fff'; ctx.font = 'bold 36px monospace'; ctx.textAlign = 'center';
   ctx.fillText('PAUSED', BASE_W / 2, BASE_H / 2);
-  ctx.font = '16px monospace';
-  ctx.fillText(touchUiActive() ? 'Tap to resume' : 'P to resume  |  ESC for title', BASE_W / 2, BASE_H / 2 + 30);
+  ctx.font = '15px monospace'; ctx.fillStyle = '#d8ccb8';
+  ctx.fillText(touchUiActive() ? 'Tap to resume' : 'P / Start to resume  |  ESC for title', BASE_W / 2, BASE_H / 2 + 30);
+  if (!touchUiActive()) {
+    ctx.font = '13px monospace'; ctx.fillStyle = '#8f8aa6';
+    ctx.fillText('? shortcuts  |  M mute  |  F fullscreen  |  O menu', BASE_W / 2, BASE_H / 2 + 54);
+  }
+  ctx.restore();
 }
 
 function render() {
@@ -8810,7 +8969,8 @@ function render() {
   renderPlatformRushGhost();
   renderPlatformRushCollectibles();
   for (const p of state.players) renderPlayer(p);
-  renderParticles(); renderDamageNumbers(); renderHUD();
+  renderParticles(); renderImpactRings(); renderDamageNumbers();
+  renderStageGrade(); renderKoFlash(); renderHUD();
   if (state.mode === 'paused') renderPaused();
 }
 
@@ -8972,6 +9132,145 @@ function handleOptionsInput() {
   }
 }
 
+// --- Polish: shared visual juice (rendering only; gameplay state is untouched) ---
+
+function hudRoundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') ctx.roundRect(x, y, w, h, r);
+  else ctx.rect(x, y, w, h);
+}
+
+function hudDamageColor(damage) {
+  const d = Math.max(0, Math.min(150, finite(damage, 0)));
+  // white -> amber at 60% -> hot red at 150%
+  const lerp = (a, b, t) => Math.round(a + (b - a) * t);
+  if (d < 60) { const t = d / 60; return `rgb(255,${lerp(255, 204, t)},${lerp(255, 64, t)})`; }
+  const t = (d - 60) / 90; return `rgb(255,${lerp(204, 58, t)},${lerp(64, 24, t)})`;
+}
+
+function hudDamagePop(index, damage) {
+  const slot = polishFx.hud[index] || (polishFx.hud[index] = { dmg: 0, popAt: -Infinity });
+  const now = performance.now();
+  if (finite(damage, 0) > slot.dmg + 0.5) slot.popAt = now;
+  slot.dmg = finite(damage, 0);
+  if (reducedMotion()) return 0;
+  const t = (now - slot.popAt) / 260;
+  if (t < 0 || t >= 1) return 0;
+  return 1 - (1 - (1 - t) * (1 - t)); // ease-out falloff from 1 to 0
+}
+
+function spawnImpactRing(x, y, color, intensity) {
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+  polishFx.rings.push({ x, y, color: color || '#ffffff', size: 18 + Math.min(15, finite(intensity, 4)) * 4, born: performance.now() });
+  if (polishFx.rings.length > 12) polishFx.rings.shift();
+}
+
+function renderImpactRings() {
+  if (!polishFx.rings.length) return;
+  const now = performance.now();
+  const reduce = reducedMotion();
+  ctx.save();
+  for (let i = polishFx.rings.length - 1; i >= 0; i--) {
+    const ring = polishFx.rings[i];
+    const t = (now - ring.born) / 280;
+    if (t >= 1 || t < 0) { polishFx.rings.splice(i, 1); continue; }
+    const ease = 1 - Math.pow(1 - t, 3);
+    const pos = worldToScreen(ring.x, ring.y);
+    const radius = ring.size * (reduce ? 0.7 : 0.35 + ease * 0.85) * state.camera.zoom;
+    ctx.globalAlpha = (1 - t) * (reduce ? 0.35 : 0.8);
+    ctx.strokeStyle = ring.color;
+    ctx.lineWidth = Math.max(1, (1 - t) * 5);
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = (1 - t) * (reduce ? 0.15 : 0.35);
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, radius * 0.35, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function renderStageGrade() {
+  // Soft vignette and a cool top light so every arena shares one festival palette.
+  ctx.save();
+  const vignette = ctx.createRadialGradient(BASE_W / 2, BASE_H * 0.46, BASE_H * 0.32, BASE_W / 2, BASE_H * 0.5, BASE_W * 0.72);
+  vignette.addColorStop(0, 'rgba(0,0,0,0)');
+  vignette.addColorStop(1, 'rgba(4,2,14,0.42)');
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, BASE_W, BASE_H);
+  const top = ctx.createLinearGradient(0, 0, 0, BASE_H * 0.4);
+  top.addColorStop(0, 'rgba(120,90,255,0.10)');
+  top.addColorStop(1, 'rgba(120,90,255,0)');
+  ctx.fillStyle = top;
+  ctx.fillRect(0, 0, BASE_W, BASE_H * 0.4);
+  ctx.restore();
+}
+
+function renderKoFlash() {
+  if (reducedMotion()) return;
+  const t = (performance.now() - polishFx.koFlashAt) / 220;
+  if (t < 0 || t >= 1) return;
+  ctx.save();
+  ctx.globalAlpha = 0.22 * (1 - t);
+  ctx.fillStyle = '#fff4e0';
+  ctx.fillRect(0, 0, BASE_W, BASE_H);
+  ctx.restore();
+}
+
+// --- Shortcut layer: help (? / H), mute (M) and gamepad Start / Back ---
+function isFighterBoundKey(code) {
+  const binds = [getP1Binds(), getP2Binds()];
+  return binds.some(b => Object.values(b).includes(code));
+}
+function toggleShortcutHelp() {
+  if (domMenuOpen && activeMenuTab === 'shortcuts') { closeDomMenu(); return; }
+  if (domMenuOpen) { setMenuTab('shortcuts'); document.getElementById('tab-shortcuts')?.focus(); return; }
+  openDomMenu('shortcuts');
+}
+function toggleSessionMute() {
+  sessionMuted = !sessionMuted;
+  if (audioCtx) syncMusicState(true);
+  pushToast(sessionMuted ? 'Sound muted (M)' : 'Sound on (M)', { tone: 'neutral' });
+}
+window.addEventListener('keydown', e => {
+  if (isCapturingBinding || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+  const target = e.target;
+  if (target && target.closest && target.closest('input, select, textarea, [contenteditable="true"]')) return;
+  const isQuestion = e.key === '?' || (e.code === 'Slash' && e.shiftKey);
+  const inTraining = !domMenuOpen && state.matchType === 'training' && (state.mode === 'training' || state.mode === 'paused');
+  const isHelpH = e.code === 'KeyH' && !e.shiftKey && !inTraining && !isFighterBoundKey('KeyH');
+  if (isQuestion || isHelpH) {
+    e.preventDefault(); e.stopImmediatePropagation();
+    delete justPressed[e.code];
+    toggleShortcutHelp();
+    return;
+  }
+  if (e.code === 'KeyM' && !e.shiftKey && !isFighterBoundKey('KeyM')) {
+    e.preventDefault(); e.stopImmediatePropagation();
+    delete justPressed[e.code];
+    toggleSessionMute();
+  }
+}, true);
+
+const gamepadMetaPrev = {};
+function pollGamepadShortcuts() {
+  let pads = [];
+  try { pads = navigator.getGamepads ? navigator.getGamepads() : []; } catch { return; }
+  for (const gp of Array.from(pads || [])) {
+    if (!gp) continue;
+    const prev = gamepadMetaPrev[gp.index] || { start: false, back: false };
+    const start = !!(gp.buttons[9] && gp.buttons[9].pressed);
+    const back = !!(gp.buttons[8] && gp.buttons[8].pressed);
+    if (back && !prev.back) toggleShortcutHelp();
+    if (start && !prev.start) {
+      if (domMenuOpen) closeDomMenu();
+      else if (state.mode === 'playing' || state.mode === 'training') { state.mode = 'paused'; saveActiveMatchSnapshot(true); }
+      else if (state.mode === 'paused') state.mode = state.matchType === 'training' ? 'training' : 'playing';
+      else if (state.mode === 'title') state.mode = 'charselect';
+      else if (state.mode === 'results') startMatch();
+    }
+    gamepadMetaPrev[gp.index] = { start, back };
+  }
+}
+
 // --- Global Key Handlers ---
 document.addEventListener('keydown', e => {
   if (domMenuOpen || isCapturingBinding) return;
@@ -8999,9 +9298,9 @@ document.addEventListener('keydown', e => {
     if (e.code === 'Enter' || e.code === 'Space') startMatch();
     if (e.code === 'Escape') state.mode = 'title';
   } else if (state.mode === 'playing' || state.mode === 'training') {
-    if (e.code === 'KeyP' && state.mode === 'playing') { state.mode = 'paused'; saveActiveMatchSnapshot(true); }
+    // P or Esc pauses (training too); Esc again from the pause screen quits to the title.
+    if (e.code === 'KeyP' || e.code === 'Escape') { state.mode = 'paused'; saveActiveMatchSnapshot(true); delete justPressed[e.code]; return; }
     if (e.code === 'KeyR' && state.matchType === 'rush') { restartPlatformRush(); delete justPressed[e.code]; return; }
-    if (e.code === 'Escape') { clearActiveMatchSnapshot(); state.mode = 'title'; }
     // Training mode keys
     if (state.matchType === 'training') {
       if (e.code === 'KeyH') options.showHitboxes = !options.showHitboxes;
@@ -9050,6 +9349,7 @@ function gameLoop(timestamp) {
   lastTime = timestamp;
   accumulator += dt;
 
+  pollGamepadShortcuts();
   // Process menu inputs (uses justPressed)
   if (state.mode === 'charselect') handleCharSelectInput();
   else if (state.mode === 'stageselect') handleStageSelectInput();
@@ -9158,6 +9458,7 @@ window.render_game_to_text = function () {
       visible: !!(audioPromptBtn && !audioPromptBtn.hidden),
     },
     mechanicsFilter: getMechanicsFilterState(),
+    shortcuts: { sessionMuted, reducedMotion: reducedMotion() },
     domMenu: {
       open: domMenuOpen,
       activeTab: activeMenuTab,
