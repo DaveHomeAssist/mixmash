@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-j6qZ5+aahcSNfUXdodWpUAQsn0ya5qSrL8AynYu8zyM=' 'sha256-Tu8S13WbwX8a4gIHVHMvp73Tjv2D5tMaOKTPh6ueRQs='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; media-src 'self' blob:; frame-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>MIXMASH — Drop the Beat. Throw the Punch.</title>
 <meta name="description" content="MIXMASH is the DJ-powered platform fighter from MixMash Studio. Pick your producer, choose your venue, and throw down — 14 fighters, 11 arenas, free in your browser.">
 <link rel="canonical" href="https://mixmash.games/play/">
@@ -957,7 +959,7 @@ footer {
 
     <div class="game-wrapper">
       <iframe id="game-frame" title="MIXMASH Game"></iframe>
-      <div class="game-overlay" id="game-overlay" onclick="launchGame()">
+      <div class="game-overlay" id="game-overlay">
         <div class="game-overlay-icon">
           <svg viewBox="0 0 24 24" fill="#fff"><polygon points="6,3 20,12 6,21"/></svg>
         </div>
@@ -1007,6 +1009,8 @@ function launchGame() {
     try { frame.contentWindow.focus(); } catch(e) {}
   }, { once: true });
 }
+// Bound here rather than with an inline onclick so the page CSP needs no 'unsafe-inline' script.
+document.getElementById('game-overlay').addEventListener('click', launchGame);
 
 // Re-focus iframe when clicking the game area (if game is loaded)
 document.querySelector('.game-wrapper').addEventListener('click', () => {
