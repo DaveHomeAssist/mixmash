@@ -1067,3 +1067,72 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   body[data-phase='book'] .offer .band-art { display: none; }
   body[data-phase='book'] .offer .choice { padding-block: 4px; }
 }
+
+/* ---------- 0.4.5 polish (docs/ART_DIRECTION.md section 5) ----------
+   Paint-only: colour, shadow, opacity and a grade over the board. Nothing here changes a
+   box's size or position, so the no-scroll fits and the HUD geometry are unchanged. */
+:root {
+  --accent-line: linear-gradient(90deg, var(--cyan), var(--coral) 55%, var(--amber));
+  --plate-lift: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+:root:not([data-theme='dark']) {
+  --plate-lift: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 22px rgba(15, 23, 42, 0.18);
+}
+/* Numbers that tick (cash, clock, readouts) keep their width. */
+.meters dd, .timecode, .readouts dd, .count, .result-line { font-variant-numeric: tabular-nums; }
+
+/* The strip ends in a thin house-light gradient instead of a flat rule. */
+.topbar::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--accent-line); opacity: 0.55; pointer-events: none;
+}
+.stepper li { transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease; }
+.stepper li.done .num { color: var(--green); opacity: 1; }
+.stepper li[aria-current='step'] { background: color-mix(in srgb, var(--cyan) 10%, transparent); }
+
+/* Plates: a lit top edge, a softer drop, and a short fade when a phase mounts them. */
+.plate { box-shadow: var(--plate-lift); animation: foh-plate-in 180ms ease-out both; }
+.at-sheet { box-shadow: inset 0 2px 0 var(--cyan), var(--plate-lift); }
+.card-plate { box-shadow: inset 3px 0 0 var(--cyan), var(--plate-lift); }
+.incident-plate { box-shadow: inset 3px 0 0 var(--red), 0 0 0 1px rgba(239, 68, 68, 0.3), 0 10px 28px rgba(0, 0, 0, 0.5); }
+.win, .menu:not([hidden]) { animation: foh-plate-in 160ms ease-out both; }
+@keyframes foh-plate-in { from { opacity: 0; } }
+
+/* Buttons ease between states; the primary call to action glows a little more on hover. */
+button, .button { transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease; }
+button.primary:hover:not(:disabled) { box-shadow: 0 0 22px rgba(0, 240, 255, 0.38); }
+.choice:hover:not(:disabled) { border-color: var(--cyan); }
+
+/* A grade over the board, under every control: a soft vignette by day, a deeper blue-hour
+   edge during the show. One static layer that never takes a click. */
+.layout::before {
+  content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse 85% 80% at 50% 50%, transparent 62%, rgba(6, 10, 18, 0.28) 100%);
+}
+body[data-phase='show'] .layout::before {
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 40%, rgba(255, 196, 120, 0.06), transparent 70%),
+    radial-gradient(ellipse 85% 80% at 50% 50%, transparent 55%, rgba(4, 6, 22, 0.42) 100%);
+}
+body[data-phase='loading'] .layout::before { background: none; }
+
+/* Boot: the loading note floats over the board, outside #panel. */
+.boot { position: fixed; z-index: 12; left: 50%; top: calc(var(--strip-h) + 24px); transform: translateX(-50%); pointer-events: none; }
+.boot .notice { margin: 0; padding: 8px 14px; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem; }
+body:not([data-phase='loading']) .boot { display: none; }
+
+/* Controller help in the menu. */
+.pad-note { margin: 0 0 4px; }
+.menu-keys .keys dt { font-variant-numeric: tabular-nums; }
+body[data-pad='on'] #pad-head::after { content: ' · connected'; color: var(--green); text-transform: none; letter-spacing: 0; }
+
+@media (max-width: 680px) {
+  /* CWV-01: until the first phase renders, the phone sheet stays out of layout, so it appears
+     once at its final height instead of growing from 44dvh (CLS 0.27 on every phone load). */
+  body[data-phase='loading'] .panel { display: none; }
+  .panel { box-shadow: inset 0 2px 0 color-mix(in srgb, var(--cyan) 70%, transparent), 0 -10px 28px rgba(0, 0, 0, 0.28); }
+  .plate, .at-sheet, .card-plate, .incident-plate { box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plate, .win, .menu:not([hidden]) { animation: none; }
+}

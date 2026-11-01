@@ -3521,6 +3521,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-polish-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-polish-smoke.mjs",
+      "description": "Front of House 0.4.5 polish: the phone Book sheet appears without a layout shift (CWV-01), a standard controller drives the menu and the build cursor through the key table, the menu lists the controller and links the…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-polish-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-research-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3776,7 +3786,7 @@
       "category": "source",
       "kind": "MJS",
       "title": "controls.mjs",
-      "description": "Front of House key bindings: the one table both key handlers in game.js read, the list the menu shows (index.html, \"Keys and mouse\") and what test-engine.mjs checks for clashes.",
+      "description": "Front of House key bindings: the one table both key handlers in game.js read, the list the menu shows (index.html, \"Keys, mouse and controller\") and what test-engine.mjs checks for clashes.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/controls.mjs",
       "open": null
     },
