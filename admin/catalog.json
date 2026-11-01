@@ -5371,6 +5371,16 @@
       "open": null
     },
     {
+      "path": "test/empires-cache-pairing.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "empires-cache-pairing.test.mjs",
+      "description": "Empires bundle integrity and exact service-worker cache fallback regression checks.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/empires-cache-pairing.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/garden-embed-focus-smoke.mjs",
       "project": "studio",
       "category": "tests",
