@@ -200,6 +200,37 @@ try {
   const resumedByPause = await readState();
   assert.equal(resumedByPause.mode, 'playing');
 
+  // Shortcut pass: ? opens the Shortcuts panel (pausing play), ? again closes it and resumes,
+  // H does the same outside Training, Esc closes it, and M toggles a session-only mute.
+  await page.keyboard.press('Shift+Slash');
+  await step(2);
+  const helpOpen = await readState();
+  assert.equal(helpOpen.domMenu.open, true);
+  assert.equal(helpOpen.domMenu.activeTab, 'shortcuts');
+  assert.equal(helpOpen.mode, 'paused');
+  assert.equal(await page.locator('#panel-shortcuts').isVisible(), true);
+  await page.keyboard.press('Shift+Slash');
+  await step(2);
+  const helpClosed = await readState();
+  assert.equal(helpClosed.domMenu.open, false);
+  assert.equal(helpClosed.mode, 'playing');
+  await press('KeyH');
+  assert.equal((await readState()).domMenu.activeTab, 'shortcuts');
+  await press('Escape');
+  assert.equal((await readState()).mode, 'playing');
+  await press('KeyM');
+  assert.equal((await readState()).shortcuts.sessionMuted, true);
+  await press('KeyM');
+  assert.equal((await readState()).shortcuts.sessionMuted, false);
+  // Browser shortcuts pass through: a Ctrl combo is not swallowed by the canvas.
+  const ctrlDefault = await page.evaluate(() => {
+    const ev = new KeyboardEvent('keydown', { code: 'KeyL', key: 'l', ctrlKey: true, bubbles: true, cancelable: true });
+    document.dispatchEvent(ev);
+    document.dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyL', key: 'l', bubbles: true }));
+    return ev.defaultPrevented;
+  });
+  assert.equal(ctrlDefault, false);
+
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(250);
 
@@ -236,7 +267,9 @@ try {
   assert.equal(afterResume.players.length, 2);
   assert.ok(afterResume.frame >= beforeReload.frame, 'resume should continue from the saved frame');
 
-  await press('Escape');
+  await press('Escape'); // Esc pauses a live match
+  assert.equal((await readState()).mode, 'paused');
+  await press('Escape'); // Esc from the pause screen quits to the title
   const afterReset = await readState();
   assert.equal(afterReset.mode, 'title');
   assert.equal(afterReset.snapshotAvailable, false);
@@ -300,7 +333,9 @@ try {
   assert.equal(Number.isFinite(trainingHit.combat.screenShake.vectorY), true);
   await screenshot('06-training-lab-hit.png');
 
-  await press('Escape');
+  await press('Escape'); // Esc pauses a live match
+  assert.equal((await readState()).mode, 'paused');
+  await press('Escape'); // Esc from the pause screen quits to the title
   const afterTrainingExit = await readState();
   assert.equal(afterTrainingExit.mode, 'title');
   assert.equal(afterTrainingExit.snapshotAvailable, false);
@@ -492,7 +527,9 @@ try {
   assert.equal(rushRestartedFromResults.onlinePrototype.ghost.available, true);
   assert.ok(rushRestartedFromResults.onlinePrototype.ghost.samples > 0);
 
-  await press('Escape');
+  await press('Escape'); // Esc pauses a live match
+  assert.equal((await readState()).mode, 'paused');
+  await press('Escape'); // Esc from the pause screen quits to the title
   assert.equal((await readState()).mode, 'title');
 
   async function launchEncoreMatch(stageKey, p1Fighter, p2Fighter, hazardsOn = true) {
@@ -570,7 +607,9 @@ try {
   assert.equal(staticHazard.before.length >= 2, true);
   assert.equal(staticHazard.after.every((platform, index) => Math.abs(platform.x - staticHazard.before[index].x) < 0.01 && Math.abs(platform.y - staticHazard.before[index].y) < 0.01), true);
 
-  await press('Escape');
+  await press('Escape'); // Esc pauses a live match
+  assert.equal((await readState()).mode, 'paused');
+  await press('Escape'); // Esc from the pause screen quits to the title
   assert.equal((await readState()).mode, 'title');
 
   await press('KeyO');
@@ -623,7 +662,9 @@ try {
   assert.equal(presetMatch.players[0].fighter, 'flume');
   assert.equal(presetMatch.players[1].fighter, 'zomboy');
   assert.equal(presetMatch.options.hazardsOn, false);
-  await press('Escape');
+  await press('Escape'); // Esc pauses a live match
+  assert.equal((await readState()).mode, 'paused');
+  await press('Escape'); // Esc from the pause screen quits to the title
   assert.equal((await readState()).mode, 'title');
 
   const challengeUrl = `${playUrl}?mix=1&p1=flume&p2=zomboy&stage=printworks&mode=rush&p1cpu=0&p2cpu=1&hazards=1&seed=daily_test&start=1`;
@@ -645,7 +686,9 @@ try {
   assert.equal(challengeB.matchType, 'rush');
   assert.deepEqual(challengeB.platformRush.collectibles.map((item) => [item.id, item.x, item.y]), challengePositionsA);
   await screenshot('14-share-challenge.png');
-  await press('Escape');
+  await press('Escape'); // Esc pauses a live match
+  assert.equal((await readState()).mode, 'paused');
+  await press('Escape'); // Esc from the pause screen quits to the title
   assert.equal((await readState()).mode, 'title');
   }
   await page.close();
