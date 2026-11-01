@@ -33,5 +33,15 @@ try{for(const [width,height,touch] of [[1440,900,false],[375,812,true],[667,375,
  for(let i=0;i<2;i++){await press('#throw-button');await page.evaluate(()=>advanceTime(13000));}
  await press('#settings-tab');const aiPaused=await state();assert.equal(aiPaused.ai.busy,false);await page.waitForTimeout(250);await page.evaluate(()=>advanceTime(2000));assert.deepEqual((await state()).match,aiPaused.match);
  await press('#restart-button');assert.deepEqual((await state()).match.scores,[0,0]);assert.equal((await state()).match.delivered,0);assert.equal((await state()).menu.open,false);
+ // Shortcut layer (horseshoes/shortcuts.js): ? opens the sheet, Esc closes it, P toggles the pausing Menu, M toggles sound.
+ if(!touch){
+  await page.keyboard.press('Shift+Slash');assert.equal(await page.evaluate(()=>document.getElementById('shortcut-help').open),true);assert.equal((await state()).menu.open,false);
+  await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.getElementById('shortcut-help').open),false);assert.equal((await state()).menu.open,false);
+  await page.keyboard.press('h');assert.equal(await page.evaluate(()=>document.getElementById('shortcut-help').open),true);await page.keyboard.press('h');assert.equal(await page.evaluate(()=>document.getElementById('shortcut-help').open),false);
+  await page.keyboard.press('p');assert.equal((await state()).menu.open,true);const pPaused=await state();await page.evaluate(()=>advanceTime(2000));assert.deepEqual((await state()).match,pPaused.match);
+  await page.keyboard.press('p');assert.equal((await state()).menu.open,false);
+  const sound=()=>page.locator('#sound-button').textContent();const before=await sound();await page.keyboard.press('m');await page.waitForTimeout(300);assert.notEqual(await sound(),before);await page.keyboard.press('m');await page.waitForTimeout(300);assert.equal(await sound(),before);
+  await page.keyboard.press('Escape');assert.equal((await state()).menu.open,true);await page.keyboard.press('Escape');assert.equal((await state()).menu.open,false);
+ }
  assert.deepEqual(errors,[]);results.push({width,height,touch,environment:'fmp-lawn',menuPause:true,focus:true,colors:true,errors});await context.close();
 }fs.writeFileSync(`${output}/report.json`,JSON.stringify({url,results},null,2));console.log(JSON.stringify(results));}finally{await browser.close(); await server?.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
