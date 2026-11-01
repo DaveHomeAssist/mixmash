@@ -161,6 +161,32 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;   // never touch third-party traffic
   if (url.pathname.startsWith('/api/')) return;      // authority calls must not be cached
 
+  // Empires bundle requests carry content hashes and integrity metadata. Never
+  // satisfy them from an unversioned URL or another bundle's cache entry.
+  // Keep this exception separate from all other games' fallback behavior.
+  if (/\/empires\/assets\/(?:shell\.js|aoe2-clone\.(?:js|wasm|data))$/.test(url.pathname)) {
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (!response.ok) throw new Error('Empires asset unavailable: ' + response.status);
+        if (isCacheable(response)) {
+          // Storage failure must not discard a verified network response.
+          try {
+            const cache = await caches.open(CACHE);
+            await cache.put(request, response.clone());
+          } catch (_) { /* Offline storage may be full or disabled. */ }
+        }
+        return response;
+      } catch (error) {
+        const cache = await caches.open(CACHE);
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        throw error;
+      }
+    })());
+    return;
+  }
+
   event.respondWith((async () => {
     try {
       const response = await fetch(request);
