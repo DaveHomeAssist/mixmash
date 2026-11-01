@@ -39,6 +39,7 @@
   <header class="masthead">
     <a class="brand" href="#games" aria-label="MixMash Studio home"><span class="monogram" aria-hidden="true">MM</span><span class="wordmark">MIXMASH <small>STUDIO</small></span></a>
     <nav class="site-nav" aria-label="Studio navigation"><a id="nav-games" href="#games">Games</a><a id="nav-studio" href="#studio">Studio</a></nav>
+    <button class="theme-toggle shortcut-toggle" id="shortcut-toggle" type="button" aria-haspopup="dialog" aria-controls="shortcut-help" aria-keyshortcuts="Shift+Slash H" hidden>Keys <kbd aria-hidden="true">?</kbd></button>
     <button class="theme-toggle" id="theme-toggle" type="button" hidden>Dark mode</button>
   </header>
   <div class="hero" id="intro" role="region" aria-label="Welcome to MixMash Studio">
@@ -158,5 +159,24 @@
   <footer class="site-footer"><span>Independent. Browser native. All welcome.</span><a class="support-link" data-support-slot href="https://ko-fi.com/avbydave" target="_blank" rel="noopener">Support MixMash on Ko-fi<span class="sr-only"> (external site)</span></a><span>© 2026 MixMash Studio</span></footer>
 </div>
 <p id="announcement" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+<dialog class="shortcut-help" id="shortcut-help" aria-labelledby="shortcut-help-title">
+  <div class="shortcut-help-top"><p class="eyebrow">Keyboard and gamepad</p><button class="button" type="button" id="shortcut-close" aria-label="Close shortcuts">Close <kbd aria-hidden="true">Esc</kbd></button></div>
+  <h2 id="shortcut-help-title">Shortcuts</h2>
+  <table class="shortcut-table">
+    <thead><tr><th scope="col">Action</th><th scope="col">Keyboard</th><th scope="col">Gamepad</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Show or hide shortcuts</th><td><kbd>?</kbd> <kbd>H</kbd></td><td><kbd>Back</kbd> / <kbd>Select</kbd></td></tr>
+      <tr><th scope="row">Games / Studio</th><td><kbd>G</kbd> / <kbd>S</kbd></td><td aria-label="None">·</td></tr>
+      <tr><th scope="row">Game details, by number</th><td><kbd>1</kbd>&ndash;<kbd>9</kbd></td><td aria-label="None">·</td></tr>
+      <tr><th scope="row">Pick a game for me</th><td><kbd>P</kbd></td><td><kbd>Y</kbd></td></tr>
+      <tr><th scope="row">Light or dark mode</th><td><kbd>T</kbd></td><td aria-label="None">·</td></tr>
+      <tr><th scope="row">Move between games</th><td><kbd>Tab</kbd></td><td>D-pad / stick</td></tr>
+      <tr><th scope="row">Open the focused item</th><td><kbd>Enter</kbd></td><td><kbd>A</kbd></td></tr>
+      <tr><th scope="row">Play the focused game</th><td><kbd>Enter</kbd> on Play</td><td><kbd>Start</kbd></td></tr>
+      <tr><th scope="row">Back to games / close</th><td><kbd>Esc</kbd></td><td><kbd>B</kbd></td></tr>
+    </tbody>
+  </table>
+  <p class="shortcut-help-note">In every game: <kbd>P</kbd> or <kbd>Esc</kbd> pauses, <kbd>M</kbd> mutes, <kbd>F</kbd> goes fullscreen, <kbd>?</kbd> shows that game's keys, and gamepad <kbd>Start</kbd> pauses. Shortcuts never fire while you type, and Ctrl, Alt or Cmd combinations stay with your browser.</p>
+</dialog>
 </body>
 </html>

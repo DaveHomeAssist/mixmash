@@ -1335,3 +1335,143 @@ body:has(.view:not(#games):target) .site-shell {
   .site-footer { height:44px }
   .support-link { min-height:44px }
 }
+
+/* Polish pass: tactile tickets, eased motion and the shortcut sheet. Motion respects reduced-motion above. */
+.game-card {
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .28s cubic-bezier(.2,.8,.2,1)
+}
+.game-vis img {
+  transition:transform .6s cubic-bezier(.2,.8,.2,1),filter .4s
+}
+.play-link span:last-child {
+  transition:transform .22s cubic-bezier(.2,.8,.2,1)
+}
+.ticket-number {
+  transition:transform .28s cubic-bezier(.2,.8,.2,1);
+  box-shadow:0 1px 0 #20221f1f
+}
+.game-card:focus-within {
+  box-shadow:0 0 0 2px var(--accent),var(--shadow)
+}
+@media(hover:hover) and (prefers-reduced-motion:no-preference) {
+  .game-card:hover {
+    transform:translateY(-4px);
+    box-shadow:0 12px 22px -12px color-mix(in srgb,var(--accent) 55%,transparent),var(--shadow)
+  }
+  .game-card:hover .game-vis img {
+    transform:scale(1.035);
+    filter:saturate(1.12) contrast(1.03)
+  }
+  .game-card:hover .ticket-number {
+    transform:rotate(-3deg) translateY(-1px)
+  }
+  .play-link:hover span:last-child,.play-link:focus-visible span:last-child {
+    transform:translate(3px,-3px)
+  }
+  .admission {
+    transition:transform .4s cubic-bezier(.2,.8,.2,1)
+  }
+  .admission:hover {
+    transform:rotate(-2deg) scale(1.04)
+  }
+}
+@media(prefers-reduced-motion:no-preference) {
+  .enhanced .game-card {
+    animation:hub-card-fade .46s cubic-bezier(.2,.8,.2,1) both
+  }
+  .enhanced .game-card:nth-child(2) { animation-delay:.04s }
+  .enhanced .game-card:nth-child(3) { animation-delay:.08s }
+  .enhanced .game-card:nth-child(4) { animation-delay:.12s }
+  .enhanced .game-card:nth-child(5) { animation-delay:.16s }
+  .enhanced .game-card:nth-child(6) { animation-delay:.2s }
+}
+/* Opacity only: a moving transform would make launch-target measurements fractional mid-entrance. */
+@keyframes hub-card-fade {
+  from { opacity:0 }
+  to { opacity:1 }
+}
+@keyframes hub-card-in {
+  from { opacity:0; transform:translateY(8px) }
+  to { opacity:1; transform:none }
+}
+.shortcut-toggle kbd,.shortcut-help kbd {
+  display:inline-block;
+  min-width:1.7em;
+  padding:1px 6px;
+  border:1px solid var(--line);
+  border-bottom-width:3px;
+  border-radius:5px;
+  background:var(--card);
+  color:var(--ink);
+  font:700 11px/1.5 ui-monospace,monospace;
+  text-align:center
+}
+.shortcut-toggle {
+  margin-left:auto
+}
+.shortcut-toggle + .theme-toggle {
+  margin-left:0
+}
+@media(max-width:900px) {
+  .shortcut-toggle {
+    display:none
+  }
+  .shortcut-toggle + .theme-toggle {
+    margin-left:auto
+  }
+}
+.shortcut-help {
+  width:min(640px,calc(100vw - 32px));
+  max-height:calc(100dvh - 32px);
+  overflow:auto;
+  padding:20px 24px 22px;
+  border:2px solid var(--ink);
+  border-radius:12px;
+  background:var(--card);
+  color:var(--ink);
+  box-shadow:0 8px 0 #20221f26
+}
+.shortcut-help::backdrop {
+  background:#20221f8c
+}
+.shortcut-help-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px
+}
+.shortcut-help h2 {
+  margin:4px 0 12px;
+  font-size:28px;
+  letter-spacing:-.03em
+}
+.shortcut-table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px
+}
+.shortcut-table th,.shortcut-table td {
+  padding:8px 6px;
+  border-bottom:1px dashed var(--line);
+  text-align:left;
+  vertical-align:top
+}
+.shortcut-table thead th {
+  font:10px ui-monospace,monospace;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--muted)
+}
+.shortcut-table tbody th {
+  font-weight:700
+}
+.shortcut-help-note {
+  margin:14px 0 0;
+  font-size:12px;
+  color:var(--muted)
+}
+@media(prefers-reduced-motion:no-preference) {
+  .shortcut-help[open] {
+    animation:hub-card-in .24s cubic-bezier(.2,.8,.2,1)
+  }
+}
