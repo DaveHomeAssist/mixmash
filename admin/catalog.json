@@ -745,6 +745,10 @@
           "description": "node src/hub/build.mjs --check"
         },
         {
+          "name": "npm run pages:site",
+          "description": "node .github/scripts/build-pages-site.mjs"
+        },
+        {
           "name": "npm run hub:social",
           "description": "node src/hub/social.mjs"
         },
@@ -5371,6 +5375,16 @@
       "open": null
     },
     {
+      "path": "test/csp-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "csp-smoke.mjs",
+      "description": "Publisher pages load under their meta CSP with zero violations (Chromium and WebKit), the Cloudflare beacon is allowed, the Garden OS wrapper iframe loads and the fighter guide still launches the game.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/csp-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/garden-embed-focus-smoke.mjs",
       "project": "studio",
       "category": "tests",
@@ -5388,6 +5402,16 @@
       "title": "hub-catalog.test.mjs",
       "description": "Public catalog integrity and publication boundaries.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-catalog.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/hub-csp.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-csp.test.mjs",
+      "description": "Publisher pages ship a meta CSP that matches src/hub/csp.mjs and allows what each page loads.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-csp.test.mjs",
       "open": null
     },
     {
@@ -5478,6 +5502,16 @@
       "title": "mobile-touch-smoke.mjs",
       "description": "MixKit mobile and tablet touch rail (Mobile & Tablet Fix program, Phase 1).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/mobile-touch-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/pages-site.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "pages-site.test.mjs",
+      "description": "The Pages artifact leaves out repository-only files and keeps every service-worker precache entry.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/pages-site.test.mjs",
       "open": null
     },
     {
@@ -5621,6 +5655,16 @@
       "open": null
     },
     {
+      "path": "src/hub/csp.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "csp.mjs",
+      "description": "Content-Security-Policy for publisher-owned pages (the hub, its static pages and the game wrappers this repo owns).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/csp.mjs",
+      "open": null
+    },
+    {
       "path": "src/hub/monetization.mjs",
       "project": "studio",
       "category": "source",
@@ -5751,6 +5795,16 @@
       "open": null
     },
     {
+      "path": ".github/scripts/build-pages-site.mjs",
+      "project": "studio",
+      "category": "ops",
+      "kind": "MJS",
+      "title": "Pages site builder",
+      "description": "Copies tracked site files into _site/, leaving out repository-only files, and fails if a service-worker precache entry would be missing.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/scripts/build-pages-site.mjs",
+      "open": null
+    },
+    {
       "path": ".github/workflows/ci.yml",
       "project": "studio",
       "category": "ops",
@@ -5768,6 +5822,16 @@
       "title": "Horseshoes smoke workflow",
       "description": "Browser regression for Horseshoes assets, native keyboard controls, touch, throwing, retry and stable physics.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/horseshoes.yml",
+      "open": null
+    },
+    {
+      "path": ".github/workflows/pages.yml",
+      "project": "studio",
+      "category": "ops",
+      "kind": "YAML",
+      "title": "Pages site workflow",
+      "description": "Builds the public site without package files, vercel.json, root Markdown, .gitignore, .github/, test/ or api/ and deploys it as a GitHub Pages artifact on the box runner. Dormant until Pages is switched to GitHub Actions and PAGES_SOURCE=actions is set.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/pages.yml",
       "open": null
     },
     {

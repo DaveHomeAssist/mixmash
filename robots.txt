@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+# /admin/ pages carry meta robots noindex, nofollow; they stay crawlable so that tag is seen.
+# The catalog is JSON (no meta tag possible), so keep crawlers off it.
+Disallow: /admin/catalog.json
 
 Sitemap: https://mixmash.games/sitemap.xml
