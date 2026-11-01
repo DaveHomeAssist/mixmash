@@ -2715,6 +2715,7 @@ function collectPlatformRushItem(item) {
   syncPlatformRushCounts();
   spawnDamageNumber(item.x, item.y - 18, item.type === 'deepCut' ? 18 : 10);
   spawnHitSparks(item.x, item.y, item.type === 'deepCut' ? 12 : 7, item.type === 'deepCut' ? '#ffd36a' : '#9ee8ff');
+  spawnImpactRing(item.x, item.y, item.type === 'deepCut' ? '#ffd36a' : '#9ee8ff', item.type === 'deepCut' ? 10 : 5);
   playSound(item.type === 'deepCut' ? 'cheer' : 'select');
   saveActiveMatchSnapshot(true);
 
@@ -4228,10 +4229,18 @@ function renderPlatformRushCollectibles() {
     const pulse = 0.75 + Math.sin(state.frameCount * 0.09 + item.x * 0.01) * 0.25;
     const dist = player ? Math.hypot(finite(player.x, 0) - item.x, finite(player.y, 0) - item.y) : 999;
     const hiddenAlpha = item.hidden ? (dist < 170 ? 0.96 : 0.38 + pulse * 0.14) : 1;
+    const bob = reducedMotion() ? 0 : Math.sin(state.frameCount * 0.06 + item.x * 0.02) * 3;
     ctx.save();
-    ctx.translate(pos.x, pos.y);
+    ctx.translate(pos.x, pos.y + bob * z);
     ctx.scale(z, z);
     ctx.globalAlpha = hiddenAlpha;
+    if (!item.hidden) {
+      const halo = ctx.createRadialGradient(0, 0, 4, 0, 0, 38);
+      halo.addColorStop(0, item.type === 'deepCut' ? 'rgba(255,211,106,0.30)' : 'rgba(126,232,255,0.26)');
+      halo.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(-38, -38, 76, 76);
+    }
 
     if (item.type === 'deepCut') {
       ctx.save();
@@ -7993,34 +8002,91 @@ function formatClock(seconds) {
 
 function renderPlatformRushHUD() {
   const rush = state.platformRush || createPlatformRushState();
-  const x = 16;
+  // Clear of the page's top-left menu handle; explicit baselines keep the clock inside the card.
+  const x = 56;
   const y = 12;
-  const w = 342;
-  const h = 74;
+  const w = 360;
+  const h = 86;
+  const reduce = reducedMotion();
+  const now = performance.now();
+  const score = Math.round(finite(rush.score, 0));
+  const fx = polishFx.rush || (polishFx.rush = { score, popAt: -Infinity, records: 0, deep: 0 });
+  if (score > fx.score) fx.popAt = now;
+  fx.score = score;
+  const ease = (from, to) => reduce ? to : from + (to - from) * 0.18;
+  const recordPct = rush.totalRecords ? rush.recordsCollected / rush.totalRecords : 0;
+  const deepPct = rush.totalDeepCuts ? rush.deepCutsCollected / rush.totalDeepCuts : 0;
+  fx.records = ease(fx.records, recordPct);
+  fx.deep = ease(fx.deep, deepPct);
+  const remaining = finite(rush.timeRemaining, 0);
+  const urgent = remaining <= 10;
+  const warn = remaining <= 30;
+  const clockColor = urgent ? '#ff5d5d' : warn ? '#ffb347' : '#ffffff';
+
   ctx.save();
-  ctx.fillStyle = 'rgba(5,8,18,0.82)';
-  ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = 'rgba(255,211,106,0.44)';
+  ctx.textBaseline = 'top';
+  ctx.shadowColor = urgent ? 'rgba(255,93,93,0.6)' : 'rgba(255,211,106,0.35)';
+  ctx.shadowBlur = urgent && !reduce ? 12 + Math.sin(now / 120) * 6 : 12;
+  hudRoundRect(x, y, w, h, 12);
+  const bg = ctx.createLinearGradient(x, y, x, y + h);
+  bg.addColorStop(0, 'rgba(14,12,30,0.92)');
+  bg.addColorStop(1, 'rgba(6,8,18,0.80)');
+  ctx.fillStyle = bg;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  hudRoundRect(x + 0.5, y + 0.5, w - 1, h - 1, 12);
+  ctx.strokeStyle = 'rgba(255,211,106,0.45)';
   ctx.lineWidth = 1;
-  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
-  ctx.fillStyle = '#ffd36a';
-  ctx.font = 'bold 14px monospace';
+  ctx.stroke();
+
   ctx.textAlign = 'left';
-  ctx.fillText('PLATFORM RUSH', x + 14, y + 12);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 24px monospace';
+  ctx.fillStyle = '#ffd36a';
+  ctx.font = 'bold 13px monospace';
+  ctx.fillText('PLATFORM RUSH', x + 14, y + 10);
+
+  // Clock: amber under 30 s, red and breathing under 10 s.
+  ctx.save();
   ctx.textAlign = 'right';
-  ctx.fillText(formatClock(rush.timeRemaining), x + w - 14, y + 8);
-  ctx.textAlign = 'left';
-  ctx.font = '12px monospace';
-  ctx.fillStyle = '#dce8f7';
-  ctx.fillText(`Score ${Math.round(finite(rush.score, 0))}`, x + 14, y + 38);
-  ctx.fillStyle = '#9ee8ff';
-  ctx.fillText(`Records ${rush.recordsCollected}/${rush.totalRecords}`, x + 136, y + 38);
-  ctx.fillStyle = '#ffd36a';
-  ctx.fillText(`Deep Cuts ${rush.deepCutsCollected}/${rush.totalDeepCuts}`, x + 254, y + 38);
+  ctx.font = 'bold 24px monospace';
+  ctx.fillStyle = clockColor;
+  const clockScale = urgent && !reduce ? 1 + Math.max(0, Math.sin(now / 160)) * 0.06 : 1;
+  ctx.translate(x + w - 14, y + 7);
+  ctx.scale(clockScale, clockScale);
+  ctx.fillText(formatClock(rush.timeRemaining), 0, 0);
+  ctx.restore();
+
+  // Score with a short pop when it rises.
+  const popT = (now - fx.popAt) / 280;
+  const pop = !reduce && popT >= 0 && popT < 1 ? 1 - popT : 0;
+  ctx.save();
+  ctx.translate(x + 14, y + 30);
+  ctx.scale(1 + pop * 0.22, 1 + pop * 0.22);
+  ctx.font = 'bold 15px monospace';
+  ctx.fillStyle = pop > 0 ? '#fff2ad' : '#ffffff';
+  ctx.fillText(`${score}`, 0, 0);
+  ctx.restore();
+  ctx.font = '10px monospace';
   ctx.fillStyle = '#8fa1b8';
-  ctx.fillText('R restart  |  P pause  |  collect all records', x + 14, y + 58);
+  ctx.fillText('SCORE', x + 14, y + 48);
+
+  // Progress bars: records (cyan) and deep cuts (gold).
+  const bar = (bx, by, bw, pct, color, label, text) => {
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    hudRoundRect(bx, by, bw, 6, 3); ctx.fill();
+    if (pct > 0.001) {
+      ctx.fillStyle = color;
+      hudRoundRect(bx, by, Math.max(6, bw * Math.min(1, pct)), 6, 3); ctx.fill();
+    }
+    ctx.font = '11px monospace';
+    ctx.fillStyle = color;
+    ctx.fillText(`${label} ${text}`, bx, by - 15);
+  };
+  bar(x + 96, y + 47, 112, fx.records, '#9ee8ff', 'Records', `${rush.recordsCollected}/${rush.totalRecords}`);
+  bar(x + 226, y + 47, 120, fx.deep, '#ffd36a', 'Deep Cuts', `${rush.deepCutsCollected}/${rush.totalDeepCuts}`);
+
+  ctx.font = '11px monospace';
+  ctx.fillStyle = '#8fa1b8';
+  ctx.fillText(touchUiActive() ? 'Collect all records before time runs out' : 'R restart  |  P / Esc pause  |  ? shortcuts', x + 14, y + 66);
   ctx.restore();
 }
 
@@ -8836,7 +8902,7 @@ function renderResults() {
     ctx.font = '16px monospace'; ctx.fillStyle = '#dce8f7';
     ctx.fillText(`Records ${rush.recordsCollected}/${rush.totalRecords}  |  Deep Cuts ${rush.deepCutsCollected}/${rush.totalDeepCuts}  |  Time ${formatClock(rush.timeRemaining)}`, BASE_W / 2, BASE_H / 2 + 4);
     ctx.fillStyle = '#aaa'; ctx.font = '18px monospace';
-    ctx.fillText('ENTER = Restart Run  |  ESC = Title', BASE_W / 2, BASE_H / 2 + 56);
+    ctx.fillText('ENTER / Start = Restart Run  |  ESC = Title', BASE_W / 2, BASE_H / 2 + 56);
     if (!state.confettiSpawned) { spawnConfetti(); state.confettiSpawned = true; }
     return;
   }
