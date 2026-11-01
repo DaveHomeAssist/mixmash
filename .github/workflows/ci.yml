@@ -234,7 +234,9 @@ jobs:
           retention-days: 30
 
   foh-regression:
-    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.foh_performance_gate)
+    # THROWAWAY integration branch only (integration/polish-security-1101): skip this hosted ubuntu-24.04 job so the
+    # combined check uses self-hosted box runners only. Never merge this commit.
+    if: github.head_ref != 'integration/polish-security-1101' && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.foh_performance_gate))
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
