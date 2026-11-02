@@ -209,5 +209,95 @@ for (const view of views) {
     if (view.id !== 'games') panel.addEventListener('scroll', () => save(`scroll.${view.id}`, String(panel.scrollTop)), { passive: true });
   }
 }
+// Shortcuts: ? or H shows the sheet; G/S switch views; 1-9 open a game's details; P picks; T toggles theme;
+// Esc closes the sheet or returns from a detail view. Typing and Ctrl/Alt/Cmd combinations are never intercepted.
+const helpDialog = document.getElementById('shortcut-help');
+const helpToggle = document.getElementById('shortcut-toggle');
+let helpReturnFocus = null;
+function openHelp() {
+  if (!helpDialog || helpDialog.open) return;
+  helpReturnFocus = document.activeElement;
+  if (typeof helpDialog.showModal === 'function') helpDialog.showModal(); else helpDialog.setAttribute('open', '');
+  document.getElementById('shortcut-close')?.focus();
+}
+function closeHelp() {
+  if (!helpDialog?.open) return;
+  if (typeof helpDialog.close === 'function') helpDialog.close(); else helpDialog.removeAttribute('open');
+}
+function toggleHelp() { if (helpDialog?.open) closeHelp(); else openHelp(); }
+if (helpDialog) {
+  helpToggle.hidden = false;
+  helpToggle.addEventListener('click', openHelp);
+  document.getElementById('shortcut-close').addEventListener('click', closeHelp);
+  helpDialog.addEventListener('close', () => { if (helpReturnFocus?.isConnected) helpReturnFocus.focus(); helpReturnFocus = null; });
+  helpDialog.addEventListener('click', event => { if (event.target === helpDialog) closeHelp(); });
+}
+function typingTarget(target) { return !!target?.closest?.('input,select,textarea,[contenteditable=""],[contenteditable="true"]'); }
+document.addEventListener('keydown', event => {
+  if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.isComposing || typingTarget(event.target)) return;
+  const key = (event.key || '').toLowerCase();
+  const help = event.key === '?' || (key === 'h' && !event.shiftKey);
+  if (help) { event.preventDefault(); toggleHelp(); return; }
+  if (helpDialog?.open) return; // the dialog handles Esc itself
+  if (event.key === 'Escape') {
+    if (currentView.startsWith('game-') || currentView === 'studio') { event.preventDefault(); location.hash = '#games'; }
+    return;
+  }
+  if (event.shiftKey) return;
+
+  if (key === 'g') { event.preventDefault(); location.hash = '#games'; }
+  else if (key === 's') { event.preventDefault(); location.hash = '#studio'; }
+  else if (key === 't') { event.preventDefault(); themeButton.click(); }
+  else if (key === 'p') { event.preventDefault(); picker.click(); }
+  else if (/^[1-9]$/.test(event.key)) {
+    const card = cards[Number(event.key) - 1];
+    if (card) { event.preventDefault(); location.hash = `game-${card.dataset.game}`; }
+  }
+});
+// Gamepad: D-pad/stick moves focus through visible links and buttons, A activates, B goes back,
+// Start plays the focused (or featured) game, Y picks, Back/Select toggles the sheet. Polls only while a pad is connected.
+const PAD = { a: 0, b: 1, y: 3, back: 8, start: 9, up: 12, down: 13, left: 14, right: 15 };
+let padFrame = 0;
+let padPrev = {};
+let padRepeatAt = 0;
+function focusables() {
+  const scope = helpDialog?.open ? helpDialog : document;
+  return [...scope.querySelectorAll('a[href],button:not([disabled])')].filter(el => !el.hidden && el.getClientRects().length && !el.closest('[hidden]'));
+}
+function moveFocus(step) {
+  const list = focusables();
+  if (!list.length) return;
+  const index = list.indexOf(document.activeElement);
+  const next = list[(index + step + list.length) % list.length] || list[0];
+  next.focus();
+}
+function pollPads() {
+  padFrame = 0;
+  const pads = [...(navigator.getGamepads?.() || [])].filter(Boolean);
+  if (!pads.length) return;
+  const now = performance.now();
+  const pressed = {};
+  for (const pad of pads) {
+    for (const [name, index] of Object.entries(PAD)) if (pad.buttons[index]?.pressed) pressed[name] = true;
+    const [x = 0, y = 0] = pad.axes;
+    if (x < -0.5) pressed.left = true; if (x > 0.5) pressed.right = true;
+    if (y < -0.5) pressed.up = true; if (y > 0.5) pressed.down = true;
+  }
+  const edge = name => pressed[name] && !padPrev[name];
+  const dir = pressed.left || pressed.up ? -1 : pressed.right || pressed.down ? 1 : 0;
+  const dirEdge = edge('left') || edge('up') || edge('right') || edge('down');
+  if (dir && (dirEdge || now >= padRepeatAt)) { moveFocus(dir); padRepeatAt = now + (dirEdge ? 380 : 140); }
+  if (edge('a')) document.activeElement?.click?.();
+  if (edge('b')) { if (helpDialog?.open) closeHelp(); else location.hash = '#games'; }
+  if (edge('back')) toggleHelp();
+  if (edge('y') && !helpDialog?.open) picker.click();
+  if (edge('start') && !helpDialog?.open) {
+    const card = document.activeElement?.closest?.('.game-card');
+    (card?.querySelector('.play-link') || document.querySelector('.view:not([hidden]) .detail-actions .primary') || document.getElementById('spotlight-play'))?.click();
+  }
+  padPrev = pressed;
+  padFrame = requestAnimationFrame(pollPads);
+}
+window.addEventListener('gamepadconnected', () => { if (!padFrame) padFrame = requestAnimationFrame(pollPads); });
 root.classList.add('enhanced');
 showView(false);
