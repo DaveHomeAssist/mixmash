@@ -4351,6 +4351,26 @@
       "open": null
     },
     {
+      "path": "horseshoes/shortcuts.css",
+      "project": "horseshoes",
+      "category": "source",
+      "kind": "CSS",
+      "title": "shortcuts.css",
+      "description": "Backyard Horseshoes polish and shortcut layer. A sidecar to the generated build: never edit the hashed bundles. Port into curling-simulator src/horseshoes on the next rebuild (see README \"Shortcut layer\").",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/shortcuts.css",
+      "open": null
+    },
+    {
+      "path": "horseshoes/shortcuts.js",
+      "project": "horseshoes",
+      "category": "source",
+      "kind": "JS",
+      "title": "shortcuts.js",
+      "description": "Backyard Horseshoes shortcut layer and juice: a sidecar to the generated build, never a bundle patch.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/shortcuts.js",
+      "open": null
+    },
+    {
       "path": "horseshoes/assets/ai.worker-BamGaX81.js",
       "project": "horseshoes",
       "category": "build",

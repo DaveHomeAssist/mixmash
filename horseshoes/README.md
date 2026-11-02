@@ -41,3 +41,7 @@ Four schematic lawn delay monitors show a silent instant replay of each settled 
 The Horseshoes adapter consumes the existing pinned FMP geometry under ECP-1.0; D1–D4 lawn delay anchor names and source demo dimensions remain unchanged. It adds only a simulated screen feed, with no hardware connection or producer changes. Source brief: docs/HORSESHOES_BROADCAST_BRIEF.md. Release verification pending; source release record owns next steps.
 
 Venue views stay disabled while loading or if the four named screen anchors are unavailable, with a visible menu status. The court remains playable. The replay camera tracks the recorded shoe in flight and at the landing.
+
+## Shortcut layer
+
+`horseshoes/shortcuts.js` and `shortcuts.css` are a sidecar to the generated build (the hashed bundles stay untouched). They add `P`/`Esc` to open the pausing Menu, `M` to toggle sound, `?`/`H` for a shortcuts sheet, gamepad play (A throw, D-pad aim and strength, LB/RB arc, X delivery, Y camera, B back to live play, Start Menu, Back/Select shortcuts) and small presentation pops on score and feedback changes, all off under reduced motion. Existing keys are unchanged, and `Esc` during the intro camera pass is left to the game so it still skips the tour. When the source is rebuilt, port the layer into curling-simulator or re-add the two `index.html` includes.
