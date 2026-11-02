@@ -72,6 +72,10 @@ ${ROWS.map(([label, keys, pad]) => `<tr><th scope="row">${label}</th><td>${kbd(k
     if (event.shiftKey) return;
     if (event.code === 'KeyM') { event.preventDefault(); toggleMute(); return; }
     const menuOpen = !!menu()?.open;
+    // Esc during the camera pass belongs to the game: its own keydown handler skips the tour, but only while the
+    // Menu is closed. This listener is registered first, so opening the Menu here would swallow that skip.
+    const tourActive = !!$('#skip-tour') && !$('#skip-tour').hidden;
+    if (event.code === 'Escape' && tourActive) return;
     if (event.code === 'KeyP' || (event.code === 'Escape' && !menuOpen)) { event.preventDefault(); toggleMenu(); }
   });
   // Gamepad: polled only while a pad is connected. Directional input reuses the game's own arrow-key handling.
