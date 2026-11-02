@@ -70,10 +70,13 @@
       <p id="board-status" class="board-status" aria-live="polite"></p>
     </section>
 
-    <section id="panel" class="panel" tabindex="-1" aria-label="Controls">
+    <!-- The boot note sits outside #panel: on phones the panel stays out of layout until the
+         first phase renders, so its sheet appears once instead of jumping (CLS, 0.4.5). -->
+    <div class="boot" id="boot" aria-live="polite">
       <noscript><p class="notice">Front of House needs JavaScript to run. Everything else on mixmash.games works without it.</p></noscript>
       <p class="notice" id="boot-note">Loading the lot…</p>
-    </section>
+    </div>
+    <section id="panel" class="panel" tabindex="-1" aria-label="Controls"></section>
   </main>
 
   <div id="sheet-controls" class="sheet-controls" role="group" aria-label="Controls sheet" hidden>
@@ -144,7 +147,7 @@
       <p class="hint" id="mode-note"></p>
     </section>
     <section class="menu-keys" aria-labelledby="keys-title">
-      <h2 id="keys-title">Keys and mouse</h2>
+      <h2 id="keys-title">Keys, mouse and controller</h2>
       <p id="board-help" class="board-help">The lot is 24 by 16 tiles. The mouse wheel zooms. To move a zoomed view, hold Space and drag, or drag with the middle or right button (outside Build a plain drag does too); a right click without a drag removes an object. The 2D/3D switch beside the camera controls changes views; the lit half is the view on screen. The props stay painted for the original camera. In Build, click a tile to place the chosen object, or focus the board and use the keys below.</p>
       <h3 class="eyebrow keys-head">Anywhere</h3>
       <dl class="keys" id="board-keys-any">
@@ -167,8 +170,25 @@
         <div data-binding="undo"><dt>Ctrl+Z or ⌘Z</dt><dd>Undo the last change to the layout</dd></div>
         <div data-binding="redo"><dt>Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z</dt><dd>Redo a change you undid</dd></div>
       </dl>
+      <h3 class="eyebrow keys-head" id="pad-head">Controller</h3>
+      <p class="hint pad-note" id="pad-status">Connect a controller and press any button. Standard layout (Xbox names; on PlayStation A is ✕, B is ○, X is □, Y is △).</p>
+      <dl class="keys" id="board-keys-pad">
+        <div data-pad="pad-confirm"><dt>A</dt><dd>Press the focused button; on the board in Build, place or inspect</dd></div>
+        <div data-pad="pad-back"><dt>B</dt><dd>Close a window/menu, or cancel the Build tool</dd></div>
+        <div data-pad="pad-rotate"><dt>X</dt><dd>Rotate the next object</dd></div>
+        <div data-pad="pad-bulldoze"><dt>Y</dt><dd>Bulldozer on or off</dd></div>
+        <div data-pad="pad-move"><dt>D-pad or left stick</dt><dd>Move between controls; on the board in Build, move the cursor</dd></div>
+        <div data-pad="pad-prev"><dt>LB</dt><dd>Previous control</dd></div>
+        <div data-pad="pad-next"><dt>RB</dt><dd>Next control</dd></div>
+        <div data-pad="pad-zoom-out"><dt>LT</dt><dd>Zoom out</dd></div>
+        <div data-pad="pad-zoom-in"><dt>RT</dt><dd>Zoom in</dd></div>
+        <div data-pad="pad-fit"><dt>View / Back</dt><dd>Show the whole lot</dd></div>
+        <div data-pad="pad-menu"><dt>Menu / Start</dt><dd>Open or close the menu</dd></div>
+        <div data-pad="pad-board"><dt>Left stick press</dt><dd>Go to the lot (focus the board)</dd></div>
+        <div data-pad="pad-turn"><dt>Right stick press</dt><dd>Turn the view a quarter</dd></div>
+      </dl>
     </section>
-    <p class="credit">MixMash Studio · <span id="game-version"></span> · <a href="./docs/RELEASE_NOTES.md">Release notes</a> · <a href="../">All games</a></p>
+    <p class="credit">MixMash Studio · <span id="game-version"></span> · <a href="./docs/RELEASE_NOTES.md">Release notes</a> · <a href="https://mixmash.games/privacy/" id="privacy-link">Privacy</a> · <a href="../">All games</a></p>
   </div>
 
   <script src="../src/kit/nav.js" data-nav-collapse="off"></script>

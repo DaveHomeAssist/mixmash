@@ -128,6 +128,12 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
         presentation.update(stageAudience ? { ...input, crowd: stageAudience.displayed.main } : input, objects, objectHeights, motion, stageAudience?.representatives.main, view);
         if (sidePresentation) sidePresentation.update({ ...input, crowd: stageAudience.displayed.second, incident: input.incident === 'rain' ? 'rain' : null, showClear: false }, [{ type: 'stage', x: 3, y: 1, rot: 0 }], [0.55], motion, stageAudience.representatives.second, view);
         performers.update(input, objects.find(o => o.type === 'stage'), motion);
+        // While an act plays at night, the stage wash drifts slowly between amber and warm red
+        // (one colour write per frame; reduced motion keeps the static amber).
+        if (input.night && input.performing && motion && stageLight.intensity > 0) {
+          const t = performance.now() / 1000;
+          stageLight.color.setHSL(0.08 - 0.06 * (0.5 + 0.5 * Math.sin(t * 0.55)), 0.9, 0.74);
+        }
         if (sidePerformers) sidePerformers.update({ ...input, artistId: input.secondaryStage?.artistId, performing: input.performing && input.secondaryStage?.booked }, { x: FESTIVAL_SCENE.stage.x, y: FESTIVAL_SCENE.stage.y, rot: 0 }, motion);
         // Include both detail levels and camera-only transitions in shadow invalidation.
         const casters = [...presentation.group.children, ...(sidePresentation?.group.children || [])].filter(mesh => mesh.isInstancedMesh && mesh.castShadow);
@@ -169,10 +175,13 @@ export function createLotRenderer(canvas, { onStatus = () => {}, pixelRatio = nu
       overlayKey = nextOverlay;
     }
     const night = !!input.night;
-    world.background = new T.Color(venue === 'club' ? (night ? 0x15121d : 0x55515a) : (night ? 0x111923 : 0x85949d));
+    // 0.4.5 grade: a deeper blue-hour night with a cool moon key against the warm stage, and a
+    // slightly warmer, softer day. Colour and intensity only; no extra lights, passes or shadows.
+    world.background = new T.Color(venue === 'club' ? (night ? 0x140f1e : 0x57525b) : (night ? 0x0c1522 : 0x8a979d));
     setEnvironmentNight(night);
-    if (environment) { sky.color.setHex(0xb4c9e1); sun.color.setHex(0xffd3a0); stageLight.color.setHex(0xffd49a); }
-    sky.intensity = night ? 1.35 : 2.2; sun.intensity = night ? 0.8 : 3; stageLight.intensity = night && (input.lightTower || input.houseLights) ? 60 : 0;
+    if (environment) { sky.color.setHex(night ? 0xa3b6d8 : 0xb9cbe0); sun.color.setHex(night ? 0xc4d2f2 : 0xffd6a6); stageLight.color.setHex(0xffd49a); }
+    renderer.toneMappingExposure = night ? 1.06 : 1;
+    sky.intensity = night ? 1.3 : 2.2; sun.intensity = night ? 0.75 : 3; stageLight.intensity = night && (input.lightTower || input.houseLights) ? 66 : 0;
     render();
   }
   function resize() {

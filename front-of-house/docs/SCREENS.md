@@ -173,7 +173,7 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | Reduced motion | Show skips the playback to the incident |
 | Phone (under 680 px) | Board on top, the panel in a bottom sheet with tabs; no page or sheet scrolls |
 
-## 7. Keys and mouse
+## 7. Keys, mouse and controller
 
 | Input | Where | Does |
 | --- | --- | --- |
@@ -195,6 +195,8 @@ Playback would run from doors to curfew in 12 seconds (`PLAY_SECONDS` in `game.j
 | Middle drag, right drag or Space + drag (any drag outside Build) | Board, zoomed | Pans; a right click without a drag removes in Build |
 
 Every key above comes from one table, `front-of-house/controls.mjs`, which both key handlers in `game.js` read. The menu's key list must match it word for word, and `test-engine.mjs` fails on two bindings that one key press could trigger together, or on a key the browser owns (Tab, F1 to F12, Ctrl or Cmd with W, T, N or L).
+
+**Controller (since 0.4.5).** A standard-mapping gamepad sends the key of the binding each button names (`PAD_BINDINGS` in `controls.mjs`), so it follows the same phases and window rules. A presses the focused control (on the board in Build, Enter); B is Escape; the D-pad or left stick moves focus between controls, or the build cursor when the board has focus in Build; LB/RB step focus; X is R; Y is B; LT/RT zoom; View/Back fits; Menu/Start is ?; the left stick press focuses the board; the right stick press is Q. The menu lists these rows word for word, and `test-engine.mjs` fails on two rows sharing a button or a row sending a key its binding would not match. The page polls only while a controller is connected.
 
 ## 8. Keeping this current
 

@@ -5,6 +5,16 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.5 — 2026-11-01
+
+Presentation polish, a controller, and a steadier phone load.
+
+- Phones: the Book sheet no longer jumps when the game finishes loading. The loading note now floats over the lot, and the sheet appears once at its final height (lab CLS 0.27 → 0 at 375 and 390 px).
+- Look: the 3D lot has a deeper blue-hour night with a cool moon against the warm stage, and the stage wash drifts slowly between amber and warm red while an act plays (static with reduced motion). The board gets a soft vignette by day and a deeper edge during the show. Plates have a lit top edge and an accent line, fade in when a phase opens, and buttons ease between states. The strip ends in a thin house-light gradient, finished steps get a green number, and the cash, clock and readouts use fixed-width digits.
+- Controller: a standard gamepad (Xbox, PlayStation or similar) works in every phase. A presses the focused button (on the board in Build it places), B goes back like Esc, the D-pad or left stick moves between controls or moves the build cursor, LB/RB step through controls, X rotates, Y toggles the bulldozer, LT/RT zoom, View fits the lot, Start opens the menu, the left stick press focuses the lot and the right stick press turns the view. Every button sends the key from the same binding table, so pad and keyboard can't disagree. Nothing polls until a controller connects.
+- The menu's help is now "Keys, mouse and controller", with the controller list and a connected marker. The menu footer links the MixMash privacy note.
+- Cache v93. Rules, balance, money movement and save schema 2 are unchanged.
+
 ## 0.4.4 — 2026-10-28
 
 Playtest fixes from the live 0.4.2 show night.

@@ -18,7 +18,7 @@ import { RESEARCH_COMMAND_LIMIT, researchRefundFor } from './research.mjs';
 import { LOOK } from './board.js';
 import { createSiteMap } from './site-map.mjs';
 import { createBoardAdapter } from './board-adapter.mjs';
-import { binding, matches } from './controls.mjs';
+import { binding, matches, padIntent, PAD_BUTTONS } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
 import { advisoryFor } from './advisory.mjs';
 import { bandArt, venueArt } from './menu-art.mjs';
@@ -3167,7 +3167,61 @@ function suggestionsSnapshot() {
     next: state.phase === 'done' ? nextShowPreview(state) : null,
   };
 }
+// Controller (controls.mjs, PAD_BINDINGS). Each button sends the key its binding names, so the
+// pad obeys the same phases and window rules as the keyboard. Polled once a frame only while a
+// pad is connected; with none connected nothing runs.
+const pad = { raf: 0, held: new Map(), presses: 0, connected: false };
+const PAD_REPEAT = { delay: 320, every: 120 };
+const PAD_REPEATS = new Set(['up', 'down', 'left', 'right', 'lt', 'rt']);
+const PAD_AXES = { left: [0, -1], right: [0, 1], up: [1, -1], down: [1, 1] };
+function padFocusables() {
+  const scope = document.querySelector('.opening') || (!el.win.hidden ? el.win : !el.menu.hidden ? el.menu : document);
+  return [...scope.querySelectorAll('button:not([disabled]), a[href], summary, label.button, input:not([disabled]):not([type="file"]), select:not([disabled]), textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter(n => n.getClientRects().length && n.tabIndex >= 0 && !n.closest('[hidden], [inert]'));
+}
+function padFire(button) {
+  const intent = padIntent(button, { boardFocused: document.activeElement === el.canvas, build: state.phase === 'build' });
+  if (!intent) return;
+  pad.presses += 1;
+  if (intent.focus === 'board') { el.canvas.focus(); return; }
+  if (intent.focus) {
+    const list = padFocusables();
+    if (!list.length) return;
+    const at = list.indexOf(document.activeElement), step = intent.focus === 'next' ? 1 : -1;
+    const next = list[at < 0 ? (step > 0 ? 0 : list.length - 1) : (at + step + list.length) % list.length];
+    next.focus(); next.scrollIntoView?.({ block: 'nearest' });
+    return;
+  }
+  const active = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+  if (intent.click) { active?.click?.(); return; }
+  const target = intent.to === 'board' ? el.canvas : (active || document.body);
+  for (const type of ['keydown', 'keyup']) target.dispatchEvent(new KeyboardEvent(type, { key: intent.key, bubbles: true, cancelable: true }));
+}
+function padPoll(now) {
+  pad.raf = 0;
+  const gp = [...(navigator.getGamepads?.() || [])].find(p => p && p.connected !== false);
+  if (pad.connected !== !!gp) {
+    pad.connected = !!gp;
+    document.body.dataset.pad = gp ? 'on' : 'off';
+    $('#pad-status').textContent = gp ? 'A controller is connected. Standard layout (Xbox names; on PlayStation A is ✕, B is ○, X is □, Y is △).' : 'Connect a controller and press any button. Standard layout (Xbox names; on PlayStation A is ✕, B is ○, X is □, Y is △).';
+  }
+  if (!gp) { pad.held.clear(); return; }
+  for (const [name, index] of Object.entries(PAD_BUTTONS)) {
+    const b = gp.buttons?.[index], axis = PAD_AXES[name];
+    const down = !!(b && (b.pressed || b.value > 0.5)) || (!!axis && (gp.axes?.[axis[0]] || 0) * axis[1] > 0.6);
+    const held = pad.held.get(name);
+    if (!down) { pad.held.delete(name); continue; }
+    if (!held) { pad.held.set(name, { next: now + PAD_REPEAT.delay }); padFire(name); }
+    else if (PAD_REPEATS.has(name) && now >= held.next) { held.next = now + PAD_REPEAT.every; padFire(name); }
+  }
+  if (!document.hidden) pad.raf = requestAnimationFrame(padPoll);
+}
+function padStart() { if (!pad.raf) pad.raf = requestAnimationFrame(padPoll); }
+window.addEventListener('gamepadconnected', padStart);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && pad.connected) padStart(); });
+
 window.__frontOfHouse = {
+  gamepad: () => ({ connected: pad.connected, presses: pad.presses, polling: !!pad.raf }),
   state: () => JSON.parse(JSON.stringify(state)),
   prefs: () => JSON.parse(JSON.stringify(prefs)),
   suggestions: () => suggestionsSnapshot(),
