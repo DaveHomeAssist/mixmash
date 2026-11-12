@@ -28,6 +28,7 @@ const PROJECT_RULES = [
   [/^(api|mars)\//, 'mars'],
   [/^front-of-house\//, 'front-of-house'],
   [/^horseshoes\//, 'horseshoes'],
+  [/^hockey-havoc\//, 'hockey-havoc'],
   [/^play\//, 'mixmash'],
   [/^playcards\//, 'playcards'],
   [/^pitch\//, 'pitch'],
@@ -38,6 +39,7 @@ const PROJECT_RULES = [
   [/^docs\/rfc-\d+-garden-os/, 'garden'],
   [/^test\/(combat|play-|public-counts)/, 'mixmash'],
   [/^test\/horseshoes-/, 'horseshoes'],
+  [/^test\/hockey-havoc-/, 'hockey-havoc'],
   [/^test\/zelda2mario-/, 'zelda2mario'],
   [/^test\/front-of-house-/, 'front-of-house'],
 ];
