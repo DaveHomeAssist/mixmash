@@ -359,6 +359,32 @@
       ]
     },
     {
+      "id": "hockey-havoc",
+      "name": "Gritty's Hockey Havoc",
+      "kind": "Arcade hockey platformer",
+      "lifecycle": "Unlisted early playable",
+      "route": "/hockey-havoc/",
+      "summary": "A single-file canvas platformer: skate three periods, collect hot dogs and puck crates, slapshot or slide-check Zambonis and rival goalies, and score to reach the next faceoff. Fixed 60 Hz simulation, keyboard and touch. Unlisted while the hub listing and naming choices are open.",
+      "pinned": [
+        "hockey-havoc/README.md",
+        "hockey-havoc/index.html",
+        "test/hockey-havoc-physics.test.mjs"
+      ],
+      "statusSources": [
+        "hockey-havoc/README.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": "noindex; no hub card.",
+          "label": "Play Gritty's Hockey Havoc",
+          "url": "/hockey-havoc/",
+          "kind": "live route"
+        }
+      ],
+      "commands": []
+    },
+    {
       "id": "pitch",
       "name": "PITCH RIOT",
       "kind": "Arcade soccer",
@@ -4398,6 +4424,36 @@
       "title": "Horseshoes production JS",
       "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-2p9AdgNp); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-2p9AdgNp.js",
+      "open": null
+    },
+    {
+      "path": "hockey-havoc/index.html",
+      "project": "hockey-havoc",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Gritty's Hockey Havoc — MixMash Studio",
+      "description": "An early arcade hockey platformer: skate three periods, collect hot dogs, slapshot Zambonis and score.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/index.html",
+      "open": "/hockey-havoc/"
+    },
+    {
+      "path": "hockey-havoc/README.md",
+      "project": "hockey-havoc",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Gritty's Hockey Havoc",
+      "description": "An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript). Tailwind, Font Awesome and Google Fonts load from CDNs, so the page needs a network connection.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/README.md",
+      "open": null
+    },
+    {
+      "path": "test/hockey-havoc-physics.test.mjs",
+      "project": "hockey-havoc",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hockey-havoc-physics.test.mjs",
+      "description": "Gritty's Hockey Havoc: loads the shipped player code, config and fixed-step loop from hockey-havoc/index.html in a vm sandbox and checks the slice-1 movement contract.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hockey-havoc-physics.test.mjs",
       "open": null
     },
     {
