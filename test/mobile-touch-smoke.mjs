@@ -127,6 +127,20 @@ export const GAMES = [
       return s.state === 1 && s.touchOn ? ok('game.state === 1 (playing), touch controls on') : bad(`game.state ${s.state} (want 1), touch controls on: ${s.touchOn}`);
     },
   },
+  {
+    id: 'hockey-havoc', name: "Gritty's Hockey Havoc", path: '/hockey-havoc/', nav: true,
+    // Touch only, from a fresh load: tap HIT THE ICE!, then the run must be live with the touch bar on screen.
+    async begin(page) {
+      await page.waitForFunction('typeof state !== "undefined" && state.running === false', null, { timeout: 15000 });
+      await reachAndTap(page, '#start-game-btn');
+      await step('HIT THE ICE! did not start a run', () => page.waitForFunction('state.running === true', null, { timeout: 8000 }));
+      await sleep(300);
+    },
+    async playing(page) {
+      const s = await page.evaluate(`({ running: state.running, touch: getComputedStyle(document.getElementById('touch-controls')).display })`);
+      return s.running && s.touch === 'flex' ? ok('state.running, touch controls on') : bad(`state.running ${s.running}, touch controls display ${s.touch}`);
+    },
+  },
   { id: 'front-of-house', name: 'Front of House', path: '/front-of-house/', nav: true },
 ];
 

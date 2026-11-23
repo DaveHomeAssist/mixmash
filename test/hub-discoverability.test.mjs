@@ -13,6 +13,7 @@ const pages = [
   { file: 'index.html', url: `${SITE}/`, id: null },
   { file: 'play/index.html', url: `${SITE}/play/`, id: 'mixmash' },
   { file: 'pitch/index.html', url: `${SITE}/pitch/`, id: 'pitch' },
+  { file: 'hockey-havoc/index.html', url: `${SITE}/hockey-havoc/`, id: 'hockey-havoc' },
   { file: 'mars/index.html', url: `${SITE}/mars/`, id: 'mars' },
   { file: 'garden/index.html', url: `${SITE}/garden/`, id: 'garden' }
 ];
@@ -83,7 +84,7 @@ test('sitemap and robots agree with canonicals and keep noindex pages out', asyn
     if (!path.startsWith('empires/')) assert.equal(canonical(html), loc, `${loc}: canonical matches sitemap`);
     assert.match(sitemap.match(new RegExp(`<loc>${loc.replace(/[.?]/g, '\\$&')}</loc>\\s*<lastmod>(\\d{4}-\\d{2}-\\d{2})</lastmod>`))?.[1] || '', /^2026-/);
   }
-  for (const hidden of ['/front-of-house/', '/horseshoes/', '/hockey-havoc/', '/admin', '/home.html']) assert.ok(!sitemap.includes(hidden), `${hidden} stays out`);
+  for (const hidden of ['/front-of-house/', '/horseshoes/', '/admin', '/home.html']) assert.ok(!sitemap.includes(hidden), `${hidden} stays out`);
   const robots = await read('robots.txt');
   assert.match(robots, /^User-agent: \*$/m); assert.match(robots, /^Allow: \/$/m);
   assert.match(robots, new RegExp(`^Sitemap: ${SITE}/sitemap.xml$`, 'm'));
