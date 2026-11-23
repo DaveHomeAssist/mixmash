@@ -5617,6 +5617,16 @@
       "open": null
     },
     {
+      "path": "test/public-controls.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "public-controls.test.mjs",
+      "description": "Public control tables must match the shipped default binds. play/input-data.js is the source of truth for fighter keys. home.html (the hub \"Game guide\") and docs/PLAYER_GUIDE.md both drifted from those defaults once…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/public-controls.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/revenue-switches.test.mjs",
       "project": "studio",
       "category": "tests",
