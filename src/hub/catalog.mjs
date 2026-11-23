@@ -94,7 +94,7 @@ export const games = [
     "accent": "orange",
     "hook": "Skate it. Slap it. Score.",
     "description": "Skate three periods as Gritty, chow stadium hot dogs, slapshot rogue Zambonis and bury a puck in the net to bring the Stanley Cup home to Philly.",
-    "image": "hockey-havoc.jpg",
+    "image": "hockey-havoc.webp",
     "alt": "Gritty jumping beside an ice platform with hot dogs overhead and a Zamboni ahead in Gritty’s Hockey Havoc.",
     "cover": "hockey-havoc.jpg",
     "coverAlt": "Gritty’s Hockey Havoc gameplay: Gritty mid-jump on the rink, a slapshot puck in flight and the arena crowd behind.",

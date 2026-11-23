@@ -5457,14 +5457,14 @@
       "open": "/assets/og/pitch.jpg"
     },
     {
-      "path": "assets/previews/hockey-havoc.jpg",
+      "path": "assets/previews/hockey-havoc.webp",
       "project": "studio",
       "category": "art",
-      "kind": "JPG",
-      "title": "hockey-havoc.jpg",
+      "kind": "TXT",
+      "title": "hockey-havoc.webp",
       "description": "Gritty’s Hockey Havoc gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/hockey-havoc.jpg",
-      "open": "/assets/previews/hockey-havoc.jpg"
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/hockey-havoc.webp",
+      "open": "/assets/previews/hockey-havoc.webp"
     },
     {
       "path": "favicon.svg",

@@ -22,7 +22,7 @@ const PRECACHE = [
   './assets/previews/mixmash.jpg',
   './assets/previews/foh.jpg',
   './assets/previews/pitch.jpg',
-  './assets/previews/hockey-havoc.jpg',
+  './assets/previews/hockey-havoc.webp',
   './assets/previews/mars.jpg',
   './assets/previews/garden.jpg',
   './assets/previews/empires.jpg',
