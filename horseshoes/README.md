@@ -1,6 +1,6 @@
 # Backyard Horseshoes — Phase 3 prototype
 
-Built from DaveHomeAssist/curling-simulator commit `78a16b5a458c8d1f5dd4bb40af4ef8698e96fbbf` ([source PR14](https://github.com/DaveHomeAssist/curling-simulator/pull/14)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
+Built from DaveHomeAssist/curling-simulator commit `4d09e2fe4107b479444584bbd01acca688fa8593` ([source PR16](https://github.com/DaveHomeAssist/curling-simulator/pull/16)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
 
 ## Play
 
@@ -24,7 +24,7 @@ The route stays unlisted with `noindex, nofollow`. Original Curling and Mixmash 
 
 Run `npx vite build --base /horseshoes/` in source. Copy `dist/horseshoes.html` to `horseshoes/index.html` plus its referenced JS/CSS, shared Three.js chunk, AI worker chunk and FMP venue JSON. Never patch generated bundles directly.
 
-78 source tests/build passed on the Linux runner. Browser checks completed local matches (84 throws per viewport) and solo matches (24 throws/six innings, both difficulties), plus audio output/mute, replay preservation, stale AI cancellation, native keys, emulated touch and return links. Maximum observed candidate search was about 0.8 seconds on that runner; device performance varies. No human acceptance is implied.
+The Phase 3 release passed 78 source tests/build on the Linux runner; the later pavilion release passed 80. Browser checks completed local matches (84 throws per viewport) and solo matches (24 throws/six innings, both difficulties), plus audio output/mute, replay preservation, stale AI cancellation, native keys, emulated touch and return links. Maximum observed candidate search was about 0.8 seconds on that runner; device performance varies. No human acceptance is implied.
 
 Run `npm run smoke:horseshoes` for local, solo and menu regression suites. Set `HORSESHOES_BASE_URL=https://mixmash.games/horseshoes/` to test publication. Exact CI/merge/deployment/live evidence belongs to the pull request and source release record. Next: physical-device play feedback and confirmed corrections only.
 
@@ -38,6 +38,31 @@ Menu pause/focus, explicit new-game choices, both themes and distinct control co
 
 Four schematic lawn delay monitors show a silent instant replay of each settled throw, while the next throw remains available. The feed holds its final frame; menu/hidden page pause it, and a new game clears it. The intro is a six-second camera pass with Skip, Escape, pointer or throw cancellation; reduced motion skips it. Menu offers Tour venue and View delay screens. Throwing from the optional screen view returns to the court.
 
-The Horseshoes adapter consumes the existing pinned FMP geometry under ECP-1.0; D1–D4 lawn delay anchor names and source demo dimensions remain unchanged. It adds only a simulated screen feed, with no hardware connection or producer changes. Source brief: docs/HORSESHOES_BROADCAST_BRIEF.md. Release verification pending; source release record owns next steps.
+The Horseshoes adapter consumes the existing pinned FMP geometry under ECP-1.0; D1–D4 lawn delay anchor names and source demo dimensions remain unchanged. It adds only a simulated screen feed, with no hardware connection or producer changes. Source brief: docs/HORSESHOES_BROADCAST_BRIEF.md. The pavilion broadcast release was verified through source PR13/14 and Mixmash PR170, including CI, Pages, live asset parity and browser checks. The source release record owns exact evidence and next steps.
 
 Venue views stay disabled while loading or if the four named screen anchors are unavailable, with a visible menu status. The court remains playable. The replay camera tracks the recorded shoe in flight and at the landing.
+
+
+## Audit corrections and hardening
+
+Short landscape windows place controls beside the court. Very small windows
+provide Court, Controls and Score tabs so actions are reachable without page
+scrolling; Menu keeps theme selection and return links available. Regression
+checks measure each required control against the viewport and clipping ancestors,
+including 568×320 and the 320×256 stress case, in both themes.
+
+The production entry applies a Content Security Policy permitting same-origin
+scripts, workers and assets, with WebAssembly compilation for Rapier. It blocks
+inline JavaScript, frames, objects, base URLs and form submission. Referrer
+information is suppressed. The source development server binds to loopback by
+default. These are defense-in-depth controls, not proof of absence of all bugs.
+
+GitHub Pages directly hosts this route with HTTPS enforcement. It cannot apply
+custom per-route response headers in this configuration. HSTS, `nosniff` and
+server-enforced framing restrictions remain hosting limitations; document meta
+policies cannot replace them. No DNS, hosting or original-game changes are made
+by this maintenance work. Exact candidate verification is recorded in the source
+release document and release PR; physical-device and human acceptance remain
+separate.
+
+The source toolchain uses Vite7.3.7 and Vitest4.1.12 with patched transitive dependencies. The October18 repair audit reports zero known vulnerabilities for both the full lockfile and runtime-only dependencies; all80 source tests and487 integrated Mixmash unit tests pass. Runtime Three.js and Rapier versions are unchanged.
