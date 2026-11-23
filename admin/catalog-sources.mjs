@@ -108,6 +108,19 @@ export const PROJECTS = [
     ],
   },
   {
+    id: 'hockey-havoc',
+    name: "Gritty's Hockey Havoc",
+    kind: 'Arcade hockey platformer',
+    lifecycle: 'Unlisted early playable',
+    route: '/hockey-havoc/',
+    summary: 'A single-file canvas platformer: skate three periods, collect hot dogs and puck crates, slapshot or slide-check Zambonis and rival goalies, and score to reach the next faceoff. Fixed 60 Hz simulation, keyboard and touch. Unlisted while the hub listing and naming choices are open.',
+    pinned: ['hockey-havoc/README.md', 'hockey-havoc/index.html', 'test/hockey-havoc-physics.test.mjs'],
+    statusSources: ['hockey-havoc/README.md'],
+    references: [
+      { label: "Play Gritty's Hockey Havoc", url: '/hockey-havoc/', kind: 'live route', note: 'noindex; no hub card.' },
+    ],
+  },
+  {
     id: 'pitch',
     name: 'PITCH RIOT',
     kind: 'Arcade soccer',

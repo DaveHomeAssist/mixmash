@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0b111e">
+    <meta name="description" content="An early arcade hockey platformer: skate three periods, collect hot dogs, slapshot Zambonis and score.">
+    <title>Gritty's Hockey Havoc — MixMash Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;600;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            overflow: hidden;
+            background-color: #0b111e;
+            /* Dynamic viewport height keeps the touch bar above mobile browser toolbars */
+            height: 100vh;
+            height: 100dvh;
+        }
+        /* Touch controls appear on any touch-capable device, whatever its width or orientation */
+        #touch-controls {
+            display: none;
+        }
+        @media (any-pointer: coarse) {
+            #touch-controls {
+                display: flex;
+            }
+        }
+        /* Very narrow phones (under 360 px): drop the logo tile so hearts, score, pucks and mute fit */
+        @media (max-width: 359px) {
+            #hud-logo {
+                display: none;
+            }
+        }
+        /* Short landscape screens: tighten the chrome so the rink gets the height */
+        @media (max-height: 500px) {
+            #game-header {
+                padding-top: 0.25rem;
+                padding-bottom: 0.25rem;
+            }
+            #touch-controls {
+                padding: 0.375rem 0.75rem;
+            }
+            #touch-controls button {
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+        .font-hockey {
+            font-family: 'Bungee', cursive;
+        }
+        .font-marker {
+            font-family: 'Permanent Marker', cursive;
+        }
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+        }
+        /* Custom neon ice glows */
+        .ice-glow {
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.8), 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+        .gritty-glow {
+            text-shadow: 0 0 12px rgba(249, 115, 22, 0.9), 0 0 25px rgba(234, 88, 12, 0.6);
+        }
+        /* Shake effect for hits */
+        @keyframes screenShake {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-4px, 4px); }
+            40% { transform: translate(4px, -3px); }
+            60% { transform: translate(-3px, 1px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0, 0); }
+        }
+        .shake {
+            animation: screenShake 0.25s ease-in-out;
+        }
+    </style>
+</head>
+<body class="w-screen flex flex-col items-center justify-center p-2 sm:p-4 text-white select-none">
+
+    <!-- Game Container Card -->
+    <div id="game-wrapper" class="relative w-full max-w-5xl h-full max-h-[820px] flex flex-col bg-slate-900 border-2 sm:border-4 border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden shadow-orange-950/40">
+        
+        <!-- Top HUD Header -->
+        <header id="game-header" class="w-full bg-slate-950/90 border-b border-slate-800 px-3 sm:px-4 py-2.5 flex items-center justify-between z-10 shrink-0 backdrop-blur-md">
+            <!-- Title & Mascot Tag (wordmark only from md up; the stats need the width on phones) -->
+            <div class="flex items-center gap-3">
+                <div id="hud-logo" class="w-10 h-10 rounded-xl bg-orange-600 border-2 border-orange-400 flex items-center justify-center shadow-md shadow-orange-600/40 transform -rotate-3 hover:rotate-0 transition-transform">
+                    <span class="text-xl">🏒</span>
+                </div>
+                <div class="hidden md:block">
+                    <h1 class="font-hockey text-orange-500 tracking-wider text-base sm:text-xl leading-none gritty-glow">GRITTY'S</h1>
+                    <p class="text-xs text-cyan-300 font-semibold tracking-wider font-hockey">HOCKEY HAVOC</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="flex items-center gap-2 sm:gap-6">
+                <!-- Health -->
+                <div class="flex items-center gap-1.5 bg-slate-800/80 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-700">
+                    <span class="hidden sm:inline text-rose-500 text-sm">❤️</span>
+                    <div id="hud-hearts" class="flex gap-1 text-sm text-rose-500">
+                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                </div>
+
+                <!-- Score -->
+                <div class="flex flex-col items-center sm:items-start">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Score</span>
+                    <span id="hud-score" class="font-hockey text-cyan-400 text-sm sm:text-lg leading-none">00000</span>
+                </div>
+
+                <!-- Pucks Available / Power -->
+                <div class="flex items-center gap-2 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700">
+                    <span class="text-base">⚫</span>
+                    <span id="hud-pucks" class="font-hockey text-amber-400 text-sm sm:text-base leading-none">x10</span>
+                </div>
+
+                <!-- Level -->
+                <div class="hidden sm:flex flex-col items-center">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Period</span>
+                    <span id="hud-period" class="font-hockey text-orange-400 text-sm sm:text-lg leading-none">1st</span>
+                </div>
+
+                <!-- Sound Mute Toggle -->
+                <button id="sound-btn" class="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:bg-slate-700 active:scale-95 transition-all text-slate-300">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Canvas Game Arena -->
+        <div id="canvas-container" class="relative flex-1 w-full h-full bg-slate-950 overflow-hidden cursor-crosshair">
+            <canvas id="gameCanvas" class="w-full h-full"></canvas>
+
+            <!-- Floating Overlay Notification Message -->
+            <div id="notice-toast" class="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4 bg-orange-600/90 text-white font-hockey px-4 py-2 rounded-xl border border-orange-300 text-sm shadow-xl z-20 flex items-center gap-2">
+                <span id="toast-icon">🌭</span>
+                <span id="toast-text">HOT DOG BOOST!</span>
+            </div>
+
+            <!-- Start / Menu Overlay Screen -->
+            <div id="start-overlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30 transition-opacity duration-300">
+                <div class="w-20 h-20 bg-orange-500 rounded-3xl border-4 border-amber-300 flex items-center justify-center text-4xl shadow-2xl shadow-orange-500/50 mb-3 animate-bounce">
+                    👺
+                </div>
+                <h2 class="font-hockey text-3xl sm:text-5xl text-orange-500 gritty-glow mb-1">GRITTY'S HAVOC</h2>
+                <p class="text-cyan-300 font-semibold text-xs sm:text-sm tracking-wide max-w-md mb-6">
+                    Lace up! Skate through the hostile arenas, collect stadium hot dogs, blast Zambonis with ferocious slapshots, and score goals!
+                </p>
+
+                <div class="grid grid-cols-2 gap-3 max-w-sm w-full mb-6 text-xs text-slate-300 text-left bg-slate-900/90 p-4 rounded-xl border border-slate-700">
+                    <div><span class="font-bold text-orange-400">A / D or ◄ ►:</span> Skate</div>
+                    <div><span class="font-bold text-orange-400">W / Space / ▲:</span> Jump</div>
+                    <div><span class="font-bold text-cyan-400">F / X / Click:</span> Slapshot</div>
+                    <div><span class="font-bold text-emerald-400">Shift / S:</span> Power Slide</div>
+                </div>
+
+                <button id="start-game-btn" class="font-hockey px-8 py-3.5 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-slate-950 text-xl rounded-xl shadow-lg shadow-orange-500/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-play"></i> HIT THE ICE!
+                </button>
+            </div>
+
+            <!-- Game Over / Victory Overlay Screen -->
+            <div id="gameover-overlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md hidden flex-col items-center justify-center p-6 text-center z-30">
+                <div id="go-icon" class="text-5xl mb-2">🚨</div>
+                <h2 id="go-title" class="font-hockey text-3xl sm:text-5xl text-rose-500 mb-2">GAME OVER</h2>
+                <p id="go-desc" class="text-slate-300 text-sm max-w-sm mb-4">Gritty got sent to the penalty box!</p>
+
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 mb-6 w-full max-w-xs space-y-2">
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-400">Final Score:</span>
+                        <span id="go-final-score" class="font-hockey text-cyan-400">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-400">Goals Scored:</span>
+                        <span id="go-goals" class="font-hockey text-amber-400">0</span>
+                    </div>
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-400">Hot Dogs Chowed:</span>
+                        <span id="go-hotdogs" class="font-hockey text-orange-400">0</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button id="restart-game-btn" class="font-hockey px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> PLAY AGAIN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Touch Controls Bar for Mobile & Tablet -->
+        <div id="touch-controls" class="w-full bg-slate-950 border-t border-slate-800 p-3 items-center justify-between select-none z-20">
+            <!-- Directional Buttons -->
+            <div class="flex items-center gap-2">
+                <button id="btn-left" class="w-13 h-13 min-w-[50px] min-h-[50px] bg-slate-800 active:bg-orange-600 rounded-xl border border-slate-700 flex items-center justify-center text-xl active:scale-95 transition-transform text-white">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <button id="btn-right" class="w-13 h-13 min-w-[50px] min-h-[50px] bg-slate-800 active:bg-orange-600 rounded-xl border border-slate-700 flex items-center justify-center text-xl active:scale-95 transition-transform text-white">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2">
+                <button id="btn-slide" class="w-13 h-13 min-w-[50px] min-h-[50px] bg-slate-800 active:bg-cyan-600 rounded-xl border border-slate-700 flex flex-col items-center justify-center text-xs font-hockey active:scale-95 transition-transform text-cyan-300">
+                    <i class="fa-solid fa-angles-down text-base mb-0.5"></i>
+                    <span>SLIDE</span>
+                </button>
+                <button id="btn-shoot" class="w-13 h-13 min-w-[50px] min-h-[50px] bg-orange-600 active:bg-orange-500 rounded-xl border border-orange-400 flex flex-col items-center justify-center text-xs font-hockey active:scale-95 transition-transform text-slate-950">
+                    <i class="fa-solid fa-hockey-puck text-base mb-0.5"></i>
+                    <span>SLAP</span>
+                </button>
+                <button id="btn-jump" class="w-13 h-13 min-w-[50px] min-h-[50px] bg-cyan-500 active:bg-cyan-400 rounded-xl border border-cyan-300 flex flex-col items-center justify-center text-xs font-hockey active:scale-95 transition-transform text-slate-950">
+                    <i class="fa-solid fa-arrow-up text-base mb-0.5"></i>
+                    <span>JUMP</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MixKit shared bar (hub, mute all, fullscreen). Loads before the game so it can track the game's AudioContext. -->
+    <script src="../src/kit/nav.js"></script>
+
+    <!-- Web Audio Synthesis & Game Logic -->
+    <script>
+        /**
+         * Sound FX System using Web Audio API (No external sound assets needed)
+         */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playTone(freq, type, duration, endFreq = null, volume = 0.2) {
+                if (this.muted || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    if (endFreq !== null) {
+                        osc.frequency.exponentialRampToValueAtTime(Math.max(1, endFreq), this.ctx.currentTime + duration);
+                    }
+
+                    gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {
+                    // Audio context errors handled silently
+                }
+            }
+
+            jump() {
+                this.playTone(200, 'sine', 0.18, 480, 0.25);
+            }
+
+            slapShot() {
+                this.playTone(130, 'triangle', 0.15, 40, 0.4);
+                this.playTone(600, 'square', 0.05, 120, 0.2);
+            }
+
+            hotdogCollect() {
+                this.playTone(523.25, 'triangle', 0.1, 784, 0.3);
+                setTimeout(() => this.playTone(784, 'triangle', 0.15, 1046.5, 0.3), 60);
+            }
+
+            goalHorn() {
+                if (this.muted || !this.ctx) return;
+                // Authentic deep blasting arena foghorn
+                const freqs = [110, 138.59, 164.81];
+                freqs.forEach(f => {
+                    this.playTone(f, 'sawtooth', 0.9, f * 0.98, 0.25);
+                });
+            }
+
+            enemyHit() {
+                this.playTone(90, 'square', 0.22, 30, 0.3);
+            }
+
+            playerHurt() {
+                this.playTone(320, 'sawtooth', 0.25, 90, 0.35);
+            }
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            }
+        }
+
+        const sound = new SoundFX();
+
+        /**
+         * Game Constants & Configurations
+         */
+        const GAME_CONFIG = {
+            gravity: 0.58,
+            iceFriction: 0.965,
+            skateAcceleration: 0.75,
+            maxSkateSpeed: 8.5,
+            jumpForce: -13.2,
+            doubleJumpForce: -11.5,
+            slideSpeedMultiplier: 1.35,
+            slideHeightRatio: 0.6,
+            puckSpeed: 14,
+            // Jump forgiveness, counted in fixed 60 Hz steps
+            coyoteFrames: 6,       // ~100 ms after skating off a ledge, a ground jump still works
+            jumpBufferFrames: 8,   // ~133 ms: a jump pressed just before landing fires on touchdown
+            jumpCutMultiplier: 0.7  // releasing jump while rising shortens the hop (once per jump);
+                                    // 0.7 keeps a 67 ms press above the 90 px first platform
+        };
+
+        /**
+         * Game State Management
+         */
+        const state = {
+            running: false,
+            period: 1,
+            maxPeriods: 3,
+            score: 0,
+            health: 3,
+            maxHealth: 3,
+            pucks: 12,
+            hotdogsCount: 0,
+            goalsScored: 0,
+            cameraX: 0,
+            screenShake: 0,
+            celebrating: false,   // true between a goal and the next faceoff
+            periodTimer: null,    // pending period-change timeout, cancelled on game over/restart
+            keys: {
+                left: false,
+                right: false,
+                jump: false,
+                slide: false,
+                shoot: false
+            }
+        };
+
+        // Canvas Setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvas-container');
+
+        // Virtual view: the world uses fixed coordinates (rink floor at y=520), so short or
+        // narrow canvases scale the world down instead of cropping the floor off-screen.
+        const VIEW = { w: 0, h: 0, scale: 1, offY: 0 };
+        const MIN_VIEW_H = 640;      // floor slab (y 520-620) plus a margin always fits
+        const MIN_VIEW_W = 640;      // enough rink ahead of Gritty to react on narrow screens
+        const NATURAL_VIEW_H = 760;  // taller views centre the world band vertically
+
+        function resizeCanvas() {
+            const cssW = Math.max(1, container.clientWidth);
+            const cssH = Math.max(1, container.clientHeight);
+            canvas.width = cssW;
+            canvas.height = cssH;
+            VIEW.scale = Math.min(1, cssH / MIN_VIEW_H, cssW / MIN_VIEW_W);
+            VIEW.w = cssW / VIEW.scale;
+            VIEW.h = cssH / VIEW.scale;
+            VIEW.offY = Math.max(0, (VIEW.h - NATURAL_VIEW_H) / 2);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(container);
+        resizeCanvas();
+
+        /**
+         * Particle System for Ice Spray, Fireworks & Explosions
+         */
+        class Particle {
+            constructor(x, y, vx, vy, color, size, life, decay = 0.95, shape = 'circle') {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.size = size;
+                this.life = life;
+                this.maxLife = life;
+                this.decay = decay;
+                this.shape = shape;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= this.decay;
+                this.vy += 0.15; // particle gravity
+                this.life--;
+            }
+
+            draw(ctx, offsetX) {
+                const alpha = Math.max(0, this.life / this.maxLife);
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = this.color;
+                if (this.shape === 'circle') {
+                    ctx.beginPath();
+                    ctx.arc(this.x - offsetX, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillRect(this.x - offsetX - this.size / 2, this.y - this.size / 2, this.size, this.size);
+                }
+                ctx.restore();
+            }
+        }
+
+        let particles = [];
+
+        function spawnIceSpray(x, y, dirX) {
+            for (let i = 0; i < 5; i++) {
+                const vx = -dirX * (Math.random() * 4 + 1.5) + (Math.random() - 0.5) * 2;
+                const vy = -(Math.random() * 3 + 1);
+                const size = Math.random() * 3 + 1.5;
+                particles.push(new Particle(x, y, vx, vy, '#e0f2fe', size, 22, 0.96));
+            }
+        }
+
+        function spawnExplosion(x, y, color = '#f97316') {
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed - 1.5;
+                const size = Math.random() * 5 + 2;
+                const colors = [color, '#facc15', '#ffffff', '#38bdf8'];
+                const pColor = colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, vx, vy, pColor, size, 35, 0.94));
+            }
+        }
+
+        /**
+         * Projectiles: Slapshot Pucks
+         */
+        class PuckProjectile {
+            constructor(x, y, dirX) {
+                this.x = x;
+                this.y = y;
+                this.radius = 7;
+                this.vx = dirX * GAME_CONFIG.puckSpeed;
+                this.vy = -1.2;
+                this.alive = true;
+                this.life = 75;
+                this.rotation = 0;
+            }
+
+            update(platforms) {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.25; // gravity on puck
+                this.rotation += this.vx * 0.1;
+                this.life--;
+
+                if (this.life <= 0) {
+                    this.alive = false;
+                }
+
+                // Bounce off platforms
+                for (const plat of platforms) {
+                    if (this.x + this.radius > plat.x && this.x - this.radius < plat.x + plat.w &&
+                        this.y + this.radius > plat.y && this.y - this.radius < plat.y + plat.h) {
+                        this.vy = -this.vy * 0.6;
+                        this.vx = this.vx * 0.85;
+                        spawnIceSpray(this.x, this.y, Math.sign(this.vx));
+                        if (Math.abs(this.vy) < 1) this.vy = 0;
+                    }
+                }
+            }
+
+            draw(ctx, offsetX) {
+                ctx.save();
+                ctx.translate(this.x - offsetX, this.y);
+                ctx.rotate(this.rotation);
+
+                // Black Hockey Puck with 3D bevel edge
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.radius, this.radius * 0.65, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Puck center logo / dot
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.arc(0, 0, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Gritty Mascot Player Character
+         */
+        class GrittyPlayer {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.w = 46;
+                this.h = 62;
+                this.vx = 0;
+                this.vy = 0;
+                this.grounded = false;
+                this.facing = 1; // 1 = right, -1 = left
+                this.isSliding = false;
+                this.airJumpsLeft = 1;     // the double jump
+                this.coyoteTimer = 0;      // steps left to ground-jump after leaving a ledge
+                this.jumpBufferTimer = 0;  // steps left for an early press to fire on landing
+                this.jumpQueued = false;   // press waiting for the next fixed step
+                this.canCutJump = false;   // early release may still shorten this jump
+                this.invulnerableTimer = 0;
+                this.eyeJiggle = 0;
+                this.slapshotCooldown = 0;
+                this.stickSwingAnim = 0;
+                this.furAnim = 0;
+            }
+
+            reset(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.grounded = false;
+                this.facing = 1;
+                this.isSliding = false;
+                this.airJumpsLeft = 1;
+                this.coyoteTimer = 0;
+                this.jumpBufferTimer = 0;
+                this.jumpQueued = false;
+                this.canCutJump = false;
+                this.invulnerableTimer = 0;
+            }
+
+            // Body height right now: the power slide crouches Gritty to 60% height
+            currentH() {
+                return this.isSliding ? this.h * GAME_CONFIG.slideHeightRatio : this.h;
+            }
+
+            // Would standing up (skates planted) push Gritty's head into a platform?
+            headroomBlocked(platforms) {
+                const feet = this.y + this.currentH();
+                const standTop = feet - this.h;
+                return platforms.some(p =>
+                    this.x + this.w > p.x && this.x < p.x + p.w &&
+                    standTop < p.y + p.h - 0.01 && feet > p.y + 0.01);
+            }
+
+            // Input handlers only queue the jump; it resolves inside the fixed update step
+            queueJump() {
+                this.jumpQueued = true;
+            }
+
+            update(platforms) {
+                this.furAnim += 0.2;
+                if (this.invulnerableTimer > 0) this.invulnerableTimer--;
+                if (this.slapshotCooldown > 0) this.slapshotCooldown--;
+                if (this.stickSwingAnim > 0) this.stickSwingAnim--;
+
+                // Slide state. Crouching and standing keep the skates planted (the height
+                // changes at the top of the body), and Gritty stays low while a platform is overhead.
+                const wantsSlide = state.keys.slide && this.grounded && Math.abs(this.vx) > 2;
+                const nextSliding = wantsSlide || (this.isSliding && this.headroomBlocked(platforms));
+                if (nextSliding !== this.isSliding) {
+                    const dh = this.h * (1 - GAME_CONFIG.slideHeightRatio);
+                    this.y += nextSliding ? dh : -dh;
+                    this.isSliding = nextSliding;
+                }
+                const currentH = this.currentH();
+
+                // Movement physics on slippery ice
+                const maxSpeed = this.isSliding ? GAME_CONFIG.maxSkateSpeed * GAME_CONFIG.slideSpeedMultiplier : GAME_CONFIG.maxSkateSpeed;
+
+                if (state.keys.left) {
+                    this.vx -= GAME_CONFIG.skateAcceleration;
+                    this.facing = -1;
+                    if (this.grounded && Math.random() < 0.4) spawnIceSpray(this.x + this.w * 0.8, this.y + currentH, 1);
+                } else if (state.keys.right) {
+                    this.vx += GAME_CONFIG.skateAcceleration;
+                    this.facing = 1;
+                    if (this.grounded && Math.random() < 0.4) spawnIceSpray(this.x + this.w * 0.2, this.y + currentH, -1);
+                }
+
+                // Ice friction & slide braking
+                this.vx *= GAME_CONFIG.iceFriction;
+
+                // Speed clamps
+                if (this.vx > maxSpeed) this.vx = maxSpeed;
+                if (this.vx < -maxSpeed) this.vx = -maxSpeed;
+
+                // Stop jitter when nearly stationary
+                if (Math.abs(this.vx) < 0.05) this.vx = 0;
+
+                // Jump input resolves here. A press with no jump available is buffered.
+                if (this.jumpQueued) {
+                    this.jumpQueued = false;
+                    if (!this.tryJump()) this.jumpBufferTimer = GAME_CONFIG.jumpBufferFrames;
+                }
+
+                // Variable jump height: letting go while still rising cuts the ascent once
+                if (this.canCutJump && this.vy < 0 && !state.keys.jump) {
+                    this.vy *= GAME_CONFIG.jumpCutMultiplier;
+                    this.canCutJump = false;
+                }
+                if (this.vy >= 0) this.canCutJump = false;
+
+                // Apply gravity
+                this.vy += GAME_CONFIG.gravity;
+                if (this.vy > 18) this.vy = 18;
+
+                // Pre-position for collision detection
+                let nextX = this.x + this.vx;
+                let nextY = this.y + this.vy;
+
+                this.grounded = false;
+
+                // Platform collisions (AABB)
+                for (const p of platforms) {
+                    // Check horizontal collisions
+                    if (nextY + currentH > p.y && this.y < p.y + p.h) {
+                        if (this.vx > 0 && this.x + this.w <= p.x && nextX + this.w >= p.x) {
+                            nextX = p.x - this.w;
+                            this.vx = 0;
+                        } else if (this.vx < 0 && this.x >= p.x + p.w && nextX <= p.x + p.w) {
+                            nextX = p.x + p.w;
+                            this.vx = 0;
+                        }
+                    }
+
+                    // Check vertical collisions
+                    if (nextX + this.w > p.x && nextX < p.x + p.w) {
+                        // Landing on top
+                        if (this.vy > 0 && this.y + currentH <= p.y && nextY + currentH >= p.y) {
+                            nextY = p.y - currentH;
+                            this.vy = 0;
+                            this.grounded = true;
+                            this.airJumpsLeft = 1; // Restore double jump
+                            this.coyoteTimer = GAME_CONFIG.coyoteFrames;
+                        }
+                        // Bumping head on bottom
+                        else if (this.vy < 0 && this.y >= p.y + p.h && nextY <= p.y + p.h) {
+                            nextY = p.y + p.h;
+                            this.vy = 0;
+                        }
+                    }
+                }
+
+                this.x = nextX;
+                this.y = nextY;
+
+                // Coyote time counts down once Gritty leaves the ice without jumping
+                if (!this.grounded && this.coyoteTimer > 0) this.coyoteTimer--;
+
+                // A buffered jump fires on the first grounded step
+                if (this.jumpBufferTimer > 0) {
+                    if (this.grounded && this.tryJump()) this.jumpBufferTimer = 0;
+                    else this.jumpBufferTimer--;
+                }
+
+                // Googly eye wobble intensity based on velocity
+                this.eyeJiggle = Math.sin(Date.now() * 0.02) * (Math.abs(this.vx) * 0.45 + 1.2);
+            }
+
+            // Ground jump (also during coyote time), else the one double jump. Returns false if none is left.
+            tryJump() {
+                if (this.grounded || this.coyoteTimer > 0) {
+                    sound.jump();
+                    this.vy = GAME_CONFIG.jumpForce;
+                    this.grounded = false;
+                    this.coyoteTimer = 0;
+                    this.airJumpsLeft = 1;
+                    this.canCutJump = true;
+                    return true;
+                }
+                if (this.airJumpsLeft > 0) {
+                    // Double Jump - Gritty Mascot Twirl!
+                    sound.jump();
+                    this.vy = GAME_CONFIG.doubleJumpForce;
+                    this.airJumpsLeft--;
+                    this.canCutJump = true;
+                    spawnIceSpray(this.x + this.w / 2, this.y + this.currentH(), this.facing);
+                    return true;
+                }
+                return false;
+            }
+
+            shoot(projectiles) {
+                if (this.slapshotCooldown > 0) return;
+                if (state.pucks <= 0) {
+                    // Never strand a run: with every crate taken, the bench restocks the nearest one
+                    if (restockCrate(this)) {
+                        showToast('BENCH RESTOCK! GRAB THE CRATE!', '📦');
+                    } else {
+                        showToast('NO PUCKS LEFT! FIND A CRATE!', '⚠️');
+                    }
+                    return;
+                }
+
+                state.pucks--;
+                updateHUD();
+                sound.slapShot();
+                this.stickSwingAnim = 12;
+                this.slapshotCooldown = 18;
+
+                // Slapshot recoil knockback
+                this.vx -= this.facing * 3;
+
+                // Spawn puck
+                const shootX = this.facing === 1 ? this.x + this.w + 6 : this.x - 6;
+                const shootY = this.y + this.currentH() * 0.7;
+                projectiles.push(new PuckProjectile(shootX, shootY, this.facing));
+                spawnIceSpray(shootX, shootY, this.facing);
+            }
+
+            hurt() {
+                // No damage during the goal celebration, so a period can't end in a loss
+                if (this.invulnerableTimer > 0 || state.celebrating) return;
+                sound.playerHurt();
+                state.health--;
+                this.invulnerableTimer = 60; // 1 second invulnerability
+                this.vy = -7;
+                this.canCutJump = false; // releasing jump must not damp the knockback
+                this.vx = -this.facing * 5;
+                triggerScreenShake(8);
+                updateHUD();
+
+                if (state.health <= 0) {
+                    gameOver(false);
+                }
+            }
+
+            draw(ctx, offsetX) {
+                // Flash when invulnerable
+                if (this.invulnerableTimer > 0 && Math.floor(Date.now() / 60) % 2 === 0) {
+                    return;
+                }
+
+                ctx.save();
+                const drawX = Math.round(this.x - offsetX);
+                const drawY = Math.round(this.y);
+                const currentH = this.currentH();
+
+                // Mirror for direction
+                if (this.facing === -1) {
+                    ctx.translate(drawX + this.w, drawY);
+                    ctx.scale(-1, 1);
+                } else {
+                    ctx.translate(drawX, drawY);
+                }
+
+                // --- 1. Gritty's Ice Skates ---
+                ctx.fillStyle = '#1e293b'; // Boot
+                ctx.fillRect(8, currentH - 8, 14, 7);
+                ctx.fillRect(24, currentH - 8, 14, 7);
+                // Steel blades
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(4, currentH - 2, 20, 2);
+                ctx.fillRect(20, currentH - 2, 20, 2);
+
+                // --- 2. Mascot Hockey Jersey (Flyers Orange & Black) ---
+                ctx.fillStyle = '#ea580c'; // Philly Orange
+                ctx.beginPath();
+                ctx.roundRect(6, currentH * 0.35, 34, currentH * 0.52, [8, 8, 4, 4]);
+                ctx.fill();
+
+                // Jersey black / white horizontal stripe
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(6, currentH * 0.62, 34, 7);
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(6, currentH * 0.65, 34, 2);
+
+                // Jersey Number #00 on back/chest
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 9px Arial';
+                ctx.fillText('00', 17, currentH * 0.55);
+
+                // --- 3. Gritty's Shaggy Orange Fur & Huge Mascot Head ---
+                const headY = currentH * 0.05;
+                const headSize = 34;
+
+                // Fuzzy fur spikes using sin offsets
+                ctx.fillStyle = '#f97316';
+                for (let angle = 0; angle < Math.PI * 2; angle += 0.35) {
+                    const spikeDist = 18 + Math.sin(this.furAnim + angle * 4) * 3;
+                    const spX = 23 + Math.cos(angle) * spikeDist;
+                    const spY = headY + 16 + Math.sin(angle) * spikeDist;
+                    ctx.beginPath();
+                    ctx.arc(spX, spY, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Main Head base
+                ctx.fillStyle = '#ea580c';
+                ctx.beginPath();
+                ctx.arc(23, headY + 16, 17, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Gritty's Signature Wild Orange Beard
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.moveTo(10, headY + 18);
+                ctx.quadraticCurveTo(23, headY + 36, 36, headY + 18);
+                ctx.quadraticCurveTo(23, headY + 28, 10, headY + 18);
+                ctx.fill();
+
+                // --- 4. Gritty's Iconic Googly Eyes ---
+                // Left Googly Eye
+                const eyeY = headY + 13;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(18, eyeY, 6.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Left Pupil (derpy wobbling pupil)
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(18 + Math.cos(this.eyeJiggle) * 2.5, eyeY + Math.sin(this.eyeJiggle * 1.5) * 2, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Right Googly Eye (larger, derpier)
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(29, eyeY, 7.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#0f172a';
+                ctx.stroke();
+
+                // Right Pupil
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(29 - Math.sin(this.eyeJiggle * 1.2) * 2.5, eyeY + Math.cos(this.eyeJiggle) * 2.5, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Gritty mouth / grin
+                ctx.strokeStyle = '#7c2d12';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(23, headY + 24, 7, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+
+                // Mascot Helmet / Winter Hat
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.arc(23, headY + 7, 14, Math.PI, 0, false);
+                ctx.fill();
+                // Helmet Visor reflection
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(17, headY + 5, 12, 3);
+
+                // --- 5. Hockey Stick & Slapshot Windup ---
+                ctx.save();
+                const stickAngle = this.stickSwingAnim > 0 
+                    ? (this.stickSwingAnim / 12) * Math.PI * 0.8 - 0.4
+                    : -0.25;
+
+                ctx.translate(28, currentH * 0.55);
+                ctx.rotate(stickAngle);
+
+                // Wooden stick shaft
+                ctx.fillStyle = '#d97706';
+                ctx.fillRect(-2, -18, 4, 38);
+
+                // Blade wrapped in black hockey tape
+                ctx.fillStyle = '#1e293b';
+                ctx.beginPath();
+                ctx.moveTo(2, 20);
+                ctx.lineTo(16, 22);
+                ctx.lineTo(15, 15);
+                ctx.lineTo(2, 14);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Interactive Entities: Hotdogs, Pucks Crate, Goal Net, Enemies (Zambonis & Rival Mascots)
+         */
+        class HotdogCollectible {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.w = 26;
+                this.h = 18;
+                this.baseY = y;
+                this.collected = false;
+                this.hoverOffset = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.hoverOffset += 0.08;
+                this.y = this.baseY + Math.sin(this.hoverOffset) * 5;
+            }
+
+            draw(ctx, offsetX) {
+                if (this.collected) return;
+                const dx = this.x - offsetX;
+                const dy = this.y;
+
+                ctx.save();
+                // Bun
+                ctx.fillStyle = '#fde68a';
+                ctx.beginPath();
+                ctx.roundRect(dx, dy + 2, this.w, this.h - 4, 6);
+                ctx.fill();
+
+                // Sausage
+                ctx.fillStyle = '#dc2626';
+                ctx.beginPath();
+                ctx.roundRect(dx - 2, dy + 5, this.w + 4, 6, 3);
+                ctx.fill();
+
+                // Mustard squiggle line
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(dx + 2, dy + 8);
+                ctx.lineTo(dx + 7, dy + 6);
+                ctx.lineTo(dx + 12, dy + 8);
+                ctx.lineTo(dx + 17, dy + 6);
+                ctx.lineTo(dx + 22, dy + 8);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        }
+
+        class PuckCrate {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.w = 32;
+                this.h = 30;
+                this.collected = false;
+            }
+
+            draw(ctx, offsetX) {
+                if (this.collected) return;
+                const dx = this.x - offsetX;
+                ctx.save();
+                // Wood crate box
+                ctx.fillStyle = '#92400e';
+                ctx.fillRect(dx, this.y, this.w, this.h);
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(dx, this.y, this.w, this.h);
+
+                // Crate cross brace
+                ctx.beginPath();
+                ctx.moveTo(dx, this.y);
+                ctx.lineTo(dx + this.w, this.y + this.h);
+                ctx.moveTo(dx + this.w, this.y);
+                ctx.lineTo(dx, this.y + this.h);
+                ctx.stroke();
+
+                // Hockey puck icon on side
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.ellipse(dx + this.w / 2, this.y + this.h / 2, 7, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class GoalNet {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.w = 64;
+                this.h = 60;
+                this.scored = false;
+            }
+
+            draw(ctx, offsetX) {
+                const dx = this.x - offsetX;
+                ctx.save();
+
+                // Goal Frame (Red Posts)
+                ctx.strokeStyle = '#dc2626';
+                ctx.lineWidth = 5;
+                ctx.strokeRect(dx, this.y, this.w, this.h);
+
+                // Back depth of net
+                ctx.fillStyle = 'rgba(241, 245, 249, 0.25)';
+                ctx.fillRect(dx, this.y, this.w, this.h);
+
+                // Mesh netting pattern
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.lineWidth = 1;
+                for (let x = dx; x <= dx + this.w; x += 8) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, this.y);
+                    ctx.lineTo(x, this.y + this.h);
+                    ctx.stroke();
+                }
+                for (let y = this.y; y <= this.y + this.h; y += 8) {
+                    ctx.beginPath();
+                    ctx.moveTo(dx, y);
+                    ctx.lineTo(dx + this.w, y);
+                    ctx.stroke();
+                }
+
+                // Red Goal Siren on top
+                ctx.fillStyle = this.scored ? '#ef4444' : '#7f1d1d';
+                ctx.beginPath();
+                ctx.arc(dx + this.w / 2, this.y - 6, 7, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Enemy 1: Rogue Ice Resurfacing Zamboni
+         */
+        class ZamboniEnemy {
+            constructor(x, y, minX, maxX) {
+                this.x = x;
+                this.y = y;
+                this.w = 68;
+                this.h = 42;
+                this.minX = minX;
+                this.maxX = maxX;
+                this.speed = 1.6;
+                this.dir = 1;
+                this.hp = 2;
+                this.dead = false;
+            }
+
+            update() {
+                if (this.dead) return;
+                this.x += this.speed * this.dir;
+                if (this.x > this.maxX) {
+                    this.x = this.maxX;
+                    this.dir = -1;
+                } else if (this.x < this.minX) {
+                    this.x = this.minX;
+                    this.dir = 1;
+                }
+
+                // Zamboni water/snow trail
+                if (Math.random() < 0.3) {
+                    spawnIceSpray(this.dir === 1 ? this.x : this.x + this.w, this.y + this.h - 2, this.dir);
+                }
+            }
+
+            draw(ctx, offsetX) {
+                if (this.dead) return;
+                const dx = this.x - offsetX;
+                ctx.save();
+
+                // Machine Cab
+                ctx.fillStyle = '#0284c7'; // Ice blue body
+                ctx.beginPath();
+                ctx.roundRect(dx, this.y + 10, this.w, this.h - 10, 6);
+                ctx.fill();
+
+                // Driver Seat / Windshield
+                ctx.fillStyle = '#bae6fd';
+                ctx.fillRect(this.dir === 1 ? dx + 38 : dx + 6, this.y + 4, 18, 12);
+
+                // Tires
+                ctx.fillStyle = '#1e293b';
+                ctx.beginPath();
+                ctx.arc(dx + 16, this.y + this.h, 7, 0, Math.PI * 2);
+                ctx.arc(dx + this.w - 16, this.y + this.h, 7, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Front scraping blade
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(this.dir === 1 ? dx + this.w - 4 : dx, this.y + this.h - 6, 6, 6);
+
+                // Caution Stripes
+                ctx.fillStyle = '#facc15';
+                ctx.fillRect(dx + 12, this.y + 24, 24, 4);
+
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Enemy 2: Rival Goalie Mascot Bot
+         */
+        class MascotEnemy {
+            constructor(x, y, patrolRange) {
+                this.x = x;
+                this.y = y;
+                this.w = 40;
+                this.h = 56;
+                this.startX = x;
+                this.patrolRange = patrolRange;
+                this.speed = 1.8;
+                this.dir = -1;
+                this.hp = 1;
+                this.dead = false;
+                this.bounceY = 0;
+            }
+
+            update() {
+                if (this.dead) return;
+                this.x += this.speed * this.dir;
+                if (Math.abs(this.x - this.startX) > this.patrolRange) {
+                    this.dir *= -1;
+                }
+                this.bounceY = Math.sin(Date.now() * 0.008) * 3;
+            }
+
+            draw(ctx, offsetX) {
+                if (this.dead) return;
+                const dx = this.x - offsetX;
+                const dy = this.y + this.bounceY;
+                ctx.save();
+
+                // Rival Penguin/Blue Robot Goalie
+                ctx.fillStyle = '#1e3a8a';
+                ctx.beginPath();
+                ctx.roundRect(dx + 4, dy + 18, this.w - 8, this.h - 22, 6);
+                ctx.fill();
+
+                // Goalie leg pads
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(dx + 6, dy + this.h - 14, 10, 14);
+                ctx.fillRect(dx + this.w - 16, dy + this.h - 14, 10, 14);
+
+                // Goalie Mask / Helmet
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(dx + this.w / 2, dy + 14, 13, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Mask grill lines
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(dx + this.w / 2 - 8, dy + 14);
+                ctx.lineTo(dx + this.w / 2 + 8, dy + 14);
+                ctx.moveTo(dx + this.w / 2, dy + 8);
+                ctx.lineTo(dx + this.w / 2, dy + 20);
+                ctx.stroke();
+
+                // Goalie Blocker / Catcher glove
+                ctx.fillStyle = '#3b82f6';
+                ctx.fillRect(this.dir === 1 ? dx + this.w - 6 : dx - 4, dy + 26, 10, 12);
+
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Level Arenas Builder
+         */
+        function buildArena(periodNumber) {
+            const platforms = [];
+            const hotdogs = [];
+            const crates = [];
+            const enemies = [];
+            let goal = null;
+
+            // Base Arena Ice Rink Floor
+            platforms.push({ x: -100, y: 520, w: 4200, h: 100, type: 'ice' });
+            // Left & Right Arena Stadium boards
+            platforms.push({ x: -120, y: 0, w: 60, h: 600, type: 'board' });
+
+            if (periodNumber === 1) {
+                // Period 1: Welcome to the Spectrum Arena
+                // Floating ice benches & spectator stands
+                platforms.push({ x: 280, y: 430, w: 140, h: 22, type: 'ice' });
+                platforms.push({ x: 520, y: 350, w: 160, h: 22, type: 'ice' });
+                platforms.push({ x: 780, y: 280, w: 150, h: 22, type: 'ice' });
+                platforms.push({ x: 1050, y: 380, w: 200, h: 22, type: 'ice' });
+                platforms.push({ x: 1380, y: 320, w: 160, h: 22, type: 'ice' });
+                platforms.push({ x: 1680, y: 410, w: 220, h: 22, type: 'ice' });
+                platforms.push({ x: 2020, y: 340, w: 180, h: 22, type: 'ice' });
+                platforms.push({ x: 2320, y: 270, w: 190, h: 22, type: 'ice' });
+                platforms.push({ x: 2650, y: 370, w: 250, h: 22, type: 'ice' });
+
+                // Collectibles
+                hotdogs.push(new HotdogCollectible(320, 390));
+                hotdogs.push(new HotdogCollectible(560, 310));
+                hotdogs.push(new HotdogCollectible(820, 240));
+                hotdogs.push(new HotdogCollectible(1100, 340));
+                hotdogs.push(new HotdogCollectible(1420, 280));
+                hotdogs.push(new HotdogCollectible(1750, 370));
+                hotdogs.push(new HotdogCollectible(2100, 300));
+                hotdogs.push(new HotdogCollectible(2400, 230));
+                hotdogs.push(new HotdogCollectible(2720, 330));
+
+                crates.push(new PuckCrate(700, 490));
+                crates.push(new PuckCrate(1850, 490));
+
+                // Enemies
+                enemies.push(new ZamboniEnemy(650, 478, 600, 950));
+                enemies.push(new MascotEnemy(1400, 464, 120));
+                enemies.push(new ZamboniEnemy(1900, 478, 1850, 2250));
+                enemies.push(new MascotEnemy(2700, 314, 70));
+
+                goal = new GoalNet(3050, 460);
+
+            } else if (periodNumber === 2) {
+                // Period 2: Overtime Blizzard
+                platforms.push({ x: 250, y: 440, w: 120, h: 22, type: 'ice' });
+                platforms.push({ x: 440, y: 370, w: 110, h: 22, type: 'ice' });
+                platforms.push({ x: 620, y: 300, w: 120, h: 22, type: 'ice' });
+                platforms.push({ x: 820, y: 230, w: 140, h: 22, type: 'ice' });
+
+                // Lower gap with ice hazards
+                platforms.push({ x: 1080, y: 420, w: 130, h: 22, type: 'ice' });
+                platforms.push({ x: 1320, y: 340, w: 150, h: 22, type: 'ice' });
+                platforms.push({ x: 1580, y: 270, w: 160, h: 22, type: 'ice' });
+                platforms.push({ x: 1860, y: 380, w: 160, h: 22, type: 'ice' });
+                platforms.push({ x: 2150, y: 310, w: 180, h: 22, type: 'ice' });
+                platforms.push({ x: 2450, y: 240, w: 180, h: 22, type: 'ice' });
+                platforms.push({ x: 2750, y: 370, w: 220, h: 22, type: 'ice' });
+
+                hotdogs.push(new HotdogCollectible(280, 400));
+                hotdogs.push(new HotdogCollectible(650, 260));
+                hotdogs.push(new HotdogCollectible(860, 190));
+                hotdogs.push(new HotdogCollectible(1360, 300));
+                hotdogs.push(new HotdogCollectible(1620, 230));
+                hotdogs.push(new HotdogCollectible(1900, 340));
+                hotdogs.push(new HotdogCollectible(2200, 270));
+                hotdogs.push(new HotdogCollectible(2800, 330));
+
+                crates.push(new PuckCrate(500, 490));
+                crates.push(new PuckCrate(1500, 490));
+                crates.push(new PuckCrate(2300, 490));
+
+                enemies.push(new ZamboniEnemy(400, 478, 350, 750));
+                enemies.push(new MascotEnemy(850, 174, 50));
+                enemies.push(new ZamboniEnemy(1200, 478, 1150, 1600));
+                enemies.push(new MascotEnemy(1900, 324, 60));
+                enemies.push(new ZamboniEnemy(2200, 478, 2100, 2550));
+
+                goal = new GoalNet(3200, 460);
+
+            } else {
+                // Period 3: Stanley Cup Finals Championship!
+                platforms.push({ x: 240, y: 440, w: 100, h: 22, type: 'ice' });
+                platforms.push({ x: 420, y: 360, w: 100, h: 22, type: 'ice' });
+                platforms.push({ x: 600, y: 280, w: 120, h: 22, type: 'ice' });
+                platforms.push({ x: 800, y: 380, w: 120, h: 22, type: 'ice' });
+                platforms.push({ x: 1000, y: 460, w: 120, h: 22, type: 'ice' });
+                platforms.push({ x: 1220, y: 350, w: 140, h: 22, type: 'ice' });
+                platforms.push({ x: 1440, y: 260, w: 140, h: 22, type: 'ice' });
+                platforms.push({ x: 1680, y: 190, w: 160, h: 22, type: 'ice' });
+                platforms.push({ x: 1980, y: 320, w: 150, h: 22, type: 'ice' });
+                platforms.push({ x: 2250, y: 420, w: 180, h: 22, type: 'ice' });
+                platforms.push({ x: 2550, y: 310, w: 160, h: 22, type: 'ice' });
+                platforms.push({ x: 2820, y: 220, w: 170, h: 22, type: 'ice' });
+                platforms.push({ x: 3120, y: 340, w: 200, h: 22, type: 'ice' });
+
+                for (let i = 0; i < 14; i++) {
+                    hotdogs.push(new HotdogCollectible(260 + i * 220, 250 + (i % 3) * 60));
+                }
+
+                crates.push(new PuckCrate(400, 490));
+                crates.push(new PuckCrate(1100, 490));
+                crates.push(new PuckCrate(2100, 490));
+
+                enemies.push(new ZamboniEnemy(300, 478, 250, 700));
+                enemies.push(new MascotEnemy(620, 224, 45));
+                enemies.push(new ZamboniEnemy(1050, 478, 950, 1400));
+                enemies.push(new MascotEnemy(1460, 204, 50));
+                enemies.push(new ZamboniEnemy(1800, 478, 1750, 2200));
+                enemies.push(new MascotEnemy(2580, 254, 60));
+                enemies.push(new ZamboniEnemy(2600, 478, 2500, 3000));
+
+                goal = new GoalNet(3450, 460);
+            }
+
+            return { platforms, hotdogs, crates, enemies, goal };
+        }
+
+        let player = new GrittyPlayer(80, 440);
+        let arena = buildArena(state.period);
+        let projectiles = [];
+
+        // Out of pucks with every crate taken: put the nearest crate back so the goal stays reachable
+        function restockCrate(p) {
+            if (!arena.crates.length || arena.crates.some(c => !c.collected)) return false;
+            const px = p.x + p.w / 2;
+            let nearest = arena.crates[0];
+            for (const c of arena.crates) {
+                if (Math.abs(c.x - px) < Math.abs(nearest.x - px)) nearest = c;
+            }
+            nearest.collected = false;
+            return true;
+        }
+
+        /**
+         * HUD Updates
+         */
+        function updateHUD() {
+            document.getElementById('hud-score').textContent = String(state.score).padStart(5, '0');
+            document.getElementById('hud-pucks').textContent = 'x' + state.pucks;
+
+            const periods = ['1st', '2nd', '3rd', 'OT'];
+            document.getElementById('hud-period').textContent = periods[state.period - 1] || 'OT';
+
+            // Health hearts
+            const heartsContainer = document.getElementById('hud-hearts');
+            let heartsHtml = '';
+            for (let i = 0; i < state.maxHealth; i++) {
+                if (i < state.health) {
+                    heartsHtml += '<i class="fa-solid fa-heart text-rose-500"></i>';
+                } else {
+                    heartsHtml += '<i class="fa-regular fa-heart text-slate-600"></i>';
+                }
+            }
+            heartsContainer.innerHTML = heartsHtml;
+        }
+
+        function showToast(text, icon = '🌭') {
+            const toast = document.getElementById('notice-toast');
+            document.getElementById('toast-text').textContent = text;
+            document.getElementById('toast-icon').textContent = icon;
+            toast.classList.remove('opacity-0', '-translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 1800);
+        }
+
+        function triggerScreenShake(amount = 6) {
+            state.screenShake = amount;
+            const wrap = document.getElementById('game-wrapper');
+            wrap.classList.add('shake');
+            setTimeout(() => wrap.classList.remove('shake'), 250);
+        }
+
+        /**
+         * Input Event Handlers
+         */
+        const GAME_KEYS = new Set([
+            'KeyA', 'ArrowLeft', 'KeyD', 'ArrowRight', 'KeyW', 'ArrowUp', 'Space',
+            'KeyS', 'ArrowDown', 'ShiftLeft', 'ShiftRight', 'KeyF', 'KeyX'
+        ]);
+
+        window.addEventListener('keydown', (e) => {
+            sound.init();
+            // While playing, game keys belong to the game: no scrolling, no Space-clicking a focused button
+            if (state.running && GAME_KEYS.has(e.code)) e.preventDefault();
+            if (e.repeat) return;
+
+            switch (e.code) {
+                case 'KeyA':
+                case 'ArrowLeft':
+                    state.keys.left = true;
+                    break;
+                case 'KeyD':
+                case 'ArrowRight':
+                    state.keys.right = true;
+                    break;
+                case 'KeyW':
+                case 'ArrowUp':
+                case 'Space':
+                    state.keys.jump = true;
+                    if (state.running) player.queueJump();
+                    break;
+                case 'KeyS':
+                case 'ArrowDown':
+                case 'ShiftLeft':
+                case 'ShiftRight':
+                    state.keys.slide = true;
+                    break;
+                case 'KeyF':
+                case 'KeyX':
+                    if (state.running) player.shoot(projectiles);
+                    break;
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            // A focused button activates on Space keyup, so block it here too while playing
+            if (state.running && GAME_KEYS.has(e.code)) e.preventDefault();
+            switch (e.code) {
+                case 'KeyA':
+                case 'ArrowLeft':
+                    state.keys.left = false;
+                    break;
+                case 'KeyD':
+                case 'ArrowRight':
+                    state.keys.right = false;
+                    break;
+                case 'KeyW':
+                case 'ArrowUp':
+                case 'Space':
+                    state.keys.jump = false;
+                    break;
+                case 'KeyS':
+                case 'ArrowDown':
+                case 'ShiftLeft':
+                case 'ShiftRight':
+                    state.keys.slide = false;
+                    break;
+            }
+        });
+
+        // Release every held control when the window loses focus or the tab is hidden,
+        // so a key held during Cmd-Tab doesn't keep Gritty skating on return
+        function releaseAllKeys() {
+            for (const k in state.keys) state.keys[k] = false;
+        }
+        window.addEventListener('blur', releaseAllKeys);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) releaseAllKeys();
+        });
+
+        // Mouse click shooting in arena
+        canvas.addEventListener('mousedown', (e) => {
+            sound.init();
+            if (state.running) {
+                player.shoot(projectiles);
+            }
+        });
+
+        // Mobile On-Screen Touch Controls
+        const btnLeft = document.getElementById('btn-left');
+        const btnRight = document.getElementById('btn-right');
+        const btnJump = document.getElementById('btn-jump');
+        const btnShoot = document.getElementById('btn-shoot');
+        const btnSlide = document.getElementById('btn-slide');
+
+        function addTouchEvents(elem, onStart, onEnd) {
+            elem.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                sound.init();
+                onStart();
+            }, { passive: false });
+            const end = (e) => {
+                e.preventDefault();
+                if (onEnd) onEnd();
+            };
+            elem.addEventListener('touchend', end, { passive: false });
+            // The OS can cancel a touch (system gesture, alert); treat it as a release
+            elem.addEventListener('touchcancel', end, { passive: false });
+        }
+
+        addTouchEvents(btnLeft, () => state.keys.left = true, () => state.keys.left = false);
+        addTouchEvents(btnRight, () => state.keys.right = true, () => state.keys.right = false);
+        addTouchEvents(btnSlide, () => state.keys.slide = true, () => state.keys.slide = false);
+        addTouchEvents(btnJump, () => {
+            state.keys.jump = true;
+            if (state.running) player.queueJump();
+        }, () => state.keys.jump = false);
+        addTouchEvents(btnShoot, () => {
+            if (state.running) player.shoot(projectiles);
+        });
+
+        // Audio Toggle
+        document.getElementById('sound-btn').addEventListener('click', (e) => {
+            e.currentTarget.blur(); // keep Space (jump) from re-clicking this button
+            sound.init();
+            const isMuted = sound.toggleMute();
+            document.getElementById('sound-icon').className = isMuted ? 'fa-solid fa-volume-xmark text-rose-400' : 'fa-solid fa-volume-high text-slate-300';
+        });
+
+        /**
+         * Game Over / Victory
+         */
+        // Cancel a pending goal-to-faceoff transition so it can't fire into a finished or new run
+        function cancelPeriodTimer() {
+            if (state.periodTimer !== null) clearTimeout(state.periodTimer);
+            state.periodTimer = null;
+            state.celebrating = false;
+        }
+
+        function gameOver(isVictory) {
+            state.running = false;
+            cancelPeriodTimer();
+            const overlay = document.getElementById('gameover-overlay');
+            const title = document.getElementById('go-title');
+            const desc = document.getElementById('go-desc');
+            const icon = document.getElementById('go-icon');
+
+            document.getElementById('go-final-score').textContent = state.score;
+            document.getElementById('go-goals').textContent = state.goalsScored;
+            document.getElementById('go-hotdogs').textContent = state.hotdogsCount;
+
+            if (isVictory) {
+                icon.textContent = '🏆';
+                title.textContent = 'STANLEY CUP CHAMPIONS!';
+                title.className = 'font-hockey text-3xl sm:text-5xl text-amber-400 mb-2 gritty-glow';
+                desc.textContent = 'Gritty conquered the ice and brought the championship home to Philly!';
+            } else {
+                icon.textContent = '🚨';
+                title.textContent = 'GAME OVER';
+                title.className = 'font-hockey text-3xl sm:text-5xl text-rose-500 mb-2';
+                desc.textContent = 'Gritty got checked into the penalty box! Time for a rematch.';
+            }
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function restartGame() {
+            cancelPeriodTimer();
+            state.period = 1;
+            state.score = 0;
+            state.health = 3;
+            state.pucks = 12;
+            state.hotdogsCount = 0;
+            state.goalsScored = 0;
+            projectiles = [];
+            particles = [];
+            player.reset(80, 440);
+            arena = buildArena(state.period);
+            updateHUD();
+
+            document.getElementById('gameover-overlay').classList.add('hidden');
+            document.getElementById('gameover-overlay').classList.remove('flex');
+            document.getElementById('start-overlay').classList.add('hidden');
+            state.running = true;
+        }
+
+        document.getElementById('start-game-btn').addEventListener('click', (e) => {
+            e.currentTarget.blur();
+            sound.init();
+            restartGame();
+        });
+
+        document.getElementById('restart-game-btn').addEventListener('click', (e) => {
+            e.currentTarget.blur();
+            sound.init();
+            restartGame();
+        });
+
+        /**
+         * Rendering the Hockey Arena Background & Visuals
+         */
+        function drawArenaBackdrop(ctx, offsetX) {
+            const w = VIEW.w;
+            const h = VIEW.h;
+
+            // Stadium Arena Gradient Ceiling
+            const arenaGradient = ctx.createLinearGradient(0, 0, 0, h);
+            arenaGradient.addColorStop(0, '#060d1a');
+            arenaGradient.addColorStop(0.55, '#0b192e');
+            arenaGradient.addColorStop(0.9, '#1e293b');
+            arenaGradient.addColorStop(1, '#0f172a');
+            ctx.fillStyle = arenaGradient;
+            ctx.fillRect(0, 0, w, h);
+
+            // Stadium Jumbotron / Light Beams
+            ctx.save();
+            ctx.globalAlpha = 0.08;
+            ctx.fillStyle = '#38bdf8';
+            for (let i = 0; i < 4; i++) {
+                const beamX = (i * 320 - (offsetX * 0.2)) % (w + 400);
+                ctx.beginPath();
+                ctx.moveTo(beamX, 0);
+                ctx.lineTo(beamX + 160, h);
+                ctx.lineTo(beamX + 80, h);
+                ctx.lineTo(beamX - 40, 0);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Crowd in the upper bleachers (stylized pixel silhouettes)
+            ctx.save();
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 160, w, 110);
+            for (let i = 0; i < w; i += 18) {
+                const headH = (Math.sin(i * 1.5 + Date.now() * 0.003) > 0.3) ? 8 : 4;
+                ctx.fillStyle = (i % 36 === 0) ? '#ea580c' : '#334155'; // Some Philly orange fans!
+                ctx.beginPath();
+                ctx.arc(i, 160 - headH, 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Glass Dividers atop the arena boards
+            ctx.fillStyle = 'rgba(186, 230, 253, 0.15)';
+            ctx.fillRect(0, 270, w, 80);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            for (let x = - (offsetX * 0.5) % 120; x < w; x += 120) {
+                ctx.fillRect(x, 270, 2, 80);
+            }
+
+            // Stadium Dasher Boards (Yellow base kicker strip)
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 350, w, 40);
+            ctx.fillStyle = '#eab308'; // Gold kicker plate
+            ctx.fillRect(0, 382, w, 8);
+
+            // Realistic Blue Line & Red Center Line on Ice
+            const blueLine1 = 650 - offsetX;
+            const centerRedLine = 1500 - offsetX;
+            const blueLine2 = 2350 - offsetX;
+
+            ctx.save();
+            // Ice Rink Surface
+            ctx.fillStyle = '#f0f9ff';
+            ctx.fillRect(0, 390, w, h - 390);
+
+            // Subtle Ice Skater Scratches
+            ctx.strokeStyle = 'rgba(203, 213, 225, 0.4)';
+            ctx.lineWidth = 1.5;
+            for (let j = 0; j < 15; j++) {
+                const sx = ((j * 190) - (offsetX * 0.8)) % w;
+                ctx.beginPath();
+                ctx.moveTo(sx, 410 + (j * 12) % 100);
+                ctx.quadraticCurveTo(sx + 30, 420 + (j * 12) % 100, sx + 50, 405 + (j * 12) % 100);
+                ctx.stroke();
+            }
+
+            // Rink Blue Lines
+            ctx.fillStyle = 'rgba(2, 132, 199, 0.45)';
+            if (blueLine1 > -20 && blueLine1 < w + 20) ctx.fillRect(blueLine1, 390, 16, h - 390);
+            if (blueLine2 > -20 && blueLine2 < w + 20) ctx.fillRect(blueLine2, 390, 16, h - 390);
+
+            // Center Ice Red Line
+            ctx.fillStyle = 'rgba(225, 29, 72, 0.5)';
+            if (centerRedLine > -20 && centerRedLine < w + 20) {
+                ctx.fillRect(centerRedLine, 390, 18, h - 390);
+                // Center Faceoff Circle
+                ctx.strokeStyle = 'rgba(225, 29, 72, 0.5)';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(centerRedLine + 9, 480, 50, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        /**
+         * Main Game Loop
+         */
+        // Physics was tuned per 60 Hz frame, so it runs in fixed 60 Hz steps on every display
+        // (120 Hz phones and ProMotion screens used to run the whole game at double speed).
+        const FIXED_STEP_MS = 1000 / 60;
+        const STEP_TOLERANCE_MS = 1;  // absorbs rAF jitter so a 60 Hz display gets one step per frame
+        const MAX_FRAME_MS = 250;     // after a stall or hidden tab, catch up at most ~15 steps
+        let stepAccumulator = 0;
+
+        function advanceSimulation(frameMs, stepFn) {
+            stepAccumulator += Math.min(Math.max(frameMs, 0), MAX_FRAME_MS);
+            let steps = 0;
+            while (stepAccumulator >= FIXED_STEP_MS - STEP_TOLERANCE_MS) {
+                stepFn();
+                stepAccumulator -= FIXED_STEP_MS;
+                steps++;
+            }
+            return steps;
+        }
+
+        let lastTime = performance.now();
+
+        function gameLoop(now) {
+            requestAnimationFrame(gameLoop);
+            const frameMs = now - lastTime;
+            lastTime = now;
+            advanceSimulation(frameMs, updateGame);
+            renderGame();
+        }
+
+        // One fixed 60 Hz simulation step
+        function updateGame() {
+            if (state.running) {
+                // Update Gritty Player
+                player.update(arena.platforms);
+
+                // Smooth Camera tracking Gritty
+                const targetCameraX = player.x - VIEW.w * 0.35;
+                state.cameraX += (targetCameraX - state.cameraX) * 0.08;
+                if (state.cameraX < -50) state.cameraX = -50;
+
+                // Update Projectiles
+                for (let i = projectiles.length - 1; i >= 0; i--) {
+                    const p = projectiles[i];
+                    p.update(arena.platforms);
+                    if (!p.alive) {
+                        projectiles.splice(i, 1);
+                        continue;
+                    }
+
+                    // Puck vs Enemy collision
+                    for (const enemy of arena.enemies) {
+                        if (!enemy.dead &&
+                            p.x + p.radius > enemy.x && p.x - p.radius < enemy.x + enemy.w &&
+                            p.y + p.radius > enemy.y && p.y - p.radius < enemy.y + enemy.h) {
+                            
+                            p.alive = false;
+                            enemy.hp--;
+                            sound.enemyHit();
+                            spawnExplosion(p.x, p.y, '#f97316');
+
+                            if (enemy.hp <= 0) {
+                                enemy.dead = true;
+                                state.score += 250;
+                                triggerScreenShake(5);
+                                showToast('+250 ENEMY CHECKED!', '💥');
+                            }
+                            updateHUD();
+                            break;
+                        }
+                    }
+
+                    // Puck in Goal Net!
+                    if (arena.goal && !arena.goal.scored) {
+                        const g = arena.goal;
+                        if (p.x > g.x && p.x < g.x + g.w && p.y > g.y && p.y < g.y + g.h) {
+                            p.alive = false;
+                            scoreGoal();
+                        }
+                    }
+                }
+
+                // Update Enemies & Check Collision with Gritty
+                for (const enemy of arena.enemies) {
+                    if (enemy.dead) continue;
+                    enemy.update();
+
+                    // Gritty touches enemy
+                    const playerHitW = player.w * 0.8;
+                    const playerHitH = player.isSliding ? player.h * 0.6 : player.h * 0.9;
+
+                    if (player.x + playerHitW > enemy.x && player.x < enemy.x + enemy.w &&
+                        player.y + playerHitH > enemy.y && player.y < enemy.y + enemy.h) {
+                        
+                        // If Gritty power-slid directly into an enemy, tackle them!
+                        if (player.isSliding && Math.abs(player.vx) > 4) {
+                            enemy.dead = true;
+                            sound.enemyHit();
+                            spawnExplosion(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2, '#38bdf8');
+                            state.score += 200;
+                            showToast('BODY CHECK SLIDE! +200', '💥');
+                            updateHUD();
+                        } else {
+                            player.hurt();
+                        }
+                    }
+                }
+
+                // Collect Hotdogs
+                for (const hd of arena.hotdogs) {
+                    if (!hd.collected) {
+                        hd.update();
+                        if (player.x + player.w > hd.x && player.x < hd.x + hd.w &&
+                            player.y + player.currentH() >hd.y && player.y < hd.y + hd.h) {
+                            hd.collected = true;
+                            state.score += 100;
+                            state.hotdogsCount++;
+                            sound.hotdogCollect();
+                            showToast('HOT DOG SNACK! +100', '🌭');
+                            // Small health restore every 5 hotdogs
+                            if (state.hotdogsCount % 5 === 0 && state.health < state.maxHealth) {
+                                state.health++;
+                                showToast('GRITTY HEALTH RESTORED!', '❤️');
+                            }
+                            updateHUD();
+                        }
+                    }
+                }
+
+                // Collect Puck Crates
+                for (const crate of arena.crates) {
+                    if (!crate.collected) {
+                        if (player.x + player.w > crate.x && player.x < crate.x + crate.w &&
+                            player.y + player.currentH() >crate.y && player.y < crate.y + crate.h) {
+                            crate.collected = true;
+                            state.pucks += 8;
+                            sound.hotdogCollect();
+                            showToast('+8 SLAPSHOT PUCKS!', '🏒');
+                            updateHUD();
+                        }
+                    }
+                }
+
+                // Fall into arena pit check (safety floor)
+                if (player.y > 650) {
+                    player.hurt();
+                    player.reset(100, 350);
+                }
+            }
+
+            // Particles and shake decay advance every step, so goal fireworks finish after a win
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                if (particles[i].life <= 0) particles.splice(i, 1);
+            }
+            if (state.screenShake > 0) {
+                state.screenShake *= 0.9;
+                if (state.screenShake < 0.2) state.screenShake = 0;
+            }
+        }
+
+        // Draw the current state once per display frame
+        function renderGame() {
+            // Clear in device pixels, then draw the world in virtual-view units
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillStyle = '#060d1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.setTransform(VIEW.scale, 0, 0, VIEW.scale, 0, VIEW.offY * VIEW.scale);
+
+            // Screen Shake Offset
+            let offsetX = state.cameraX;
+            let offsetY = 0;
+            if (state.screenShake > 0) {
+                offsetX += (Math.random() - 0.5) * state.screenShake * 2;
+                offsetY += (Math.random() - 0.5) * state.screenShake * 2;
+            }
+
+            // Draw Ice Rink Arena Background
+            drawArenaBackdrop(ctx, offsetX);
+
+            // Draw Platforms / Ice blocks
+            for (const plat of arena.platforms) {
+                if (plat.type === 'board') continue;
+                const px = plat.x - offsetX;
+                if (px + plat.w < 0 || px > VIEW.w) continue;
+
+                ctx.save();
+                // Slick ice platform with frosted top
+                ctx.fillStyle = '#0284c7';
+                ctx.beginPath();
+                ctx.roundRect(px, plat.y, plat.w, plat.h, [6, 6, 4, 4]);
+                ctx.fill();
+
+                // Shiny top frosting
+                ctx.fillStyle = '#e0f2fe';
+                ctx.fillRect(px, plat.y, plat.w, 4);
+
+                // Ice crystal highlights
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fillRect(px + 10, plat.y + 7, plat.w - 20, 2);
+                ctx.restore();
+            }
+
+            // Draw Goal Net
+            if (arena.goal) {
+                arena.goal.draw(ctx, offsetX);
+            }
+
+            // Draw Collectibles & Crates
+            arena.crates.forEach(c => c.draw(ctx, offsetX));
+            arena.hotdogs.forEach(h => h.draw(ctx, offsetX));
+
+            // Draw Enemies
+            arena.enemies.forEach(e => e.draw(ctx, offsetX));
+
+            // Draw Projectiles
+            projectiles.forEach(p => p.draw(ctx, offsetX));
+
+            // Draw Gritty Player
+            player.draw(ctx, offsetX);
+
+            // Draw Particles (they advance in updateGame)
+            for (const pt of particles) pt.draw(ctx, offsetX);
+        }
+
+        /**
+         * Scoring a Goal & Advancing Periods
+         */
+        function scoreGoal() {
+            if (arena.goal.scored) return;
+            arena.goal.scored = true;
+            state.celebrating = true;
+            state.goalsScored++;
+            state.score += 1000;
+            sound.goalHorn();
+            triggerScreenShake(12);
+
+            // Massive arena fireworks confetti!
+            for (let i = 0; i < 60; i++) {
+                spawnExplosion(arena.goal.x + arena.goal.w / 2, arena.goal.y + 20, '#f97316');
+            }
+
+            showToast('🚨 GOOOOAAALLL!!! +1000', '🏒');
+            updateHUD();
+
+            // Transition to next period or victory (tracked so game over/restart can cancel it)
+            if (state.periodTimer !== null) clearTimeout(state.periodTimer);
+            state.periodTimer = setTimeout(() => {
+                state.periodTimer = null;
+                state.celebrating = false;
+                if (!state.running) return;
+                if (state.period < state.maxPeriods) {
+                    state.period++;
+                    showToast(`PERIOD ${state.period} FACEOFF!`, '⚡');
+                    arena = buildArena(state.period);
+                    player.reset(80, 420);
+                    updateHUD();
+                } else {
+                    gameOver(true);
+                }
+            }, 2200);
+        }
+
+        // Initialize when window is loaded
+        window.onload = function () {
+            updateHUD();
+            gameLoop(performance.now());
+        };
+    </script>
+
+    <!-- MixKit nav placement: top-left, but just below the HUD header, so neither the idle
+         handle nor the open bar covers hearts, score or pucks (it sits over the arena ceiling). -->
+    <script>
+        (function () {
+            function placeNav() {
+                const nav = window.__mixmashNav;
+                const header = document.getElementById('game-header');
+                if (!nav || !header) return;
+                nav.setSlot('top-left', { top: Math.round(header.getBoundingClientRect().bottom) });
+            }
+            function init() {
+                placeNav();
+                window.addEventListener('resize', placeNav);
+                const header = document.getElementById('game-header');
+                if (window.ResizeObserver && header) new ResizeObserver(placeNav).observe(header);
+            }
+            // nav.js builds its bar on DOMContentLoaded; this listener is registered after its own
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+            else init();
+        })();
+    </script>
+</body>
+</html>
