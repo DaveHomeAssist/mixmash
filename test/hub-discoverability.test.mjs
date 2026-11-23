@@ -128,7 +128,7 @@ test('Privacy note (PRIV-03): linked from the homepage footer and Studio view, n
   assert.match(html, /<div class="studio-links">[^]*href="\/privacy\/">Privacy<\/a>/, 'Studio view links it too (the footer is hidden on phones)');
   const note = await read('privacy/index.html');
   assert.equal(canonical(note), `${SITE}/privacy/`);
-  assert.ok(note.includes('Last updated October 30, 2026'), 'dated');
+  assert.ok(note.includes('Last updated November 23, 2026'), 'dated');
   assert.ok(note.includes('Cloudflare Web Analytics'), 'names the analytics in use');
   assert.ok(note.includes('mailto:avbydave@gmail.com'), 'studio contact');
   assert.ok(!/daverobertson/i.test(note), 'never a personal address');
