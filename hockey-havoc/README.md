@@ -2,7 +2,7 @@
 
 An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript). Tailwind, Font Awesome and Google Fonts load from CDNs, so the page needs a network connection.
 
-**Route:** `/hockey-havoc/`. It is unlisted: `noindex`, no hub card, and not in the sitemap or the service-worker precache.
+**Route:** `/hockey-havoc/`. Listed on the hub since 2026-11-23, with a card, a sitemap entry, a share card at `assets/og/hockey-havoc.jpg` and service-worker precaching.
 
 ## Play
 
@@ -17,7 +17,11 @@ Skate three periods. Collect hot dogs (every fifth restores a heart) and puck cr
 
 ## Status
 
-The game is early playable and unlisted. Slice 1 (2026-11-11) is a bug-fix and jump-feel pass. Nobody has played it as an acceptance test yet, and it hasn't been run on a real phone or a real 120 Hz display.
+Early playable, listed on the hub.
+
+- Slice 1 (2026-11-11): bug-fix and jump-feel pass. Merged in PR #201 and live since 2026-11-23.
+- Slice 2 (2026-11-23): hub listing. Adds the catalog card, a gameplay preview and cover captured from the live route, the share card, SEO metadata, a sitemap entry, precaching, a 44 px mute button and a `smoke:mobile` entry.
+- Not yet done: a human playtest, and runs on a real phone or a real 120 Hz display.
 
 ## Brief: slice 1
 
@@ -92,7 +96,7 @@ Headless Chromium runs also covered:
 
 | ID | Choice | Options | Recommended |
 | --- | --- | --- | --- |
-| HH-D1 | Hub listing | (a) keep unlisted, (b) "Early playable" hub card that stays `noindex` (as Front of House did), (c) full listing and sitemap | (a) until HH-D2 is settled |
-| HH-D2 | Naming | Gritty, the Flyers colors and the Stanley Cup belong to third parties. (a) keep them for an unlisted fan build, (b) rename to an original mascot before any listing | (b) before any listing |
+| HH-D1 | Hub listing | (a) keep unlisted, (b) "Early playable" hub card that stays `noindex` (as Front of House did), (c) full listing and sitemap | (a) until HH-D2 is settled. **Answered (c)** by Dave, 2026-11-23 |
+| HH-D2 | Naming | Gritty, the Flyers colors and the Stanley Cup belong to third parties. (a) keep them for an unlisted fan build, (b) rename to an original mascot before any listing | (b) before any listing. **Answered: keep the name and the Stanley Cup on the listed game** (Dave, 2026-11-23, accepting the trademark risk) |
 | HH-D3 | Rendering style | crisp vector with Retina scaling, or low-res pixel art | crisp vector |
 | HH-D4 | A 3D version | keep 2D, or rebuild in 3D | keep 2D for now (later milestone) |

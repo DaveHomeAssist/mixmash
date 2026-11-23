@@ -329,7 +329,8 @@ body:has(.view:not(#games):target) .hero {
 }
 .games-grid {
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  /* Seven games: rows of 4 + 3 on tall desktops (was 3 x 2 for six). */
+  grid-template-columns:repeat(4,minmax(0,1fr));
   grid-auto-rows:minmax(220px,1fr);
   gap:16px;
   min-height:0;
@@ -1252,7 +1253,8 @@ body:has(.view:not(#games):target) .site-shell {
   .game-card { grid-template-rows:minmax(56px,1fr) auto; }
 }
 @media(min-width:1200px) and (max-height:849px) and (min-height:401px) {
-  .games-grid { grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; }
+  /* Short desktops keep the whole lineup in one row: one column per game (seven). */
+  .games-grid { grid-template-columns:repeat(7,minmax(0,1fr)); gap:12px; }
   .game-card { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(56px,1fr) auto auto; }
   .game-body { padding:10px 12px 4px; }
   .game-body h3 { font-size:18px; }

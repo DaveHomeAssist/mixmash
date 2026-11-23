@@ -1,7 +1,7 @@
 {
   "name": "MixMash Studio",
   "short_name": "MixMash",
-  "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.",
+  "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer and hockey, strategy and venue management.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
@@ -42,6 +42,11 @@
       "name": "Pitch Riot",
       "url": "/pitch/",
       "description": "Arcade soccer"
+    },
+    {
+      "name": "Gritty’s Hockey Havoc",
+      "url": "/hockey-havoc/",
+      "description": "Arcade hockey"
     },
     {
       "name": "MarsScape",

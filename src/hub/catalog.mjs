@@ -4,7 +4,7 @@ export const studio = {
   "headline": "Small games. Big personality.",
   "intro": "Fight for the stage. Build a colony. Run the show. Free games, ready to play in your browser.",
   "note": "Every game here is playable now. Each card shows how far along it is.",
-  "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management."
+  "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer and hockey, strategy and venue management."
 };
 export const games = [
   {
@@ -82,6 +82,28 @@ export const games = [
         "href": "https://systembydave.com/fifa-pitch-crew/"
       }
     ]
+  },
+  {
+    "id": "hockey-havoc",
+    "name": "Gritty’s Hockey Havoc",
+    "route": "/hockey-havoc/",
+    "published": true,
+    "genre": "Arcade hockey",
+    "status": "Early playable",
+    "action": "Play now",
+    "accent": "orange",
+    "hook": "Skate it. Slap it. Score.",
+    "description": "Skate three periods as Gritty, chow stadium hot dogs, slapshot rogue Zambonis and bury a puck in the net to bring the Stanley Cup home to Philly.",
+    "image": "hockey-havoc.jpg",
+    "alt": "Gritty jumping beside an ice platform with hot dogs overhead and a Zamboni ahead in Gritty’s Hockey Havoc.",
+    "cover": "hockey-havoc.jpg",
+    "coverAlt": "Gritty’s Hockey Havoc gameplay: Gritty mid-jump on the rink, a slapshot puck in flight and the arena crowd behind.",
+    "players": "Solo",
+    "controls": "Keyboard, mouse or touch",
+    "saving": "Nothing is saved: every run starts at the first period. Mute All stays set in this browser.",
+    "evidence": "hockey-havoc",
+    "verified": "2026-11-23",
+    "related": []
   },
   {
     "id": "mars",

@@ -12,6 +12,9 @@ art or injected game state. Shared hub navigation is omitted where noted.
 | mars.jpg | https://mixmash.games/mars/ | Expedition after confirmed iron gather, 5 to 4 charges; game navigation remains visible |
 | garden.jpg | https://mixmash.games/garden/ | New Game, Start Story, chapter-one garden |
 | empires.jpg | https://mixmash.games/empires/ | Start skirmish, initial settlement |
+| hockey-havoc.jpg | https://mixmash.games/hockey-havoc/ | 2026-11-23: HIT THE ICE!, held ArrowRight, Space jump, F slapshot; Gritty mid-jump, full health, puck in flight |
+
+hockey-havoc.jpg was captured losslessly at 1000×650 and stored at 800×520 (same aspect), Chromium JPEG quality 60 (22.9 KB). That keeps the seven-game homepage inside its 500 KB initial-transfer budget (496,878 bytes Chromium, 498,377 bytes WebKit, measured 2026-11-23). Its share card was built from a quality-76 1000×650 encode of the same frame.
 
 Other captures omit only the shared MixKit hub control bar. Keep images below
 160 KB each and measure total delivered homepage transfer below 500 KB. To refresh,

@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#0b111e">
-    <meta name="description" content="An early arcade hockey platformer: skate three periods, collect hot dogs, slapshot Zambonis and score.">
-    <title>Gritty's Hockey Havoc — MixMash Studio</title>
+    <title>Gritty’s Hockey Havoc — MixMash Studio</title>
+    <meta name="description" content="Gritty’s Hockey Havoc is a free arcade hockey platformer in your browser. Skate three periods, chow hot dogs, slapshot rogue Zambonis and bring the Stanley Cup home to Philly.">
+    <link rel="canonical" href="https://mixmash.games/hockey-havoc/">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MixMash Studio">
+    <meta property="og:title" content="Gritty’s Hockey Havoc — Arcade Hockey">
+    <meta property="og:description" content="Skate, slapshot and score through three periods in your browser. Hot dogs, rogue Zambonis and a Stanley Cup run. No installs, no accounts.">
+    <meta property="og:url" content="https://mixmash.games/hockey-havoc/">
+    <meta property="og:image" content="https://mixmash.games/assets/og/hockey-havoc.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Gritty jumping beside an ice platform with hot dogs overhead and a Zamboni ahead in Gritty’s Hockey Havoc.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gritty’s Hockey Havoc — Arcade Hockey">
+    <meta name="twitter:description" content="Skate, slapshot and score through three periods in your browser. Hot dogs, rogue Zambonis and a Stanley Cup run. No installs, no accounts.">
+    <meta name="twitter:image" content="https://mixmash.games/assets/og/hockey-havoc.jpg">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Gritty’s Hockey Havoc","url":"https://mixmash.games/hockey-havoc/","description":"Skate three periods as Gritty, chow stadium hot dogs, slapshot rogue Zambonis and bury a puck in the net to bring the Stanley Cup home to Philly.","genre":"Arcade hockey","image":"https://mixmash.games/assets/og/hockey-havoc.jpg","gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"MixMash Studio","url":"https://mixmash.games/"}}</script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -45,6 +61,29 @@
         }
         /* Short landscape screens: tighten the chrome so the rink gets the height */
         @media (max-height: 500px) {
+            /* Start and game-over cards must fit the short rink (the touch bar sits right below it):
+               drop decoration and the keyboard legend, and scroll rather than clip if still too tall. */
+            #start-overlay, #gameover-overlay {
+                overflow-y: auto;
+                padding: 0.75rem;
+            }
+            #start-overlay > .animate-bounce,
+            #start-overlay > p,
+            #start-overlay > .grid,
+            #go-icon,
+            #go-desc {
+                display: none;
+            }
+            #start-overlay > h2,
+            #gameover-overlay > h2 {
+                font-size: 1.5rem;
+                line-height: 2rem;
+                margin-bottom: 0.5rem;
+            }
+            #gameover-overlay > .space-y-2 {
+                margin-bottom: 0.75rem;
+                padding: 0.5rem 1rem;
+            }
             #game-header {
                 padding-top: 0.25rem;
                 padding-bottom: 0.25rem;
@@ -137,7 +176,7 @@
                 </div>
 
                 <!-- Sound Mute Toggle -->
-                <button id="sound-btn" class="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:bg-slate-700 active:scale-95 transition-all text-slate-300">
+                <button id="sound-btn" aria-label="Toggle sound" class="w-11 h-11 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:bg-slate-700 active:scale-95 transition-all text-slate-300">
                     <i id="sound-icon" class="fa-solid fa-volume-high"></i>
                 </button>
             </div>
@@ -237,6 +276,8 @@
 
     <!-- MixKit shared bar (hub, mute all, fullscreen). Loads before the game so it can track the game's AudioContext. -->
     <script src="../src/kit/nav.js"></script>
+    <!-- Hub "Continue" marker: records mm.lastGame on load; never touches game state. -->
+    <script src="/assets/last-game.js" data-game="hockey-havoc" defer></script>
 
     <!-- Web Audio Synthesis & Game Logic -->
     <script>

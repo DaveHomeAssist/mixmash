@@ -42,6 +42,17 @@ narrower verified control sets are advertised, not universal gamepad/touch suppo
 - Saving: loadAudioPrefs/saveAudioPrefs persist audio only; match state initializes
   on load. No resumable match claim.
 
+## hockey-havoc
+
+- Players: [source](../hockey-havoc/index.html) has one player character (GrittyPlayer);
+  the enemies patrol on fixed rules. There is no second player or online mode.
+- Controls:
+  - The keyboard handler covers A/D or arrows, W/Space/Up, F/X and Shift/S, and a canvas mousedown fires the slapshot.
+  - On-screen touch buttons appear on any coarse-pointer device.
+  - On 2026-11-23 a live headless run on Chromium (Playwright 1.63, 5 viewports) moved Gritty with held ArrowRight, slid on the ice without damage, and reached play by tapping Start.
+- Saving: the game script uses no storage, so a reload starts a fresh run at the first period. Only the shared MixKit Mute All choice persists (src/kit/nav.js).
+- Publication: Dave approved a full listing with the current naming on 2026-11-23 (HH-D1, HH-D2 in [the route README](../hockey-havoc/README.md)).
+
 ## mars
 
 - Players/controls: single colony state in [engine](../mars/engine.mjs), native
