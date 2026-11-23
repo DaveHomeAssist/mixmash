@@ -48,7 +48,7 @@
       <button type="button" id="zoom-fit" aria-label="Fit the whole lot (0)">Fit</button>
       <button type="button" id="zoom-in" aria-label="Zoom in (plus)">+</button>
       <button type="button" id="turn-view" aria-label="Turn the view (Q)" title="Turn the view (Q)">&#8635;</button>
-      <button type="button" id="renderer-btn" class="renderer-btn" aria-pressed="false" aria-label="Try the 3D preview">3D</button>
+      <button type="button" id="renderer-btn" class="renderer-btn" data-mode="2d" aria-pressed="false" aria-label="3D view" title="Showing the classic 2D view. Click for the 3D view."><span class="renderer-seg" data-seg="2d" data-on>2D</span><span class="renderer-seg" data-seg="3d">3D</span></button>
     </div>
     <dl class="meters">
       <div><dt>Cash</dt><dd id="meter-cash">—</dd></div>
@@ -95,6 +95,28 @@
 
   <div id="menu" class="menu" role="region" aria-label="Menu" hidden>
     <div id="menu-art" class="menu-art" aria-hidden="true"></div>
+    <details id="save-menu" class="savebar">
+      <summary>Save and load</summary>
+      <div class="save-body">
+        <p>The game saves itself in this browser after every step. A save file or save code moves it to another browser.</p>
+        <div class="row">
+          <button type="button" data-save="download">Download save file</button>
+          <label class="button" for="save-file">Load a save file</label>
+          <input type="file" id="save-file" class="sr-only" accept=".txt,.json,text/plain,application/json" />
+        </div>
+        <div class="row">
+          <button type="button" data-save="export">Show my save code</button>
+          <button type="button" data-save="new" class="danger">Start a new game</button>
+          <button type="button" data-save="forget-prefs" id="forget-prefs">Forget suggestions &amp; view settings</button>
+        </div>
+        <label for="save-code">Save code</label>
+        <textarea id="save-code" rows="3" spellcheck="false" autocomplete="off"></textarea>
+        <div class="row">
+          <button type="button" data-save="import">Load this code</button>
+        </div>
+        <p id="save-status" class="save-status" aria-live="polite"></p>
+      </div>
+    </details>
     <button type="button" data-act="advisory-open">Advisory desk</button>
     <button type="button" id="intro-replay">Replay intro</button>
     <button type="button" data-act="camera-open">Camera &amp; 3D preview</button>
@@ -123,7 +145,7 @@
     </section>
     <section class="menu-keys" aria-labelledby="keys-title">
       <h2 id="keys-title">Keys and mouse</h2>
-      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. The mouse wheel zooms. To move a zoomed view, hold Space and drag, or drag with the middle or right button (outside Build a plain drag does too); a right click without a drag removes an object. The 3D button beside the camera controls switches views. The props stay painted for the original camera. In Build, click a tile to place the chosen object, or focus the board and use the keys below.</p>
+      <p id="board-help" class="board-help">The lot is 24 by 16 tiles. The mouse wheel zooms. To move a zoomed view, hold Space and drag, or drag with the middle or right button (outside Build a plain drag does too); a right click without a drag removes an object. The 2D/3D switch beside the camera controls changes views; the lit half is the view on screen. The props stay painted for the original camera. In Build, click a tile to place the chosen object, or focus the board and use the keys below.</p>
       <h3 class="eyebrow keys-head">Anywhere</h3>
       <dl class="keys" id="board-keys-any">
         <div data-binding="turn-view"><dt>Q</dt><dd>Turn the view a quarter</dd></div>
@@ -146,23 +168,6 @@
         <div data-binding="redo"><dt>Ctrl+Shift+Z, Ctrl+Y or ⌘⇧Z</dt><dd>Redo a change you undid</dd></div>
       </dl>
     </section>
-    <details id="save-menu" class="savebar">
-      <summary>Save and load</summary>
-      <div class="save-body">
-        <p>The game saves itself in this browser after every step. A save code moves it to another browser.</p>
-        <div class="row">
-          <button type="button" data-save="export">Show my save code</button>
-          <button type="button" data-save="new" class="danger">Start a new game</button>
-          <button type="button" data-save="forget-prefs" id="forget-prefs">Forget suggestions &amp; view settings</button>
-        </div>
-        <label for="save-code">Save code</label>
-        <textarea id="save-code" rows="3" spellcheck="false" autocomplete="off"></textarea>
-        <div class="row">
-          <button type="button" data-save="import">Load this code</button>
-        </div>
-        <p id="save-status" class="save-status" aria-live="polite"></p>
-      </div>
-    </details>
     <p class="credit">MixMash Studio · <span id="game-version"></span> · <a href="./docs/RELEASE_NOTES.md">Release notes</a> · <a href="../">All games</a></p>
   </div>
 

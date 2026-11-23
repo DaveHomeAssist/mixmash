@@ -24,5 +24,7 @@ test('Front of House release metadata stays aligned with runtime and cache', asy
   assert.match(worker, /\.\/front-of-house\/version\.mjs/);
   assert.match(page, /id="game-version"/);
   assert.match(page, /\.\/docs\/RELEASE_NOTES\.md/);
-  assert.match(notes, new RegExp(`## ${release.version} — ${release.date}`));
+  const escapedVersion = release.version.replaceAll('.', '\\.');
+  // Accept historical headings and the current colon format; require exact metadata.
+  assert.match(notes, new RegExp(`^## ${escapedVersion}(?: \u2014|:) ${release.date}$`, 'm'));
 });
