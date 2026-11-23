@@ -360,11 +360,11 @@
     },
     {
       "id": "hockey-havoc",
-      "name": "Gritty's Hockey Havoc",
+      "name": "Gritty’s Hockey Havoc",
       "kind": "Arcade hockey platformer",
-      "lifecycle": "Unlisted early playable",
+      "lifecycle": "Early playable",
       "route": "/hockey-havoc/",
-      "summary": "A single-file canvas platformer: skate three periods, collect hot dogs and puck crates, slapshot or slide-check Zambonis and rival goalies, and score to reach the next faceoff. Fixed 60 Hz simulation, keyboard and touch. Unlisted while the hub listing and naming choices are open.",
+      "summary": "A single-file canvas platformer: skate three periods, collect hot dogs and puck crates, slapshot or slide-check Zambonis and rival goalies, and score to reach the next faceoff. Fixed 60 Hz simulation, keyboard and touch. Listed on the hub and indexed since 2026-11-23.",
       "pinned": [
         "hockey-havoc/README.md",
         "hockey-havoc/index.html",
@@ -376,8 +376,8 @@
       "references": [
         {
           "private": false,
-          "note": "noindex; no hub card.",
-          "label": "Play Gritty's Hockey Havoc",
+          "note": "Hub card, sitemap and share card.",
+          "label": "Play Gritty’s Hockey Havoc",
           "url": "/hockey-havoc/",
           "kind": "live route"
         }
@@ -4461,8 +4461,8 @@
       "project": "hockey-havoc",
       "category": "surface",
       "kind": "HTML",
-      "title": "Gritty's Hockey Havoc — MixMash Studio",
-      "description": "An early arcade hockey platformer: skate three periods, collect hot dogs, slapshot Zambonis and score.",
+      "title": "Gritty’s Hockey Havoc — MixMash Studio",
+      "description": "Gritty’s Hockey Havoc is a free arcade hockey platformer in your browser. Skate three periods, chow hot dogs, slapshot rogue Zambonis and bring the Stanley Cup home to Philly.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/index.html",
       "open": "/hockey-havoc/"
     },
@@ -4472,7 +4472,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Gritty's Hockey Havoc",
-      "description": "An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript). Tailwind, Font Awesome and Google Fonts load from CDNs, so the page needs a network connection.",
+      "description": "An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/README.md",
       "open": null
     },
@@ -4484,6 +4484,16 @@
       "title": "hockey-havoc-physics.test.mjs",
       "description": "Gritty's Hockey Havoc: loads the shipped player code, config and fixed-step loop from hockey-havoc/index.html in a vm sandbox and checks the slice-1 movement contract.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hockey-havoc-physics.test.mjs",
+      "open": null
+    },
+    {
+      "path": "hockey-havoc/tailwind.css",
+      "project": "hockey-havoc",
+      "category": "source",
+      "kind": "CSS",
+      "title": "tailwind.css",
+      "description": "Tailwind v3.4.17 utilities built from hockey-havoc/index.html. Replaces the Play CDN so the precached route renders offline; rebuild command in hockey-havoc/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/tailwind.css",
       "open": null
     },
     {
@@ -5102,7 +5112,7 @@
       "category": "surface",
       "kind": "HTML",
       "title": "MixMash Studio | Free Browser Games",
-      "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.",
+      "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer and hockey, strategy and venue management.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/index.html",
       "open": "/"
     },
@@ -5327,6 +5337,16 @@
       "open": "/assets/covers/garden.jpg"
     },
     {
+      "path": "assets/covers/hockey-havoc.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "hockey-havoc.jpg",
+      "description": "Gritty’s Hockey Havoc canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/hockey-havoc.jpg",
+      "open": "/assets/covers/hockey-havoc.jpg"
+    },
+    {
       "path": "assets/covers/mars.jpg",
       "project": "studio",
       "category": "art",
@@ -5397,6 +5417,16 @@
       "open": "/assets/og/garden.jpg"
     },
     {
+      "path": "assets/og/hockey-havoc.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "hockey-havoc.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for hockey-havoc, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/hockey-havoc.jpg",
+      "open": "/assets/og/hockey-havoc.jpg"
+    },
+    {
       "path": "assets/og/mars.jpg",
       "project": "studio",
       "category": "art",
@@ -5425,6 +5455,16 @@
       "description": "1200x630 Open Graph/Twitter share card for pitch, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/pitch.jpg",
       "open": "/assets/og/pitch.jpg"
+    },
+    {
+      "path": "assets/previews/hockey-havoc.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "hockey-havoc.webp",
+      "description": "Gritty’s Hockey Havoc gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/hockey-havoc.webp",
+      "open": "/assets/previews/hockey-havoc.webp"
     },
     {
       "path": "favicon.svg",
@@ -5522,7 +5562,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "hub-offline-smoke.mjs",
-      "description": "Homepage worker upgrade preserves game data and the six launch links offline.",
+      "description": "Homepage worker upgrade preserves game data and the seven launch links offline.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-offline-smoke.mjs",
       "open": null
     },

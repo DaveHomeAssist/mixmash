@@ -1,4 +1,4 @@
-/** Homepage worker upgrade preserves game data and the six launch links offline. */
+/** Homepage worker upgrade preserves game data and the seven launch links offline. */
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { readFile } from 'node:fs/promises';
@@ -23,7 +23,7 @@ try {
   await context.setOffline(true);
   await page.reload();
   await page.waitForFunction(() => document.documentElement.classList.contains('enhanced'));
-  assert.equal(await page.locator('.game-card .play-link').count(), 6);
+  assert.equal(await page.locator('.game-card .play-link').count(), 7);
   await page.locator('#details-front-of-house').click();
   await page.waitForFunction(() => !document.getElementById('game-front-of-house').hidden);
   assert.equal(await page.locator('#game-front-of-house .primary').getAttribute('href'), '/front-of-house/');

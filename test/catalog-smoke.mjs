@@ -1132,7 +1132,7 @@ try {
   {
     const { context, page } = await open('/');
     assert.equal(await page.locator('link[rel="manifest"]').count(), 1, 'HUB-104 manifest is linked');
-    assert.equal(await page.locator('.game-card').count(), 6, 'six playable titles');
+    assert.equal(await page.locator('.game-card').count(), 7, 'seven playable titles');
     const motion = await page.locator('.game-card').evaluateAll(cards => cards.map(card => getComputedStyle(card).animationName));
     assert.ok(motion.every(name => name === 'none'), 'tickets never loop at rest');
     await page.getByRole('button', { name: /Pick for me/ }).click();
