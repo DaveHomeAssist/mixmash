@@ -366,6 +366,7 @@ export const FILE_NOTES = {
   'assets/previews/mixmash.jpg': preview('MIXMASH'),
   'assets/previews/pitch.jpg': preview('PITCH RIOT'),
   'assets/previews/hockey-havoc.jpg': preview('Gritty’s Hockey Havoc'),
+  'hockey-havoc/tailwind.css': { description: 'Tailwind v3.4.17 utilities built from hockey-havoc/index.html. Replaces the Play CDN so the precached route renders offline; rebuild command in hockey-havoc/README.md.' },
   'src/kit/save.js': { description: 'MixKit save codes: encodes and decodes portable save strings that games can share.' },
   'test/kit-save.test.mjs': { description: 'Unit tests for MixKit save-code encoding, decoding and corrupt-input handling.' },
   'test/landing-smoke.mjs': { description: 'Playwright rail for the landing page in Chromium and WebKit at 320 to 3840 px: native launch links, details, theme persistence, focus, fallback, hit targets and image budget (smoke:landing).' },

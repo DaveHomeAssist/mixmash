@@ -55,6 +55,7 @@ const PRECACHE = [
   './pitch/index.html',
   './hockey-havoc/',
   './hockey-havoc/index.html',
+  './hockey-havoc/tailwind.css',
   './mars/',
   './mars/index.html',
   './mars/styles.css',

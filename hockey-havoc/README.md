@@ -1,6 +1,16 @@
 # Gritty's Hockey Havoc
 
-An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript). Tailwind, Font Awesome and Google Fonts load from CDNs, so the page needs a network connection.
+An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript).
+
+**Styles:**
+- `tailwind.css` holds the Tailwind v3.4.17 utilities the page uses, built locally. It replaced the Play CDN on 2026-11-23, so the service worker caches it and the layout and overlays work offline.
+- Font Awesome icons and Google Fonts still load from CDNs. Offline, the icons drop out (every button except the arrows and mute has a text label) and the text falls back to system fonts.
+- After changing classes in `index.html`, rebuild the stylesheet:
+
+```
+printf '@tailwind base;\n@tailwind components;\n@tailwind utilities;\n' > /tmp/tw-in.css
+npx tailwindcss@3.4.17 -i /tmp/tw-in.css -o hockey-havoc/tailwind.css --content hockey-havoc/index.html --minify
+```
 
 **Route:** `/hockey-havoc/`. Listed on the hub since 2026-11-23, with a card, a sitemap entry, a share card at `assets/og/hockey-havoc.jpg` and service-worker precaching.
 
@@ -64,7 +74,7 @@ Early playable, listed on the hub.
 - Camera reset between periods.
 - A right-hand wall.
 - Retina scaling.
-- Removing the CDN dependencies.
+- Removing the remaining CDN dependencies (Font Awesome, Google Fonts).
 - The rest of MixKit (stage, lifecycle, input).
 - A hub card.
 - New mechanics.

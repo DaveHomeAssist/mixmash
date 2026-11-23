@@ -23,8 +23,6 @@
     <meta name="twitter:description" content="Skate, slapshot and score through three periods in your browser. Hot dogs, rogue Zambonis and a Stanley Cup run. No installs, no accounts.">
     <meta name="twitter:image" content="https://mixmash.games/assets/og/hockey-havoc.jpg">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Gritty’s Hockey Havoc","url":"https://mixmash.games/hockey-havoc/","description":"Skate three periods as Gritty, chow stadium hot dogs, slapshot rogue Zambonis and bury a puck in the net to bring the Stanley Cup home to Philly.","genre":"Arcade hockey","image":"https://mixmash.games/assets/og/hockey-havoc.jpg","gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"MixMash Studio","url":"https://mixmash.games/"}}</script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -126,6 +124,8 @@
             animation: screenShake 0.25s ease-in-out;
         }
     </style>
+    <!-- Tailwind v3.4.17 utilities built from this page (was the Play CDN), so the page also renders offline -->
+    <link rel="stylesheet" href="./tailwind.css">
 </head>
 <body class="w-screen flex flex-col items-center justify-center p-2 sm:p-4 text-white select-none">
 
