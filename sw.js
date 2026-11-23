@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v93';
+const VERSION = 'v94';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -19,13 +19,13 @@ const PRECACHE = [
   './index.html',
   './src/hub/style.css',
   './src/hub/app.js',
-  './assets/previews/mixmash.jpg',
-  './assets/previews/foh.jpg',
-  './assets/previews/pitch.jpg',
+  './assets/previews/mixmash.webp',
+  './assets/previews/foh.webp',
+  './assets/previews/pitch.webp',
   './assets/previews/hockey-havoc.webp',
-  './assets/previews/mars.jpg',
-  './assets/previews/garden.jpg',
-  './assets/previews/empires.jpg',
+  './assets/previews/mars.webp',
+  './assets/previews/garden.webp',
+  './assets/previews/empires.webp',
   './assets/covers/mixmash.jpg',
   './assets/covers/foh.jpg',
   './assets/covers/pitch.jpg',
