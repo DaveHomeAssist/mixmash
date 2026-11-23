@@ -771,10 +771,6 @@
           "description": "node src/hub/build.mjs --check"
         },
         {
-          "name": "npm run pages:site",
-          "description": "node .github/scripts/build-pages-site.mjs"
-        },
-        {
           "name": "npm run hub:social",
           "description": "node src/hub/social.mjs"
         },
@@ -4326,7 +4322,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit 78a16b5a458c8d1f5dd4bb40af4ef8698e96fbbf (source PR14).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit 4d09e2fe4107b479444584bbd01acca688fa8593 (source PR16).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -4348,6 +4344,16 @@
       "title": "horseshoes-broadcast-smoke.mjs",
       "description": "Pavilion broadcast and skippable camera pass acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-broadcast-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/horseshoes-layout-security-smoke.mjs",
+      "project": "horseshoes",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "horseshoes-layout-security-smoke.mjs",
+      "description": "Regression: required control bounds, compact court navigation and document CSP.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-layout-security-smoke.mjs",
       "open": null
     },
     {
@@ -4381,6 +4387,26 @@
       "open": null
     },
     {
+      "path": "horseshoes/shortcuts.css",
+      "project": "horseshoes",
+      "category": "source",
+      "kind": "CSS",
+      "title": "shortcuts.css",
+      "description": "Backyard Horseshoes polish and shortcut layer. A sidecar to the generated build: never edit the hashed bundles. Port into curling-simulator src/horseshoes on the next rebuild (see README \"Shortcut layer\").",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/shortcuts.css",
+      "open": null
+    },
+    {
+      "path": "horseshoes/shortcuts.js",
+      "project": "horseshoes",
+      "category": "source",
+      "kind": "JS",
+      "title": "shortcuts.js",
+      "description": "Backyard Horseshoes shortcut layer and juice: a sidecar to the generated build, never a bundle patch.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/shortcuts.js",
+      "open": null
+    },
+    {
       "path": "horseshoes/assets/ai.worker-BamGaX81.js",
       "project": "horseshoes",
       "category": "build",
@@ -4401,23 +4427,23 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-BIqcnaFO.css",
+      "path": "horseshoes/assets/horseshoes-0NVzVOSx.css",
       "project": "horseshoes",
       "category": "build",
       "kind": "CSS",
       "title": "Horseshoes production CSS",
-      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BIqcnaFO); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BIqcnaFO.css",
+      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-0NVzVOSx); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-0NVzVOSx.css",
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-CJyCwu-H.js",
+      "path": "horseshoes/assets/horseshoes-DW19vTBY.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-CJyCwu-H); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-CJyCwu-H.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-DW19vTBY); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-DW19vTBY.js",
       "open": null
     },
     {
@@ -5091,6 +5117,16 @@
       "open": "/offline.html"
     },
     {
+      "path": "privacy/index.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Privacy | MixMash Studio",
+      "description": "What mixmash.games collects (very little), what stays in your browser, and the outside services the site uses.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/privacy/index.html",
+      "open": "/privacy/"
+    },
+    {
       "path": "src/hub/template.html",
       "project": "studio",
       "category": "surface",
@@ -5561,16 +5597,6 @@
       "open": null
     },
     {
-      "path": "test/pages-site.test.mjs",
-      "project": "studio",
-      "category": "tests",
-      "kind": "MJS",
-      "title": "pages-site.test.mjs",
-      "description": "The Pages artifact leaves out repository-only files and keeps every service-worker precache entry.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/pages-site.test.mjs",
-      "open": null
-    },
-    {
       "path": "test/revenue-switches.test.mjs",
       "project": "studio",
       "category": "tests",
@@ -5851,16 +5877,6 @@
       "open": null
     },
     {
-      "path": ".github/scripts/build-pages-site.mjs",
-      "project": "studio",
-      "category": "ops",
-      "kind": "MJS",
-      "title": "Pages site builder",
-      "description": "Copies tracked site files into _site/, leaving out repository-only files, and fails if a service-worker precache entry would be missing.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/scripts/build-pages-site.mjs",
-      "open": null
-    },
-    {
       "path": ".github/workflows/ci.yml",
       "project": "studio",
       "category": "ops",
@@ -5878,16 +5894,6 @@
       "title": "Horseshoes smoke workflow",
       "description": "Browser regression for Horseshoes assets, native keyboard controls, touch, throwing, retry and stable physics.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/horseshoes.yml",
-      "open": null
-    },
-    {
-      "path": ".github/workflows/pages.yml",
-      "project": "studio",
-      "category": "ops",
-      "kind": "YAML",
-      "title": "Pages site workflow",
-      "description": "Builds the public site without package files, vercel.json, root Markdown, .gitignore, .github/, test/ or api/ and deploys it as a GitHub Pages artifact on the box runner. Dormant until Pages is switched to GitHub Actions and PAGES_SOURCE=actions is set.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/.github/workflows/pages.yml",
       "open": null
     },
     {
