@@ -66,3 +66,7 @@ release document and release PR; physical-device and human acceptance remain
 separate.
 
 The source toolchain uses Vite7.3.7 and Vitest4.1.12 with patched transitive dependencies. The October18 repair audit reports zero known vulnerabilities for both the full lockfile and runtime-only dependencies; all80 source tests and487 integrated Mixmash unit tests pass. Runtime Three.js and Rapier versions are unchanged.
+
+## Shortcut layer
+
+`horseshoes/shortcuts.js` and `shortcuts.css` are a sidecar to the generated build (the hashed bundles stay untouched). They add `P`/`Esc` to open the pausing Menu, `M` to toggle sound, `?`/`H` for a shortcuts sheet, gamepad play (A throw, D-pad aim and strength, LB/RB arc, X delivery, Y camera, B back to live play, Start Menu, Back/Select shortcuts) and small presentation pops on score and feedback changes, all off under reduced motion. Existing keys are unchanged, and `Esc` during the intro camera pass is left to the game so it still skips the tour. When the source is rebuilt, port the layer into curling-simulator or re-add the two `index.html` includes.
