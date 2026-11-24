@@ -5,7 +5,8 @@ import { playableGames } from './catalog.mjs';
 const escape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;');
 const tickets = await Promise.all(playableGames.map(async (game, index) => {
   const data = await readFile(new URL(`../../assets/previews/${game.image}`, import.meta.url));
-  return `<article><img src="data:image/jpeg;base64,${data.toString('base64')}" alt=""><span>MM / 0${index + 1}</span><h2>${escape(game.name)}</h2><p>${escape(game.status)}</p></article>`;
+  const type = game.image.endsWith('.webp') ? 'image/webp' : game.image.endsWith('.png') ? 'image/png' : 'image/jpeg';
+  return `<article><img src="data:${type};base64,${data.toString('base64')}" alt=""><span>MM / 0${index + 1}</span><h2>${escape(game.name)}</h2><p>${escape(game.status)}</p></article>`;
 }));
 const browser = await chromium.launch();
 try {
