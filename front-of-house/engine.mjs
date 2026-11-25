@@ -1683,6 +1683,69 @@ const intOr = (v, fallback) => (typeof v === 'number' && Number.isFinite(v) ? Ma
 // the current version, or the input unchanged when it is not a recognisable save (so
 // normalizeState can reject it). Applied one version at a time.
 
+// Save guard: decides whether the stored career can be read by this build before anything is
+// written over it (docs/SAVE_FORMAT.md, "Unreadable saves"). A save from a newer version, a
+// damaged save, a save whose migration fails and a save that makes normalizeState throw are all
+// kept: the raw text is copied to a backup key, and the game neither loads nor autosaves over it
+// until the player explicitly starts a new game or loads a code. It lives here rather than in a
+// module of its own because the hub service worker's precache list (sw.js) is not this game's to
+// change, and a new module would break the first offline visit. Pure apart from `backupSave`,
+// which only touches the storage it is given.
+
+export const BACKUP_SUFFIX = '.backup';
+
+const saveSchemaOf = (s) => (isObj(s) && Number.isInteger(s.schema) ? s.schema : null);
+
+// text: the stored string (or null). Returns { status, state?, reason? } where status is
+// 'empty' (nothing stored), 'ok' (state is the normalized career), 'newer' (written by a newer
+// version), 'corrupt' (not a readable Front of House save) or 'failed' (migration or
+// normalization threw or did not reach the current schema).
+export function inspectSave(text, { namespace, schema, migrate, normalize, seed }) {
+  if (text === null || text === undefined || text === '') return { status: 'empty' };
+  let parsed;
+  try { parsed = JSON.parse(text); } catch { return { status: 'corrupt', reason: 'not JSON' }; }
+  if (!isObj(parsed)) return { status: 'corrupt', reason: 'not an object' };
+  let raw;
+  // Same envelope test as the shared kit's loadResult(): ns, savedAt or a v+state pair mark an
+  // envelope, so a damaged envelope is never read as legacy raw state.
+  const has = (k) => Object.prototype.hasOwnProperty.call(parsed, k);
+  if (!has('ns') && !has('savedAt') && !(has('v') && has('state'))) raw = parsed; // legacy raw state
+  else {
+    if (parsed.ns !== namespace) return { status: 'corrupt', reason: 'another namespace' };
+    if (typeof parsed.v === 'number' && parsed.v > schema) return { status: 'newer', reason: `envelope v${parsed.v}` };
+    raw = parsed.state;
+  }
+  const version = saveSchemaOf(raw);
+  if (version === null) return { status: 'corrupt', reason: 'no schema' };
+  if (version > schema) return { status: 'newer', reason: `schema ${version}` };
+  if (version < 1) return { status: 'corrupt', reason: `schema ${version}` };
+  let migrated;
+  try { migrated = migrate(raw); } catch (error) { return { status: 'failed', reason: `migration: ${error?.message || error}` }; }
+  if (saveSchemaOf(migrated) !== schema) return { status: 'failed', reason: 'migration did not reach the current schema' };
+  try {
+    const state = normalize(migrated, seed);
+    if (saveSchemaOf(state) !== schema) return { status: 'failed', reason: 'normalized state has the wrong schema' };
+    return { status: 'ok', state };
+  } catch (error) {
+    return { status: 'failed', reason: `normalize: ${error?.message || error}` };
+  }
+}
+
+// Copies `text` to `${namespace}.backup`, or to a timestamped key when that backup already holds
+// a different save, so an earlier backup is never replaced. Returns the key, or null when the
+// browser refuses storage.
+export function backupSave(storage, namespace, text, now = Date.now()) {
+  if (!storage || typeof text !== 'string') return null;
+  const base = namespace + BACKUP_SUFFIX;
+  try {
+    const existing = storage.getItem(base);
+    const key = existing === null || existing === text ? base : `${base}.${now}`;
+    if (key !== base && storage.getItem(key) === text) return key;
+    storage.setItem(key, text);
+    return key;
+  } catch { return null; }
+}
+
 export function migrateSave(raw) {
   if (!isObj(raw) || !isInt(raw.schema)) return raw;
   let s = raw;
