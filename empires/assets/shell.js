@@ -443,6 +443,8 @@ function setupShortcutGuide() {
   // work on them; Space elsewhere is also kept from scrolling the page.
   function guardKeysWhileOpen(e) {
     if (!modal.classList.contains('is-open')) return;
+    // Shell-level keys keep working over the guide (EM-103 F3 telemetry).
+    if (e.code === 'F3') return;
     e.stopImmediatePropagation();
     if (e.type === 'keydown' && e.code === 'Escape') {
       markSeen();
