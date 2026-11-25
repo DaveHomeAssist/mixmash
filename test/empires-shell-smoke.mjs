@@ -1,4 +1,4 @@
-// Empires shell regressions from the 2026-11-25 bug pass (Scaler engine items):
+// Empires shell regressions from the 2026-11-25 bug pass: the controls guide swallows keys, WebGL 1 is reported as unsupported, and a tab hidden during load starts paused.
 //  1. Keys pressed while the "Command Basics" guide is open never reach the
 //     engine (Space used to start the skirmish underneath the dialog).
 //  2. A WebGL 1-only browser is told the game cannot run (the build links

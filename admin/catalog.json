@@ -5512,7 +5512,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "empires-shell-smoke.mjs",
-      "description": "Empires shell regressions from the 2026-11-25 bug pass (Scaler engine items): 1.",
+      "description": "Empires shell regressions from the 2026-11-25 bug pass: the controls guide swallows keys, WebGL 1 is reported as unsupported, and a tab hidden during load starts paused.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/empires-shell-smoke.mjs",
       "open": null
     },
