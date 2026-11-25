@@ -4,7 +4,7 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
-- Front of House 0.4.6: save safety. A newer-version, damaged, unconvertible or unloadable career save is backed up to `front_of_house_v1.backup`, never loaded or overwritten, and shown with a Reload / Download / Start new notice; a second tab can no longer write a fresh game over a save it can't read; resizing keeps an open window's scroll, focus and choices; Start a new game disarms when the Menu closes; hidden-tab time no longer skips the show. Release metadata cites cache v94; `sw.js` unchanged; rules, balance and save schema 2 unchanged.
+- Front of House 0.4.6: save safety. A newer-version, damaged, unconvertible or unloadable career save is backed up to `front_of_house_v1.backup`, never loaded or overwritten, and shown with a Reload / Download / Start new notice; a second tab can no longer write a fresh game over a save it can't read; resizing keeps an open window's scroll, focus and choices; Start a new game disarms when the Menu closes; hidden-tab time no longer skips the show. Release metadata cites cache v95; `sw.js` unchanged; rules, balance and save schema 2 unchanged.
 
 - Hub: the six JPEG gameplay previews are now WebP, re-encoded from the same captures with Chromium's encoder at quality 80 (1000×650, unchanged frames). The previews drop from 372,254 to 246,660 bytes (125,594 saved), restoring headroom under the homepage's 500 KB initial-transfer budget after the seventh game. `src/hub/social.mjs` now sets the data-URL type from the file extension, like `og-games.mjs`; share cards are not regenerated. Cache v94.
 
