@@ -847,16 +847,6 @@
       "open": null
     },
     {
-      "path": "assets/previews/mixmash.jpg",
-      "project": "mixmash",
-      "category": "art",
-      "kind": "JPG",
-      "title": "mixmash.jpg",
-      "description": "MIXMASH gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mixmash.jpg",
-      "open": "/assets/previews/mixmash.jpg"
-    },
-    {
       "path": "test/combat-inline-parity.test.mjs",
       "project": "mixmash",
       "category": "tests",
@@ -1205,16 +1195,6 @@
       "description": "Curated mapping of baseline behaviours and save fields to their port status; input to the parity ledger.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/mapping.json",
       "open": null
-    },
-    {
-      "path": "assets/previews/mars.jpg",
-      "project": "mars",
-      "category": "art",
-      "kind": "JPG",
-      "title": "mars.jpg",
-      "description": "MarsScape gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mars.jpg",
-      "open": "/assets/previews/mars.jpg"
     },
     {
       "path": "mars/art/golden-scene.json",
@@ -2315,16 +2295,6 @@
       "description": "Eighteen clean headless renderer-only Intel/Mesa EGL windows under the established Lot protocol, with source, fixture and raw digests; not physical-device or full-HUD acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/performance/2026-10-07-egl.json",
       "open": null
-    },
-    {
-      "path": "assets/previews/foh.jpg",
-      "project": "front-of-house",
-      "category": "art",
-      "kind": "JPG",
-      "title": "foh.jpg",
-      "description": "Front of House gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/foh.jpg",
-      "open": "/assets/previews/foh.jpg"
     },
     {
       "path": "front-of-house/assets/equipment/bar-tent.png",
@@ -4507,16 +4477,6 @@
       "open": "/pitch/"
     },
     {
-      "path": "assets/previews/pitch.jpg",
-      "project": "pitch",
-      "category": "art",
-      "kind": "JPG",
-      "title": "pitch.jpg",
-      "description": "PITCH RIOT gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/pitch.jpg",
-      "open": "/assets/previews/pitch.jpg"
-    },
-    {
       "path": "empires/index.html",
       "project": "empires",
       "category": "surface",
@@ -4535,16 +4495,6 @@
       "description": "Session log for restoring /empires/ as Age of Dave and replacing the prototype with the real aoe2-clone WASM build.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/progress.md",
       "open": null
-    },
-    {
-      "path": "assets/previews/empires.jpg",
-      "project": "empires",
-      "category": "art",
-      "kind": "JPG",
-      "title": "empires.jpg",
-      "description": "EMPIRES gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/empires.jpg",
-      "open": "/assets/previews/empires.jpg"
     },
     {
       "path": "empires/assets/aoe2-clone.data",
@@ -4605,16 +4555,6 @@
       "description": "RFC for a shared Garden OS engine: the specification, an architectural audit and the verified migration baseline.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/rfc-004-garden-os-engine-specification.md",
       "open": null
-    },
-    {
-      "path": "assets/previews/garden.jpg",
-      "project": "garden",
-      "category": "art",
-      "kind": "JPG",
-      "title": "garden.jpg",
-      "description": "Garden OS gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/garden.jpg",
-      "open": "/assets/previews/garden.jpg"
     },
     {
       "path": "zelda2mario/index.html",
@@ -5162,7 +5102,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Landing gameplay previews",
-      "description": "Refreshed from the live browser games on October 5, 2026 at 1000×650 CSS pixels, device scale 1, JPEG quality 76.",
+      "description": "Refreshed from the live browser games on October 5, 2026 at 1000×650 CSS pixels, device scale 1. These are actual gameplay captures; no generated art or injected game state. Shared hub navigation is omitted where noted.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/README.md",
       "open": null
     },
@@ -5457,6 +5397,36 @@
       "open": "/assets/og/pitch.jpg"
     },
     {
+      "path": "assets/previews/empires.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "empires.webp",
+      "description": "EMPIRES gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/empires.webp",
+      "open": "/assets/previews/empires.webp"
+    },
+    {
+      "path": "assets/previews/foh.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "foh.webp",
+      "description": "Front of House gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/foh.webp",
+      "open": "/assets/previews/foh.webp"
+    },
+    {
+      "path": "assets/previews/garden.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "garden.webp",
+      "description": "Garden OS gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/garden.webp",
+      "open": "/assets/previews/garden.webp"
+    },
+    {
       "path": "assets/previews/hockey-havoc.webp",
       "project": "studio",
       "category": "art",
@@ -5465,6 +5435,36 @@
       "description": "Gritty’s Hockey Havoc gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/hockey-havoc.webp",
       "open": "/assets/previews/hockey-havoc.webp"
+    },
+    {
+      "path": "assets/previews/mars.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "mars.webp",
+      "description": "MarsScape gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mars.webp",
+      "open": "/assets/previews/mars.webp"
+    },
+    {
+      "path": "assets/previews/mixmash.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "mixmash.webp",
+      "description": "MIXMASH gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mixmash.webp",
+      "open": "/assets/previews/mixmash.webp"
+    },
+    {
+      "path": "assets/previews/pitch.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "pitch.webp",
+      "description": "PITCH RIOT gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/pitch.webp",
+      "open": "/assets/previews/pitch.webp"
     },
     {
       "path": "favicon.svg",
@@ -5634,6 +5634,16 @@
       "title": "mobile-touch-smoke.mjs",
       "description": "MixKit mobile and tablet touch rail (Mobile & Tablet Fix program, Phase 1).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/mobile-touch-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/public-controls.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "public-controls.test.mjs",
+      "description": "Public control tables must match the shipped default binds. play/input-data.js is the source of truth for fighter keys. home.html (the hub \"Game guide\") and docs/PLAYER_GUIDE.md both drifted from those defaults once…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/public-controls.test.mjs",
       "open": null
     },
     {
