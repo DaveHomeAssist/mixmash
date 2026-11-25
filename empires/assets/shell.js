@@ -133,6 +133,11 @@ var empiresArguments = (function () {
 
 var Module = {
   arguments: empiresArguments,
+  // Runs after main() has started the engine loop: apply the hidden-tab pause
+  // if the tab went to the background during load (setupVisibilityPause).
+  postRun: [function () {
+    if (window.__empiresVisibility) window.__empiresVisibility.sync();
+  }],
   canvas: document.getElementById('canvas'),
   // The glue resolves side files (aoe2-clone.data sprite package) against the
   // page URL; they live next to the script in ./assets/.
@@ -253,10 +258,15 @@ function checkCapabilities() {
   if (!report.wasm) {
     problems.push('This browser has no WebAssembly support, which EMPIRES needs to run at all.');
   }
+  // The engine is linked with -sUSE_WEBGL2=1 and has no WebGL 1 fallback, so
+  // anything short of WebGL 2 cannot draw (bug pass 2026-11-25).
+  var blocking = false;
   if (!report.webgl) {
+    blocking = true;
     problems.push('No WebGL context is available, so the game cannot draw. Hardware acceleration may be disabled.');
   } else if (report.webgl === 'webgl') {
-    problems.push('Only WebGL 1 is available. The game should still render, but expect lower performance.');
+    blocking = true;
+    problems.push('Only WebGL 1 is available, and EMPIRES needs WebGL 2, so the game cannot draw in this browser. Try a current Chrome, Edge, Firefox or Safari, or turn on hardware acceleration.');
   }
   if (report.wasm && !report.simd) {
     problems.push('WebAssembly SIMD is unavailable, so simulation-heavy moments may run slower.');
@@ -267,6 +277,11 @@ function checkCapabilities() {
   var dismiss = document.getElementById('capability-dismiss');
   if (problems.length && notice && detail) {
     detail.textContent = problems.join(' ');
+    if (blocking) {
+      var title = notice.querySelector('b');
+      if (title) title.textContent = 'Not supported in this browser';
+      if (dismiss) dismiss.textContent = 'Dismiss';
+    }
     notice.classList.add('is-visible');
     if (dismiss) {
       dismiss.addEventListener('click', function () { notice.classList.remove('is-visible'); });
@@ -420,11 +435,25 @@ function setupShortcutGuide() {
   modal.addEventListener('click', function (e) {
     if (e.target === modal) { markSeen(); close(); }
   });
-  window.addEventListener('keydown', function (e) {
-    if (e.code === 'Escape' && modal.classList.contains('is-open')) {
+  // While the guide is open, no key reaches the engine underneath: SDL treats
+  // Space as "start skirmish" in the lobby, so a Space press used to start the
+  // match behind the still-open dialog (bug pass 2026-11-25). Window capture
+  // runs before SDL's own listeners (this file loads before the glue). Default
+  // actions are kept for the dialog's own buttons so Tab/Enter/Space still
+  // work on them; Space elsewhere is also kept from scrolling the page.
+  function guardKeysWhileOpen(e) {
+    if (!modal.classList.contains('is-open')) return;
+    e.stopImmediatePropagation();
+    if (e.type === 'keydown' && e.code === 'Escape') {
       markSeen();
       close();
+      return;
     }
+    var onDialogControl = e.target && e.target.closest && e.target.closest('#shortcuts button, #shortcuts a');
+    if (e.code === 'Space' && !onDialogControl) e.preventDefault();
+  }
+  ['keydown', 'keyup', 'keypress'].forEach(function (type) {
+    window.addEventListener(type, guardKeysWhileOpen, true);
   });
 
   window.__empiresShortcuts = { open: open, close: close, seen: seen };
@@ -527,7 +556,7 @@ setTimeout(function () { document.title = 'EMPIRES — MixMash Studio'; }, 500);
 // windows) and resume when it comes back.
 function setupVisibilityPause() {
   var paused = false;
-  document.addEventListener('visibilitychange', function () {
+  function sync() {
     var M = window.Module;
     if (!M || typeof M.pauseMainLoop !== 'function') return;
     if (document.hidden && !paused) {
@@ -537,8 +566,13 @@ function setupVisibilityPause() {
       M.resumeMainLoop();
       paused = false;
     }
-  });
-  window.__empiresVisibility = { paused: function () { return paused; } };
+  }
+  document.addEventListener('visibilitychange', sync);
+  // A tab hidden while the wasm/data is still downloading never saw a usable
+  // visibilitychange, so the main loop would start (and run) in the
+  // background. Module.postRun (below) calls sync() once main() has installed
+  // the loop.
+  window.__empiresVisibility = { paused: function () { return paused; }, sync: sync };
 }
 
 window.addEventListener('DOMContentLoaded', function () {
