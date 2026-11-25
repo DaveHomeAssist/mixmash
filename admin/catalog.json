@@ -4312,7 +4312,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit 4d09e2fe4107b479444584bbd01acca688fa8593 (source PR16).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit b3e153f (source PR18, WebGL context-loss recovery and no drawing in hidden tabs, on top of 4d09e2fe4107b479444584bbd01acca688fa8593 from PR16).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -4334,6 +4334,16 @@
       "title": "horseshoes-broadcast-smoke.mjs",
       "description": "Pavilion broadcast and skippable camera pass acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-broadcast-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/horseshoes-context-smoke.mjs",
+      "project": "horseshoes",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "horseshoes-context-smoke.mjs",
+      "description": "Bug pass 2026-11-25 (Scaler engine items): Horseshoes stops drawing while the tab is hidden, and recovers from a lost WebGL context (court and the FMP replay monitors draw again after restore, no page errors).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-context-smoke.mjs",
       "open": null
     },
     {
@@ -4427,23 +4437,23 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-DW19vTBY.js",
+      "path": "horseshoes/assets/horseshoes-6t8KyqIe.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-DW19vTBY); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-DW19vTBY.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-6t8KyqIe); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-6t8KyqIe.js",
       "open": null
     },
     {
-      "path": "horseshoes/assets/three.module-2p9AdgNp.js",
+      "path": "horseshoes/assets/three.module-BtCP-pKZ.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-2p9AdgNp); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-2p9AdgNp.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-BtCP-pKZ); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-BtCP-pKZ.js",
       "open": null
     },
     {
