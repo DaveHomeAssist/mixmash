@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v94';
+const VERSION = 'v95';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -171,11 +171,14 @@ self.addEventListener('fetch', (event) => {
       const response = await fetch(request);
       if (isCacheable(response)) {
         const cache = await caches.open(CACHE);
-        cache.put(request, response.clone());
+        const put = cache.put(request, response.clone());
+        event.waitUntil(put);
       }
       return response;
     } catch (error) {
-      const cached = await caches.match(request, { ignoreSearch: true });
+      // Only the current versioned cache: searching every cache can mix two deploys.
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match(request, { ignoreSearch: true });
       if (cached) return cached;
       if (request.mode === 'navigate') {
         const offline = await caches.match('./offline.html');
