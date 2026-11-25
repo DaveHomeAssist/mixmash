@@ -15,19 +15,36 @@ MIXMASH plays like a Smash-style platform fighter: there's no health bar. Landin
 
 ## Controls
 
-| Action | Player 1 | Player 2 |
+| Action | Player 1 | Player 2 | Gamepad |
+|---|---|---|---|
+| Move | `A` / `D` | `←` / `→` | Stick / D-pad |
+| Jump | `W` | `↑` | `A` |
+| Drop / crouch / fast-fall | `S` | `↓` | Down |
+| Attack | `J` or `Space` | `Num 1` | `X` |
+| Special (grab) | `K` | `Num 2` | `Y` |
+| Shield | `L` | `Num 3` | `RB` / `RT` |
+
+**Special** is a grounded grab. Combine a direction with Attack for different moves — up-attack, down-attack, and forward-attack all hit differently, plus a separate aerial attack while airborne. Hold **Shield** to block; tap it to dodge. A grab goes through shields, then you can throw.
+
+On a phone or tablet, on-screen buttons cover move, jump, attack, special, and shield. You can remap fighter keys in the in-game Controls tab. All of your control binds, volume, music toggle, hitbox-display, and stage-hazard settings are saved in your browser and reloaded automatically next time.
+
+## Shortcuts
+
+Press `?` or `H` in-game for the Shortcuts panel. In Training, `H` toggles hitboxes, so use `?` for the panel. A shortcut never overrides a key you bound to a fighter action. Browser shortcuts with Ctrl, Alt, or Cmd pass through.
+
+| Action | Keyboard | Gamepad |
 |---|---|---|
-| Move | `A` / `D` | `←` / `→` |
-| Jump | `W` | `↑` |
-| Crouch / fast-fall | `S` | `↓` |
-| Attack | `J` | `Numpad 1` |
-| Attack (alt) | `Space` | — |
-| Grab | `K` | `Numpad 2` |
-| Shield | `L` | `Numpad 3` |
-
-Gamepads work out of the box (left stick/d-pad to move, face button to attack, shoulder buttons to shield). Combine a direction with Attack for different moves — up-attack, down-attack, and forward-attack all hit differently, plus a separate aerial attack while airborne. Hold **Shield** to block; tap it to dodge. **Grab** into a throw when your opponent is shielding — grabs go through shields.
-
-All of your control binds, volume, music toggle, hitbox-display, and stage-hazard settings are saved in your browser and reloaded automatically next time.
+| Pause / resume | `P` or `Esc` | Start |
+| Quit to title (from pause) | `Esc` | — |
+| Shortcuts | `?` or `H` | Back / Select |
+| Mute / unmute | `M` | — |
+| Fullscreen | `F` | — |
+| Command menu | `O` | — |
+| Quick Fight (title) | `Q` | — |
+| Setup match / rematch | `Enter` or `Space` | Start |
+| Resume saved match (title) | `R` | — |
+| Restart run (Platform Rush) | `R` | — |
+| Training: hitboxes / reset damage | `H` / `R` | — |
 
 ## The roster — 14 headliners
 

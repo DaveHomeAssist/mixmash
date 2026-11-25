@@ -7,7 +7,7 @@
 import * as D from './data.mjs';
 import { equipmentCardInfo, SITE_CARD_TYPES } from './equipment-cards.mjs';
 import {
-  amenitySupply, applyAction, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
+  amenitySupply, applyAction, backupSave, inspectSave, artistFor, buzz, createGame, demand, doorRushPilot, evaluateVenue, findResponse, forecast, incidentAtFor, setTimeFor, festivalSupportFor, stageOpenersFor, stagePlanFor, stageForecastFor, festivalPolicyFor,
   careerProgress, completedShows, migrateSave, normalizeState, offersFor, presaleSplit, rollShow, settlementFor, liveServicesFor, liveIncidentMinute, liveArrivalPlan, liveAccessFor, liveEndMinute,
   settlementPayout, sanitationPlanFor, equipmentFor, equipmentPlanFor, careerLedgerFor, heldRunFor, seatingPlanFor, seatingForecastFor, ticketingPlanFor, ticketingForecastFor, researchFor, researchEffectsFor, researchNightFor, showPreview, sightlineTiles, termsFor, upfrontFor, validatePlacement, venueSpec,
 } from './engine.mjs';
@@ -140,6 +140,9 @@ function rememberRendererPreference(enabled) {
   updatePrefs(setView(prefs, { renderer: enabled ? '3d' : '2d' }));
 }
 
+// The kit store writes the save. Reading goes through inspectSave (engine.mjs), which sorts the
+// raw text into empty/ok/newer/corrupt/failed itself and also defers to the kit's loadResult()
+// when the kit has it (see kitVerdict), so it is safe with both the old and the new kit.
 const store = window.MixKitSave
   ? window.MixKitSave.createSaveStore(D.SAVE_NAMESPACE, { version: D.SCHEMA_VERSION, migrate: (saved) => migrateSave(saved) })
   : null;
@@ -151,15 +154,49 @@ function freshSeed() {
   return (a[0] >>> 0) || 1;
 }
 
-function loadState() {
-  let raw = null;
-  try { raw = store ? store.load() : null; } catch { raw = null; }
-  return raw ? normalizeState(migrateSave(raw), freshSeed()) : createGame(freshSeed());
+// The stored text itself, read directly so the save guard sees exactly what the kit would load.
+const saveStorage = (() => { try { return window.localStorage; } catch { return null; } })();
+function readStoredSave() {
+  try { return saveStorage ? saveStorage.getItem(D.SAVE_NAMESPACE) : null; } catch { return null; }
 }
 
-let hadOpeningSave = false;
-try { hadOpeningSave = !!store?.load(); } catch { /* blocked storage remains playable */ }
+// A save this build cannot read (newer version, damaged, failed migration or failed
+// normalization) is never loaded or overwritten: its text is copied to a backup key, autosave
+// stays off and a notice offers Reload or Start new (inspectSave in engine.mjs, docs/SAVE_FORMAT.md).
+let saveLock = null;
+// The kit's loadResult() (MixKitSave after the 2026-11-25 contract) reports 'newer' or
+// 'corrupt' itself. When it is there, either verdict also locks the save; when it is not (the
+// older kit, whose load() reads both as "no save"), inspectSave alone decides. load() is never
+// called, so its throw for those statuses can't be mistaken for an empty slot.
+function kitVerdict() {
+  if (!store || typeof store.loadResult !== 'function') return null;
+  try {
+    const result = store.loadResult();
+    return result && (result.status === 'newer' || result.status === 'corrupt') ? result : null;
+  } catch { return null; }
+}
+function inspectStored(text = readStoredSave()) {
+  const result = inspectSave(text, { namespace: D.SAVE_NAMESPACE, schema: D.SCHEMA_VERSION, migrate: migrateSave, normalize: normalizeState, seed: freshSeed() });
+  if (result.status !== 'ok' || text !== readStoredSave()) return result;
+  const kit = kitVerdict();
+  return kit ? { status: kit.status, reason: `shared save store: ${kit.error?.message || kit.error || kit.status}` } : result;
+}
+function lockSave(result, text) {
+  const backup = backupSave(saveStorage, D.SAVE_NAMESPACE, text);
+  saveLock = { status: result.status, reason: result.reason || '', backup, text };
+  queueMicrotask(showSaveGuard);
+}
+
+function loadState() {
+  const text = readStoredSave();
+  const result = inspectStored(text);
+  if (result.status === 'ok') return result.state;
+  if (result.status !== 'empty') lockSave(result, text);
+  return createGame(freshSeed());
+}
+
 let state = loadState();
+let hadOpeningSave = !saveLock && readStoredSave() !== null;
 let openingActive = false;
 const ui = {
   tool: 'select', placeTool: 'stage', selection: null, dozing: false, rot: 0, cursor: { x: 11, y: 6 }, hover: null, focused: false, showClear: true,
@@ -170,10 +207,60 @@ const ui = {
 // a reload quietly return to an older game; a save code still carries the game elsewhere.
 let saveWarned = false;
 function persist() {
+  if (saveLock) return; // an unreadable save stays untouched until the player chooses Start new
   if ((store && store.save(state)) || saveWarned) return;
   saveWarned = true;
   setSaveStatus('This browser is not keeping progress. Copy a save code to keep this game.');
   queueMicrotask(() => say('This browser is not saving progress. Open Menu and copy a save code to keep this game.', 'error'));
+}
+
+const SAVE_GUARD_TEXT = {
+  newer: 'This save is from a newer version of Front of House. Reload to update. Your career has not been changed.',
+  corrupt: "Your saved career couldn't be read, so it was not loaded or changed.",
+  failed: "Your saved career couldn't be loaded by this version, so it was not loaded or changed.",
+};
+// The non-blocking notice for an unreadable save. Play continues in a temporary game that is not
+// saved until the player picks Start new (which keeps the backup) or loads a code.
+function showSaveGuard() {
+  let box = document.getElementById('save-guard');
+  if (!saveLock) { box?.remove(); return; }
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'save-guard';
+    box.className = 'save-guard';
+    box.setAttribute('role', 'alert');
+    box.addEventListener('click', (e) => {
+      const button = e.target.closest('[data-guard]');
+      if (!button) return;
+      const kind = button.dataset.guard;
+      if (kind === 'reload') location.reload();
+      else if (kind === 'download' && saveLock) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([saveLock.text + '\n'], { type: 'text/plain' }));
+        link.download = `front-of-house-unreadable-save-${new Date().toISOString().slice(0, 10)}.txt`;
+        document.body.append(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      } else if (kind === 'new' && saveLock) {
+        if (!saveLock.backup) saveLock.backup = backupSave(saveStorage, D.SAVE_NAMESPACE, saveLock.text);
+        if (!saveLock.backup && !saveLock.confirmErase) {
+          saveLock.confirmErase = true;
+          button.textContent = 'Press again to erase it';
+          box.querySelector('.save-guard-backup').textContent = 'This browser would not keep a backup copy. Download the save first to keep it.';
+          return;
+        }
+        startNewGame();
+        say('Started a new game. The earlier save is kept as a backup in this browser.');
+      }
+    });
+    document.body.append(box);
+  }
+  box.dataset.status = saveLock.status;
+  box.innerHTML = `<p class="save-guard-text"></p><p class="save-guard-backup"></p>
+    <div class="save-guard-actions"><button type="button" data-guard="reload">Reload</button><button type="button" data-guard="download">Download the save</button><button type="button" data-guard="new" class="danger">Start new</button></div>`;
+  box.querySelector('.save-guard-text').textContent = SAVE_GUARD_TEXT[saveLock.status] || SAVE_GUARD_TEXT.corrupt;
+  box.querySelector('.save-guard-backup').textContent = saveLock.backup
+    ? 'A backup copy is kept in this browser. Progress here is not saved until you choose Start new.'
+    : 'Progress here is not saved until you choose Start new.';
 }
 
 function say(text, kind = 'info') {
@@ -1196,6 +1283,21 @@ function startPlayback() {
   }
   loop();
 }
+
+// Show-night clocks run on wall time; while the tab is hidden no frames run, so the hidden time
+// is added back on return and the night continues where it was instead of jumping ahead.
+let hiddenAt = null;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { hiddenAt = performance.now(); return; }
+  if (hiddenAt === null) return;
+  const away = performance.now() - hiddenAt;
+  hiddenAt = null;
+  const play = ui.play;
+  if (!play || !(away > 0)) return;
+  if (play.live) { if (Number.isFinite(play.last)) play.last += away; }
+  else if (Number.isFinite(play.start)) play.start += away;
+  if (play.after && !play.after.done && Number.isFinite(play.after.start)) play.after.start += away;
+});
 
 function stopPlayback() {
   if (ui.raf) cancelAnimationFrame(ui.raf);
@@ -2877,8 +2979,31 @@ function reviewAdvisory(category) {
   else if (target === 'stages') openStages(opener);
   else if (target === 'settlement') openSettlement(opener, { signed: state.phase === 'done' });
 }
+// A resize rebuilds an open window only when its compact layout actually changes (the 560px
+// height pagination, the phone width, or the settlement's narrow Back button), so the mobile
+// URL bar and an on-screen keyboard don't reset it; a paged window just re-pages in place. The
+// rebuild keeps scroll, focus and unapplied select choices.
+const windowLayoutKey = () => `${innerHeight <= 560}|${innerWidth <= 680}|${innerHeight <= 760}`;
+let windowLayout = windowLayoutKey();
 window.addEventListener('resize', () => {
+  const key = windowLayoutKey(), changed = key !== windowLayout;
+  windowLayout = key;
   if (el.win.hidden) return;
+  if (!changed) { if (innerHeight <= 560) paginateCompactWindow(0); return; }
+  const active = document.activeElement && el.win.contains(document.activeElement) ? document.activeElement : null;
+  const focusKey = active ? (active.id ? `#${CSS.escape(active.id)}` : active.dataset.act ? `[data-act="${CSS.escape(active.dataset.act)}"]` : null) : null;
+  const scroll = el.winBody.scrollTop;
+  const selects = [...el.winBody.querySelectorAll('select')].map((sel, i) => [sel.id || i, sel.value]);
+  reopenWindowForLayout();
+  const now = [...el.winBody.querySelectorAll('select')];
+  for (const [id, value] of selects) {
+    const sel = typeof id === 'string' ? now.find(n => n.id === id) : now[id];
+    if (sel && [...sel.options].some(o => o.value === value)) sel.value = value;
+  }
+  el.winBody.scrollTop = scroll;
+  if (focusKey) el.win.querySelector(focusKey)?.focus({ preventScroll: true });
+});
+function reopenWindowForLayout() {
   if (win.kind === 'equipment') openEquipment(win.opener);
   if (win.kind === 'site-equipment') openSiteEquipment(win.opener);
   if (win.kind === 'ticketing') openTicketing(win.opener);
@@ -2888,7 +3013,7 @@ window.addEventListener('resize', () => {
   if (win.kind === 'set-time') openWindow('set-time', 'Set time', setTimeHtml(setTimeFor(state)), win.opener);
   if (win.kind === 'deals') openWindow('deals', 'Deal terms', dealHelpHtml(), win.opener);
   if (win.kind === 'advisory') refreshAdvisory();
-});
+}
 
 // wide: the settlement's three columns. scrolls: only show history may scroll (decision 11).
 function openWindow(kind, title, html, opener, { foot = '', wide = false, scrolls = false } = {}) {
@@ -2942,6 +3067,12 @@ function closeWindow({ focus = true } = {}) {
 
 function resetModeButtons() {
   ui.confirmMode = null;
+  // An armed "Start a new game" disarms when the menu closes, so a later single press can't erase.
+  if (ui.confirmNew) {
+    ui.confirmNew = false;
+    const button = el.menu.querySelector('[data-save="new"]');
+    if (button) button.textContent = 'Start a new game';
+  }
   el.menu.querySelectorAll('[data-act="mode"]').forEach((b) => { b.textContent = b.dataset.label; });
 }
 
@@ -3075,18 +3206,29 @@ document.querySelector('.savebar').addEventListener('click', (e) => {
     }
     ui.confirmNew = false;
     target.textContent = 'Start a new game';
-    state = createGame(freshSeed());
-    resetHistory();
-    resetCamera();
-    persist();
-    stopPlayback();
-    ui.play = null;
-    ui.mounted = null;
-    render();
+    startNewGame();
     setSaveStatus('Started a new game.');
     setMenu(false);
   }
 });
+
+// Start new: the only path, with Load a code, that may replace a save this build cannot read.
+// The unreadable text was backed up when it was found; the backup is retried here first.
+function startNewGame() {
+  if (saveLock) {
+    if (!saveLock.backup) saveLock.backup = backupSave(saveStorage, D.SAVE_NAMESPACE, saveLock.text);
+    saveLock = null;
+    showSaveGuard();
+  }
+  state = createGame(freshSeed());
+  resetHistory();
+  resetCamera();
+  persist();
+  stopPlayback();
+  ui.play = null;
+  ui.mounted = null;
+  render();
+}
 
 // Checks the code before anything is written, so a bad code can't replace a good save.
 // Codes from an older save version are converted with migrateSave (SAVE_FORMAT.md).
@@ -3098,7 +3240,18 @@ function importCode(code) {
     setSaveStatus("That code isn't a Front of House save. Nothing was changed.");
     return false;
   }
-  state = normalizeState(migrateSave(parsed.state), freshSeed());
+  let next = null;
+  try { next = normalizeState(migrateSave(parsed.state), freshSeed()); } catch { next = null; }
+  if (!next || next.schema !== D.SCHEMA_VERSION) {
+    setSaveStatus("That code couldn't be read by this version. Nothing was changed.");
+    return false;
+  }
+  state = next;
+  if (saveLock) {
+    if (!saveLock.backup) saveLock.backup = backupSave(saveStorage, D.SAVE_NAMESPACE, saveLock.text);
+    saveLock = null;
+    showSaveGuard();
+  }
   resetHistory();
   persist();
   stopPlayback();
@@ -3228,6 +3381,7 @@ window.__frontOfHouse = {
   act: (action) => act(action),
   skip: () => skipToIncident(),
   importCode,
+  saveGuard: () => (saveLock ? { status: saveLock.status, reason: saveLock.reason, backup: saveLock.backup } : null),
   buildTools: () => ({ tool: ui.tool, selection: ui.selection, undo: history.undo.length, redo: history.redo.length }),
   board: () => board.info(),
   scene: () => (ui.lastScene ? { ...ui.lastScene } : null),
@@ -3275,8 +3429,19 @@ persist();
 // Another tab saving this game replaces the copy shown here, so a stale tab cannot sign, book or
 // build over newer progress; a page restored from the back-forward cache reloads the save too.
 function adoptStoredGame(message) {
-  const next = loadState();
-  if (JSON.stringify(next) === JSON.stringify(normalizeState(JSON.parse(JSON.stringify(state)), state.seed))) return;
+  const text = readStoredSave();
+  const result = inspectStored(text);
+  if (result.status === 'empty') return;
+  // A save this tab cannot read (a newer version in another tab, or damage) is never replaced by
+  // this tab's copy: stop autosaving and show the notice instead.
+  if (result.status !== 'ok') {
+    if (!saveLock || saveLock.text !== text) lockSave(result, text);
+    return;
+  }
+  const next = result.state;
+  const wasLocked = !!saveLock;
+  if (wasLocked) { saveLock = null; showSaveGuard(); }
+  if (!wasLocked && JSON.stringify(next) === JSON.stringify(normalizeState(JSON.parse(JSON.stringify(state)), state.seed))) return;
   state = next;
   hadOpeningSave = true;
   resetHistory();
@@ -3288,7 +3453,7 @@ function adoptStoredGame(message) {
   say(message);
 }
 window.addEventListener('storage', (e) => {
-  if (store && e.key === store.key && e.newValue) adoptStoredGame('This game changed in another tab. Showing the latest save.');
+  if (e.key === D.SAVE_NAMESPACE && e.newValue) adoptStoredGame('This game changed in another tab. Showing the latest save.');
 });
 window.addEventListener('pageshow', (e) => { if (e.persisted) adoptStoredGame('Showing the latest save.'); });
 window.addEventListener('resize', queueLayout);

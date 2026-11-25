@@ -6,8 +6,8 @@ import { execFileSync } from 'node:child_process';
 import { playableGames, studio } from '../src/hub/catalog.mjs';
 const root = new URL('../', import.meta.url);
 const read = file => readFile(new URL(file, root), 'utf8');
-test('the six browser games have real routes, bounded images and recorded claims', async () => {
-  assert.deepEqual(playableGames.map(g => g.route), ['/play/', '/front-of-house/', '/pitch/', '/mars/', '/garden/', '/empires/']);
+test('the seven browser games have real routes, bounded images and recorded claims', async () => {
+  assert.deepEqual(playableGames.map(g => g.route), ['/play/', '/front-of-house/', '/pitch/', '/hockey-havoc/', '/mars/', '/garden/', '/empires/']);
   assert.equal(new Set(playableGames.map(g => g.id)).size, playableGames.length);
   const evidence = await read('docs/HOMEPAGE_EVIDENCE.md');
   for (const game of playableGames) {
@@ -26,7 +26,7 @@ test('generated static catalog cannot drift and keeps the requested copy', async
   assert.equal(studio.note, 'Every game here is playable now. Each card shows how far along it is.');
   assert.ok(html.includes(studio.note));
   assert.ok(!/[—]|&mdash;|&#8212;/.test(html));
-  assert.equal((html.match(/class="play-link"/g) || []).length, 6);
+  assert.equal((html.match(/class="play-link"/g) || []).length, 7);
   assert.ok(!html.includes('/src/kit/pwa.js'), 'do not precache game runtimes during a first homepage visit');
 });
 test('FOH approval affects discovery only, not indexing or game saves', async () => {

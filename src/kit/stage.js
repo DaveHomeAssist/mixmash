@@ -215,12 +215,17 @@
     }
 
     var raf = 0;
+    var rafIsTimeout = false;
     function schedule() {
       if (raf) return;
-      var run = function () { raf = 0; fit(); };
-      raf = typeof global.requestAnimationFrame === 'function'
-        ? global.requestAnimationFrame(run)
-        : setTimeout(run, 16);
+      var run = function () { raf = 0; rafIsTimeout = false; fit(); };
+      if (typeof global.requestAnimationFrame === 'function') {
+        rafIsTimeout = false;
+        raf = global.requestAnimationFrame(run);
+      } else {
+        rafIsTimeout = true;
+        raf = setTimeout(run, 16);
+      }
     }
 
     global.addEventListener('resize', schedule);
@@ -236,6 +241,11 @@
       setBase: function (w, h) { base = { width: w, height: h }; fit(); },
       setDprCap: function (n) { if (n > 0) { cap = n; fit(); } },
       destroy: function () {
+        if (raf) {
+          if (rafIsTimeout || typeof global.cancelAnimationFrame !== 'function') clearTimeout(raf);
+          else global.cancelAnimationFrame(raf);
+          raf = 0;
+        }
         global.removeEventListener('resize', schedule);
         global.removeEventListener('orientationchange', schedule);
         if (global.visualViewport && global.visualViewport.removeEventListener) {

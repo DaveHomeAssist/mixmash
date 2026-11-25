@@ -9,6 +9,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
   for (const game of playableGames) {
     const art = (await readFile(new URL(`../../assets/previews/${game.image}`, import.meta.url))).toString('base64');
+    const type = game.image.endsWith('.webp') ? 'image/webp' : game.image.endsWith('.png') ? 'image/png' : 'image/jpeg';
     await page.setContent(`<html><head><style>
     *{box-sizing:border-box}body{margin:0;width:1200px;height:630px;position:relative;overflow:hidden;background:#20221f;font-family:Arial,Helvetica,sans-serif;color:#fffcf4}
     img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -19,7 +20,7 @@ try {
     h1{font-size:76px;line-height:.95;letter-spacing:-3px;margin:0 0 20px}
     .hook{font-family:Georgia,serif;font-style:italic;font-size:30px;margin:0}
     .foot{display:flex;gap:16px;align-items:center;font:16px monospace}.pill{border:1px solid #fffcf4;border-radius:999px;padding:6px 14px}
-    </style></head><body><img src="data:image/jpeg;base64,${art}" alt=""><div class="shade"></div><div class="copy">
+    </style></head><body><img src="data:${type};base64,${art}" alt=""><div class="shade"></div><div class="copy">
     <div class="brand">MIXMASH STUDIO<small>${escape(game.status.toUpperCase())}</small></div>
     <div><p class="genre">${escape(game.genre)}</p><h1>${escape(game.name)}</h1><p class="hook">${escape(game.hook)}</p></div>
     <div class="foot"><span class="pill">Free in your browser</span><strong>mixmash.games${escape(game.route)}</strong></div></div></body></html>`);

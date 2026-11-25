@@ -1,0 +1,29 @@
+/* Backyard Horseshoes polish and shortcut layer. A sidecar to the generated build: never edit the hashed bundles.
+   Port into curling-simulator src/horseshoes on the next rebuild (see README "Shortcut layer"). */
+.scoreboard,.deck{box-shadow:0 1px 0 #19392d0f,0 10px 24px -18px #19392d55}
+:root[data-theme=dark] .scoreboard,:root[data-theme=dark] .deck{box-shadow:0 1px 0 #0006,0 12px 28px -18px #000c}
+#score-one,#score-two{display:inline-block;transform-origin:center;font-variant-numeric:tabular-nums}
+#throw-button{background-image:linear-gradient(180deg,#ffffff24,#0000 55%);box-shadow:0 2px 0 #00000026,0 8px 18px -10px var(--throw);text-shadow:0 1px 0 #0003}
+#throw-button:not(:disabled):hover{filter:brightness(1.06)}
+#throw-button:not(:disabled):active{transform:translateY(1px) scale(.985);box-shadow:0 1px 0 #00000026}
+#throw-feedback{transition:color .3s}
+@media (prefers-reduced-motion:no-preference){
+  #throw-button,.deck button{transition:transform .14s cubic-bezier(.2,.8,.2,1),filter .14s,box-shadow .2s}
+  .hs-pop{animation:hs-score-pop .55s cubic-bezier(.2,.9,.25,1.25)}
+  .hs-feedback{animation:hs-feedback-in .4s cubic-bezier(.2,.8,.2,1)}
+  .hs-help[open]{animation:hs-feedback-in .22s cubic-bezier(.2,.8,.2,1)}
+}
+@keyframes hs-score-pop{0%{transform:scale(1)}35%{transform:scale(1.45);text-shadow:0 0 14px currentColor}100%{transform:scale(1)}}
+@keyframes hs-feedback-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hs-help{width:min(600px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:18px 22px 20px;border:1px solid var(--line);border-radius:18px;color:var(--text);background:var(--panel);box-shadow:0 24px 90px #0006}
+.hs-help::backdrop{background:#0a17138c}
+.hs-help-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hs-help h2{margin:0;font-size:22px}
+.hs-help table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+.hs-help th,.hs-help td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.hs-help thead th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.hs-help tbody th{font-weight:700}
+.hs-help kbd{display:inline-block;min-width:1.7em;margin:0 2px 2px 0;padding:1px 6px;border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;background:var(--bg);font:700 11px/1.5 ui-monospace,monospace;text-align:center}
+.hs-help p{margin:12px 0 0;font-size:12px;color:var(--muted)}
+.hs-toast{position:fixed;left:50%;bottom:18px;z-index:50;transform:translateX(-50%);padding:8px 14px;border-radius:999px;background:var(--text);color:var(--bg);font-size:13px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .2s}
+.hs-toast.is-on{opacity:.94}

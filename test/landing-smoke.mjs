@@ -12,7 +12,9 @@ const output = process.env.LANDING_SCREENSHOT_DIR || await mkdtemp(join(tmpdir()
 await mkdir(output, { recursive: true });
 const results = [];
 const dimensions = [[1440,900], [375,812], [844,390], [320,256], [3840,1080], [768,900], [320,812], [1366,768], [1280,720], [1470,830]];
-const noPaging = new Set(['1440x900', '375x812', '1366x768', '1280x720', '1470x830']);
+// 375x812 dropped out on 2026-11-23: seven phone cards (68 px minimum, 44 px Details link) cannot share
+// one screen, so the phone uses the brief's explicit pagination. Overflow, targets and paging reach are still checked.
+const noPaging = new Set(['1440x900', '1366x768', '1280x720', '1470x830']);
 async function fit(page, label) {
   const state = await page.evaluate(() => {
     const d = document.documentElement;
@@ -51,7 +53,7 @@ try {
     if (noPaging.has(`${width}x${height}`)) {
       assert.ok(await page.locator('#pager').isHidden(), `no paging at ${width}x${height}`);
       const playLinks = await page.locator('.game-card:visible .play-link').evaluateAll(links => links.filter(link => { const r = link.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; }).length);
-      assert.equal(playLinks, 6, `six Play links visible without paging at ${width}x${height}`);
+      assert.equal(playLinks, playableGames.length, `all ${playableGames.length} Play links visible without paging at ${width}x${height}`);
     }
     const visited = new Set();
     do {
@@ -66,8 +68,8 @@ try {
       await fit(page, `${engine} ${width} library`);
       if (await page.locator('#pager').isHidden() || await page.locator('#next-page').isDisabled()) break;
       await page.locator('#next-page').click();
-    } while (visited.size <= 6);
-    assert.equal(visited.size, 6, 'pagination exposes every game');
+    } while (visited.size <= playableGames.length);
+    assert.equal(visited.size, playableGames.length, 'pagination exposes every game');
     while (await page.locator('#previous-page').isVisible() && await page.locator('#previous-page').isEnabled()) await page.locator('#previous-page').click();
     await page.screenshot({ path: join(output, `${engine}-${width}-light.png`) });
     await page.locator('#theme-toggle').click();
@@ -150,7 +152,7 @@ try {
     const context = await browser.newContext({ viewport: {width:375,height:812}, javaScriptEnabled: disabled !== 'scripts', serviceWorkers:'block' });
     if (disabled === 'storage') await context.addInitScript(() => { Object.defineProperty(window, 'localStorage', { get() { throw new DOMException('Blocked', 'SecurityError'); } }); });
     const page = await context.newPage(); await page.goto(origin);
-    assert.equal(await page.locator('.game-card .play-link').count(),6);
+    assert.equal(await page.locator('.game-card .play-link').count(), playableGames.length);
     if (disabled === 'scripts') { await page.locator('#details-mixmash').click(); assert.ok(await page.locator('#game-mixmash').isVisible()); }
     else { await page.locator('#theme-toggle').click(); assert.equal(await page.locator('html').getAttribute('data-theme'),'dark'); }
     await fit(page, `${engine} ${disabled} fallback`); await context.close();

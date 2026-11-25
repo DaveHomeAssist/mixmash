@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v93';
+const VERSION = 'v96';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -19,15 +19,17 @@ const PRECACHE = [
   './index.html',
   './src/hub/style.css',
   './src/hub/app.js',
-  './assets/previews/mixmash.jpg',
-  './assets/previews/foh.jpg',
-  './assets/previews/pitch.jpg',
-  './assets/previews/mars.jpg',
-  './assets/previews/garden.jpg',
-  './assets/previews/empires.jpg',
+  './assets/previews/mixmash.webp',
+  './assets/previews/foh.webp',
+  './assets/previews/pitch.webp',
+  './assets/previews/hockey-havoc.webp',
+  './assets/previews/mars.webp',
+  './assets/previews/garden.webp',
+  './assets/previews/empires.webp',
   './assets/covers/mixmash.jpg',
   './assets/covers/foh.jpg',
   './assets/covers/pitch.jpg',
+  './assets/covers/hockey-havoc.jpg',
   './assets/covers/mars.jpg',
   './assets/covers/garden.jpg',
   './assets/covers/empires.jpg',
@@ -51,6 +53,9 @@ const PRECACHE = [
   './play/snapshot-data.js',
   './pitch/',
   './pitch/index.html',
+  './hockey-havoc/',
+  './hockey-havoc/index.html',
+  './hockey-havoc/tailwind.css',
   './mars/',
   './mars/index.html',
   './mars/styles.css',
@@ -166,11 +171,14 @@ self.addEventListener('fetch', (event) => {
       const response = await fetch(request);
       if (isCacheable(response)) {
         const cache = await caches.open(CACHE);
-        cache.put(request, response.clone());
+        const put = cache.put(request, response.clone());
+        event.waitUntil(put);
       }
       return response;
     } catch (error) {
-      const cached = await caches.match(request, { ignoreSearch: true });
+      // Only the current versioned cache: searching every cache can mix two deploys.
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match(request, { ignoreSearch: true });
       if (cached) return cached;
       if (request.mode === 'navigate') {
         const offline = await caches.match('./offline.html');

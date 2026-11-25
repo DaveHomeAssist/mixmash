@@ -359,6 +359,32 @@
       ]
     },
     {
+      "id": "hockey-havoc",
+      "name": "Gritty’s Hockey Havoc",
+      "kind": "Arcade hockey platformer",
+      "lifecycle": "Early playable",
+      "route": "/hockey-havoc/",
+      "summary": "A single-file canvas platformer: skate three periods, collect hot dogs and puck crates, slapshot or slide-check Zambonis and rival goalies, and score to reach the next faceoff. Fixed 60 Hz simulation, keyboard and touch. Listed on the hub and indexed since 2026-11-23.",
+      "pinned": [
+        "hockey-havoc/README.md",
+        "hockey-havoc/index.html",
+        "test/hockey-havoc-physics.test.mjs"
+      ],
+      "statusSources": [
+        "hockey-havoc/README.md"
+      ],
+      "references": [
+        {
+          "private": false,
+          "note": "Hub card, sitemap and share card.",
+          "label": "Play Gritty’s Hockey Havoc",
+          "url": "/hockey-havoc/",
+          "kind": "live route"
+        }
+      ],
+      "commands": []
+    },
+    {
       "id": "pitch",
       "name": "PITCH RIOT",
       "kind": "Arcade soccer",
@@ -634,7 +660,7 @@
         },
         {
           "name": "npm run smoke:mobile",
-          "description": "node test/mobile-touch-smoke.mjs"
+          "description": "node test/mobile-touch-smoke.mjs && node test/empires-shell-smoke.mjs"
         },
         {
           "name": "npm run smoke:catalog",
@@ -819,16 +845,6 @@
       "description": "Production roadmap for the /play/ fighter: decision gates D1 to D4 and upgrade slices P0 to P8, each with scope, status and verification.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/ROADMAP.md",
       "open": null
-    },
-    {
-      "path": "assets/previews/mixmash.jpg",
-      "project": "mixmash",
-      "category": "art",
-      "kind": "JPG",
-      "title": "mixmash.jpg",
-      "description": "MIXMASH gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mixmash.jpg",
-      "open": "/assets/previews/mixmash.jpg"
     },
     {
       "path": "test/combat-inline-parity.test.mjs",
@@ -1179,16 +1195,6 @@
       "description": "Curated mapping of baseline behaviours and save fields to their port status; input to the parity ledger.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/mars/parity/mapping.json",
       "open": null
-    },
-    {
-      "path": "assets/previews/mars.jpg",
-      "project": "mars",
-      "category": "art",
-      "kind": "JPG",
-      "title": "mars.jpg",
-      "description": "MarsScape gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mars.jpg",
-      "open": "/assets/previews/mars.jpg"
     },
     {
       "path": "mars/art/golden-scene.json",
@@ -2291,16 +2297,6 @@
       "open": null
     },
     {
-      "path": "assets/previews/foh.jpg",
-      "project": "front-of-house",
-      "category": "art",
-      "kind": "JPG",
-      "title": "foh.jpg",
-      "description": "Front of House gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/foh.jpg",
-      "open": "/assets/previews/foh.jpg"
-    },
-    {
       "path": "front-of-house/assets/equipment/bar-tent.png",
       "project": "front-of-house",
       "category": "art",
@@ -3151,6 +3147,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-save-guard.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-save-guard.mjs",
+      "description": "Save guard (inspectSave and backupSave in engine.mjs): unreadable saves are classified, never loaded, and backed up without replacing an earlier backup (docs/SAVE_FORMAT.md, Unreadable saves).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-save-guard.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-seating-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3526,7 +3532,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "front-of-house-polish-smoke.mjs",
-      "description": "Front of House 0.4.5 polish: the phone Book sheet appears without a layout shift (CWV-01), a standard controller drives the menu and the build cursor through the key table, the menu lists the controller and links the…",
+      "description": "Front of House 0.4.7 polish: the phone Book sheet appears without a layout shift (CWV-01), a standard controller drives the menu and the build cursor through the key table, the menu lists the controller and links the…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-polish-smoke.mjs",
       "open": null
     },
@@ -3568,6 +3574,16 @@
       "title": "front-of-house-save-export-smoke.mjs",
       "description": "Export must preserve the current career, including progress after storage fails.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-save-export-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-save-safety-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-save-safety-smoke.mjs",
+      "description": "Save safety (0.4.6): a newer-version or damaged save is backed up and never overwritten, a second tab that can't read the save stops writing, Start new backs up first, and a resize keeps an open window.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-save-safety-smoke.mjs",
       "open": null
     },
     {
@@ -4306,7 +4322,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Backyard Horseshoes — Phase 3 prototype",
-      "description": "Built from DaveHomeAssist/curling-simulator commit 78a16b5a458c8d1f5dd4bb40af4ef8698e96fbbf (source PR14).",
+      "description": "Built from DaveHomeAssist/curling-simulator commit b3e153f (source PR18, WebGL context-loss recovery and no drawing in hidden tabs, on top of 4d09e2fe4107b479444584bbd01acca688fa8593 from PR16).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/README.md",
       "open": null
     },
@@ -4328,6 +4344,26 @@
       "title": "horseshoes-broadcast-smoke.mjs",
       "description": "Pavilion broadcast and skippable camera pass acceptance.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-broadcast-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/horseshoes-context-smoke.mjs",
+      "project": "horseshoes",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "horseshoes-context-smoke.mjs",
+      "description": "Bug pass 2026-11-25 (Scaler engine items): Horseshoes stops drawing while the tab is hidden, and recovers from a lost WebGL context (court and the FMP replay monitors draw again after restore, no page errors).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-context-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/horseshoes-layout-security-smoke.mjs",
+      "project": "horseshoes",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "horseshoes-layout-security-smoke.mjs",
+      "description": "Regression: required control bounds, compact court navigation and document CSP.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/horseshoes-layout-security-smoke.mjs",
       "open": null
     },
     {
@@ -4361,6 +4397,26 @@
       "open": null
     },
     {
+      "path": "horseshoes/shortcuts.css",
+      "project": "horseshoes",
+      "category": "source",
+      "kind": "CSS",
+      "title": "shortcuts.css",
+      "description": "Backyard Horseshoes polish and shortcut layer. A sidecar to the generated build: never edit the hashed bundles. Port into curling-simulator src/horseshoes on the next rebuild (see README \"Shortcut layer\").",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/shortcuts.css",
+      "open": null
+    },
+    {
+      "path": "horseshoes/shortcuts.js",
+      "project": "horseshoes",
+      "category": "source",
+      "kind": "JS",
+      "title": "shortcuts.js",
+      "description": "Backyard Horseshoes shortcut layer and juice: a sidecar to the generated build, never a bundle patch.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/shortcuts.js",
+      "open": null
+    },
+    {
       "path": "horseshoes/assets/ai.worker-BamGaX81.js",
       "project": "horseshoes",
       "category": "build",
@@ -4381,33 +4437,73 @@
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-BIqcnaFO.css",
+      "path": "horseshoes/assets/horseshoes-0NVzVOSx.css",
       "project": "horseshoes",
       "category": "build",
       "kind": "CSS",
       "title": "Horseshoes production CSS",
-      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-BIqcnaFO); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-BIqcnaFO.css",
+      "description": "Generated CSS bundle for the Backyard Horseshoes prototype (horseshoes-0NVzVOSx); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-0NVzVOSx.css",
       "open": null
     },
     {
-      "path": "horseshoes/assets/horseshoes-CJyCwu-H.js",
+      "path": "horseshoes/assets/horseshoes-6t8KyqIe.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-CJyCwu-H); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-CJyCwu-H.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (horseshoes-6t8KyqIe); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/horseshoes-6t8KyqIe.js",
       "open": null
     },
     {
-      "path": "horseshoes/assets/three.module-2p9AdgNp.js",
+      "path": "horseshoes/assets/three.module-BtCP-pKZ.js",
       "project": "horseshoes",
       "category": "build",
       "kind": "JS",
       "title": "Horseshoes production JS",
-      "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-2p9AdgNp); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-2p9AdgNp.js",
+      "description": "Generated JS bundle for the Backyard Horseshoes prototype (three.module-BtCP-pKZ); source and locked dependencies live in DaveHomeAssist/curling-simulator.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/horseshoes/assets/three.module-BtCP-pKZ.js",
+      "open": null
+    },
+    {
+      "path": "hockey-havoc/index.html",
+      "project": "hockey-havoc",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Gritty’s Hockey Havoc — MixMash Studio",
+      "description": "Gritty’s Hockey Havoc is a free arcade hockey platformer in your browser. Skate three periods, chow hot dogs, slapshot rogue Zambonis and bring the Stanley Cup home to Philly.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/index.html",
+      "open": "/hockey-havoc/"
+    },
+    {
+      "path": "hockey-havoc/README.md",
+      "project": "hockey-havoc",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Gritty's Hockey Havoc",
+      "description": "An early arcade hockey platformer in a single HTML file (canvas and vanilla JavaScript).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/README.md",
+      "open": null
+    },
+    {
+      "path": "test/hockey-havoc-physics.test.mjs",
+      "project": "hockey-havoc",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hockey-havoc-physics.test.mjs",
+      "description": "Gritty's Hockey Havoc: loads the shipped player code, config and fixed-step loop from hockey-havoc/index.html in a vm sandbox and checks the slice-1 movement contract.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hockey-havoc-physics.test.mjs",
+      "open": null
+    },
+    {
+      "path": "hockey-havoc/tailwind.css",
+      "project": "hockey-havoc",
+      "category": "source",
+      "kind": "CSS",
+      "title": "tailwind.css",
+      "description": "Tailwind v3.4.17 utilities built from hockey-havoc/index.html. Replaces the Play CDN so the precached route renders offline; rebuild command in hockey-havoc/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/tailwind.css",
       "open": null
     },
     {
@@ -4419,16 +4515,6 @@
       "description": "PITCH RIOT is a fast, arcade street-soccer game you play in your browser.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/pitch/index.html",
       "open": "/pitch/"
-    },
-    {
-      "path": "assets/previews/pitch.jpg",
-      "project": "pitch",
-      "category": "art",
-      "kind": "JPG",
-      "title": "pitch.jpg",
-      "description": "PITCH RIOT gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/pitch.jpg",
-      "open": "/assets/previews/pitch.jpg"
     },
     {
       "path": "empires/index.html",
@@ -4449,16 +4535,6 @@
       "description": "Session log for restoring /empires/ as Age of Dave and replacing the prototype with the real aoe2-clone WASM build.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/empires/progress.md",
       "open": null
-    },
-    {
-      "path": "assets/previews/empires.jpg",
-      "project": "empires",
-      "category": "art",
-      "kind": "JPG",
-      "title": "empires.jpg",
-      "description": "EMPIRES gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/empires.jpg",
-      "open": "/assets/previews/empires.jpg"
     },
     {
       "path": "empires/assets/aoe2-clone.data",
@@ -4519,16 +4595,6 @@
       "description": "RFC for a shared Garden OS engine: the specification, an architectural audit and the verified migration baseline.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/rfc-004-garden-os-engine-specification.md",
       "open": null
-    },
-    {
-      "path": "assets/previews/garden.jpg",
-      "project": "garden",
-      "category": "art",
-      "kind": "JPG",
-      "title": "garden.jpg",
-      "description": "Garden OS gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
-      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/garden.jpg",
-      "open": "/assets/previews/garden.jpg"
     },
     {
       "path": "zelda2mario/index.html",
@@ -5026,7 +5092,7 @@
       "category": "surface",
       "kind": "HTML",
       "title": "MixMash Studio | Free Browser Games",
-      "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer, strategy and venue management.",
+      "description": "Play free browser games from MixMash Studio: DJ battles, colony survival, garden adventures, arcade soccer and hockey, strategy and venue management.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/index.html",
       "open": "/"
     },
@@ -5039,6 +5105,16 @@
       "description": "Offline fallback page the service worker serves when a navigation fails.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/offline.html",
       "open": "/offline.html"
+    },
+    {
+      "path": "privacy/index.html",
+      "project": "studio",
+      "category": "surface",
+      "kind": "HTML",
+      "title": "Privacy | MixMash Studio",
+      "description": "What mixmash.games collects (very little), what stays in your browser, and the outside services the site uses.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/privacy/index.html",
+      "open": "/privacy/"
     },
     {
       "path": "src/hub/template.html",
@@ -5066,7 +5142,7 @@
       "category": "docs",
       "kind": "MD",
       "title": "Landing gameplay previews",
-      "description": "Refreshed from the live browser games on October 5, 2026 at 1000×650 CSS pixels, device scale 1, JPEG quality 76.",
+      "description": "Refreshed from the live browser games on October 5, 2026 at 1000×650 CSS pixels, device scale 1. These are actual gameplay captures; no generated art or injected game state. Shared hub navigation is omitted where noted.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/README.md",
       "open": null
     },
@@ -5241,6 +5317,16 @@
       "open": "/assets/covers/garden.jpg"
     },
     {
+      "path": "assets/covers/hockey-havoc.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "hockey-havoc.jpg",
+      "description": "Gritty’s Hockey Havoc canonical 3:2 cover for the landing-page detail panel.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/covers/hockey-havoc.jpg",
+      "open": "/assets/covers/hockey-havoc.jpg"
+    },
+    {
       "path": "assets/covers/mars.jpg",
       "project": "studio",
       "category": "art",
@@ -5311,6 +5397,16 @@
       "open": "/assets/og/garden.jpg"
     },
     {
+      "path": "assets/og/hockey-havoc.jpg",
+      "project": "studio",
+      "category": "art",
+      "kind": "JPG",
+      "title": "hockey-havoc.jpg",
+      "description": "1200x630 Open Graph/Twitter share card for hockey-havoc, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/hockey-havoc.jpg",
+      "open": "/assets/og/hockey-havoc.jpg"
+    },
+    {
       "path": "assets/og/mars.jpg",
       "project": "studio",
       "category": "art",
@@ -5339,6 +5435,76 @@
       "description": "1200x630 Open Graph/Twitter share card for pitch, built by npm run hub:og (src/hub/og-games.mjs) from its gameplay preview and catalog copy.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/og/pitch.jpg",
       "open": "/assets/og/pitch.jpg"
+    },
+    {
+      "path": "assets/previews/empires.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "empires.webp",
+      "description": "EMPIRES gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/empires.webp",
+      "open": "/assets/previews/empires.webp"
+    },
+    {
+      "path": "assets/previews/foh.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "foh.webp",
+      "description": "Front of House gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/foh.webp",
+      "open": "/assets/previews/foh.webp"
+    },
+    {
+      "path": "assets/previews/garden.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "garden.webp",
+      "description": "Garden OS gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/garden.webp",
+      "open": "/assets/previews/garden.webp"
+    },
+    {
+      "path": "assets/previews/hockey-havoc.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "hockey-havoc.webp",
+      "description": "Gritty’s Hockey Havoc gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/hockey-havoc.webp",
+      "open": "/assets/previews/hockey-havoc.webp"
+    },
+    {
+      "path": "assets/previews/mars.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "mars.webp",
+      "description": "MarsScape gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mars.webp",
+      "open": "/assets/previews/mars.webp"
+    },
+    {
+      "path": "assets/previews/mixmash.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "mixmash.webp",
+      "description": "MIXMASH gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/mixmash.webp",
+      "open": "/assets/previews/mixmash.webp"
+    },
+    {
+      "path": "assets/previews/pitch.webp",
+      "project": "studio",
+      "category": "art",
+      "kind": "TXT",
+      "title": "pitch.webp",
+      "description": "PITCH RIOT gameplay preview on the landing page. Capture provenance is in assets/previews/README.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/assets/previews/pitch.webp",
+      "open": "/assets/previews/pitch.webp"
     },
     {
       "path": "favicon.svg",
@@ -5381,6 +5547,26 @@
       "open": null
     },
     {
+      "path": "test/csp-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "csp-smoke.mjs",
+      "description": "Publisher pages load under their meta CSP with zero violations (Chromium and WebKit), the Cloudflare beacon is allowed, the Garden OS wrapper iframe loads and the fighter guide still launches the game.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/csp-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/empires-shell-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "empires-shell-smoke.mjs",
+      "description": "Empires shell regressions from the 2026-11-25 bug pass: the controls guide swallows keys, WebGL 1 is reported as unsupported, and a tab hidden during load starts paused.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/empires-shell-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/garden-embed-focus-smoke.mjs",
       "project": "studio",
       "category": "tests",
@@ -5401,6 +5587,16 @@
       "open": null
     },
     {
+      "path": "test/hub-csp.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-csp.test.mjs",
+      "description": "Publisher pages ship a meta CSP that matches src/hub/csp.mjs and allows what each page loads.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-csp.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/hub-discoverability.test.mjs",
       "project": "studio",
       "category": "tests",
@@ -5416,7 +5612,7 @@
       "category": "tests",
       "kind": "MJS",
       "title": "hub-offline-smoke.mjs",
-      "description": "Homepage worker upgrade preserves game data and the six launch links offline.",
+      "description": "Homepage worker upgrade preserves game data and the seven launch links offline.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-offline-smoke.mjs",
       "open": null
     },
@@ -5488,6 +5684,16 @@
       "title": "mobile-touch-smoke.mjs",
       "description": "MixKit mobile and tablet touch rail (Mobile & Tablet Fix program, Phase 1).",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/mobile-touch-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/public-controls.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "public-controls.test.mjs",
+      "description": "Public control tables must match the shipped default binds. play/input-data.js is the source of truth for fighter keys. home.html (the hub \"Game guide\") and docs/PLAYER_GUIDE.md both drifted from those defaults once…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/public-controls.test.mjs",
       "open": null
     },
     {
@@ -5628,6 +5834,16 @@
       "title": "catalog.mjs",
       "description": "Public browser-game catalog. Claims are supported by docs/HOMEPAGE_EVIDENCE.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/catalog.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/csp.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "csp.mjs",
+      "description": "Content-Security-Policy for publisher-owned pages (the hub, its static pages and the game wrappers this repo owns).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/csp.mjs",
       "open": null
     },
     {

@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-j6qZ5+aahcSNfUXdodWpUAQsn0ya5qSrL8AynYu8zyM=' 'sha256-Tu8S13WbwX8a4gIHVHMvp73Tjv2D5tMaOKTPh6ueRQs='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; media-src 'self' blob:; frame-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>MIXMASH — Drop the Beat. Throw the Punch.</title>
 <meta name="description" content="MIXMASH is the DJ-powered platform fighter from MixMash Studio. Pick your producer, choose your venue, and throw down — 14 fighters, 11 arenas, free in your browser.">
 <link rel="canonical" href="https://mixmash.games/play/">
@@ -496,6 +498,41 @@ section { padding: 100px 24px; position: relative; }
   font-size: 0.8rem; color: var(--text-secondary);
 }
 
+.shortcuts-panel {
+  grid-column: 1 / -1;
+  padding: 32px;
+  border-radius: 24px;
+}
+.shortcuts-panel h3 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: 1.1rem; margin-bottom: 8px;
+}
+.shortcuts-lead {
+  font-size: 0.9rem; color: var(--text-secondary);
+  line-height: 1.6; margin-bottom: 16px;
+}
+.shortcut-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+}
+.shortcut-table th, .shortcut-table td {
+  padding: 8px 10px; text-align: left; vertical-align: top;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-secondary);
+}
+.shortcut-table th {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--laser-pink);
+}
+.shortcut-table td:first-child { color: var(--text-primary); font-weight: 700; }
+.shortcuts-note {
+  margin-top: 14px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6;
+}
+.shortcuts-lead .key-cap, .nowrap {
+  white-space: nowrap;
+}
+.shortcut-table-wrap { overflow-x: auto; }
+
 /* =============================================
    GAME SECTION
    ============================================= */
@@ -637,6 +674,9 @@ footer {
   .stages-scroll { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
   .hero { padding-top: 100px; }
+  .key-grid { grid-template-columns: 1fr; }
+  .shortcut-table { font-size: 0.75rem; }
+  .shortcuts-panel { padding: 24px 16px; }
 }
 </style>
 <script src="/src/kit/pwa.js" defer></script>
@@ -730,7 +770,7 @@ footer {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--uv-violet)" stroke-width="2" stroke-linecap="round"><rect x="2" y="8" width="20" height="8" rx="2"/><line x1="6" y1="8" x2="6" y2="16"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="18" y1="8" x2="18" y2="16"/></svg>
         </div>
         <div class="feature-title">11 Arenas</div>
-        <div class="feature-text">Four featured arenas — the LED-drenched Main Stage, stripped-back Underground Club, golden-hour Sunset Set, and holographic Digital Arena — represent the 11-arena lineup. Each venue changes how you play.</div>
+        <div class="feature-text">Four featured arenas — Festival Stage, Final Destination, Battlefield, and Skybridge — represent the 11-arena lineup. Each venue changes how you play.</div>
       </div>
 
       <div class="feature-card glass reveal">
@@ -753,8 +793,8 @@ footer {
         <div class="feature-icon" style="background: rgba(255,226,61,0.08);">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--strobe-yellow)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
-        <div class="feature-title">3 Game Modes</div>
-        <div class="feature-text">Stock Match (last one standing), Time Match (highest KO count wins), and Training Mode with hitbox visualization, frame data, and damage resets. Warm up or go all in.</div>
+        <div class="feature-title">4 Game Modes</div>
+        <div class="feature-text">Stock Match (last one standing), Time Match (highest KO count wins), Training Mode with hitbox visualization and instant respawn, and Platform Rush — a solo timed route to collect vinyl records and hidden Deep Cuts. Warm up or go all in.</div>
       </div>
 
       <div class="feature-card glass reveal">
@@ -802,7 +842,7 @@ footer {
         </div>
         <div class="roster-name">deadmau5</div>
         <div class="roster-genre">Progressive House</div>
-        <div class="roster-style">Zoner / Control</div>
+        <div class="roster-style">Heavyweight</div>
       </div>
 
       <div class="roster-card glass reveal">
@@ -874,8 +914,8 @@ footer {
         </div>
         <div class="stage-body">
           <div class="stage-genre-tag">Big Room / EDM</div>
-          <div class="stage-name">Festival Main Stage</div>
-          <div class="stage-desc">LED walls, laser grids, and 50,000 people at your back. Full platform layout with moving side stages.</div>
+          <div class="stage-name">Festival Stage</div>
+          <div class="stage-desc">LED walls, laser grids, and a festival crowd at your back. A solid main platform plus moving side stages.</div>
         </div>
       </div>
 
@@ -883,17 +923,17 @@ footer {
         <div class="stage-vis vis-underground"></div>
         <div class="stage-body">
           <div class="stage-genre-tag">Hard Techno / Minimal</div>
-          <div class="stage-name">Underground Club</div>
-          <div class="stage-desc">Berlin warehouse energy. A single strobe cuts the smoke. Flat stage — no platforms, nowhere to hide.</div>
+          <div class="stage-name">Final Destination</div>
+          <div class="stage-desc">One wide solid platform and nothing else. No soft platforms, nowhere to hide.</div>
         </div>
       </div>
 
       <div class="stage-card reveal">
         <div class="stage-vis vis-arena"></div>
         <div class="stage-body">
-          <div class="stage-genre-tag">D&B / Experimental</div>
-          <div class="stage-name">Digital Arena</div>
-          <div class="stage-desc">Holographic tournament space. Cool tones, floating geometry, and three tiered platforms for vertical play.</div>
+          <div class="stage-genre-tag">D&amp;B / Experimental</div>
+          <div class="stage-name">Battlefield</div>
+          <div class="stage-desc">The classic three-platform layout: a solid main stage and two side platforms under a central one, built for vertical play.</div>
         </div>
       </div>
 
@@ -901,8 +941,8 @@ footer {
         <div class="stage-vis vis-sunset"></div>
         <div class="stage-body">
           <div class="stage-genre-tag">Afro House / Deep</div>
-          <div class="stage-name">Sunset Set</div>
-          <div class="stage-desc">Golden hour vibes. Warm palette, open layout. The most beautiful moment at any festival, now a battlefield.</div>
+          <div class="stage-name">Skybridge</div>
+          <div class="stage-desc">Golden-hour sky and a main platform with moving side platforms. Tomorrowland, Ultra Miami, Burning Man, Coachella, EDC Las Vegas, Printworks, and Electric Forest round out the full 11-arena lineup.</div>
         </div>
       </div>
     </div>
@@ -916,7 +956,7 @@ footer {
   <div class="container">
     <span class="section-label">How to Play</span>
     <h2 class="section-title">The Controls</h2>
-    <p class="section-desc">Keyboard controls for 2-player local play. Plug in a gamepad for analog stick movement and rumble feedback.</p>
+    <p class="section-desc">Keyboard controls for 2-player local play. Plug in a gamepad for analog stick movement and rumble feedback. On a phone or tablet, on-screen buttons cover the same actions. Remap fighter keys in the in-game Controls tab.</p>
 
     <div class="controls-layout reveal">
       <div class="control-group glass" style="padding: 32px; border-radius: 24px;">
@@ -925,9 +965,9 @@ footer {
           <div class="key-row"><span class="key-cap">A</span><span class="key-cap">D</span><span class="key-action">Move</span></div>
           <div class="key-row"><span class="key-cap">W</span><span class="key-action">Jump</span></div>
           <div class="key-row"><span class="key-cap">S</span><span class="key-action">Drop / Crouch</span></div>
-          <div class="key-row"><span class="key-cap">F</span><span class="key-action">Attack</span></div>
-          <div class="key-row"><span class="key-cap">G</span><span class="key-action">Special</span></div>
-          <div class="key-row"><span class="key-cap">H</span><span class="key-action">Shield / Grab</span></div>
+          <div class="key-row"><span class="key-cap">J</span><span class="key-cap">Space</span><span class="key-action">Attack</span></div>
+          <div class="key-row"><span class="key-cap">K</span><span class="key-action">Special (grab)</span></div>
+          <div class="key-row"><span class="key-cap">L</span><span class="key-action">Shield</span></div>
         </div>
       </div>
 
@@ -937,10 +977,34 @@ footer {
           <div class="key-row"><span class="key-cap">←</span><span class="key-cap">→</span><span class="key-action">Move</span></div>
           <div class="key-row"><span class="key-cap">↑</span><span class="key-action">Jump</span></div>
           <div class="key-row"><span class="key-cap">↓</span><span class="key-action">Drop / Crouch</span></div>
-          <div class="key-row"><span class="key-cap">.</span><span class="key-action">Attack</span></div>
-          <div class="key-row"><span class="key-cap">/</span><span class="key-action">Special</span></div>
-          <div class="key-row"><span class="key-cap">;</span><span class="key-action">Shield / Grab</span></div>
+          <div class="key-row"><span class="key-cap">Num 1</span><span class="key-action">Attack</span></div>
+          <div class="key-row"><span class="key-cap">Num 2</span><span class="key-action">Special (grab)</span></div>
+          <div class="key-row"><span class="key-cap">Num 3</span><span class="key-action">Shield</span></div>
         </div>
+      </div>
+
+      <div class="shortcuts-panel glass">
+        <h3>Shortcuts</h3>
+        <p class="shortcuts-lead">These open menus and options. They never override a key you have bound to a fighter action. Press <span class="nowrap"><span class="key-cap">?</span> or <span class="key-cap">H</span></span> in-game for the full sheet. In Training, <span class="key-cap">H</span> toggles hitboxes, so use <span class="nowrap"><span class="key-cap">?</span></span>.</p>
+        <div class="shortcut-table-wrap">
+        <table class="shortcut-table" aria-label="Game shortcuts">
+          <thead><tr><th>Action</th><th>Keyboard</th><th>Gamepad</th></tr></thead>
+          <tbody>
+            <tr><td>Pause / resume</td><td><span class="key-cap">P</span> <span class="key-cap">Esc</span></td><td>Start</td></tr>
+            <tr><td>Quit to title (from pause)</td><td><span class="key-cap">Esc</span></td><td>—</td></tr>
+            <tr><td>Shortcuts</td><td><span class="key-cap">?</span> <span class="key-cap">H</span></td><td>Back / Select</td></tr>
+            <tr><td>Mute / unmute</td><td><span class="key-cap">M</span></td><td>—</td></tr>
+            <tr><td>Fullscreen</td><td><span class="key-cap">F</span></td><td>—</td></tr>
+            <tr><td>Command menu</td><td><span class="key-cap">O</span></td><td>—</td></tr>
+            <tr><td>Quick Fight (title)</td><td><span class="key-cap">Q</span></td><td>—</td></tr>
+            <tr><td>Setup match / rematch</td><td><span class="key-cap">Enter</span> <span class="key-cap">Space</span></td><td>Start</td></tr>
+            <tr><td>Resume saved match (title)</td><td><span class="key-cap">R</span></td><td>—</td></tr>
+            <tr><td>Restart run (Platform Rush)</td><td><span class="key-cap">R</span></td><td>—</td></tr>
+            <tr><td>Training: hitboxes / reset damage</td><td><span class="key-cap">H</span> / <span class="key-cap">R</span></td><td>—</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="shortcuts-note"><strong>Platform Rush</strong> is a solo mode for Player 1. You have 2 minutes to collect 8 vinyl records and 2 hidden Deep Cuts. Clear the route before time runs out for a time bonus, or the run ends with Time Up. Your best clear on each stage is saved as a ghost. Copy Daily Challenge shares today’s layout.</p>
       </div>
     </div>
   </div>
@@ -957,7 +1021,7 @@ footer {
 
     <div class="game-wrapper">
       <iframe id="game-frame" title="MIXMASH Game"></iframe>
-      <div class="game-overlay" id="game-overlay" onclick="launchGame()">
+      <div class="game-overlay" id="game-overlay">
         <div class="game-overlay-icon">
           <svg viewBox="0 0 24 24" fill="#fff"><polygon points="6,3 20,12 6,21"/></svg>
         </div>
@@ -969,8 +1033,8 @@ footer {
     <div class="game-hints">
       <div class="game-hint"><span class="key-cap">Enter</span> Confirm / Start</div>
       <div class="game-hint"><span class="key-cap">Esc</span> Pause</div>
-      <div class="game-hint"><span class="key-cap">O</span> Options</div>
-      <div class="game-hint"><span class="key-cap">F</span> / <span class="key-cap">.</span> Attack</div>
+      <div class="game-hint"><span class="key-cap">?</span> Shortcuts</div>
+      <div class="game-hint"><span class="key-cap">J</span> / <span class="key-cap">Space</span> Attack</div>
     </div>
   </div>
 </section>
@@ -1007,6 +1071,8 @@ function launchGame() {
     try { frame.contentWindow.focus(); } catch(e) {}
   }, { once: true });
 }
+// Bound here rather than with an inline onclick so the page CSP needs no 'unsafe-inline' script.
+document.getElementById('game-overlay').addEventListener('click', launchGame);
 
 // Re-focus iframe when clicking the game area (if game is loaded)
 document.querySelector('.game-wrapper').addEventListener('click', () => {

@@ -292,7 +292,7 @@ function wireEvents() {
   el.importButton.addEventListener('click', importSave);
   el.pixelModeButton.addEventListener('click', () => {
     pixelMode = !pixelMode;
-    localStorage.setItem(PIXEL_MODE_KEY, pixelMode ? 'on' : 'off');
+    writeStorage(PIXEL_MODE_KEY, pixelMode ? 'on' : 'off');
     render();
     showToast('Renderer changed', pixelMode ? 'Pixel art is on.' : 'Procedural fallback is on.');
   });
@@ -300,7 +300,15 @@ function wireEvents() {
     if (window.confirm('Reset this MarsScape session?')) enqueueCommand('reset');
   });
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') saveLocalSoon(true);
+    if (document.visibilityState === 'hidden') {
+      saveLocalSoon(true);
+      if (artAnimationFrame) {
+        cancelAnimationFrame(artAnimationFrame);
+        artAnimationFrame = 0;
+      }
+    } else {
+      syncArtAnimation();
+    }
   });
 }
 
@@ -619,6 +627,7 @@ function syncRenderTelemetryDataset() {
 function artAnimationAllowed() {
   const art = commissionedCache.getTelemetry();
   return pixelMode
+    && !document.hidden
     && art.indexedFrames > art.indexedStates
     && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 }
@@ -657,8 +666,8 @@ function renderNode(node) {
     <button class="map-piece node ${locked ? 'locked' : ''} ${depleted ? 'depleted' : ''}"
       type="button"
       data-command="gather"
-      data-id="${node.id}"
-      style="left:${pos.x}px;top:${pos.y}px;--node-color:${ITEMS[node.item].color}"
+      data-id="${escapeHtml(node.id)}"
+      style="left:${pos.x}px;top:${pos.y}px;--node-color:${ITEMS[node.item]?.color || "#d6d0c4"}"
       ${locked || depleted ? 'disabled' : ''}
       aria-label="${escapeHtml(label)}">
       <span class="model"></span>
@@ -687,9 +696,9 @@ function renderBuilding(building) {
   return `
     <button class="map-piece building ${online ? 'online' : 'ghost'}"
       type="button"
-      data-command="${online ? 'service' : 'build'}"
-      data-id="${building.id}"
-      data-model="${building.model}"
+      data-command="${escapeHtml(online ? 'service' : 'build')}"
+      data-id="${escapeHtml(building.id)}"
+      data-model="${escapeHtml(building.model)}"
       style="left:${pos.x}px;top:${pos.y}px"
       aria-label="${online ? 'Service' : 'Plan'} ${escapeHtml(building.name)}">
       <span class="model"></span>
@@ -842,7 +851,7 @@ function renderPack() {
   const cap = packCap(state);
   const used = packSlots(state);
   const edible = ['genefruit', 'berries', 'algae', 'soy', 'food'].find((id) => (state.inventory[id] || 0) > 0);
-  return `<div class="card"><h3>Field Pack</h3><p>${used}/${cap} slots used. Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Equipment</h3><p>${statLine}</p><div class="skill-list">${equipRows}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="ration" ${!edible ? 'disabled' : ''} data-id="${edible || ''}">Ration ${edible ? escapeHtml(ITEMS[edible].name) : 'Food'}</button></div>`;
+  return `<div class="card"><h3>Field Pack</h3><p>${used}/${cap} slots used. Server state owns resource totals when authority is online.</p><div class="inventory-grid">${slots}</div></div><div class="card"><h3>Equipment</h3><p>${statLine}</p><div class="skill-list">${equipRows}</div></div><div class="card"><h3>Field Actions</h3><button data-action="purify" ${!state.built.water ? 'disabled' : ''}>Purify Ice to Water</button><button data-action="ration" ${!edible ? 'disabled' : ''} data-id="${escapeHtml(edible || '')}">Ration ${edible ? escapeHtml(ITEMS[edible].name) : 'Food'}</button></div>`;
 }
 
 function capitalize(word) {
@@ -862,17 +871,17 @@ function renderBuild() {
     const tiers = BUILD_TIERS[building.id];
     const faulted = !!state.fault[building.id];
     if (!online) {
-      return `<div class="card"><h3>${escapeHtml(building.name)}</h3><p>${escapeHtml(building.description)}</p>${renderCost(building.cost)}<button data-action="build" data-id="${building.id}" ${canAfford(building.cost) ? '' : 'disabled'}>Build</button></div>`;
+      return `<div class="card"><h3>${escapeHtml(building.name)}</h3><p>${escapeHtml(building.description)}</p>${renderCost(building.cost)}<button data-action="build" data-id="${escapeHtml(building.id)}" ${canAfford(building.cost) ? '' : 'disabled'}>Build</button></div>`;
     }
     const label = tiers ? ` — Tier ${['I', 'II', 'III'][tier - 1]}` : '';
     const fault = faulted
-      ? `<p class="warn">Faulted: output is offline until serviced.</p><button data-action="service" data-id="${building.id}">Service now</button>`
-      : `<button data-action="service" data-id="${building.id}">Service</button>`;
+      ? `<p class="warn">Faulted: output is offline until serviced.</p><button data-action="service" data-id="${escapeHtml(building.id)}">Service now</button>`
+      : `<button data-action="service" data-id="${escapeHtml(building.id)}">Service</button>`;
     let upgrade = '';
     if (tiers && tier < MAX_TIER) {
       const step = tiers[tier - 1];
       const gated = engLevel < step.engLvl;
-      upgrade = `<p>Tier ${['I', 'II', 'III'][tier]} needs Engineering ${step.engLvl}${gated ? ` (you are ${engLevel})` : ''}.</p>${renderCost(step.cost)}<button data-action="upgrade" data-id="${building.id}" ${gated || !canAfford(step.cost) ? 'disabled' : ''}>Upgrade</button>`;
+      upgrade = `<p>Tier ${['I', 'II', 'III'][tier]} needs Engineering ${step.engLvl}${gated ? ` (you are ${engLevel})` : ''}.</p>${renderCost(step.cost)}<button data-action="upgrade" data-id="${escapeHtml(building.id)}" ${gated || !canAfford(step.cost) ? 'disabled' : ''}>Upgrade</button>`;
     } else if (tiers) {
       upgrade = '<p>Fully upgraded.</p>';
     }
@@ -888,14 +897,14 @@ function renderFarm() {
   const agri = (state.skills.agriculture || {}).level || 1;
   const plots = state.farm.plots.map((plot, index) => {
     if (plot.disease) {
-      return `<div class="card"><h3>Plot ${index + 1} — blighted</h3><p>Growth is paused until treated. Blight never kills the crop.</p>${renderCost({ water: 1 })}<button data-action="treat" data-plot="${index}" ${canAfford({ water: 1 }) ? '' : 'disabled'}>Treat blight</button></div>`;
+      return `<div class="card"><h3>Plot ${index + 1} — blighted</h3><p>Growth is paused until treated. Blight never kills the crop.</p>${renderCost({ water: 1 })}<button data-action="treat" data-plot="${escapeHtml(index)}" ${canAfford({ water: 1 }) ? '' : 'disabled'}>Treat blight</button></div>`;
     }
     if (plot.crop) {
       const crop = CROPS.find((c) => c.id === plot.crop);
       const need = cropNeed(state, plot);
       const ready = plot.t >= need;
       const pct = Math.min(100, Math.round((plot.t / need) * 100));
-      return `<div class="card"><h3>Plot ${index + 1} — ${escapeHtml(crop.name)}</h3><p>${ready ? 'Ready to harvest.' : `Growing: ${pct}%${plot.fert ? ' (fertilized)' : ''}`}</p><span class="skill-bar"><i style="width:${pct}%;background:var(--green)"></i></span><button data-action="harvest" data-plot="${index}" ${ready ? '' : 'disabled'}>Harvest</button></div>`;
+      return `<div class="card"><h3>Plot ${index + 1} — ${escapeHtml(crop.name)}</h3><p>${ready ? 'Ready to harvest.' : `Growing: ${pct}%${plot.fert ? ' (fertilized)' : ''}`}</p><span class="skill-bar"><i style="width:${pct}%;background:var(--green)"></i></span><button data-action="harvest" data-plot="${escapeHtml(index)}" ${ready ? '' : 'disabled'}>Harvest</button></div>`;
     }
     const options = CROPS.map((crop) => {
       const locked = agri < crop.lvl || (crop.requiresResearch && !state.research[crop.requiresResearch]);
@@ -904,9 +913,9 @@ function renderFarm() {
         ? (agri < crop.lvl ? `Agriculture ${crop.lvl}` : 'needs research')
         : `${crop.water} water · ${crop.ticks} ticks`;
       const fert = (state.inventory.fertilizer || 0) > 0 && !locked
-        ? `<button data-action="plant" data-plot="${index}" data-crop="${crop.id}" data-fert="1">+ fertilizer</button>`
+        ? `<button data-action="plant" data-plot="${escapeHtml(index)}" data-crop="${escapeHtml(crop.id)}" data-fert="1">+ fertilizer</button>`
         : '';
-      return `<div class="skill-row"><span>${escapeHtml(crop.name)} (${note})</span><button data-action="plant" data-plot="${index}" data-crop="${crop.id}" data-fert="0" ${locked || !canAfford(cost) ? 'disabled' : ''}>Plant</button>${fert}</div>`;
+      return `<div class="skill-row"><span>${escapeHtml(crop.name)} (${note})</span><button data-action="plant" data-plot="${escapeHtml(index)}" data-crop="${escapeHtml(crop.id)}" data-fert="0" ${locked || !canAfford(cost) ? 'disabled' : ''}>Plant</button>${fert}</div>`;
     }).join('');
     return `<div class="card"><h3>Plot ${index + 1} — empty</h3><div class="skill-list">${options}</div></div>`;
   }).join('');
@@ -920,16 +929,16 @@ function renderDepot() {
   const banked = Object.entries(state.bank).filter(([, qty]) => qty > 0);
   const carried = Object.entries(state.inventory).filter(([, qty]) => qty > 0);
   const bankRows = banked.length
-    ? banked.map(([id, qty]) => `<div class="skill-row"><span>${escapeHtml(ITEMS[id].name)}</span><b>${qty}</b><button data-action="withdraw" data-id="${id}" data-qty="${qty}">Withdraw all</button></div>`).join('')
+    ? banked.map(([id, qty]) => `<div class="skill-row"><span>${escapeHtml(ITEMS[id].name)}</span><b>${qty}</b><button data-action="withdraw" data-id="${escapeHtml(id)}" data-qty="${escapeHtml(qty)}">Withdraw all</button></div>`).join('')
     : '<p>The Depot is empty.</p>';
   const packRows = carried.length
-    ? carried.map(([id, qty]) => `<div class="skill-row"><span>${escapeHtml(ITEMS[id].name)}</span><b>${qty}</b><button data-action="deposit" data-id="${id}" data-qty="${qty}">Deposit all</button></div>`).join('')
+    ? carried.map(([id, qty]) => `<div class="skill-row"><span>${escapeHtml(ITEMS[id].name)}</span><b>${qty}</b><button data-action="deposit" data-id="${escapeHtml(id)}" data-qty="${escapeHtml(qty)}">Deposit all</button></div>`).join('')
     : '<p>The pack is empty.</p>';
   const drones = state.drones.length
     ? state.drones.map((drone, i) => {
         const node = drone.nodeId ? visibleNodes().find((n) => n.id === drone.nodeId) : null;
         const targets = visibleNodes().filter((n) => (n.regionId || 'landing_basin') === 'landing_basin')
-          .map((n) => `<button data-action="deployDrone" data-id="${n.id}">${escapeHtml(n.name)}</button>`).join('');
+          .map((n) => `<button data-action="deployDrone" data-id="${escapeHtml(n.id)}">${escapeHtml(n.name)}</button>`).join('');
         return `<div class="skill-row"><span>Drone ${i + 1}</span><b>${node ? escapeHtml(node.name) : 'idle'}</b></div>${node ? '' : `<div class="skill-list">${targets}</div>`}`;
       }).join('')
     : `<p>No drones. Build one at the Forge (cap ${droneCap(state)}).</p>`;
@@ -939,12 +948,12 @@ function renderDepot() {
 }
 
 function renderForge() {
-  const smelt = SMELT_RECIPES.map((recipe) => `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${renderCost(recipe.input)}<button data-action="smelt" data-id="${recipe.id}" ${!canAfford(recipe.input) ? 'disabled' : ''}>Smelt</button></div>`).join('');
+  const smelt = SMELT_RECIPES.map((recipe) => `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${renderCost(recipe.input)}<button data-action="smelt" data-id="${escapeHtml(recipe.id)}" ${!canAfford(recipe.input) ? 'disabled' : ''}>Smelt</button></div>`).join('');
   const craft = CRAFT_RECIPES.map((recipe) => {
     const gated = recipe.lvl && (state.skills.fabrication?.level || 1) < recipe.lvl;
     const desc = recipe.description ? `<p>${escapeHtml(recipe.description)}</p>` : '';
     const lvlNote = recipe.lvl ? `<p class="muted">Requires Fabrication ${recipe.lvl}.</p>` : '';
-    return `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${desc}${lvlNote}${renderCost(recipe.input)}<button data-action="craft" data-id="${recipe.id}" ${!canAfford(recipe.input) || gated ? 'disabled' : ''}>Fabricate</button></div>`;
+    return `<div class="card"><h3>${escapeHtml(recipe.name)}</h3>${desc}${lvlNote}${renderCost(recipe.input)}<button data-action="craft" data-id="${escapeHtml(recipe.id)}" ${!canAfford(recipe.input) || gated ? 'disabled' : ''}>Fabricate</button></div>`;
   }).join('');
   return `<div class="card"><h3>Smelting</h3><p>Bars consume power and train Fabrication.</p></div>${smelt}<div class="card"><h3>Crafting</h3></div>${craft}`;
 }
@@ -953,7 +962,7 @@ function renderResearch() {
   return RESEARCH.map((project) => {
     const done = !!state.research[project.id];
     const tierOpen = researchTierOpen(state, project.tier);
-    return `<div class="card"><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p>${renderCost(project.input)}<button data-action="research" data-id="${project.id}" ${done || !tierOpen || !state.built.lab || !canAfford(project.input) ? 'disabled' : ''}>${done ? 'Researched' : tierOpen ? 'Research' : `Tier ${project.tier} locked`}</button></div>`;
+    return `<div class="card"><h3>${escapeHtml(project.name)}</h3><p>${escapeHtml(project.description)}</p>${renderCost(project.input)}<button data-action="research" data-id="${escapeHtml(project.id)}" ${done || !tierOpen || !state.built.lab || !canAfford(project.input) ? 'disabled' : ''}>${done ? 'Researched' : tierOpen ? 'Research' : `Tier ${project.tier} locked`}</button></div>`;
   }).join('');
 }
 
@@ -975,7 +984,7 @@ function renderTravel() {
     const gateText = region.gate && !gateOk ? `Requires ${escapeHtml(SKILLS[region.gate.skill].name)} ${region.gate.lvl}.` : '';
     const hasFuel = (state.inventory.fuel || 0) >= TRAVEL_FUEL_COST;
     const eta = region.home ? 0 : previewTravelMs(region);
-    return `<div class="card"><h3>${escapeHtml(region.name)}</h3>${gateText ? `<p>${gateText}</p>` : `<p>${Math.round(eta / 1000)}s by ${escapeHtml(rover.name)} · ${TRAVEL_FUEL_COST} Fuel Cell</p>`}<button data-action="travel" data-id="${id}" ${!gateOk || !hasFuel ? 'disabled' : ''}>Drive here</button></div>`;
+    return `<div class="card"><h3>${escapeHtml(region.name)}</h3>${gateText ? `<p>${gateText}</p>` : `<p>${Math.round(eta / 1000)}s by ${escapeHtml(rover.name)} · ${TRAVEL_FUEL_COST} Fuel Cell</p>`}<button data-action="travel" data-id="${escapeHtml(id)}" ${!gateOk || !hasFuel ? 'disabled' : ''}>Drive here</button></div>`;
   }).join('');
   return `<div class="card"><h3>Rover</h3><p>${escapeHtml(rover.name)} · Piloting L${pilotLevel} · ${state.inventory.fuel || 0} Fuel Cells in the pack.</p></div>${cards}`;
 }
@@ -1489,11 +1498,21 @@ async function apiPost(path, body) {
   return data;
 }
 
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function applyServerPayload(payload) {
   if (!payload?.state) throw new Error('Authority returned no state');
   sessionId = payload.sessionId || sessionId;
   state = publicState(payload.state);
-  localStorage.setItem(SESSION_KEY, sessionId);
+  writeStorage(SESSION_KEY, sessionId);
   saveLocalSoon(true, payload.signature);
 }
 
@@ -1525,7 +1544,9 @@ async function writeLocalEnvelope(signature = '') {
   const payload = localEnvelopePayload(envelope);
   envelope.localHmac = await localSigner.sign(payload);
   envelope.checksum = checksum(payload);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(envelope));
+  if (!writeStorage(STORAGE_KEY, JSON.stringify(envelope))) {
+    throw new Error('Local save write failed');
+  }
 }
 
 async function readLocalEnvelope() {
@@ -1616,7 +1637,7 @@ async function importSave() {
     }
     state = publicState(sanitizeState(envelope.state));
     sessionId = envelope.sessionId || getOrCreateSessionId(true);
-    localStorage.setItem(SESSION_KEY, sessionId);
+    writeStorage(SESSION_KEY, sessionId);
     mode = 'offline';
     saveLocalSoon(true);
     render();
@@ -1632,7 +1653,7 @@ function getOrCreateSessionId(force = false) {
   if (!force) {
     const legacy = localStorage.getItem(LEGACY_SESSION_KEY);
     if (legacy && localStorage.getItem(LEGACY_STORAGE_KEY) && !localStorage.getItem(STORAGE_KEY)) {
-      localStorage.setItem(SESSION_KEY, legacy);
+      writeStorage(SESSION_KEY, legacy);
       return legacy;
     }
     const existing = localStorage.getItem(SESSION_KEY);
@@ -1640,12 +1661,12 @@ function getOrCreateSessionId(force = false) {
     // Adopt the v3 session so the player resumes their authority session rather
     // than being handed a new, empty one by the key bump.
     if (legacy) {
-      localStorage.setItem(SESSION_KEY, legacy);
+      writeStorage(SESSION_KEY, legacy);
       return legacy;
     }
   }
   const next = crypto.randomUUID();
-  localStorage.setItem(SESSION_KEY, next);
+  writeStorage(SESSION_KEY, next);
   return next;
 }
 
