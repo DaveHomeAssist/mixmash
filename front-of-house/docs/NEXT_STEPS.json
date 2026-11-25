@@ -2781,5 +2781,10 @@
     "date": "2026-10-28",
     "state": "release 0.4.4, cache v92",
     "detail": "Five fixes from the live 0.4.2 playtest: day-lit lot after the show with a settled crowd within the signed attendance, content-sized phone sheets, lit 2D/3D switch, Save and load first in the Menu with save file download and load, PA must-touch-the-stage message before and after the tap. Rules, balance and save schema 2 unchanged."
+  },
+  "polish1101": {
+    "date": "2026-11-01",
+    "state": "release 0.4.5, cache v93 (draft PR)",
+    "detail": "Aesthetics pass (3D night grade and stage wash, board vignette, plate edges and fades), standard gamepad through the key binding table with menu help, Privacy link, and the phone Book sheet CLS fix (CWV-01). Rules, balance and save schema 2 unchanged."
   }
 }

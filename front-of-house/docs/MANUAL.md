@@ -152,6 +152,6 @@ These board shortcuts require board focus. Text fields and open windows keep the
 | Esc | Close the current window or menu, then cancel a Build tool |
 | ? | Open or close Menu |
 
-**Menu → Keys and mouse** lists the current equipment shortcuts. Menu also provides **Dark controls** and **Full screen**. Phone and short-window layouts divide content into tabs or pages; check the selected tab and page controls if a field is not visible. Reduced motion changes presentation, not settlement rules.
+**Menu → Keys, mouse and controller** lists the current equipment shortcuts and the gamepad buttons (a standard controller works in every phase). Menu also provides **Dark controls** and **Full screen**. Phone and short-window layouts divide content into tabs or pages; check the selected tab and page controls if a field is not visible. Reduced motion changes presentation, not settlement rules.
 
 For exact calculations and compatibility rules, see [Rules](RULES.md) and [Save format](SAVE_FORMAT.md). Known limitations are recorded in [Known issues](KNOWN_ISSUES.md).

@@ -9,7 +9,7 @@ import {
   presaleSplit, priceFactor, rollShow, incidentAtFor, settlementFor, settlementPayout, showPreview, sightlineTiles, upfrontFor, validateLayout,
 } from './engine.mjs';
 import { REFERENCE_ADS, REFERENCE_LAYOUT, WORKED_EXAMPLE } from './sim/reference.mjs';
-import { BINDINGS, binding, clashes, matches, reservedKeys } from './controls.mjs';
+import { BINDINGS, PAD_BINDINGS, binding, clashes, matches, padIntent, padProblems, reservedKeys } from './controls.mjs';
 
 // Runs a list of actions and fails the test on the first engine error.
 function run(state, actions) {
@@ -855,6 +855,28 @@ test('controls: the menu lists every binding exactly as the table names it', asy
     .map(([, id, keys, label]) => ({ id, keys, label }));
   assert.deepEqual(listed, BINDINGS.filter((b) => b.phases === 'all').concat(BINDINGS.filter((b) => b.phases !== 'all'))
     .map((b) => ({ id: b.id, keys: b.keysLabel, label: b.label })));
+});
+
+test('controls: every controller button does one thing and sends the key its binding names', () => {
+  assert.deepEqual(padProblems(), []);
+  const twice = { ...PAD_BINDINGS.find((b) => b.id === 'pad-rotate'), id: 'pad-rotate-again' };
+  assert.deepEqual(padProblems([...PAD_BINDINGS, twice]), ['pad-rotate and pad-rotate-again share x'], 'a shared button is caught');
+  assert.deepEqual(padProblems([{ id: 'bad', buttons: ['x'], send: { binding: 'rotate', key: 'z', to: 'board' } }]), ['bad sends z, which rotate does not match']);
+  assert.deepEqual(padProblems([{ id: 'gone', buttons: ['x'], send: { binding: 'nope', key: 'r', to: 'board' } }]), ['gone names missing binding nope']);
+  assert.deepEqual(padIntent('a'), { click: true });
+  assert.deepEqual(padIntent('a', { boardFocused: true, build: true }), { binding: 'place', key: 'Enter', to: 'board' });
+  assert.deepEqual(padIntent('left', { boardFocused: true, build: true }), { binding: 'move-cursor', key: 'ArrowLeft', to: 'board' });
+  assert.deepEqual(padIntent('left', { boardFocused: true, build: false }), { focus: 'prev' }, 'outside Build the D-pad moves between controls');
+  assert.deepEqual(padIntent('down'), { focus: 'next' });
+  assert.deepEqual(padIntent('start'), { binding: 'menu', key: '?', to: 'page' });
+  assert.equal(padIntent('nope'), null);
+});
+
+test('controls: the menu lists every controller button exactly as the table names it', async () => {
+  const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+  const listed = [...html.matchAll(/<div data-pad="([^"]+)"><dt>([^<]*)<\/dt><dd>([^<]*)<\/dd><\/div>/g)]
+    .map(([, id, buttons, label]) => ({ id, buttons, label }));
+  assert.deepEqual(listed, PAD_BINDINGS.map((b) => ({ id: b.id, buttons: b.padLabel, label: b.label })));
 });
 
 test('undo: setLayout with an earlier copy restores the layout exactly, fence kit included', () => {
