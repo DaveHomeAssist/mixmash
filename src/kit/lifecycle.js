@@ -61,7 +61,8 @@
       try {
         if (ctx.state === 'running') {
           suspendedByKit.push(ctx);
-          ctx.suspend();
+          var p = ctx.suspend();
+          if (p && typeof p.catch === 'function') p.catch(function () { /* context may be closed */ });
         }
       } catch (e) { /* context may be closed */ }
     }
@@ -75,7 +76,10 @@
     if (muted) return; // the player muted while away; leave it suspended
     for (var i = 0; i < list.length; i++) {
       try {
-        if (list[i].state === 'suspended') list[i].resume();
+        if (list[i].state === 'suspended') {
+          var p = list[i].resume();
+          if (p && typeof p.catch === 'function') p.catch(function () { /* context may be closed */ });
+        }
       } catch (e) { /* context may be closed */ }
     }
   }

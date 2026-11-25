@@ -112,7 +112,7 @@ try {
     assert.ok(Math.abs(Date.now() - entry.t) < 60000);
     await context.close();
   }
-  // Garden wrapper: Mute All persists in mm.prefs and restores with the right aria-pressed.
+  // Garden wrapper: mm.prefs.muteAll migrates into mixmash.muteAll.v1 and restores aria-pressed.
   {
     const context = await browser.newContext({ serviceWorkers: 'block' });
     await context.route(/^https:\/\/davehomeassist\.github\.io\//, route => route.fulfill({ status: 200, contentType: 'text/html', body: '<p>stub</p>' }));
@@ -127,9 +127,11 @@ try {
     await page.waitForFunction(() => window.__mixmashNav && document.querySelector('.garden-bar .mixnav'));
     assert.equal(await mute.getAttribute('aria-pressed'), 'true', 'saved mute restores pressed');
     assert.equal(await page.evaluate(() => window.__mixmashNav.isMuted()), true);
+    assert.equal(await page.evaluate(() => localStorage.getItem('mixmash.muteAll.v1')), '1', 'legacy prefs migrate to the nav key');
     await mute.click();
     assert.equal(await mute.getAttribute('aria-pressed'), 'false', 'tap flips to unmuted');
-    assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('mm.prefs'))), { muteAll: false, other: 'kept' });
+    assert.equal(await page.evaluate(() => localStorage.getItem('mixmash.muteAll.v1')), '0');
+    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('mm.prefs')).other), 'kept', 'unrelated prefs stay put');
     await page.waitForFunction(() => document.activeElement === document.getElementById('game-frame'), null, { timeout: 5000 });
     await page.reload();
     await page.waitForFunction(() => window.__mixmashNav && document.querySelector('.garden-bar .mixnav'));
@@ -139,7 +141,7 @@ try {
     await page.reload();
     await page.waitForFunction(() => window.__mixmashNav && document.querySelector('.garden-bar .mixnav'));
     assert.equal(await mute.getAttribute('aria-pressed'), 'true', 'muted survives reload');
-    assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('mm.prefs')).muteAll), true);
+    assert.equal(await page.evaluate(() => localStorage.getItem('mixmash.muteAll.v1')), '1');
     assert.equal(await page.locator('#game-frame').getAttribute('src'), 'https://davehomeassist.github.io/garden-os/story-mode/', 'iframe unchanged');
     assert.deepEqual(failures, []);
     await context.close();

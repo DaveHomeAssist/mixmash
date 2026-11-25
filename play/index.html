@@ -14,14 +14,25 @@
       status.framed = true;
     }
     if (status.framed) {
-      status.action = 'top-navigation-attempted';
+      let sameOriginParent = false;
       try {
-        window.top.location = window.self.location.href;
+        sameOriginParent = !!(window.parent && window.parent.location.origin === window.location.origin);
       } catch {
-        status.action = 'blocked-embed-hidden';
-        document.addEventListener('DOMContentLoaded', () => {
-          document.body.innerHTML = '<main style="display:grid;min-height:100vh;place-items:center;background:#070711;color:#f4f1ff;font:16px ui-monospace,monospace;text-align:center;padding:24px;"><div><h1 style="font-size:24px;margin-bottom:12px;">MIXMASH opens in its own tab.</h1><p>This page blocks third-party framing.</p></div></main>';
-        }, { once: true });
+        sameOriginParent = false;
+      }
+      if (sameOriginParent) {
+        // Allow the same-origin Drop In overlay on home.html; still block other origins.
+        status.action = 'same-origin-embed-allowed';
+      } else {
+        status.action = 'top-navigation-attempted';
+        try {
+          window.top.location = window.self.location.href;
+        } catch {
+          status.action = 'blocked-embed-hidden';
+          document.addEventListener('DOMContentLoaded', () => {
+            document.body.innerHTML = '<main style="display:grid;min-height:100vh;place-items:center;background:#070711;color:#f4f1ff;font:16px ui-monospace,monospace;text-align:center;padding:24px;"><div><h1 style="font-size:24px;margin-bottom:12px;">MIXMASH opens in its own tab.</h1><p>This page blocks third-party framing.</p></div></main>';
+          }, { once: true });
+        }
       }
     }
     window.__mixmashFrameGuard = status;
@@ -879,12 +890,24 @@ let options = {
 const optionsStore = window.MixKitSave ? MixKitSave.createSaveStore('mixmash_opts', { version: 1 }) : null;
 function loadOptions() {
   try {
-    const s = optionsStore ? optionsStore.load() : JSON.parse(localStorage.getItem('mixmash_opts') || 'null');
+    let s = null;
+    if (optionsStore && typeof optionsStore.loadResult === 'function') {
+      const result = optionsStore.loadResult();
+      if (result.status === 'ok') s = result.state;
+    } else if (optionsStore) {
+      s = optionsStore.load();
+    } else {
+      s = JSON.parse(localStorage.getItem('mixmash_opts') || 'null');
+    }
     if (s) Object.assign(options, s);
   } catch {}
 }
 function saveOptions() {
   try {
+    if (optionsStore && typeof optionsStore.loadResult === 'function') {
+      const result = optionsStore.loadResult();
+      if (result.status === 'newer') return;
+    }
     if (optionsStore) optionsStore.save(options);
     else localStorage.setItem('mixmash_opts', JSON.stringify(options));
   } catch {}
@@ -1833,9 +1856,10 @@ function triggerRumble(padIndex, intensity, duration) {
     try { pads = navigator.getGamepads ? navigator.getGamepads() : []; } catch(e) { return; }
     const gp = pads[padIndex];
     if (gp && gp.vibrationActuator) {
-      gp.vibrationActuator.playEffect('dual-rumble', {
+      const effect = gp.vibrationActuator.playEffect('dual-rumble', {
         duration, strongMagnitude: intensity, weakMagnitude: intensity * 0.5
       });
+      if (effect && typeof effect.catch === 'function') effect.catch(() => {});
     }
   } catch {}
 }
@@ -2197,8 +2221,14 @@ function initiateRebind(player, actionId, button) {
     event.preventDefault();
     event.stopImmediatePropagation();
     if (event.code !== 'Escape') {
-      mixmashConfig.controls.key_bindings[key] = event.code;
-      saveMixmashConfig(`${player} ${actionId.toLowerCase()} set to ${event.code}`);
+      const bindings = mixmashConfig.controls.key_bindings;
+      const usedBy = Object.keys(bindings).find((other) => other !== key && bindings[other] === event.code);
+      if (usedBy) {
+        setMenuStatus(`${event.code} is already used by ${usedBy.replace(/_/g, ' ')}`);
+      } else {
+        bindings[key] = event.code;
+        saveMixmashConfig(`${player} ${actionId.toLowerCase()} set to ${event.code}`);
+      }
     } else {
       setMenuStatus('Rebind cancelled');
     }
@@ -3495,9 +3525,25 @@ function syncMusicState(force) {
 }
 
 function startMusicScheduler() {
-  if (musicState.schedulerId || !audioCtx) return;
+  if (musicState.schedulerId || !audioCtx || document.hidden) return;
   musicState.nextNoteTime = audioCtx.currentTime + 0.06;
   musicState.schedulerId = window.setInterval(scheduleMusic, 80);
+}
+
+function stopMusicScheduler() {
+  if (!musicState.schedulerId) return;
+  clearInterval(musicState.schedulerId);
+  musicState.schedulerId = 0;
+}
+
+function resumeFromHidden() {
+  if (audioCtx) startMusicScheduler();
+  if (loopStoppedForHide) {
+    loopStoppedForHide = false;
+    lastTime = performance.now();
+    accumulator = 0;
+    if (!loopHandle) loopHandle = requestAnimationFrame(gameLoop);
+  }
 }
 
 function initAudio() {
@@ -9015,12 +9061,14 @@ function startMatch() {
     p2.y = currentStage.spawns[1].y - 200;
   }
 
-  // Auto-assign gamepads
+  // Auto-assign gamepads, skipping empty slots so a pad in slot 1 is not ignored.
   let pads = [];
   try { pads = navigator.getGamepads ? navigator.getGamepads() : []; } catch(e) {}
   let padIdx = 0;
   for (const p of state.players) {
-    if (p.controlType === 'human' && pads[padIdx]) { p.gamepadIndex = padIdx; padIdx++; }
+    if (p.controlType !== 'human') continue;
+    while (padIdx < pads.length && !pads[padIdx]) padIdx++;
+    if (pads[padIdx]) { p.gamepadIndex = padIdx; padIdx++; }
   }
 
   state.hitstopFrames = 0;
@@ -9320,18 +9368,31 @@ document.addEventListener('keydown', e => {
   }
 
   if (e.code === 'KeyF') {
-    if (!document.fullscreenElement) canvas.requestFullscreen().catch(() => {});
-    else document.exitFullscreen();
+    if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
+      const req = canvas.requestFullscreen || canvas.webkitRequestFullscreen;
+      if (req) Promise.resolve(req.call(canvas)).catch(() => {});
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) Promise.resolve(exit.call(document)).catch(() => {});
+    }
   }
 });
 
 document.addEventListener('fullscreenchange', resizeCanvas);
+document.addEventListener('webkitfullscreenchange', resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('pagehide', () => saveActiveMatchSnapshot(true));
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') saveActiveMatchSnapshot(true);
+  if (document.visibilityState === 'hidden' || document.hidden) {
+    saveActiveMatchSnapshot(true);
+    clearPressedInput();
+    stopMusicScheduler();
+  } else {
+    resumeFromHidden();
+  }
 });
 window.addEventListener('blur', () => {
+  clearPressedInput();
   if (!options.muteOnBlur || !audioCtx || !musicState.masterGain) return;
   musicState.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
   musicState.masterGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
@@ -9343,8 +9404,16 @@ window.addEventListener('focus', () => {
 // --- Game Loop ---
 let lastTime = 0;
 let accumulator = 0;
+let loopHandle = 0;
+let loopStoppedForHide = false;
 
 function gameLoop(timestamp) {
+  loopHandle = 0;
+  if (document.hidden) {
+    loopStoppedForHide = true;
+    stopMusicScheduler();
+    return;
+  }
   const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
   lastTime = timestamp;
   accumulator += dt;
@@ -9371,7 +9440,7 @@ function gameLoop(timestamp) {
   updateAudioPrompt();
 
   render();
-  requestAnimationFrame(gameLoop);
+  loopHandle = requestAnimationFrame(gameLoop);
 }
 
 // --- Playwright APIs ---
@@ -9592,7 +9661,7 @@ setupMechanicsFilter();
 updateAudioPrompt();
 applySharePresetFromUrl();
 resizeCanvas();
-requestAnimationFrame(gameLoop);
+loopHandle = requestAnimationFrame(gameLoop);
 </script>
 </body>
 </html>

@@ -34,6 +34,7 @@
   if (window.__mixmashNav) return;
 
   var MUTE_KEY = 'mixmash.muteAll.v1';
+  var LEGACY_PREFS_KEY = 'mm.prefs';
   var REPO_URL = 'https://github.com/DaveHomeAssist/mixmash';
   var COLLAPSE_MS = 3200;
   var SLOTS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
@@ -68,7 +69,17 @@
   });
 
   function readMuted() {
-    try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; }
+    try {
+      var raw = localStorage.getItem(MUTE_KEY);
+      if (raw === '1' || raw === '0') return raw === '1';
+      // Migrate the Garden wrapper's older mm.prefs.muteAll flag once.
+      var prefs = JSON.parse(localStorage.getItem(LEGACY_PREFS_KEY) || 'null');
+      if (prefs && typeof prefs === 'object' && typeof prefs.muteAll === 'boolean') {
+        persistMuted(prefs.muteAll);
+        return prefs.muteAll;
+      }
+      return false;
+    } catch (e) { return false; }
   }
 
   function persistMuted(value) {
@@ -78,8 +89,10 @@
   function applyMute() {
     contexts.forEach(function (ctx) {
       try {
-        if (muted && ctx.state === 'running') ctx.suspend();
-        else if (!muted && ctx.state === 'suspended') ctx.resume();
+        var p = null;
+        if (muted && ctx.state === 'running') p = ctx.suspend();
+        else if (!muted && ctx.state === 'suspended') p = ctx.resume();
+        if (p && typeof p.catch === 'function') p.catch(function () { /* context may be closed */ });
       } catch (e) { /* context may be closed */ }
     });
     // Media elements are not routed through an AudioContext, so mute them too.
@@ -103,7 +116,7 @@
       '.mixnav{position:fixed;z-index:16;display:flex;align-items:center;gap:6px;',
       'top:calc(' + inset('top') + ' + 12px + var(--mixnav-offset-top,0px));',
       'left:calc(' + inset('left') + ' + 12px + var(--mixnav-offset-left,0px));',
-      'font-family:"Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:0.09em;',
+      'font-family:"Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;letter-spacing:0.09em;',
       'text-transform:uppercase;pointer-events:auto}',
       // Slots: the handle stays in its corner and the controls open toward the
       // middle of the screen.
@@ -173,7 +186,7 @@
     var fsBtn = button('Fullscreen', '&#9974;', 'Toggle fullscreen');
     // iPhone Safari has no Fullscreen API on the document: a button that does
     // nothing is worse than no button.
-    fsBtn.hidden = !document.documentElement.requestFullscreen;
+    fsBtn.hidden = !(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
 
     var repo = document.createElement('a');
     repo.href = REPO_URL;
@@ -200,19 +213,27 @@
     });
 
     function syncFsBtn() {
-      var on = !!document.fullscreenElement;
+      var on = !!(document.fullscreenElement || document.webkitFullscreenElement);
       fsBtn.setAttribute('aria-pressed', String(on));
       fsBtn.querySelector('.mixnav-label').textContent = on ? 'Exit Full' : 'Fullscreen';
     }
 
+    function catchPromise(p) {
+      if (p && typeof p.catch === 'function') p.catch(function () { /* denied or unsupported */ });
+    }
+
     fsBtn.addEventListener('click', function () {
-      if (document.fullscreenElement) {
-        if (document.exitFullscreen) document.exitFullscreen();
-      } else if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(function () { /* denied */ });
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        var exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) catchPromise(exit.call(document));
+      } else {
+        var root = document.documentElement;
+        var req = root.requestFullscreen || root.webkitRequestFullscreen;
+        if (req) catchPromise(req.call(root));
       }
     });
     document.addEventListener('fullscreenchange', syncFsBtn);
+    document.addEventListener('webkitfullscreenchange', syncFsBtn);
 
     items.appendChild(home);
     items.appendChild(muteBtn);
