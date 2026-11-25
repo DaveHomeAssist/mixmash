@@ -1,3 +1,29 @@
+// One published engine bundle. Refresh all three pins together when copying a
+// verified engine build. Integrity checks also reject mismatched responses from
+// an older service worker that still ignores query strings during fallback.
+var empiresAssets = {
+  "aoe2-clone.js": {
+    "url": "./assets/aoe2-clone.js?sha256=1b4f9b3305e359133e2292de0da8f0cd06b9658f5036269f8b78c321d4e9cd6e",
+    "integrity": "sha256-G0+bMwXjWRM+IpLeDajwzQa5ZY9QNiafi3jDIdTpzW4="
+  },
+  "aoe2-clone.wasm": {
+    "url": "./assets/aoe2-clone.wasm?sha256=6f9fb8cf39ea80b61d21a8f931a1fce8c45af97eb841b9fbb8b8b58d958c3b18",
+    "integrity": "sha256-b5+4zznqgLYdIaj5MaH86MRa+X64Qbn7uLi1jZWMOxg="
+  },
+  "aoe2-clone.data": {
+    "url": "./assets/aoe2-clone.data?sha256=3298e12a6e0eda90faf2a3403c3d220fa0a36e547033d16a4c60ee9230985949",
+    "integrity": "sha256-MpjhKm4O2pD68qNAPD0iD6CjblRwM9FqTGDukjCYWUk="
+  }
+};
+
+function empiresLoadFailed(error) {
+  console.error('EMPIRES bundle could not be loaded', error);
+  var message = 'Could not load this game version. Reconnect and reload to try again.';
+  setLoadProgress(0, message);
+  var status = document.getElementById('status');
+  if (status) status.textContent = message;
+}
+
 function setLoadProgress(fraction, label) {
   var bar = document.getElementById('loadbar-fill');
   var text = document.getElementById('loadbar-label');
@@ -136,7 +162,9 @@ var Module = {
   canvas: document.getElementById('canvas'),
   // The glue resolves side files (aoe2-clone.data sprite package) against the
   // page URL; they live next to the script in ./assets/.
-  locateFile: function (path) { return './assets/' + path; },
+  locateFile: function (path) {
+    return empiresAssets[path] ? empiresAssets[path].url : './assets/' + path;
+  },
   print: function (text) { console.log(text); },
   printErr: function (text) { console.error(text); },
   setStatus: function (text) {
@@ -149,8 +177,12 @@ var Module = {
   // Emscripten's default wasm loader doesn't expose download progress; fetch
   // the binary ourselves (with a real byte counter) and hand the bytes back.
   instantiateWasm: function (imports, successCallback) {
-    fetch('./assets/aoe2-clone.wasm')
+    fetch(empiresAssets['aoe2-clone.wasm'].url, {
+      integrity: empiresAssets['aoe2-clone.wasm'].integrity,
+      cache: 'no-cache',
+    })
       .then(function (response) {
+        if (!response.ok) throw new Error('WASM download failed: ' + response.status);
         var total = parseInt(response.headers.get('Content-Length') || '0', 10);
         if (!response.body || !total) {
           setLoadProgress(0.5, 'Loading EMPIRES...');
@@ -179,10 +211,7 @@ var Module = {
       .then(function (output) {
         successCallback(output.instance, output.module);
       })
-      .catch(function (err) {
-        console.error('wasm instantiation failed', err);
-        Module.setStatus('Failed to load — check the browser console.');
-      });
+      .catch(empiresLoadFailed);
     return {}; // tells Emscripten we're handling instantiation asynchronously
   },
 };
@@ -560,3 +589,26 @@ window.addEventListener('DOMContentLoaded', function () {
     if (e.code === 'Space') hideStartHint();
   }, { once: true });
 });
+
+// Verify the sprite package before executing the pinned glue. The generated
+// loader's synchronous getPreloadedPackage hook avoids a second, unverified
+// data fetch without modifying the generated engine artifacts.
+(function loadEmpiresBundle() {
+  var data = empiresAssets['aoe2-clone.data'];
+  fetch(data.url, { integrity: data.integrity, cache: 'no-cache' })
+    .then(function (response) {
+      if (!response.ok) throw new Error('Sprite download failed: ' + response.status);
+      return response.arrayBuffer();
+    })
+    .then(function (buffer) {
+      Module.getPreloadedPackage = function () { return buffer; };
+      var glue = empiresAssets['aoe2-clone.js'];
+      var script = document.createElement('script');
+      script.src = glue.url;
+      script.integrity = glue.integrity;
+      script.crossOrigin = 'anonymous';
+      script.onerror = empiresLoadFailed;
+      document.body.appendChild(script);
+    })
+    .catch(empiresLoadFailed);
+})();

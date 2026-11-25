@@ -255,7 +255,9 @@
 
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
     <script src="../src/kit/nav.js"></script>
-    <script src="./assets/shell.js"></script>
-    <script src="./assets/aoe2-clone.js"></script>
+    <!-- Pin the bootstrap too, so a cached shell cannot select another engine bundle. -->
+    <script src="./assets/shell.js?sha256=0841d27cb9b19c6b5848652a84404fe788f6aedb2070ace4be54394d676b56d2"
+      integrity="sha256-CEHSfLmxnGtYSGUqhEBP54j2rtsgcKzkvlQ5TWdrVtI=" crossorigin="anonymous"
+      onerror="document.getElementById('loadbar-label').textContent = 'Could not load this game version. Reconnect and reload to try again.'"></script>
   </body>
 </html>
