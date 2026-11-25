@@ -1,6 +1,6 @@
 # Backyard Horseshoes — Phase 3 prototype
 
-Built from DaveHomeAssist/curling-simulator commit `4d09e2fe4107b479444584bbd01acca688fa8593` ([source PR16](https://github.com/DaveHomeAssist/curling-simulator/pull/16)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
+Built from DaveHomeAssist/curling-simulator commit `b3e153f` ([source PR18](https://github.com/DaveHomeAssist/curling-simulator/pull/18), WebGL context-loss recovery and no drawing in hidden tabs, on top of `4d09e2fe4107b479444584bbd01acca688fa8593` from [PR16](https://github.com/DaveHomeAssist/curling-simulator/pull/16)). Source planning and release evidence live in `docs/HORSESHOES_PHASE3_BRIEF.md` and `docs/HORSESHOES_RELEASE.md` in that repository.
 
 ## Play
 
