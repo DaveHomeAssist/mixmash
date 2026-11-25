@@ -83,12 +83,25 @@ ${ROWS.map(([label, keys, pad]) => `<tr><th scope="row">${label}</th><td>${kbd(k
   let prev = {};
   let frame = 0;
   let repeatAt = 0;
-  const sendKey = (code, key = code) => window.dispatchEvent(new KeyboardEvent('keydown', { code, key, bubbles: true, cancelable: true }));
+  const sendKey = (code, key = code, type = 'keydown') => window.dispatchEvent(new KeyboardEvent(type, { code, key, bubbles: true, cancelable: true }));
+  const heldKeys = {};
+  const pressKey = (code, key = code) => {
+    sendKey(code, key, 'keydown');
+    heldKeys[code] = key;
+  };
+  const releaseKey = (code) => {
+    if (!(code in heldKeys)) return;
+    sendKey(code, heldKeys[code], 'keyup');
+    delete heldKeys[code];
+  };
   const clickIf = (selector) => { const el = $(selector); if (el && !el.disabled) el.click(); };
   function poll() {
     frame = 0;
     const pads = [...(navigator.getGamepads?.() || [])].filter(Boolean);
-    if (!pads.length) return;
+    if (!pads.length) {
+      for (const code of Object.keys(heldKeys)) releaseKey(code);
+      return;
+    }
     const now = performance.now();
     const down = {};
     for (const pad of pads) {
@@ -102,21 +115,29 @@ ${ROWS.map(([label, keys, pad]) => `<tr><th scope="row">${label}</th><td>${kbd(k
     const edge = (name) => down[name] && !prev[name];
     if (edge('back')) toggleHelp();
     if (edge('start')) { closeHelp(); toggleMenu(); }
-    if (edge('b')) { if (help.open) closeHelp(); else if (menu()?.open) toggleMenu(); else sendKey('KeyR', 'r'); }
+    if (edge('b')) { if (help.open) closeHelp(); else if (menu()?.open) toggleMenu(); else { sendKey('KeyR', 'r', 'keydown'); sendKey('KeyR', 'r', 'keyup'); } }
+    const want = {};
     if (!help.open && !menu()?.open) {
       if (edge('a')) clickIf('#throw-button');
       if (edge('y')) clickIf('#camera-button');
-      if (edge('x')) {
+      if (down.x) {
         const turn = $('#style-buttons button[aria-pressed="true"]')?.textContent?.trim().toLowerCase() === 'turn';
-        sendKey(turn ? 'KeyQ' : 'KeyT', turn ? 'q' : 't');
+        want[turn ? 'KeyQ' : 'KeyT'] = turn ? 'q' : 't';
       }
-      if (edge('lb')) sendKey('Digit1', '1');
-      if (edge('rb')) sendKey('Digit3', '3');
+      if (down.lb) want.Digit1 = '1';
+      if (down.rb) want.Digit3 = '3';
       const dirs = [['left', 'ArrowLeft'], ['right', 'ArrowRight'], ['up', 'ArrowUp'], ['down', 'ArrowDown']];
       for (const [name, code] of dirs) {
         if (!down[name]) continue;
-        if (edge(name) || now >= repeatAt) { sendKey(code); repeatAt = now + (edge(name) ? 320 : 60); }
+        want[code] = code;
+        if (edge(name) || now >= repeatAt) { pressKey(code, code); repeatAt = now + (edge(name) ? 320 : 60); }
       }
+      for (const [code, key] of Object.entries(want)) {
+        if (!(code in heldKeys)) pressKey(code, key);
+      }
+    }
+    for (const code of Object.keys(heldKeys)) {
+      if (!(code in want)) releaseKey(code);
     }
     prev = down;
     frame = requestAnimationFrame(poll);
