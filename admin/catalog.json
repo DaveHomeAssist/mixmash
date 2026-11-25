@@ -5527,6 +5527,16 @@
       "open": null
     },
     {
+      "path": "test/csp-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "csp-smoke.mjs",
+      "description": "Publisher pages load under their meta CSP with zero violations (Chromium and WebKit), the Cloudflare beacon is allowed, the Garden OS wrapper iframe loads and the fighter guide still launches the game.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/csp-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/garden-embed-focus-smoke.mjs",
       "project": "studio",
       "category": "tests",
@@ -5544,6 +5554,16 @@
       "title": "hub-catalog.test.mjs",
       "description": "Public catalog integrity and publication boundaries.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-catalog.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/hub-csp.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "hub-csp.test.mjs",
+      "description": "Publisher pages ship a meta CSP that matches src/hub/csp.mjs and allows what each page loads.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hub-csp.test.mjs",
       "open": null
     },
     {
@@ -5784,6 +5804,16 @@
       "title": "catalog.mjs",
       "description": "Public browser-game catalog. Claims are supported by docs/HOMEPAGE_EVIDENCE.md.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/catalog.mjs",
+      "open": null
+    },
+    {
+      "path": "src/hub/csp.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "csp.mjs",
+      "description": "Content-Security-Policy for publisher-owned pages (the hub, its static pages and the game wrappers this repo owns).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/hub/csp.mjs",
       "open": null
     },
     {
