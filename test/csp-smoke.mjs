@@ -15,9 +15,19 @@ if (shots) await mkdir(shots, { recursive: true });
 const exists = path => access(join(repoRoot, path)).then(() => true, () => false);
 const routes = [
   { name: 'hub', path: '/', ready: '.game-card' },
-  // The overlay handler (moved off inline onclick) loads /play/ in the frame; /play/'s own frame
-  // guard then takes the whole tab there, as it did before this change.
-  { name: 'home', path: '/home.html', after: async page => { await page.click('#game-overlay'); await page.waitForURL(/\/play\/(index\.html)?$/); } },
+  // #206 lets same-origin Drop In keep /play/ inside the home.html iframe instead of breaking out.
+  { name: 'home', path: '/home.html', after: async page => {
+    await page.click('#game-overlay');
+    await page.waitForFunction(() => {
+      const frame = document.getElementById('game-frame');
+      const src = frame && frame.getAttribute('src');
+      return !!(src && /(?:^|\/)play\/(index\.html)?$/.test(src));
+    });
+    await page.waitForSelector('#game-overlay.hidden');
+    if (!/\/home\.html(?:[?#]|$)/.test(page.url())) {
+      throw new Error(`Drop In left home.html: ${page.url()}`);
+    }
+  } },
   { name: 'brand', path: '/brand.html' },
   { name: '404', path: '/404.html' },
   { name: 'offline', path: '/offline.html' },
