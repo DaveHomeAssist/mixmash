@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
-import { monetization, supportEnabled, supportBlock, supportFooterLink, isKofi, analyticsEnabled, analyticsHead, analyticsScript, applyAnalyticsCsp, ANALYTICS_PAGES, CF_BEACON_SRC } from '../src/hub/monetization.mjs';
+import { monetization, supportEnabled, supportBlock, supportFooterLink, isKofi, kofiTiersUrl, KOFI_SUPPORT_TIERS, analyticsEnabled, analyticsHead, analyticsScript, applyAnalyticsCsp, ANALYTICS_PAGES, CF_BEACON_SRC } from '../src/hub/monetization.mjs';
 const read = file => readFile(new URL(`../${file}`, import.meta.url), 'utf8');
 // Test-only values. Real ones are never committed by tests.
 const KOFI = 'https://ko-fi.com/test_page';
@@ -19,7 +19,11 @@ test('shipped config: Ko-fi support on, Cloudflare Web Analytics on', async () =
   const homeSupport = await read('index.html');
   assert.ok(homeSupport.includes(supportBlock()), 'homepage carries the Ko-fi block');
   assert.ok(homeSupport.includes(supportFooterLink()), 'homepage footer carries the Ko-fi link');
-  assert.equal((homeSupport.match(/href="https:\/\/ko-fi\.com\/avbydave" target="_blank" rel="noopener"/g) || []).length, 2, 'exactly two Ko-fi links: block and footer');
+  assert.equal((homeSupport.match(/href="https:\/\/ko-fi\.com\/avbydave" target="_blank" rel="noopener"/g) || []).length, 2, 'exactly two one-off Ko-fi page links: block and footer');
+  assert.equal((homeSupport.match(/href="https:\/\/ko-fi\.com\/avbydave\/tiers" target="_blank" rel="noopener"/g) || []).length, 1, 'one membership /tiers link in the supporter section');
+  assert.ok(homeSupport.includes('Stagehand'), 'Stagehand tier is on the homepage');
+  assert.ok(homeSupport.includes('Headliner'), 'Headliner tier is on the homepage');
+  assert.ok(!/<script[^>]+ko-fi/i.test(homeSupport), 'no Ko-fi widget script');
   assert.equal(analyticsHead(), `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${TOKEN_LIVE}"}'></script>`);
   const include = await read('assets/analytics.js');
   assert.equal(include, analyticsScript());
@@ -99,7 +103,22 @@ test('Ko-fi support link: accepted shape, Ko-fi label and copy', () => {
   assert.match(block, /<h3>Keep the games free<\/h3>/);
   assert.match(block, /a tip on Ko-fi helps keep the site free and ad-light, and funds new games, stages and fighters\./);
   assert.match(block, /<p class="support-note">One-off tips\. No Ko-fi account needed\.<\/p><\/div>$/);
+  assert.match(block, /href="https:\/\/ko-fi\.com\/test_page\/tiers" target="_blank" rel="noopener">Become a monthly supporter/);
+  assert.match(block, /<h4 id="supporter-tiers-heading">Monthly supporters<\/h4>/);
+  assert.match(block, /Stagehand/);
+  assert.match(block, /\$3\/mo/);
+  assert.match(block, /Headliner/);
+  assert.match(block, /\$7\/mo/);
+  assert.ok(!block.includes('Open Mic'), 'alternate $3 name stays off the hub');
+  assert.ok(!block.includes('Festival Pass'), 'alternate $7 name stays off the hub');
+  assert.ok(!/discord/i.test(block), 'no Discord perk while no MixMash Discord exists');
+  assert.equal(kofiTiersUrl({ supportUrl: KOFI }), 'https://ko-fi.com/test_page/tiers');
+  assert.equal(kofiTiersUrl({ supportUrl: 'https://www.ko-fi.com/TestPage/' }), 'https://ko-fi.com/TestPage/tiers');
+  assert.equal(kofiTiersUrl({ supportUrl: 'https://example.itch.io/' }), '');
+  assert.equal(kofiTiersUrl({ supportUrl: 'https://ko-fi.com/x?ref=1' }), '');
+  assert.equal(KOFI_SUPPORT_TIERS.length, 2);
   assert.ok(!supportBlock({ supportUrl: 'https://example.itch.io/' }).includes('support-note'), 'Ko-fi-only note stays off other hosts');
+  assert.ok(!supportBlock({ supportUrl: 'https://example.itch.io/' }).includes('supporter-tiers'), 'membership tiers stay Ko-fi-only');
   assert.match(supportFooterLink({ supportUrl: KOFI }), />Support MixMash on Ko-fi</);
   // itch.io stays valid for the planned second channel, with the generic label.
   assert.match(supportBlock({ supportUrl: 'https://example.itch.io/' }), />Support MixMash </);

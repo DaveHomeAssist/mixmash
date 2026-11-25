@@ -1316,6 +1316,49 @@ body:has(.view:not(#games):target) .site-shell {
 .support-slot h3 { margin-top:0 }
 .support-slot p { margin-bottom:14px }
 .support-slot .support-note { margin:10px 0 0; font-size:.875rem; color:var(--muted) }
+.supporter-tiers { margin:4px 0 16px }
+.supporter-tiers h4 {
+  margin:0 0 8px;
+  font-size:1rem
+}
+.supporter-tiers .tier-lead {
+  margin:0 0 12px;
+  font-size:.875rem
+}
+.supporter-tiers .tier-cards {
+  list-style:none;
+  margin:0 0 12px;
+  padding:0;
+  display:grid;
+  gap:10px
+}
+@media(min-width:560px) {
+  .supporter-tiers .tier-cards { grid-template-columns:1fr 1fr }
+}
+.supporter-tiers .tier-card {
+  margin:0;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--card)
+}
+.supporter-tiers .tier-card h5 {
+  margin:0 0 8px;
+  font-size:.9375rem;
+  line-height:1.3
+}
+.supporter-tiers .tier-price { font-weight:700; color:var(--primary) }
+.supporter-tiers .tier-card ul {
+  margin:0;
+  padding-left:1.15em;
+  font-size:.8125rem
+}
+.supporter-tiers .tier-card li { margin:0 0 4px }
+.supporter-tiers .tier-card li:last-child { margin-bottom:0 }
+.supporter-tiers .button { margin-top:2px; width:100% }
+@media(min-width:560px) {
+  .supporter-tiers .button { width:auto }
+}
 .ad-slot {
   margin:24px 0 8px;
   min-height:274px;

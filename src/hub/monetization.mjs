@@ -9,6 +9,7 @@ export const monetization = {
   // Dave's Ko-fi page, exactly https://ko-fi.com/<name> (Dave's pick, Oct 19). An itch.io page
   // (https://<name>.itch.io/) is the planned second channel; any other https page also works.
   // Shows a "Keep the games free" tip block in the Studio view and a footer link.
+  // Monthly memberships use the derived page URL plus /tiers (confirm after the Ko-fi tiers exist).
   supportUrl: 'https://ko-fi.com/avbydave',
   // Optional label override. Empty: "Support MixMash on Ko-fi" for Ko-fi, else "Support MixMash".
   supportLabel: '',
@@ -47,6 +48,52 @@ const supportCopy = config => isKofi(config.supportUrl)
   : 'Every MixMash game is free to play, right in your browser. If one made your day, chipping in helps keep the site free and ad-light, and funds new games, stages and fighters.';
 // Ko-fi takes one-off tips from guests (help.ko-fi.com: "No, an account is not needed to support you on Ko-fi!").
 const supportNote = config => isKofi(config.supportUrl) ? 'One-off tips. No Ko-fi account needed.' : '';
+/**
+ * Membership page for a well-formed Ko-fi support URL: https://ko-fi.com/<name>/tiers.
+ * Official Ko-fi help: add '/tiers' after the page name. Confirm this URL after the
+ * tiers are created in the Ko-fi dashboard. Empty when support is off or not Ko-fi.
+ */
+export function kofiTiersUrl(config = monetization) {
+  if (!supportEnabled(config) || !isKofi(config.supportUrl)) return '';
+  let url;
+  try { url = new URL(config.supportUrl); } catch { return ''; }
+  const name = url.pathname.replace(/^\/+|\/+$/g, '');
+  return name ? `https://ko-fi.com/${name}/tiers` : '';
+}
+/**
+ * Chosen MixMash monthly tiers (Dave approved $3 and $7 on Nov 25, 2026).
+ * Alternate names (not shown on the hub): Stagehand → "Open Mic"; Headliner → "Festival Pass".
+ * No Discord role: no MixMash Discord was found. No paywalled game content.
+ */
+export const KOFI_SUPPORT_TIERS = [
+  {
+    name: 'Stagehand',
+    price: '$3/mo',
+    perks: [
+      'Your name on the MixMash supporters credits list',
+      'Devlogs and early patch notes as Ko-fi member posts'
+    ]
+  },
+  {
+    name: 'Headliner',
+    price: '$7/mo',
+    perks: [
+      'Everything in Stagehand',
+      'Featured credit on the supporters list',
+      'A vote in the next-feature poll, posted on Ko-fi'
+    ]
+  }
+];
+const TIER_INTRO = 'Monthly memberships help fund MIXMASH, Mars, Horseshoes, Front of House, Garden OS and Empires. Every game stays free to play. No paywalled content.';
+function kofiTiersBlock(config) {
+  const tiersUrl = kofiTiersUrl(config);
+  if (!tiersUrl) return '';
+  const cards = KOFI_SUPPORT_TIERS.map(tier => {
+    const perks = tier.perks.map(perk => `<li>${escape(perk)}</li>`).join('');
+    return `<li class="tier-card"><h5>${escape(tier.name)} <span class="tier-price">${escape(tier.price)}</span></h5><ul>${perks}</ul></li>`;
+  }).join('');
+  return `<!-- Confirm the membership URL ${escape(tiersUrl)} after the Ko-fi tiers are created. --><section class="supporter-tiers" aria-labelledby="supporter-tiers-heading"><h4 id="supporter-tiers-heading">Monthly supporters</h4><p class="tier-lead">${escape(TIER_INTRO)}</p><ul class="tier-cards">${cards}</ul><a class="button" href="${escape(tiersUrl)}" target="_blank" rel="noopener">Become a monthly supporter <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a></section>`;
+}
 /** Ads are live only with both a valid publisher ID and a numeric slot ID. */
 export function adsEnabled(config = monetization) {
   return /^ca-pub-\d{16}$/.test(config.adsensePublisherId || '') && /^\d{6,12}$/.test(config.adsenseSlotId || '');
@@ -55,7 +102,8 @@ export function adsEnabled(config = monetization) {
 export function supportBlock(config = monetization) {
   if (!supportEnabled(config)) return '';
   const note = supportNote(config);
-  return `<div class="support-slot" data-support-slot><h3>Keep the games free</h3><p>${escape(supportCopy(config))}</p><a class="button primary" href="${escape(config.supportUrl)}" target="_blank" rel="noopener">${escape(supportLabel(config))} <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>${note ? `<p class="support-note">${escape(note)}</p>` : ''}</div>`;
+  const tiers = kofiTiersBlock(config);
+  return `<div class="support-slot" data-support-slot><h3>Keep the games free</h3><p>${escape(supportCopy(config))}</p>${tiers}<a class="button primary" href="${escape(config.supportUrl)}" target="_blank" rel="noopener">${escape(supportLabel(config))} <span aria-hidden="true">↗</span><span class="sr-only"> (external site)</span></a>${note ? `<p class="support-note">${escape(note)}</p>` : ''}</div>`;
 }
 /** Compact footer link. Empty string when disabled. */
 export function supportFooterLink(config = monetization) {
