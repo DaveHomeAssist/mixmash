@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { playableGames, studio } from './catalog.mjs';
 import { monetization, supportBlock, supportFooterLink, adHead, adBlock, analyticsHead, analyticsScript, applyAnalyticsCsp, ANALYTICS_PAGES } from './monetization.mjs';
 import { structuredData, SITE } from './seo.mjs';
+import { CSP_PAGES, applyPageCsp } from './csp.mjs';
 const root = new URL('../../', import.meta.url);
 const escape = text => String(text).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const picture = (game, eager = false) => `<img src="/assets/previews/${escape(game.image)}" width="1000" height="650" alt="${escape(game.alt)}" decoding="async"${eager ? ' fetchpriority="high"' : ' loading="lazy"'}>`;
@@ -26,6 +27,7 @@ const details = playableGames.map(g => `
 let html = await readFile(new URL('template.html', import.meta.url), 'utf8');
 for (const [key, value] of Object.entries({ TITLE: escape(studio.title), DESCRIPTION: escape(studio.description), INTRO: escape(studio.intro), COUNT: playableGames.length, NOTE: escape(studio.note), CARDS: cards, DETAILS: details, OG_ALT: escape(`MixMash Studio: ${playableGames.map(g => g.name).join(', ')}. Free browser games.`), SHARE_TEXT: escape(studio.intro), JSONLD: structuredData(), AD_HEAD: [analyticsHead(monetization), adHead(monetization)].filter(Boolean).map(tag => '\n' + tag).join(''), SUPPORT: supportBlock(monetization), AD: adBlock(monetization), SUPPORT_FOOTER: supportFooterLink(monetization) })) html = html.replaceAll(`{{${key}}}`, String(value));
 if (html.includes('{{')) throw new Error('Unresolved homepage template marker');
+html = applyPageCsp(html, CSP_PAGES['index.html']);
 const destination = new URL('index.html', root);
 if (process.argv.includes('--check')) {
   if (await readFile(destination, 'utf8') !== html) throw new Error('Homepage catalog drift. Run npm run hub:build.');
@@ -44,6 +46,19 @@ const manifestOutput = JSON.stringify(manifest, null, 2) + '\n';
 if (process.argv.includes('--check')) {
   if (manifestSource !== manifestOutput) throw new Error('Installed app metadata drift. Run npm run hub:build.');
 } else await writeFile(manifestURL, manifestOutput);
+
+// Content-Security-Policy meta on the other publisher-owned pages (src/hub/csp.mjs). Runs before the
+// analytics pass, which then finds the beacon origins already in place and changes nothing.
+for (const [page, options] of Object.entries(CSP_PAGES)) {
+  if (page === 'index.html') continue;
+  const url = new URL(page, root);
+  let source;
+  try { source = await readFile(url, 'utf8'); } catch (error) { if (options.optional && error.code === 'ENOENT') continue; throw error; }
+  const output = applyPageCsp(source, options);
+  if (process.argv.includes('--check')) {
+    if (source !== output) throw new Error(`CSP drift in ${fileURLToPath(url)}. Run npm run hub:build.`);
+  } else if (source !== output) await writeFile(url, output);
+}
 
 // Analytics include for game wrapper pages, plus the beacon origins in any wrapper CSP while it is on.
 const generated = [[new URL('assets/analytics.js', root), analyticsScript(monetization)]];

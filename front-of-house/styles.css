@@ -1067,3 +1067,15 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   body[data-phase='book'] .offer .band-art { display: none; }
   body[data-phase='book'] .offer .choice { padding-block: 4px; }
 }
+
+/* Unreadable-save notice (#save-guard, game.js): non-blocking, above the HUD, below dialogs. */
+.save-guard {
+  position: fixed; z-index: 24; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  width: min(560px, calc(100vw - 24px)); padding: 12px 14px; border-radius: var(--radius);
+  background: var(--panel); border: 1px solid var(--amber); box-shadow: 0 8px 24px rgb(0 0 0 / 0.35); font-size: 0.9rem;
+}
+.save-guard p { margin: 0 0 6px; }
+.save-guard .save-guard-text { font-weight: 600; }
+.save-guard .save-guard-backup { color: var(--text-muted); font-size: 0.85rem; }
+.save-guard-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.save-guard-actions button { min-height: 44px; }
