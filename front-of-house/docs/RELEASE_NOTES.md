@@ -5,6 +5,18 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.6 — 2026-11-25
+
+Save safety and window fixes from the 2026-11-25 bug audit. (0.4.5 is the unmerged aesthetics draft, PR #200.)
+
+- A stored career this version cannot read is never loaded or overwritten. That covers a save from a newer version, a damaged save, a version 1 save whose conversion fails and a save the game fails to load. Its text is copied to `front_of_house_v1.backup` (or a timestamped backup key when that one is taken), autosave stays off, and a notice offers **Reload**, **Download the save** and **Start new**. Previously the page replaced it with a fresh game on load. When the shared save store reports its own `newer` or `corrupt` status (`loadResult()`, hub PR #206, now live), that also keeps the save; with an older store the game's own check decides.
+- A second tab that cannot read the save another tab wrote shows the same notice instead of writing its own game back. A tab whose notice is showing picks up a readable save written elsewhere.
+- Loading a save code that this version cannot normalize is refused with nothing changed.
+- Resizing no longer rebuilds an open window unless its compact layout changes; a short paged window re-pages in place. When it does rebuild, it keeps scroll, focus and unapplied choices.
+- **Start a new game** disarms when the Menu closes, so one later press can't erase the career.
+- Show-night time spent in a hidden tab no longer counts, so the night resumes where it was instead of skipping ahead.
+- Release metadata names cache v95, the live shared cache after hub PR #206. `sw.js` is unchanged here; its next bump belongs to the hub. Rules, balance, money movement and save schema 2 are unchanged.
+
 ## 0.4.4 — 2026-10-28
 
 Playtest fixes from the live 0.4.2 show night.
