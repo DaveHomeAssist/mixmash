@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-DJ49y8GI5zvZeM1jPjMAhH0LNrnpJgt5V4XGsLpCQho=' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://cloudflareinsights.com; media-src 'self' blob:; frame-src https://davehomeassist.github.io; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Garden OS: Story Mode — MixMash Studio</title>
 <meta name="description" content="A 3D open-world garden adventure by MixMash Studio. Plays free in your browser.">
 <link rel="canonical" href="https://mixmash.games/garden/">
@@ -58,6 +60,36 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
   width: 100%; min-height: 0;
   border: 0; display: block;
 }
+#game-frame-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+#garden-fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: #06060E;
+  color: #F0F0F8;
+  font-family: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: center;
+  z-index: 2;
+}
+#garden-fallback[hidden] { display: none; }
+.garden-fallback-card { max-width: 36ch; }
+.garden-fallback-card h1 { font-size: 1.2rem; margin-bottom: 10px; }
+.garden-fallback-card p { color: #9A9ABB; line-height: 1.5; margin-bottom: 18px; }
+.garden-fallback-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.garden-fallback-actions a, .garden-fallback-actions button {
+  padding: 10px 18px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #F0F0F8; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.16); text-decoration: none;
+}
+.garden-fallback-actions a:hover, .garden-fallback-actions button:hover { border-color: rgba(255,255,255,0.4); }
+.garden-fallback-actions a:focus-visible, .garden-fallback-actions button:focus-visible { outline: 2px solid #FFE23D; outline-offset: 2px; }
 </style>
 <script src="/src/kit/pwa.js" defer></script>
 <script src="/assets/last-game.js" data-game="garden" defer></script>
@@ -67,14 +99,60 @@ html, body { height: 100%; background: #06060E; overflow: hidden; }
 <script src="../src/kit/nav.js" data-nav-collapse="off"></script>
 <div id="garden-stage">
 <div class="garden-bar"></div>
+<div id="game-frame-wrap">
 <iframe id="game-frame"
   src="https://davehomeassist.github.io/garden-os/story-mode/"
   title="Garden OS: Story Mode"
   allow="fullscreen; gamepad; autoplay"></iframe>
+<div id="garden-fallback" hidden>
+  <div class="garden-fallback-card">
+    <h1>Garden OS didn't load</h1>
+    <p>The game couldn't be reached. You may be offline, or the host may be blocking the embed.</p>
+    <div class="garden-fallback-actions">
+      <button type="button" id="garden-retry">Retry</button>
+      <a href="https://davehomeassist.github.io/garden-os/story-mode/">Open Garden OS directly</a>
+    </div>
+  </div>
+</div>
+</div>
 </div>
 <script>
 const frame = document.getElementById('game-frame');
 const stage = document.getElementById('garden-stage');
+const fallback = document.getElementById('garden-fallback');
+const GARDEN_ORIGIN = 'https://davehomeassist.github.io';
+const GARDEN_URL = GARDEN_ORIGIN + '/garden-os/story-mode/';
+const GARDEN_LOAD_MS = 12000;
+let gardenReady = false;
+let gardenLoadTimer = 0;
+
+function showGardenFallback() {
+  if (gardenReady) return;
+  if (fallback) fallback.hidden = false;
+}
+function hideGardenFallback() {
+  if (fallback) fallback.hidden = true;
+}
+function armGardenLoadWatch() {
+  gardenReady = false;
+  hideGardenFallback();
+  clearTimeout(gardenLoadTimer);
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    showGardenFallback();
+    return;
+  }
+  gardenLoadTimer = setTimeout(showGardenFallback, GARDEN_LOAD_MS);
+}
+function retryGarden() {
+  armGardenLoadWatch();
+  frame.src = GARDEN_URL;
+}
+armGardenLoadWatch();
+window.addEventListener('offline', showGardenFallback);
+if (document.getElementById('garden-retry')) {
+  document.getElementById('garden-retry').addEventListener('click', retryGarden);
+}
+frame.addEventListener('error', showGardenFallback);
 
 // Cross-origin Garden OS only gets keys when the iframe element itself is
 // focused. contentWindow.focus() alone is unreliable across origins; match
@@ -85,7 +163,19 @@ function focusGame() {
 }
 
 window.addEventListener('load', focusGame);
-frame.addEventListener('load', focusGame);
+frame.addEventListener('load', () => {
+  clearTimeout(gardenLoadTimer);
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    showGardenFallback();
+    return;
+  }
+  gardenReady = true;
+  hideGardenFallback();
+  focusGame();
+  try {
+    if (window.__mixmashNav) sendMuteToGarden(window.__mixmashNav.isMuted());
+  } catch (e) {}
+});
 
 // Pointer on the stage/strip (but not Hub/Mute/Fullscreen/GitHub) hands focus
 // back to the game so keys work without a canvas click first.
@@ -143,36 +233,33 @@ function adoptNav() {
     // reach the game, and Space/Enter would toggle fullscreen back off.
     event.stopPropagation();
     try { fsBtn.blur(); } catch (e) {}
-    if (document.fullscreenElement) {
-      if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) Promise.resolve(exit.call(document)).catch(() => {});
     } else if (stage.requestFullscreen) {
       stage.requestFullscreen().catch(() => {});
     } else if (stage.webkitRequestFullscreen) {
-      stage.webkitRequestFullscreen();
+      try { stage.webkitRequestFullscreen(); } catch (e) {}
     }
     setTimeout(focusGame, 0);
   }, true);
 }
-// Mute All remembers its setting in mm.prefs ({"muteAll": true}). Restore it once
-// the nav exists, then record every change the button (or setMuted) makes.
-function readPrefs() {
+// Mute All is stored by nav.js (mixmash.muteAll.v1, which migrates mm.prefs.muteAll).
+// Garden OS is cross-origin, so also post the mute flag into the iframe.
+function sendMuteToGarden(muted) {
   try {
-    const prefs = JSON.parse(localStorage.getItem('mm.prefs'));
-    return prefs && typeof prefs === 'object' && !Array.isArray(prefs) ? prefs : {};
-  } catch (e) { return {}; }
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'mixmash:mute', muted: !!muted }, GARDEN_ORIGIN);
+    }
+  } catch (e) {}
 }
 function restoreMute() {
   try {
     const nav = window.__mixmashNav;
     if (!nav) return;
-    const saved = readPrefs().muteAll;
-    if (typeof saved === 'boolean' && nav.isMuted() !== saved) nav.setMuted(saved);
+    sendMuteToGarden(nav.isMuted());
     window.addEventListener('mixmash:mute', (event) => {
-      try {
-        const prefs = readPrefs();
-        prefs.muteAll = !!(event.detail && event.detail.muted);
-        localStorage.setItem('mm.prefs', JSON.stringify(prefs));
-      } catch (e) {}
+      sendMuteToGarden(!!(event.detail && event.detail.muted));
     });
   } catch (e) {}
 }

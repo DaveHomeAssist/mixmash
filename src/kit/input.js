@@ -250,11 +250,31 @@
       }
     }
 
+    function resetPointers() {
+      clearTimer();
+      pointers = {};
+      count = 0;
+      primary = null;
+      panning = false;
+      panLast = null;
+      panTotal = { dx: 0, dy: 0 };
+    }
+
+    function onVisibilityHidden() {
+      if (global.document && global.document.hidden) resetPointers();
+    }
+
     element.addEventListener('pointerdown', down);
     element.addEventListener('pointermove', move);
     element.addEventListener('pointerup', up);
     element.addEventListener('pointercancel', up);
     element.addEventListener('contextmenu', contextmenu);
+    if (global.document && typeof global.document.addEventListener === 'function') {
+      global.document.addEventListener('visibilitychange', onVisibilityHidden);
+    }
+    if (typeof global.addEventListener === 'function') {
+      global.addEventListener('blur', resetPointers);
+    }
 
     return {
       destroy: function () {
@@ -264,10 +284,13 @@
         element.removeEventListener('pointerup', up);
         element.removeEventListener('pointercancel', up);
         element.removeEventListener('contextmenu', contextmenu);
-        pointers = {};
-        count = 0;
-        primary = null;
-        panning = false;
+        if (global.document && typeof global.document.removeEventListener === 'function') {
+          global.document.removeEventListener('visibilitychange', onVisibilityHidden);
+        }
+        if (typeof global.removeEventListener === 'function') {
+          global.removeEventListener('blur', resetPointers);
+        }
+        resetPointers();
       },
     };
   }
