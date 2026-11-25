@@ -24,6 +24,18 @@ The store wraps game state in an envelope:
 - `clear()` resets the save.
 - The namespace follows the studio pattern (`marsscape_v1`, `empires_v1`).
 
+## Unreadable saves
+
+Since 0.4.6 the game reads the stored text itself and checks it with `inspectSave` (`engine.mjs`) before anything is written. Only `ok` loads. `empty` starts a new game. Every other result keeps the save:
+
+| Status | When |
+| --- | --- |
+| `newer` | The envelope `v` or `state.schema` is above the current schema (a newer build wrote it) |
+| `corrupt` | Not JSON, not an object, another namespace, or no integer `schema` |
+| `failed` | `migrateSave` throws or doesn't reach the current schema, or `normalizeState` throws |
+
+For an unreadable save, the raw text is copied to `front_of_house_v1.backup`. If that key already holds a different save, it goes to `front_of_house_v1.backup.<ms>` instead, so an older backup is never replaced. Autosave stays off, and a notice offers **Reload**, **Download the save** and **Start new**. Only Start new or loading a valid save code writes `front_of_house_v1` again. A tab that gets a `storage` event for a save it cannot read shows the same notice and stops writing. These statuses match the shared kit's `loadResult()` (`ok`, `empty`, `newer`, `corrupt`; the kit counts a failed conversion as `corrupt`). The game only uses the kit store to write, so it does not depend on `load()` returning `null` or throwing.
+
 ## State, version 2
 
 The save stores the **player's choices and the seed**, not computed results. Capacity, demand, satisfaction and money are recomputed by the engine from the choices every time a save loads. The only exception is the settlement history, which keeps final numbers as a permanent record.

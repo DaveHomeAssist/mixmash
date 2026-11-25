@@ -3147,6 +3147,16 @@
       "open": null
     },
     {
+      "path": "front-of-house/test-save-guard.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "test-save-guard.mjs",
+      "description": "Save guard (inspectSave and backupSave in engine.mjs): unreadable saves are classified, never loaded, and backed up without replacing an earlier backup (docs/SAVE_FORMAT.md, Unreadable saves).",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/front-of-house/test-save-guard.mjs",
+      "open": null
+    },
+    {
       "path": "front-of-house/test-seating-integration.mjs",
       "project": "front-of-house",
       "category": "tests",
@@ -3554,6 +3564,16 @@
       "title": "front-of-house-save-export-smoke.mjs",
       "description": "Export must preserve the current career, including progress after storage fails.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-save-export-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/front-of-house-save-safety-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-save-safety-smoke.mjs",
+      "description": "Save safety (0.4.6): a newer-version or damaged save is backed up and never overwritten, a second tab that can't read the save stops writing, Start new backs up first, and a resize keeps an open window.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-save-safety-smoke.mjs",
       "open": null
     },
     {
