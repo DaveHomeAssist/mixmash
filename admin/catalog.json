@@ -660,7 +660,7 @@
         },
         {
           "name": "npm run smoke:mobile",
-          "description": "node test/mobile-touch-smoke.mjs"
+          "description": "node test/mobile-touch-smoke.mjs && node test/empires-shell-smoke.mjs"
         },
         {
           "name": "npm run smoke:catalog",
@@ -5544,6 +5544,16 @@
       "title": "csp-smoke.mjs",
       "description": "Publisher pages load under their meta CSP with zero violations (Chromium and WebKit), the Cloudflare beacon is allowed, the Garden OS wrapper iframe loads and the fighter guide still launches the game.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/csp-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/empires-shell-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "empires-shell-smoke.mjs",
+      "description": "Empires shell regressions from the 2026-11-25 bug pass: the controls guide swallows keys, WebGL 1 is reported as unsupported, and a tab hidden during load starts paused.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/empires-shell-smoke.mjs",
       "open": null
     },
     {
