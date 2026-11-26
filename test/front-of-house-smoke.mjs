@@ -209,7 +209,19 @@ try {
   const settling = await game(page);
   assert.equal(settling.phase, 'settle');
   assert.ok(settling.settlement && Number.isInteger(settling.settlement.net));
+  // 0.4.8 (journey B1): answering the incident no longer cuts straight to the settlement. The
+  // rest of the night plays first, at the pre-incident pace, and the window waits for it.
+  const windDown = JSON.parse(await page.evaluate(() => window.render_game_to_text())).playback;
+  assert.ok(windDown && windDown.after && !windDown.after.done && windDown.settlementHeld, 'the act plays on after the incident answer');
+  assert.equal(await page.isVisible('#win'), false, 'the settlement window waits for the wind-down');
+  await page.waitForTimeout(1500);
+  const later = JSON.parse(await page.evaluate(() => window.render_game_to_text())).playback;
+  assert.equal(await page.isVisible('#win'), false, 'the settlement is still held 1.5 s after the answer');
+  assert.ok(later.progress > windDown.progress && later.after.progress < 1, `the night keeps playing (${windDown.progress} -> ${later.progress})`);
+  await page.waitForSelector('#win:not([hidden])', { timeout: 20000 });
+  assert.equal(JSON.parse(await page.evaluate(() => window.render_game_to_text())).playback.after.done, true, 'the window opens once the wind-down ends');
   assert.equal(await page.isVisible('#win'), true, 'the settlement opens in its own window');
+  ok('the night plays on to curfew after the incident answer, then the settlement opens');
   assert.equal(await page.getAttribute('#win-body > .tabbar [aria-selected="true"]', 'data-tab-name'), 'Summary', 'the settlement opens on its calm summary');
   const summary = await page.textContent('#win');
   assert.match(summary, new RegExp(`Promoter (profit|loss).*${Math.abs(settling.settlement.net).toLocaleString('en-US')}`, 's'), 'the summary shows the exact promoter result');
@@ -438,6 +450,8 @@ try {
     if (skip && !skip.hidden) skip.click();
   });
   await page2.click('[data-act="respond"]:not([disabled])');
+  // The settlement waits for the wind-down; Open the settlement skips the wait.
+  await page2.click('#open-settlement');
   await page2.click('[data-act="accept"]');
   await page2.waitForTimeout(150);
   const signedEarly = await game(page2);

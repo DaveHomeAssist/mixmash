@@ -1001,7 +1001,8 @@ body[data-phase='done'] .row.tight > button { min-width: 0; padding-inline: 4px;
   display: inline-block; padding: 0 6px; border: 1px solid var(--amber); border-radius: 999px;
   font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.03em; color: var(--amber); white-space: nowrap; vertical-align: middle;
 }
-.tile.ring:not(:has(input:checked)) { box-shadow: inset 0 0 0 2px var(--amber); }
+/* A suggestion ring is dashed so it never reads as a second selected tool (the selected tile is solid cyan). */
+.tile.ring:not(:has(input:checked)) { box-shadow: none; outline: 2px dashed var(--amber); outline-offset: -3px; }
 
 /* Equipment cards use the runtime PA model renders, with no independent scene or animation. */
 .pa-equipment-card { display: grid; grid-template-columns: minmax(100px, 42%) minmax(0, 1fr); align-items: center; gap: 16px; margin: 0 0 12px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel-alt); }
@@ -1147,3 +1148,10 @@ body[data-pad='on'] #pad-head::after { content: ' · connected'; color: var(--gr
 .save-guard .save-guard-backup { color: var(--text-muted); font-size: 0.85rem; }
 .save-guard-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .save-guard-actions button { min-height: 44px; }
+
+/* 0.4.8: a compact game name when the strip has room below 1600 px (fitBrand in game.js). */
+@media (min-width: 681px) and (max-width: 1599px) {
+  .topbar[data-brand='compact'] .brand { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; }
+  .topbar[data-brand='compact'] .brand h1 { font-size: 0.95rem; white-space: nowrap; }
+  .topbar[data-brand='compact'] .tagline { display: none; }
+}

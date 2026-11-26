@@ -40,7 +40,7 @@ export const BINDINGS = [
   { id: 'rotate', scope: 'board', phases: ['build'], combos: [{ keys: ['r', 'R'] }],
     keysLabel: 'R', label: 'Rotate the next object' },
   { id: 'bulldoze', scope: 'board', phases: ['build'], combos: [{ keys: ['b', 'B'] }],
-    keysLabel: 'B', label: 'Bulldozer on or off' },
+    keysLabel: 'B', label: 'Remove tool on or off' },
   // Build, anywhere on the page
   { id: 'pick-tool', scope: 'page', phases: ['build'],
     combos: [{ keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', 't', 'T', 'd', 'D', 'v', 'V', 'u', 'U', 'a', 'A', 'w', 'W'], ctrl: false, meta: false, alt: false }],
@@ -140,7 +140,7 @@ export const PAD_BINDINGS = [
   { id: 'pad-rotate', buttons: ['x'], send: { binding: 'rotate', key: 'r', to: 'board' },
     padLabel: 'X', label: 'Rotate the next object' },
   { id: 'pad-bulldoze', buttons: ['y'], send: { binding: 'bulldoze', key: 'b', to: 'board' },
-    padLabel: 'Y', label: 'Bulldozer on or off' },
+    padLabel: 'Y', label: 'Remove tool on or off' },
   { id: 'pad-move', buttons: ['up', 'down', 'left', 'right'], focus: 'step', onBoard: { binding: 'move-cursor', to: 'board' },
     padLabel: 'D-pad or left stick', label: 'Move between controls; on the board in Build, move the cursor' },
   { id: 'pad-prev', buttons: ['lb'], focus: 'prev', padLabel: 'LB', label: 'Previous control' },
