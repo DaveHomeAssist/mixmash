@@ -3387,6 +3387,16 @@
       "open": null
     },
     {
+      "path": "test/front-of-house-journey-fixes-smoke.mjs",
+      "project": "front-of-house",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "front-of-house-journey-fixes-smoke.mjs",
+      "description": "Front of House 0.4.8: fixes from the 2026-11-25 first-time-player walkthrough.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/front-of-house-journey-fixes-smoke.mjs",
+      "open": null
+    },
+    {
       "path": "test/front-of-house-lighting-smoke.mjs",
       "project": "front-of-house",
       "category": "tests",

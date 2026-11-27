@@ -27,7 +27,10 @@ import { bumpHint, clearPrefs, defaultPrefs, loadPrefs, rememberAct, rememberInc
 import { bookSuggestions, buildSuggestion, hasPlacementRule, incidentSuggestion, legalTiles, nextShowPreview, promoteSuggestion } from './anticipate.mjs';
 
 const PLAY_SECONDS = 12; // show-night playback length up to curfew
-const AFTER_SECONDS = 3; // playback after the incident is answered
+const AFTER_SECONDS = 3; // shortest playback after the incident is answered
+// After the incident the rest of the night plays at the same pace as before it, so the act is
+// seen through to curfew; the settlement window waits for it (or for Open the settlement).
+const afterSecondsFor = (play) => Math.max(AFTER_SECONDS, ((play.end ?? 1) - play.at) * PLAY_SECONDS);
 const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 const liveServicesPilot = new URLSearchParams(window.location.search).get('live-services') === '1';
 const lotNightSlice = new URLSearchParams(window.location.search).get('night-slice') === '1';
@@ -77,7 +80,7 @@ const SUGGEST_TEXT = {
   apply: 'Apply',
   applied: 'Applied last show’s price and ads. Nothing is paid until you open the doors.',
   backAddExits: 'Back to Build: add exits',
-  legalTiles: 'Outlined tiles accept it; nothing is placed until you click one.',
+  get legalTiles() { return `Outlined tiles accept it; nothing is placed until you ${tapWord()} one.`; },
   phoneRenderer: 'Switch between 3D and 2D in Menu → Camera.',
   nextShow: 'Next:',
   forgot: 'Forgot suggestions and view settings. Your game is unchanged.',
@@ -98,6 +101,15 @@ const signed = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const adTotal = (ads) => D.AD_CHANNELS.reduce((s, c) => s + (ads[c] || 0), 0);
 const label = (type) => D.OBJECT_TYPES[type].label;
+// Save files are named by the player's own calendar day, not UTC's.
+const localDateStamp = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+// A label inside a sentence: 'Stage' becomes 'stage', but 'PA (small)' and 'VIP deck' keep their capitals.
+const lowerLabel = (text) => /^[A-Z]{2}/.test(text) ? text : text.charAt(0).toLowerCase() + text.slice(1);
+const inline = (type) => lowerLabel(label(type));
+// Touch screens tap; mice click. Copy that tells the player what to do uses the right verb.
+const coarseQuery = window.matchMedia ? window.matchMedia('(pointer: coarse)') : { matches: false };
+const isTouch = () => coarseQuery.matches || (navigator.maxTouchPoints > 0 && window.matchMedia?.('(max-width: 680px)').matches);
+const tapWord = (capital = false) => { const w = isTouch() ? 'tap' : 'click'; return capital ? w[0].toUpperCase() + w.slice(1) : w; };
 
 const el = {
   panel: $('#panel'),
@@ -237,7 +249,7 @@ function showSaveGuard() {
       else if (kind === 'download' && saveLock) {
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([saveLock.text + '\n'], { type: 'text/plain' }));
-        link.download = `front-of-house-unreadable-save-${new Date().toISOString().slice(0, 10)}.txt`;
+        link.download = `front-of-house-unreadable-save-${localDateStamp()}.txt`;
         document.body.append(link); link.click(); link.remove();
         setTimeout(() => URL.revokeObjectURL(link.href), 1000);
       } else if (kind === 'new' && saveLock) {
@@ -419,7 +431,7 @@ function mount() {
   closeWindow({ focus: false });
   const heading = el.panel.querySelector('h2');
   if (heading) heading.setAttribute('tabindex', '-1');
-  if (state.phase === 'settle') openSettlement($('#open-settlement'));
+  if (state.phase === 'settle' && !ui.holdSettlement) openSettlement($('#open-settlement'));
   syncTabs(el.panel, state.phase);
   if (state.phase === 'build' && ui.pendingTool) {
     const type = ui.pendingTool;
@@ -541,7 +553,7 @@ function bookPanel() {
         <p class="eyebrow">Show ${completedShows(state) + 1} · ${esc(spec.name)}</p>
         <h2>Book the act</h2>
       </div>
-      <button type="button" class="info-btn" data-act="deal-help" aria-label="How the deals work">ⓘ Deals</button>
+      <button type="button" class="info-btn" data-act="deal-help" aria-label="Deals: how the deals work">ⓘ Deals</button>
       ${spec.secondStage ? '<button type="button" class="info-btn" data-act="stages-open" id="stage-bill">Stage bill</button>' : ''}
     </div>
     <p id="msg" class="message" aria-live="polite"></p>
@@ -603,9 +615,9 @@ function syncToolKeys() {
 // Where a tool may go, for the tool card: the rules the engine would otherwise only refuse.
 function toolWhere(type) {
   const t = D.OBJECT_TYPES[type];
-  if (t.edge) return `Click a tile on the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'} edge.`;
-  if (t.paTier) return 'Click a tile touching the stage.';
-  return 'Click a tile for its top corner.';
+  if (t.edge) return `${tapWord(true)} a tile on the ${venueSpec(state.venue).id === 'lot' ? 'lot' : 'room'} edge.`;
+  if (t.paTier) return `${tapWord(true)} a tile touching the stage.`;
+  return `${tapWord(true)} a tile for its top corner.`;
 }
 
 function toolFacts(type) {
@@ -648,7 +660,7 @@ function buildPanel() {
     </div>
     <div class="plate at-bl tools-plate" role="group" aria-label="Object to place" data-tab="Tools">
       <div class="tiles"><button type="button" class="tile" data-act="select" id="select-btn" aria-pressed="false" title="Select · Escape cancels placement"><span class="tile-glyph" aria-hidden="true">↖</span><span class="tile-name">Select</span></button>${tiles}
-        <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Bulldoze · key ${binding('bulldoze').keysLabel}">
+        <button type="button" class="tile" data-act="bulldoze" id="doze-btn" aria-pressed="false" title="Remove · key ${binding('bulldoze').keysLabel}">
           <span class="tile-key" aria-hidden="true">${binding('bulldoze').keysLabel}</span><span class="tile-glyph" aria-hidden="true">✕</span><span class="tile-name">Remove</span>
         </button>
         <button type="button" class="tile" data-act="rotate" title="Rotate · key ${binding('rotate').keysLabel}">
@@ -740,8 +752,11 @@ function updateBuild() {
   $('#rot-glyph').textContent = ARROWS[ui.rot];
   const fence = state.venue.objects.some((o) => o.type === 'fence');
   const fenceBtn = $('#fence-btn');
-  fenceBtn.textContent = fence ? 'Fence ✓' : `Fence +${money(D.FENCE_KIT)}`;
-  fenceBtn.setAttribute('aria-label', fence ? 'Remove the fence kit' : `Add the fence kit, ${money(D.FENCE_KIT)}`);
+  // The fence kit is required and its cost is always in Show cost so far, so the button
+  // must not promise an extra charge that never appears.
+  fenceBtn.textContent = fence ? 'Fence ✓' : 'Add fence';
+  fenceBtn.title = `Fence kit, required: ${money(D.FENCE_KIT)}, already in Show cost so far.`;
+  fenceBtn.setAttribute('aria-label', fence ? 'Fence kit added. Remove the fence kit' : `Add fence: the required fence kit, ${money(D.FENCE_KIT)}, already in Show cost so far`);
   fenceBtn.setAttribute('aria-pressed', fence ? 'true' : 'false');
   $('#confirm-build').disabled = !v.ready;
   $('#undo-btn').disabled = !history.undo.length;
@@ -753,9 +768,9 @@ function updateBuild() {
   const selecting = ui.tool === 'select';
   $('#select-btn').setAttribute('aria-pressed', String(selecting));
   $('#select-btn').classList.toggle('on', selecting);
-  $('#tool-info').textContent = selecting ? 'Select: click an object to inspect it. Choose a tool to place; Escape returns here.' : dozing
-    ? 'Bulldozing: click or drag across anything you want gone. B places again.'
-    : `Placing the ${label(ui.tool).toLowerCase()}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. ${toolWhere(ui.tool)}`;
+  $('#tool-info').textContent = selecting ? `Select: ${tapWord()} an object to inspect it. Choose a tool to place; Escape returns here.` : dozing
+    ? `Removing: ${tapWord()} or drag across anything you want gone. B places again.`
+    : `Placing the ${inline(ui.tool)}: ${toolFacts(ui.tool)}${ui.tool === 'stage' ? `, facing ${FACING[ui.rot]}` : ''}. ${toolWhere(ui.tool)}`;
   updateBuildSuggest();
   if (win.kind === 'lot') refreshWindow(lotDetailsHtml());
 }
@@ -812,7 +827,7 @@ function lotDetailsHtml() {
   const place = (o) => (D.OBJECT_TYPES[o.type].kit ? 'around the lot' : `${o.x}, ${o.y}${o.type === 'stage' ? `, facing ${FACING[o.rot]}` : ''}`);
   const rows = [...groups].map(([type, list]) => `
       <li><span class="obj-name">${esc(label(type))} <span class="count">×${list.length}</span></span>
-        <span class="obj-places">${list.map(({ o, i }) => `<button type="button" class="chip" data-act="remove" data-index="${i}" aria-label="Remove the ${esc(label(type).toLowerCase())} at ${place(o)}">${place(o)} ✕</button>`).join('')}</span></li>`).join('');
+        <span class="obj-places">${list.map(({ o, i }) => `<button type="button" class="chip" data-act="remove" data-index="${i}" aria-label="Remove the ${esc(inline(type))} at ${place(o)}">${place(o)} ✕</button>`).join('')}</span></li>`).join('');
   return `
     <section aria-labelledby="ready-title">
       <h3 id="ready-title">Readiness</h3>
@@ -837,7 +852,15 @@ function objectIndexAt(x, y) {
   return -1;
 }
 
+// A refusal belongs to the tool that was refused; leaving that tool clears it.
+function clearRefusal() {
+  const msg = $('#msg');
+  if (ui.refusal && msg && msg.textContent === ui.refusal) say('');
+  ui.refusal = null;
+}
+
 function selectTool() {
+  clearRefusal();
   ui.tool = 'select';
   ui.selection = null;
   ui.dozing = false;
@@ -892,13 +915,19 @@ function placeAt(tile) {
     // The tool stays chosen, so the next tap can try a better tile.
     const text = refusalText(error);
     say(text, 'error');
+    ui.refusal = text;
     el.boardStatus.textContent = text;
     document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === ui.tool; });
     return false;
   }
+  // The tile just filled is not a refusal: until the pointer moves on, the board says what was
+  // placed instead of warning that the armed tool's ghost overlaps the new object.
+  ui.justPlaced = { x: tile.x, y: tile.y };
   act({ type: 'place', object: { type, x: tile.x, y: tile.y, rot: ui.rot } }, { quiet: true });
   const blocked = sight().blocked.size - blockedBefore;
-  say(`Placed the ${label(type).toLowerCase()} at ${tile.x}, ${tile.y}.${blocked > 0 ? ` It blocks the stage view from ${blocked} more tile${blocked === 1 ? '' : 's'}.` : ''}`);
+  const placed = `Placed the ${inline(type)} at ${tile.x}, ${tile.y}.`;
+  say(`${placed}${blocked > 0 ? ` It blocks the stage view from ${blocked} more tile${blocked === 1 ? '' : 's'}.` : ''}`);
+  el.boardStatus.textContent = placed;
   return true;
 }
 
@@ -908,10 +937,11 @@ function doze(tile) {
   const i = objectIndexAt(tile.x, tile.y);
   if (i < 0) return;
   const type = state.venue.objects[i].type;
-  if (act({ type: 'remove', index: i }, { quiet: true })) say(`Bulldozed the ${label(type).toLowerCase()}.`);
+  if (act({ type: 'remove', index: i }, { quiet: true })) say(`Removed the ${inline(type)}.`);
 }
 
 function toggleBulldoze() {
+  clearRefusal();
   ui.selection = null;
   if (ui.tool === 'bulldoze') ui.tool = ui.placeTool || 'stage';
   else {
@@ -920,7 +950,7 @@ function toggleBulldoze() {
   }
   document.querySelectorAll('input[name="tool"]').forEach((input) => { input.checked = input.value === ui.tool; });
   el.boardStatus.textContent = ui.tool === 'bulldoze'
-    ? 'Bulldozer. Click or drag across an object to remove it. B places again. The fence kit stays on its button.'
+    ? `Remove tool. ${tapWord(true)} or drag across an object to remove it. B places again. The fence kit stays on its button.`
     : ui.tool === 'select' ? 'Select an object to inspect it.' : `Placing: ${label(ui.tool)}.`;
   if (state.phase === 'build') updateBuild();
   draw();
@@ -943,7 +973,7 @@ function removeAt(tile) {
   const i = objectIndexAt(tile.x, tile.y);
   if (i < 0) { say('Nothing to remove on that tile.'); return; }
   const type = state.venue.objects[i].type;
-  if (act({ type: 'remove', index: i }, { quiet: true })) say(`Removed the ${label(type).toLowerCase()}.`);
+  if (act({ type: 'remove', index: i }, { quiet: true })) say(`Removed the ${inline(type)}.`);
 }
 
 function describeTile(tile) {
@@ -1308,6 +1338,7 @@ function stopPlayback() {
 // crowd transition, so the board rests on the signed attendance.
 function endPlayback() {
   stopPlayback();
+  ui.holdSettlement = false;
   if (ui.play && ui.play.after) {
     ui.play.after.done = true;
     ui.play.p = ui.play.end ?? 1;
@@ -1336,14 +1367,17 @@ function loop() {
       if (play.p >= play.at) reachIncident();
     }
     if (play.after) {
-      const k = Math.min(1, (performance.now() - play.after.start) / 1000 / AFTER_SECONDS);
+      const k = Math.min(1, (performance.now() - play.after.start) / 1000 / afterSecondsFor(play));
       play.p = play.at + ((play.end ?? 1) - play.at) * k;
       play.after.progress = k;
       if (k >= 1) play.after.done = true;
     }
     draw();
     if (state.phase === 'show' || (play.after && !play.after.done)) loop();
-    else ui.raf = 0;
+    else {
+      ui.raf = 0;
+      releaseSettlement();
+    }
   });
 }
 
@@ -1465,7 +1499,10 @@ function locateIncident() {
 function respond(responseId) {
   const play = ui.play;
   const incidentId = state.show?.incidentId;
-  if (!act({ type: 'respond', responseId })) return;
+  // The wind-down plays before the settlement window opens; mount() checks this flag.
+  ui.holdSettlement = !!play && !play.live && !reduceMotion;
+  if (!act({ type: 'respond', responseId })) { ui.holdSettlement = false; return; }
+  if (state.phase !== 'settle') ui.holdSettlement = false;
   updatePrefs(rememberIncident(prefs, incidentId, responseId));
   stopPlayback();
   if (play?.live) {
@@ -1498,7 +1535,7 @@ function amenityGap(attendance, v) {
   const supply = amenitySupply(v), count = (n) => n.toLocaleString('en-US');
   const line = (name, served, unit) => {
     if (served >= attendance) return `${name} service covers all ${count(attendance)} guests`;
-    const n = Math.ceil((attendance - served) / SERVES[unit]), label = D.OBJECT_TYPES[unit].label.toLowerCase();
+    const n = Math.ceil((attendance - served) / SERVES[unit]), label = lowerLabel(D.OBJECT_TYPES[unit].label);
     return `${name} service ${count(served)} of ${count(attendance)} · add ${n} ${label}${n === 1 ? '' : 's'}`;
   };
   return `${line('Bar', supply.bar, toolOffered('bar-tent') ? 'bar-tent' : 'bar')}; ${line('restroom', supply.restroom, toolOffered('restroom-block') ? 'restroom-block' : 'restroom')}`;
@@ -1656,7 +1693,15 @@ function setTimeHtml(time) {
 
 // The settlement window: the sheet, with the stamp, the tip and the signature in its footer
 // (docs/HUD.md decision 9). Signed, it is the read-only copy the Done screen reopens.
+// The wind-down after the incident has finished: open the held settlement window.
+function releaseSettlement() {
+  if (!ui.holdSettlement) return;
+  ui.holdSettlement = false;
+  if (state.phase === 'settle' && el.win.hidden) { openSettlement($('#open-settlement')); focusHeading(); }
+}
+
 function openSettlement(opener, { signed: done = false } = {}) {
+  ui.holdSettlement = false;
   const r = settlementFor(state);
   if (!r) return;
   const { body, foot } = sheetParts(r, { signed: done });
@@ -2181,12 +2226,14 @@ function draw() {
   }
   if (state.phase === 'build') {
     const at = ui.hover || (ui.focused ? ui.cursor : null);
+    const fresh = at && ui.justPlaced && at.x === ui.justPlaced.x && at.y === ui.justPlaced.y;
+    if (!fresh) ui.justPlaced = null;
     if (at) {
       scene.cursor = at;
       scene.cursorColor = ui.tool === 'bulldoze' ? '#ef4444' : null;
-      if (ui.tool !== 'bulldoze' && ui.tool !== 'select') scene.ghost = ghostAt(at);
+      if (ui.tool !== 'bulldoze' && ui.tool !== 'select' && !fresh) scene.ghost = ghostAt(at);
     }
-  }
+  } else ui.justPlaced = null;
   // A red ghost says why before the tap, not only after it.
   const ghostReason = scene.ghost && !scene.ghost.valid && ui.hover ? refusalText(scene.ghost.reason) : '';
   if (ghostReason !== ui.ghostReason) {
@@ -2208,10 +2255,23 @@ function draw() {
 // into the part the top strip and the panel leave clear. On a phone the panel is a sheet
 // across the bottom, so the clear part is above it.
 let laidOut = '';
+// Below 1600 px the strip has no room for the full name and tagline. When the hub pills and
+// the strip's own controls leave room, a compact name sits after the pills (never under them);
+// when they don't, the name stays read out only.
+function fitBrand() {
+  const bar = el.topbar;
+  if (window.innerWidth >= 1600 || phoneQuery.matches) { delete bar.dataset.brand; return; }
+  bar.dataset.brand = 'compact';
+  const brand = bar.querySelector('.brand').getBoundingClientRect();
+  const nav = window.__mixmashNav && window.__mixmashNav.element;
+  const clearOfNav = !nav || brand.left >= nav.getBoundingClientRect().right;
+  if (bar.scrollWidth > bar.clientWidth + 1 || !clearOfNav || brand.height > 40) delete bar.dataset.brand;
+}
 function layoutBoard() {
   const root = document.documentElement.style;
   const nav = window.__mixmashNav && window.__mixmashNav.element;
   if (nav) root.setProperty('--nav-room', `${Math.ceil(nav.getBoundingClientRect().right) + 12}px`);
+  fitBrand();
   const strip = Math.ceil(el.topbar.getBoundingClientRect().bottom);
   root.setProperty('--strip-h', `${strip}px`);
   const width = window.innerWidth;
@@ -2342,7 +2402,7 @@ el.canvas.addEventListener('pointerup', (event) => {
   } else if (previewDrag && state.phase === 'build' && el.win.hidden && el.menu.hidden) {
     // A drag with a placement tool only previews; say so, and why that tile would be refused.
     const tile = board.tileAt(event.clientX, event.clientY), ghost = tile ? ghostAt(tile) : null;
-    el.boardStatus.textContent = ghost && !ghost.valid ? `${refusalText(ghost.reason)} Dragging only previews; tap to place.` : 'Dragging only previews; tap a tile to place.';
+    el.boardStatus.textContent = ghost && !ghost.valid ? `${refusalText(ghost.reason)} Dragging only previews; ${tapWord()} to place.` : `Dragging only previews; ${tapWord()} a tile to place.`;
   }
 }, true);
 for (const name of ['pointercancel', 'lostpointercapture']) el.canvas.addEventListener(name, () => { if (board.status().active) cancelLotGesture(); }, true);
@@ -2699,7 +2759,7 @@ function onAct(e) {
   } else if (a === 'remove') {
     const i = Number(target.dataset.index);
     const type = state.venue.objects[i] && state.venue.objects[i].type;
-    if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${label(type).toLowerCase()}.`);
+    if (act({ type: 'remove', index: i }, { quiet: true }) && type) say(`Removed the ${inline(type)}.`);
   } else if (a === 'back') {
     // Promote's Back can carry the Exit tool into Build when exits cap the show; it picks, never places.
     if (state.phase === 'promote' && target.dataset.tool) ui.pendingTool = target.dataset.tool;
@@ -2783,6 +2843,7 @@ el.panel.addEventListener('change', (e) => {
 });
 
 function pickTool(type) {
+  if (type !== ui.tool) clearRefusal();
   ui.selection = null;
   ui.tool = type;
   ui.placeTool = type;
@@ -3153,7 +3214,7 @@ function currentSaveCode() {
 function downloadSave() {
   const code = currentSaveCode();
   if (!code) { setSaveStatus('Nothing saved yet.'); return; }
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = localDateStamp();
   const link = document.createElement('a');
   link.href = URL.createObjectURL(new Blob([code + '\n'], { type: 'text/plain' }));
   link.download = `front-of-house-save-${stamp}.txt`;
@@ -3292,7 +3353,7 @@ window.render_game_to_text = () => {
     promotion: state.promotion,
     show: state.show,
     setTime: setTimeFor(state),
-    playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused } : null,
+    playback: ui.play ? { progress: Number(ui.play.p.toFixed(3)), paused: !!ui.play.paused, after: ui.play.after ? { progress: Number((ui.play.after.progress || 0).toFixed(3)), done: !!ui.play.after.done } : null, settlementHeld: !!ui.holdSettlement } : null,
     crowd: crowdNow(),
     services: liveServicesFor(state),
     serviceView: serviceView ? { coordinates: 'logical tiles; admission samples outside the grid', totals: serviceView.totals, shown: serviceView.shown, worker: serviceView.worker, representative: serviceView.representative, transitions: serviceView.transitions, diagnostic: serviceView.diagnostic } : null,
@@ -3476,7 +3537,7 @@ if (!new URLSearchParams(location.search).has('renderer') && !new URLSearchParam
       const now = performance.now();
       if (play.live) play.last = now;
       else play.start = now - play.p * PLAY_SECONDS * 1000;
-      if (play.after && !play.after.done) play.after.start = now - (play.after.progress || 0) * AFTER_SECONDS * 1000;
+      if (play.after && !play.after.done) play.after.start = now - (play.after.progress || 0) * afterSecondsFor(play) * 1000;
       if (!ui.raf) loop();
     }
     focusHeading();

@@ -5,6 +5,19 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.8 — 2026-11-26
+
+Fixes from the 2026-11-25 first-time-player walkthrough, on top of 0.4.7. Product questions from that walkthrough (night-one balance, build readiness, placement on phones, door-deal payouts, phone layout) are untouched and wait for Dave.
+
+- Show: answering the incident no longer jumps to the settlement about a second later. The act plays on to curfew at the same pace as before the incident, and the settlement window opens when the night ends. **Open the settlement** on the Settle sheet opens it at once. With reduced motion the settlement still opens straight away.
+- Build: a placement that worked says "Placed the stage at 9, 1." over the board instead of "Stage overlaps another object." (the armed tool's preview was being checked against the object it had just placed). Moving to another tile shows the usual preview and refusals again.
+- Build: the fence kit is required and its $150 is always part of Show cost so far, so the button now reads **Add fence** (its hint and spoken name say the cost is already counted) instead of "Fence +$150".
+- Build: pressing Escape, picking another tool or switching to Remove clears a placement refusal that belonged to the old tool.
+- Build: the "last used" or "answers last night's weakest part" ring on a tool is now a dashed amber outline, so it can't be mistaken for the selected tool (solid cyan).
+- Wording: object names keep their capitals inside sentences ("Placing the PA (small)"); touch screens say tap and mice say click; the Deals info button's spoken name starts with "Deals"; the bulldozer is the Remove tool in the help, status and messages, matching its button; save files are named by the player's local date, not UTC's.
+- Strip: below 1600 px a compact "Front of House" shows after the hub pills whenever the strip has room (about 1300 px and up), and is read out only when it doesn't. The hub's own pills are unchanged.
+- Cache v98 (v97 is reserved for PR #209). Rules, balance, money movement and save schema 2 are unchanged.
+
 ## 0.4.7 — 2026-11-25
 
 Presentation polish, a controller, and a steadier phone load, on top of shipped 0.4.6 save safety.

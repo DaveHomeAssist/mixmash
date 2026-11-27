@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v96';
+const VERSION = 'v98';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
