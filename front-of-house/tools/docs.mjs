@@ -480,9 +480,10 @@ function stringsDoc() {
     if (!m) { problem(`game.js has no one-line helper ${name}`); return 'null'; }
     return m[1];
   };
-  const sandbox = { D };
+  const sandbox = { D, isTouch: () => false };
   vm.createContext(sandbox);
   vm.runInContext(`var money = ${helper('money')};`, sandbox);
+  vm.runInContext(`var tapWord = ${helper('tapWord')};`, sandbox);
   const sections = COPY_TABLES.map(([name, where]) => {
     const code = extractConst(src, name);
     if (!code) { problem(`game.js has no copy table ${name}`); return ''; }
