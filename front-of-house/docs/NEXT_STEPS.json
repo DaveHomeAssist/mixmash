@@ -373,6 +373,7 @@
     }
   ],
   "verify": [
+    "November 27 draft 0.4.8: the settlement action contrast fix brings light mode Sign & Continue to 6.85:1. Dominic Chromium verified computed light and dark colors at rest and on hover using the draft stylesheet and settlement button fixture. The full first-show journey and release verification are separate.",
     "npm run perf:front-of-house -- --gpu=metal",
     "npm test",
     "npm run vercel-build",

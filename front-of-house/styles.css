@@ -558,6 +558,7 @@ figcaption { color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; }
 #win[data-kind="settlement"] .settlement-change.cash { padding-left: 14px; border-left: 1px solid var(--settlement-line); }
 #win[data-kind="settlement"] .settlement-change.cash small { color: var(--settlement-muted); font-size: 0.65rem; }
 #win[data-kind="settlement"] .win-foot .primary { min-height: 44px; min-width: 150px; color: #171006; background: var(--amber); border-color: color-mix(in srgb, var(--amber) 70%, #000); }
+:root:not([data-theme='dark']) #win[data-kind="settlement"] .win-foot .primary { color: #fff; }
 .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; color: var(--text-muted); }
 .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); margin-right: 6px; }
 .meta-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; background: var(--panel); border: 1px solid var(--border); padding: 10px; border-radius: var(--radius); }
