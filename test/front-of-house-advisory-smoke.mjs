@@ -147,9 +147,21 @@ try {
   await load(roomStates('lot')[3]); await openDesk();
   await page.locator('#win [role="tab"][data-tab-name="Overview"]').click();
   const running = await snapshot();
-  await page.evaluate(() => window.__frontOfHouse.skip());
-  assert.match(await page.locator('.advisory-page:not(.tab-off)').innerText(), /Current decision/);
-  assert.equal(await page.evaluate(() => document.querySelector('#win').contains(document.activeElement)), true);
+  const incident = await page.evaluate(() => {
+    // The skip hook synchronously replaces the advice content. Read the new
+    // panel and focus in the same browser task as the update.
+    window.__frontOfHouse.skip();
+    const desk = document.querySelector('#win[data-kind="advisory"]:not([hidden])');
+    const panel = desk?.querySelector('.advisory-page:not(.tab-off)');
+    return {
+      text: panel?.textContent ?? '',
+      visible: Boolean(panel?.getClientRects().length),
+      focused: Boolean(desk?.contains(document.activeElement)),
+    };
+  });
+  assert.match(incident.text, /Current decision/);
+  assert.equal(incident.visible, true);
+  assert.equal(incident.focused, true);
   assert.deepEqual(await snapshot(), running);
   await page.keyboard.press('Escape'); await page.emulateMedia({ reducedMotion: 'reduce' });
   ok('newly observable incident refreshes advice without stealing modal focus or changing the save');
