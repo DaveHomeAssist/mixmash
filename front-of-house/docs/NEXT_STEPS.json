@@ -59,6 +59,11 @@
     "owner": "Code",
     "blockedBy": "Final-head CI on the merged branch (one approved run)."
   },
+  "amenitySettlementAdvice20261127": {
+    "baseRevision": "f47aca4f0c41980d25923faf57042890bac0a142",
+    "change": "Settlement explains measured bar service and restroom visits, uses effective bar capacity after a doors-rush reassignment, and flags when adding a facility would cut ticket capacity. Bar revenue, scoring and save schema 2 are unchanged.",
+    "verification": "Eight focused advisory tests passed on the Mac. CI and hosted verification are separate."
+  },
   "findings": [
     {
       "id": "FOH-QA-001..014",
