@@ -3,6 +3,24 @@ import { artistFor, evaluateVenue, forecast, heldRunFor, liveAccessFor, liveServ
   offersFor, settlementFor, seatingPlanFor, stagePlanFor, termsFor, upfrontFor,
   venueSpec, equipmentPlanFor, sanitationPlanFor, festivalPolicyFor } from './engine.mjs';
 
+// Use the same observed results and denominators as the amenity score.
+export function observedAmenityLines(receipt) {
+  const count = n => n.toLocaleString('en-US');
+  const { attendance, services, doorRush, sanitation } = receipt;
+  let bar = null;
+  if (services) {
+    bar = `Bar served ${count(services.barServed)} of ${count(attendance)} guests`;
+  } else if (doorRush) {
+    bar = `Bar capacity during the rush covered ${count(Math.min(attendance, doorRush.barCapacity))} of ${count(attendance)} guests`;
+  }
+  const totals = sanitation?.totals;
+  const restroom = totals
+    ? totals.requested === 0 ? 'No restroom visits requested'
+      : `Restrooms completed ${count(totals.served)} of ${count(totals.requested)} requested visits`
+    : null;
+  return { bar, restroom };
+}
+
 const PARTS = { sound: 'Sound and light', sightlines: 'Sightlines', amenities: 'Bars and restrooms', flow: 'Entry flow', incident: 'Incident handling' };
 const money = n => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 const route = (target, label = 'Review') => ({ target, label });

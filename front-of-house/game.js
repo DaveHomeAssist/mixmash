@@ -20,7 +20,7 @@ import { createSiteMap } from './site-map.mjs';
 import { createBoardAdapter } from './board-adapter.mjs';
 import { binding, matches } from './controls.mjs';
 import { FRONT_OF_HOUSE_RELEASE } from './version.mjs';
-import { advisoryFor } from './advisory.mjs';
+import { advisoryFor, observedAmenityLines } from './advisory.mjs';
 import { bandArt, venueArt } from './menu-art.mjs';
 import { createOpening } from './opening.mjs';
 import { bumpHint, clearPrefs, defaultPrefs, loadPrefs, rememberAct, rememberIncident, rememberRoom, rememberTab, savePrefs, setSuggest, setView, TAB_PHASES } from './prefs.mjs';
@@ -87,7 +87,7 @@ const SUGGEST_TEXT = {
 const WINS = {
   sound: 'Sound and lighting met this show’s needs.',
   sightlines: 'The crowd had a clear view of the stage.',
-  amenities: 'Bars and restrooms kept pace with the crowd.',
+  amenities: 'Bars and restrooms had the highest category score.',
   flow: 'Guests moved through entry without a major loss.',
   incident: 'The show-night response protected the result.',
 };
@@ -1492,16 +1492,22 @@ function settlementRevenue(r) {
     + (r.second ? r.second.cash : 0) - (r.ticketing?.fee || 0);
 }
 
-// The service each placed bar/restroom supply gives against the crowd, and how many of the
-// room's largest unit would close the gap.
-function amenityGap(attendance, v) {
+// Use measured service when available and installed capacity for aggregate scoring.
+function amenityGap(r, v) {
+  const { attendance } = r, observed = observedAmenityLines(r);
   const supply = amenitySupply(v), count = (n) => n.toLocaleString('en-US');
-  const line = (name, served, unit) => {
-    if (served >= attendance) return `${name} service covers all ${count(attendance)} guests`;
-    const n = Math.ceil((attendance - served) / SERVES[unit]), label = D.OBJECT_TYPES[unit].label.toLowerCase();
-    return `${name} service ${count(served)} of ${count(attendance)} · add ${n} ${label}${n === 1 ? '' : 's'}`;
+  const line = (name, capacity, unit) => {
+    if (capacity >= attendance) return `${name} capacity covers all ${count(attendance)} guests`;
+    const n = Math.ceil((attendance - capacity) / SERVES[unit]);
+    const { label, w, h } = D.OBJECT_TYPES[unit];
+    const floorCapacity = Math.floor((v.openFloorTiles - n * w * h) * v.density);
+    const addition = `${n} more ${label.toLowerCase()}${n === 1 ? '' : 's'}`;
+    const recommendation = floorCapacity < attendance ? `${addition} needed, but would cut ticket capacity` : `add ${addition}`;
+    return `${name} capacity ${count(capacity)} of ${count(attendance)} · ${recommendation}`;
   };
-  return `${line('Bar', supply.bar, toolOffered('bar-tent') ? 'bar-tent' : 'bar')}; ${line('restroom', supply.restroom, toolOffered('restroom-block') ? 'restroom-block' : 'restroom')}`;
+  const bar = observed.bar ?? line('Bar', supply.bar, toolOffered('bar-tent') ? 'bar-tent' : 'bar');
+  const restroom = observed.restroom ?? line('Restroom', supply.restroom, toolOffered('restroom-block') ? 'restroom-block' : 'restroom');
+  return `${bar}; ${restroom}`;
 }
 
 function settlementSummary(r, v) {
@@ -1518,11 +1524,16 @@ function settlementSummary(r, v) {
       ? `${r.attendance} guests attended, but the night did not cover every show cost and artist payment.`
       : `The show finished in the black, but crowd satisfaction held the result back.`;
   const priorityDetail = r.weakest === 'amenities'
-    ? amenityGap(r.attendance, v)
+    ? amenityGap(r, v)
     : r.weakest === 'flow' && r.doorRush
       ? `${r.doorRush.rushAdmitted}/${r.doorRush.rushArrivals} admitted during the rush · ${r.doorRush.lostWalkups} left`
       : `${Math.round(r.parts[r.weakest] * 100)}% in this category`;
-  return { strongest, verdict, line, priorityDetail };
+  let priorityTip = TIPS[r.weakest];
+  if (r.weakest === 'amenities') {
+    if (r.services) priorityTip = 'Review queues, staffing and usable facilities where service fell short.';
+    else if (r.doorRush?.choice === 'gate') priorityTip = 'Review the trade-off between staffing the bar and helping admission during the rush.';
+  }
+  return { strongest, verdict, line, priorityTip, priorityDetail };
 }
 
 // Settlement is a calm summary first and an exact accounting document second. All values
@@ -1624,7 +1635,7 @@ function sheetParts(r, { signed: done }) {
         <section aria-labelledby="settlement-financial-heading"><h3 id="settlement-financial-heading">Financial result</h3>${financialRows}</section>
         <div class="settlement-coaching">
           <section class="settlement-note positive"><h3>What worked</h3><p>${esc(WINS[summary.strongest])}</p><small>${PART_LABELS[summary.strongest]} · ${Math.round(r.parts[summary.strongest] * 100)}%</small></section>
-          <section class="settlement-note priority"><h3>Next priority: ${esc(PART_LABELS[r.weakest])}</h3><p>${esc(TIPS[r.weakest])}</p><small>${esc(summary.priorityDetail)}</small></section>
+          <section class="settlement-note priority"><h3>Next priority: ${esc(PART_LABELS[r.weakest])}</h3><p>${esc(summary.priorityTip)}</p><small>${esc(summary.priorityDetail)}</small></section>
         </div>
       </div>
     </section>`;

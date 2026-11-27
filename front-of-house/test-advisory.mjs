@@ -1,7 +1,7 @@
 // Advisory evidence, hidden-outcome boundaries and immutable presentation reads.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advisoryFor } from './advisory.mjs';
+import { advisoryFor, observedAmenityLines } from './advisory.mjs';
 import * as E from './engine.mjs';
 import * as D from './data.mjs';
 
@@ -80,4 +80,27 @@ test('finished state without a result never substitutes zero or reports readines
   for (const section of Object.values(a.sections)) {
     assert.match(section.detail, /Not available/); assert.deepEqual(section.rows, []); assert.equal(section.action, null);
   }
+});
+
+
+test('settlement amenity advice uses measured bar service and restroom visits', () => {
+  const receipt = {
+    attendance: 150,
+    services: { barServed: 90 },
+    sanitation: { totals: { requested: 120, served: 100 } },
+  };
+  assert.deepEqual(observedAmenityLines(receipt), {
+    bar: 'Bar served 90 of 150 guests',
+    restroom: 'Restrooms completed 100 of 120 requested visits',
+  });
+  receipt.sanitation.totals = { requested: 0, served: 0 };
+  assert.equal(observedAmenityLines(receipt).restroom, 'No restroom visits requested');
+});
+
+test('settlement distinguishes doors-rush capacity from completed service', () => {
+  assert.deepEqual(observedAmenityLines({ attendance: 150, doorRush: { barCapacity: 62 } }), {
+    bar: 'Bar capacity during the rush covered 62 of 150 guests',
+    restroom: null,
+  });
+  assert.deepEqual(observedAmenityLines({ attendance: 40 }), { bar: null, restroom: null });
 });

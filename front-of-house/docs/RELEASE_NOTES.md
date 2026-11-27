@@ -5,6 +5,10 @@ carry compatible fixes. Minor releases add player-facing capability. Save schema
 versions are a separate compatibility contract and change only when saved data
 requires migration.
 
+## 0.4.7 (2026-11-27)
+
+Settlement explains measured bar service and restroom visits, uses effective bar capacity after a doors-rush reassignment, and flags when adding a facility would cut ticket capacity. Bar revenue, scoring and save schema 2 are unchanged. Cache v96.
+
 ## 0.4.6 — 2026-11-25
 
 Save safety and window fixes from the 2026-11-25 bug audit. (0.4.5 is the unmerged aesthetics draft, PR #200.)
