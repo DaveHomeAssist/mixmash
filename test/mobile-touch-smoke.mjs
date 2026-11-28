@@ -104,7 +104,7 @@ export const GAMES = [
   },
   { id: 'garden', name: 'Garden OS', path: '/garden/', nav: true },
   {
-    id: 'empires', name: 'Age of Dave', path: '/empires/', nav: true,
+    id: 'empires', name: 'EMPIRES', path: '/empires/', nav: true,
     // The first-visit controls guide and start hint appear once the WebAssembly engine has loaded.
     async ready(page) {
       await page.waitForFunction(() => { const h = document.getElementById('start-hint'); return h && getComputedStyle(h).display !== 'none'; }, null, { timeout: 30000 });
@@ -830,7 +830,7 @@ async function launch(engine) {
     // An installed Chrome has a real GPU path; software GL would only slow it down.
     options.channel = process.env.SMOKE_CHROMIUM_CHANNEL;
   } else {
-    // Playwright's headless shell has no GPU, so give WebGL pages (Age of Dave, Garden OS) software GL.
+    // Playwright's headless shell has no GPU, so give WebGL pages (EMPIRES, Garden OS) software GL.
     options.args = ['--use-gl=angle', '--use-angle=swiftshader'];
     if (process.env.PW_EXECUTABLE_PATH) options.executablePath = process.env.PW_EXECUTABLE_PATH;
   }
