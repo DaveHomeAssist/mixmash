@@ -296,6 +296,8 @@
     <script src="../src/kit/nav.js"></script>
     <!-- Hub "Continue" marker: records mm.lastGame on load; never touches game state. -->
     <script src="/assets/last-game.js" data-game="hockey-havoc" defer></script>
+    <!-- Registers the site service worker, so a player who only ever opens this page still gets an offline copy. -->
+    <script src="../src/kit/pwa.js" defer></script>
 
     <!-- Web Audio Synthesis & Game Logic -->
     <script>

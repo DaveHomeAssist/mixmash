@@ -34,6 +34,7 @@ Early playable, listed on the hub.
 - Slice 1 (2026-11-11): bug-fix and jump-feel pass. Merged in PR #201 and live since 2026-11-23.
 - Slice 2 (2026-11-23): hub listing. Adds the catalog card, a gameplay preview and cover captured from the live route, the share card, SEO metadata, a sitemap entry, precaching, a 44 px mute button and a `smoke:mobile` entry.
 - Slice 3 (2026-11-28): offline assets. The Font Awesome and Google Fonts CDNs are replaced by inline SVG icons and self-hosted fonts, so a first open offline shows the hearts, the mute icon and the touch arrows, in the game's own type.
+- Slice 4 (2026-11-28): the page registers the site service worker itself by loading `src/kit/pwa.js`, as the other game pages do. A player who has only ever opened `/hockey-havoc/` now gets an offline copy; before, the worker was installed only after a visit to another game, since the homepage does not register it.
 - Not yet done: a human playtest, and runs on a real phone or a real 120 Hz display.
 
 ## Brief: slice 1

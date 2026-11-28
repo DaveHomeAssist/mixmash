@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Gritty's Hockey Havoc registers the site service worker itself: the page now loads `src/kit/pwa.js`, like Pitch Riot, Garden OS, MIXMASH, MarsScape, EMPIRES and Front of House. A player who has only ever opened `/hockey-havoc/` gets an offline copy without first opening another game (the homepage does not register the worker). The worker also precaches `src/kit/pwa.js`, which seven game pages load. Cache v98.
+
 - Gritty's Hockey Havoc works fully offline and loads nothing from a third party. Its 11 Font Awesome icons are now an inline SVG sprite (Font Awesome Free 6.4.0 artwork, CC BY 4.0) and Bungee and Inter are served from `hockey-havoc/fonts/` (SIL OFL 1.1), so a first open offline shows the hearts, the mute icon and the touch arrows in the game's own type. Permanent Marker was loaded but unused and is dropped. The worker also precaches `/assets/last-game.js`, which six game pages load. Cache v97. Notices: `hockey-havoc/THIRD_PARTY_NOTICES.md`; the privacy note no longer lists cdnjs.
 
 - Front of House 0.4.7: Settlement explains measured bar service and restroom visits, uses effective bar capacity after a doors-rush reassignment, and flags when adding a facility would cut ticket capacity. Bar revenue, scoring and save schema 2 are unchanged. Cache v96.
