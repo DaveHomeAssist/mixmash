@@ -12,7 +12,7 @@ The page draws 11 icons as inline SVG, using the unmodified artwork from Font Aw
 
 ## Typefaces: Bungee and Inter
 
-`fonts/bungee-latin.woff2` and `fonts/inter-latin.woff2` are the latin subsets that Google Fonts serves (Bungee v17; Inter v20, a variable font), copied unmodified.
+`fonts/bungee-latin.woff2` and `fonts/inter-latin.woff2` are the latin subsets that Google Fonts serves to Windows and Linux desktop browsers (Bungee v17; Inter v20, a variable font), copied unmodified. They match the files Google serves to Apple and Android devices except for a 7-byte `prep` table, which Apple's text renderer ignores. Glyphs and advance widths are identical.
 
 * Bungee: Copyright 2023 The Bungee Project Authors (<https://github.com/djrrb/Bungee>).
 * Inter: Copyright 2020 The Inter Project Authors (<https://github.com/rsms/inter>).

@@ -33,8 +33,9 @@
         @font-face { font-family: 'Inter'; font-style: normal; font-weight: 800; font-display: swap; src: url(./fonts/inter-latin.woff2) format('woff2'); }
         /* Icons are inline SVG (Font Awesome Free 6.4.0 artwork, CC BY 4.0), so they need no
            download. .hh-i keeps the old icon-font box: 1em tall, the glyph's width, sitting
-           1/8 em below the baseline. */
-        .hh-i { display: inline-block; font-style: normal; line-height: 1; }
+           1/8 em below the baseline. Its line height is 0 so the text font's own ascent and
+           descent cannot make the box taller than the SVG; text-base still sets 1.5rem. */
+        .hh-i { display: inline-block; font-style: normal; line-height: 0; }
         .hh-svg { display: inline-block; height: 1em; overflow: visible; vertical-align: -0.125em; fill: currentColor; }
         .hh-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
         body {

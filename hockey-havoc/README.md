@@ -5,7 +5,7 @@ An early arcade hockey platformer in a single HTML file (canvas and vanilla Java
 **Styles:**
 - `tailwind.css` holds the Tailwind v3.4.17 utilities the page uses, built locally. It replaced the Play CDN on 2026-11-23, so the service worker caches it and the layout and overlays work offline.
 - Icons are inline SVG: a sprite of 11 Font Awesome Free 6.4.0 glyphs (CC BY 4.0) at the top of `<body>`, so they draw with the page and need no download. `.hh-i` keeps the icon font's box, so layouts did not move. `hhIcon(name)` builds the hearts and the mute icon from the sprite.
-- `fonts/` holds the Bungee and Inter latin subsets from Google Fonts (SIL OFL 1.1), declared with the same weights Google declared (Inter 400, 600 and 800 from one variable file). The service worker precaches both. Permanent Marker was loaded but never used, so it was dropped.
+- `fonts/` holds the Bungee and Inter latin subsets from Google Fonts (SIL OFL 1.1), declared with the same weights Google declared (Inter 400, 600 and 800 from one variable file). They are the variants Google serves to Windows and Linux, so text there renders exactly as it did; Apple's renderer ignores their one extra table. The service worker precaches both. Permanent Marker was loaded but never used, so it was dropped.
 - Licences and attribution: `THIRD_PARTY_NOTICES.md`. Since 2026-11-28 the page loads nothing from a third party.
 - After changing classes in `index.html`, rebuild the stylesheet:
 
