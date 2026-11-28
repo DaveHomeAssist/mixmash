@@ -4477,6 +4477,16 @@
       "open": null
     },
     {
+      "path": "hockey-havoc/THIRD_PARTY_NOTICES.md",
+      "project": "hockey-havoc",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Gritty's Hockey Havoc third-party notices",
+      "description": "This page serves its icons and typefaces from this site, so it works offline and loads nothing from a third party.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/THIRD_PARTY_NOTICES.md",
+      "open": null
+    },
+    {
       "path": "test/hockey-havoc-physics.test.mjs",
       "project": "hockey-havoc",
       "category": "tests",
@@ -4484,6 +4494,26 @@
       "title": "hockey-havoc-physics.test.mjs",
       "description": "Gritty's Hockey Havoc: loads the shipped player code, config and fixed-step loop from hockey-havoc/index.html in a vm sandbox and checks the slice-1 movement contract.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/hockey-havoc-physics.test.mjs",
+      "open": null
+    },
+    {
+      "path": "hockey-havoc/fonts/bungee-latin.woff2",
+      "project": "hockey-havoc",
+      "category": "source",
+      "kind": "TXT",
+      "title": "Bungee latin subset",
+      "description": "Google Fonts latin subset of Bungee (SIL OFL 1.1), served from this site and precached so Hockey Havoc headings render offline. Notice: hockey-havoc/THIRD_PARTY_NOTICES.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/fonts/bungee-latin.woff2",
+      "open": null
+    },
+    {
+      "path": "hockey-havoc/fonts/inter-latin.woff2",
+      "project": "hockey-havoc",
+      "category": "source",
+      "kind": "TXT",
+      "title": "Inter latin subset",
+      "description": "Google Fonts latin subset of the Inter variable font (SIL OFL 1.1), served from this site and precached for Hockey Havoc body text. Notice: hockey-havoc/THIRD_PARTY_NOTICES.md.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/hockey-havoc/fonts/inter-latin.woff2",
       "open": null
     },
     {

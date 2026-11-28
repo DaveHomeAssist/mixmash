@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v96';
+const VERSION = 'v97';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -37,6 +37,7 @@ const PRECACHE = [
   './offline.html',
   './favicon.svg',
   './manifest.webmanifest',
+  './assets/last-game.js',
   './src/kit/nav.js',
   './src/kit/save.js',
   './src/kit/input.js',
@@ -56,6 +57,8 @@ const PRECACHE = [
   './hockey-havoc/',
   './hockey-havoc/index.html',
   './hockey-havoc/tailwind.css',
+  './hockey-havoc/fonts/bungee-latin.woff2',
+  './hockey-havoc/fonts/inter-latin.woff2',
   './mars/',
   './mars/index.html',
   './mars/styles.css',
