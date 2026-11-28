@@ -366,6 +366,8 @@ export const FILE_NOTES = {
   'assets/previews/mixmash.webp': preview('MIXMASH'),
   'assets/previews/pitch.webp': preview('PITCH RIOT'),
   'assets/previews/hockey-havoc.webp': preview('Gritty’s Hockey Havoc'),
+  'hockey-havoc/fonts/bungee-latin.woff2': { title: 'Bungee latin subset', description: 'Google Fonts latin subset of Bungee (SIL OFL 1.1), served from this site and precached so Hockey Havoc headings render offline. Notice: hockey-havoc/THIRD_PARTY_NOTICES.md.' },
+  'hockey-havoc/fonts/inter-latin.woff2': { title: 'Inter latin subset', description: 'Google Fonts latin subset of the Inter variable font (SIL OFL 1.1), served from this site and precached for Hockey Havoc body text. Notice: hockey-havoc/THIRD_PARTY_NOTICES.md.' },
   'hockey-havoc/tailwind.css': { description: 'Tailwind v3.4.17 utilities built from hockey-havoc/index.html. Replaces the Play CDN so the precached route renders offline; rebuild command in hockey-havoc/README.md.' },
   'src/kit/save.js': { description: 'MixKit save codes: encodes and decodes portable save strings that games can share.' },
   'test/kit-save.test.mjs': { description: 'Unit tests for MixKit save-code encoding, decoding and corrupt-input handling.' },

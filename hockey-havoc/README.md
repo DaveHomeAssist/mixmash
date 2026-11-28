@@ -4,7 +4,9 @@ An early arcade hockey platformer in a single HTML file (canvas and vanilla Java
 
 **Styles:**
 - `tailwind.css` holds the Tailwind v3.4.17 utilities the page uses, built locally. It replaced the Play CDN on 2026-11-23, so the service worker caches it and the layout and overlays work offline.
-- Font Awesome icons and Google Fonts still load from CDNs. Offline, the icons drop out (every button except the arrows and mute has a text label) and the text falls back to system fonts.
+- Icons are inline SVG: a sprite of 11 Font Awesome Free 6.4.0 glyphs (CC BY 4.0) at the top of `<body>`, so they draw with the page and need no download. `.hh-i` keeps the icon font's box, so layouts did not move. `hhIcon(name)` builds the hearts and the mute icon from the sprite.
+- `fonts/` holds the Bungee and Inter latin subsets from Google Fonts (SIL OFL 1.1), declared with the same weights Google declared (Inter 400, 600 and 800 from one variable file). The service worker precaches both. Permanent Marker was loaded but never used, so it was dropped.
+- Licences and attribution: `THIRD_PARTY_NOTICES.md`. Since 2026-11-28 the page loads nothing from a third party.
 - After changing classes in `index.html`, rebuild the stylesheet:
 
 ```
@@ -31,6 +33,7 @@ Early playable, listed on the hub.
 
 - Slice 1 (2026-11-11): bug-fix and jump-feel pass. Merged in PR #201 and live since 2026-11-23.
 - Slice 2 (2026-11-23): hub listing. Adds the catalog card, a gameplay preview and cover captured from the live route, the share card, SEO metadata, a sitemap entry, precaching, a 44 px mute button and a `smoke:mobile` entry.
+- Slice 3 (2026-11-28): offline assets. The Font Awesome and Google Fonts CDNs are replaced by inline SVG icons and self-hosted fonts, so a first open offline shows the hearts, the mute icon and the touch arrows, in the game's own type.
 - Not yet done: a human playtest, and runs on a real phone or a real 120 Hz display.
 
 ## Brief: slice 1
@@ -74,7 +77,7 @@ Early playable, listed on the hub.
 - Camera reset between periods.
 - A right-hand wall.
 - Retina scaling.
-- Removing the remaining CDN dependencies (Font Awesome, Google Fonts).
+- Removing the remaining CDN dependencies (Font Awesome, Google Fonts). Done later, in slice 3.
 - The rest of MixKit (stage, lifecycle, input).
 - A hub card.
 - New mechanics.
