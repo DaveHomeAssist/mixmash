@@ -1,0 +1,27 @@
+# MixMash report intake Worker. Setup steps: workers/report-intake/README.md
+# Secrets (never committed): NOTION_TOKEN, NOTION_DATABASE_ID via `wrangler secret put`.
+name = "mixmash-report-intake"
+main = "src/index.mjs"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://mixmash.games,https://www.mixmash.games"
+
+# Five reports a minute from one client.
+[[ratelimits]]
+name = "CLIENT_LIMITER"
+namespace_id = "4101"
+
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
+# Thirty reports a minute across the whole endpoint, so a flood cannot fill the backlog.
+[[ratelimits]]
+name = "GLOBAL_LIMITER"
+namespace_id = "4102"
+
+  [ratelimits.simple]
+  limit = 30
+  period = 60

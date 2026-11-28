@@ -145,6 +145,8 @@ jobs:
       # runners (see the script). On hosted runners it runs the command as is.
       - name: npm run smoke:landing
         run: .github/scripts/box-browser.sh npm run smoke:landing
+      - name: npm run smoke:report
+        run: .github/scripts/box-browser.sh npm run smoke:report
       - name: npm run smoke:front-of-house
         run: .github/scripts/box-browser.sh npm run smoke:front-of-house
       - run: node --test test/front-of-house-version.test.mjs

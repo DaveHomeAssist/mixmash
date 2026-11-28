@@ -675,6 +675,10 @@
           "description": "This admin index: no page scroll at six widths, themes, keyboard tabs, search, filters and privacy."
         },
         {
+          "name": "npm run smoke:report",
+          "description": "node test/report-smoke.mjs"
+        },
+        {
           "name": "npm run vercel-build",
           "description": "Syntax-check the API, MarsScape server, Front of House client and admin scripts (what Vercel's build runs)."
         },
@@ -5227,6 +5231,26 @@
       "open": null
     },
     {
+      "path": "docs/QUALITY_AUDIT_SLICE_1.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Quality audit, slice 1: Pitch Riot (plan only)",
+      "description": "go ahead after the reporting pilot is merged.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/QUALITY_AUDIT_SLICE_1.md",
+      "open": null
+    },
+    {
+      "path": "docs/QUALITY_REPORTING.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "Quality reporting: feature brief (pilot)",
+      "description": "studio's Notion issue backlog, received by a Cloudflare Worker. Everything else below is a recommendation until merged.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/docs/QUALITY_REPORTING.md",
+      "open": null
+    },
+    {
       "path": "docs/REVENUE_SETUP.md",
       "project": "studio",
       "category": "docs",
@@ -5254,6 +5278,16 @@
       "title": "SEO / Indexing Setup — mixmash.games",
       "description": "The site's technical SEO is complete: robots.txt allows all crawlers, sitemap.xml is valid, and every route ships unique <title>/description/canonical/OpenGraph tags.",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/SEO_SETUP.md",
+      "open": null
+    },
+    {
+      "path": "workers/report-intake/README.md",
+      "project": "studio",
+      "category": "docs",
+      "kind": "MD",
+      "title": "MixMash report intake Worker",
+      "description": "Receives problem reports from the games on mixmash.games and writes each one as a row in the studio issue backlog in Notion. The Notion token lives only in this Worker as a secret, so the static site never holds a key.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/workers/report-intake/README.md",
       "open": null
     },
     {
@@ -5717,6 +5751,46 @@
       "open": null
     },
     {
+      "path": "test/report-client.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "report-client.test.mjs",
+      "description": "Report client helpers (src/kit/report.js): context, revision, report build and send, with no browser and no network.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/report-client.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/report-schema.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "report-schema.test.mjs",
+      "description": "Report contract (src/kit/report-schema.mjs): one problem and evidence model for player reports and audit findings.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/report-schema.test.mjs",
+      "open": null
+    },
+    {
+      "path": "test/report-smoke.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "report-smoke.mjs",
+      "description": "Pitch Riot problem report (quality pilot): the form stays hidden with no intake endpoint, opens from Pause, keeps typed keys away from the match, sends one contract report and keeps the text when the send fails.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/report-smoke.mjs",
+      "open": null
+    },
+    {
+      "path": "test/report-worker.test.mjs",
+      "project": "studio",
+      "category": "tests",
+      "kind": "MJS",
+      "title": "report-worker.test.mjs",
+      "description": "Report intake Worker (workers/report-intake): guards and the Notion write, with Notion and the rate limit bindings replaced by fakes.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/test/report-worker.test.mjs",
+      "open": null
+    },
+    {
       "path": "test/revenue-switches.test.mjs",
       "project": "studio",
       "category": "tests",
@@ -5957,6 +6031,26 @@
       "open": null
     },
     {
+      "path": "src/kit/report-schema.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "report-schema.mjs",
+      "description": "MixKit report contract (quality operations, schema 1). One problem and evidence model for every MixMash game. Player reports sent from a game, and findings written by an audit, both pass through this file:",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/report-schema.mjs",
+      "open": null
+    },
+    {
+      "path": "src/kit/report.js",
+      "project": "studio",
+      "category": "source",
+      "kind": "JS",
+      "title": "report.js",
+      "description": "MixKit problem report (quality operations pilot). An in-game \"Report a problem\" form that sends one report, shaped by src/kit/report-schema.mjs, to the MixMash report intake Worker. Load it as a module after the game's…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/report.js",
+      "open": null
+    },
+    {
       "path": "src/kit/save.js",
       "project": "studio",
       "category": "source",
@@ -5984,6 +6078,26 @@
       "title": "viewport.css",
       "description": "MixKit viewport (Mobile & Tablet Fix Phase 1). The shared page frame for every game: a root that never scrolls or rubber-bands, a 100dvh stage, the device safe-area insets as custom properties, and overlay rules so a…",
       "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/src/kit/viewport.css",
+      "open": null
+    },
+    {
+      "path": "workers/report-intake/src/index.mjs",
+      "project": "studio",
+      "category": "source",
+      "kind": "MJS",
+      "title": "index.mjs",
+      "description": "MixMash report intake Worker (quality operations pilot). Receives player reports from the static games on mixmash.games and writes each one as a row in the studio issue backlog in Notion. The Notion token lives only…",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/workers/report-intake/src/index.mjs",
+      "open": null
+    },
+    {
+      "path": "workers/report-intake/wrangler.toml",
+      "project": "studio",
+      "category": "source",
+      "kind": "TXT",
+      "title": "Report intake Worker config",
+      "description": "Cloudflare Worker name, allowed origins and the two report rate limits. Secrets are set with wrangler, never committed.",
+      "github": "https://github.com/DaveHomeAssist/mixmash/blob/gh-pages/workers/report-intake/wrangler.toml",
       "open": null
     },
     {

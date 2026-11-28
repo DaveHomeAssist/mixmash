@@ -342,6 +342,8 @@ html, body {
 
 <script src="../src/kit/nav.js"></script>
 <script src="../src/kit/input.js"></script>
+<!-- Problem reports (quality pilot). Hidden until data-endpoint names the intake Worker: workers/report-intake/README.md -->
+<script type="module" src="../src/kit/report.js" data-mixkit-report data-game="pitch" data-endpoint=""></script>
 <div id="pause-pill" hidden>&#10073;&#10073; Pause</div>
 
 <div id="stage">
@@ -421,6 +423,7 @@ html, body {
   <div class="overlay-actions">
     <button class="btn" id="resume-btn">&#9654; Resume</button>
     <button class="btn ghost" id="quit-btn">Quit to Menu</button>
+    <button class="btn ghost" data-report-open hidden>Report a problem</button>
   </div>
  </div>
 </div>
@@ -435,6 +438,7 @@ html, body {
   <div class="overlay-actions">
     <button class="btn" id="rematch-btn">&#9654; Rematch</button>
     <button class="btn ghost" id="menu-btn">Change Settings</button>
+    <button class="btn ghost" data-report-open hidden>Report a problem</button>
   </div>
  </div>
 </div>
