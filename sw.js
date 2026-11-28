@@ -37,6 +37,7 @@ const PRECACHE = [
   './offline.html',
   './favicon.svg',
   './manifest.webmanifest',
+  './assets/last-game.js',
   './src/kit/nav.js',
   './src/kit/save.js',
   './src/kit/input.js',
