@@ -28,3 +28,7 @@ Original prompt: Restore /empires/ as Age of Dave backed by the real aoe2-clone 
 - Published aoe2-clone `main` at `207a4e3` (PRs #14, #16, #10, #11 since the last build): sprite ground shadows drawn in one pre-pass before the sprites (web draws/frame 63 → 41) at #13's lighter shadow alphas, `--map-size` option, and the status naming change. Files come from main's CI `web-build` artifact (run 39035880192), which #11 now produces and smoke-tests in headless Chrome on every push. `aoe2-clone.data` is byte-identical to the previous build; `.wasm` 1,274,009 bytes. Shell unchanged.
 - Verified locally in headless Chromium: lobby, Start Skirmish, no page errors or failed requests.
 - Same day, second update: published aoe2-clone `main` at `95952be`, which adds #8 (AI stalemates resolved so matches actually end) and #9 (soft trampled-earth pads under buildings, `aoe2-clone.data` 3.09 MB). Built on the box with emsdk 6.0.12 via `tools/build_web.sh`, not hosted Actions; aoe2-clone's `tools/web_smoke/smoke.mjs` passed on the output (696 frames, no problems). Shell unchanged.
+
+## 2026-11-25
+
+- Published aoe2-clone `main` at `e55e46a` (PR #29): hidden-tab tick catch-up, F5/F9 save robustness, and the tellg check. Files come from the post-merge self-hosted CI `web-build` artifact (run 45581683719), which was green including the web job. `aoe2-clone.data` 4,018,018 bytes (was 3,091,724); `.wasm` 1,292,390 bytes (was 1,275,690). Shell unchanged. Service worker still at v95; the wasm/js/data binaries are not in the precache list.
