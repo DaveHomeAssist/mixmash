@@ -11,7 +11,7 @@
  * first successful fetch rather than force-installed.
  */
 
-const VERSION = 'v97';
+const VERSION = 'v98';
 const CACHE = `mixmash-${VERSION}`;
 
 const PRECACHE = [
@@ -39,6 +39,7 @@ const PRECACHE = [
   './manifest.webmanifest',
   './assets/last-game.js',
   './src/kit/nav.js',
+  './src/kit/pwa.js',
   './src/kit/save.js',
   './src/kit/input.js',
   './src/kit/lifecycle.js',
