@@ -4,6 +4,8 @@ All notable changes to the MixMash Studio site (`gh-pages` branch, served at mix
 
 ## [Unreleased]
 
+- Gritty's Hockey Havoc works fully offline and loads nothing from a third party. Its 11 Font Awesome icons are now an inline SVG sprite (Font Awesome Free 6.4.0 artwork, CC BY 4.0) and Bungee and Inter are served from `hockey-havoc/fonts/` (SIL OFL 1.1), so a first open offline shows the hearts, the mute icon and the touch arrows in the game's own type. Permanent Marker was loaded but unused and is dropped. The worker also precaches `/assets/last-game.js`, which six game pages load. Cache v97. Notices: `hockey-havoc/THIRD_PARTY_NOTICES.md`; the privacy note no longer lists cdnjs.
+
 - Front of House 0.4.7: Settlement explains measured bar service and restroom visits, uses effective bar capacity after a doors-rush reassignment, and flags when adding a facility would cut ticket capacity. Bar revenue, scoring and save schema 2 are unchanged. Cache v96.
 
 - Front of House 0.4.6: save safety. A newer-version, damaged, unconvertible or unloadable career save is backed up to `front_of_house_v1.backup`, never loaded or overwritten, and shown with a Reload / Download / Start new notice; a second tab can no longer write a fresh game over a save it can't read; resizing keeps an open window's scroll, focus and choices; Start a new game disarms when the Menu closes; hidden-tab time no longer skips the show. Release metadata cites cache v95; `sw.js` unchanged; rules, balance and save schema 2 unchanged.
