@@ -27,7 +27,11 @@ cache or block the beacon.
 ## Ko-fi — ON
 
 **Status: ON.** `supportUrl` is `https://ko-fi.com/avbydave`. The Studio view shows the "Keep the games free"
-block and the footer shows **Support MixMash on Ko-fi**. Payment status check (no login):
+block (one-off **Support MixMash on Ko-fi** button, plus a monthly supporters section for Stagehand
+at $3/mo and Headliner at $7/mo) and the footer shows **Support MixMash on Ko-fi**. The membership
+button links to `https://ko-fi.com/avbydave/tiers` (the page URL plus `/tiers`, per Ko-fi's help).
+**Confirm that membership URL after the Ko-fi tiers are created.** Do not merge this hub change
+until those tiers exist. Payment status check (no login):
 `/workspace/kofi-live/check.sh` on the box prints CONNECTED / NOT_CONNECTED / UNKNOWN.
 
 Setup that was used:

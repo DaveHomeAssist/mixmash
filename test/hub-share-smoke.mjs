@@ -75,7 +75,7 @@ try {
       page.on('request', request => { if (!request.url().startsWith(origin)) offsite.push(request.url()); });
       await page.reload({ waitUntil: 'networkidle' });
       assert.equal(await page.locator('[data-ad-slot],.adsbygoogle').count(), 0, `${width} ${hash}: no ad slots`);
-      assert.deepEqual(await page.locator('[data-support-slot]').evaluateAll(nodes => nodes.map(node => (node.matches('a') ? node : node.querySelector('a')).getAttribute('href'))), ['https://ko-fi.com/avbydave', 'https://ko-fi.com/avbydave'], `${width} ${hash}: Ko-fi block and footer link`);
+      assert.deepEqual(await page.locator('[data-support-slot]').evaluateAll(nodes => nodes.flatMap(node => (node.matches('a') ? [node] : [...node.querySelectorAll('a')]).map(anchor => anchor.getAttribute('href')))), ['https://ko-fi.com/avbydave/tiers', 'https://ko-fi.com/avbydave', 'https://ko-fi.com/avbydave'], `${width} ${hash}: Ko-fi membership, one-off, and footer links`);
       const unexpected = [...new Set(offsite)].filter(url => !allowedOffsite(url));
       assert.deepEqual(unexpected, [], `${width} ${hash}: unexpected third-party ${JSON.stringify(offsite)}`);
       assert.ok(offsite.some(url => url.includes('static.cloudflareinsights.com/beacon.min.js')), `${width} ${hash}: analytics beacon requested`);
